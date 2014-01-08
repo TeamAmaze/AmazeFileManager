@@ -53,6 +53,7 @@ import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
+import com.amaze.filemanager.utils.IconHolder;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
@@ -100,12 +101,13 @@ public class Main extends android.support.v4.app.Fragment {
     public ListView listView;
     public GridView gridView;
     private SharedPreferences sharedPreferences;
-    public Boolean aBoolean;
-
+    public Boolean aBoolean,showThumbs;
+    public IconHolder ic;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
         showPermissions=Sp.getBoolean("showPermissions",false);
         showSize=Sp.getBoolean("showFileSize",true);
         showLastModified=Sp.getBoolean("showLastModified",true);
@@ -128,7 +130,8 @@ public class Main extends android.support.v4.app.Fragment {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         aBoolean = sharedPreferences.getBoolean("view", true);
-
+        showThumbs=Sp.getBoolean("showThumbs",true);
+        ic=new IconHolder(getActivity(),showThumbs,!aBoolean);
         if (aBoolean) {
             listView.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.GONE);

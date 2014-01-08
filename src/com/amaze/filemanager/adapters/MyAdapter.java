@@ -31,7 +31,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     Main main;
     Futils utils = new Futils();
-    IconHolder ic;
     boolean showThumbs;
     public MyAdapter(Context context, int resourceId,
                      List<Layoutelements> items, Main main) {
@@ -42,8 +41,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, false);
         }
-        showThumbs=main.Sp.getBoolean("showThumbs",true);
-		ic=new IconHolder(context,showThumbs,!main.aBoolean);
+
     }
 
 
@@ -174,12 +172,12 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.imageView.setVisibility(View.INVISIBLE);
             holder.viewmageV.setVisibility(View.VISIBLE);
             holder.viewmageV.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_doc_image));
-            ic.cancelLoad(holder.viewmageV);
-            ic.loadDrawable(holder.viewmageV,new File(rowItem.getDesc()),null);
+            main.ic.cancelLoad(holder.viewmageV);
+            main.ic.loadDrawable(holder.viewmageV,new File(rowItem.getDesc()),null);
         }
         if (Icons.isApk((rowItem.getDesc()))) {
-            ic.cancelLoad(holder.imageView);
-            ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
+            main.ic.cancelLoad(holder.imageView);
+            main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
         }
             if(main.showPermissions)
             holder.perm.setText(rowItem.getPermissions());
@@ -202,9 +200,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             vholder.date= (TextView) view.findViewById(R.id.date);
             vholder.txtDesc= (TextView) view.findViewById(R.id.size);
             view.setTag(vholder);
-
-
-        }else{ view = convertView;}
+            }else{ view = convertView;}
             final ViewHolder holder = (ViewHolder) view.getTag();
             Boolean checked = myChecked.get(position);
             if (checked != null) {
@@ -235,12 +231,9 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                         toggleChecked(p);
 
                     }
-                    // TODO: Implement this method
                     return true;
                 }
             });
-
-
             holder.txtTitle.setText(rowItem.getTitle());
             holder.imageView1.setVisibility(View.INVISIBLE);
             holder.imageView.setVisibility(View.VISIBLE);
@@ -248,12 +241,12 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
-                ic.cancelLoad(holder.imageView1);
-                ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
+                main.ic.cancelLoad(holder.imageView1);
+                main.ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
             }
             if (Icons.isApk((rowItem.getDesc()))) {
-                ic.cancelLoad(holder.imageView);
-                ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
+                main.ic.cancelLoad(holder.imageView);
+                main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
             }
             if(main.showLastModified)
                 holder.date.setText(rowItem.getDate());
@@ -261,6 +254,8 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 holder.txtDesc.setText(rowItem.getSize());
             return view;}
 
+    }public int calculatePx(int dp){
+        return (int)(dp * (main.getResources().getDisplayMetrics().densityDpi / 160));
     }
 }
 
