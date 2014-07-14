@@ -1,0 +1,127 @@
+<resources>
+    <string name="app_name">Navigation Drawer Example</string>
+	<string-array name="listmode">
+		<item>Detailed View</item>
+		<item>Simple View</item>
+	</string-array>
+	<string-array name="folder">
+		<item>Orange</item>
+		<item>Yellow</item>
+		<item>Blue</item>
+	</string-array>
+	<string-array name="directorysortmode">
+		<item>Folders on Top</item>
+		<item>Files on Top</item>
+		<item>None on Top</item>
+	</string-array>
+	<string-array name="sortby">
+		<item>Name</item>
+		<item>Last Modified</item>
+		<item>Size</item>
+		<item>Name (Desc)</item>
+		<item>Last Modified (Desc)</item>
+		<item>Size (Desc)</item>
+	</string-array>
+	<string-array name="uimode">
+		<item>Simple Ui</item>
+		<item>Card Ui</item>
+	
+	</string-array>
+	<string-array name="theme">
+		<item>Light</item>
+		<item>Dark</item>
+	
+	</string-array>
+	<string-array name="ints2">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+		<item>4</item>
+		<item>5</item>
+    </string-array>
+	<string-array name="ints1">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+	</string-array>
+	<string-array name="ints">
+		<item>0</item>
+		<item>1</item>
+	</string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="books">Bookmarks</string> 
+    <string name="icon">icon</string>
+    <string name="efn">Enter File Name</string>
+	<string name="storage">Storage</string>
+	<string name="gallery">Gallery</string>
+	<string name="apps">App Manager</string>
+	<string name="bookmanag">Bookmarks Manager</string>
+	<string name="setting">Settings</string>
+	<string name="select">Select Item</string>
+	<string name="pressagain">Press  again to exit</string>
+	<string name="backup">Backup</string>
+	<string name="uninstall">Uninstall</string>
+	<string name="play">Play store</string>
+	<string name="properties">Properties</string>
+	<string name="copyingapk">Copying apk to </string>
+	<string name="addbook">Add Bookmark</string>
+	<string name="enterpath">Enter Path</string>
+	<string name="cancel">Cancel</string>
+	<string name="create">Create</string>
+	<string name="success">Success</string>
+	<string name="filenotexists">File Not Exists</string>
+	<string name="error">Error</string>
+	<string name="cantlistfiles">Can\'t list files without root</string>
+<string name="searchresults">Search Results</string>
+<string name="itemsselected">Items Selected</string>
+<string name="newhomedirectory">New Home Directory</string>
+<string name="rename">Rename</string>
+<string name="save">Save</string>
+<string name="renameerror">Rename Unsuccessful</string>
+<string name="renamed">Rename Successful</string>
+<string name="bookmarksadded">Bookmarks Added</string>
+<string name="fileexist">File Already Exists</string>
+<string name="filecreated">File Created</string>
+<string name="searchpath">Search Path</string>
+<string name="search">Search</string>
+<string name="enterfile">Enter File Name</string>
+<string name="name">Name:</string>
+<string name="date">Date:</string>
+<string name="location">Located in:</string>
+<string name="size">Size:</string>
+<string name="totalitems">Total Items:</string>
+<string name="enterzipname">Enter Zip Name</string>
+<string name="noappfound">No App found to open this file</string>
+<string name="copying">Copying</string>
+<string name="moving">Moving</string>
+<string name="add">Add</string>
+<string name="tab">Tab</string>
+<string name="file">File</string>
+<string name="folder">Folder</string>
+<string name="newfolder">New Folder</string>
+<string name="entername">Enter Name</string>
+<string name="extracting">Extracting</string>
+<string name="zipping">Zipping</string>
+<string name="stopping">Stopping</string>
+<string name="guide1">Welcome to Amaze File Manager</string>
+<string name="guide2">Touch the blue strip to show or hide PathBar</string>
+<string name="guide3">Touch and hold any file for more options...</string>
+<string name="guide4">Like copy,move,properties etc</string>
+<string name="guide5">Use Back Button of your device to exit app anytime...</string>
+<string name="guide6">..And use left arrow button for navigation in file manager</string>
+<string name="maintab">Main Tab can\'t be removed</string>
+<string name="openparent">Open Parent Directory</string>
+<string name="openwith">Open with</string>
+<string name="share">Share</string>
+<string name="about">About</string>
+<string name="extract">Extract</string>
+<string name="compress">Compress</string>
+<string name="yes">Yes</string>
+<string name="no">No</string>
+<string name="confirm">Confirm</string>
+<string name="deleting">Deleting</string>
+<string name="questiondelete">Do you really want to delete following files?</string>
+</resources>
+	

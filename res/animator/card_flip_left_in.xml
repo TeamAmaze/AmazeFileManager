@@ -1,0 +1,60 @@
+<!--
+  Copyright 2012 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<!--
+    This object animator is used as a custom fragment transition. See
+    FragmentTransaction.setCustomAnimation for more details.
+
+    The overall effect of this animator is to rotate the back of the card
+    into view. The order of operations is described below:
+
+    1. The back is immediately set to transparent.
+    2. The invisible back rotates 90 degrees, from being fully flipped
+       to being zero-width, fully perpendicular to the viewer, facing right.
+       It is still invisible.
+    3. The back is then made visible (this is half-way through the
+       animation).
+    4. The back rotates another 90 degrees, from zero-width, to
+       100% of its normal width, facing the user.
+
+    This is accomplished using the 3 child animators below, executed in
+    parallel. Note that the last animator starts half-way into the animation.
+-->
+
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Before rotating, immediately set the alpha to 0. -->
+    <objectAnimator
+        android:valueFrom="1.0"
+        android:valueTo="0.0"
+        android:propertyName="alpha"
+        android:duration="0" />
+
+    <!-- Rotate. -->
+    <objectAnimator
+        android:valueFrom="-180"
+        android:valueTo="0"
+        android:propertyName="rotationY"
+        android:interpolator="@android:interpolator/accelerate_decelerate"
+        android:duration="@integer/card_flip_time_full" />
+
+    <!-- Half-way through the rotation (see startOffset), set the alpha to 1. -->
+    <objectAnimator
+        android:valueFrom="0.0"
+        android:valueTo="1.0"
+        android:propertyName="alpha"
+        android:startOffset="@integer/card_flip_time_half"
+        android:duration="1" />
+</set>

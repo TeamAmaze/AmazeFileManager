@@ -1,0 +1,24 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+	
+    <EditText android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:singleLine="false"
+
+      android:gravity="top|left"
+      android:cursorVisible="true"
+      android:background="@null"
+      android:imeOptions="actionDone|flagNoFullscreen"
+      android:inputType="textMultiLine|textImeMultiLine"
+      android:text="@null"
+      android:textAppearance="@style/secondary_text_appearance" 
+		android:id="@+id/fname"
+	/><ProgressBar android:layout_gravity="top"
+	android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:indeterminate="true"
+		android:id="@+id/pbar"/>
+	
+</FrameLayout>

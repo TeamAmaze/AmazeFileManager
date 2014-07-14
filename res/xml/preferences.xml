@@ -1,0 +1,24 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	
+	<PreferenceCategory android:title="File Explorer">
+	
+		<ListPreference android:key="viewmode" android:entries="@array/listmode" android:title="View Mode" android:entryValues="@array/ints" android:defaultValue="0" android:summary="Choose ListView Mode" />
+		<ListPreference android:key="uimode" android:entries="@array/uimode" android:title="UI Mode" android:entryValues="@array/ints" android:defaultValue="0" android:summary="Choose Item Ui" />
+	<ListPreference android:key="dirontop" android:entries="@array/directorysortmode" android:title="Directory Sort Mode" android:defaultValue="0" android:entryValues="@array/ints1"  />
+
+	
+		
+		<ListPreference android:key="sortby" android:entries="@array/sortby" android:title="Sort By" android:defaultValue="0" android:entryValues="@array/ints2"  />
+		<ListPreference android:key="folder" android:entries="@array/folder" android:title="Folder Color" android:defaultValue="1" android:entryValues="@array/ints1"  />
+	</PreferenceCategory>
+	
+	<PreferenceCategory android:title="Image Gallery">
+	
+	<EditTextPreference android:key="Ipath" android:title="Change Gallery Path" />
+    
+	<CheckBoxPreference android:key="Ipathset" android:title="Use Default Image Gallery Path" android:defaultValue="true"/>
+		
+	</PreferenceCategory>
+		<ListPreference android:key="theme" android:entries="@array/theme" android:title="Theme" android:defaultValue="0" android:entryValues="@array/ints"  />
+
+</PreferenceScreen>

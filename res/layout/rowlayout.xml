@@ -1,0 +1,66 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/second"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+   
+    android:clickable="true"
+    android:layout_marginLeft="10dip"
+    android:minHeight="60dip"
+    android:padding="6dip" >
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="55dip"
+        android:layout_height="55dip"
+        android:clickable="false"
+        android:padding="5dip"
+        android:contentDescription="@string/icon" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_toRightOf="@id/icon"
+		android:layout_marginLeft="3dip"
+	    android:layout_marginTop="5dip"
+        android:clickable="false" >
+
+        <TextView
+            android:id="@+id/firstline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+			android:gravity="center_vertical"
+			
+            android:clickable="false"
+            
+            android:textSize="17sp" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/firstline"
+            	    android:layout_marginTop="5dip"
+            android:clickable="false" >
+
+            <TextView
+                android:id="@+id/secondLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:gravity="left"
+                android:textSize="15sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="3dip"
+                android:clickable="false"
+                android:textSize="13sp"
+                android:visibility="gone" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

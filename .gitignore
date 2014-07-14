@@ -26,7 +26,8 @@ $RECYCLE.BIN/
 .LSOverride
 
 # Icon must ends with two \r.
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -34,3 +35,19 @@ Icon
 # Files that might appear on external disk
 .Spotlight-V100
 .Trashes
+
+# Android Studio
+.idea
+#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+.gradle
+build/
+.settings
+bin/
+build
+gen/
+gradle/
+.classpath
+local.properties
+gradlew
+gradlew.bat
+.project

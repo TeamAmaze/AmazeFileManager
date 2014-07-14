@@ -1,0 +1,44 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<item android:id="@+id/cpy"
+	android:title="Copy"
+	android:icon= "@drawable/ic_action_copy_light"
+	android:showAsAction="always"/>
+	<item android:id="@+id/cut"
+		android:title="cut"
+		android:icon="@drawable/ic_action_cut_light"
+		android:showAsAction="always"/>
+	<item android:id="@+id/delete"
+		android:title="delete"
+		android:icon="@drawable/ic_action_delete_light"
+		android:showAsAction="always"/>
+	<item android:id="@+id/all"
+		android:title="Select All"
+		android:icon="@drawable/ic_action_select_all_light"
+		android:showAsAction="always"/>
+	<item android:id="@+id/about"
+		android:title="Properties"
+		android:icon="@drawable/ic_action_about_light"
+		android:showAsAction="ifRoom"/>
+	<item android:id="@+id/rename"
+		android:title="Rename"
+		
+		/>
+	<item android:id="@+id/sethome"
+		android:title="Set As Home Folder"
+		
+	/>	<item android:id="@+id/share"
+		android:title="Share"
+		/>
+	<item android:id="@+id/book"
+		android:title="Add to Bookmarks"
+	/>
+		
+	<item android:id="@+id/ex"
+		android:title="Extract"
+	/>
+		<item android:id="@+id/compress"
+		android:title="Compress"
+		/>	<item android:id="@+id/openwith"
+			android:title="Open With"
+		/>
+		</menu>

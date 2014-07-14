@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.amaze.filemanager"
+    android:versionCode="1"
+    android:versionName="1.0" >
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-sdk 
+        android:minSdkVersion="14" 
+        android:targetSdkVersion="15" />
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="Amaze File Manager" >
+        <activity
+	   		android:uiOptions="splitActionBarWhenNarrow"
+            android:label="Amaze File Manager"
+            android:name=".activities.MainActivity" 
+			android:theme="@style/LightTheme">
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+		<activity
+			android:uiOptions="splitActionBarWhenNarrow"
+            android:label="Settings"
+            android:name=".activities.Preferences" 
+			android:theme="@style/DarkTheme">
+           
+        </activity>
+		<activity
+			
+            android:label="Text Reader"
+            android:name="com.amaze.filemanager.activities.TextReader" 
+			android:theme="@style/LightTheme">
+
+        </activity>
+	
+
+			<service
+			android:process=":amaze"
+			android:name = "com.amaze.filemanager.services.DeleteTask"
+			android:label = "Deleting"
+				
+			>	
+		</service>
+   <service
+   	android:process=":amaze"
+			android:name = "com.amaze.filemanager.services.ExtractService"
+			android:label = "Extracting"
+			>	
+		</service><service
+			android:name = "com.amaze.filemanager.services.ZipTask"
+			android:label = "Compressing"
+	android:process=":amaze"
+		>
+		</service>
+			<service
+			android:name = "com.amaze.filemanager.services.CopyService"
+			android:label = "Copying"
+		android:process=":amaze"	
+		>
+		</service>
+		<service
+			android:name = "com.amaze.filemanager.services.MoveService"
+			android:label = "Moving"
+			android:process=":amaze"
+		>
+		</service>
+    </application>
+
+</manifest>
