@@ -75,5 +75,15 @@
 <string name="confirm">Confirm</string>
 <string name="deleting">Deleting</string>
 <string name="questiondelete">Do you really want to delete following files?</string>
+<string name="viewmode">View Mode</string>
+<string name="uimode">UI Mode</string>
+<string name="directorysort">Directory Sort Mode</string>
+<string name="sortby">Sort By</string>
+<string name="theme">Theme</string>
+<string name="foldercolor">Folder Color</string>
+<string name="imagegallery">Image Gallery</string>
+<string name="fileexplorer">File Explorer</string>
+<string name="changegallerypath">Change Gallery Path</string>
+<string name="usedefaultgallerypath">Use Default Image Gallery Path</string>
 </resources>
 	
