@@ -35,4 +35,10 @@
 	<item android:id="@+id/item9"
 		android:title="Set Current Directory As Home"
 		android:showAsAction="ifRoom"/>
+    <item android:id="@+id/item10"
+        android:title="Sort by"
+        android:showAsAction="ifRoom"/>
+    <item android:id="@+id/item11"
+        android:title="Directory Sort Mode"
+        android:showAsAction="ifRoom"/>
 		</menu>

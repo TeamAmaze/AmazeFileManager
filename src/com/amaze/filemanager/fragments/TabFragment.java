@@ -160,6 +160,12 @@ ActionBar ACTION_BAR;TabFragment t=this;
 		case R.id.item2:
 			home();
 			break;
+            case R.id.item10:
+                utils.showSortDialog(getCurrentTab());
+                break;
+            case R.id.item11:
+                utils.showDirectorySortDialog(getCurrentTab());
+                break;
 		case R.id.item3:
 			removePage(mViewPager.getCurrentItem());
 			break;
