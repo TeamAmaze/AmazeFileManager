@@ -418,16 +418,18 @@ if(!file.getName().equals(".thumbnails")){
 	}
     public void showSortDialog(final Main m){
 String[] sort= m.getResources().getStringArray(R.array.sortby);
+        int current = Integer.parseInt(m.Sp.getString("sortby", "0"));
 AlertDialog.Builder a=new AlertDialog.Builder(m.getActivity());
 
-        a.setAdapter(new ArrayAdapter<String>(m.getActivity(),android.R.layout.select_dialog_singlechoice,sort),new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        a.setSingleChoiceItems(new ArrayAdapter<String>(m.getActivity(),android.R.layout.select_dialog_singlechoice,sort), current, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int i) {
+
                 m.Sp.edit().putString("sortby",""+i).commit();
                 m.getSortModes();
                 m.loadlist(new File(m.current),false);
+                dialog.cancel();
             }
-        });
+                });
         a.setTitle("Sort By");
         a.setNegativeButton(getString(m.getActivity(), R.string.cancel), null);
         a.show();
