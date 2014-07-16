@@ -18,6 +18,7 @@ import com.amaze.filemanager.services.*;
 
 import de.keyboardsurfer.android.widget.crouton.*;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.text.*;
 import java.util.*;
 
@@ -379,33 +380,72 @@ if(!file.getName().equals(".thumbnails")){
 		adapter.add(getString(main.getActivity(),R.string.compress));
 		if(!f.isDirectory() && f.getName().endsWith(".zip"))
 			adapter.add(getString(main.getActivity(),R.string.extract));
-		ba.setAdapter(adapter, new DialogInterface.OnClickListener(){
+		ba.setAdapter(adapter, new DialogInterface.OnClickListener() {
 
-			public void onClick(DialogInterface p1, int p2)
-			{switch(p2){
-			case 0:main.loadlist(new File(main.slist.get(p2).getDesc()).getParentFile(),true);
-				break;
-			case 1:openWith(f, main.getActivity());
-			break;
-			case 2:showProps(f,main.getActivity());
-			break;
-			case 3:	Intent i = new Intent();
-			i.setAction(Intent.ACTION_SEND);
-			i.setType("*/*");
-			i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
-			main.startActivity(i);
-			break;
-			case 4:ArrayList<String> copies1=new ArrayList<String>();
-			copies1.add(f.getPath());
-		showNameDialog((MainActivity)main.getActivity(),copies1,main.current);
-			
-				break;
-			case 5:Intent intent=new Intent(main.getActivity(),ExtractService.class);
-			intent.putExtra("zip",f.getPath());
-			main.getActivity().startService(intent);
-				break;
-			}	}
-		});
+            public void onClick(DialogInterface p1, int p2) {
+                switch (p2) {
+                    case 0:
+                        main.loadlist(new File(main.slist.get(p2).getDesc()).getParentFile(), true);
+                        break;
+                    case 1:
+                        openWith(f, main.getActivity());
+                        break;
+                    case 2:
+                        showProps(f, main.getActivity());
+                        break;
+                    case 3:
+                        Intent i = new Intent();
+                        i.setAction(Intent.ACTION_SEND);
+                        i.setType("*/*");
+                        i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
+                        main.startActivity(i);
+                        break;
+                    case 4:
+                        ArrayList<String> copies1 = new ArrayList<String>();
+                        copies1.add(f.getPath());
+                        showNameDialog((MainActivity) main.getActivity(), copies1, main.current);
+
+                        break;
+                    case 5:
+                        Intent intent = new Intent(main.getActivity(), ExtractService.class);
+                        intent.putExtra("zip", f.getPath());
+                        main.getActivity().startService(intent);
+                        break;
+                }
+            }
+        });
 		ba.show();
 	}
+    public void showSortDialog(final Main m){
+String[] sort= m.getResources().getStringArray(R.array.sortby);
+AlertDialog.Builder a=new AlertDialog.Builder(m.getActivity());
+
+        a.setAdapter(new ArrayAdapter<String>(m.getActivity(),android.R.layout.select_dialog_singlechoice,sort),new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                m.Sp.edit().putString("sortby",""+i).commit();
+                m.getSortModes();
+                m.loadlist(new File(m.current),false);
+            }
+        });
+        a.setTitle("Sort By");
+        a.setNegativeButton(getString(m.getActivity(), R.string.cancel), null);
+        a.show();
+    }
+    public void showDirectorySortDialog(final Main m){
+        String[] sort= m.getResources().getStringArray(R.array.directorysortmode);
+        AlertDialog.Builder a=new AlertDialog.Builder(m.getActivity());
+
+        a.setAdapter(new ArrayAdapter<String>(m.getActivity(),android.R.layout.select_dialog_singlechoice,sort),new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                m.Sp.edit().putString("dirontop",""+i).commit();
+                m.getSortModes();
+                m.loadlist(new File(m.current),false);
+            }
+        });
+        a.setTitle("Directory Sort Mode");
+        a.setNegativeButton(getString(m.getActivity(), R.string.cancel), null);
+        a.show();
+    }
 }

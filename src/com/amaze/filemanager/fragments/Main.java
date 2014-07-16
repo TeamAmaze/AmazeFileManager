@@ -47,7 +47,7 @@ public class Main extends ListFragment {
 	public ActionMode mActionMode;
 	ProgressBar pbar;
 	NotificationCompat.Builder mBuilder;
-	SharedPreferences Sp;
+	public SharedPreferences Sp;
 	Drawable folder,apk,unknown,archive,text;
 	Resources res;
 	LinearLayout buttons;

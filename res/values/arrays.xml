@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="uimode">
+        <item>Simple Ui</item>
+        <item>Card Ui</item>
+
+    </string-array>
+    <string-array name="theme">
+        <item>Light</item>
+        <item>Dark</item>
+
+    </string-array>
+    <string-array name="directorysortmode">
+        <item>Folders on Top</item>
+        <item>Files on Top</item>
+        <item>None on Top</item>
+    </string-array>
+    <string-array name="sortby">
+        <item>Name</item>
+        <item>Last Modified</item>
+        <item>Size</item>
+        <item>Name (Desc)</item>
+        <item>Last Modified (Desc)</item>
+        <item>Size (Desc)</item>
+    </string-array>
+
+
+    <string-array name="ints2">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+    <string-array name="ints1">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="listmode">
+        <item>Detailed View</item>
+        <item>Simple View</item>
+    </string-array>
+    <string-array name="folder">
+        <item>Orange</item>
+        <item>Yellow</item>
+        <item>Blue</item>
+    </string-array>
+
+    <string-array name="ints">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+</resources>
