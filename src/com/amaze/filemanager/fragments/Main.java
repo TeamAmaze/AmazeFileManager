@@ -58,7 +58,10 @@ public class Main extends ListFragment {
     Shortcuts sh=new Shortcuts();
 	HashMap<String,Bundle> scrolls=new HashMap<String,Bundle>();
 	Main ma=this;
+    HistoryManager history;
 	IconUtils icons;
+
+
 	int p;
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -66,7 +69,7 @@ public class Main extends ListFragment {
 		setHasOptionsMenu(false);
 		utils = new Futils();
 		res=getResources();
-
+        history=new HistoryManager(getActivity(),"Tab1");
 	    Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 	    icons=new IconUtils(Sp,getActivity());
 		int foldericon=Integer.parseInt(Sp.getString("folder","1"));
@@ -260,6 +263,8 @@ this.back=back;
 					}catch(Exception e){}
 					results=false;
 					current = f.getPath();
+
+                    history.addPath(current);
 					if(back){
 					if(scrolls.containsKey(current))
 						{Bundle b=scrolls.get(current);
