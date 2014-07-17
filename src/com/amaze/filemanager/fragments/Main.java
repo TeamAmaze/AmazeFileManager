@@ -208,7 +208,7 @@ this.back=back;
 
 		@Override
 		protected void onPreExecute() {
-
+            history.addPath(current);
 		}
 		@Override
 		public void onProgressUpdate(String... message){
@@ -264,7 +264,7 @@ this.back=back;
 					results=false;
 					current = f.getPath();
 
-                    history.addPath(current);
+
 					if(back){
 					if(scrolls.containsKey(current))
 						{Bundle b=scrolls.get(current);
