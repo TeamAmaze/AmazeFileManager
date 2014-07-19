@@ -436,7 +436,7 @@ AlertDialog.Builder a=new AlertDialog.Builder(m.getActivity());
                 dialog.cancel();
             }
                 });
-        a.setTitle("Sort By");
+        a.setTitle(getString(m.getActivity(),R.string.sortby));
         a.setNegativeButton(getString(m.getActivity(), R.string.cancel), null);
         a.show();
     }
@@ -453,14 +453,14 @@ AlertDialog.Builder a=new AlertDialog.Builder(m.getActivity());
             }
         });
 
-        a.setTitle("Directory Sort Mode");
+        a.setTitle(getString(m.getActivity(),R.string.directorysort));
         a.setNegativeButton(getString(m.getActivity(), R.string.cancel), null);
         a.show();
     } public void showHistoryDialog(final Main m){
       final ArrayList<String> paths=m.history.readTable();
 
         AlertDialog.Builder a=new AlertDialog.Builder(m.getActivity());
-        a.setTitle("History");
+        a.setTitle(getString(m.getActivity(),R.string.history));
         DialogAdapter adapter=new DialogAdapter(m.getActivity(),R.layout.bookmarkrow,toFileArray(paths));
         a.setAdapter(adapter,new DialogInterface.OnClickListener() {
             @Override
