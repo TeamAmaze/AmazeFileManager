@@ -18,7 +18,7 @@ public class IAdapter extends ArrayAdapter<Layoutelements>
 	Context context;	int dpAsPixels;
 	
 		List<Layoutelements> items;
-		public SparseArray<Boolean> myChecked = new SparseArray<Boolean>();
+		public SparseBooleanArray myChecked = new SparseBooleanArray();
          Ifragment frag;
 		public IAdapter(Context context, int resourceId,
 				List<Layoutelements> items,Ifragment frag) {
@@ -106,10 +106,7 @@ public class IAdapter extends ArrayAdapter<Layoutelements>
 				vholder.r = (FrameLayout) view.findViewById(R.id.i);
 				view.setTag(vholder);
 
-			} else {
-				view = convertView;
-
-			}
+			}else {view=convertView;}
 			final ViewHolder holder = (ViewHolder) view.getTag();
            
 			holder.txtTitle.setText(rowItem.getTitle());
@@ -122,14 +119,12 @@ public class IAdapter extends ArrayAdapter<Layoutelements>
 
 				public void onClick(View p1) {
 					frag.onListItemClick(p);
-					// TODO: Implement this method
 				}
 			});
 			holder.r.setOnLongClickListener(new View.OnLongClickListener() {
 
 				public boolean onLongClick(View p1) {
 					frag.onLongItemClick(p);
-					// TODO: Implement this method
 					return false;
 				}
 			});
@@ -147,7 +142,7 @@ public class IAdapter extends ArrayAdapter<Layoutelements>
 			}
 		//	view.setLayoutParams( new GridView.LayoutParams(dpAsPixels, dpAsPixels) );
 			Boolean checked = myChecked.get(position);
-			if (checked != null) {
+
 				
 				if (checked) {
 					holder.r.setBackgroundColor(Color.parseColor("#9f33b5e5"));
@@ -157,7 +152,7 @@ public class IAdapter extends ArrayAdapter<Layoutelements>
 					else {holder.album.setBackgroundColor(Color.parseColor("#70000000"));
 					holder.iname.setBackgroundColor(Color.parseColor("#70000000"));
 						holder.r.setBackgroundResource(R.drawable.listitem);
-				}}
+				}
 			}
 			return view;
 		}

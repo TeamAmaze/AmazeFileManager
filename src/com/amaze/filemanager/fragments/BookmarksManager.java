@@ -52,6 +52,9 @@ Shortcuts s=new Shortcuts();
 		hideOption(R.id.item4,menu);
 		hideOption(R.id.item6,menu);
 		hideOption(R.id.item9,menu);
+    hideOption(R.id.item11,menu);
+    hideOption(R.id.item10,menu);
+    hideOption(R.id.item12,menu);
 
 		
 		
