@@ -20,10 +20,14 @@
 		android:title="Add"
 		android:icon="@drawable/ic_action_new_light"
 		android:showAsAction="ifRoom"/>
-			<item android:id="@+id/item6"
-		android:title="Bookmarks"
+			<item android:id="@+id/item12"
+		android:title="History"
 	    android:icon="@drawable/ic_action_not_important_light"
 		android:showAsAction="ifRoom"/>
+    <item android:id="@+id/item6"
+        android:title="Bookmarks"
+        android:icon="@drawable/ic_action_not_important_light"
+        android:showAsAction="ifRoom"/>
 	<item android:id="@+id/item7"
 		android:title="Refresh"
 		android:icon="@drawable/ic_action_refresh_light"

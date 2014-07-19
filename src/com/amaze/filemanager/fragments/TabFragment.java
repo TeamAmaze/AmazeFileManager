@@ -172,6 +172,8 @@ ActionBar ACTION_BAR;TabFragment t=this;
 		case R.id.item5:
 			add(HOME);
 			break;
+            case R.id.item12:utils.showHistoryDialog(getCurrentTab());
+                break;
 			case R.id.item7:
 		Main ma = getCurrentTab();
 				ma.loadlist(new File(ma.current),false);
@@ -180,38 +182,7 @@ ActionBar ACTION_BAR;TabFragment t=this;
 	search();
 			break;
 			case R.id.item6:
-				try
-				{
-					ArrayList<File> fu=sh.readS();
-					ArrayList<String> names=new ArrayList<String>();
-					final ArrayList<File> files=new ArrayList<File>();
-					for(int i=fu.size()-1;i>=0;i--){
-						names.add(fu.get(i).getName());
-						files.add(fu.get(i));}
-					AlertDialog.Builder ba=new AlertDialog.Builder(getActivity());
-					ba.setTitle(utils.getString(getActivity(), R.string.books));
-					
-					ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						getActivity(), android.R.layout.select_dialog_item,names);
-					ba.setAdapter(adapter, new DialogInterface.OnClickListener(){
-
-							public void onClick(DialogInterface p1, int p2)
-							{	Main ma = getCurrentTab();
-							final File f=files.get(p2);
-								if (f.isDirectory()) {
-
-								ma.	loadlist(f,false);
-								} else {utils.openFile(f,(MainActivity)getActivity());}
-							}
-						});
-						ba.show();
-				}
-				catch (IOException e)
-				{}
-				catch (ParserConfigurationException e)
-				{}
-				catch (SAXException e)
-				{}
+               utils.showBookmarkDialog(getCurrentTab(),sh);
 				break;
 		}
 		return super.onOptionsItemSelected(item);

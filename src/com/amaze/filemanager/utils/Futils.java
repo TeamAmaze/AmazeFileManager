@@ -13,6 +13,8 @@ import android.webkit.*;
 import android.widget.*;
 
 import com.amaze.filemanager.activities.*;
+import com.amaze.filemanager.adapters.BooksAdapter;
+import com.amaze.filemanager.adapters.DialogAdapter;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.*;
 
@@ -23,6 +25,10 @@ import java.text.*;
 import java.util.*;
 
 import com.amaze.filemanager.*;
+
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 public class Futils {
 	public Futils() {
@@ -446,8 +452,54 @@ AlertDialog.Builder a=new AlertDialog.Builder(m.getActivity());
                 m.loadlist(new File(m.current),false);
             }
         });
+
         a.setTitle("Directory Sort Mode");
         a.setNegativeButton(getString(m.getActivity(), R.string.cancel), null);
         a.show();
+    } public void showHistoryDialog(final Main m){
+      final ArrayList<String> paths=m.history.readTable();
+
+        AlertDialog.Builder a=new AlertDialog.Builder(m.getActivity());
+        a.setTitle("History");
+        DialogAdapter adapter=new DialogAdapter(m.getActivity(),R.layout.bookmarkrow,toFileArray(paths));
+        a.setAdapter(adapter,new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                m.loadlist(new File(paths.get(i)),true);
+            }
+        });
+        a.setNegativeButton(getString(m.getActivity(),R.string.cancel),null);
+        a.show();
+
+    }public void showBookmarkDialog(final Main m,Shortcuts sh){
+        try
+        {
+           final  ArrayList<File> fu=sh.readS();
+
+            AlertDialog.Builder ba=new AlertDialog.Builder(m.getActivity());
+            ba.setTitle(getString(m.getActivity(), R.string.books));
+
+            DialogAdapter adapter = new DialogAdapter(
+                    m.getActivity(), android.R.layout.select_dialog_item,fu);
+            ba.setAdapter(adapter, new DialogInterface.OnClickListener(){
+
+                public void onClick(DialogInterface p1, int p2)
+                {
+                    final File f=fu.get(p2);
+                    if (f.isDirectory()) {
+
+                        m.	loadlist(f,false);
+                    } else {openFile(f, (MainActivity) m.getActivity());}
+                }
+            });
+            ba.setNegativeButton(getString(m.getActivity(),R.string.cancel),null);
+            ba.show();
+        }
+        catch (IOException e)
+        {}
+        catch (ParserConfigurationException e)
+        {}
+        catch (SAXException e)
+        {}
     }
 }
