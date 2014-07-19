@@ -487,6 +487,7 @@ a.show();
 	  menu.findItem(R.id.item6).setIcon(icons.getBookDrawable());
 	  menu.findItem(R.id.item7).setIcon(icons.getRefreshDrawable());
 	  menu.findItem(R.id.item8).setIcon(icons.getPasteDrawable());
+      menu.findItem(R.id.item12).setIcon(icons.getBookDrawable());
   }
   }
 	

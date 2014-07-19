@@ -19,6 +19,7 @@
 	<string name="properties">Properties</string>
 	<string name="copyingapk">Copying apk to </string>
 	<string name="addbook">Add Bookmark</string>
+    <string name="addtobook">Add to Bookmark</string>
 	<string name="enterpath">Enter Path</string>
 	<string name="cancel">Cancel</string>
 	<string name="create">Create</string>
@@ -80,6 +81,18 @@
 <string name="directorysort">Directory Sort Mode</string>
 <string name="sortby">Sort By</string>
 <string name="theme">Theme</string>
+<string name="back">Back</string>
+<string name="home">Home</string>
+<string name="paste">Paste</string>
+<string name="close">Close</string>
+<string name="history">History</string>
+<string name="refresh">Refresh</string>
+    <string name="copy">Copy</string>
+    <string name="cut">Cut</string>
+    <string name="selectall">Select All</string>
+    <string name="delete">Delete</string>
+    <string name="setashome"> Set As Home Folder</string>
+    <string name="sethome">Set Current Directory as Home</string>
 <string name="foldercolor">Folder Color</string>
 <string name="imagegallery">Image Gallery</string>
 <string name="fileexplorer">File Explorer</string>
