@@ -58,7 +58,7 @@ public class Main extends ListFragment {
     Shortcuts sh=new Shortcuts();
 	HashMap<String,Bundle> scrolls=new HashMap<String,Bundle>();
 	Main ma=this;
-    HistoryManager history;
+    public HistoryManager history;
 	IconUtils icons;
 
 

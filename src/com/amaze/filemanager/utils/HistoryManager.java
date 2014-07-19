@@ -14,7 +14,7 @@ public class HistoryManager {
 
         db = c.openOrCreateDatabase(x, c.MODE_PRIVATE, null);
         table=x;
-        db.execSQL("DROP TABLE "+x);
+       try{ db.execSQL("DROP TABLE "+x);}catch (Exception e){}
           db.execSQL("CREATE TABLE IF NOT EXISTS "+x+" (PATH VARCHAR)");
     }
 
@@ -28,5 +28,6 @@ public class HistoryManager {
         return  paths;
     }
     public void addPath(String path){
+        try{ db.execSQL("DELETE FROM "+table+" WHERE PATH='"+path+"'");}catch (Exception e){}
         db.execSQL("INSERT INTO "+table+" VALUES"+"('"+path+"');");
 }}
