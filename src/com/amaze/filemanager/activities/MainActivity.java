@@ -61,7 +61,7 @@ ImageButton progress;
 		utils = new Futils();
     mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     mDrawerList = (ListView) findViewById(R.id.left_drawer);
-		val=new String[]{utils.getString(this,R.string.storage),utils.getString(this,R.string.gallery),utils.getString(this,R.string.apps),utils.getString(this,R.string.bookmanag),utils.getString(this,R.string.setting)};
+		val=new String[]{utils.getString(this,R.string.storage),utils.getString(this,R.string.apps),utils.getString(this,R.string.bookmanag),utils.getString(this,R.string.setting)};
 	ArrayList<String> list=new ArrayList<String>();
 	for(int i=0;i<val.length;i++){
 		list.add(val[i]);
@@ -144,6 +144,7 @@ catch (Exception e) {
 		
 		if(select==0){
            Main main=(Main) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+		   
 		if(main.results==true){main.results=false;main.loadlist(new File(main.current),true);}
 	else{
           if(!main.current.equals(main.home)){
@@ -181,19 +182,8 @@ select=0;
 			getActionBar().setSubtitle(val[0]);
 					mDrawerList.setItemChecked(0, true);
 			break;
-					
-				case 1:	android.support.v4.app.FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
-// Replace whatever is in the fragment_container view with this fragment,
-// and add the transaction to the back stack so the user can navigate back
-transaction1.replace(R.id.content_frame, new Ifragment());
-transaction1.addToBackStack(null);
-select=1;
-// Commit the transaction
-transaction1.commit();
-				getActionBar().setSubtitle(val[1]);
-					mDrawerList.setItemChecked(1, true);
-				break;
-				case 2:
+				
+				case 1:
 					android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                  	transaction2.replace(R.id.content_frame, new AppsList());
 					transaction2.addToBackStack(null);
@@ -202,7 +192,7 @@ transaction1.commit();
 					transaction2.commit();
 					getActionBar().setSubtitle(val[2]);
 				break;
-			case 3:	android.support.v4.app.FragmentTransaction transaction3= getSupportFragmentManager().beginTransaction();
+			case 2:	android.support.v4.app.FragmentTransaction transaction3= getSupportFragmentManager().beginTransaction();
                     transaction3.replace(R.id.content_frame, new BookmarksManager());
 					transaction3.addToBackStack(null);
 					select=3;
@@ -210,7 +200,7 @@ transaction1.commit();
 					transaction3.commit();
 					getActionBar().setSubtitle(val[3]);
 			break;
-				case 4: Intent in=new Intent(MainActivity.this,Preferences.class);finish();startActivity(in);
+				case 3: Intent in=new Intent(MainActivity.this,Preferences.class);finish();startActivity(in);
 				break;
 			
 			} 

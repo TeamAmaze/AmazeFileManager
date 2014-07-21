@@ -2,6 +2,7 @@ package com.amaze.filemanager.fragments;
 import android.app.*;
 import android.content.*;
 import android.os.*;
+import android.preference.*;
 import android.support.v4.app.*;
 import android.view.*;
 import android.widget.*;
@@ -20,12 +21,18 @@ public class BookmarksManager extends ListFragment
 {	Futils utils=new Futils();
 Shortcuts s=new Shortcuts();
 	BooksAdapter b;
+	SharedPreferences Sp;
+	public IconUtils icons;
+	ArrayList<File> bx;
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
+		setRetainInstance(false);
 		((LinearLayout) getActivity().findViewById(R.id.buttons))
 			.setVisibility(View.GONE);
+		Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+	    icons=new IconUtils(Sp,getActivity());
 		ListView vl=getListView();
 //		float scale = getResources().getDisplayMetrics().density;
 //		int dpAsPixels = (int) (10*scale + 0.5f);
@@ -40,9 +47,24 @@ Shortcuts s=new Shortcuts();
 //		vl.addHeaderView(divider);
 //		vl.setFooterDividersEnabled(true);
         vl.setFastScrollEnabled(true);
+		if(savedInstanceState==null)
 		refresh();
+		else{refresh(utils.toFileArray(savedInstanceState.getStringArrayList("bx")));
+			getListView().setSelectionFromTop(savedInstanceState.getInt("index"),savedInstanceState.getInt("top"));
+		}
 		
-	}@Override
+	}
+	@Override
+	public void onSaveInstanceState(Bundle b){
+		super.onSaveInstanceState(b);
+		b.putStringArrayList("bx",utils.toStringArray(bx));
+		int index = getListView().getFirstVisiblePosition();
+		View vi= getListView().getChildAt(0);
+		int top = (vi== null) ? 0 : vi.getTop();
+		b.putInt("index",index);
+		b.putInt("top",top);
+	}
+	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.activity_extra, menu);
@@ -55,9 +77,8 @@ Shortcuts s=new Shortcuts();
     hideOption(R.id.item11,menu);
     hideOption(R.id.item10,menu);
     hideOption(R.id.item12,menu);
-
-		
-		
+	menu.findItem(R.id.item7).setIcon(icons.getRefreshDrawable());
+		menu.findItem(R.id.item5).setIcon(icons.getNewDrawable());
 	}	private void hideOption(int id, Menu menu) {
 		MenuItem item = menu.findItem(id);
 		item.setVisible(false);
@@ -105,8 +126,8 @@ case R.id.item5:
 break;}
 return super.onOptionsItemSelected(item);
 }public void refresh(){	try
-		{ArrayList<File> bx=s.readS();
-		b	=new BooksAdapter(getActivity(), R.layout.bookmarkrow, bx);
+		{bx=s.readS();
+		b	=new BooksAdapter(getActivity(), R.layout.bookmarkrow, bx,this);
 			setListAdapter(b);
 		}
 		catch (IOException e)
@@ -115,4 +136,8 @@ return super.onOptionsItemSelected(item);
 		{}
 		catch (ParserConfigurationException e)
 		{}}
+	public void refresh(ArrayList<File> f){
+			b	=new BooksAdapter(getActivity(), R.layout.bookmarkrow, f,this);
+			setListAdapter(b);
+		}
 }
