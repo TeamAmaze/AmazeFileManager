@@ -61,6 +61,7 @@ public class Main extends ListFragment {
 	Main ma=this;
     public HistoryManager history;
 	IconUtils icons;
+	HorizontalScrollView scroll;
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -100,6 +101,7 @@ public class Main extends ListFragment {
 	   
 		File f=new File(home);
 		buttons=(LinearLayout) getActivity().findViewById(R.id.buttons);
+		scroll=(HorizontalScrollView) getActivity().findViewById(R.id.scroll);
 		uimode=Integer.parseInt(Sp.getString("uimode","0"));
 		ListView vl=getListView();
 		if(uimode==1){
@@ -505,6 +507,19 @@ this.back=back;
 						e.printStackTrace();
 					}
 					bbar(current);
+					getActivity().getActionBar().setSubtitle(f.getName());
+					scroll.post(new Runnable() {
+							@Override
+							public void run() {
+								// This method works but animates the scrolling 
+								// which looks weird on first load
+								// 
+								scroll.fullScroll(View.FOCUS_RIGHT);
+
+								// This method works even better because there are no animations.
+								//scroll.scrollTo(0, scroll.getRight());
+							}
+						});
 				}
 			} catch (Exception e) {
 			}
@@ -858,6 +873,8 @@ this.back=back;
 			buttons.addView(button);
 			}}
 		}catch(NullPointerException e){System.out.println("button view not available");}
+		buttons.setVisibility(View.VISIBLE);
+		
 	}
 
 	class BitmapWorkerTask extends AsyncTask<String, Bitmap, Bitmap> {

@@ -42,13 +42,11 @@ public class DrawerAdapter extends ArrayAdapter<String>
 	switch(position){
 		case 0: imageView.setImageDrawable(icons.getSdDrawable());
 		break;
-		case 1:imageView.setImageDrawable(icons.getImageDrawable());
+		case 1:imageView.setImageDrawable(icons.getGridDrawable());
 		break;
-		case 2:imageView.setImageDrawable(icons.getGridDrawable());
+		case 2:imageView.setImageDrawable(icons.getBookDrawable());
 		break;
-		case 3:imageView.setImageDrawable(icons.getBookDrawable());
-		break;
-		case 4: imageView.setImageDrawable(icons.getSettingDrawable());
+		case 3: imageView.setImageDrawable(icons.getSettingDrawable());
 		
 	}
     // change the icon for Windows and iPhone
