@@ -10,8 +10,8 @@ import android.content.*;
 
 public class SearchTask extends AsyncTask<Bundle,String,ArrayList<File>>
 { ProgressDialog a;boolean run=true;
-MainActivity m;TabFragment tab;
-public SearchTask(MainActivity m,TabFragment tab){this.m=m;this.tab=tab;}
+MainActivity m;Main tab;
+public SearchTask(MainActivity m,Main tab){this.m=m;this.tab=tab;}
 @Override
   public void onPreExecute(){
 	  a=new ProgressDialog(m);
@@ -45,7 +45,7 @@ public SearchTask(MainActivity m,TabFragment tab){this.m=m;this.tab=tab;}
 	@Override
 	public void onPostExecute(ArrayList<File> c){
 		if(run){
-		tab.getCurrentTab().loadsearchlist(new Futils().toStringArray(c));}
+		tab.loadsearchlist(new Futils().toStringArray(c));}
 a.dismiss();
 		}
 	ArrayList<File> lis = new ArrayList<File>();

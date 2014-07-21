@@ -42,6 +42,10 @@ Main main;
 		}
 
 		notifyDataSetChanged();
+		if(main.selection==false || main.mActionMode==null){
+		main.selection = true;
+		main.mActionMode = main.getActivity().startActionMode(
+			main.mActionModeCallback);}
 	}
 
 	public void toggleChecked(boolean b) {
@@ -52,8 +56,8 @@ Main main;
 		notifyDataSetChanged();
 	}
 
-	public List<Integer> getCheckedItemPositions() {
-		List<Integer> checkedItemPositions = new ArrayList<Integer>();
+	public ArrayList<Integer> getCheckedItemPositions() {
+		ArrayList<Integer> checkedItemPositions = new ArrayList<Integer>();
 
 		for (int i = 0; i < myChecked.size(); i++) {
 			if (myChecked.get(i)) {
@@ -136,9 +140,7 @@ Main main;
 					}
 					else if (!main.selection) {
 						toggleChecked(p);
-				    	main.selection = true;
-						main.mActionMode = main.getActivity().startActionMode(
-							main.mActionModeCallback);
+				    
 					}
 					// TODO: Implement this method
 					return true;
