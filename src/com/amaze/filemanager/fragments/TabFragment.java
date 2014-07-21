@@ -368,7 +368,7 @@ a.setPositiveButton(utils.getString(getActivity(), R.string.search), new DialogI
 	          Bundle b=new Bundle();
 			  b.putString("FILENAME",a);
 			  b.putString("FILEPATH",fpath);
-			  new SearchTask((MainActivity)getActivity(),t).execute(b);
+			 // new SearchTask((MainActivity)getActivity()).execute(b);
 
 			}
 		});

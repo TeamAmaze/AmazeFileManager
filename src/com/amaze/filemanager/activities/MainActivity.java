@@ -37,7 +37,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity
 
 String[] val;
 ImageButton progress;
-	TabFragment tab;
+	
 	IconUtils util;
 	Shortcuts s=new Shortcuts();
     /** Called when the activity is first created. */
@@ -143,8 +143,7 @@ catch (Exception e) {
 	public void onBackPressed(){
 		
 		if(select==0){
-           TabFragment current=(TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-           Main main=current.getCurrentTab();
+           Main main=(Main) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 		if(main.results==true){main.results=false;main.loadlist(new File(main.current),true);}
 	else{
           if(!main.current.equals(main.home)){
@@ -172,9 +171,9 @@ catch (Exception e) {
     }
 		public void selectItem(int i){
 			switch(i){case 0:
-			tab=new TabFragment();
+			
 			android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-	        transaction.replace(R.id.content_frame, tab);
+	        transaction.replace(R.id.content_frame, new Main());
             transaction.addToBackStack(null);
 select=0;
 // Commit the transaction
