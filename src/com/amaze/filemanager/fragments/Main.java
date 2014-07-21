@@ -53,6 +53,7 @@ public class Main extends ListFragment {
 	LinearLayout buttons;
 	int sortby,dsort,asc;
 	public int uimode;
+	ArrayList<String> COPY_PATH=null,MOVE_PATH=null;
 	public String home,current=Environment.getExternalStorageDirectory().getPath(),sdetails;
 	android.support.v4.view.PagerTitleStrip strip;
     Shortcuts sh=new Shortcuts();
@@ -60,13 +61,10 @@ public class Main extends ListFragment {
 	Main ma=this;
     public HistoryManager history;
 	IconUtils icons;
-
-
-	int p;
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		setHasOptionsMenu(false);
+		setHasOptionsMenu(true);
 		utils = new Futils();
 		res=getResources();
         history=new HistoryManager(getActivity(),"Tab1");
@@ -91,7 +89,7 @@ public class Main extends ListFragment {
 		home=Sp.getString("home",Environment.getExternalStorageDirectory().getPath());
 		sdetails=Sp.getString("viewmode","0");
 		final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-		this.setRetainInstance(true);
+	    this.setRetainInstance(false);
       	final int cacheSize = maxMemory / 4;
 		mMemoryCache = new android.util.LruCache<String, Bitmap>(cacheSize) {
 			@Override
@@ -100,9 +98,8 @@ public class Main extends ListFragment {
 			}
 		};
 	   
-		File f=new File(getArguments().getString("path"));
+		File f=new File(home);
 		buttons=(LinearLayout) getActivity().findViewById(R.id.buttons);
-		p=getArguments().getInt("pos");
 		uimode=Integer.parseInt(Sp.getString("uimode","0"));
 		ListView vl=getListView();
 		if(uimode==1){
@@ -111,20 +108,253 @@ public class Main extends ListFragment {
 	    vl.setPadding(dpAsPixels,0, dpAsPixels, 0);
 	    vl.setDivider(null);
 		vl.setDividerHeight(dpAsPixels);
-
 		View divider=getActivity().getLayoutInflater().inflate(R.layout.divider,null);
 		vl.addFooterView(divider);
 		vl.addHeaderView(divider);
 		vl.setHeaderDividersEnabled(true);
 		vl.setFooterDividersEnabled(true);}
 	    vl.setFastScrollEnabled(true);
-		if(!orient){
-		loadlist(f,false);orient=true;}
-		
+		if(savedInstanceState==null)
+		loadlist(f,false);
+		else{Bundle b=new Bundle();
+		String cur=savedInstanceState.getString("current");
+			b.putInt("index",savedInstanceState.getInt("index"));
+			b.putInt("top",savedInstanceState.getInt("top"));
+			scrolls.put(cur,b);
+			list=savedInstanceState.getParcelableArrayList("list");
+			createViews(list,true,new File(cur));
+			if(savedInstanceState.getBoolean("selection")){
+				
+			for(int i:	savedInstanceState.getIntegerArrayList("position")){
+				adapter.toggleChecked(i);
+			}
+			}
+		}
 	
      	}
-	
 
+@Override
+	public void onSaveInstanceState(Bundle outState)
+	{super.onSaveInstanceState(outState);
+	int index = getListView().getFirstVisiblePosition();
+	View vi= getListView().getChildAt(0);
+	int top = (vi== null) ? 0 : vi.getTop();
+	outState.putInt("index",index);
+	outState.putInt("top",top);
+	outState.putParcelableArrayList("list",list);
+	outState.putString("current",current);
+outState.putBoolean("selection",	selection);
+	if(selection){outState.putIntegerArrayList("position",adapter.getCheckedItemPositions());}
+		// TODO: Implement this method
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.activity_extra, menu);
+		initMenu(menu);
+
+	}private void hideOption(int id, Menu menu) {
+		MenuItem item = menu.findItem(id);
+		item.setVisible(false);
+	}
+	private void showOption(int id, Menu menu) {
+		MenuItem item = menu.findItem(id);
+		item.setVisible(true);
+	}
+	public void initMenu(Menu menu){
+		menu.findItem(R.id.item1).setIcon(icons.getBackDrawable());
+		menu.findItem(R.id.item2).setIcon(icons.getHomeDrawable());
+		menu.findItem(R.id.item3).setIcon(icons.getCancelDrawable());
+		menu.findItem(R.id.item4).setIcon(icons.getSearchDrawable());
+		menu.findItem(R.id.item5).setIcon(icons.getNewDrawable());
+		menu.findItem(R.id.item6).setIcon(icons.getBookDrawable());
+		menu.findItem(R.id.item7).setIcon(icons.getRefreshDrawable());
+		menu.findItem(R.id.item8).setIcon(icons.getPasteDrawable());
+		menu.findItem(R.id.item12).setIcon(icons.getBookDrawable());
+	}
+	public void onPrepareOptionsMenu(Menu menu){
+		hideOption(R.id.item8,menu);
+		if(COPY_PATH!=null){ showOption(R.id.item8,menu);}
+		if(MOVE_PATH!=null){ showOption(R.id.item8,menu);}
+	}
+	public boolean onOptionsItemSelected(MenuItem item) { 
+		switch (item.getItemId()) {
+			case R.id.item8:if(COPY_PATH!=null){
+					String path1=ma.current;
+					Intent intent =new Intent(getActivity(),CopyService.class);
+					intent.putExtra("FILE_PATHS",COPY_PATH);
+					intent.putExtra("COPY_DIRECTORY",path1);
+					getActivity().startService(intent);
+					COPY_PATH=null;
+					getActivity().invalidateOptionsMenu();
+				}if(MOVE_PATH!=null){
+					String path1=ma.current;
+					Intent intent =new Intent(getActivity(),CopyService.class);
+					intent.putExtra("FILE_PATHS",MOVE_PATH);
+					intent.putExtra("move",true);
+					intent.putExtra("COPY_DIRECTORY",path1);
+					getActivity().startService(intent);
+					MOVE_PATH=null;
+					getActivity().invalidateOptionsMenu();
+				}
+				break;
+			case R.id.item1:
+				goBack();
+
+				break;
+			case R.id.item3:
+			getActivity().finish();
+			break;
+			case R.id.item9:
+				Sp.edit().putString("home", ma.current).commit();
+				Crouton.makeText(getActivity(),utils.getString(getActivity(), R.string.newhomedirectory)+ma.home,Style.CONFIRM).show();
+				ma.home=ma.current;
+				break;
+			case R.id.item2:
+				home();
+				break;
+            case R.id.item10:
+                utils.showSortDialog(ma);
+                break;
+            case R.id.item11:
+                utils.showDirectorySortDialog(ma);
+                break;
+			case R.id.item5:
+				add(home);
+				break;
+            case R.id.item12:utils.showHistoryDialog(ma);
+                break;
+			case R.id.item7:
+		
+				ma.loadlist(new File(ma.current),false);
+				break;
+			case R.id.item4:
+				search();
+				break;
+			case R.id.item6:
+				utils.showBookmarkDialog(ma,sh);
+				break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+
+	public void add(final String text) {
+		AlertDialog.Builder ba=new AlertDialog.Builder(getActivity());
+		ba.setTitle(utils.getString(getActivity(),R.string.add));
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+			getActivity(), android.R.layout.select_dialog_item);
+	adapter.add(utils.getString(getActivity(), R.string.folder));
+	adapter.add(utils.getString(getActivity(), R.string.file));
+		ba.setAdapter(adapter, new DialogInterface.OnClickListener(){
+
+				public void onClick(DialogInterface p1, int p2)
+				{switch(p2){
+	
+						case 0:	
+							final String path=ma.current;
+							AlertDialog.Builder ba1=new AlertDialog.Builder(getActivity());
+							ba1.setTitle(utils.getString(getActivity(), R.string.newfolder));
+							View v=getActivity().getLayoutInflater().inflate(R.layout.dialog,null);
+							final EditText edir=(EditText)v.findViewById(R.id.newname);
+							edir.setHint(utils.getString(getActivity(), R.string.entername));
+							ba1.setView(v);
+							ba1.setNegativeButton(utils.getString(getActivity(), R.string.cancel), new DialogInterface.OnClickListener(){
+
+									public void onClick(DialogInterface p1, int p2)
+									{
+										// TODO: Implement this method
+									}
+								});
+							ba1.setPositiveButton(utils.getString(getActivity(), R.string.create), new DialogInterface.OnClickListener(){
+
+									public void onClick(DialogInterface p1, int p2)
+									{String a=edir.getText().toString();
+										File f=new File(path+"/"+a);
+										if(!f.exists()){f.mkdirs();Toast.makeText(getActivity(),"Folder Created",Toast.LENGTH_LONG).show();}
+										else{Crouton.makeText(getActivity(),utils.getString(getActivity(), R.string.fileexist),Style.ALERT).show();}
+										// TODO: Implement this method
+									}
+								});
+							ba1.show();
+							break;
+						case 1:
+							final String path1=ma.current;
+							AlertDialog.Builder ba2=new AlertDialog.Builder(getActivity());
+							ba2.setTitle(utils.getString(getActivity(), R.string.newfolder));
+							View v1=getActivity().getLayoutInflater().inflate(R.layout.dialog,null);
+							final EditText edir1=(EditText)v1.findViewById(R.id.newname);
+							edir1.setHint(utils.getString(getActivity(), R.string.entername));
+							ba2.setView(v1);
+							ba2.setNegativeButton(utils.getString(getActivity(), R.string.cancel), new DialogInterface.OnClickListener(){
+
+									public void onClick(DialogInterface p1, int p2)
+									{
+										// TODO: Implement this method
+									}
+								});
+							ba2.setPositiveButton(utils.getString(getActivity(), R.string.create), new DialogInterface.OnClickListener(){
+
+									public void onClick(DialogInterface p1, int p2)
+									{String a=edir1.getText().toString();
+										File f1=new File(path1+"/"+a);
+										if (!f1.exists())
+										{try
+											{
+												f1.createNewFile();
+												Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.filecreated), Style.CONFIRM).show();
+											}
+											catch (IOException e)
+											{}}
+										else
+										{Crouton.makeText(getActivity(),utils.getString(getActivity(), R.string.fileexist), Style.ALERT).show();}
+										// TODO: Implement this method
+									}
+								});
+							ba2.show();
+							break;
+					}
+				}
+			});
+		ba.show();
+
+
+	}
+	public void home() {
+		ma.loadlist(new File(ma.home),false);
+	}
+	public void search() {
+		final String fpath=ma.current;
+
+	    Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.searchpath)+fpath, Toast.LENGTH_LONG).show();
+		AlertDialog.Builder a=new AlertDialog.Builder(getActivity());
+		a.setTitle(utils.getString(getActivity(), R.string.search));
+		View v=getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
+		final EditText e=(EditText)v.findViewById(R.id.newname);
+		e.setHint(utils.getString(getActivity(), R.string.enterfile));
+		a.setView(v);
+		a.setNeutralButton(utils.getString(getActivity(), R.string.cancel), new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {}});
+		a.setPositiveButton(utils.getString(getActivity(), R.string.search), new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					String a=e.getText().toString();
+					Bundle b=new Bundle();
+					b.putString("FILENAME",a);
+					b.putString("FILEPATH",fpath);
+					new SearchTask((MainActivity)getActivity(),ma).execute(b);
+
+				}
+			});
+		a.show();
+	}
+	
+	
 	    public void onListItemClicked(int position,View v) {
 	    	if(results==true){
 	    		String path =slist.get(position).getDesc();
@@ -152,16 +382,7 @@ public class Main extends ListFragment {
 		
 		final File f = new File(path);
 		if (f.isDirectory()) {
-		
-
-
-		int index = getListView().getFirstVisiblePosition();
-		View vi= getListView().getChildAt(0);
-		int top = (vi == null) ? 0 : vi.getTop();
-		Bundle b=new Bundle();
-		b.putInt("index",index);
-		b.putInt("top",top);
-		scrolls.put(current,b);
+		computeScroll();
 		loadlist(f,false);
 		} else {utils.openFile(f,(MainActivity)getActivity());}
 
@@ -253,6 +474,11 @@ this.back=back;
 				bitmap = null;
 
 			}
+		createViews(bitmap,back,f);
+
+		}
+	}
+	public void createViews(ArrayList<Layoutelements> bitmap,boolean back,File f){
 			try {
 				if (bitmap != null) {
 					adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
@@ -282,8 +508,6 @@ this.back=back;
 				}
 			} catch (Exception e) {
 			}
-
-		}
 	}
 	class LoadSearchTask extends AsyncTask<ArrayList<String>, Void, ArrayList<Layoutelements>> {
 
@@ -399,7 +623,7 @@ this.back=back;
 		// onCreateActionMode, but
 		// may be called multiple times if the mode is invalidated.
 		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-           List<Integer> positions=adapter.getCheckedItemPositions();
+           ArrayList<Integer> positions=adapter.getCheckedItemPositions();
 			mode.setSubtitle(positions.size()+" "
 							 + utils.getString(getActivity(),R.string.itemsselected));
 			if (positions.size() == 1) {
@@ -421,7 +645,7 @@ this.back=back;
 		// called when the user selects a contextual menu item
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 		computeScroll();
-			List<Integer> plist=adapter.getCheckedItemPositions();
+			ArrayList<Integer> plist=adapter.getCheckedItemPositions();
 			switch (item.getItemId()) {
 			case R.id.sethome:
 				int pos = plist.get(0);
@@ -524,24 +748,23 @@ this.back=back;
 					mode.finish();
 				return true;
 				case R.id.cpy:
-				Intent intent1=new Intent("copy_path");
 				ArrayList<String> copies=new ArrayList<String>();
 				
 					for(int i2=0;i2<plist.size();i2++){
 						copies.add(list.get(plist.get(i2)).getDesc());
 					}
-					intent1.putExtra("copy_path",copies);
-				LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent1);
+					COPY_PATH=copies;
+					getActivity().invalidateOptionsMenu();
 				mode.finish();
 				return true;
 		case R.id.cut:
-				Intent intent2=new Intent("move_path");
+				
 				ArrayList<String> copie=new ArrayList<String>();
 					for(int i3=0;i3<plist.size();i3++){
 						copie.add(list.get(plist.get(i3)).getDesc());
 					}
-					intent2.putExtra("move_path",copie);
-				LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent2);
+				MOVE_PATH=copie;
+					getActivity().invalidateOptionsMenu();
 				mode.finish();
 				return true;
 		case R.id.compress:
