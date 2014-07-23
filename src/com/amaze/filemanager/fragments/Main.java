@@ -28,6 +28,8 @@ import java.util.*;
 
 import android.support.v4.app.ListFragment;
 import com.amaze.filemanager.services.*;
+import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.execution.Command;
 
 
 public class Main extends ListFragment {
@@ -61,8 +63,16 @@ public class Main extends ListFragment {
 	Main ma=this;
     public HistoryManager history;
 	IconUtils icons;
+    ListRootFiles root;
 	HorizontalScrollView scroll;
-    RootCommands root;
+    ProgressBar p;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.mainlist,
+                container, false);
+        p=(ProgressBar)rootView.findViewById(R.id.progressBar);
+        return rootView;    }
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -73,8 +83,6 @@ public class Main extends ListFragment {
 	    Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 	    icons=new IconUtils(Sp,getActivity());
 		int foldericon=Integer.parseInt(Sp.getString("folder","1"));
-        root=new RootCommands(getActivity());
-        root.listFiles(getActivity(),"/");
 		switch(foldericon){
 			case 0:	folder=res.getDrawable(R.drawable.ic_grid_folder);
 			break;
@@ -84,6 +92,7 @@ public class Main extends ListFragment {
 			break;
 			default:	folder=res.getDrawable(R.drawable.ic_grid_folder);
 		}
+        root=new ListRootFiles();
 	  //  Crouton.makeText(getActivity(),""+IconUtils.getMimeType("/sdcard/AndroidClock.ttf"),Style.ALERT).show();
 		apk=res.getDrawable(R.drawable.ic_doc_apk);
 		unknown=res.getDrawable(R.drawable.ic_doc_generic_am);
@@ -113,11 +122,10 @@ public class Main extends ListFragment {
 	    vl.setPadding(dpAsPixels,0, dpAsPixels, 0);
 	    vl.setDivider(null);
 		vl.setDividerHeight(dpAsPixels);
-		View divider=getActivity().getLayoutInflater().inflate(R.layout.divider,null);
+		/*View divider=getActivity().getLayoutInflater().inflate(R.layout.divider,null);
 		vl.addFooterView(divider);
-		vl.addHeaderView(divider);
-		vl.setHeaderDividersEnabled(true);
-		vl.setFooterDividersEnabled(true);}
+		vl.addHeaderView(divider);*/
+        }
 	    vl.setFastScrollEnabled(true);
 		if(savedInstanceState==null)
 		loadlist(f,false);
@@ -451,6 +459,8 @@ this.back=back;
 			try {	if(utils.canListFiles(f)){file = f.listFiles();	mFile.clear();
 				for (int i = 0; i < file.length; i++) {
 					mFile.add(file[i]);}}else{
+                if(root!=null)
+                  root.execute(f.getPath());
 					}
 				
 			
@@ -524,8 +534,58 @@ this.back=back;
 				}
 			} catch (Exception e) {
 			}
+        p.setVisibility(View.GONE);
+        getListView().setVisibility(View.VISIBLE);
 	}
-	class LoadSearchTask extends AsyncTask<ArrayList<String>, Void, ArrayList<Layoutelements>> {
+
+
+    public class ListRootFiles extends AsyncTask<String,Void,Void> {
+        ArrayList<File> a=new ArrayList<File>();
+        String c;
+        boolean b;
+        public ListRootFiles(){b=RootTools.isAccessGiven();}
+        @Override
+        protected Void doInBackground(String... strings) {
+            if(b) {
+                final String path = strings[0];
+                c = path;
+                Command command = new Command(0, "ls " + path) {
+                    @Override
+                    public void commandOutput(int i, String s) {
+                        File f = new File(path + "/" + s);
+                        a.add(f);
+                    }
+
+
+                    @Override
+                    public void commandTerminated(int i, String s) {
+
+                    }
+
+                    @Override
+                    public void commandCompleted(int i, int i2) {
+
+                    }
+                };
+                try {
+                    RootTools.getShell(true).add(command);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void v) {
+            if(b) {
+                list = addTo(this.a);
+                createViews(list, false, new File(c));
+            }        }
+
+    }
+
+    class LoadSearchTask extends AsyncTask<ArrayList<String>, Void, ArrayList<Layoutelements>> {
 
 		private ArrayList<String> f;
 
