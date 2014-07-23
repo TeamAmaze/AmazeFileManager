@@ -17,11 +17,9 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 import android.preference.*;
-
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import android.support.v4.content.*;
-
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 

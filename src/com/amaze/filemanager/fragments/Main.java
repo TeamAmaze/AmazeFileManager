@@ -62,6 +62,7 @@ public class Main extends ListFragment {
     public HistoryManager history;
 	IconUtils icons;
 	HorizontalScrollView scroll;
+    RootCommands root;
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -72,6 +73,8 @@ public class Main extends ListFragment {
 	    Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 	    icons=new IconUtils(Sp,getActivity());
 		int foldericon=Integer.parseInt(Sp.getString("folder","1"));
+        root=new RootCommands(getActivity());
+        root.listFiles(getActivity(),"/");
 		switch(foldericon){
 			case 0:	folder=res.getDrawable(R.drawable.ic_grid_folder);
 			break;
@@ -448,8 +451,6 @@ this.back=back;
 			try {	if(utils.canListFiles(f)){file = f.listFiles();	mFile.clear();
 				for (int i = 0; i < file.length; i++) {
 					mFile.add(file[i]);}}else{
-						publishProgress(utils.getString(getActivity(),R.string.cantlistfiles));
-						mFile=utils.toFileArray(RootCommands.listFiles(f.getPath(), true));
 					}
 				
 			
