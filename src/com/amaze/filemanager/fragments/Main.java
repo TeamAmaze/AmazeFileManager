@@ -63,7 +63,6 @@ public class Main extends ListFragment {
 	Main ma=this;
     public HistoryManager history;
 	IconUtils icons;
-    ListRootFiles root;
 	HorizontalScrollView scroll;
     ProgressBar p;
     @Override
@@ -92,7 +91,6 @@ public class Main extends ListFragment {
 			break;
 			default:	folder=res.getDrawable(R.drawable.ic_grid_folder);
 		}
-        root=new ListRootFiles();
 	  //  Crouton.makeText(getActivity(),""+IconUtils.getMimeType("/sdcard/AndroidClock.ttf"),Style.ALERT).show();
 		apk=res.getDrawable(R.drawable.ic_doc_apk);
 		unknown=res.getDrawable(R.drawable.ic_doc_generic_am);
@@ -458,11 +456,10 @@ this.back=back;
             mFile.clear();
 			try {	if(utils.canListFiles(f)){file = f.listFiles();	mFile.clear();
 				for (int i = 0; i < file.length; i++) {
-					mFile.add(file[i]);}}else{
-                if(root!=null)
-                  root.execute(f.getPath());
-					}
-				
+					mFile.add(file[i]);}}else {
+                new ListRootFiles().execute(f.getPath());
+            }
+
 			
 			
 				// String path=prog.getText().toString();
