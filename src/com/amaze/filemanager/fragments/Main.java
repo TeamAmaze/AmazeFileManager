@@ -11,7 +11,6 @@ import android.graphics.drawable.*;
 import android.net.*;
 import android.os.*;
 import android.preference.*;
-import android.support.v4.app.*;
 import android.support.v4.content.*;
 import android.util.Log;
 import android.view.*;
@@ -19,7 +18,6 @@ import android.widget.*;
 import com.amaze.filemanager.*;
 import com.amaze.filemanager.activities.*;
 import com.amaze.filemanager.adapters.*;
-import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.utils.*;
 import de.keyboardsurfer.android.widget.crouton.*;
 import java.io.*;
@@ -38,17 +36,11 @@ public class Main extends ListFragment {
 	TextView prog;
 	MyAdapter adapter;
 	Futils utils;
-	boolean orient=false;
 	private android.util.LruCache<String, Bitmap> mMemoryCache;
-	public String lastpath;
-	public ArrayList<File> sFile,array,mFile=new ArrayList<File>();
+	public ArrayList<File> sFile,mFile=new ArrayList<File>();
 	public boolean selection;
-	LoadListTask listtask;
 	public boolean results = false;
-	LinearLayout utilbar;
 	public ActionMode mActionMode;
-	ProgressBar pbar;
-	NotificationCompat.Builder mBuilder;
 	public SharedPreferences Sp;
 	Drawable folder,apk,unknown,archive,text;
 	Resources res;
@@ -57,7 +49,6 @@ public class Main extends ListFragment {
 	public int uimode;
 	ArrayList<String> COPY_PATH=null,MOVE_PATH=null;
 	public String home,current=Environment.getExternalStorageDirectory().getPath(),sdetails;
-	android.support.v4.view.PagerTitleStrip strip;
     Shortcuts sh=new Shortcuts();
 	HashMap<String,Bundle> scrolls=new HashMap<String,Bundle>();
 	Main ma=this;
@@ -218,7 +209,7 @@ outState.putBoolean("selection",	selection);
 			getActivity().finish();
 			break;
 			case R.id.item9:
-				Sp.edit().putString("home", ma.current).commit();
+				Sp.edit().putString("home", ma.current).apply();
 				Crouton.makeText(getActivity(),utils.getString(getActivity(), R.string.newhomedirectory)+ma.home,Style.CONFIRM).show();
 				ma.home=ma.current;
 				break;
@@ -232,7 +223,7 @@ outState.putBoolean("selection",	selection);
                 utils.showDirectorySortDialog(ma);
                 break;
 			case R.id.item5:
-				add(home);
+				add();
 				break;
             case R.id.item12:utils.showHistoryDialog(ma);
                 break;
@@ -251,7 +242,7 @@ outState.putBoolean("selection",	selection);
 	}
 
 
-	public void add(final String text) {
+	public void add() {
 		AlertDialog.Builder ba=new AlertDialog.Builder(getActivity());
 		ba.setTitle(utils.getString(getActivity(),R.string.add));
 
@@ -276,7 +267,6 @@ outState.putBoolean("selection",	selection);
 
 									public void onClick(DialogInterface p1, int p2)
 									{
-										// TODO: Implement this method
 									}
 								});
 							ba1.setPositiveButton(utils.getString(getActivity(), R.string.create), new DialogInterface.OnClickListener(){
@@ -286,7 +276,6 @@ outState.putBoolean("selection",	selection);
 										File f=new File(path+"/"+a);
 										if(!f.exists()){f.mkdirs();Toast.makeText(getActivity(),"Folder Created",Toast.LENGTH_LONG).show();}
 										else{Crouton.makeText(getActivity(),utils.getString(getActivity(), R.string.fileexist),Style.ALERT).show();}
-										// TODO: Implement this method
 									}
 								});
 							ba1.show();
@@ -637,6 +626,7 @@ this.back=back;
 			}
 			try {
 				if (bitmap != null) {
+                    getActivity().getActionBar().setSubtitle(R.string.searchresults);
 					adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
 							bitmap,ma);
 							try{
@@ -648,7 +638,8 @@ this.back=back;
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-							}catch(Exception e){}		prog.setText(utils.getString(getActivity(),R.string.searchresults));
+
+										}catch(Exception e){}		prog.setText(utils.getString(getActivity(),R.string.searchresults));
 					buttons.setVisibility(View.GONE);
 				
 				}

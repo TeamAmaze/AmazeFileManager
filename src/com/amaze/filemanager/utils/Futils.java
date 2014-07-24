@@ -379,6 +379,8 @@ if(!file.getName().equals(".thumbnails")){
 		AlertDialog.Builder ba=new AlertDialog.Builder(main.getActivity());
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 				main.getActivity(), android.R.layout.select_dialog_item);
+        Toast.makeText(main.getActivity(),files,Toast.LENGTH_SHORT).show();
+        ba.setTitle(f.getName());
 		adapter.add(getString(main.getActivity(),R.string.openparent));
 		adapter.add(getString(main.getActivity(),R.string.openwith));
 		adapter.add(getString(main.getActivity(),R.string.about));
@@ -394,7 +396,7 @@ if(!file.getName().equals(".thumbnails")){
                         main.loadlist(new File(main.slist.get(p2).getDesc()).getParentFile(), true);
                         break;
                     case 1:
-                        openWith(f, main.getActivity());
+                        openunknown(f, main.getActivity());
                         break;
                     case 2:
                         showProps(f, main.getActivity());
@@ -443,8 +445,9 @@ AlertDialog.Builder a=new AlertDialog.Builder(m.getActivity());
     public void showDirectorySortDialog(final Main m){
         String[] sort= m.getResources().getStringArray(R.array.directorysortmode);
         AlertDialog.Builder a=new AlertDialog.Builder(m.getActivity());
+        int current = Integer.parseInt(m.Sp.getString("dirontop", "0"));
 
-        a.setAdapter(new ArrayAdapter<String>(m.getActivity(),android.R.layout.select_dialog_singlechoice,sort),new DialogInterface.OnClickListener() {
+        a.setSingleChoiceItems(new ArrayAdapter<String>(m.getActivity(),android.R.layout.select_dialog_singlechoice,sort),current,new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 m.Sp.edit().putString("dirontop",""+i).commit();
