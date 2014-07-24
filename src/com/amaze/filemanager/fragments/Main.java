@@ -542,6 +542,16 @@ this.back=back;
         boolean b;
         public ListRootFiles(){b=RootTools.isAccessGiven();}
         @Override
+        public void onProgressUpdate(Void... v){
+            if(b) {
+                mFile=a;
+                Collections.sort(mFile,
+                        new FileListSorter(dsort,sortby,asc));
+                list = addTo(mFile);
+                createViews(list, false, new File(c));
+            }
+        }
+        @Override
         protected Void doInBackground(String... strings) {
             if(b) {
                 final String path = strings[0];
@@ -561,7 +571,7 @@ this.back=back;
 
                     @Override
                     public void commandCompleted(int i, int i2) {
-
+                     publishProgress();
                     }
                 };
                 try {
@@ -573,12 +583,7 @@ this.back=back;
             }
             return null;
         }
-        @Override
-        protected void onPostExecute(Void v) {
-            if(b) {
-                list = addTo(this.a);
-                createViews(list, false, new File(c));
-            }        }
+
 
     }
 
