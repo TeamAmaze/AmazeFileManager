@@ -1,32 +1,30 @@
 package com.amaze.filemanager.adapters;
 
 
-import android.app.*;
-import android.content.*;
-import android.content.pm.*;
-import android.graphics.*;
-import android.graphics.drawable.*;
-import android.view.*;
-import android.widget.*;
-import com.amaze.filemanager.*;
-import com.amaze.filemanager.fragments.*;
-import com.amaze.filemanager.utils.*;
-import java.util.*;
-import java.io.*;
-import org.xml.sax.*;
-import javax.xml.parsers.*;
-import de.keyboardsurfer.android.widget.crouton.*;
+import android.app.Activity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
-public class DialogAdapter extends ArrayAdapter<File>
-{Shortcuts s=new Shortcuts();
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.Shortcuts;
+
+import java.io.File;
+import java.util.ArrayList;
+
+public class DialogAdapter extends ArrayAdapter<File> {
+    Shortcuts s = new Shortcuts();
     Activity context;
     public ArrayList<File> items;
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public DialogAdapter(Activity context, int resourceId,ArrayList<File> items) {
-        super(context, resourceId,items);
+    public DialogAdapter(Activity context, int resourceId, ArrayList<File> items) {
+        super(context, resourceId, items);
         this.context = context;
-        this.items=items;
+        this.items = items;
 
 
     }
@@ -40,7 +38,7 @@ public class DialogAdapter extends ArrayAdapter<File>
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        File f=items.get(position);
+        File f = items.get(position);
         //final Layoutelements rowItem = getItem(position);
 
         View view;
@@ -51,9 +49,9 @@ public class DialogAdapter extends ArrayAdapter<File>
             view = mInflater.inflate(R.layout.bookmarkrow, null);
             final ViewHolder vholder = new ViewHolder();
             vholder.txtTitle = (TextView) view.findViewById(R.id.text1);
-            vholder.image= (ImageButton) view.findViewById(R.id.delete_button);
+            vholder.image = (ImageButton) view.findViewById(R.id.delete_button);
             vholder.image.setVisibility(View.GONE);
-            vholder.txtDesc=(TextView) view.findViewById(R.id.text2);
+            vholder.txtDesc = (TextView) view.findViewById(R.id.text2);
 
             view.setTag(vholder);
 
