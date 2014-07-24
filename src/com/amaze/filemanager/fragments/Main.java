@@ -62,6 +62,8 @@ public class Main extends ListFragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.mainlist,
                 container, false);
         p=(ProgressBar)rootView.findViewById(R.id.progressBar);
+        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        icons=new IconUtils(Sp,getActivity());
         return rootView;    }
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -70,8 +72,8 @@ public class Main extends ListFragment {
 		utils = new Futils();
 		res=getResources();
         history=new HistoryManager(getActivity(),"Tab1");
-	    Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-	    icons=new IconUtils(Sp,getActivity());
+
+
 		int foldericon=Integer.parseInt(Sp.getString("folder","1"));
 		switch(foldericon){
 			case 0:	folder=res.getDrawable(R.drawable.ic_grid_folder);
@@ -152,11 +154,11 @@ outState.putBoolean("selection",	selection);
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		super.onCreateOptionsMenu(menu, inflater);
-		inflater.inflate(R.menu.activity_extra, menu);
-		initMenu(menu);
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.activity_extra, menu);
+        initMenu(menu);
 
-	}private void hideOption(int id, Menu menu) {
+    }private void hideOption(int id, Menu menu) {
 		MenuItem item = menu.findItem(id);
 		item.setVisible(false);
 	}
@@ -179,6 +181,7 @@ outState.putBoolean("selection",	selection);
 		hideOption(R.id.item8,menu);
 		if(COPY_PATH!=null){ showOption(R.id.item8,menu);}
 		if(MOVE_PATH!=null){ showOption(R.id.item8,menu);}
+//        initMenu(menu);
 	}
 	public boolean onOptionsItemSelected(MenuItem item) { 
 		switch (item.getItemId()) {
@@ -534,8 +537,7 @@ this.back=back;
         public void onProgressUpdate(Void... v){
             if(b) {
                 mFile=a;
-                Collections.sort(mFile,
-                        new FileListSorter(dsort,sortby,asc));
+
                 list = addTo(mFile);
                 createViews(list, false, new File(c));
             }
@@ -560,7 +562,10 @@ this.back=back;
 
                     @Override
                     public void commandCompleted(int i, int i2) {
-                     publishProgress();
+
+                        Collections.sort(a,
+                                new FileListSorter(dsort,sortby,asc));
+                        publishProgress();
                     }
                 };
                 try {

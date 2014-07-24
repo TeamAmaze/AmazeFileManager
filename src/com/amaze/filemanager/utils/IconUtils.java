@@ -4,13 +4,17 @@ import com.amaze.filemanager.R;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+
+import java.util.ResourceBundle;
 
 public class IconUtils {
 	int LIGHT=0,DARK=1,CURRENT;Context c;
-	public IconUtils(SharedPreferences Sp,Context c){
-		CURRENT=Integer.parseInt(Sp.getString("theme", "0"));this.c=c;
-	}
+    public IconUtils(SharedPreferences Sp,Context c){
+        CURRENT=Integer.parseInt(Sp.getString("theme", "0"));this.c=c;
+
+    }
     public Drawable getCopyDrawable(){
     	if(CURRENT==LIGHT)
     		return c.getResources().getDrawable(R.drawable.ic_action_copy_light);
