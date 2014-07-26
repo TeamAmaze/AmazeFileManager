@@ -10,11 +10,11 @@ import java.util.ArrayList;
 public class HistoryManager {
     SQLiteDatabase db;
     String table;
-
+    Context c;
     public HistoryManager(Context c, String x) {
-
-        db = c.openOrCreateDatabase(x, c.MODE_PRIVATE, null);
+        this.c=c;
         table = x;
+        open();
         try {
             db.execSQL("DROP TABLE " + x);
         } catch (Exception e) {
@@ -41,5 +41,8 @@ public class HistoryManager {
     }
     public void end(){
         db.close();
+    }
+    public void open(){
+        db = c.openOrCreateDatabase(table, c.MODE_PRIVATE, null);
     }
 }

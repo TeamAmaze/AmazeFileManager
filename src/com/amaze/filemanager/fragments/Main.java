@@ -101,6 +101,7 @@ public class Main extends ListFragment {
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.mainlist,
                 container, false);
+        history=new HistoryManager(getActivity(),"Table1");
         p = (ProgressBar) rootView.findViewById(R.id.progressBar);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         icons = new IconUtils(Sp, getActivity());
@@ -1198,7 +1199,7 @@ public class Main extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-          history=new HistoryManager(getActivity(),"table1");
+          history.open();
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
     }
 
