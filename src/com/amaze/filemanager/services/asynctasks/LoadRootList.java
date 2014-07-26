@@ -18,7 +18,7 @@ public class LoadRootList extends AsyncTask<String, Void, Void> {
     Main ma;
 
     public LoadRootList(Main ma) {
-        this.ma=ma;
+        this.ma = ma;
         b = RootTools.isAccessGiven();
     }
 
@@ -54,7 +54,7 @@ public class LoadRootList extends AsyncTask<String, Void, Void> {
                 public void commandCompleted(int i, int i2) {
 
                     Collections.sort(a,
-                            new FileListSorter(ma.dsort,ma.sortby, ma.asc));
+                            new FileListSorter(ma.dsort, ma.sortby, ma.asc));
                     publishProgress();
                 }
             };

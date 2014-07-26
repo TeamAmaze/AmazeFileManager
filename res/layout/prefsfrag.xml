@@ -2,11 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-    <fragment class="com.amaze.filemanager.fragments.Preffrag"
+    android:orientation="vertical">
+
+    <fragment
+        class="com.amaze.filemanager.fragments.Preffrag"
         android:id="@+id/prefsfragment"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-  />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

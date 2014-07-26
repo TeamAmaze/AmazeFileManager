@@ -11,8 +11,9 @@ public class HistoryManager {
     SQLiteDatabase db;
     String table;
     Context c;
+
     public HistoryManager(Context c, String x) {
-        this.c=c;
+        this.c = c;
         table = x;
         open();
         try {
@@ -39,10 +40,12 @@ public class HistoryManager {
         }
         db.execSQL("INSERT INTO " + table + " VALUES" + "('" + path + "');");
     }
-    public void end(){
+
+    public void end() {
         db.close();
     }
-    public void open(){
+
+    public void open() {
         db = c.openOrCreateDatabase(table, c.MODE_PRIVATE, null);
     }
 }

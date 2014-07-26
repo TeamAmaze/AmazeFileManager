@@ -1,38 +1,48 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-<item android:id="@+id/cpy"
-	android:title="@string/copy"
-	android:icon= "@drawable/ic_action_copy_light"
-	android:showAsAction="always"/>
-	<item android:id="@+id/cut"
-		android:title="@string/cut"
-		android:icon="@drawable/ic_action_cut_light"
-		android:showAsAction="always"/>
-	<item android:id="@+id/delete"
-		android:title="@string/delete"
-		android:icon="@drawable/ic_action_delete_light"
-		android:showAsAction="always"/>
-	<item android:id="@+id/all"
-		android:title="@string/selectall"
-		android:icon="@drawable/ic_action_select_all_light"
-		android:showAsAction="always"/>
-	<item android:id="@+id/about"
-		android:title="@string/properties"
-		android:icon="@drawable/ic_action_about_light"
-		android:showAsAction="ifRoom"/>
-	<item android:id="@+id/rename"
-		android:title="@string/rename"/>
-	<item android:id="@+id/sethome"
-		android:title="@string/setashome"/>
-    <item android:id="@+id/share"
-		android:title="@string/share"/>
-	<item android:id="@+id/book"
-		android:title="@string/addtobook"/>
-	<item android:id="@+id/ex"
-		android:title="@string/extract"
-	/>
-		<item android:id="@+id/compress"
-		android:title="@string/compress"
-		/>	<item android:id="@+id/openwith"
-			android:title="@string/openwith"
-		/>
-		</menu>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/cpy"
+        android:title="@string/copy"
+        android:icon="@drawable/ic_action_copy_light"
+        android:showAsAction="always" />
+    <item
+        android:id="@+id/cut"
+        android:title="@string/cut"
+        android:icon="@drawable/ic_action_cut_light"
+        android:showAsAction="always" />
+    <item
+        android:id="@+id/delete"
+        android:title="@string/delete"
+        android:icon="@drawable/ic_action_delete_light"
+        android:showAsAction="always" />
+    <item
+        android:id="@+id/all"
+        android:title="@string/selectall"
+        android:icon="@drawable/ic_action_select_all_light"
+        android:showAsAction="always" />
+    <item
+        android:id="@+id/about"
+        android:title="@string/properties"
+        android:icon="@drawable/ic_action_about_light"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/rename"
+        android:title="@string/rename" />
+    <item
+        android:id="@+id/sethome"
+        android:title="@string/setashome" />
+    <item
+        android:id="@+id/share"
+        android:title="@string/share" />
+    <item
+        android:id="@+id/book"
+        android:title="@string/addtobook" />
+    <item
+        android:id="@+id/ex"
+        android:title="@string/extract" />
+    <item
+        android:id="@+id/compress"
+        android:title="@string/compress" />
+    <item
+        android:id="@+id/openwith"
+        android:title="@string/openwith" />
+</menu>

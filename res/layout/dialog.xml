@@ -2,8 +2,10 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
-    <EditText android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-	android:id="@+id/newname"
-	android:hint="enter new name"/>
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/newname"
+        android:hint="enter new name" />
 </LinearLayout>

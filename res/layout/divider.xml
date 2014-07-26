@@ -1,4 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="fill_parent"
-android:layout_height="10dip"
-android:orientation="horizontal"/>
+    android:layout_width="fill_parent"
+    android:layout_height="10dip"
+    android:orientation="horizontal" />

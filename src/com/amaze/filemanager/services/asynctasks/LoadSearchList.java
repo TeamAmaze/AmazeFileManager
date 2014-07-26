@@ -20,8 +20,9 @@ public class LoadSearchList extends AsyncTask<ArrayList<String>, Void, ArrayList
 
     private ArrayList<String> f;
     Main ma;
+
     public LoadSearchList(Main ma) {
-    this.ma=ma;
+        this.ma = ma;
     }
 
     @Override

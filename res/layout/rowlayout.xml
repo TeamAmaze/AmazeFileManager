@@ -2,11 +2,11 @@
     android:id="@+id/second"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-   
+
     android:clickable="true"
     android:layout_marginLeft="10dip"
     android:minHeight="60dip"
-    android:padding="6dip" >
+    android:padding="6dip">
 
     <ImageView
         android:id="@+id/icon"
@@ -20,24 +20,24 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:layout_toRightOf="@id/icon"
-		android:layout_marginLeft="3dip"
-	    android:layout_marginTop="5dip" >
+        android:layout_marginLeft="3dip"
+        android:layout_marginTop="5dip">
 
         <TextView
             android:id="@+id/firstline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-			android:gravity="center_vertical"
-			
+            android:gravity="center_vertical"
+
             android:clickable="false"
-            
+
             android:textSize="17sp" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/firstline"
-            	    android:layout_marginTop="5dip">
+            android:layout_marginTop="5dip">
 
             <TextView
                 android:id="@+id/secondLine"

@@ -3,22 +3,21 @@
     android:layout_width="fill_parent"
     android:layout_height="40dip"
     android:background="@drawable/listitem"
-    android:clickable="true"
-     >
+    android:clickable="true">
 
     <ImageView
         android:id="@+id/icon"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:clickable="false"
-		android:gravity="center_vertical"
-        android:contentDescription="@string/icon"/>
-	<TextView
+        android:gravity="center_vertical"
+        android:contentDescription="@string/icon" />
+
+    <TextView
         android:id="@+id/firstline"
         android:layout_width="wrap_content"
-		android:layout_toRightOf="@id/icon"
+        android:layout_toRightOf="@id/icon"
         android:layout_height="fill_parent"
         android:clickable="false"
-       android:gravity="center_vertical"
-       />
+        android:gravity="center_vertical" />
 </LinearLayout>

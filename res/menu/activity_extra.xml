@@ -1,48 +1,60 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-<item android:id="@+id/item1"
-	android:title="@string/back"
-	android:icon="@drawable/ic_action_back_light"
-	android:showAsAction="always"/>
-	<item android:id="@+id/item8"
-		android:title="@string/paste"
-		android:visible="false"
-		android:icon="@drawable/ic_action_paste_light"
-		android:showAsAction="ifRoom"/>
-	<item android:id="@+id/item2"
-		android:title="@string/home"
-		android:icon="@drawable/home_light"
-		android:showAsAction="ifRoom"/>
-	<item android:id="@+id/item3"
-		android:title="@string/close"
-		android:icon="@drawable/ic_action_cancel_light"
-		android:showAsAction="ifRoom"/>
-	<item android:id="@+id/item5"
-		android:title="@string/add"
-		android:icon="@drawable/ic_action_new_light"
-		android:showAsAction="ifRoom"/>
-			<item android:id="@+id/item12"
-		android:title="@string/history"
-	    android:icon="@drawable/ic_action_not_important_light"
-		android:showAsAction="ifRoom"/>
-    <item android:id="@+id/item6"
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/item1"
+        android:title="@string/back"
+        android:icon="@drawable/ic_action_back_light"
+        android:showAsAction="always" />
+    <item
+        android:id="@+id/item8"
+        android:title="@string/paste"
+        android:visible="false"
+        android:icon="@drawable/ic_action_paste_light"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/item2"
+        android:title="@string/home"
+        android:icon="@drawable/home_light"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/item3"
+        android:title="@string/close"
+        android:icon="@drawable/ic_action_cancel_light"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/item5"
+        android:title="@string/add"
+        android:icon="@drawable/ic_action_new_light"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/item12"
+        android:title="@string/history"
+        android:icon="@drawable/ic_action_not_important_light"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/item6"
         android:title="@string/books"
         android:icon="@drawable/ic_action_not_important_light"
-        android:showAsAction="ifRoom"/>
-	<item android:id="@+id/item7"
-		android:title="@string/refresh"
-		android:icon="@drawable/ic_action_refresh_light"
-		android:showAsAction="ifRoom"/>
-	<item android:id="@+id/item4"
-	android:title="@string/search"
-	android:icon="@drawable/ic_action_search_light"
-	android:showAsAction="ifRoom"/>
-	<item android:id="@+id/item9"
-		android:title="@string/sethome"
-		android:showAsAction="ifRoom"/>
-    <item android:id="@+id/item10"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/item7"
+        android:title="@string/refresh"
+        android:icon="@drawable/ic_action_refresh_light"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/item4"
+        android:title="@string/search"
+        android:icon="@drawable/ic_action_search_light"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/item9"
+        android:title="@string/sethome"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/item10"
         android:title="@string/sortby"
-        android:showAsAction="ifRoom"/>
-    <item android:id="@+id/item11"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/item11"
         android:title="@string/directorysort"
-        android:showAsAction="ifRoom"/>
-		</menu>
+        android:showAsAction="ifRoom" />
+</menu>

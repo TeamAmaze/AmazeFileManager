@@ -18,9 +18,10 @@ public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>>
     private File f;
     boolean back;
     Main ma;
-    public LoadList(boolean back,Main ma) {
+
+    public LoadList(boolean back, Main ma) {
         this.back = back;
-        this.ma=ma;
+        this.ma = ma;
     }
 
     @Override
@@ -44,17 +45,17 @@ public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>>
             if (ma.utils.canListFiles(f)) {
                 ma.file = f.listFiles();
                 ma.mFile.clear();
-                for (File f:ma.file) {
+                for (File f : ma.file) {
                     ma.mFile.add(f);
                 }
             } else {
-                if(ma.rootMode)
-               new LoadRootList(ma).execute(f.getPath());
+                if (ma.rootMode)
+                    new LoadRootList(ma).execute(f.getPath());
                 else publishProgress("Access is Denied");
             }
 
             Collections.sort(ma.mFile,
-                    new FileListSorter(ma.dsort,ma.sortby, ma.asc));
+                    new FileListSorter(ma.dsort, ma.sortby, ma.asc));
 
             ma.list = ma.addTo(ma.mFile);
 

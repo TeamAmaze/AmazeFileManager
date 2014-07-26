@@ -69,12 +69,19 @@ public class Preffrag extends PreferenceFragment {
         rootmode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                boolean b=sharedPref.getBoolean("rootmode",false);
-                if(b){
-                if(RootTools.isAccessGiven()){rootmode.setChecked(true);mountSystem.setEnabled(true);
-                    mountSystem.setChecked(false);}
-                else{Toast.makeText(getActivity(),getResources().getString(R.string.rootfailure),Toast.LENGTH_LONG).show();}}
-                    else{a.setChecked(false);mountSystem.setEnabled(false);}
+                boolean b = sharedPref.getBoolean("rootmode", false);
+                if (b) {
+                    if (RootTools.isAccessGiven()) {
+                        rootmode.setChecked(true);
+                        mountSystem.setEnabled(true);
+                        mountSystem.setChecked(false);
+                    } else {
+                        Toast.makeText(getActivity(), getResources().getString(R.string.rootfailure), Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    a.setChecked(false);
+                    mountSystem.setEnabled(false);
+                }
 
 
                 return false;

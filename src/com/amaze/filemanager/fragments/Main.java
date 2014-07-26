@@ -46,24 +46,20 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.MyAdapter;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.ExtractService;
+import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.services.asynctasks.LoadSearchList;
-import com.amaze.filemanager.utils.FileListSorter;
+import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
-import com.amaze.filemanager.services.asynctasks.SearchTask;
-import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.utils.Shortcuts;
-import com.stericson.RootTools.RootTools;
-import com.stericson.RootTools.execution.Command;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -96,13 +92,14 @@ public class Main extends ListFragment {
     IconUtils icons;
     HorizontalScrollView scroll;
     ProgressBar p;
-    public boolean rootMode,mountSystem;
+    public boolean rootMode, mountSystem;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.mainlist,
                 container, false);
-        history=new HistoryManager(getActivity(),"Table1");
+        history = new HistoryManager(getActivity(), "Table1");
         p = (ProgressBar) rootView.findViewById(R.id.progressBar);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         icons = new IconUtils(Sp, getActivity());
@@ -115,8 +112,8 @@ public class Main extends ListFragment {
         setHasOptionsMenu(true);
         utils = new Futils();
         res = getResources();
-        rootMode=Sp.getBoolean("rootmode",false);
-        mountSystem=Sp.getBoolean("mountsystem",false);
+        rootMode = Sp.getBoolean("rootmode", false);
+        mountSystem = Sp.getBoolean("mountsystem", false);
         int foldericon = Integer.parseInt(Sp.getString("folder", "1"));
         switch (foldericon) {
             case 0:
@@ -159,9 +156,9 @@ public class Main extends ListFragment {
             vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
             vl.setDivider(null);
             vl.setDividerHeight(dpAsPixels);
-            View divider=getActivity().getLayoutInflater().inflate(R.layout.divider,null);
-		    vl.addFooterView(divider);
-		    vl.addHeaderView(divider);
+            View divider = getActivity().getLayoutInflater().inflate(R.layout.divider, null);
+            vl.addFooterView(divider);
+            vl.addHeaderView(divider);
         }
         vl.setFastScrollEnabled(true);
         if (savedInstanceState == null)
@@ -362,7 +359,7 @@ public class Main extends ListFragment {
                                 File f1 = new File(path1 + "/" + a);
                                 if (!f1.exists()) {
                                     try {
-                                        boolean b=f1.createNewFile();
+                                        boolean b = f1.createNewFile();
                                         Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.filecreated), Style.CONFIRM).show();
                                     } catch (IOException e) {
                                         e.printStackTrace();
@@ -459,7 +456,7 @@ public class Main extends ListFragment {
 
     public void loadlist(File f, boolean back) {
         mMemoryCache.evictAll();
-        new LoadList(back,ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
+        new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
 
     }
 
@@ -479,8 +476,6 @@ public class Main extends ListFragment {
     public Bitmap getBitmapFromMemCache(String key) {
         return mMemoryCache.get(key);
     }
-
-
 
 
     public void createViews(ArrayList<Layoutelements> bitmap, boolean back, File f) {
@@ -531,9 +526,6 @@ public class Main extends ListFragment {
         p.setVisibility(View.GONE);
         getListView().setVisibility(View.VISIBLE);
     }
-
-
-
 
 
     public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -965,9 +957,11 @@ public class Main extends ListFragment {
 
     public void goBack() {
         File f = new File(current);
-        if(!results){
-        loadlist(f.getParentFile(), true);}
-        else{loadlist(f,true);}
+        if (!results) {
+            loadlist(f.getParentFile(), true);
+        } else {
+            loadlist(f, true);
+        }
     }
 
     private BroadcastReceiver receiver2 = new BroadcastReceiver() {
@@ -1006,14 +1000,14 @@ public class Main extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-          history.open();
+        history.open();
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-          history.end();
+        history.end();
         (getActivity()).unregisterReceiver(receiver2);
     }
 
