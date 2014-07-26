@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.services.asynctasks;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.utils.Futils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -60,6 +61,7 @@ public class SearchTask extends AsyncTask<Bundle, String, ArrayList<File>> {
     @Override
     public void onPostExecute(ArrayList<File> c) {
         if (run) {
+
             tab.loadsearchlist(new Futils().toStringArray(c));
         }
         a.dismiss();
@@ -69,6 +71,7 @@ public class SearchTask extends AsyncTask<Bundle, String, ArrayList<File>> {
 
     public ArrayList<File> getSearchResult(File f, String text) {
         lis.clear();
+
 
         search(f, text);
 

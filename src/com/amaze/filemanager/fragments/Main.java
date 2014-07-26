@@ -22,7 +22,6 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,13 +46,15 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.MyAdapter;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.ExtractService;
+import com.amaze.filemanager.services.asynctasks.LoadSearchList;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
-import com.amaze.filemanager.utils.SearchTask;
+import com.amaze.filemanager.services.asynctasks.SearchTask;
+import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
@@ -70,11 +71,11 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 
 public class Main extends ListFragment {
-    File[] file;
+    public File[] file;
     public ArrayList<Layoutelements> list, slist;
     TextView prog;
-    MyAdapter adapter;
-    Futils utils;
+    public MyAdapter adapter;
+    public Futils utils;
     private android.util.LruCache<String, Bitmap> mMemoryCache;
     public ArrayList<File> sFile, mFile = new ArrayList<File>();
     public boolean selection;
@@ -83,8 +84,8 @@ public class Main extends ListFragment {
     public SharedPreferences Sp;
     Drawable folder, apk, unknown, archive, text;
     Resources res;
-    LinearLayout buttons;
-    int sortby, dsort, asc;
+    public LinearLayout buttons;
+    public int sortby, dsort, asc;
     public int uimode;
     ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
     public String home, current = Environment.getExternalStorageDirectory().getPath(), sdetails;
@@ -95,7 +96,7 @@ public class Main extends ListFragment {
     IconUtils icons;
     HorizontalScrollView scroll;
     ProgressBar p;
-
+    public boolean rootMode,mountSystem;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -114,6 +115,8 @@ public class Main extends ListFragment {
         setHasOptionsMenu(true);
         utils = new Futils();
         res = getResources();
+        rootMode=Sp.getBoolean("rootmode",false);
+        mountSystem=Sp.getBoolean("mountsystem",false);
         int foldericon = Integer.parseInt(Sp.getString("folder", "1"));
         switch (foldericon) {
             case 0:
@@ -456,14 +459,14 @@ public class Main extends ListFragment {
 
     public void loadlist(File f, boolean back) {
         mMemoryCache.evictAll();
-        new LoadListTask(back).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
+        new LoadList(back,ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
 
     }
 
     @SuppressWarnings("unchecked")
     public void loadsearchlist(ArrayList<String> f) {
 
-        new LoadSearchTask().execute(f);
+        new LoadSearchList(ma).execute(f);
 
     }
 
@@ -478,70 +481,7 @@ public class Main extends ListFragment {
     }
 
 
-    class LoadListTask extends AsyncTask<File, String, ArrayList<Layoutelements>> {
 
-        private File f;
-        boolean back;
-
-        public LoadListTask(boolean back) {
-            this.back = back;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            history.addPath(current);
-        }
-
-        @Override
-        public void onProgressUpdate(String... message) {
-            Crouton.makeText(getActivity(), message[0], Style.ALERT).show();
-        }
-
-        @Override
-        // Actual download method, run in the task thread
-        protected ArrayList<Layoutelements> doInBackground(File... params) {
-            // params comes from the execute() call: params[0] is the url.
-
-            f = params[0];
-            mFile.clear();
-            try {
-                if (utils.canListFiles(f)) {
-                    file = f.listFiles();
-                    mFile.clear();
-                    for (File f:file) {
-                        mFile.add(f);
-                    }
-                } else {
-                    new ListRootFiles().execute(f.getPath());
-                }
-
-
-                // String path=prog.getText().toString();
-                Collections.sort(mFile,
-                        new FileListSorter(dsort, sortby, asc));
-
-                list = addTo(mFile);
-
-
-                return list;
-
-            } catch (Exception e) {
-                return null;
-            }
-
-        }
-
-        @Override
-        // Once the image is downloaded, associates it to the imageView
-        protected void onPostExecute(ArrayList<Layoutelements> bitmap) {
-            if (isCancelled()) {
-                bitmap = null;
-
-            }
-            createViews(bitmap, back, f);
-
-        }
-    }
 
     public void createViews(ArrayList<Layoutelements> bitmap, boolean back, File f) {
         try {
@@ -593,139 +533,8 @@ public class Main extends ListFragment {
     }
 
 
-    public class ListRootFiles extends AsyncTask<String, Void, Void> {
-        ArrayList<File> a = new ArrayList<File>();
-        String c;
-        boolean b;
-
-        public ListRootFiles() {
-            b = RootTools.isAccessGiven();
-        }
-
-        @Override
-        public void onProgressUpdate(Void... v) {
-            if (b) {
-                mFile = a;
-
-                list = addTo(mFile);
-                createViews(list, false, new File(c));
-            }
-        }
-
-        @Override
-        protected Void doInBackground(String... strings) {
-            if (b) {
-                final String path = strings[0];
-                c = path;
-                Command command = new Command(0, "ls " + path) {
-                    @Override
-                    public void commandOutput(int i, String s) {
-                        File f = new File(path + "/" + s);
-                        a.add(f);
-                    }
 
 
-                    @Override
-                    public void commandTerminated(int i, String s) {
-
-                    }
-
-                    @Override
-                    public void commandCompleted(int i, int i2) {
-
-                        Collections.sort(a,
-                                new FileListSorter(dsort, sortby, asc));
-                        publishProgress();
-                    }
-                };
-                try {
-                    RootTools.getShell(true).add(command);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-            return null;
-        }
-
-
-    }
-
-    class LoadSearchTask extends AsyncTask<ArrayList<String>, Void, ArrayList<Layoutelements>> {
-
-        private ArrayList<String> f;
-
-        public LoadSearchTask() {
-
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        // Actual download method, run in the task thread
-        protected ArrayList<Layoutelements> doInBackground(ArrayList<String>... params) {
-            // params comes from the execute() call: params[0] is the url.
-            sFile = new ArrayList<File>();
-            f = params[0];
-            for (int i = 0; i < f.size(); i++) {
-                sFile.add(new File(f.get(i)));
-            }
-
-            try {
-
-
-                // String path=prog.getText().toString();
-                Collections.sort(sFile,
-                        new FileListSorter(dsort, sortby, asc));
-
-                slist = addTo(sFile);
-
-
-                return slist;
-
-            } catch (Exception e) {
-                return null;
-            }
-
-        }
-
-        @Override
-        // Once the image is downloaded, associates it to the imageView
-        protected void onPostExecute(ArrayList<Layoutelements> bitmap) {
-            if (isCancelled()) {
-                bitmap = null;
-
-            }
-            try {
-                if (bitmap != null) {
-                    getActivity().getActionBar().setSubtitle(R.string.searchresults);
-                    adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
-                            bitmap, ma);
-                    try {
-                        setListAdapter(adapter);
-                        results = true;
-                        try {
-                            Intent i = new Intent("updatepager");
-                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
-                        } catch (Exception e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-
-                    } catch (Exception e) {
-                    }
-                    prog.setText(utils.getString(getActivity(), R.string.searchresults));
-                    buttons.setVisibility(View.GONE);
-
-                }
-            } catch (Exception e) {
-            }
-
-        }
-    }
 
     public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
         private void hideOption(int id, Menu menu) {
@@ -1136,15 +945,11 @@ public class Main extends ListFragment {
         if (bitmapWorkerTask != null) {
             final String bitmapData = bitmapWorkerTask.path;
             if (!bitmapData.equals(data)) {
-                // Cancel previous task
                 bitmapWorkerTask.cancel(true);
             } else {
-                // The same work is already in progress
                 return false;
             }
         }
-        // No task associated with the ImageView, or an existing task was
-        // cancelled
         return true;
     }
 
@@ -1160,7 +965,9 @@ public class Main extends ListFragment {
 
     public void goBack() {
         File f = new File(current);
-        loadlist(f.getParentFile(), true);
+        if(!results){
+        loadlist(f.getParentFile(), true);}
+        else{loadlist(f,true);}
     }
 
     private BroadcastReceiver receiver2 = new BroadcastReceiver() {
@@ -1221,7 +1028,6 @@ public class Main extends ListFragment {
                     a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), mFile.get(i).getPath()), mFile.get(i).getPath()));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e("Amaze", mFile.get(i).getPath());
                 }
             }
         }

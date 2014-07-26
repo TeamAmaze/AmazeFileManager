@@ -113,7 +113,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             }
             LayoutInflater mInflater = (LayoutInflater) context
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            view = mInflater.inflate(i, null);
+            view = mInflater.inflate(i,parent,false );
             final ViewHolder vholder = new ViewHolder();
 
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
