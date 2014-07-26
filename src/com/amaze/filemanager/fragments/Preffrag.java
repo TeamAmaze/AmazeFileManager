@@ -10,8 +10,10 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.stericson.RootTools.RootTools;
 
 public class Preffrag extends PreferenceFragment {
 
@@ -62,6 +64,23 @@ public class Preffrag extends PreferenceFragment {
                 return true;
             }
         });
+        final CheckBoxPreference mountSystem = (CheckBoxPreference) findPreference("mountsystem");
+        final CheckBoxPreference rootmode = (CheckBoxPreference) findPreference("rootmode");
+        rootmode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                boolean b=sharedPref.getBoolean("rootmode",false);
+                if(b){
+                if(RootTools.isAccessGiven()){rootmode.setChecked(true);mountSystem.setEnabled(true);
+                    mountSystem.setChecked(false);}
+                else{Toast.makeText(getActivity(),getResources().getString(R.string.rootfailure),Toast.LENGTH_LONG).show();}}
+                    else{a.setChecked(false);mountSystem.setEnabled(false);}
+
+
+                return false;
+            }
+        });
+
     }
 
     public static void restartPC(final Activity activity) {

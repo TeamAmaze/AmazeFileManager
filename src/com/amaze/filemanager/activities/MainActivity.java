@@ -136,21 +136,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         if (savedInstanceState == null) {
             selectItem(0);
         }
-
-		
-	/*try {
-  ViewConfiguration config = ViewConfiguration.get(this);
-  Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
-
-  if (menuKeyField != null) {
-    menuKeyField.setAccessible(true);
-    menuKeyField.setBoolean(config, false);
-  }
-}
-catch (Exception e) {
-  // presumably, not relevant
-}*/
-
     }
 
     @Override

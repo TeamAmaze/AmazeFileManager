@@ -39,4 +39,7 @@ public class HistoryManager {
         }
         db.execSQL("INSERT INTO " + table + " VALUES" + "('" + path + "');");
     }
+    public void end(){
+        db.close();
+    }
 }

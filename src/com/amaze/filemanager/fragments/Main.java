@@ -113,9 +113,6 @@ public class Main extends ListFragment {
         setHasOptionsMenu(true);
         utils = new Futils();
         res = getResources();
-        history = new HistoryManager(getActivity(), "Tab1");
-
-
         int foldericon = Integer.parseInt(Sp.getString("folder", "1"));
         switch (foldericon) {
             case 0:
@@ -130,7 +127,6 @@ public class Main extends ListFragment {
             default:
                 folder = res.getDrawable(R.drawable.ic_grid_folder);
         }
-        //  Crouton.makeText(getActivity(),""+IconUtils.getMimeType("/sdcard/AndroidClock.ttf"),Style.ALERT).show();
         apk = res.getDrawable(R.drawable.ic_doc_apk);
         unknown = res.getDrawable(R.drawable.ic_doc_generic_am);
         archive = res.getDrawable(R.drawable.archive_blue);
@@ -159,9 +155,9 @@ public class Main extends ListFragment {
             vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
             vl.setDivider(null);
             vl.setDividerHeight(dpAsPixels);
-        /*View divider=getActivity().getLayoutInflater().inflate(R.layout.divider,null);
-		vl.addFooterView(divider);
-		vl.addHeaderView(divider);*/
+            View divider=getActivity().getLayoutInflater().inflate(R.layout.divider,null);
+		    vl.addFooterView(divider);
+		    vl.addHeaderView(divider);
         }
         vl.setFastScrollEnabled(true);
         if (savedInstanceState == null)
@@ -198,7 +194,6 @@ public class Main extends ListFragment {
         if (selection) {
             outState.putIntegerArrayList("position", adapter.getCheckedItemPositions());
         }
-        // TODO: Implement this method
     }
 
     @Override
@@ -239,7 +234,6 @@ public class Main extends ListFragment {
         if (MOVE_PATH != null) {
             showOption(R.id.item8, menu);
         }
-//        initMenu(menu);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -267,7 +261,6 @@ public class Main extends ListFragment {
                 break;
             case R.id.item1:
                 goBack();
-
                 break;
             case R.id.item3:
                 getActivity().finish();
@@ -328,11 +321,7 @@ public class Main extends ListFragment {
                         final EditText edir = (EditText) v.findViewById(R.id.newname);
                         edir.setHint(utils.getString(getActivity(), R.string.entername));
                         ba1.setView(v);
-                        ba1.setNegativeButton(utils.getString(getActivity(), R.string.cancel), new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface p1, int p2) {
-                            }
-                        });
+                        ba1.setNegativeButton(utils.getString(getActivity(), R.string.cancel), null);
                         ba1.setPositiveButton(utils.getString(getActivity(), R.string.create), new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface p1, int p2) {
@@ -369,14 +358,14 @@ public class Main extends ListFragment {
                                 File f1 = new File(path1 + "/" + a);
                                 if (!f1.exists()) {
                                     try {
-                                        f1.createNewFile();
+                                        boolean b=f1.createNewFile();
                                         Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.filecreated), Style.CONFIRM).show();
                                     } catch (IOException e) {
+                                        e.printStackTrace();
                                     }
                                 } else {
                                     Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Style.ALERT).show();
                                 }
-                                // TODO: Implement this method
                             }
                         });
                         ba2.show();
@@ -426,7 +415,7 @@ public class Main extends ListFragment {
 
 
     public void onListItemClicked(int position, View v) {
-        if (results == true) {
+        if (results) {
             String path = slist.get(position).getDesc();
 
 
@@ -518,8 +507,8 @@ public class Main extends ListFragment {
                 if (utils.canListFiles(f)) {
                     file = f.listFiles();
                     mFile.clear();
-                    for (int i = 0; i < file.length; i++) {
-                        mFile.add(file[i]);
+                    for (File f:file) {
+                        mFile.add(f);
                     }
                 } else {
                     new ListRootFiles().execute(f.getPath());
@@ -1209,14 +1198,14 @@ public class Main extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-
+          history=new HistoryManager(getActivity(),"table1");
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
+          history.end();
         (getActivity()).unregisterReceiver(receiver2);
     }
 
