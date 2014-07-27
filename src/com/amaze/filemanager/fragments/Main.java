@@ -151,14 +151,7 @@ public class Main extends ListFragment {
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         ListView vl = getListView();
         if (uimode == 1) {
-            float scale = getResources().getDisplayMetrics().density;
-            int dpAsPixels = (int) (5 * scale + 0.5f);
-            vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
-            View divider = getActivity().getLayoutInflater().inflate(R.layout.divider, null);
-            vl.setDivider(null);
-            vl.setDividerHeight(dpAsPixels);
-            vl.addFooterView(divider);
-            vl.addHeaderView(divider);
+           vl.setDivider(null);
         }
         vl.setFastScrollEnabled(true);
         if (savedInstanceState == null)

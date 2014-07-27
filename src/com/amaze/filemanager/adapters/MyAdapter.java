@@ -95,7 +95,8 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         TextView txtDesc;
         TextView date;
         RelativeLayout rl;
-
+        View divider1;
+        View divider2;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -119,6 +120,8 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
             vholder.imageView = (ImageView) view.findViewById(R.id.icon);
             vholder.rl = (RelativeLayout) view.findViewById(R.id.second);
+            vholder.divider1=view.findViewById(R.id.dividerView1);
+            vholder.divider2=view.findViewById(R.id.dividerView2);
             if (main.sdetails.equals("0")) {
                 vholder.date = (TextView) view.findViewById(R.id.date);
                 vholder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
@@ -138,6 +141,8 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     holder.rl.setBackgroundResource(R.drawable.listitem1);
                 } else if (main.uimode == 1) {
                     holder.rl.setBackgroundResource(R.drawable.bg_card);
+                    holder.divider1.setVisibility(View.VISIBLE);
+                    holder.divider2.setVisibility(View.VISIBLE);
                 }
             }
         }

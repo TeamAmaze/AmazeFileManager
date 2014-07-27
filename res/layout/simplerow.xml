@@ -1,11 +1,23 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+    <View
+        android:minHeight="5dp"
+        android:id="@+id/dividerView1"
+        android:background="@android:color/transparent"
+        android:layout_width="fill_parent"
+        android:visibility="gone"
+        android:layout_height="wrap_content"/>
+<RelativeLayout
     android:id="@+id/second"
     android:layout_width="fill_parent"
     android:minHeight="55dip"
     android:layout_height="wrap_content"
-    android:background="@drawable/listitem"
     android:clickable="true"
     android:layout_marginLeft="10dip"
+    android:layout_marginRight="10dip"
     android:padding="6dip">
 
     <ImageView
@@ -30,3 +42,11 @@
 
         />
 </RelativeLayout>
+    <View
+        android:minHeight="5dp"
+        android:id="@+id/dividerView2"
+        android:visibility="gone"
+        android:background="@android:color/transparent"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
