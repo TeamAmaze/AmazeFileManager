@@ -163,8 +163,11 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
             if (checked) {
                 holder.rl.setBackgroundColor(Color.parseColor("#5f33b5e5"));
             } else {
+                if (app.uimode == 0) {
                     holder.rl.setBackgroundResource(R.drawable.listitem1);
-
+                } else if (app.uimode == 1) {
+                    holder.rl.setBackgroundResource(R.drawable.bg_card);
+                }
             }
         }
         return view;
