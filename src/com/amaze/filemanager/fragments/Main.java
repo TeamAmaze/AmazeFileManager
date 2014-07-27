@@ -82,7 +82,6 @@ public class Main extends ListFragment {
     Resources res;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
-    public int uimode;
     ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
     public String home, current = Environment.getExternalStorageDirectory().getPath(), sdetails;
     Shortcuts sh = new Shortcuts();
@@ -91,26 +90,17 @@ public class Main extends ListFragment {
     public HistoryManager history;
     IconUtils icons;
     HorizontalScrollView scroll;
-    ProgressBar p;
     public boolean rootMode, mountSystem;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.mainlist,
-                container, false);
-        history = new HistoryManager(getActivity(), "Table1");
-        p = (ProgressBar) rootView.findViewById(R.id.progressBar);
-        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        icons = new IconUtils(Sp, getActivity());
-        return rootView;
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         utils = new Futils();
+        history = new HistoryManager(getActivity(), "Table1");
+        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        icons = new IconUtils(Sp, getActivity());
         res = getResources();
         rootMode = Sp.getBoolean("rootmode", false);
         mountSystem = Sp.getBoolean("mountsystem", false);
@@ -148,18 +138,7 @@ public class Main extends ListFragment {
         File f = new File(home);
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
         scroll = (HorizontalScrollView) getActivity().findViewById(R.id.scroll);
-        uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         ListView vl = getListView();
-        if (uimode == 1) {
-            float scale = getResources().getDisplayMetrics().density;
-            int dpAsPixels = (int) (5 * scale + 0.5f);
-            vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
-            View divider = getActivity().getLayoutInflater().inflate(R.layout.divider, null);
-            vl.setDivider(null);
-            vl.setDividerHeight(dpAsPixels);
-            vl.addFooterView(divider);
-            vl.addHeaderView(divider);
-        }
         vl.setFastScrollEnabled(true);
         if (savedInstanceState == null)
             loadlist(f, false);
@@ -523,7 +502,6 @@ public class Main extends ListFragment {
             }
         } catch (Exception e) {
         }
-        p.setVisibility(View.GONE);
         getListView().setVisibility(View.VISIBLE);
     }
 
