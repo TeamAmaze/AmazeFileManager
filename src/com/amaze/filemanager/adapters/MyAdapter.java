@@ -20,6 +20,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
     Main main;
     Futils utils = new Futils();
    IconHolder ic;
+    boolean showThumbs;
     public MyAdapter(Context context, int resourceId,
                      List<Layoutelements> items, Main main) {
         super(context, resourceId, items);
@@ -29,7 +30,8 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, false);
         }
-		ic=new IconHolder(context,true);
+        showThumbs=main.Sp.getBoolean("showThumbs",true);
+		ic=new IconHolder(context,showThumbs);
     }
 
 

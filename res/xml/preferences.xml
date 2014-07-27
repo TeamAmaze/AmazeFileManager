@@ -7,7 +7,11 @@
         android:title="@string/theme" />
 
     <PreferenceCategory android:title="File Explorer">
-
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="showThumbs"
+            android:summary="Show Thumbnails of apps and images"
+            android:title="Show Thumbnails" />
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/listmode"

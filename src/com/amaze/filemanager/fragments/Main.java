@@ -35,6 +35,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -201,7 +202,6 @@ public class Main extends ListFragment {
     public void initMenu(Menu menu) {
         menu.findItem(R.id.item1).setIcon(icons.getBackDrawable());
         menu.findItem(R.id.item2).setIcon(icons.getHomeDrawable());
-        menu.findItem(R.id.item3).setIcon(icons.getCancelDrawable());
         menu.findItem(R.id.item4).setIcon(icons.getSearchDrawable());
         menu.findItem(R.id.item5).setIcon(icons.getNewDrawable());
         menu.findItem(R.id.item6).setIcon(icons.getBookDrawable());

@@ -47,14 +47,12 @@
         android:showAsAction="ifRoom" />
     <item
         android:id="@+id/item9"
-        android:title="@string/sethome"
-        android:showAsAction="ifRoom" />
+        android:title="@string/sethome" />
     <item
         android:id="@+id/item10"
-        android:title="@string/sortby"
-        android:showAsAction="ifRoom" />
+        android:title="@string/sortby"/>
     <item
         android:id="@+id/item11"
-        android:title="@string/directorysort"
-        android:showAsAction="ifRoom" />
+        android:title="@string/directorysort" />
+
 </menu>
