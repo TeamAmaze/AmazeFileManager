@@ -17,10 +17,7 @@
     android:id="@+id/second"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-
     android:clickable="true"
-    android:layout_marginLeft="10dip"
-    android:layout_marginRight="10dip"
     android:minHeight="60dip"
     android:padding="6dip">
 

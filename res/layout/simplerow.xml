@@ -19,8 +19,6 @@
     android:minHeight="50dip"
     android:layout_height="wrap_content"
     android:clickable="true"
-    android:layout_marginLeft="10dip"
-    android:layout_marginRight="10dip"
     android:padding="6dip">
 
     <ImageView

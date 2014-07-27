@@ -65,11 +65,11 @@ public class AppsList extends ListFragment {
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         ListView vl = getListView();
         if (uimode == 1) {
-
+            float scale = getResources().getDisplayMetrics().density;
+            int dpAsPixels = (int) (5 * scale + 0.5f);
+            vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
             vl.setDivider(null);
-
         }
-        //	vl.setScrollBarStyle(ListView.SCROLLBARS_OUTSIDE_INSET);
         vl.setFastScrollEnabled(true);
         new LoadListTask().execute();
     }

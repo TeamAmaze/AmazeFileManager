@@ -23,12 +23,10 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.ActionMode;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,8 +35,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -48,6 +44,7 @@ import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.services.asynctasks.LoadSearchList;
+import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
@@ -69,7 +66,6 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 public class Main extends ListFragment {
     public File[] file;
     public ArrayList<Layoutelements> list, slist;
-    TextView prog;
     public MyAdapter adapter;
     public Futils utils;
     private android.util.LruCache<String, Bitmap> mMemoryCache;
@@ -91,20 +87,8 @@ public class Main extends ListFragment {
     public HistoryManager history;
     IconUtils icons;
     HorizontalScrollView scroll;
-    ProgressBar p;
     public boolean rootMode, mountSystem;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.mainlist,
-                container, false);
-        history = new HistoryManager(getActivity(), "Table1");
-        p = (ProgressBar) rootView.findViewById(R.id.progressBar);
-        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        icons = new IconUtils(Sp, getActivity());
-        return rootView;
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -112,6 +96,9 @@ public class Main extends ListFragment {
         setHasOptionsMenu(true);
         utils = new Futils();
         res = getResources();
+        history = new HistoryManager(getActivity(), "Table1");
+        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        icons = new IconUtils(Sp, getActivity());
         rootMode = Sp.getBoolean("rootmode", false);
         mountSystem = Sp.getBoolean("mountsystem", false);
         int foldericon = Integer.parseInt(Sp.getString("folder", "1"));
@@ -151,6 +138,9 @@ public class Main extends ListFragment {
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         ListView vl = getListView();
         if (uimode == 1) {
+            float scale = getResources().getDisplayMetrics().density;
+            int dpAsPixels = (int) (5 * scale + 0.5f);
+            vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
            vl.setDivider(null);
         }
         vl.setFastScrollEnabled(true);
@@ -243,12 +233,7 @@ public class Main extends ListFragment {
                     getActivity().invalidateOptionsMenu();
                 }
                 if (MOVE_PATH != null) {
-                    String path1 = ma.current;
-                    Intent intent = new Intent(getActivity(), CopyService.class);
-                    intent.putExtra("FILE_PATHS", MOVE_PATH);
-                    intent.putExtra("move", true);
-                    intent.putExtra("COPY_DIRECTORY", path1);
-                    getActivity().startService(intent);
+                    new MoveFiles(utils.toFileArray(MOVE_PATH),ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,current);
                     MOVE_PATH = null;
                     getActivity().invalidateOptionsMenu();
                 }
@@ -516,8 +501,6 @@ public class Main extends ListFragment {
             }
         } catch (Exception e) {
         }
-        p.setVisibility(View.GONE);
-        getListView().setVisibility(View.VISIBLE);
     }
 
 
@@ -961,11 +944,12 @@ public class Main extends ListFragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            computeScroll();
-            loadlist(new File(current), true);
+
         }
     };
-
+   public void updateList(){
+       computeScroll();
+       loadlist(new File(current), true);}
     private static BitmapWorkerTask getBitmapWorkerTask(ImageView imageView) {
         if (imageView != null) {
             final Drawable drawable = imageView.getDrawable();
@@ -1000,7 +984,6 @@ public class Main extends ListFragment {
     @Override
     public void onPause() {
         super.onPause();
-        history.end();
         (getActivity()).unregisterReceiver(receiver2);
     }
 
