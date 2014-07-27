@@ -152,11 +152,11 @@ public class Main extends ListFragment {
         ListView vl = getListView();
         if (uimode == 1) {
             float scale = getResources().getDisplayMetrics().density;
-            int dpAsPixels = (int) (10 * scale + 0.5f);
+            int dpAsPixels = (int) (5 * scale + 0.5f);
             vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
+            View divider = getActivity().getLayoutInflater().inflate(R.layout.divider, null);
             vl.setDivider(null);
             vl.setDividerHeight(dpAsPixels);
-            View divider = getActivity().getLayoutInflater().inflate(R.layout.divider, null);
             vl.addFooterView(divider);
             vl.addHeaderView(divider);
         }
