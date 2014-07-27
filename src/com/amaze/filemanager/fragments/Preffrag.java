@@ -26,13 +26,23 @@ public class Preffrag extends PreferenceFragment {
 
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         final EditTextPreference b = (EditTextPreference) findPreference("Ipath");
-       
+        final ListPreference ui = (ListPreference) findPreference("uimode");
+        int vl = Integer.parseInt(sharedPref.getString("theme", "0"));
+        if (vl == 1) {
+            ui.setEnabled(false);
+        }
         ListPreference th = (ListPreference) findPreference("theme");
         th.setOnPreferenceChangeListener(new ListPreference.OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference p1, Object p2) {
                 int value = Integer.parseInt(sharedPref.getString("theme", "0"));
 
+                if (value == 0) {
+                    sharedPref.edit().putString("uimode", "0").commit();
+                    ui.setEnabled(false);
+                } else {
+                    ui.setEnabled(true);
+                }
                 restartPC(getActivity());
                 // TODO: Implement this method
                 return true;
