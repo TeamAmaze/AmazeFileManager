@@ -797,129 +797,9 @@ public class Main extends ListFragment {
             System.out.println("button view not available");
         }
         buttons.setVisibility(View.VISIBLE);
-
     }
 
-    class BitmapWorkerTask extends AsyncTask<String, Bitmap, Bitmap> {
-        private final WeakReference<ImageView> imageViewReference;
-        private int data = 0;
-        String path;
 
-        public BitmapWorkerTask(ImageView imageView) {
-            // Use a WeakReference to ensure the ImageView can be garbage
-            // collected
-            imageViewReference = new WeakReference<ImageView>(imageView);
-        }
-
-
-        // Decode image in background.
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            path = params[0];
-
-            Bitmap bitsat = null;
-            if (!isCancelled()) {
-                if (path.endsWith(".apk")) {
-                    try {
-                        PackageManager pm = getActivity().getPackageManager();
-                        PackageInfo pi = pm.getPackageArchiveInfo(path, 0);
-                        // // the secret are these two lines....
-                        pi.applicationInfo.sourceDir = path;
-                        pi.applicationInfo.publicSourceDir = path;
-                        // //
-                        Drawable d = pi.applicationInfo.loadIcon(pm);
-
-                        Bitmap d1 = null;
-                        d1 = ((BitmapDrawable) d).getBitmap();
-
-                        addBitmapToMemoryCache(path, d1);
-                        bitsat = d1;
-                    } catch (Exception e) {
-                        Drawable apk = getResources().getDrawable(R.drawable.ic_doc_apk);
-                        Bitmap apk1 = ((BitmapDrawable) apk).getBitmap();
-                        bitsat = apk1;
-                    }
-                } else if (Icons.isPicture(path)) {
-                    try {
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inJustDecodeBounds = true;
-                        Bitmap b = BitmapFactory.decodeFile(path, options);
-                        publishProgress(b);
-                        options.inSampleSize = utils.calculateInSampleSize(options, 50, 50);
-
-                        // Decode bitmap with inSampleSize set
-                        options.inJustDecodeBounds = false;
-
-                        Bitmap bit = BitmapFactory.decodeFile(path, options);
-                        addBitmapToMemoryCache(path, bit);
-                        bitsat = bit;// decodeFile(path);//.createScaledBitmap(bits,imageViewReference.get().getHeight(),imageViewReference.get().getWidth(),true);
-                    } catch (Exception e) {
-                        Drawable img = getResources().getDrawable(R.drawable.ic_doc_image);
-                        Bitmap img1 = ((BitmapDrawable) img).getBitmap();
-                        bitsat = img1;
-                    }
-                }
-            }
-            // TODO: Implement this method
-            return bitsat;
-        }
-
-        // Once complete, see if ImageView is still around and set bitmap.
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            if (isCancelled()) {
-                bitmap = null;
-            }
-
-            if (imageViewReference != null && bitmap != null) {
-                final ImageView imageView = imageViewReference.get();
-                final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
-                if (this == bitmapWorkerTask && imageView != null) {
-                    imageView.setImageBitmap(bitmap);
-                }
-            }
-        }
-
-    }
-
-    public void loadBitmap(String path, ImageView imageView, Bitmap b) {
-        if (cancelPotentialWork(path, imageView)) {
-            final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
-            final AsyncDrawable asyncDrawable = new AsyncDrawable(
-                    getResources(), b, task);
-            imageView.setImageDrawable(asyncDrawable);
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
-        }
-    }
-
-    static class AsyncDrawable extends BitmapDrawable {
-        private final WeakReference<BitmapWorkerTask> bitmapWorkerTaskReference;
-
-        public AsyncDrawable(Resources res, Bitmap bitmap,
-                             BitmapWorkerTask bitmapWorkerTask) {
-            super(res, bitmap);
-            bitmapWorkerTaskReference = new WeakReference<BitmapWorkerTask>(
-                    bitmapWorkerTask);
-        }
-
-        public BitmapWorkerTask getBitmapWorkerTask() {
-            return bitmapWorkerTaskReference.get();
-        }
-    }
-
-    public static boolean cancelPotentialWork(String data, ImageView imageView) {
-        final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
-
-        if (bitmapWorkerTask != null) {
-            final String bitmapData = bitmapWorkerTask.path;
-            if (!bitmapData.equals(data)) {
-                bitmapWorkerTask.cancel(true);
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public void computeScroll() {
         int index = getListView().getFirstVisiblePosition();
@@ -950,16 +830,6 @@ public class Main extends ListFragment {
    public void updateList(){
        computeScroll();
        loadlist(new File(current), true);}
-    private static BitmapWorkerTask getBitmapWorkerTask(ImageView imageView) {
-        if (imageView != null) {
-            final Drawable drawable = imageView.getDrawable();
-            if (drawable instanceof AsyncDrawable) {
-                final AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
-                return asyncDrawable.getBitmapWorkerTask();
-            }
-        }
-        return null;
-    }
 
     public void getSortModes() {
         int t = Integer.parseInt(Sp.getString("sortby", "0"));

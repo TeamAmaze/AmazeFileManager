@@ -1,28 +1,17 @@
 package com.amaze.filemanager.adapters;
 
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.util.SparseBooleanArray;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.fragments.Main;
-import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.Icons;
-import com.amaze.filemanager.utils.Layoutelements;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import android.app.*;
+import android.content.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.util.*;
+import android.view.*;
+import android.widget.*;
+import com.amaze.filemanager.*;
+import com.amaze.filemanager.fragments.*;
+import com.amaze.filemanager.utils.*;
+import java.io.*;
+import java.util.*;
 
 public class MyAdapter extends ArrayAdapter<Layoutelements> {
     Context context;
@@ -30,7 +19,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     Main main;
     Futils utils = new Futils();
-
+   IconHolder ic;
     public MyAdapter(Context context, int resourceId,
                      List<Layoutelements> items, Main main) {
         super(context, resourceId, items);
@@ -40,6 +29,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, false);
         }
+		ic=new IconHolder(context,true);
     }
 
 
@@ -119,6 +109,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
             vholder.imageView = (ImageView) view.findViewById(R.id.icon);
+			
             vholder.rl = (RelativeLayout) view.findViewById(R.id.second);
             vholder.divider1=view.findViewById(R.id.dividerView1);
             vholder.divider2=view.findViewById(R.id.dividerView2);
@@ -127,10 +118,11 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 vholder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
             }
             view.setTag(vholder);
+			
 
         }
         final ViewHolder holder = (ViewHolder) view.getTag();
-
+		ic.cancelLoad(holder.imageView);
         Boolean checked = myChecked.get(position);
         if (checked != null) {
 
@@ -173,35 +165,13 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         holder.imageView.setImageDrawable(rowItem.getImageId());
         if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
 
+			ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_image));
+            
 
-            final Bitmap bitmap1 = main.getBitmapFromMemCache(rowItem
-                    .getDesc());
-            if (bitmap1 != null) {
-                holder.imageView.setImageBitmap(bitmap1);
-            } else {
-
-                main.loadBitmap(
-                        rowItem.getDesc(),
-                        holder.imageView,
-                        ((BitmapDrawable) main.getResources().getDrawable(
-                                R.drawable.ic_doc_image)).getBitmap()
-                );
-
-            }
         }
         if (Icons.isApk((rowItem.getDesc()))) {
-
-            final Bitmap bitmap = main.getBitmapFromMemCache(rowItem.getDesc());
-            if (bitmap != null) {
-                holder.imageView.setImageBitmap(bitmap);
-            } else {
-                main.loadBitmap(
-                        rowItem.getDesc(),
-                        holder.imageView,
-                        ((BitmapDrawable) main.getResources().getDrawable(
-                                R.drawable.ic_doc_apk)).getBitmap()
-                );
-            }
+               
+            ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
         }
 
         if (main.sdetails.equals("0")) {
