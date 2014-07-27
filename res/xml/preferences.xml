@@ -17,13 +17,6 @@
             android:title="@string/viewmode" />
         <ListPreference
             android:defaultValue="0"
-            android:entries="@array/uimode"
-            android:entryValues="@array/ints"
-            android:key="uimode"
-            android:summary="Choose Item Ui"
-            android:title="@string/uimode" />
-        <ListPreference
-            android:defaultValue="0"
             android:entries="@array/directorysortmode"
             android:entryValues="@array/ints1"
             android:key="dirontop"

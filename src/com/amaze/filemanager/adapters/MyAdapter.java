@@ -134,11 +134,9 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             if (checked) {
                 holder.rl.setBackgroundColor(Color.parseColor("#5fcccccc"));
             } else {
-                if (main.uimode == 0) {
+
                     holder.rl.setBackgroundResource(R.drawable.listitem1);
-                } else if (main.uimode == 1) {
-                    holder.rl.setBackgroundResource(R.drawable.bg_card);
-                }
+
             }
         }
         holder.rl.setOnClickListener(new View.OnClickListener() {

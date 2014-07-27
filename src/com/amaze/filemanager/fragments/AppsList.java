@@ -45,7 +45,6 @@ public class AppsList extends ListFragment {
     Futils utils = new Futils();
     AppsList app = this;
     AppsAdapter adapter;
-    public int uimode;
     SharedPreferences Sp;
     public boolean selection = false;
     public ActionMode mActionMode;
@@ -62,23 +61,8 @@ public class AppsList extends ListFragment {
 
         };
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         ListView vl = getListView();
-        if (uimode == 1) {
-            float scale = getResources().getDisplayMetrics().density;
-            int dpAsPixels = (int) (10 * scale + 0.5f);
-            vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
-            vl.setDivider(null);
-            vl.setDividerHeight(dpAsPixels);
-            View divider = getActivity().getLayoutInflater().inflate(R.layout.divider, null);
-            vl.addFooterView(divider);
-            vl.addHeaderView(divider);
-            vl.setCacheColorHint(android.R.color.transparent);
-            vl.setSelector(android.R.color.transparent);
-            vl.setHeaderDividersEnabled(true);
-            vl.setFooterDividersEnabled(true);
-        }
-        //	vl.setScrollBarStyle(ListView.SCROLLBARS_OUTSIDE_INSET);
+
         vl.setFastScrollEnabled(true);
         new LoadListTask().execute();
     }

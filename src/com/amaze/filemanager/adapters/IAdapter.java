@@ -165,7 +165,7 @@ public class IAdapter extends ArrayAdapter<Layoutelements> {
             holder.r.setBackgroundColor(Color.parseColor("#9f33b5e5"));
         } else {
             if (frag.theme == 0) {
-                holder.r.setBackgroundResource(R.drawable.bg_card);
+                holder.r.setBackgroundResource(R.drawable.listitem1);
             } else {
                 holder.album.setBackgroundColor(Color.parseColor("#70000000"));
                 holder.iname.setBackgroundColor(Color.parseColor("#70000000"));
