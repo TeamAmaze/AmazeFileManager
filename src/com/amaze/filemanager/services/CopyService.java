@@ -68,7 +68,7 @@ public class CopyService extends Service {
 
 
     public void onDestroy() {
-        //this.unregisterReceiver(receiver3);
+        this.unregisterReceiver(receiver3);
     }
 
     public class Doback extends AsyncTask<Bundle, Void, Integer> {
@@ -171,7 +171,7 @@ public class CopyService extends Service {
                 InputStream in = new FileInputStream(sourceFile);
                 OutputStream out = new FileOutputStream(targetFile);
 
-                byte[] buffer = new byte[1024];
+                byte[] buffer = new byte[8192];
 
                 int length;
                 //copy the file content in bytes

@@ -45,6 +45,7 @@ public class ProcessViewer extends Fragment {
                              Bundle savedInstanceState) {
         View root = (ViewGroup) inflater.inflate(R.layout.processparent,
                 container, false);
+        setRetainInstance(false);
         rootView = (LinearLayout) root.findViewById(R.id.secondbut);
         getActivity().getActionBar().setSubtitle("Processes");
         ((LinearLayout) getActivity().findViewById(R.id.buttons))

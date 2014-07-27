@@ -2,6 +2,9 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:clickable="false"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
     >
     <View
         android:minHeight="5dp"
@@ -13,7 +16,7 @@
 <RelativeLayout
     android:id="@+id/second"
     android:layout_width="fill_parent"
-    android:minHeight="55dip"
+    android:minHeight="50dip"
     android:layout_height="wrap_content"
     android:clickable="true"
     android:layout_marginLeft="10dip"

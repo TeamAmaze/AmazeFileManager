@@ -88,7 +88,8 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
     private class ViewHolder {
         ImageView imageView;
         TextView txtTitle;
-
+        View divider1;
+        View divider2;
         RelativeLayout rl;
 
     }
@@ -109,7 +110,8 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
             vholder.imageView = (ImageView) view.findViewById(R.id.icon);
             vholder.rl = (RelativeLayout) view.findViewById(R.id.second);
             //	vholder.date = (TextView) view.findViewById(R.id.date);
-
+            vholder.divider1=view.findViewById(R.id.dividerView1);
+            vholder.divider2=view.findViewById(R.id.dividerView2);
             view.setTag(vholder);
 
         } else {
@@ -167,6 +169,9 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                     holder.rl.setBackgroundResource(R.drawable.listitem1);
                 } else if (app.uimode == 1) {
                     holder.rl.setBackgroundResource(R.drawable.bg_card);
+                    holder.divider1.setVisibility(View.VISIBLE);
+
+                    holder.divider2.setVisibility(View.VISIBLE);
                 }
             }
         }
