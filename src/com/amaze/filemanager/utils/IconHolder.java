@@ -186,20 +186,26 @@ public class IconHolder {
          * @return Drawable The drawable or null if cannot be extracted
          */
         private Bitmap getAppDrawable(File fso) {
-            final String filepath = fso.getPath();
-            PackageManager pm = mContext.getPackageManager();
-            PackageInfo packageInfo = pm.getPackageArchiveInfo(filepath,
-															   PackageManager.GET_ACTIVITIES);
-            if (packageInfo != null) {
-                // Read http://code.google.com/p/android/issues/detail?id=9151, CM fixed this
-                // issue. We retain it for compatibility with older versions and roms without
-                // this fix. Required to access apk which are not installed.
-                final ApplicationInfo appInfo = packageInfo.applicationInfo;
-                appInfo.sourceDir = filepath;
-                appInfo.publicSourceDir = filepath;
-                return ((BitmapDrawable)pm.getDrawable(appInfo.packageName, appInfo.icon, appInfo)).getBitmap();
+            String path=fso.getPath();
+            Bitmap bitsat;
+            try {
+                PackageManager pm = mContext.getPackageManager();
+                PackageInfo pi = pm.getPackageArchiveInfo(path, 0);
+                // // the secret are these two lines....
+                pi.applicationInfo.sourceDir = path;
+                pi.applicationInfo.publicSourceDir = path;
+                // //
+                Drawable d = pi.applicationInfo.loadIcon(pm);
+
+                Bitmap d1 = null;
+                d1 = ((BitmapDrawable) d).getBitmap();
+                bitsat = d1;
+            } catch (Exception e) {
+                Drawable apk =mContext. getResources().getDrawable(R.drawable.ic_doc_apk);
+                Bitmap apk1 = ((BitmapDrawable) apk).getBitmap();
+                bitsat = apk1;
             }
-            return null;
+        return bitsat;
         }
 
 

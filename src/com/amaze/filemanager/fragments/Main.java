@@ -202,6 +202,7 @@ public class Main extends ListFragment {
     public void initMenu(Menu menu) {
         menu.findItem(R.id.item1).setIcon(icons.getBackDrawable());
         menu.findItem(R.id.item2).setIcon(icons.getHomeDrawable());
+        menu.findItem(R.id.item3).setIcon(icons.getCancelDrawable());
         menu.findItem(R.id.item4).setIcon(icons.getSearchDrawable());
         menu.findItem(R.id.item5).setIcon(icons.getNewDrawable());
         menu.findItem(R.id.item6).setIcon(icons.getBookDrawable());
