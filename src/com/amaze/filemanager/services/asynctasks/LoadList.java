@@ -78,26 +78,6 @@ public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>>
 
         }
         ma.createViews(bitmap, back, f);
-        if(ma.mountSystem){
-            if(!f.canWrite()){
-                try {
-                    RootTools.getShell(true).add(new Command(0, "mount -o rw,remount "+f.getPath()) {
-                        @Override
-                        public void commandOutput(int i, String s) {
 
-                        }
-
-                        @Override
-                        public void commandTerminated(int i, String s) {
-
-                        }
-
-                        @Override
-                        public void commandCompleted(int i, int i2) {
-                            Crouton.makeText(ma.getActivity(),""+f.canWrite(), Style.ALERT).show();//should give true,but giving false
-                        }
-                    });
-                }catch(Exception e){}
-            }}
     }
 }

@@ -23,6 +23,8 @@ import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
+import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.execution.Command;
 
 import org.xml.sax.SAXException;
 
@@ -104,11 +106,11 @@ public class Futils {
 
     }
 
-    public void deleteFiles(ArrayList<Layoutelements> a, final MainActivity b, List<Integer> pos) {
-        AlertDialog.Builder c = new AlertDialog.Builder(b);
-        View v = b.getLayoutInflater().inflate(R.layout.dialoginfo, null);
+    public void deleteFiles(ArrayList<Layoutelements> a, final Main b, List<Integer> pos) {
+        AlertDialog.Builder c = new AlertDialog.Builder(b.getActivity());
+        View v = b.getActivity().getLayoutInflater().inflate(R.layout.dialoginfo, null);
         TextView tb = (TextView) v.findViewById(R.id.info);
-        c.setTitle(getString(b, R.string.confirm));
+        c.setTitle(getString(b.getActivity(), R.string.confirm));
         String names = "";
         final ArrayList<File> todelete = new ArrayList<File>();
         for (int i = 0; i < pos.size(); i++) {
@@ -116,17 +118,21 @@ public class Futils {
             todelete.add(new File(path));
             names = names + "\n" + "(" + (i + 1) + ".)" + new File(path).getName();
         }
-        tb.setText(getString(b, R.string.questiondelete) + names);
+        tb.setText(getString(b.getActivity(), R.string.questiondelete) + names);
         c.setView(v);
-        c.setNegativeButton(getString(b, R.string.no), null);
-        c.setPositiveButton(getString(b, R.string.yes), new DialogInterface.OnClickListener() {
+        c.setNegativeButton(getString(b.getActivity(), R.string.no), null);
+        c.setPositiveButton(getString(b.getActivity(), R.string.yes), new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface p1, int p2) {
-                Crouton.makeText(b, getString(b, R.string.deleting), Style.INFO).show();
-                Intent i = new Intent(b, DeleteTask.class);
+                Crouton.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Style.INFO).show();
+                if(todelete.get(0).getParentFile().canWrite()){
+                Intent i = new Intent(b.getActivity(), DeleteTask.class);
                 i.putStringArrayListExtra("files", toStringArray(todelete));
-                b.startService(i);
-                // TODO: Implement this method
+                b.getActivity().startService(i);}
+                else if(b.rootMode){for(File f:todelete){
+                    RootTools.deleteFileOrDirectory(f.getPath(),true);}
+                    b.updateList();
+                }
             }
         });
         c.show();
@@ -332,8 +338,25 @@ public class Futils {
 
     public boolean rename(File f, String name) {
         String newname = f.getParent() + "/" + name;
-        boolean b = f.renameTo(new File(newname));
-        return b;
+        if(f.getParentFile().canWrite()){
+        boolean b = f.renameTo(new File(newname));}
+        else{try{RootTools.getShell(true).add(new Command(0,"mv "+f.getPath()+" "+newname) {
+            @Override
+            public void commandOutput(int i, String s) {
+                System.out.println(s);
+            }
+
+            @Override
+            public void commandTerminated(int i, String s) {
+
+            }
+
+            @Override
+            public void commandCompleted(int i, int i2) {
+
+            }
+        });}catch (Exception e){return false;}}
+        return true;
     }
 
     public boolean canListFiles(File f) {

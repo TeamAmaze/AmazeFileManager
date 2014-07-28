@@ -54,6 +54,8 @@ import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.Shortcuts;
+import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.execution.Command;
 
 import java.io.File;
 import java.io.IOException;
@@ -589,7 +591,7 @@ public class Main extends ListFragment {
                             utils.getString(getActivity(), R.string.newhomedirectory) + mFile.get(pos).getName(),
                             Style.INFO).show();
                     Sp.edit().putString("home", list.get(pos).getDesc()).apply();
-                    // the Action was executed, close the CAB
+
                     mode.finish();
                     return true;
                 case R.id.about:
@@ -597,7 +599,7 @@ public class Main extends ListFragment {
                     mode.finish();
                     return true;
                 case R.id.delete:
-                    utils.deleteFiles(list, (MainActivity) getActivity(), plist);
+                    utils.deleteFiles(list,ma, plist);
 
                     mode.finish();
 
@@ -639,7 +641,7 @@ public class Main extends ListFragment {
                                             .toString());
                                     m.finish();
                                     mMemoryCache.evictAll();
-                                    loadlist(new File(current), true);
+                                    updateList();
                                     if (b) {
                                         Crouton.makeText(getActivity(),
                                                 utils.getString(getActivity(), R.string.renamed),
