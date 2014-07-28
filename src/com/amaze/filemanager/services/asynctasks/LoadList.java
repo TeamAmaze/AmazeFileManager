@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Layoutelements;
+import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.execution.Command;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -76,6 +78,26 @@ public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>>
 
         }
         ma.createViews(bitmap, back, f);
+        if(ma.mountSystem){
+            if(!f.canWrite()){
+                try {
+                    RootTools.getShell(true).add(new Command(0, "mount -o rw,remount "+f.getPath()) {
+                        @Override
+                        public void commandOutput(int i, String s) {
 
+                        }
+
+                        @Override
+                        public void commandTerminated(int i, String s) {
+
+                        }
+
+                        @Override
+                        public void commandCompleted(int i, int i2) {
+                            Crouton.makeText(ma.getActivity(),""+f.canWrite(), Style.ALERT).show();//should give true,but giving false
+                        }
+                    });
+                }catch(Exception e){}
+            }}
     }
 }

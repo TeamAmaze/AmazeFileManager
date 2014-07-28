@@ -44,6 +44,7 @@ import com.amaze.filemanager.adapters.MyAdapter;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
+import com.amaze.filemanager.services.asynctasks.LoadRootList;
 import com.amaze.filemanager.services.asynctasks.LoadSearchList;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.services.asynctasks.SearchTask;

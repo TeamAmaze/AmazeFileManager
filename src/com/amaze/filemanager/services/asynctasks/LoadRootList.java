@@ -11,6 +11,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
+
 public class LoadRootList extends AsyncTask<String, Void, Void> {
     ArrayList<File> a = new ArrayList<File>();
     String c;
@@ -29,6 +32,27 @@ public class LoadRootList extends AsyncTask<String, Void, Void> {
 
             ma.list = ma.addTo(ma.mFile);
             ma.createViews(ma.list, false, new File(c));
+            if(ma.mountSystem){
+                if(!new File(c).canWrite()){
+                    try {
+                    RootTools.getShell(true).add(new Command(0, "mount -o remount,rw "+c) {
+                        @Override
+                        public void commandOutput(int i, String s) {
+
+                        }
+
+                        @Override
+                        public void commandTerminated(int i, String s) {
+
+                        }
+
+                        @Override
+                        public void commandCompleted(int i, int i2) {
+                            Crouton.makeText(ma.getActivity(),""+new File(c).canWrite(), Style.ALERT).show();
+                        }
+                    });
+                }catch(Exception e){}
+            }}
         }
     }
 
