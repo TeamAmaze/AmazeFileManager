@@ -99,7 +99,7 @@ public class Ifragment extends android.support.v4.app.Fragment {
                 .getExternalStorageDirectory().getPath()
                 + "/"
                 + Environment.DIRECTORY_DCIM);
-        grid = (GridView) rootView.findViewById(R.id.grid);
+        grid = (GridView) rootView.findViewById(android.R.id.list);
 
         new LoadList().execute();
 

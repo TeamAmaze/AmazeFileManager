@@ -1,19 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:clickable="false"
-    android:focusable="false"
-    android:focusableInTouchMode="false"
-    android:orientation="vertical"
-    >
-<View
-    android:minHeight="5dp"
-    android:id="@+id/dividerView1"
-    android:background="@android:color/transparent"
-    android:layout_width="fill_parent"
-    android:visibility="gone"
-    android:layout_height="wrap_content"/>
- <RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/second"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -72,11 +57,3 @@
     </RelativeLayout>
 
 </RelativeLayout>
-    <View
-        android:minHeight="5dp"
-        android:id="@+id/dividerView2"
-        android:visibility="gone"
-        android:background="@android:color/transparent"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
-</LinearLayout>

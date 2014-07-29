@@ -199,7 +199,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 select = 2;
 // Commit the transaction
                 transaction2.commit();
-                getActionBar().setSubtitle(val[2]);
+                getActionBar().setSubtitle(val[1]);
                 break;
             case 2:
                 android.support.v4.app.FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
@@ -208,7 +208,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 select = 3;
 // Commit the transaction
                 transaction3.commit();
-                getActionBar().setSubtitle(val[3]);
+                getActionBar().setSubtitle(val[2]);
                 break;
             case 3:
                 Intent in = new Intent(MainActivity.this, Preferences.class);

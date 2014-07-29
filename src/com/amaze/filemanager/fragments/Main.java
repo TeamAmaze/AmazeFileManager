@@ -23,10 +23,12 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.ActionMode;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -93,7 +95,6 @@ public class Main extends ListFragment {
     HorizontalScrollView scroll;
     public boolean rootMode, mountSystem;
 
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -142,11 +143,13 @@ public class Main extends ListFragment {
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         ListView vl = getListView();
         if (uimode == 1) {
-            float scale = getResources().getDisplayMetrics().density;
-            int dpAsPixels = (int) (5 * scale + 0.5f);
-            vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
+           float scale = getResources().getDisplayMetrics().density;
+           int dpAsPixels = (int) (5 * scale + 0.5f);
+           vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
            vl.setDivider(null);
-        }
+           vl.setDividerHeight(dpAsPixels);
+
+        } vl.addFooterView(getActivity().getLayoutInflater().inflate(R.layout.divider,null));
         vl.setFastScrollEnabled(true);
         if (savedInstanceState == null)
             loadlist(f, false);
