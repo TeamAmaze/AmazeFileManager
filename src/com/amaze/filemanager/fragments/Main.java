@@ -8,12 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -34,10 +29,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -46,7 +40,6 @@ import com.amaze.filemanager.adapters.MyAdapter;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
-import com.amaze.filemanager.services.asynctasks.LoadRootList;
 import com.amaze.filemanager.services.asynctasks.LoadSearchList;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
@@ -56,12 +49,9 @@ import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.Shortcuts;
-import com.stericson.RootTools.RootTools;
-import com.stericson.RootTools.execution.Command;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -74,7 +64,6 @@ public class Main extends ListFragment {
     public ArrayList<Layoutelements> list, slist;
     public MyAdapter adapter;
     public Futils utils;
-    private android.util.LruCache<String, Bitmap> mMemoryCache;
     public ArrayList<File> sFile, mFile = new ArrayList<File>();
     public boolean selection;
     public boolean results = false;
@@ -94,7 +83,16 @@ public class Main extends ListFragment {
     IconUtils icons;
     HorizontalScrollView scroll;
     public boolean rootMode, mountSystem;
-
+    public ProgressBar p;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.mainlist,
+                container, false);
+        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        icons = new IconUtils(Sp, getActivity());
+        p=(ProgressBar)rootView.findViewById(R.id.progressBar);
+        return  rootView;}
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -102,8 +100,6 @@ public class Main extends ListFragment {
         utils = new Futils();
         res = getResources();
         history = new HistoryManager(getActivity(), "Table1");
-        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        icons = new IconUtils(Sp, getActivity());
         rootMode = Sp.getBoolean("rootmode", false);
         mountSystem = Sp.getBoolean("mountsystem", false);
         int foldericon = Integer.parseInt(Sp.getString("folder", "1"));
@@ -127,16 +123,7 @@ public class Main extends ListFragment {
         getSortModes();
         home = Sp.getString("home", Environment.getExternalStorageDirectory().getPath());
         sdetails = Sp.getString("viewmode", "0");
-        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         this.setRetainInstance(false);
-        final int cacheSize = maxMemory / 4;
-        mMemoryCache = new android.util.LruCache<String, Bitmap>(cacheSize) {
-            @Override
-            protected int sizeOf(String key, Bitmap bitmp) {
-                return bitmp.getByteCount() / 1024;
-            }
-        };
-
         File f = new File(home);
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
         scroll = (HorizontalScrollView) getActivity().findViewById(R.id.scroll);
@@ -167,6 +154,8 @@ public class Main extends ListFragment {
                     adapter.toggleChecked(i);
                 }
             }
+            p.setVisibility(View.GONE);
+            getListView().setVisibility(View.VISIBLE);
         }
 
     }
@@ -440,7 +429,7 @@ public class Main extends ListFragment {
 
 
     public void loadlist(File f, boolean back) {
-        mMemoryCache.evictAll();
+
         new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
 
     }
@@ -450,16 +439,6 @@ public class Main extends ListFragment {
 
         new LoadSearchList(ma).execute(f);
 
-    }
-
-    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
-        if (getBitmapFromMemCache(key) == null) {
-            mMemoryCache.put(key, bitmap);
-        }
-    }
-
-    public Bitmap getBitmapFromMemCache(String key) {
-        return mMemoryCache.get(key);
     }
 
 
@@ -643,7 +622,6 @@ public class Main extends ListFragment {
                                     boolean b = utils.rename(f, edit.getText()
                                             .toString());
                                     m.finish();
-                                    mMemoryCache.evictAll();
                                     updateList();
                                     if (b) {
                                         Crouton.makeText(getActivity(),
@@ -831,7 +809,7 @@ public class Main extends ListFragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
+        updateList();
         }
     };
    public void updateList(){
@@ -854,7 +832,6 @@ public class Main extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        history.open();
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
     }
 
@@ -882,4 +859,8 @@ public class Main extends ListFragment {
     }
 
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+history.end();    }
 }

@@ -98,7 +98,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
                 android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.content_frame, new ProcessViewer());
-                transaction.addToBackStack(null);
+             //   transaction.addToBackStack(null);
                 select = 102;
 //Commit the transaction
                 transaction.commit();
@@ -184,7 +184,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
                 android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.content_frame, new Main());
-                transaction.addToBackStack(null);
+               // transaction.addToBackStack(null);
                 select = 0;
 // Commit the transaction
                 transaction.commit();
@@ -195,7 +195,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             case 1:
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                 transaction2.replace(R.id.content_frame, new AppsList());
-                transaction2.addToBackStack(null);
+               // transaction2.addToBackStack(null);
                 select = 2;
 // Commit the transaction
                 transaction2.commit();
@@ -204,7 +204,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             case 2:
                 android.support.v4.app.FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
                 transaction3.replace(R.id.content_frame, new BookmarksManager());
-                transaction3.addToBackStack(null);
+               // transaction3.addToBackStack(null);
                 select = 3;
 // Commit the transaction
                 transaction3.commit();

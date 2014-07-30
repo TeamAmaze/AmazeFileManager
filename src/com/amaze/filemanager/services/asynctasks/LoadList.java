@@ -1,6 +1,7 @@
 package com.amaze.filemanager.services.asynctasks;
 
 import android.os.AsyncTask;
+import android.view.View;
 
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.FileListSorter;
@@ -78,6 +79,7 @@ public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>>
 
         }
         ma.createViews(bitmap, back, f);
-
+        ma.p.setVisibility(View.GONE);
+        ma.getListView().setVisibility(View.VISIBLE);
     }
 }
