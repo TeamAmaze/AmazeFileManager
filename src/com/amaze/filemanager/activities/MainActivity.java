@@ -196,7 +196,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                 transaction2.replace(R.id.content_frame, new AppsList());
                // transaction2.addToBackStack(null);
-                select = 2;
+                select = 1;
 // Commit the transaction
                 transaction2.commit();
                 getActionBar().setSubtitle(val[1]);
@@ -205,7 +205,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 android.support.v4.app.FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
                 transaction3.replace(R.id.content_frame, new BookmarksManager());
                // transaction3.addToBackStack(null);
-                select = 3;
+                select = 2;
 // Commit the transaction
                 transaction3.commit();
                 getActionBar().setSubtitle(val[2]);
