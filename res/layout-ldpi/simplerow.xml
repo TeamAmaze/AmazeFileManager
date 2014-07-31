@@ -1,16 +1,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/second"
     android:layout_width="fill_parent"
-    android:minHeight="50dip"
+    android:minHeight="40dip"
     android:layout_height="wrap_content"
     android:clickable="true"
-    android:padding="6dip">
+    android:padding="2dip">
 
     <ImageView
         android:id="@+id/icon"
         android:padding="5dip"
-        android:layout_width="55dip"
-        android:layout_height="55dip"
+        android:layout_width="50dip"
+        android:layout_height="50dip"
         android:clickable="false"
         android:gravity="center"
         android:layout_gravity="center"
@@ -20,7 +20,7 @@
         android:id="@+id/firstline"
         android:layout_width="fill_parent"
         android:layout_toRightOf="@id/icon"
-        android:layout_height="55dip"
+        android:layout_height="50dip"
         android:clickable="false"
         android:layout_gravity="center"
         android:textSize="17sp"

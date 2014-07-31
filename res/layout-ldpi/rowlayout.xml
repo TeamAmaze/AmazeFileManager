@@ -4,12 +4,12 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:minHeight="40dip"
-    android:padding="6dip">
+    android:padding="2dp">
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="40dip"
-        android:layout_height="40dip"
+        android:layout_width="50dip"
+        android:layout_height="50dip"
         android:padding="5dip"
         android:contentDescription="@string/icon" />
 
