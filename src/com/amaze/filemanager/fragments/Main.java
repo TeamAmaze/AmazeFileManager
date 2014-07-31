@@ -82,17 +82,14 @@ public class Main extends ListFragment {
     public HistoryManager history;
     IconUtils icons;
     HorizontalScrollView scroll;
-    public boolean rootMode, mountSystem;
-    public ProgressBar p;
+	boolean rememberLastPath;
+    public boolean rootMode, mountSystem,showHidden;
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.mainlist,
-                container, false);
+    public void onCreate(Bundle savedInstanceState) {
+       super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         icons = new IconUtils(Sp, getActivity());
-        p=(ProgressBar)rootView.findViewById(R.id.progressBar);
-        return  rootView;}
+        }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -102,6 +99,8 @@ public class Main extends ListFragment {
         history = new HistoryManager(getActivity(), "Table1");
         rootMode = Sp.getBoolean("rootmode", false);
         mountSystem = Sp.getBoolean("mountsystem", false);
+		showHidden=Sp.getBoolean("showHidden",true);
+		rememberLastPath=Sp.getBoolean("rememberLastPath",false);
         int foldericon = Integer.parseInt(Sp.getString("folder", "1"));
         switch (foldericon) {
             case 0:
@@ -124,7 +123,12 @@ public class Main extends ListFragment {
         home = Sp.getString("home", Environment.getExternalStorageDirectory().getPath());
         sdetails = Sp.getString("viewmode", "0");
         this.setRetainInstance(false);
+		
         File f = new File(home);
+		if(rememberLastPath){
+			f=new File(Sp.getString("current",home));
+		
+			}
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
         scroll = (HorizontalScrollView) getActivity().findViewById(R.id.scroll);
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
@@ -154,7 +158,7 @@ public class Main extends ListFragment {
                     adapter.toggleChecked(i);
                 }
             }
-            p.setVisibility(View.GONE);
+           
             getListView().setVisibility(View.VISIBLE);
         }
 
@@ -454,8 +458,6 @@ public class Main extends ListFragment {
                 }
                 results = false;
                 current = f.getPath();
-
-
                 if (back) {
                     if (scrolls.containsKey(current)) {
                         Bundle b = scrolls.get(current);
@@ -838,9 +840,16 @@ public class Main extends ListFragment {
     @Override
     public void onPause() {
         super.onPause();
+		if(rememberLastPath){
+			Sp.edit().putString("current",current).apply();
+		}
         (getActivity()).unregisterReceiver(receiver2);
     }
-
+	@Override
+    public void onStop() {
+        super.onStop();
+	
+		}
     public ArrayList<Layoutelements> addTo(ArrayList<File> mFile) {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         for (int i = 0; i < mFile.size(); i++) {
@@ -861,6 +870,7 @@ public class Main extends ListFragment {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
-history.end();    }
+       super.onDestroy();
+		
+		history.end();     }
 }

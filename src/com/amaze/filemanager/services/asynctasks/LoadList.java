@@ -49,7 +49,10 @@ public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>>
                 ma.file = f.listFiles();
                 ma.mFile.clear();
                 for (File f : ma.file) {
-                    ma.mFile.add(f);
+					if(f.isHidden()){
+						if(ma.showHidden){ma.mFile.add(f);}
+					}else{
+                    ma.mFile.add(f);}
                 }
             } else {
                 if (ma.rootMode)
@@ -79,7 +82,7 @@ public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>>
 
         }
         ma.createViews(bitmap, back, f);
-        ma.p.setVisibility(View.GONE);
+      
         ma.getListView().setVisibility(View.VISIBLE);
     }
 }

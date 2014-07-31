@@ -45,7 +45,8 @@ public class LoadRootList extends AsyncTask<String, Void, Void> {
                 @Override
                 public void commandOutput(int i, String s) {
                     File f = new File(path + "/" + s);
-                    a.add(f);
+					if(f.isHidden()){if(ma.showHidden){a.add(f);}}
+                   else a.add(f);
                 }
 
 

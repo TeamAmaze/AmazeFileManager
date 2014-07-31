@@ -12,7 +12,17 @@
             android:key="showThumbs"
             android:summary="Show Thumbnails of apps and images"
             android:title="Show Thumbnails" />
-        <ListPreference
+		<CheckBoxPreference
+            android:defaultValue="true"
+            android:key="showHidden"
+          
+            android:title="Show Hidden Files and Folders" />
+	  	<CheckBoxPreference
+            android:defaultValue="false"
+            android:key="rememberLastPath"
+
+            android:title="Remember Last Path" />
+	  <ListPreference
             android:defaultValue="0"
             android:entries="@array/listmode"
             android:entryValues="@array/ints"
@@ -51,12 +61,7 @@
             android:key="rootmode"
             android:summary="@string/rootmodesummary"
             android:title="@string/rootmode" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="mountsystem"
-            android:enabled="false"
-            android:summary="@string/mountsystemsummary"
-            android:title="@string/mountsystem" />
+    
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/imagegallery">
@@ -68,8 +73,6 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="Ipathset"
-            android:title="@string/usedefaultgallerypath" />
-
-    </PreferenceCategory>
-
-</PreferenceScreen>
+            android:title="@string/usedefaultgallerypath"/>
+        </PreferenceCategory>
+    </PreferenceScreen>

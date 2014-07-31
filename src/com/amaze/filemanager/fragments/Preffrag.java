@@ -64,7 +64,7 @@ public class Preffrag extends PreferenceFragment {
                 return true;
             }
         });
-        final CheckBoxPreference mountSystem = (CheckBoxPreference) findPreference("mountsystem");
+        
         final CheckBoxPreference rootmode = (CheckBoxPreference) findPreference("rootmode");
         rootmode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -73,14 +73,14 @@ public class Preffrag extends PreferenceFragment {
                 if (b) {
                     if (RootTools.isAccessGiven()) {
                         rootmode.setChecked(true);
-                        mountSystem.setEnabled(true);
-                        mountSystem.setChecked(false);
-                    } else {
+                    
+                    } else {  rootmode.setChecked(false);
+				
                         Toast.makeText(getActivity(), getResources().getString(R.string.rootfailure), Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    a.setChecked(false);
-                    mountSystem.setEnabled(false);
+                    rootmode.setChecked(false);
+                    
                 }
 
 
