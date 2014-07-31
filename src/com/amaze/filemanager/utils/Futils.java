@@ -567,4 +567,10 @@ public class Futils {
         } catch (SAXException e) {
         }
     }
+    public void setPermissionsDialog(File f,Activity c){
+        AlertDialog.Builder a=new AlertDialog.Builder(c);
+        View v=c.getLayoutInflater().inflate(R.layout.permissiontable,null);
+        a.setView(v);
+        a.show();
+    }
 }

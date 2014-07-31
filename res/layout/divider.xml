@@ -2,6 +2,7 @@
     android:layout_width="fill_parent"
     android:layout_height="10dip" >
     <TextView
+        android:id="@+id/footerText"
         android:padding="10dip"
         android:layout_width="fill_parent"
         android:textStyle="bold"

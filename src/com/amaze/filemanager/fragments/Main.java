@@ -32,6 +32,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -84,6 +85,7 @@ public class Main extends ListFragment {
     HorizontalScrollView scroll;
 	boolean rememberLastPath;
     public boolean rootMode, mountSystem,showHidden;
+    View footerView;
     @Override
     public void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
@@ -140,7 +142,9 @@ public class Main extends ListFragment {
            vl.setDivider(null);
            vl.setDividerHeight(dpAsPixels);
 
-        } vl.addFooterView(getActivity().getLayoutInflater().inflate(R.layout.divider,null));
+        }
+        footerView=getActivity().getLayoutInflater().inflate(R.layout.divider,null);
+        vl.addFooterView(footerView);
         vl.setFastScrollEnabled(true);
         if (savedInstanceState == null)
             loadlist(f, false);
@@ -449,6 +453,13 @@ public class Main extends ListFragment {
     public void createViews(ArrayList<Layoutelements> bitmap, boolean back, File f) {
         try {
             if (bitmap != null) {
+                TextView footerText=(TextView) footerView.findViewById(R.id.footerText);
+                if(bitmap.size()==0){
+                    footerText.setText("No Files");
+                }
+                else{
+                    footerText.setText("Tap and hold on a File or Folder for more options");
+                }
                 adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
                         bitmap, ma);
                 try {
@@ -465,13 +476,13 @@ public class Main extends ListFragment {
                         getListView().setSelectionFromTop(b.getInt("index"), b.getInt("top"));
                     }
                 }
-                try {
+               /* try {
                     Intent i = new Intent("updatepager");
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                }
+                }*/
                 bbar(current);
                 getActivity().getActionBar().setSubtitle(f.getName());
                 scroll.post(new Runnable() {
@@ -489,6 +500,7 @@ public class Main extends ListFragment {
             }
         } catch (Exception e) {
         }
+
     }
 
 
