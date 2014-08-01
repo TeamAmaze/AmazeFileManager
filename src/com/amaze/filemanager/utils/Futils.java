@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -567,9 +568,44 @@ public class Futils {
         } catch (SAXException e) {
         }
     }
-    public void setPermissionsDialog(File f,Activity c){
-        AlertDialog.Builder a=new AlertDialog.Builder(c);
-        View v=c.getLayoutInflater().inflate(R.layout.permissiontable,null);
+    public void setPermissionsDialog(final File file, final Activity act){
+        AlertDialog.Builder a=new AlertDialog.Builder(act);
+        View v=act.getLayoutInflater().inflate(R.layout.permissiontable,null);
+        final CheckBox readown=(CheckBox) v.findViewById(R.id.creadown);
+        final CheckBox readgroup=(CheckBox) v.findViewById(R.id.creadgroup);
+        final CheckBox readother=(CheckBox) v.findViewById(R.id.creadother);
+        final CheckBox writeown=(CheckBox) v.findViewById(R.id.cwriteown);
+        final CheckBox writegroup=(CheckBox) v.findViewById(R.id.cwritegroup);
+        final CheckBox writeother=(CheckBox) v.findViewById(R.id.cwriteother);
+        final CheckBox exeown=(CheckBox) v.findViewById(R.id.cexeown);
+        final CheckBox exegroup=(CheckBox) v.findViewById(R.id.cexegroup);
+        final CheckBox exeother=(CheckBox) v.findViewById(R.id.cexeother);
+        a.setPositiveButton("Set",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int j) {
+            int a=0,b=0,c=0;
+                if(readown.isChecked())a=4;
+                if(writeown.isChecked())b=2;
+                if(exeown.isChecked())c=1;
+                int owner=a+b+c;
+                int d=0,e=0,f=0;
+                if(readgroup.isChecked())d=4;
+                if(writegroup.isChecked())e=2;
+                if(exegroup.isChecked())f=1;
+                int group=d+e+f;
+                int g=0,h=0,i=0;
+                if(readother.isChecked())g=4;
+                if(writeother.isChecked())h=2;
+                if(exeother.isChecked())i=1;
+                int other=g+h+i;
+                String  finalValue="0"+owner+group+other;
+                Toast.makeText(act,finalValue,Toast.LENGTH_LONG).show();
+                String recursive="";
+                if(file.isDirectory())recursive="-R";
+                String command="chmod "+recursive+" "+finalValue+" "+file.getPath();
+            }
+        });
+        a.setTitle(file.getName());
         a.setView(v);
         a.show();
     }

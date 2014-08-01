@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
     <TableRow
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
@@ -47,9 +47,6 @@
             android:id="@+id/cexeown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        <EditText android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ownerNum"/>
     </TableRow>
     <TableRow
         android:layout_width="fill_parent"
@@ -74,9 +71,6 @@
             android:id="@+id/cexegroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        <EditText android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/groupNum"/>
     </TableRow>
     <TableRow
         android:layout_width="fill_parent"
@@ -101,8 +95,5 @@
             android:id="@+id/cexeother"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        <EditText android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/otherNum"/>
     </TableRow>
 </TableLayout>
