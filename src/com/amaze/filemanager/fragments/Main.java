@@ -435,6 +435,7 @@ public class Main extends ListFragment {
                 computeScroll();
                 loadlist(f, false);
             } else {
+
                 utils.openFile(f, (MainActivity) getActivity());
             }
 

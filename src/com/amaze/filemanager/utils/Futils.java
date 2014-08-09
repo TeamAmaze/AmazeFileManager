@@ -614,107 +614,32 @@ public class Futils {
         a.setTitle(file.getName());
         a.setView(v);
         a.show();
+    }String per=null;
+    public String getFilePermissionsSymlinks(String file,final Context c,boolean root)
+    {per=null;
+        String ls = RootHelper.runAndWait("ls -l " + file);
+        if(ls!=null){
+            per=getPermissions(ls);}
+        return per;
     }
-    int permissions=-1;
-    public int getFilePermissionsSymlinks(String file,final Context c) {
-        permissions=-1;
-        RootTools.log("Checking permissions for " + file);
-        if (RootTools.exists(file)) {
-            RootTools.log(file + " was found.");
-            try {
-
-                Command command = new Command(
-                        1, "ls -l " + new File(file).getAbsolutePath()) {
-
-                    @Override
-                    public void commandOutput(int i, String s) {
-                    Toast.makeText(c,s,Toast.LENGTH_SHORT).show();
-                   permissions= getPermissions(s);
-                    }
-
-                    @Override
-                    public void commandTerminated(int i, String s) {
-
-                    }
-
-                    @Override
-                    public void commandCompleted(int i, int i2) {
-
-                    }
-
-                };
-                Shell.startRootShell().add(command);
-                commandWait(Shell.startRootShell(), command);
-
-                return permissions;
-
-            } catch (Exception e) {
-                Toast.makeText(c,"returning null",Toast.LENGTH_SHORT).show();
-                RootTools.log(e.getMessage());
-                return -1;
-            }
-        }
-        return -1;
-    }private void commandWait(Shell shell, Command cmd) throws Exception {
-
-        while (!cmd.isFinished()) {
-
-            RootTools.log("com.amaze.filemanager", shell.getCommandQueuePositionString(cmd));
-
-            synchronized (cmd) {
-                try {
-                    if (!cmd.isFinished()) {
-                        cmd.wait(2000);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (!cmd.isExecuting() && !cmd.isFinished()) {
-                if (!shell.isExecuting && !shell.isReading) {
-                    Log.e("com.amaze.filemanager", "Waiting for a command to be executed in a shell that is not executing and not reading! \n\n Command: " + cmd.getCommand());
-                    Exception e = new Exception();
-                    e.setStackTrace(Thread.currentThread().getStackTrace());
-                    e.printStackTrace();
-                } else if (shell.isExecuting && !shell.isReading) {
-                    Log.e("com.amaze.filemanager", "Waiting for a command to be executed in a shell that is executing but not reading! \n\n Command: " + cmd.getCommand());
-                    Exception e = new Exception();
-                    e.setStackTrace(Thread.currentThread().getStackTrace());
-                    e.printStackTrace();
-                } else {
-                    Log.e("com.amaze.filemanager", "Waiting for a command to be executed in a shell that is not reading! \n\n Command: " + cmd.getCommand());
-                    Exception e = new Exception();
-                    e.setStackTrace(Thread.currentThread().getStackTrace());
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    }
-    public int getPermissions(String line) {
-
-        String[] lineArray = line.split(" ");
-        String rawPermissions = lineArray[0];
-
-        if (rawPermissions.length() == 10
-                && (rawPermissions.charAt(0) == '-'
-                || rawPermissions.charAt(0) == 'd' || rawPermissions
-                .charAt(0) == 'l')
-                && (rawPermissions.charAt(1) == '-' || rawPermissions.charAt(1) == 'r')
-                && (rawPermissions.charAt(2) == '-' || rawPermissions.charAt(2) == 'w')) {
-            RootTools.log(rawPermissions);
+    public String getPermissions(String line) {
+try {
+    String[] lineArray = line.split(" ");
+    String rawPermissions = lineArray[0];
+ System.out.println(rawPermissions);
 
 
-            StringBuilder finalPermissions = new StringBuilder();
-            finalPermissions.append(parseSpecialPermissions(rawPermissions));
-            finalPermissions.append(parsePermissions(rawPermissions.substring(1, 4)));
-            finalPermissions.append(parsePermissions(rawPermissions.substring(4, 7)));
-            finalPermissions.append(parsePermissions(rawPermissions.substring(7, 10)));
+    StringBuilder finalPermissions = new StringBuilder();
+    finalPermissions.append(parseSpecialPermissions(rawPermissions));
+    finalPermissions.append(parsePermissions(rawPermissions.substring(1, 4)));
+    finalPermissions.append(parsePermissions(rawPermissions.substring(4, 7)));
+    finalPermissions.append(parsePermissions(rawPermissions.substring(7, 10)));
+    return (finalPermissions.toString());
+}catch (Exception e)
+{e.printStackTrace();
+    return null;}
 
-
-            return Integer.parseInt(finalPermissions.toString());
-        }return -1;}
+       }
 public int parsePermissions(String permission) {
         int tmp;
         if (permission.charAt(0) == 'r')
