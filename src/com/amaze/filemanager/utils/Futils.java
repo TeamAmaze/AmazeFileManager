@@ -5,10 +5,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -586,6 +588,19 @@ public class Futils {
         final CheckBox exeown=(CheckBox) v.findViewById(R.id.cexeown);
         final CheckBox exegroup=(CheckBox) v.findViewById(R.id.cexegroup);
         final CheckBox exeother=(CheckBox) v.findViewById(R.id.cexeother);
+        String perm=getFilePermissionsSymlinks(file.getPath(),act.getApplicationContext(), PreferenceManager.getDefaultSharedPreferences(act.getApplicationContext()).getBoolean("rootmode",false));
+        Boolean[] read=unparsePermissions(Integer.parseInt(""+(perm.charAt(1))));
+        Boolean[] write=unparsePermissions(Integer.parseInt(""+(perm.charAt(2))));
+        Boolean[] exe=unparsePermissions(Integer.parseInt(""+(perm.charAt(3))));
+        readown.setChecked(read[0]);
+        readgroup.setChecked(read[1]);
+        readother.setChecked(read[2]);
+        writeown.setChecked(write[0]);
+        writegroup.setChecked(write[1]);
+        writeother.setChecked(write[2]);
+        exeown.setChecked(exe[0]);
+        exegroup.setChecked(exe[1]);
+        exeother.setChecked(exe[2]);
         a.setPositiveButton("Set",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int j) {
@@ -617,16 +632,16 @@ public class Futils {
     }String per=null;
     public String getFilePermissionsSymlinks(String file,final Context c,boolean root)
     {per=null;
-        String ls = RootHelper.runAndWait("ls -l " + file);
+        String ls = RootHelper.runAndWait("ls -l " + file,root);
         if(ls!=null){
             per=getPermissions(ls);}
         return per;
     }
     public String getPermissions(String line) {
-try {
+try {if(line.length()>=40) {
     String[] lineArray = line.split(" ");
     String rawPermissions = lineArray[0];
- System.out.println(rawPermissions);
+    System.out.println(rawPermissions);
 
 
     StringBuilder finalPermissions = new StringBuilder();
@@ -635,11 +650,25 @@ try {
     finalPermissions.append(parsePermissions(rawPermissions.substring(4, 7)));
     finalPermissions.append(parsePermissions(rawPermissions.substring(7, 10)));
     return (finalPermissions.toString());
-}catch (Exception e)
+}}catch (Exception e)
 {e.printStackTrace();
     return null;}
-
+        return null;
        }
+    public Boolean[] unparsePermissions(int i){
+
+        switch (i){
+            case 0:return new Boolean[]{false,false,false};
+            case 1:return new Boolean[]{false,false,true};
+            case 2:return new Boolean[]{false,true,false};
+            case 3:return new Boolean[]{false,true,true};
+            case 4:return new Boolean[]{true,false,false};
+            case 5:return new Boolean[]{true,false,true};
+            case 6:return new Boolean[]{true,true,false};
+            case 7:return new Boolean[]{true,true,true};
+            default:return null;
+        }
+    }
 public int parsePermissions(String permission) {
         int tmp;
         if (permission.charAt(0) == 'r')

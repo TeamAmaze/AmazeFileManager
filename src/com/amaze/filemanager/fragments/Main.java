@@ -1,6 +1,7 @@
 package com.amaze.filemanager.fragments;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -560,6 +561,7 @@ public class Main extends ListFragment {
             mode.setSubtitle(positions.size() + " "
                     + utils.getString(getActivity(), R.string.itemsselected));
             if (positions.size() == 1) {
+                showOption(R.id.permissions,menu);
                 showOption(R.id.about, menu);
                 showOption(R.id.rename, menu);
                 File x = new File(list.get(adapter.getCheckedItemPositions().get(0))
@@ -577,6 +579,11 @@ public class Main extends ListFragment {
                     showOption(R.id.share, menu);
                 }
             } else {
+                hideOption(R.id.ex, menu);
+                hideOption(R.id.sethome, menu);
+                hideOption(R.id.openwith, menu);
+                hideOption(R.id.share, menu);
+                hideOption(R.id.permissions,menu);
                 hideOption(R.id.about, menu);
             }
             return false; // Return false if nothing is done
@@ -718,6 +725,10 @@ public class Main extends ListFragment {
                 case R.id.openwith:
                     utils.openWith(new File(list.get(
                             (plist.get(0))).getDesc()), getActivity());
+                    mode.finish();
+                    return true;
+                case R.id.permissions:
+                    utils.setPermissionsDialog(new File(list.get(plist.get(0)).getDesc()),(Activity)getActivity());
                     mode.finish();
                     return true;
                 default:

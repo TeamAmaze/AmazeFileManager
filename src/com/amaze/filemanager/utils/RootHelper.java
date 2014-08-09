@@ -10,14 +10,16 @@ import com.stericson.RootTools.execution.Shell;
 
 public class RootHelper
 {
-    public static String runAndWait(String cmd)
+    public static String runAndWait(String cmd,boolean root)
     {
 
         CommandCapture cc = new CommandCapture(0, false, cmd);
 
         try
-        {
+        {if(root)
             Shell.runRootCommand(cc);
+            else
+            Shell.runCommand(cc);
         }
         catch (Exception e)
         {
@@ -83,7 +85,7 @@ public class RootHelper
 
         String parentDir = path.substring(0, i);
 
-        List<String> fileList = getFilesList(parentDir);
+        List<String> fileList = getFilesList(parentDir,false);
 
         boolean exists = fileList.contains(path.substring(i + 1));
   //      Logger.debug("Exists: " + (exists ? "true" : "false"));
@@ -91,11 +93,11 @@ public class RootHelper
         return exists;
     }
 
-    public static List<String> getFilesList(String path)
+    public static List<String> getFilesList(String path,boolean root)
     {
     //    Logger.debug("Getting file list: " + path);
 
-        String ls = runAndWait("ls " + path);
+        String ls = runAndWait("ls " + path,root);
         if (ls == null)
         {
       //      Logger.errorST("Error: Could not get list of files in directory: " + path);
