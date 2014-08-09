@@ -16,7 +16,7 @@ dependencies {
 android {
     compileSdkVersion 19
     buildToolsVersion "19.1.0"
-
+    packagingOptions{exclude 'AndroidManifest.xml'}
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'

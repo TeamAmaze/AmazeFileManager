@@ -11,9 +11,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
-
 public class LoadRootList extends AsyncTask<String, Void, Void> {
     ArrayList<File> a = new ArrayList<File>();
     String c;
@@ -45,8 +42,8 @@ public class LoadRootList extends AsyncTask<String, Void, Void> {
                 @Override
                 public void commandOutput(int i, String s) {
                     File f = new File(path + "/" + s);
-					if(f.isHidden()){if(ma.showHidden){a.add(f);}}
-                   else a.add(f);
+                    if(f.isHidden()){if(ma.showHidden){a.add(f);}}
+                    else a.add(f);
                 }
 
 

@@ -41,11 +41,11 @@ public class LoadSearchList extends AsyncTask<ArrayList<String>, Void, ArrayList
         }
 
         try {
-            Collections.sort(ma.sFile,
+            /*Collections.sort(ma.sFile,
                     new FileListSorter(ma.dsort, ma.sortby, ma.asc));
 
             ma.slist = ma.addTo(ma.sFile);
-
+*/
 
             return ma.slist;
 

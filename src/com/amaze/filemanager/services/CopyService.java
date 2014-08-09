@@ -125,7 +125,7 @@ public class CopyService extends Service {
 
         long totalBytes = 0L, copiedBytes = 0L;
 
-        public void execute(int id, ArrayList<String> files, String FILE2) {
+        public void execute(int id, final ArrayList<String> files, String FILE2) {
             if(new File(FILE2).canWrite()){for (int i = 0; i < files.size(); i++) {
 
                 File f1 = new File(files.get(i));
@@ -161,7 +161,7 @@ public class CopyService extends Service {
 
                     @Override
                     public void commandCompleted(int i, int i2) {
-
+                     RootTools.getFilePermissionsSymlinks(files.get(i)).setPermissions(0644);
                     }
                 };
                 try {

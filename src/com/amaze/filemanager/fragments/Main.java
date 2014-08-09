@@ -17,6 +17,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -50,6 +51,8 @@ import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.Shortcuts;
+import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.containers.Permissions;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +68,8 @@ public class Main extends ListFragment {
     public ArrayList<Layoutelements> list, slist;
     public MyAdapter adapter;
     public Futils utils;
-    public ArrayList<File> sFile, mFile = new ArrayList<File>();
+    public ArrayList<File> sFile;
+    public ArrayList<File> mFile = new ArrayList<File>();
     public boolean selection;
     public boolean results = false;
     public ActionMode mActionMode;
@@ -98,6 +102,9 @@ public class Main extends ListFragment {
         setHasOptionsMenu(true);
         utils = new Futils();
         res = getResources();
+
+
+
         history = new HistoryManager(getActivity(), "Table1");
         rootMode = Sp.getBoolean("rootmode", false);
         mountSystem = Sp.getBoolean("mountsystem", false);
@@ -422,8 +429,6 @@ public class Main extends ListFragment {
         } else {
 
             String path = list.get(position).getDesc();
-
-
             final File f = new File(path);
             if (f.isDirectory()) {
                 computeScroll();
@@ -865,12 +870,13 @@ public class Main extends ListFragment {
     public ArrayList<Layoutelements> addTo(ArrayList<File> mFile) {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         for (int i = 0; i < mFile.size(); i++) {
-            if (mFile.get(i).isDirectory()) {
-                a.add(utils.newElement(folder, mFile.get(i).getPath()));
+            File f=mFile.get(i);
+            if (f.isDirectory()) {
+                a.add(utils.newElement(folder, f.getPath()));
 
             } else {
                 try {
-                    a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), mFile.get(i).getPath()), mFile.get(i).getPath()));
+                    a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath()), f.getPath()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

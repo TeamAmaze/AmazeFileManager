@@ -5,13 +5,17 @@ import android.view.View;
 
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.FileListSorter;
+import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.exceptions.RootDeniedException;
 import com.stericson.RootTools.execution.Command;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.TimeoutException;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -49,10 +53,10 @@ public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>>
                 ma.file = f.listFiles();
                 ma.mFile.clear();
                 for (File f : ma.file) {
-					if(f.isHidden()){
-						if(ma.showHidden){ma.mFile.add(f);}
-					}else{
-                    ma.mFile.add(f);}
+                    if(f.isHidden()){
+                        if(ma.showHidden){ma.mFile.add(f);}
+                    }else{
+                        ma.mFile.add(f);}
                 }
             } else {
                 if (ma.rootMode)
@@ -82,7 +86,10 @@ public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>>
 
         }
         ma.createViews(bitmap, back, f);
-      
+
         ma.getListView().setVisibility(View.VISIBLE);
     }
+
+
+
 }

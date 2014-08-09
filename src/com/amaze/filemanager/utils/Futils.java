@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -25,7 +26,11 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.containers.Permissions;
 import com.stericson.RootTools.execution.Command;
+import com.stericson.RootTools.execution.CommandCapture;
+import com.stericson.RootTools.execution.Shell;
+import com.stericson.RootTools.internal.InternalVariables;
 
 import org.xml.sax.SAXException;
 
@@ -569,6 +574,7 @@ public class Futils {
         }
     }
     public void setPermissionsDialog(final File file, final Activity act){
+
         AlertDialog.Builder a=new AlertDialog.Builder(act);
         View v=act.getLayoutInflater().inflate(R.layout.permissiontable,null);
         final CheckBox readown=(CheckBox) v.findViewById(R.id.creadown);
@@ -608,5 +614,149 @@ public class Futils {
         a.setTitle(file.getName());
         a.setView(v);
         a.show();
+    }
+    int permissions=-1;
+    public int getFilePermissionsSymlinks(String file,final Context c) {
+        permissions=-1;
+        RootTools.log("Checking permissions for " + file);
+        if (RootTools.exists(file)) {
+            RootTools.log(file + " was found.");
+            try {
+
+                Command command = new Command(
+                        1, "ls -l " + new File(file).getAbsolutePath()) {
+
+                    @Override
+                    public void commandOutput(int i, String s) {
+                    Toast.makeText(c,s,Toast.LENGTH_SHORT).show();
+                   permissions= getPermissions(s);
+                    }
+
+                    @Override
+                    public void commandTerminated(int i, String s) {
+
+                    }
+
+                    @Override
+                    public void commandCompleted(int i, int i2) {
+
+                    }
+
+                };
+                Shell.startRootShell().add(command);
+                commandWait(Shell.startRootShell(), command);
+
+                return permissions;
+
+            } catch (Exception e) {
+                Toast.makeText(c,"returning null",Toast.LENGTH_SHORT).show();
+                RootTools.log(e.getMessage());
+                return -1;
+            }
+        }
+        return -1;
+    }private void commandWait(Shell shell, Command cmd) throws Exception {
+
+        while (!cmd.isFinished()) {
+
+            RootTools.log("com.amaze.filemanager", shell.getCommandQueuePositionString(cmd));
+
+            synchronized (cmd) {
+                try {
+                    if (!cmd.isFinished()) {
+                        cmd.wait(2000);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (!cmd.isExecuting() && !cmd.isFinished()) {
+                if (!shell.isExecuting && !shell.isReading) {
+                    Log.e("com.amaze.filemanager", "Waiting for a command to be executed in a shell that is not executing and not reading! \n\n Command: " + cmd.getCommand());
+                    Exception e = new Exception();
+                    e.setStackTrace(Thread.currentThread().getStackTrace());
+                    e.printStackTrace();
+                } else if (shell.isExecuting && !shell.isReading) {
+                    Log.e("com.amaze.filemanager", "Waiting for a command to be executed in a shell that is executing but not reading! \n\n Command: " + cmd.getCommand());
+                    Exception e = new Exception();
+                    e.setStackTrace(Thread.currentThread().getStackTrace());
+                    e.printStackTrace();
+                } else {
+                    Log.e("com.amaze.filemanager", "Waiting for a command to be executed in a shell that is not reading! \n\n Command: " + cmd.getCommand());
+                    Exception e = new Exception();
+                    e.setStackTrace(Thread.currentThread().getStackTrace());
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+    public int getPermissions(String line) {
+
+        String[] lineArray = line.split(" ");
+        String rawPermissions = lineArray[0];
+
+        if (rawPermissions.length() == 10
+                && (rawPermissions.charAt(0) == '-'
+                || rawPermissions.charAt(0) == 'd' || rawPermissions
+                .charAt(0) == 'l')
+                && (rawPermissions.charAt(1) == '-' || rawPermissions.charAt(1) == 'r')
+                && (rawPermissions.charAt(2) == '-' || rawPermissions.charAt(2) == 'w')) {
+            RootTools.log(rawPermissions);
+
+
+            StringBuilder finalPermissions = new StringBuilder();
+            finalPermissions.append(parseSpecialPermissions(rawPermissions));
+            finalPermissions.append(parsePermissions(rawPermissions.substring(1, 4)));
+            finalPermissions.append(parsePermissions(rawPermissions.substring(4, 7)));
+            finalPermissions.append(parsePermissions(rawPermissions.substring(7, 10)));
+
+
+            return Integer.parseInt(finalPermissions.toString());
+        }return -1;}
+public int parsePermissions(String permission) {
+        int tmp;
+        if (permission.charAt(0) == 'r')
+            tmp = 4;
+        else
+            tmp = 0;
+
+        RootTools.log("permission " + tmp);
+        RootTools.log("character " + permission.charAt(0));
+
+        if (permission.charAt(1) == 'w')
+            tmp += 2;
+        else
+            tmp += 0;
+
+        RootTools.log("permission " + tmp);
+        RootTools.log("character " + permission.charAt(1));
+
+        if (permission.charAt(2) == 'x')
+            tmp += 1;
+        else
+            tmp += 0;
+
+        RootTools.log("permission " + tmp);
+        RootTools.log("character " + permission.charAt(2));
+
+        return tmp;
+    }
+
+    public int parseSpecialPermissions(String permission) {
+        int tmp = 0;
+        if (permission.charAt(2) == 's')
+            tmp += 4;
+
+        if (permission.charAt(5) == 's')
+            tmp += 2;
+
+        if (permission.charAt(8) == 't')
+            tmp += 1;
+
+        RootTools.log("special permissions " + tmp);
+
+        return tmp;
     }
 }
