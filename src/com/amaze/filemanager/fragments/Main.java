@@ -129,7 +129,7 @@ public class Main extends ListFragment {
         archive = res.getDrawable(R.drawable.archive_blue);
         text = res.getDrawable(R.drawable.ic_doc_text_am);
         getSortModes();
-        home = Sp.getString("home", Environment.getExternalStorageDirectory().getPath());
+        home = Sp.getString("home", System.getenv("EXTERNAL_STORAGE"));
         sdetails = Sp.getString("viewmode", "0");
         this.setRetainInstance(false);
 		
@@ -429,6 +429,7 @@ public class Main extends ListFragment {
         } else {
 
             String path = list.get(position).getDesc();
+
             final File f = new File(path);
             if (f.isDirectory()) {
                 computeScroll();
