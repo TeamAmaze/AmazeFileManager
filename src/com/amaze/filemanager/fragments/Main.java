@@ -51,6 +51,7 @@ import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
+import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.containers.Permissions;

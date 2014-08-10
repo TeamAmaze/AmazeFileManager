@@ -66,38 +66,14 @@ public class RootHelper
         return true;
     }
 
-    public static boolean fileOrFolderExists(String path)
-    {
-        //Logger.debug("File or folder exists: " + path);
 
-        // Remove trailing slash if it exists (for directories)
-        if (path.charAt(path.length() - 1) == '/')
-        {
-            path = path.substring(0, path.length() - 1);
-        }
 
-        int i = path.lastIndexOf('/');
-        if (i == -1)
-        {
-//            Logger.debug("Could not find path folder (invalid filename?)");
-            return false;
-        }
-
-        String parentDir = path.substring(0, i);
-
-        List<String> fileList = getFilesList(parentDir,false);
-
-        boolean exists = fileList.contains(path.substring(i + 1));
-  //      Logger.debug("Exists: " + (exists ? "true" : "false"));
-
-        return exists;
-    }
-
-    public static List<String> getFilesList(String path,boolean root)
+    public static ArrayList<String> getFilesList(String path,boolean root)
     {
     //    Logger.debug("Getting file list: " + path);
-
-        String ls = runAndWait("ls " + path,root);
+Futils futils=new Futils();
+        ArrayList<String> a=new ArrayList<String>();
+        String ls = runAndWait("ls -l " + path,root);
         if (ls == null)
         {
       //      Logger.errorST("Error: Could not get list of files in directory: " + path);
@@ -113,10 +89,12 @@ public class RootHelper
         {
             List<String> files = Arrays.asList(ls.split("\n"));
             for (String file : files)
-            {
-          //      Logger.debug("Directory List: " + file);
-            }
+            {String fpath=path+"/"+futils.parseName(file);
+                System.out.println(fpath);
+                a.add(fpath);
 
-            return files;
+            }
+return a;
+
         }
     }}

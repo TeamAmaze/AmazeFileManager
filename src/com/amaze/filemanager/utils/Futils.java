@@ -632,10 +632,30 @@ public class Futils {
     }String per=null;
     public String getFilePermissionsSymlinks(String file,final Context c,boolean root)
     {per=null;
+        File f=new File(file);
+        if(f.isDirectory()){
+            String ls = RootHelper.runAndWait("ls -l " + f.getParent(),root);
+           String[] array=ls.split("\n");
+            for(String x:array){String[] a=x.split(" ");
+            if(a[a.length-1].equals(f.getName())){
+
+               return  getPermissions(x);}
+            }
+            return  null;}else{
+
         String ls = RootHelper.runAndWait("ls -l " + file,root);
         if(ls!=null){
             per=getPermissions(ls);}
-        return per;
+        return per;}
+    }
+    public String parseName(String line){
+        String[] array=line.split(" ");
+        if(array[array.length-2].contains(":")){return array[array.length-1];}
+        else if(array[array.length-3].contains(":")){return array[array.length-2]+" "+array[array.length-1];}
+        else if(array[array.length-4].contains(":")){
+            return array[array.length-1];
+        }
+        return "";
     }
     public String getPermissions(String line) {
 try {if(line.length()>=40) {
