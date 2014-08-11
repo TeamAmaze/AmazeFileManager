@@ -74,14 +74,13 @@ public class RootHelper
 
     public static ArrayList<String[]> getFilesList(String path,boolean root,boolean showHidden)
     {
-path=getCommandLineString(path);
-        System.out.println(path);
+String cpath=getCommandLineString(path);
         Futils futils=new Futils();
         ArrayList<String[]> a=new ArrayList<String[]>();
         String ls="";
         if(futils.canListFiles(new File(path))){
-        ls = runAndWait("ls -l " + path,false);}
-        else if(root){ls = runAndWait("ls -l " + path,true);}
+        ls = runAndWait("ls -l " + cpath,false);}
+        else if(root){ls = runAndWait("ls -l " + cpath,true);}
         else{return new ArrayList<String[]>();}
         if (ls == null)
         {
