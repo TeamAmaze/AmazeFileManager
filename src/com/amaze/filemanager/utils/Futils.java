@@ -69,7 +69,7 @@ public class Futils {
 
     public String readableFileSize(long size) {
         if (size <= 0)
-            return "0";
+            return "0 B";
         final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
         return new DecimalFormat("#,##0.##").format(size
@@ -105,10 +105,19 @@ public class Futils {
         intent.setDataAndType(Uri.fromFile(f), "*/*");
         c.startActivity(intent);
 
+    }public String getSize(File f) {
+        long i =f.length();
+
+        return readableFileSize(i);
+
     }
 
-    public String getSize(File f) {
-        long i = f.length();
+    public String getSize(String[] array) {
+        String sym=array[1];
+        long i;
+        if(sym!=null && sym.length()!=0){i=new File(array[1]).length();}
+        else
+         i = new File(array[0]).length();
 
         return readableFileSize(i);
 
@@ -153,7 +162,6 @@ public class Futils {
             return "";
         }
     }
-
     public boolean canGoBack(File f) {
         try {
             f.getParentFile().listFiles();
@@ -397,8 +405,8 @@ public class Futils {
         }
     }
 
-    public Layoutelements newElement(Drawable i, String d,String permissions,String symlink) {
-        Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink);
+    public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size) {
+        Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size);
         return item;
     }
 

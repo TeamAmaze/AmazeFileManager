@@ -173,15 +173,9 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         }
 
         if (main.sdetails.equals("0")) {
-            holder.perm.setText(rowItem.getSymlink());
+            holder.perm.setText(rowItem.getPermissions());
             holder.date.setText(utils.getdate(new File(rowItem.getDesc())));
-            if (new File(rowItem.getDesc()).isDirectory()) {
-                holder.txtDesc.setText(utils.count(new File(rowItem.getDesc()
-                        .toString())));
-            } else {
-                holder.txtDesc.setText(utils.getSize(new File(rowItem.getDesc()
-                        .toString())));
-            }
+            holder.txtDesc.setText(rowItem.getSize());
             holder.date.setVisibility(View.VISIBLE);
             holder.txtDesc.setVisibility(View.VISIBLE);
         }

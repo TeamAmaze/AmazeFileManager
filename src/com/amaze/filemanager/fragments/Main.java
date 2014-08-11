@@ -430,8 +430,10 @@ public class Main extends ListFragment {
 
         } else {
 
-            String path = list.get(position).getDesc();
-
+            String path;Layoutelements l=list.get(position);
+            if(!l.hasSymlink()){
+            path= l.getDesc();}
+            else{path=l.getSymlink();}
             final File f = new File(path);
             if (f.isDirectory()) {
                 computeScroll();
@@ -886,11 +888,11 @@ public class Main extends ListFragment {
         for (int i = 0; i < mFile.size(); i++) {
             File f=new File(mFile.get(i)[0]);
             if (f.isDirectory()) {
-                a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[1],mFile.get(i)[2]));
+                a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f)));
 
             } else {
                 try {
-                    a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath()), f.getPath(),mFile.get(i)[1],mFile.get(i)[2]));
+                    a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath()), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.getSize(mFile.get(i))));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -174,7 +174,7 @@ public class Ifragment extends android.support.v4.app.Fragment {
             for (int i = 0; i < images.size(); i++) {
 
                 Layoutelements e = new Layoutelements(getActivity()
-                        .getResources().getDrawable(R.drawable.ic_doc_image), images.get(i).getName(), images.get(i).getPath(),"","");
+                        .getResources().getDrawable(R.drawable.ic_doc_image), images.get(i).getName(), images.get(i).getPath(),"","","");
                 list.add(e);
             }
             // TODO: Implement this method

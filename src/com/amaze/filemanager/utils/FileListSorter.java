@@ -20,8 +20,10 @@ public class FileListSorter implements Comparator<Layoutelements> {
 
     @Override
     public int compare(Layoutelements file1, Layoutelements file2) {
-File f1=new File(file1.getDesc());
-        File f2=new File(file2.getDesc());
+File f1;if(!file1.hasSymlink()){
+        f1=new File(file1.getDesc());}else {  f1=new File(file1.getSymlink());}
+        File f2;if(!file2.hasSymlink()){
+            f2=new File(file2.getDesc());}else {  f2=new File(file1.getSymlink());}
         if (dirsOnTop == 0) {
             if (f1.isDirectory() && f2.isFile()) {
                 return -1;

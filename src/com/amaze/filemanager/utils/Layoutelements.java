@@ -13,6 +13,8 @@ public class Layoutelements implements Parcelable {
         imageId = new BitmapDrawable(bitmap);
         title = im.readString();
         desc = im.readString();
+        permissions=im.readString();
+        symlink=im.readString();
     }
 
     public static final Parcelable.Creator<Layoutelements> CREATOR =
@@ -34,6 +36,8 @@ public class Layoutelements implements Parcelable {
     public void writeToParcel(Parcel p1, int p2) {
         p1.writeString(title);
         p1.writeString(desc);
+        p1.writeString(permissions);
+        p1.writeString(symlink);
         p1.writeParcelable(((BitmapDrawable) imageId).getBitmap(), p2);
         // TODO: Implement this method
     }
@@ -43,13 +47,15 @@ public class Layoutelements implements Parcelable {
     private String desc;
     private String permissions;
     private String symlink;
+    private String size;
 
-    public Layoutelements(Drawable imageId, String title, String desc,String permissions,String symlink) {
+    public Layoutelements(Drawable imageId, String title, String desc,String permissions,String symlink,String size) {
         this.imageId = imageId;
         this.title = title;
         this.desc = desc;
-        this.permissions=permissions;
-        this.symlink=symlink;
+        this.permissions=permissions.trim();
+        this.symlink=symlink.trim();
+        this.size=size;
     }
 
     public Drawable getImageId() {
@@ -74,6 +80,10 @@ public class Layoutelements implements Parcelable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getSize() {
+        return  size;
     }
 
     public String getPermissions() {
