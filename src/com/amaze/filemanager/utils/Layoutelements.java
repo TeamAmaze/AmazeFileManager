@@ -41,15 +41,15 @@ public class Layoutelements implements Parcelable {
     private Drawable imageId;
     private String title;
     private String desc;
-    private boolean selected;
+    private String permissions;
+    private String symlink;
 
-
-    public Layoutelements(Drawable imageId, String title, String desc) {
+    public Layoutelements(Drawable imageId, String title, String desc,String permissions,String symlink) {
         this.imageId = imageId;
         this.title = title;
         this.desc = desc;
-
-        selected = false;
+        this.permissions=permissions;
+        this.symlink=symlink;
     }
 
     public Drawable getImageId() {
@@ -76,14 +76,13 @@ public class Layoutelements implements Parcelable {
         this.title = title;
     }
 
-    public boolean isSelected() {
-        return selected;
+    public String getPermissions() {
+        return permissions;
     }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
+    public String getSymlink() {
+        return symlink;
     }
-
+    public boolean hasSymlink(){if(getSymlink()!=null && getSymlink().length()!=0){return true;}else return false;}
     @Override
     public String toString() {
         return title + "\n" + desc;

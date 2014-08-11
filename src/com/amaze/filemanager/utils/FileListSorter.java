@@ -3,7 +3,7 @@ package com.amaze.filemanager.utils;
 import java.io.File;
 import java.util.Comparator;
 
-public class FileListSorter implements Comparator<File> {
+public class FileListSorter implements Comparator<Layoutelements> {
 
 
     private int dirsOnTop = 0;
@@ -19,9 +19,9 @@ public class FileListSorter implements Comparator<File> {
     }
 
     @Override
-    public int compare(File file1, File file2) {
-File f1=file1;
-        File f2=(file2);
+    public int compare(Layoutelements file1, Layoutelements file2) {
+File f1=new File(file1.getDesc());
+        File f2=new File(file2.getDesc());
         if (dirsOnTop == 0) {
             if (f1.isDirectory() && f2.isFile()) {
                 return -1;

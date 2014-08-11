@@ -1,5 +1,6 @@
 package com.amaze.filemanager.utils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -68,30 +69,36 @@ public class RootHelper
 
 
 
-    public static ArrayList<String> getFilesList(String path,boolean root)
+    public static ArrayList<String[]> getFilesList(String path,boolean root,boolean showHidden)
     {
     //    Logger.debug("Getting file list: " + path);
 Futils futils=new Futils();
-        ArrayList<String> a=new ArrayList<String>();
-        String ls = runAndWait("ls -l " + path,root);
+        ArrayList<String[]> a=new ArrayList<String[]>();
+        String ls="";
+        if(futils.canListFiles(new File(path))){
+        ls = runAndWait("ls -l " + path,false);}
+        else if(root){ls = runAndWait("ls -l " + path,true);}
+        else{return new ArrayList<String[]>();}
         if (ls == null)
         {
       //      Logger.errorST("Error: Could not get list of files in directory: " + path);
-            return new ArrayList<String>();
+            return new ArrayList<String[]>();
         }
 
         if (ls.equals("\n") || ls.equals(""))
         {
         //    Logger.debug("No files in directory");
-            return new ArrayList<String>();
+            return new ArrayList<String[]>();
         }
         else
         {
             List<String> files = Arrays.asList(ls.split("\n"));
             for (String file : files)
-            {String fpath=path+"/"+futils.parseName(file);
-                System.out.println(fpath);
-                a.add(fpath);
+            {String[] array=futils.parseName(file);
+                array[0]=path+"/"+array[0];
+                System.out.println("path "+array[0]+" symlink "+array[1]+" permissions "+array[2]);
+                if(new File(array[0]).isHidden()){if(showHidden){}}
+                a.add(array);
 
             }
 return a;

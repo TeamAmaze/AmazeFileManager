@@ -397,8 +397,8 @@ public class Futils {
         }
     }
 
-    public Layoutelements newElement(Drawable i, String d) {
-        Layoutelements item = new Layoutelements(i, new File(d).getName(), d);
+    public Layoutelements newElement(Drawable i, String d,String permissions,String symlink) {
+        Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink);
         return item;
     }
 
@@ -648,14 +648,37 @@ public class Futils {
             per=getPermissions(ls);}
         return per;}
     }
-    public String parseName(String line){
+    public String[] parseName(String line){
+        boolean linked=false;String name="",link="";
         String[] array=line.split(" ");
-        if(array[array.length-2].contains(":")){return array[array.length-1];}
-        else if(array[array.length-3].contains(":")){return array[array.length-2]+" "+array[array.length-1];}
-        else if(array[array.length-4].contains(":")){
-            return array[array.length-1];
+        for(int i=0;i<array.length;i++){
+            if(array[i].contains("->")){linked=true;}
         }
-        return "";
+        if(!linked){int p=getColonPosition(array);
+        for(int i=p+1;i<array.length;i++){name=name+" "+array[i];}
+            name=name.trim();
+            return new String[]{name,"",array[0]};
+        }
+        else if(linked){int p=getColonPosition(array);
+            int q=getLinkPosition(array);
+            for(int i=p+1;i<q;i++){name=name+" "+array[i];}
+            name=name.trim();
+            for(int i=q+1;i<array.length;i++){link=link+" "+array[i];}
+            return  new String[]{name,link,array[0]};
+        }
+        return new String[]{name,"",array[0]};
+    }
+    public int getLinkPosition(String[] array){
+        for(int i=0;i<array.length;i++){
+            if(array[i].contains("->"))return i;
+        }
+        return  0;
+    }
+    public int getColonPosition(String[] array){
+        for(int i=0;i<array.length;i++){
+            if(array[i].contains(":"))return i;
+        }
+        return  0;
     }
     public String getPermissions(String line) {
 try {if(line.length()>=40) {

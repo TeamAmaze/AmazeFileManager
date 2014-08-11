@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="left"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:visibility="gone" />
 
             <TextView
@@ -51,8 +51,17 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="3dip"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:visibility="gone" />
+            <TextView
+                android:id="@+id/permis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/date"
+                android:layout_marginLeft="2dip"
+                android:layout_marginRight="9dip"
+                android:textSize="13sp"
+                />
         </RelativeLayout>
     </RelativeLayout>
 

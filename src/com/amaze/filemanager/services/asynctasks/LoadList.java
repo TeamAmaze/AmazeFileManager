@@ -7,6 +7,7 @@ import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Layoutelements;
+import com.amaze.filemanager.utils.RootHelper;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.exceptions.RootDeniedException;
 import com.stericson.RootTools.execution.Command;
@@ -47,28 +48,13 @@ public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>>
         // params comes from the execute() call: params[0] is the url.
 
         f = params[0];
-        ma.mFile.clear();
         try {
-            if (ma.utils.canListFiles(f)) {
-                ma.file = f.listFiles();
-                ma.mFile.clear();
-                for (File f : ma.file) {
-                    if(f.isHidden()){
-                        if(ma.showHidden){ma.mFile.add(f);}
-                    }else{
-                        ma.mFile.add(f);}
-                }
-            } else {
-                if (ma.rootMode)
-                    new LoadRootList(ma).execute(f.getPath());
-                else publishProgress("Access is Denied");
-            }
 
-            Collections.sort(ma.mFile,
+
+            ma.list = ma.addTo(RootHelper.getFilesList(f.getPath(),ma.rootMode,ma.showHidden));
+
+            Collections.sort(ma.list,
                     new FileListSorter(ma.dsort, ma.sortby, ma.asc));
-
-            ma.list = ma.addTo(ma.mFile);
-
 
             return ma.list;
 

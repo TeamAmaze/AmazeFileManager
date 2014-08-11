@@ -881,16 +881,16 @@ public class Main extends ListFragment {
         super.onStop();
 	
 		}
-    public ArrayList<Layoutelements> addTo(ArrayList<File> mFile) {
+    public ArrayList<Layoutelements> addTo(ArrayList<String[]> mFile) {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         for (int i = 0; i < mFile.size(); i++) {
-            File f=mFile.get(i);
+            File f=new File(mFile.get(i)[0]);
             if (f.isDirectory()) {
-                a.add(utils.newElement(folder, f.getPath()));
+                a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[1],mFile.get(i)[2]));
 
             } else {
                 try {
-                    a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath()), f.getPath()));
+                    a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath()), f.getPath(),mFile.get(i)[1],mFile.get(i)[2]));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

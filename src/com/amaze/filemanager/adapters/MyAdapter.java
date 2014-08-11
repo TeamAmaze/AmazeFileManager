@@ -86,6 +86,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         TextView txtTitle;
         TextView txtDesc;
         TextView date;
+        TextView perm;
         RelativeLayout rl;
     }
 
@@ -109,9 +110,10 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
             vholder.imageView = (ImageView) view.findViewById(R.id.icon);
-			
+
             vholder.rl = (RelativeLayout) view.findViewById(R.id.second);
             if (main.sdetails.equals("0")) {
+                vholder.perm = (TextView) view.findViewById(R.id.permis);
                 vholder.date = (TextView) view.findViewById(R.id.date);
                 vholder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
             }
@@ -171,6 +173,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         }
 
         if (main.sdetails.equals("0")) {
+            holder.perm.setText(rowItem.getSymlink());
             holder.date.setText(utils.getdate(new File(rowItem.getDesc())));
             if (new File(rowItem.getDesc()).isDirectory()) {
                 holder.txtDesc.setText(utils.count(new File(rowItem.getDesc()
