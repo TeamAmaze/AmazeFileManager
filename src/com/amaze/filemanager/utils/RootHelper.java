@@ -67,12 +67,16 @@ public class RootHelper
         return true;
     }
 
+    public static String getCommandLineString(String input) {
+        return input.replaceAll(UNIX_ESCAPE_EXPRESSION, "\\\\$1");
+    }	private static final String UNIX_ESCAPE_EXPRESSION = "(\\(|\\)|\\[|\\]|\\s|\'|\"|`|\\{|\\}|&|\\\\|\\?)";
 
 
     public static ArrayList<String[]> getFilesList(String path,boolean root,boolean showHidden)
     {
-    //    Logger.debug("Getting file list: " + path);
-Futils futils=new Futils();
+path=getCommandLineString(path);
+        System.out.println(path);
+        Futils futils=new Futils();
         ArrayList<String[]> a=new ArrayList<String[]>();
         String ls="";
         if(futils.canListFiles(new File(path))){
@@ -96,9 +100,9 @@ Futils futils=new Futils();
             for (String file : files)
             {String[] array=futils.parseName(file);
                 array[0]=path+"/"+array[0];
-                System.out.println("path "+array[0]+" symlink "+array[1]+" permissions "+array[2]);
-                if(new File(array[0]).isHidden()){if(showHidden){}}
-                a.add(array);
+                if(new File(array[0]).isHidden()){if(showHidden){a.add(array);}}
+                else{
+                a.add(array);}
 
             }
 return a;
