@@ -63,7 +63,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             setTheme(R.style.DarkTheme);
         }
         setContentView(R.layout.main);
-
+getActionBar().setIcon(R.drawable.ic_launcher1);
         try {
             s.makeS();
         } catch (Exception e) {

@@ -55,7 +55,7 @@ public class DrawerAdapter extends ArrayAdapter<String> {
                 imageView.setImageDrawable(icons.getGridDrawable());
                 break;
             case 2:
-                imageView.setImageDrawable(icons.getBookDrawable());
+                imageView.setImageDrawable(icons.getBookDrawable1());
                 break;
             case 3:
                 imageView.setImageDrawable(icons.getSettingDrawable());

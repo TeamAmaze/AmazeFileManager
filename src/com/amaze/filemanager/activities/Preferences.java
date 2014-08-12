@@ -20,9 +20,9 @@ public class Preferences extends Activity {
             setTheme(R.style.LightTheme);
         }
         super.onCreate(savedInstanceState);
-
-        //	getActionBar().setIcon(R.drawable.folder_orange);
         setContentView(R.layout.prefsfrag);
+        getActionBar().setIcon(R.drawable.ic_launcher1);
+
         getActionBar().setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
     }
 

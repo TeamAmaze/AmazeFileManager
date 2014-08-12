@@ -17,11 +17,15 @@
 <resources>
 
     <style name="DarkTheme" parent="android:Theme.Holo">
-        <!--<item name="android:actionBarStyle">@style/DarkActionBar</item>-->
+
     </style>
 
-    <style name="LightTheme" parent="android:Theme.Holo.Light">
-        <!--<item name="android:actionBarStyle">@style/DarkActionBar</item>-->
+    <style name="LightTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+    </style>
+    <style name="DarkActionBar" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse" >
+        <item name="android:background">#3f51b5</item>
+        <item name="android:backgroundSplit">#3f51b5</item>
     </style>
 
     <style name="secondary_text_appearance">
