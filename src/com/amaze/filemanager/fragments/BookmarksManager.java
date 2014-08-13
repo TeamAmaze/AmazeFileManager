@@ -42,7 +42,7 @@ public class BookmarksManager extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(false);
         setRetainInstance(false);
         ((LinearLayout) getActivity().findViewById(R.id.buttons))
                 .setVisibility(View.GONE);
@@ -90,11 +90,9 @@ public class BookmarksManager extends ListFragment {
         hideOption(R.id.item2, menu);
         hideOption(R.id.item3, menu);
         hideOption(R.id.item4, menu);
-        hideOption(R.id.item6, menu);
         hideOption(R.id.item9, menu);
         hideOption(R.id.item11, menu);
         hideOption(R.id.item10, menu);
-        hideOption(R.id.item12, menu);
         menu.findItem(R.id.item7).setIcon(icons.getRefreshDrawable());
         menu.findItem(R.id.item5).setIcon(icons.getNewDrawable());
     }

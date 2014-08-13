@@ -26,16 +26,6 @@
         android:icon="@drawable/ic_action_new_light"
         android:showAsAction="ifRoom" />
     <item
-        android:id="@+id/item12"
-        android:title="@string/history"
-        android:icon="@drawable/ic_action_not_important_light"
-        android:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/item6"
-        android:title="@string/books"
-        android:icon="@drawable/ic_action_not_important_light"
-        android:showAsAction="ifRoom" />
-    <item
         android:id="@+id/item7"
         android:title="@string/refresh"
         android:icon="@drawable/ic_action_refresh_light"

@@ -26,11 +26,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -53,6 +55,7 @@ import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.Shortcuts;
+import com.fourmob.poppyview.PoppyViewHelper;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.containers.Permissions;
 
@@ -92,6 +95,7 @@ public class Main extends ListFragment {
 	boolean rememberLastPath;
     public boolean rootMode, mountSystem,showHidden;
     View footerView;
+    private PoppyViewHelper mPoppyViewHelper;
     @Override
     public void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
@@ -101,12 +105,12 @@ public class Main extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(false);
         utils = new Futils();
         res = getResources();
-
-
-
+        mPoppyViewHelper = new PoppyViewHelper(getActivity());
+        View poppyView = mPoppyViewHelper.createPoppyViewOnListView(android.R.id.list,R.layout.pooppybar);
+        initPoppyViewListeners(poppyView);
         history = new HistoryManager(getActivity(), "Table1");
         rootMode = Sp.getBoolean("rootmode", false);
         mountSystem = Sp.getBoolean("mountsystem", false);
@@ -217,10 +221,8 @@ public class Main extends ListFragment {
         menu.findItem(R.id.item3).setIcon(icons.getCancelDrawable());
         menu.findItem(R.id.item4).setIcon(icons.getSearchDrawable());
         menu.findItem(R.id.item5).setIcon(icons.getNewDrawable());
-        menu.findItem(R.id.item6).setIcon(icons.getBookDrawable());
         menu.findItem(R.id.item7).setIcon(icons.getRefreshDrawable());
         menu.findItem(R.id.item8).setIcon(icons.getPasteDrawable());
-        menu.findItem(R.id.item12).setIcon(icons.getBookDrawable());
     }
 
     public void onPrepareOptionsMenu(Menu menu) {
@@ -251,9 +253,7 @@ public class Main extends ListFragment {
                     getActivity().invalidateOptionsMenu();
                 }
                 break;
-            case R.id.item1:
-                goBack();
-                break;
+
             case R.id.item3:
                 getActivity().finish();
                 break;
@@ -263,7 +263,7 @@ public class Main extends ListFragment {
                 ma.home = ma.current;
                 break;
             case R.id.item2:
-                home();
+
                 break;
             case R.id.item10:
                 utils.showSortDialog(ma);
@@ -274,18 +274,9 @@ public class Main extends ListFragment {
             case R.id.item5:
                 add();
                 break;
-            case R.id.item12:
-                utils.showHistoryDialog(ma);
-                break;
-            case R.id.item7:
 
-                ma.loadlist(new File(ma.current), false);
-                break;
             case R.id.item4:
                 search();
-                break;
-            case R.id.item6:
-                utils.showBookmarkDialog(ma, sh);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -448,7 +439,7 @@ public class Main extends ListFragment {
 
 
     public void loadlist(File f, boolean back) {
-
+        if(mActionMode!=null){mActionMode.finish();}
         new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
 
     }
@@ -797,7 +788,7 @@ public class Main extends ListFragment {
                 } else {
                     Button button = new Button(getActivity());
                     button.setText(rnames.get(index));
-
+                    button.setTextColor(getResources().getColor(android.R.color.white));
                     button.setTextSize(13);
 
                     //	button.setBackgroundDrawable(getResources().getDrawable(R.drawable.listitem));
@@ -907,4 +898,37 @@ public class Main extends ListFragment {
        super.onDestroy();
 		
 		history.end();     }
+    public void initPoppyViewListeners(View poppy){
+        ((ImageView)poppy.findViewById(R.id.back)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goBack();if(mActionMode!=null){mActionMode.finish();}
+            }
+        });
+        ((ImageView)poppy.findViewById(R.id.home)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                home();if(mActionMode!=null){mActionMode.finish();}
+            }
+        });
+        ((ImageView)poppy.findViewById(R.id.refresh)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ma.loadlist(new File(ma.current), false);if(mActionMode!=null){mActionMode.finish();}
+            }
+        });
+        ((ImageView)poppy.findViewById(R.id.history)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                utils.showHistoryDialog(ma);
+            }
+        });
+        ((ImageView)poppy.findViewById(R.id.books)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                utils.showBookmarkDialog(ma,sh);
+            }
+        });
+    }
 }

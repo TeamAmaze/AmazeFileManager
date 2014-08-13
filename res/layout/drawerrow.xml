@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/second"
     android:layout_width="fill_parent"
-    android:layout_height="40dip"
-    android:background="@drawable/listitem"
+    android:layout_height="50dip"
+    android:background="@drawable/listitem1"
     android:clickable="true">
 
     <ImageView
@@ -15,6 +15,7 @@
 
     <TextView
         android:id="@+id/firstline"
+        android:layout_marginLeft="10dp"
         android:layout_width="wrap_content"
         android:layout_toRightOf="@id/icon"
         android:layout_height="fill_parent"

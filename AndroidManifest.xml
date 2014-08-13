@@ -12,10 +12,10 @@
         android:icon="@drawable/ic_launcher"
         android:label="Amaze File Manager" >
         <activity
-	   		android:uiOptions="splitActionBarWhenNarrow"
             android:label="Amaze File Manager"
-            android:name=".activities.MainActivity" 
-			android:theme="@style/LightTheme">
+            android:name=".activities.MainActivity"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:theme="@style/LightTheme">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
 

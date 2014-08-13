@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -16,7 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -35,7 +38,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends android.support.v4.app.FragmentActivity {
     int select;
-    View footer;
+    TextView title;
     Futils utils;
     private boolean backPressedToExitOnce = false;
     private Toast toast = null;
@@ -46,10 +49,10 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
     String[] val;
     ImageButton progress;
-
+    DrawerAdapter adapter;
     IconUtils util;
     Shortcuts s = new Shortcuts();
-
+    public int theme;
     /**
      * Called when the activity is first created.
      */
@@ -57,13 +60,16 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
+        theme=Integer.parseInt(Sp.getString("theme","0"));
         util = new IconUtils(Sp, this);
         int th = Integer.parseInt(Sp.getString("theme", "0"));
         if (th == 1) {
             setTheme(R.style.DarkTheme);
         }
         setContentView(R.layout.main);
-getActionBar().setIcon(R.drawable.ic_launcher1);
+getActionBar().hide();
+        title=(TextView)findViewById(R.id.title);
+
         try {
             s.makeS();
         } catch (Exception e) {
@@ -71,18 +77,22 @@ getActionBar().setIcon(R.drawable.ic_launcher1);
         utils = new Futils();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        View v1=getLayoutInflater().inflate(R.layout.drawerheader,null);
+        TextView tv=(TextView)v1.findViewById(R.id.firstline);
+        tv.setTextColor(getResources().getColor(android.R.color.white));
+        mDrawerList.addHeaderView(v1);
         val = new String[]{utils.getString(this, R.string.storage), utils.getString(this, R.string.apps), utils.getString(this, R.string.bookmanag), utils.getString(this, R.string.setting)};
         ArrayList<String> list = new ArrayList<String>();
         for (int i = 0; i < val.length; i++) {
             list.add(val[i]);
         }
-        DrawerAdapter adapter = new DrawerAdapter(this, val, MainActivity.this, Sp);
+    adapter= new DrawerAdapter(this, val, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
         if (th == 1) {
             mDrawerList.setBackgroundResource(android.R.drawable.screen_background_dark);
         }
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
+        mDrawerList.setDivider(null);
 
         ActionBar bar = getActionBar();
         View v = getLayoutInflater().inflate(R.layout.button, null);
@@ -113,6 +123,7 @@ getActionBar().setIcon(R.drawable.ic_launcher1);
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
+
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
@@ -122,17 +133,25 @@ getActionBar().setIcon(R.drawable.ic_launcher1);
         ) {
             public void onDrawerClosed(View view) {
                 if (select <= 5) {
+                    title.setText(val[select]);
                     getActionBar().setSubtitle(val[select]);
                 }// creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
+                //title.setText("Amaze File Manager");
                 getActionBar().setSubtitle(utils.getString(MainActivity.this, R.string.select));
                 // creates call to onPrepareOptionsMenu()
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-
+        ((ImageView)findViewById(R.id.drawer_buttton)).setOnClickListener(new ImageView.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mDrawerLayout.isDrawerOpen(mDrawerList)){mDrawerLayout.closeDrawer(mDrawerList);}
+                else mDrawerLayout.openDrawer(mDrawerList);
+            }
+        });
         if (savedInstanceState == null) {
             selectItem(0);
         }
@@ -188,8 +207,8 @@ getActionBar().setIcon(R.drawable.ic_launcher1);
                 select = 0;
 // Commit the transaction
                 transaction.commit();
-                getActionBar().setSubtitle(val[0]);
-                mDrawerList.setItemChecked(0, true);
+                title.setText(val[0]);
+
                 break;
 
             case 1:
@@ -199,7 +218,7 @@ getActionBar().setIcon(R.drawable.ic_launcher1);
                 select = 1;
 // Commit the transaction
                 transaction2.commit();
-                getActionBar().setSubtitle(val[1]);
+                title.setText(val[1]);
                 break;
             case 2:
                 android.support.v4.app.FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
@@ -208,7 +227,7 @@ getActionBar().setIcon(R.drawable.ic_launcher1);
                 select = 2;
 // Commit the transaction
                 transaction3.commit();
-                getActionBar().setSubtitle(val[2]);
+                title.setText(val[2]);
                 break;
             case 3:
                 Intent in = new Intent(MainActivity.this, Preferences.class);
@@ -217,8 +236,7 @@ getActionBar().setIcon(R.drawable.ic_launcher1);
                 break;
 
         }
-        mDrawerList.setItemChecked(i, true);
-
+        adapter.toggleChecked(i);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 

@@ -210,18 +210,12 @@ public class TabFragment extends android.support.v4.app.Fragment {
             case R.id.item5:
                 add(HOME);
                 break;
-            case R.id.item12:
-                utils.showHistoryDialog(getCurrentTab());
-                break;
             case R.id.item7:
                 Main ma = getCurrentTab();
                 ma.loadlist(new File(ma.current), false);
                 break;
             case R.id.item4:
                 search();
-                break;
-            case R.id.item6:
-                utils.showBookmarkDialog(getCurrentTab(), sh);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -552,10 +546,8 @@ public class TabFragment extends android.support.v4.app.Fragment {
         menu.findItem(R.id.item3).setIcon(icons.getCancelDrawable());
         menu.findItem(R.id.item4).setIcon(icons.getSearchDrawable());
         menu.findItem(R.id.item5).setIcon(icons.getNewDrawable());
-        menu.findItem(R.id.item6).setIcon(icons.getBookDrawable());
         menu.findItem(R.id.item7).setIcon(icons.getRefreshDrawable());
         menu.findItem(R.id.item8).setIcon(icons.getPasteDrawable());
-        menu.findItem(R.id.item12).setIcon(icons.getBookDrawable());
     }
 }
 

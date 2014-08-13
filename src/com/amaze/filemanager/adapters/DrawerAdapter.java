@@ -2,6 +2,8 @@ package com.amaze.filemanager.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +22,31 @@ public class DrawerAdapter extends ArrayAdapter<String> {
     MainActivity m;
 
     IconUtils icons;
+    private SparseBooleanArray myChecked = new SparseBooleanArray();
+    public void toggleChecked(int position) {
+       toggleChecked(false);
+            myChecked.put(position, true);
+
+
+        notifyDataSetChanged();
+    }
+
+    public void toggleChecked(boolean b) {
+
+        for (int i = 0; i < values.length; i++) {
+            myChecked.put(i, b);
+        }
+        notifyDataSetChanged();
+    }
 
     public DrawerAdapter(Context context, String[] values, MainActivity m, SharedPreferences Sp) {
         super(context, R.layout.rowlayout, values);
         this.context = context;
         this.values = values;
 
+        for (int i = 0; i < values.length; i++) {
+            myChecked.put(i, false);
+        }
         icons = new IconUtils(Sp, m);
         this.m = m;
     }
@@ -48,19 +69,32 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         });
         textView.setText(values[position]);
         switch (position) {
-            case 0:
-                imageView.setImageDrawable(icons.getSdDrawable());
+            case 0:if(myChecked.get(0))
+                imageView.setImageResource(R.drawable.ic_action_sd_storage_blue);
+                else
+                imageView.setImageDrawable(icons.getSdDrawable1());
                 break;
-            case 1:
+            case 1:if(myChecked.get(1))
+                imageView.setImageResource(R.drawable.ic_action_view_as_grid_blue);
+            else
                 imageView.setImageDrawable(icons.getGridDrawable());
                 break;
-            case 2:
+            case 2:if(myChecked.get(2))
+                imageView.setImageResource(R.drawable.ic_action_not_important_blue);
+            else
                 imageView.setImageDrawable(icons.getBookDrawable1());
                 break;
             case 3:
                 imageView.setImageDrawable(icons.getSettingDrawable());
 
         }
+if(myChecked.get(position)){
+    if(m.theme==0){textView.setTypeface(Typeface.DEFAULT);}else textView.setTypeface(Typeface.DEFAULT_BOLD);
+   textView.setTextColor(m.getResources().getColor(R.color.theme_primary));}
+        else
+if(m.theme==0)
+    textView.setTextColor(m.getResources().getColor(android.R.color.black));
+        else     textView.setTextColor(m.getResources().getColor(android.R.color.white));
 
         return rowView;
     }
