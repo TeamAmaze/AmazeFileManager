@@ -10,7 +10,7 @@
         android:orientation="vertical">
 <LinearLayout
     android:layout_width="fill_parent"
-    android:layout_height="50dip"
+    android:layout_height="?android:attr/actionBarSize"
     android:orientation="horizontal"
     android:background="@color/theme_primary">
     <ImageButton
@@ -58,7 +58,57 @@
         android:src="@drawable/ic_action_overflow"
         />
     </LinearLayout>
+
+        <LinearLayout
+            android:background="@color/theme_primary"
+            android:id="@+id/pathbar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
+            android:orientation="horizontal">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_drawer_l"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:clickable="false"
+                style="?android:borderlessButtonStyle"/>
+            <LinearLayout
+                android:clickable="false"
+                android:layout_weight="20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            <TextView
+                android:clickable="false"
+                android:layout_width="wrap_content"
+               style="@android:style/TextAppearance.Large"
+                android:textColor="@android:color/white"
+                android:layout_height="wrap_content"
+                android:id="@+id/pathname" />
+                <HorizontalScrollView
+                    android:scrollbars="none"
+                    android:clickable="false"
+                    android:id="@+id/scroll1"
+                    android:background="@color/theme_primary"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                <TextView
+                    android:clickable="false"
+                    android:layout_width="wrap_content"
+                    style="@android:style/TextAppearance.Small"
+                    android:textColor="@android:color/white"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/fullpath" />
+            </HorizontalScrollView>
+            </LinearLayout>
+            </LinearLayout>
+
+
         <HorizontalScrollView
+            android:scrollbars="none"
             android:id="@+id/scroll"
             android:background="@color/theme_primary"
             android:layout_width="fill_parent"

@@ -92,12 +92,14 @@ public class Main extends ListFragment {
     Main ma = this;
     public HistoryManager history;
     IconUtils icons;
-    HorizontalScrollView scroll;
+    HorizontalScrollView scroll,scroll1;
 	boolean rememberLastPath;
     public boolean rootMode, mountSystem,showHidden;
     View footerView;
     ImageButton paste;
     private PoppyViewHelper mPoppyViewHelper;
+    LinearLayout pathbar;
+    UpdatePathBar updatePathBar=new UpdatePathBar();
     @Override
     public void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
@@ -175,7 +177,19 @@ public class Main extends ListFragment {
 		
 			}
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
+        pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
+        pathbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setVisibility(View.GONE);
+                buttons.setVisibility(View.VISIBLE);
+                updatePathBar.cancel(true);
+                updatePathBar=new UpdatePathBar();
+                updatePathBar.execute();
+            }
+        });
         scroll = (HorizontalScrollView) getActivity().findViewById(R.id.scroll);
+        scroll1 = (HorizontalScrollView) getActivity().findViewById(R.id.scroll1);
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         ListView vl = getListView();
         if (uimode == 1) {
@@ -464,18 +478,7 @@ public class Main extends ListFragment {
                 }*/
                 bbar(current);
                 getActivity().getActionBar().setSubtitle(f.getName());
-                scroll.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        // This method works but animates the scrolling
-                        // which looks weird on first load
-                        //
-                        scroll.fullScroll(View.FOCUS_RIGHT);
 
-                        // This method works even better because there are no animations.
-                        //scroll.scrollTo(0, scroll.getRight());
-                    }
-                });
             }
         } catch (Exception e) {
         }
@@ -781,10 +784,25 @@ public class Main extends ListFragment {
                     buttons.addView(button);
                 }
             }
+            File f=new File(text);
+            ((TextView)pathbar.findViewById(R.id.pathname)).setText(f.getName());
+            TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
+            bapath.setAllCaps(true);
+            bapath.setText(f.getPath());
+            scroll.post(new Runnable() {
+                @Override
+                public void run() {
+                    scroll.fullScroll(View.FOCUS_RIGHT);
+                    scroll1.fullScroll(View.FOCUS_RIGHT);
+                }
+            });
+            updatePathBar.cancel(true);
+            updatePathBar=new UpdatePathBar();
+            updatePathBar.execute();
         } catch (NullPointerException e) {
             System.out.println("button view not available");
         }
-        buttons.setVisibility(View.VISIBLE);
+
     }
 
 
@@ -875,6 +893,23 @@ public class Main extends ListFragment {
        super.onDestroy();
 		
 		history.end();     }
+    public class UpdatePathBar extends AsyncTask<Void,Void,Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void bitmap) {
+            if(!isCancelled()){
+            buttons.setVisibility(View.GONE);
+            pathbar.setVisibility(View.VISIBLE);}
+        }
+    }
     public void initPoppyViewListeners(View poppy){
         ((ImageView)poppy.findViewById(R.id.back)).setOnClickListener(new View.OnClickListener() {
             @Override
