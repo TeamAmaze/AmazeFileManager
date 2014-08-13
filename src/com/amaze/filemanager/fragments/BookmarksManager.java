@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -44,6 +45,8 @@ public class BookmarksManager extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
         setRetainInstance(false);
+        ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
+        overflow.setVisibility(View.GONE);
         ((LinearLayout) getActivity().findViewById(R.id.buttons))
                 .setVisibility(View.GONE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());

@@ -72,7 +72,7 @@ public class IconUtils {
 
     public Drawable getCancelDrawable() {
         if (CURRENT == LIGHT)
-            return c.getResources().getDrawable(R.drawable.ic_action_cancel);
+            return c.getResources().getDrawable(R.drawable.ic_action_cancel_light);
         else
             return c.getResources().getDrawable(R.drawable.ic_action_cancel);
     }

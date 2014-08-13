@@ -10,7 +10,7 @@
         android:orientation="vertical">
 <LinearLayout
     android:layout_width="fill_parent"
-    android:layout_height="55dip"
+    android:layout_height="50dip"
     android:orientation="horizontal"
     android:background="@color/theme_primary">
     <ImageButton

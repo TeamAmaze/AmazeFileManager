@@ -20,6 +20,7 @@ import android.support.v4.util.LruCache;
 import android.view.ActionMode;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -60,7 +61,8 @@ public class AppsList extends ListFragment {
         final int cacheSize = maxMemory / 4;
         mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
 
-        };
+        };ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
+        overflow.setVisibility(View.GONE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         ListView vl = getListView();

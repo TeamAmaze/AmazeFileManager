@@ -141,7 +141,7 @@ getActionBar().hide();
         });
         if (savedInstanceState == null) {
             selectItem(0);
-        }
+        }if(select<5){title.setText(val[select]);}
     }
 
     @Override

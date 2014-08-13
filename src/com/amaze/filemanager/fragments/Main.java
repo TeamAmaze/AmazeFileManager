@@ -108,7 +108,9 @@ public class Main extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
-        ((ImageButton)getActivity().findViewById(R.id.action_overflow)).setOnClickListener(new View.OnClickListener() {
+        ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
+        overflow.setVisibility(View.VISIBLE);
+        (overflow).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showPopup(view);
