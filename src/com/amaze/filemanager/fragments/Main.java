@@ -35,6 +35,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -95,6 +96,7 @@ public class Main extends ListFragment {
 	boolean rememberLastPath;
     public boolean rootMode, mountSystem,showHidden;
     View footerView;
+    ImageButton paste;
     private PoppyViewHelper mPoppyViewHelper;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,6 +108,32 @@ public class Main extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
+        ((ImageButton)getActivity().findViewById(R.id.action_overflow)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPopup(view);
+            }
+        });
+        paste=(ImageButton)getActivity().findViewById(R.id.paste);
+        paste.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (COPY_PATH != null) {
+                    String path1 = ma.current;
+                    Intent intent = new Intent(getActivity(), CopyService.class);
+                    intent.putExtra("FILE_PATHS", COPY_PATH);
+                    intent.putExtra("COPY_DIRECTORY", path1);
+                    getActivity().startService(intent);
+                    COPY_PATH = null;
+                }
+                if (MOVE_PATH != null) {
+                    new MoveFiles(utils.toFileArray(MOVE_PATH),ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,current);
+                    MOVE_PATH = null;
+
+                }invalidatePasteButton();
+
+            }
+        });
         utils = new Futils();
         res = getResources();
         mPoppyViewHelper = new PoppyViewHelper(getActivity());
@@ -216,73 +244,20 @@ public class Main extends ListFragment {
     }
 
     public void initMenu(Menu menu) {
-        menu.findItem(R.id.item1).setIcon(icons.getBackDrawable());
-        menu.findItem(R.id.item2).setIcon(icons.getHomeDrawable());
         menu.findItem(R.id.item3).setIcon(icons.getCancelDrawable());
         menu.findItem(R.id.item4).setIcon(icons.getSearchDrawable());
         menu.findItem(R.id.item5).setIcon(icons.getNewDrawable());
-        menu.findItem(R.id.item7).setIcon(icons.getRefreshDrawable());
-        menu.findItem(R.id.item8).setIcon(icons.getPasteDrawable());
     }
 
     public void onPrepareOptionsMenu(Menu menu) {
-        hideOption(R.id.item8, menu);
+       /* hideOption(R.id.item8, menu);
         if (COPY_PATH != null) {
             showOption(R.id.item8, menu);
         }
         if (MOVE_PATH != null) {
             showOption(R.id.item8, menu);
-        }
+        }*/
     }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.item8:
-                if (COPY_PATH != null) {
-                    String path1 = ma.current;
-                    Intent intent = new Intent(getActivity(), CopyService.class);
-                    intent.putExtra("FILE_PATHS", COPY_PATH);
-                    intent.putExtra("COPY_DIRECTORY", path1);
-                    getActivity().startService(intent);
-                    COPY_PATH = null;
-                    getActivity().invalidateOptionsMenu();
-                }
-                if (MOVE_PATH != null) {
-                    new MoveFiles(utils.toFileArray(MOVE_PATH),ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,current);
-                    MOVE_PATH = null;
-                    getActivity().invalidateOptionsMenu();
-                }
-                break;
-
-            case R.id.item3:
-                getActivity().finish();
-                break;
-            case R.id.item9:
-                Sp.edit().putString("home", ma.current).apply();
-                Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.newhomedirectory) + ma.home, Style.CONFIRM).show();
-                ma.home = ma.current;
-                break;
-            case R.id.item2:
-
-                break;
-            case R.id.item10:
-                utils.showSortDialog(ma);
-                break;
-            case R.id.item11:
-                utils.showDirectorySortDialog(ma);
-                break;
-            case R.id.item5:
-                add();
-                break;
-
-            case R.id.item4:
-                search();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
     public void add() {
         AlertDialog.Builder ba = new AlertDialog.Builder(getActivity());
         ba.setTitle(utils.getString(getActivity(), R.string.add));
@@ -695,7 +670,7 @@ public class Main extends ListFragment {
                         copies.add(list.get(plist.get(i2)).getDesc());
                     }
                     COPY_PATH = copies;
-                    getActivity().invalidateOptionsMenu();
+                    invalidatePasteButton();
                     mode.finish();
                     return true;
                 case R.id.cut:
@@ -705,7 +680,7 @@ public class Main extends ListFragment {
                         copie.add(list.get(plist.get(i3)).getDesc());
                     }
                     MOVE_PATH = copie;
-                    getActivity().invalidateOptionsMenu();
+                    invalidatePasteButton();
                     mode.finish();
                     return true;
                 case R.id.compress:
@@ -930,5 +905,46 @@ public class Main extends ListFragment {
                 utils.showBookmarkDialog(ma,sh);
             }
         });
+    }public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(getActivity(), v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.activity_extra, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+
+                    case R.id.item3:
+                        getActivity().finish();
+                        break;
+                    case R.id.item9:
+                        Sp.edit().putString("home", ma.current).apply();
+                        Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.newhomedirectory) + ma.home, Style.CONFIRM).show();
+                        ma.home = ma.current;
+                        break;
+                    case R.id.item10:
+                        utils.showSortDialog(ma);
+                        break;
+                    case R.id.item11:
+                        utils.showDirectorySortDialog(ma);
+                        break;
+                    case R.id.item5:
+                        add();
+                        break;
+
+                    case R.id.item4:
+                        search();
+                        break;
+                }
+                return false;
+            }
+        });
+        popup.show();
+    }
+    public void invalidatePasteButton(){
+        if(MOVE_PATH!=null || COPY_PATH!=null){
+            paste.setVisibility(View.VISIBLE);
+        }else paste.setVisibility(View.GONE);
     }
 }

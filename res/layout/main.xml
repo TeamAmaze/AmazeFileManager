@@ -6,39 +6,58 @@
     <LinearLayout
         android:id="@+id/lin"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
-<RelativeLayout
+<LinearLayout
     android:layout_width="fill_parent"
     android:layout_height="55dip"
+    android:orientation="horizontal"
     android:background="@color/theme_primary">
-    <ImageView
+    <ImageButton
         android:id="@+id/drawer_buttton"
-        android:layout_width="50dp"
-        android:layout_height="fill_parent"
-        android:padding="13dp"
-        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/ic_drawer_l"
-        android:background="@drawable/listitem1"/>
+        android:layout_weight="1"
+        style="?android:borderlessButtonStyle"/>
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Amaze File Manager"
-        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        android:layout_weight="20"
         android:textColor="@android:color/white"
-        android:layout_toRightOf="@id/drawer_buttton"
-        style="@android:style/TextAppearance.Large" />
-    <ImageView
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    <ProgressBar
         android:background="@drawable/listitem1"
-        android:layout_alignParentRight="true"
+        android:layout_weight="1"
+        android:visibility="gone"
+        android:indeterminate="true"
         android:layout_width="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_height="fill_parent"
-        android:padding="5dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        />
+        <ImageButton
+            android:background="@drawable/listitem1"
+            android:layout_weight="1"
+            android:visibility="gone"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/paste"
+            android:src="@drawable/ic_action_paste"
+            />
+    <ImageButton
+        android:background="@drawable/listitem1"
+        android:layout_weight="1"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/action_overflow"
         android:src="@drawable/ic_action_overflow"
         />
-    </RelativeLayout>
+    </LinearLayout>
         <HorizontalScrollView
             android:id="@+id/scroll"
             android:background="@color/theme_primary"

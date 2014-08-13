@@ -151,18 +151,18 @@ public class TabFragment extends android.support.v4.app.Fragment {
     }
 
     public void onPrepareOptionsMenu(Menu menu) {
-        hideOption(R.id.item8, menu);
+       /* hideOption(R.id.item8, menu);
         if (COPY_PATH != null) {
             showOption(R.id.item8, menu);
         }
         if (MOVE_PATH != null) {
             showOption(R.id.item8, menu);
-        }
+        }*/
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.item8:
+            /*case R.id.item8:
                 if (COPY_PATH != null) {
                     Main ma = ((Main) fragments.get(mViewPager.getCurrentItem()));
                     String path1 = ma.current;
@@ -184,19 +184,12 @@ public class TabFragment extends android.support.v4.app.Fragment {
                     MOVE_PATH = null;
                     getActivity().invalidateOptionsMenu();
                 }
-                break;
-            case R.id.item1:
-                back();
-
-                break;
+                break;*/
             case R.id.item9:
                 Main ma1 = getCurrentTab();
                 Sp.edit().putString("home", ma1.current).commit();
                 Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.newhomedirectory) + ma1.home, Style.CONFIRM).show();
                 ma1.home = ma1.current;
-                break;
-            case R.id.item2:
-                home();
                 break;
             case R.id.item10:
                 utils.showSortDialog(getCurrentTab());
@@ -209,10 +202,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 break;
             case R.id.item5:
                 add(HOME);
-                break;
-            case R.id.item7:
-                Main ma = getCurrentTab();
-                ma.loadlist(new File(ma.current), false);
                 break;
             case R.id.item4:
                 search();
@@ -541,13 +530,9 @@ public class TabFragment extends android.support.v4.app.Fragment {
     }
 
     public void initMenu(Menu menu) {
-        menu.findItem(R.id.item1).setIcon(icons.getBackDrawable());
-        menu.findItem(R.id.item2).setIcon(icons.getHomeDrawable());
         menu.findItem(R.id.item3).setIcon(icons.getCancelDrawable());
         menu.findItem(R.id.item4).setIcon(icons.getSearchDrawable());
         menu.findItem(R.id.item5).setIcon(icons.getNewDrawable());
-        menu.findItem(R.id.item7).setIcon(icons.getRefreshDrawable());
-        menu.findItem(R.id.item8).setIcon(icons.getPasteDrawable());
     }
 }
 

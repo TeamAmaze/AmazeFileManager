@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +49,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     private ActionBarDrawerToggle mDrawerToggle;
 
     String[] val;
-    ImageButton progress;
+    ProgressBar progress;
     DrawerAdapter adapter;
     IconUtils util;
     Shortcuts s = new Shortcuts();
@@ -93,34 +94,20 @@ getActionBar().hide();
         }
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerList.setDivider(null);
-
-        ActionBar bar = getActionBar();
-        View v = getLayoutInflater().inflate(R.layout.button, null);
-        progress = (ImageButton) v.findViewById(R.id.progress);
-        progress.setImageDrawable(getResources().getDrawable(R.drawable.ic_prog));
-        bar.setCustomView(v);
-        progress.setVisibility(View.GONE);
+        progress = (ProgressBar) findViewById(R.id.progressBar);
         progress.setOnClickListener(new View.OnClickListener() {
-
             @Override
-            public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-
-                android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.content_frame, new ProcessViewer());
-             //   transaction.addToBackStack(null);
-                select = 102;
+            public void onClick(View view) {
+                if(select!=102){
+                    android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_frame, new ProcessViewer());
+                    //   transaction.addToBackStack(null);
+                    select = 102;
 //Commit the transaction
-                transaction.commit();
-
+                    transaction.commit();
+                }else{selectItem(0);}
             }
         });
-        bar.setDisplayShowCustomEnabled(true);
-        bar.setDisplayShowTitleEnabled(true);
-
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
 
@@ -145,7 +132,7 @@ getActionBar().hide();
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        ((ImageView)findViewById(R.id.drawer_buttton)).setOnClickListener(new ImageView.OnClickListener() {
+        ((ImageButton)findViewById(R.id.drawer_buttton)).setOnClickListener(new ImageView.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mDrawerLayout.isDrawerOpen(mDrawerList)){mDrawerLayout.closeDrawer(mDrawerList);}
