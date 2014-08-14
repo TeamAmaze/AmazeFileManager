@@ -1,72 +1,29 @@
 package com.amaze.filemanager.fragments;
 
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Environment;
-import android.preference.PreferenceManager;
+import android.animation.*;
+import android.app.*;
+import android.content.*;
+import android.content.res.*;
+import android.graphics.drawable.*;
+import android.net.*;
+import android.os.*;
+import android.preference.*;
+import android.support.v4.app.*;
+import android.view.*;
+import android.widget.*;
+import com.amaze.filemanager.*;
+import com.amaze.filemanager.activities.*;
+import com.amaze.filemanager.adapters.*;
+import com.amaze.filemanager.services.*;
+import com.amaze.filemanager.services.asynctasks.*;
+import com.amaze.filemanager.utils.*;
+import com.fourmob.poppyview.*;
+import de.keyboardsurfer.android.widget.crouton.*;
+import java.io.*;
+import java.util.*;
+
 import android.support.v4.app.ListFragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-import android.view.ActionMode;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.PopupMenu;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.adapters.MyAdapter;
-import com.amaze.filemanager.services.CopyService;
-import com.amaze.filemanager.services.ExtractService;
-import com.amaze.filemanager.services.asynctasks.LoadList;
-import com.amaze.filemanager.services.asynctasks.LoadSearchList;
-import com.amaze.filemanager.services.asynctasks.MoveFiles;
-import com.amaze.filemanager.services.asynctasks.SearchTask;
-import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.HistoryManager;
-import com.amaze.filemanager.utils.IconUtils;
-import com.amaze.filemanager.utils.Icons;
-import com.amaze.filemanager.utils.Layoutelements;
-import com.amaze.filemanager.utils.RootHelper;
-import com.amaze.filemanager.utils.Shortcuts;
-import com.fourmob.poppyview.PoppyViewHelper;
-import com.stericson.RootTools.RootTools;
-import com.stericson.RootTools.containers.Permissions;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 
 
 public class Main extends ListFragment {
@@ -181,8 +138,7 @@ public class Main extends ListFragment {
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                view.setVisibility(View.GONE);
-                buttons.setVisibility(View.VISIBLE);
+                crossfade();
                 updatePathBar.cancel(true);
                 updatePathBar=new UpdatePathBar();
                 updatePathBar.execute();
@@ -897,17 +853,17 @@ public class Main extends ListFragment {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }if(!isCancelled()){publishProgress();}
             return null;
         }
         @Override
-        protected void onPostExecute(Void bitmap) {
+        protected void onProgressUpdate(Void... bitmap) {
             if(!isCancelled()){
-            buttons.setVisibility(View.GONE);
-            pathbar.setVisibility(View.VISIBLE);}
+				if(buttons.getVisibility()==View.VISIBLE)
+           crossfadeInverse();}
         }
     }
     public void initPoppyViewListeners(View poppy){
@@ -983,5 +939,57 @@ public class Main extends ListFragment {
         if(MOVE_PATH!=null || COPY_PATH!=null){
             paste.setVisibility(View.VISIBLE);
         }else paste.setVisibility(View.GONE);
-    }
-}
+    }private void crossfade() {
+
+		// Set the content view to 0% opacity but visible, so that it is visible
+		// (but fully transparent) during the animation.
+		buttons.setAlpha(0f);
+		buttons.setVisibility(View.VISIBLE);
+	
+		// Animate the content view to 100% opacity, and clear any animation
+		// listener set on the view.
+		buttons.animate()
+            .alpha(1f)
+            .setDuration(100)
+            .setListener(null);
+		pathbar.animate()
+            .alpha(0f)
+            .setDuration(100)
+            .setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    pathbar.setVisibility(View.GONE);
+                }
+            });
+		// Animate the loading view to 0% opacity. After the animation ends,
+		// set its visibility to GONE as an optimization step (it won't
+		// participate in layout passes, etc.)
+
+	}private void crossfadeInverse() {
+
+		// Set the content view to 0% opacity but visible, so that it is visible
+		// (but fully transparent) during the animation.
+		pathbar.setAlpha(0f);
+		pathbar.setVisibility(View.VISIBLE);
+
+		// Animate the content view to 100% opacity, and clear any animation
+		// listener set on the view.
+	pathbar.animate()
+            .alpha(1f)
+            .setDuration(500)
+            .setListener(null);
+		buttons.animate()
+            .alpha(0f)
+            .setDuration(500)
+            .setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    buttons.setVisibility(View.GONE);
+                }
+            });
+		// Animate the loading view to 0% opacity. After the animation ends,
+		// set its visibility to GONE as an optimization step (it won't
+		// participate in layout passes, etc.)
+
+	
+}}

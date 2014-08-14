@@ -58,7 +58,7 @@
         android:src="@drawable/ic_action_overflow"
         />
     </LinearLayout>
-
+<FrameLayout android:layout_height="wrap_content" android:layout_width="fill_parent">
         <LinearLayout
             android:background="@color/theme_primary"
             android:id="@+id/pathbar"
@@ -110,6 +110,7 @@
         <HorizontalScrollView
             android:scrollbars="none"
             android:id="@+id/scroll"
+			android:paddingBottom="5dp"
             android:background="@color/theme_primary"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
@@ -121,6 +122,7 @@
                 android:orientation="horizontal">
                 </LinearLayout>
         </HorizontalScrollView>
+</FrameLayout>
         <!--
          As the main content view, the view below consumes the entire
          space available using match_parent in both dimensions.
