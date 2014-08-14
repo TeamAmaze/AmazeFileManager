@@ -697,9 +697,14 @@ public class Main extends ListFragment {
             }
             for (int i = 0; i < names.size(); i++) {
                 final int index = i;
+                ImageView v=new ImageView(getActivity());v.setImageResource(R.drawable.abc_ic_ab_back_holo_dark);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.gravity= Gravity.CENTER_VERTICAL;
                 if (rpaths.get(i).equals("/")) {
                     ImageButton ib = new ImageButton(getActivity());
                     ib.setImageDrawable(icons.getRootDrawable());
+                    ib.setBackgroundDrawable(null);
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
@@ -709,9 +714,12 @@ public class Main extends ListFragment {
                     });
 
                     buttons.addView(ib);
+                    if(names.size()-i!=1)
+                    buttons.addView(v);
                 } else if (rpaths.get(i).equals(Environment.getExternalStorageDirectory().getPath())) {
                     ImageButton ib = new ImageButton(getActivity());
                     ib.setImageDrawable(icons.getSdDrawable());
+                    ib.setBackgroundDrawable(null);
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
@@ -719,14 +727,15 @@ public class Main extends ListFragment {
                             // TODO: Implement this method
                         }
                     });
-
-                    buttons.addView(ib);
+                     buttons.addView(ib);
+                    if(names.size()-i!=1)
+                        buttons.addView(v);
                 } else {
                     Button button = new Button(getActivity());
                     button.setText(rnames.get(index));
                     button.setTextColor(getResources().getColor(android.R.color.white));
                     button.setTextSize(13);
-
+                    button.setBackgroundDrawable(null);
                     //	button.setBackgroundDrawable(getResources().getDrawable(R.drawable.listitem));
                     button.setOnClickListener(new Button.OnClickListener() {
 
@@ -738,6 +747,8 @@ public class Main extends ListFragment {
                     });
 
                     buttons.addView(button);
+                    if(names.size()-i!=1)
+                        buttons.addView(v);
                 }
             }
             File f=new File(text);
@@ -755,7 +766,8 @@ public class Main extends ListFragment {
             updatePathBar.cancel(true);
             updatePathBar=new UpdatePathBar();
             updatePathBar.execute();
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("button view not available");
         }
 
