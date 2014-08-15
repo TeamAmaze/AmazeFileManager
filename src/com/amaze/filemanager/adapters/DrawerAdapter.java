@@ -84,8 +84,6 @@ public class DrawerAdapter extends ArrayAdapter<String> {
             else
                 imageView.setImageDrawable(icons.getBookDrawable1());
                 break;
-            case 3:
-                imageView.setImageDrawable(icons.getSettingDrawable());
 
         }
 if(myChecked.get(position)){

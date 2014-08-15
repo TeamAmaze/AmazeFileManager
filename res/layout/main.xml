@@ -142,16 +142,36 @@
          the container. A solid background is used for contrast
          with the content view.
     -->
-
-    <ListView
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
         android:id="@+id/left_drawer"
+        android:layout_gravity="start"
+        >
+    <ListView
+        android:id="@+id/menu_drawer"
         style="@android:style/Theme.Holo.Light"
         android:layout_width="250dp"
         android:layout_height="match_parent"
-        android:layout_gravity="left"
+        android:layout_gravity="start"
         android:background="@drawable/drawer_bg"
         android:choiceMode="singleChoice"
         android:dividerHeight="0dip" />
+        <LinearLayout
+            android:layout_alignParentBottom="true"
+            android:layout_width="fill_parent"
+            android:background="@color/theme_primary"
+            android:layout_height="?android:attr/actionBarSize">
+        <ImageButton
+            android:id="@+id/settingsbutton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@drawable/listitem1"
+            android:src="@drawable/ic_action_settings"
+            /></LinearLayout>
+    </RelativeLayout>
     <!--
     <ListView
         android:id="@+id/right_drawer"

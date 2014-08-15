@@ -15,11 +15,14 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,11 +38,13 @@ import com.amaze.filemanager.utils.Shortcuts;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends android.support.v4.app.FragmentActivity {
     int select;
     TextView title;
+
     Futils utils;
     private boolean backPressedToExitOnce = false;
     private Toast toast = null;
@@ -52,6 +57,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     ProgressBar progress;
     DrawerAdapter adapter;
     IconUtils util;
+    RelativeLayout mDrawerLinear;
     Shortcuts s = new Shortcuts();
     public int theme;
     /**
@@ -76,13 +82,22 @@ getActionBar().hide();
         } catch (Exception e) {
         }
         utils = new Futils();
+        mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerList = (ListView) findViewById(R.id.menu_drawer);
+        ((ImageButton)findViewById(R.id.settingsbutton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(getApplicationContext(),Preferences.class);
+                finish();
+                startActivity(i);
+            }
+        });
         View v1=getLayoutInflater().inflate(R.layout.drawerheader,null);
         TextView tv=(TextView)v1.findViewById(R.id.firstline);
         tv.setTextColor(getResources().getColor(android.R.color.white));
         mDrawerList.addHeaderView(v1);
-        val = new String[]{utils.getString(this, R.string.storage), utils.getString(this, R.string.apps), utils.getString(this, R.string.bookmanag), utils.getString(this, R.string.setting)};
+        val = new String[]{utils.getString(this, R.string.storage), utils.getString(this, R.string.apps), utils.getString(this, R.string.bookmanag)};
         ArrayList<String> list = new ArrayList<String>();
         for (int i = 0; i < val.length; i++) {
             list.add(val[i]);
@@ -135,13 +150,13 @@ getActionBar().hide();
         ((ImageButton)findViewById(R.id.drawer_buttton)).setOnClickListener(new ImageView.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mDrawerLayout.isDrawerOpen(mDrawerList)){mDrawerLayout.closeDrawer(mDrawerList);}
-                else mDrawerLayout.openDrawer(mDrawerList);
+                if(mDrawerLayout.isDrawerOpen(mDrawerLinear)){mDrawerLayout.closeDrawer(mDrawerLinear);}
+                else mDrawerLayout.openDrawer(mDrawerLinear);
             }
         });
         if (savedInstanceState == null) {
             selectItem(0);
-        }if(select<5){title.setText(val[select]);}
+        }if(select<4){title.setText(val[select]);}
     }
 
     @Override
@@ -216,15 +231,11 @@ getActionBar().hide();
                 transaction3.commit();
                 title.setText(val[2]);
                 break;
-            case 3:
-                Intent in = new Intent(MainActivity.this, Preferences.class);
-                finish();
-                startActivity(in);
-                break;
+
 
         }
         adapter.toggleChecked(i);
-        mDrawerLayout.closeDrawer(mDrawerList);
+        mDrawerLayout.closeDrawer(mDrawerLinear);
     }
 
     private void showToast(String message) {

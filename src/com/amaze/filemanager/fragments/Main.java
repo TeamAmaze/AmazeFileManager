@@ -681,6 +681,8 @@ public class Main extends ListFragment {
     public void bbar(String text) {
         try {
             buttons.removeAllViews();
+            Drawable bg=getResources().getDrawable(R.drawable.listitem1);
+            Drawable arrow=getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
             Bundle b = utils.getPaths(text, getActivity());
             ArrayList<String> names = b.getStringArrayList("names");
             ArrayList<String> rnames = new ArrayList<String>();
@@ -696,15 +698,16 @@ public class Main extends ListFragment {
                 rpaths.add(paths.get(i));
             }
             for (int i = 0; i < names.size(); i++) {
-                final int index = i;
-                ImageView v=new ImageView(getActivity());v.setImageResource(R.drawable.abc_ic_ab_back_holo_dark);
+                ImageView v=new ImageView(getActivity());v.setImageDrawable(arrow);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 params.gravity= Gravity.CENTER_VERTICAL;
+                v.setLayoutParams(params);
+                final int index = i;
                 if (rpaths.get(i).equals("/")) {
                     ImageButton ib = new ImageButton(getActivity());
                     ib.setImageDrawable(icons.getRootDrawable());
-                    ib.setBackgroundDrawable(null);
+                    ib.setBackgroundDrawable(bg);
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
@@ -719,7 +722,7 @@ public class Main extends ListFragment {
                 } else if (rpaths.get(i).equals(Environment.getExternalStorageDirectory().getPath())) {
                     ImageButton ib = new ImageButton(getActivity());
                     ib.setImageDrawable(icons.getSdDrawable());
-                    ib.setBackgroundDrawable(null);
+                    ib.setBackgroundDrawable(bg);
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
@@ -735,7 +738,7 @@ public class Main extends ListFragment {
                     button.setText(rnames.get(index));
                     button.setTextColor(getResources().getColor(android.R.color.white));
                     button.setTextSize(13);
-                    button.setBackgroundDrawable(null);
+                    button.setBackgroundDrawable(bg);
                     //	button.setBackgroundDrawable(getResources().getDrawable(R.drawable.listitem));
                     button.setOnClickListener(new Button.OnClickListener() {
 
