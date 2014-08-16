@@ -374,10 +374,7 @@ public class Ifragment extends android.support.v4.app.Fragment {
 
                 case R.id.about:
                     utils.showProps(
-                            new File(list.get(
-                                    (adapter.getCheckedItemPositions().get(0)))
-                                    .getDesc()), getActivity()
-                    );
+                            new File(list.get((adapter.getCheckedItemPositions().get(0))).getDesc()), getActivity(),false);
                     mode.finish();
                     return true;
                 case R.id.delete:

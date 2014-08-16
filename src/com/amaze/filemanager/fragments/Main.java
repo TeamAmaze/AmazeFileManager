@@ -31,8 +31,6 @@ public class Main extends ListFragment {
     public ArrayList<Layoutelements> list, slist;
     public MyAdapter adapter;
     public Futils utils;
-    public ArrayList<File> sFile;
-    public ArrayList<File> mFile = new ArrayList<File>();
     public boolean selection;
     public boolean results = false;
     public ActionMode mActionMode;
@@ -55,7 +53,7 @@ public class Main extends ListFragment {
     View footerView;
     ImageButton paste;
     private PoppyViewHelper mPoppyViewHelper;
-    LinearLayout pathbar;
+    public LinearLayout pathbar;
     UpdatePathBar updatePathBar=new UpdatePathBar();
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +65,7 @@ public class Main extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
+        getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
         ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
         overflow.setVisibility(View.VISIBLE);
         (overflow).setOnClickListener(new View.OnClickListener() {
@@ -197,39 +196,6 @@ public class Main extends ListFragment {
         }
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.activity_extra, menu);
-        initMenu(menu);
-
-    }
-
-    private void hideOption(int id, Menu menu) {
-        MenuItem item = menu.findItem(id);
-        item.setVisible(false);
-    }
-
-    private void showOption(int id, Menu menu) {
-        MenuItem item = menu.findItem(id);
-        item.setVisible(true);
-    }
-
-    public void initMenu(Menu menu) {
-        menu.findItem(R.id.item3).setIcon(icons.getCancelDrawable());
-        menu.findItem(R.id.item4).setIcon(icons.getSearchDrawable());
-        menu.findItem(R.id.item5).setIcon(icons.getNewDrawable());
-    }
-
-    public void onPrepareOptionsMenu(Menu menu) {
-       /* hideOption(R.id.item8, menu);
-        if (COPY_PATH != null) {
-            showOption(R.id.item8, menu);
-        }
-        if (MOVE_PATH != null) {
-            showOption(R.id.item8, menu);
-        }*/
-    }
     public void add() {
         AlertDialog.Builder ba = new AlertDialog.Builder(getActivity());
         ba.setTitle(utils.getString(getActivity(), R.string.add));
@@ -259,6 +225,7 @@ public class Main extends ListFragment {
                                 File f = new File(path + "/" + a);
                                 if (!f.exists()) {
                                     f.mkdirs();
+                                    updateList();
                                     Toast.makeText(getActivity(), "Folder Created", Toast.LENGTH_LONG).show();
                                 } else {
                                     Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Style.ALERT).show();
@@ -270,7 +237,7 @@ public class Main extends ListFragment {
                     case 1:
                         final String path1 = ma.current;
                         AlertDialog.Builder ba2 = new AlertDialog.Builder(getActivity());
-                        ba2.setTitle(utils.getString(getActivity(), R.string.newfolder));
+                        ba2.setTitle("New File");
                         View v1 = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
                         final EditText edir1 = (EditText) v1.findViewById(R.id.newname);
                         edir1.setHint(utils.getString(getActivity(), R.string.entername));
@@ -289,6 +256,7 @@ public class Main extends ListFragment {
                                 if (!f1.exists()) {
                                     try {
                                         boolean b = f1.createNewFile();
+                                        updateList();
                                         Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.filecreated), Style.CONFIRM).show();
                                     } catch (IOException e) {
                                         e.printStackTrace();
@@ -392,7 +360,7 @@ public class Main extends ListFragment {
     }
 
     @SuppressWarnings("unchecked")
-    public void loadsearchlist(ArrayList<String> f) {
+    public void loadsearchlist(ArrayList<String[]> f) {
 
         new LoadSearchList(ma).execute(f);
 
@@ -528,14 +496,14 @@ public class Main extends ListFragment {
                     int pos = plist.get(0);
                     home = list.get(pos).getDesc();
                     Crouton.makeText(getActivity(),
-                            utils.getString(getActivity(), R.string.newhomedirectory) + mFile.get(pos).getName(),
+                            utils.getString(getActivity(), R.string.newhomedirectory) + list.get(pos).getTitle(),
                             Style.INFO).show();
                     Sp.edit().putString("home", list.get(pos).getDesc()).apply();
 
                     mode.finish();
                     return true;
                 case R.id.about:
-                    utils.showProps(new File(list.get((plist.get(0))).getDesc()), getActivity());
+                    utils.showProps(new File(list.get((plist.get(0))).getDesc()), getActivity(),rootMode);
                     mode.finish();
                     return true;
                 case R.id.delete:
@@ -625,6 +593,7 @@ public class Main extends ListFragment {
                     mode.finish();
                     return true;
                 case R.id.cpy:
+                    MOVE_PATH=null;
                     ArrayList<String> copies = new ArrayList<String>();
 
                     for (int i2 = 0; i2 < plist.size(); i2++) {
@@ -635,7 +604,7 @@ public class Main extends ListFragment {
                     mode.finish();
                     return true;
                 case R.id.cut:
-
+                    COPY_PATH=null;
                     ArrayList<String> copie = new ArrayList<String>();
                     for (int i3 = 0; i3 < plist.size(); i3++) {
                         copie.add(list.get(plist.get(i3)).getDesc());
@@ -845,7 +814,7 @@ public class Main extends ListFragment {
         for (int i = 0; i < mFile.size(); i++) {
             File f=new File(mFile.get(i)[0]);
             if (f.isDirectory()) {
-                a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f)));
+                a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f,rootMode)));
 
             } else {
                 try {

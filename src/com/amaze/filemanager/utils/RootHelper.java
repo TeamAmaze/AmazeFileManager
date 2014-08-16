@@ -107,4 +107,40 @@ String cpath=getCommandLineString(path);
 return a;
 
         }
+    }
+    public static ArrayList<String> getSimpleFilesList(String path,boolean root,boolean showHidden)
+    {
+        String cpath=getCommandLineString(path);
+        String p="";
+        if(showHidden)p="-a";
+        Futils futils=new Futils();
+        ArrayList<String> a=new ArrayList<String>();
+        String ls="";
+        if(futils.canListFiles(new File(path))){
+            ls = runAndWait("ls "+p+" " + cpath,false);}
+        else if(root){ls = runAndWait("ls "+p+" " + cpath,true);}
+        else{return new ArrayList<String>();}
+        if (ls == null)
+        {
+            //      Logger.errorST("Error: Could not get list of files in directory: " + path);
+            return new ArrayList<String>();
+        }
+
+        if (ls.equals("\n") || ls.equals(""))
+        {
+            //    Logger.debug("No files in directory");
+            return new ArrayList<String>();
+        }
+        else
+        {
+            List<String> files = Arrays.asList(ls.split("\n"));
+            for (String file : files)
+            {
+
+                a.add(path+"/"+file);
+
+            }
+            return a;
+
+        }
     }}

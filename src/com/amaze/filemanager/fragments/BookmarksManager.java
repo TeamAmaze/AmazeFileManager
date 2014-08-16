@@ -45,6 +45,7 @@ public class BookmarksManager extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
         setRetainInstance(false);
+        getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
         ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
         overflow.setVisibility(View.GONE);
         ((LinearLayout) getActivity().findViewById(R.id.buttons))

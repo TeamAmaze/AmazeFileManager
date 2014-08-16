@@ -139,7 +139,7 @@ public class ZipTask extends Service {
         public void execute(int id, ArrayList<File> a, String fileOut) {
             for (File f1 : a) {
                 if (f1.isDirectory()) {
-                    totalBytes = totalBytes + new Futils().folderSize(f1);
+                    totalBytes = totalBytes + new Futils().folderSize(f1,false);
                 } else {
                     totalBytes = totalBytes + f1.length();
                 }

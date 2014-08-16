@@ -57,7 +57,7 @@ public class AppsList extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-        getActivity().findViewById(R.id.buttons).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
         final int cacheSize = maxMemory / 4;
         mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
 

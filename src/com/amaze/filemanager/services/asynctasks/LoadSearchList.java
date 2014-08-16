@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
+import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.MyAdapter;
@@ -16,9 +17,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class LoadSearchList extends AsyncTask<ArrayList<String>, Void, ArrayList<Layoutelements>> {
+public class LoadSearchList extends AsyncTask<ArrayList<String[]>, Void, ArrayList<Layoutelements>> {
 
-    private ArrayList<String> f;
+    private ArrayList<String[]> f;
     Main ma;
 
     public LoadSearchList(Main ma) {
@@ -32,20 +33,16 @@ public class LoadSearchList extends AsyncTask<ArrayList<String>, Void, ArrayList
 
     @Override
     // Actual download method, run in the task thread
-    protected ArrayList<Layoutelements> doInBackground(ArrayList<String>... params) {
+    protected ArrayList<Layoutelements> doInBackground(ArrayList<String[]>... params) {
         // params comes from the execute() call: params[0] is the url.
-        ma.sFile = new ArrayList<File>();
+
         f = params[0];
-        for (int i = 0; i < f.size(); i++) {
-            ma.sFile.add(new File(f.get(i)));
-        }
+
 
         try {
-            /*Collections.sort(ma.sFile,
+            ma.slist = ma.addTo(f);
+            Collections.sort(ma.slist,
                     new FileListSorter(ma.dsort, ma.sortby, ma.asc));
-
-            ma.slist = ma.addTo(ma.sFile);
-*/
 
             return ma.slist;
 
@@ -64,7 +61,7 @@ public class LoadSearchList extends AsyncTask<ArrayList<String>, Void, ArrayList
         }
         try {
             if (bitmap != null) {
-                ma.getActivity().getActionBar().setSubtitle(R.string.searchresults);
+                ((TextView)ma.pathbar.findViewById(R.id.pathname)).setText("Search Results");
                 ma.adapter = new MyAdapter(ma.getActivity(), R.layout.rowlayout,
                         bitmap, ma);
                 try {

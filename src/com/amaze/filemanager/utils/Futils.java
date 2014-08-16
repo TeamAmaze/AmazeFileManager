@@ -155,9 +155,9 @@ public class Futils {
         c.show();
     }
 
-    public String count(File f) {
+    public String count(File f,boolean root) {
         try {
-            return (f.listFiles().length + " items");
+            return (RootHelper.getSimpleFilesList(f.getPath(),root,true).size() + " items");
         } catch (Exception e) {
             return "";
         }
@@ -238,14 +238,14 @@ public class Futils {
         return inSampleSize;
     }
 
-    public void showProps(File f, Activity c) {
+    public void showProps(File f, Activity c,boolean root) {
         String date = getString(c, R.string.date) + getdate(f);
         String items = "", size = "", name, parent;
         name = getString(c, R.string.name) + f.getName();
         parent = getString(c, R.string.location) + f.getParent();
         if (f.isDirectory()) {
-            size = getString(c, R.string.size) + readableFileSize(folderSize(f));
-            items = getString(c, R.string.totalitems) + count(f);
+            size = getString(c, R.string.size) + readableFileSize(folderSize(f,root));
+            items = getString(c, R.string.totalitems) + count(f,root);
         } else if (f.isFile()) {
             items = "";
             size = getString(c, R.string.size) + getSize(f);
@@ -260,13 +260,14 @@ public class Futils {
         a.show();
     }
 
-    public static long folderSize(File directory) {
+    public static long folderSize(File directory,boolean rootMode) {
         long length = 0;
-        for (File file : directory.listFiles()) {
+        for (String f : RootHelper.getSimpleFilesList(directory.getPath(),rootMode,true)) {
+            File file=new File(f);
             if (file.isFile())
                 length += file.length();
             else
-                length += folderSize(file);
+                length += folderSize(file,rootMode);
         }
         return length;
     }
@@ -474,7 +475,7 @@ public class Futils {
                         openunknown(f, main.getActivity());
                         break;
                     case 2:
-                        showProps(f, main.getActivity());
+                        showProps(f, main.getActivity(),main.rootMode);
                         break;
                     case 3:
                         Intent i = new Intent();

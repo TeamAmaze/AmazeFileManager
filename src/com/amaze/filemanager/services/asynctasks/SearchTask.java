@@ -8,11 +8,12 @@ import android.os.Bundle;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.RootHelper;
 
 import java.io.File;
 import java.util.ArrayList;
 
-public class SearchTask extends AsyncTask<Bundle, String, ArrayList<File>> {
+public class SearchTask extends AsyncTask<Bundle, String, ArrayList<String[]>> {
     ProgressDialog a;
     boolean run = true;
     MainActivity m;
@@ -49,7 +50,7 @@ public class SearchTask extends AsyncTask<Bundle, String, ArrayList<File>> {
 
     }
 
-    protected ArrayList<File> doInBackground(Bundle[] p1) {
+    protected ArrayList<String[]> doInBackground(Bundle[] p1) {
         Bundle b = p1[0];
         String FILENAME = b.getString("FILENAME");
         String FILEPATH = b.getString("FILEPATH");
@@ -59,17 +60,17 @@ public class SearchTask extends AsyncTask<Bundle, String, ArrayList<File>> {
     }
 
     @Override
-    public void onPostExecute(ArrayList<File> c) {
+    public void onPostExecute(ArrayList<String[]> c) {
         if (run) {
 
-            tab.loadsearchlist(new Futils().toStringArray(c));
+            tab.loadsearchlist(c);
         }
         a.dismiss();
     }
 
-    ArrayList<File> lis = new ArrayList<File>();
+    ArrayList<String[]> lis = new ArrayList<String[]>();
 
-    public ArrayList<File> getSearchResult(File f, String text) {
+    public ArrayList<String[]> getSearchResult(File f, String text) {
         lis.clear();
 
 
@@ -82,17 +83,17 @@ public class SearchTask extends AsyncTask<Bundle, String, ArrayList<File>> {
     public void search(File file, String text) {
         if (file.isDirectory()) {
 
-
-            File[] f = file.listFiles();
+            ArrayList<String[]> f=RootHelper.getFilesList(file.getPath(),tab.rootMode,tab.showHidden);
             // do you have permission to read this directory?
-            if (file.canRead()) {
-                for (File temp : f) {
+
+                for (String[] x : f) {
+                    File temp=new File(x[0]);
                     publishProgress(temp.getPath());
                     if (run) {
                         if (temp.isDirectory()) {
                             if (temp.getName().toLowerCase()
                                     .contains(text.toLowerCase())) {
-                                lis.add(temp);
+                                lis.add(x);
                             }
                             //System.out
                             //.println(file.getAbsoluteFile() );
@@ -102,7 +103,7 @@ public class SearchTask extends AsyncTask<Bundle, String, ArrayList<File>> {
                         } else {
                             if (temp.getName().toLowerCase()
                                     .contains(text.toLowerCase())) {
-                                lis.add(temp);
+                                lis.add(x);
                             }
                         }//	publishProgress(temp.getPath());
                     }
@@ -113,4 +114,4 @@ public class SearchTask extends AsyncTask<Bundle, String, ArrayList<File>> {
             }
         }
     }
-}
+

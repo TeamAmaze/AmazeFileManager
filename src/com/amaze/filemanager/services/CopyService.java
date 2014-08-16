@@ -125,12 +125,12 @@ public class CopyService extends Service {
 
         long totalBytes = 0L, copiedBytes = 0L;
 
-        public void execute(int id, final ArrayList<String> files, String FILE2) {
-            if(new File(FILE2).canWrite()){for (int i = 0; i < files.size(); i++) {
+        public void execute(int id, final ArrayList<String> files,final String FILE2) {
+            if(new File(FILE2).canWrite() && new File(files.get(0)).canRead()){for (int i = 0; i < files.size(); i++) {
 
                 File f1 = new File(files.get(i));
                 if (f1.isDirectory()) {
-                    totalBytes = totalBytes + new Futils().folderSize(f1);
+                    totalBytes = totalBytes + new Futils().folderSize(f1,false);
                 } else {
                     totalBytes = totalBytes + f1.length();
                 }
@@ -161,7 +161,7 @@ public class CopyService extends Service {
 
                     @Override
                     public void commandCompleted(int i, int i2) {
-                     RootTools.getFilePermissionsSymlinks(files.get(i)).setPermissions(0644);
+                        utils.scanFile(FILE2+"/"+new File(files.get(i)).getName(), c);
                     }
                 };
                 try {
@@ -174,6 +174,7 @@ public class CopyService extends Service {
                     e.printStackTrace();
                 }}
             }
+            utils.scanFile(new File(files.get(0)).getParent(),c);
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
 
