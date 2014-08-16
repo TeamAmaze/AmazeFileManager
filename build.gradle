@@ -12,6 +12,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
     compile files('libs/RootTools')
     compile files('libs/poppyview')
+    compile files('libs/FloatingActionButton')
 }
 
 android {

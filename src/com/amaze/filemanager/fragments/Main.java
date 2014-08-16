@@ -9,7 +9,7 @@ import android.graphics.drawable.*;
 import android.net.*;
 import android.os.*;
 import android.preference.*;
-import android.support.v4.app.*;
+import com.faizmalkani.floatingactionbutton.FloatingActionButton;
 import android.view.*;
 import android.widget.*;
 import com.amaze.filemanager.*;
