@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.File;
+
 public class Layoutelements implements Parcelable {
     public Layoutelements(Parcel im) {
         Bitmap bitmap = (Bitmap) im.readParcelable(getClass().getClassLoader());
@@ -15,6 +17,7 @@ public class Layoutelements implements Parcelable {
         desc = im.readString();
         permissions=im.readString();
         symlink=im.readString();
+        date=im.readString();
     }
 
     public static final Parcelable.Creator<Layoutelements> CREATOR =
@@ -38,6 +41,7 @@ public class Layoutelements implements Parcelable {
         p1.writeString(desc);
         p1.writeString(permissions);
         p1.writeString(symlink);
+        p1.writeString(date);
         p1.writeParcelable(((BitmapDrawable) imageId).getBitmap(), p2);
         // TODO: Implement this method
     }
@@ -48,7 +52,7 @@ public class Layoutelements implements Parcelable {
     private String permissions;
     private String symlink;
     private String size;
-
+    private String date;
     public Layoutelements(Drawable imageId, String title, String desc,String permissions,String symlink,String size) {
         this.imageId = imageId;
         this.title = title;
@@ -56,36 +60,28 @@ public class Layoutelements implements Parcelable {
         this.permissions=permissions.trim();
         this.symlink=symlink.trim();
         this.size=size;
+        date=new Futils().getdate(new File(desc));
     }
 
     public Drawable getImageId() {
         return imageId;
     }
 
-    public void setImageId(Drawable imageId) {
-        this.imageId = imageId;
-    }
 
     public String getDesc() {
         return desc.toString();
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc.toString();
-    }
 
     public String getTitle() {
         return title.toString();
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public String getSize() {
         return  size;
     }
-
+    public String getDate(){return date;}
     public String getPermissions() {
         return permissions;
     }

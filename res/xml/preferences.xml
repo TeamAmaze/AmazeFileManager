@@ -17,18 +17,26 @@
             android:key="showHidden"
           
             android:title="Show Hidden Files and Folders" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="showPermissions"
+            android:summary="Show Permissions of Files and Folders"
+            android:title="Show Permissions" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="showLastModified"
+            android:summary="Show the date and time when then fle was modified last time"
+            android:title="Show Last Modified" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="showFileSize"
+            android:summary="Show size of files and number of items in folders"
+            android:title="Show Sizes" />
 	  	<CheckBoxPreference
             android:defaultValue="false"
             android:key="rememberLastPath"
 
             android:title="Remember Last Path" />
-	  <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/listmode"
-            android:entryValues="@array/ints"
-            android:key="viewmode"
-            android:summary="Choose ListView Mode"
-            android:title="@string/viewmode" />
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/uimode"

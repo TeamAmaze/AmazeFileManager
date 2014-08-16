@@ -41,7 +41,7 @@ public class Main extends ListFragment {
     public int sortby, dsort, asc;
     public int uimode;
     ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
-    public String home, current = Environment.getExternalStorageDirectory().getPath(), sdetails;
+    public String home, current = Environment.getExternalStorageDirectory().getPath();
     Shortcuts sh = new Shortcuts();
     HashMap<String, Bundle> scrolls = new HashMap<String, Bundle>();
     Main ma = this;
@@ -49,7 +49,7 @@ public class Main extends ListFragment {
     IconUtils icons;
     HorizontalScrollView scroll,scroll1;
 	boolean rememberLastPath;
-    public boolean rootMode, mountSystem,showHidden;
+    public boolean rootMode, mountSystem,showHidden,showPermissions,showSize,showLastModified;
     View footerView;
     ImageButton paste;
     private PoppyViewHelper mPoppyViewHelper;
@@ -59,6 +59,9 @@ public class Main extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        showPermissions=Sp.getBoolean("showPermissions",false);
+        showSize=Sp.getBoolean("showFileSize",true);
+        showLastModified=Sp.getBoolean("showLastModified",true);
         icons = new IconUtils(Sp, getActivity());
         }
     @Override
@@ -124,7 +127,6 @@ public class Main extends ListFragment {
         text = res.getDrawable(R.drawable.ic_doc_text_am);
         getSortModes();
         home = Sp.getString("home", System.getenv("EXTERNAL_STORAGE"));
-        sdetails = Sp.getString("viewmode", "0");
         this.setRetainInstance(false);
 		
         File f = new File(home);

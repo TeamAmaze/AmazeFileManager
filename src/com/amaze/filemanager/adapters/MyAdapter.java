@@ -97,26 +97,18 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         View view = convertView;
         final int p = position;
         if (convertView == null) {
-            int i = R.layout.simplerow;
-            if (main.sdetails.equals("1")) {
-                i = R.layout.simplerow;
-            } else if (main.sdetails.equals("0")) {
-                i = R.layout.rowlayout;
-            }
             LayoutInflater mInflater = (LayoutInflater) context
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            view = mInflater.inflate(i, parent, false);
+            view = mInflater.inflate(R.layout.rowlayout, parent, false);
             final ViewHolder vholder = new ViewHolder();
 
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
             vholder.imageView = (ImageView) view.findViewById(R.id.icon);
 
             vholder.rl = (RelativeLayout) view.findViewById(R.id.second);
-            if (main.sdetails.equals("0")) {
                 vholder.perm = (TextView) view.findViewById(R.id.permis);
                 vholder.date = (TextView) view.findViewById(R.id.date);
                 vholder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
-            }
             view.setTag(vholder);
 			
 
@@ -171,14 +163,14 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                
             ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
         }
-
-        if (main.sdetails.equals("0")) {
+            if(main.showPermissions)
             holder.perm.setText(rowItem.getPermissions());
-            holder.date.setText(utils.getdate(new File(rowItem.getDesc())));
-            holder.txtDesc.setText(rowItem.getSize());
+        if(main.showLastModified)
+            holder.date.setText(rowItem.getDate());
+        if(main.showSize)
+        holder.txtDesc.setText(rowItem.getSize());
             holder.date.setVisibility(View.VISIBLE);
             holder.txtDesc.setVisibility(View.VISIBLE);
-        }
         return view;
     }
 }
