@@ -2,6 +2,9 @@ package com.amaze.filemanager.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Typeface;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -67,10 +70,29 @@ public class DrawerAdapter extends ArrayAdapter<String> {
             // TODO: Implement this method
 
         });
+
+        // Color matrix
+        float r = Color.red(android.R.color.white);
+        float g = Color.green(android.R.color.white);
+        float b = Color.blue(android.R.color.white);
+        float[] src = {
+
+                r, 0, 0, 0, 0,
+                0, g, 0, 0, 0,
+                0, 0, b, 0, 0,
+                0, 0, 0, 1, 0,
+                0, 0.59f, 0.53f, 1, 1
+        };
+        ColorMatrix colorMatrix = new ColorMatrix(src);
+        ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
+
         textView.setText(values[position]);
         switch (position) {
-            case 0:if(myChecked.get(0))
-                imageView.setImageResource(R.drawable.ic_action_sd_storage_blue);
+            case 0:if(myChecked.get(0)) {
+                // imageView.setImageResource(R.drawable.ic_action_sd_storage_blue);
+                imageView.setImageResource(R.drawable.ic_action_sd_storage);
+                imageView.setColorFilter(colorMatrixColorFilter);
+            }
                 else
                 imageView.setImageDrawable(icons.getSdDrawable1());
                 break;
