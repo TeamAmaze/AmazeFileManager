@@ -24,8 +24,8 @@
         <item name="android:actionBarStyle">@style/DarkActionBar</item>
     </style>
     <style name="DarkActionBar" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse" >
-        <item name="android:background">#3f51b5</item>
-        <item name="android:backgroundSplit">#3f51b5</item>
+        <item name="android:background">@color/theme_primary</item>
+        <item name="android:backgroundSplit">@color/theme_primary</item>
     </style>
 
     <style name="secondary_text_appearance">
