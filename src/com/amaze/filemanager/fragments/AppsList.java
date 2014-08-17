@@ -38,9 +38,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
-
 public class AppsList extends ListFragment {
     ArrayList<File> mFile = new ArrayList<File>();
     Futils utils = new Futils();
@@ -89,7 +86,7 @@ public class AppsList extends ListFragment {
             public void onClick(DialogInterface p1, int p2) {
                 switch (p2) {
                     case 0:
-                        Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Style.CONFIRM).show();
+                        Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
                         ApplicationInfo info = c.get(position);
                         File f = new File(info.publicSourceDir);
                         ArrayList<String> a = new ArrayList<String>();

@@ -2,6 +2,7 @@ package com.amaze.filemanager.utils;
 
 import android.app.Activity;
 import android.os.Environment;
+import android.widget.Toast;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,8 +24,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class Shortcuts {
     public Shortcuts() {
@@ -140,6 +139,6 @@ public class Shortcuts {
         DOMSource source = new DOMSource(doc);
         StreamResult result = new StreamResult(new File("/data/data/com.amaze.filemanager/shortcut.xml"));
         transformer.transform(source, result);
-        Crouton.makeText(s, "Successful", Style.INFO).show();
+        Toast.makeText(s, "Successful", Toast.LENGTH_LONG).show();
     }
 }

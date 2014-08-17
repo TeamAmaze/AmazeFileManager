@@ -19,7 +19,6 @@ import com.amaze.filemanager.services.*;
 import com.amaze.filemanager.services.asynctasks.*;
 import com.amaze.filemanager.utils.*;
 import com.fourmob.poppyview.*;
-import de.keyboardsurfer.android.widget.crouton.*;
 import java.io.*;
 import java.util.*;
 
@@ -50,7 +49,7 @@ public class Main extends ListFragment {
     HorizontalScrollView scroll,scroll1;
 	boolean rememberLastPath;
     public boolean rootMode, mountSystem,showHidden,showPermissions,showSize,showLastModified;
-    View footerView;
+    View footerView, poppyView;
     ImageButton paste;
     private PoppyViewHelper mPoppyViewHelper;
     public LinearLayout pathbar;
@@ -62,8 +61,7 @@ public class Main extends ListFragment {
         showPermissions=Sp.getBoolean("showPermissions",false);
         showSize=Sp.getBoolean("showFileSize",true);
         showLastModified=Sp.getBoolean("showLastModified",true);
-        icons = new IconUtils(Sp, getActivity());
-        }
+        icons = new IconUtils(Sp, getActivity());        }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -77,6 +75,14 @@ public class Main extends ListFragment {
                 showPopup(view);
             }
         });
+        FloatingActionButton fab=(FloatingActionButton)getActivity().findViewById(R.id.fabbutton);
+        (fab).setDrawable(icons.getNewDrawable());fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                add();
+            }
+        });
+
         paste=(ImageButton)getActivity().findViewById(R.id.paste);
         paste.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +106,7 @@ public class Main extends ListFragment {
         utils = new Futils();
         res = getResources();
         mPoppyViewHelper = new PoppyViewHelper(getActivity());
-        View poppyView = mPoppyViewHelper.createPoppyViewOnListView(android.R.id.list,R.layout.pooppybar);
+        poppyView = mPoppyViewHelper.createPoppyViewOnListView(android.R.id.list,R.layout.pooppybar);
         initPoppyViewListeners(poppyView);
         history = new HistoryManager(getActivity(), "Table1");
         rootMode = Sp.getBoolean("rootmode", false);
@@ -136,6 +142,7 @@ public class Main extends ListFragment {
 			}
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
         pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
+
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -230,7 +237,7 @@ public class Main extends ListFragment {
                                     updateList();
                                     Toast.makeText(getActivity(), "Folder Created", Toast.LENGTH_LONG).show();
                                 } else {
-                                    Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Style.ALERT).show();
+                                    Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
@@ -259,12 +266,12 @@ public class Main extends ListFragment {
                                     try {
                                         boolean b = f1.createNewFile();
                                         updateList();
-                                        Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.filecreated), Style.CONFIRM).show();
+                                        Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.filecreated), Toast.LENGTH_LONG).show();
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
                                 } else {
-                                    Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Style.ALERT).show();
+                                    Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
@@ -448,7 +455,9 @@ public class Main extends ListFragment {
             hideOption(R.id.openwith, menu);
             hideOption(R.id.ex, menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
-
+            getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
+            getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
+            poppyView.setVisibility(View.GONE);
             return true;
         }
 
@@ -497,9 +506,9 @@ public class Main extends ListFragment {
                 case R.id.sethome:
                     int pos = plist.get(0);
                     home = list.get(pos).getDesc();
-                    Crouton.makeText(getActivity(),
+                    Toast.makeText(getActivity(),
                             utils.getString(getActivity(), R.string.newhomedirectory) + list.get(pos).getTitle(),
-                            Style.INFO).show();
+                            Toast.LENGTH_LONG).show();
                     Sp.edit().putString("home", list.get(pos).getDesc()).apply();
 
                     mode.finish();
@@ -552,13 +561,13 @@ public class Main extends ListFragment {
                                     m.finish();
                                     updateList();
                                     if (b) {
-                                        Crouton.makeText(getActivity(),
+                                        Toast.makeText(getActivity(),
                                                 utils.getString(getActivity(), R.string.renamed),
-                                                Style.CONFIRM).show();
+                                                Toast.LENGTH_LONG).show();
                                     } else {
-                                        Crouton.makeText(getActivity(),
+                                        Toast.makeText(getActivity(),
                                                 utils.getString(getActivity(), R.string.renameerror),
-                                                Style.ALERT).show();
+                                                Toast.LENGTH_LONG).show();
                                     }
                                     // TODO: Implement this method
                                 }
@@ -584,7 +593,7 @@ public class Main extends ListFragment {
                         } catch (Exception e) {
                         }
                     }
-                    Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.bookmarksadded), Style.CONFIRM).show();
+                    Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                     mode.finish();
                     return true;
                 case R.id.ex:
@@ -644,7 +653,9 @@ public class Main extends ListFragment {
 
             selection = false;
             adapter.toggleChecked(false);
-
+            poppyView.setVisibility(View.VISIBLE);
+            getActivity().findViewById(R.id.action_bar).setVisibility(View.VISIBLE);
+            getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
 
         }
     };
@@ -899,7 +910,7 @@ public class Main extends ListFragment {
                         break;
                     case R.id.item9:
                         Sp.edit().putString("home", ma.current).apply();
-                        Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.newhomedirectory) + ma.home, Style.CONFIRM).show();
+                        Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.newhomedirectory) + ma.home, Toast.LENGTH_LONG).show();
                         ma.home = ma.current;
                         break;
                     case R.id.item10:

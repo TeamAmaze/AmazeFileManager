@@ -17,15 +17,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 
 import java.util.ArrayList;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class ProcessViewer extends Fragment {
 
@@ -123,7 +121,7 @@ public class ProcessViewer extends Fragment {
                         cancel.setOnClickListener(new View.OnClickListener() {
 
                             public void onClick(View p1) {
-                                Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.stopping), Style.CONFIRM).show();
+                                Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.stopping),Toast.LENGTH_LONG).show();
                                 Intent i = new Intent("copycancel");
                                 i.putExtra("id", id1);
                                 getActivity().sendBroadcast(i);
@@ -190,7 +188,7 @@ public class ProcessViewer extends Fragment {
                         cancel.setOnClickListener(new View.OnClickListener() {
 
                             public void onClick(View p1) {
-                                Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.stopping), Style.CONFIRM).show();
+                              Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.stopping), Toast.LENGTH_LONG).show();
                                 Intent i = new Intent("excancel");
                                 i.putExtra("id", id);
                                 getActivity().sendBroadcast(i);
@@ -254,7 +252,7 @@ public class ProcessViewer extends Fragment {
                         cancel.setOnClickListener(new View.OnClickListener() {
 
                             public void onClick(View p1) {
-                                Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.stopping), Style.CONFIRM).show();
+                                Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.stopping), Toast.LENGTH_LONG).show();
                                 Intent i = new Intent("zipcancel");
                                 i.putExtra("id", id);
                                 getActivity().sendBroadcast(i);

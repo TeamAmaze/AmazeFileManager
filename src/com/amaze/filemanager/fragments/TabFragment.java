@@ -40,9 +40,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
-
 
 public class TabFragment extends android.support.v4.app.Fragment {
     List<android.support.v4.app.Fragment> fragments = new ArrayList<android.support.v4.app.Fragment>();
@@ -80,12 +77,12 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
         boolean firstrun = Sp.getBoolean("firstrun", true);
         if (firstrun) {
-            Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.guide1), Style.INFO).show();
+           /* Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.guide1), Style.INFO).show();
             Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.guide2), Style.ALERT).show();
             Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.guide3), Style.CONFIRM).show();
             Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.guide4), Style.CONFIRM).show();
             Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.guide5), Style.INFO).show();
-            Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.guide6), Style.CONFIRM).show();
+            Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.guide6), Style.CONFIRM).show();*/
             Sp.edit().putBoolean("firstrun", false).apply();
         }
         HOME = Sp.getString("home", Environment.getExternalStorageDirectory().getPath());
@@ -188,7 +185,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
             case R.id.item9:
                 Main ma1 = getCurrentTab();
                 Sp.edit().putString("home", ma1.current).commit();
-                Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.newhomedirectory) + ma1.home, Style.CONFIRM).show();
+ //               Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.newhomedirectory) + ma1.home, Style.CONFIRM).show();
                 ma1.home = ma1.current;
                 break;
             case R.id.item10:
@@ -314,7 +311,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                                     f.mkdirs();
                                     Toast.makeText(getActivity(), "Folder Created", Toast.LENGTH_LONG).show();
                                 } else {
-                                    Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Style.ALERT).show();
+   //                                 Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Style.ALERT).show();
                                 }
                                 // TODO: Implement this method
                             }
@@ -344,11 +341,11 @@ public class TabFragment extends android.support.v4.app.Fragment {
                                 if (!f1.exists()) {
                                     try {
                                         f1.createNewFile();
-                                        Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.filecreated), Style.CONFIRM).show();
+       //                                 Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.filecreated), Style.CONFIRM).show();
                                     } catch (IOException e) {
                                     }
                                 } else {
-                                    Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Style.ALERT).show();
+     //                               Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Style.ALERT).show();
                                 }
                                 // TODO: Implement this method
                             }

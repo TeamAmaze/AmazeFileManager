@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.BooksAdapter;
@@ -28,9 +29,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class BookmarksManager extends ListFragment {
     Futils utils = new Futils();
@@ -129,13 +127,13 @@ public class BookmarksManager extends ListFragment {
                                 s.addS(a);
                                 b.items.add(a);
                                 b.notifyDataSetChanged();
-                                Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.success), Style.CONFIRM).show();
+                                Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.success), Toast.LENGTH_LONG).show();
                             } else {
-                                Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.filenotexists), Style.ALERT).show();
+                                Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.filenotexists), Toast.LENGTH_LONG).show();
                             }
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
-                            Crouton.makeText(getActivity(), utils.getString(getActivity(), R.string.error), Style.ALERT).show();
+                            Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.error), Toast.LENGTH_LONG).show();
                         }
                         // TODO: Implement this method
                     }

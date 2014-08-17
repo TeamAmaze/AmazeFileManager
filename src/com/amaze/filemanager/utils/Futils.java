@@ -45,9 +45,6 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
-
 public class Futils {
     public Futils() {
     }
@@ -141,7 +138,7 @@ public class Futils {
         c.setPositiveButton(getString(b.getActivity(), R.string.yes), new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface p1, int p2) {
-                Crouton.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Style.INFO).show();
+                Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_LONG).show();
                 if(todelete.get(0).getParentFile().canWrite()){
                 Intent i = new Intent(b.getActivity(), DeleteTask.class);
                 i.putStringArrayListExtra("files", toStringArray(todelete));
@@ -400,7 +397,7 @@ public class Futils {
             try {
                 openunknown(f, m);
             } catch (Exception e) {
-                Crouton.makeText(m, getString(m, R.string.noappfound), Style.ALERT).show();
+                Toast.makeText(m, getString(m, R.string.noappfound),Toast.LENGTH_LONG).show();
                 openWith(f, m);
             }
         }

@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.AppsList;
@@ -21,9 +22,6 @@ import com.amaze.filemanager.utils.Layoutelements;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class AppsAdapter extends ArrayAdapter<Layoutelements> {
     Context context;
@@ -138,7 +136,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                     if (i != null)
                         app.startActivity(i);
                     else
-                        Crouton.makeText(app.getActivity(), "Not Allowed", Style.ALERT).show();
+                       Toast.makeText(app.getActivity(), "Not Allowed", Toast.LENGTH_LONG).show();
                 }
                 // TODO: Implement this method
             }

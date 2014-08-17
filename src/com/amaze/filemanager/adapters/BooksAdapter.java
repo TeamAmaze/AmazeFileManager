@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.BookmarksManager;
@@ -15,10 +16,6 @@ import com.amaze.filemanager.utils.Shortcuts;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
-
 public class BooksAdapter extends ArrayAdapter<File> {
     Shortcuts s = new Shortcuts();
     Activity context;
@@ -77,7 +74,7 @@ public class BooksAdapter extends ArrayAdapter<File> {
                     items.remove(p);
                     notifyDataSetChanged();
                 } catch (Exception e) {
-                    Crouton.makeText(context, e + "", Style.INFO).show();
+                    Toast.makeText(context, e + "", Toast.LENGTH_LONG).show();
                 }
                 // TODO: Implement this method
             }

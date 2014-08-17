@@ -2,6 +2,7 @@ package com.amaze.filemanager.services.asynctasks;
 
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.Toast;
 
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.FileListSorter;
@@ -18,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>> {
 
@@ -39,7 +38,7 @@ public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>>
 
     @Override
     public void onProgressUpdate(String... message) {
-        Crouton.makeText(ma.getActivity(), message[0], Style.ALERT).show();
+        Toast.makeText(ma.getActivity(), message[0], Toast.LENGTH_LONG).show();
     }
 
     @Override

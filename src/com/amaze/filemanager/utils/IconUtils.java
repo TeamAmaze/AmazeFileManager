@@ -89,9 +89,9 @@ public class IconUtils {
 
     public Drawable getNewDrawable() {
         if (CURRENT == LIGHT)
-            return c.getResources().getDrawable(R.drawable.ic_action_new);
+            return c.getResources().getDrawable(R.drawable.ic_action_new_light);
         else
-            return c.getResources().getDrawable(R.drawable.ic_action_new);
+            return c.getResources().getDrawable(R.drawable.ic_action_new_light);
     }
 
     public Drawable getSearchDrawable() {

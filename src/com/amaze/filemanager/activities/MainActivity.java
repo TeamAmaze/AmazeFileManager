@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
@@ -319,7 +320,22 @@ getActionBar().hide();
         registerReceiver(RECIEVER, new IntentFilter("run"));
 
     }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+       if ( keyCode == KeyEvent.KEYCODE_MENU ) {
+ImageButton ib=(ImageButton)findViewById(R.id.action_overflow);
+if(ib.getVisibility()==View.VISIBLE){
+	ib.performClick();
+}
+           // perform your desired action here
 
+           // return 'true' to prevent further propagation of the key event
+           return true;
+       }
+
+       // let the system handle all other key events
+       return super.onKeyDown(keyCode, event);
+    }
     private BroadcastReceiver RECIEVER = new BroadcastReceiver() {
 
         @Override

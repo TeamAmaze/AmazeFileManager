@@ -3,15 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/lin"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+       >
 <LinearLayout
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/actionBarSize"
     android:orientation="horizontal"
+    android:id="@+id/action_bar"
     android:background="@color/theme_primary">
     <ImageButton
         android:id="@+id/drawer_buttton"
@@ -58,7 +60,7 @@
         android:src="@drawable/ic_action_overflow"
         />
     </LinearLayout>
-<FrameLayout android:id="@+id/buttonbarframe" android:layout_height="wrap_content" android:layout_width="fill_parent">
+<FrameLayout android:id="@+id/buttonbarframe" android:layout_below="@id/action_bar"  android:layout_height="wrap_content" android:layout_width="fill_parent">
         <LinearLayout
             android:background="@color/theme_primary"
             android:id="@+id/pathbar"
@@ -68,7 +70,7 @@
             android:orientation="horizontal">
             <ImageButton
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="?android:attr/actionBarSize"
                 android:src="@drawable/ic_drawer_l"
                 android:layout_weight="1"
                 android:visibility="invisible"
@@ -83,6 +85,7 @@
             <TextView
                 android:clickable="false"
                 android:layout_width="wrap_content"
+                android:text="  "
                style="@android:style/TextAppearance.Large"
                 android:textColor="@android:color/white"
                 android:layout_height="wrap_content"
@@ -96,6 +99,7 @@
                     android:layout_height="wrap_content">
 
                 <TextView
+                    android:text="  "
                     android:clickable="false"
                     android:layout_width="wrap_content"
                     style="@android:style/TextAppearance.Small"
@@ -122,18 +126,30 @@
                 android:orientation="horizontal">
                 </LinearLayout>
         </HorizontalScrollView>
+
+
 </FrameLayout>
+
         <!--
          As the main content view, the view below consumes the entire
          space available using match_parent in both dimensions.
         -->
 
         <FrameLayout
-            android:layout_weight="1"
+            android:layout_below="@id/buttonbarframe"
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </LinearLayout>
+        <com.faizmalkani.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabbutton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_below="@id/buttonbarframe"
+            android:layout_marginTop="-28dp"
+            android:layout_marginLeft="10dp"
+            />
+    </RelativeLayout>
+
     <!--
          android:layout_gravity="start" tells DrawerLayout to treat
          this as a sliding drawer on the left side for left-to-right
