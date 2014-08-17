@@ -2,6 +2,8 @@ package com.amaze.filemanager.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Typeface;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -67,20 +69,33 @@ public class DrawerAdapter extends ArrayAdapter<String> {
             // TODO: Implement this method
 
         });
+        float[] src = {
+
+                                0, 0, 0,0, 0,
+                                0, 0.58431373f, 0, 0, 0,
+                                0, 0,  0.52941176f,0, 0,
+                                0, 0, 0, 1, 0
+                        };
+                ColorMatrix colorMatrix = new ColorMatrix(src);
+                ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
+
         textView.setText(values[position]);
         switch (position) {
-            case 0:if(myChecked.get(0))
-                imageView.setImageResource(R.drawable.ic_action_sd_storage_blue);
+            case 0:if(myChecked.get(0)){
+                imageView.setImageResource(R.drawable.ic_action_sd_storage);
+                imageView.setColorFilter(colorMatrixColorFilter);}
                 else
                 imageView.setImageDrawable(icons.getSdDrawable1());
                 break;
-            case 1:if(myChecked.get(1))
-                imageView.setImageResource(R.drawable.ic_action_view_as_grid_blue);
+            case 1:if(myChecked.get(1)){
+                imageView.setImageResource(R.drawable.ic_action_view_as_grid);
+                imageView.setColorFilter(colorMatrixColorFilter);}
             else
                 imageView.setImageDrawable(icons.getGridDrawable());
                 break;
-            case 2:if(myChecked.get(2))
-                imageView.setImageResource(R.drawable.ic_action_not_important_blue);
+            case 2:if(myChecked.get(2)){
+                imageView.setImageResource(R.drawable.ic_action_not_important);
+                imageView.setColorFilter(colorMatrixColorFilter);}
             else
                 imageView.setImageDrawable(icons.getBookDrawable1());
                 break;
