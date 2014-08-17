@@ -197,9 +197,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
             case R.id.item3:
                 removePage(mViewPager.getCurrentItem());
                 break;
-            case R.id.item5:
-                add(HOME);
-                break;
             case R.id.item4:
                 search();
                 break;
@@ -529,7 +526,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
     public void initMenu(Menu menu) {
         menu.findItem(R.id.item3).setIcon(icons.getCancelDrawable());
         menu.findItem(R.id.item4).setIcon(icons.getSearchDrawable());
-        menu.findItem(R.id.item5).setIcon(icons.getNewDrawable());
+        //menu.findItem(R.id.item5).setIcon(icons.getNewDrawable());
     }
 }
 

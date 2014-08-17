@@ -5,11 +5,6 @@
         android:icon="@drawable/ic_action_cancel_light"
         android:showAsAction="ifRoom" />
     <item
-        android:id="@+id/item5"
-        android:title="@string/add"
-        android:icon="@drawable/ic_action_new_light"
-        android:showAsAction="ifRoom" />
-    <item
         android:id="@+id/item4"
         android:title="@string/search"
         android:icon="@drawable/ic_action_search_light"

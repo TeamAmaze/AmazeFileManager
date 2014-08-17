@@ -82,7 +82,7 @@ public class Main extends ListFragment {
                 add();
             }
         });
-
+        getActivity().findViewById(R.id.fabbutton).setVisibility(View.VISIBLE);
         paste=(ImageButton)getActivity().findViewById(R.id.paste);
         paste.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -919,9 +919,7 @@ public class Main extends ListFragment {
                     case R.id.item11:
                         utils.showDirectorySortDialog(ma);
                         break;
-                    case R.id.item5:
-                        add();
-                        break;
+
 
                     case R.id.item4:
                         search();
