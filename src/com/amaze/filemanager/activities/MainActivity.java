@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -16,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -36,6 +38,7 @@ import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Shortcuts;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -75,7 +78,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             setTheme(R.style.DarkTheme);
         }
         setContentView(R.layout.main);
-getActionBar().hide();
+        getActionBar().hide();
         title=(TextView)findViewById(R.id.title);
 
         try {
@@ -85,6 +88,15 @@ getActionBar().hide();
         utils = new Futils();
         mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if(Build.VERSION.SDK_INT>=19){
+        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        // enable status bar tint
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setStatusBarTintColor(getResources().getColor(R.color.theme_primary));
+
+        SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
+        ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mDrawerLayout.getLayoutParams();
+        p.setMargins(0,config.getPixelInsetTop(false),0,0);}
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         ((ImageButton)findViewById(R.id.settingsbutton)).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="DarkTheme" parent="android:Theme.Holo">
+
+    </style>
+
+    <style name="LightTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+    </style>
+    <style name="DarkActionBar" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse" >
+
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:background">@color/theme_primary</item>
+        <item name="android:backgroundSplit">@color/theme_primary</item>
+    </style>
+
+    <style name="secondary_text_appearance">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#99000000</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+</resources>

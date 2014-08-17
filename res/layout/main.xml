@@ -140,6 +140,12 @@
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+        <ImageView android:layout_width="match_parent"
+            android:scaleType="fitXY"
+            android:layout_height="7dp"
+            android:src="@drawable/shadow"
+            android:layout_below="@id/buttonbarframe"
+            android:adjustViewBounds="false" />
         <com.faizmalkani.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabbutton"
             android:layout_width="56dp"
