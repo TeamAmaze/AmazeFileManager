@@ -66,7 +66,7 @@
             android:id="@+id/pathbar"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
+            android:paddingBottom="2dp"
             android:orientation="horizontal">
             <ImageButton
                 android:layout_width="wrap_content"
@@ -85,7 +85,7 @@
             <TextView
                 android:clickable="false"
                 android:layout_width="wrap_content"
-                android:text="  "
+                android:textSize="18sp"
                style="@android:style/TextAppearance.Large"
                 android:textColor="@android:color/white"
                 android:layout_height="wrap_content"
@@ -99,7 +99,6 @@
                     android:layout_height="wrap_content">
 
                 <TextView
-                    android:text="  "
                     android:clickable="false"
                     android:layout_width="wrap_content"
                     style="@android:style/TextAppearance.Small"

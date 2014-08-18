@@ -4,11 +4,13 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
 import com.amaze.filemanager.R;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 public class Preferences extends Activity {
     @Override
@@ -22,7 +24,12 @@ public class Preferences extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prefsfrag);
         getActionBar().setIcon(R.drawable.ic_launcher1);
-
+        if(Build.VERSION.SDK_INT>=19) {
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            // enable status bar tint
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintColor(getResources().getColor(R.color.theme_primary));
+        }
         getActionBar().setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
     }
 

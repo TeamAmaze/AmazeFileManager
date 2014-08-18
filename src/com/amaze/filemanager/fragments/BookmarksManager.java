@@ -44,6 +44,7 @@ public class BookmarksManager extends ListFragment {
         setHasOptionsMenu(false);
         setRetainInstance(false);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.fabbutton).setVisibility(View.GONE);
         ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
         overflow.setVisibility(View.GONE);
         ((LinearLayout) getActivity().findViewById(R.id.buttons))
@@ -93,7 +94,6 @@ public class BookmarksManager extends ListFragment {
         hideOption(R.id.item9, menu);
         hideOption(R.id.item11, menu);
         hideOption(R.id.item10, menu);
-        menu.findItem(R.id.item5).setIcon(icons.getNewDrawable());
     }
 
     private void hideOption(int id, Menu menu) {
@@ -104,7 +104,7 @@ public class BookmarksManager extends ListFragment {
     public boolean onOptionsItemSelected(MenuItem item) { // Handleitem
         // selection
         switch (item.getItemId()) {
-            case R.id.item5:
+            default:
 
                 AlertDialog.Builder ba1 = new AlertDialog.Builder(getActivity());
                 ba1.setTitle(utils.getString(getActivity(), R.string.addbook));
