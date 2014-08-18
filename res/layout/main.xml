@@ -170,10 +170,40 @@
         android:id="@+id/left_drawer"
         android:layout_gravity="start"
         >
+        <LinearLayout
+            android:id="@+id/drawerheader"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:padding="5dp"
+            android:background="@color/theme_primary"
+            android:clickable="false">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="40dp"
+                android:layout_height="fill_parent"
+                android:clickable="false"
+                android:padding="5dp"
+                android:src="@drawable/ic_launcher1"
+                android:gravity="center_vertical"
+                android:contentDescription="@string/icon" />
+
+            <TextView
+                android:id="@+id/firstline"
+                android:layout_width="wrap_content"
+                android:layout_toRightOf="@id/icon"
+                android:layout_height="fill_parent"
+                android:clickable="false"
+                style="@android:style/TextAppearance.Medium.Inverse"
+                android:text="Amaze File Manager"
+                android:gravity="center_vertical" />
+        </LinearLayout>
     <ListView
         android:id="@+id/menu_drawer"
         style="@android:style/Theme.Holo.Light"
         android:layout_width="250dp"
+        android:layout_below="@id/drawerheader"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@drawable/drawer_bg"

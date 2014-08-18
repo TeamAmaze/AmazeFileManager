@@ -70,6 +70,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        utils = new Futils();
+        val = new String[]{utils.getString(this, R.string.storage), utils.getString(this, R.string.apps), utils.getString(this, R.string.bookmanag)};
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         theme=Integer.parseInt(Sp.getString("theme","0"));
         util = new IconUtils(Sp, this);
@@ -80,24 +82,31 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         setContentView(R.layout.main);
         getActionBar().hide();
         title=(TextView)findViewById(R.id.title);
-
+        if(Sp.getBoolean("firstrun",true)){
         try {
             s.makeS();
         } catch (Exception e) {
-        }
-        utils = new Futils();
+        }Sp.edit().putBoolean("firstrun",false);}
         mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.menu_drawer);
+        ArrayList<String> list = new ArrayList<String>();
+        for (int i = 0; i < val.length; i++) {
+            list.add(val[i]);
+        }
+        adapter= new DrawerAdapter(this, val, MainActivity.this, Sp);
+        mDrawerList.setAdapter(adapter);
+
+        if (savedInstanceState == null) {
+            selectItem(0);
+        }if(select<4){title.setText(val[select]);}
         if(Build.VERSION.SDK_INT>=19){
         SystemBarTintManager tintManager = new SystemBarTintManager(this);
-        // enable status bar tint
         tintManager.setStatusBarTintEnabled(true);
         tintManager.setStatusBarTintColor(getResources().getColor(R.color.theme_primary));
-
         SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
         ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mDrawerLayout.getLayoutParams();
         p.setMargins(0,config.getPixelInsetTop(false),0,0);}
-        mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         ((ImageButton)findViewById(R.id.settingsbutton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,17 +115,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 startActivity(i);
             }
         });
-        View v1=getLayoutInflater().inflate(R.layout.drawerheader,null);
-        TextView tv=(TextView)v1.findViewById(R.id.firstline);
-        tv.setTextColor(getResources().getColor(android.R.color.white));
-        mDrawerList.addHeaderView(v1);
-        val = new String[]{utils.getString(this, R.string.storage), utils.getString(this, R.string.apps), utils.getString(this, R.string.bookmanag)};
-        ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < val.length; i++) {
-            list.add(val[i]);
-        }
-    adapter= new DrawerAdapter(this, val, MainActivity.this, Sp);
-        mDrawerList.setAdapter(adapter);
         if (th == 1) {
             mDrawerList.setBackgroundResource(android.R.drawable.screen_background_dark);
         }
@@ -167,9 +165,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 else mDrawerLayout.openDrawer(mDrawerLinear);
             }
         });
-        if (savedInstanceState == null) {
-            selectItem(0);
-        }if(select<4){title.setText(val[select]);}
     }
 
     @Override
