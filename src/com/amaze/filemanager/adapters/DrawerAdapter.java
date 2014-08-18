@@ -26,8 +26,8 @@ public class DrawerAdapter extends ArrayAdapter<String> {
     IconUtils icons;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     public void toggleChecked(int position) {
-       toggleChecked(false);
-            myChecked.put(position, true);
+        toggleChecked(false);
+        myChecked.put(position, true);
 
 
         notifyDataSetChanged();
@@ -71,20 +71,20 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         });
         float[] src = {
 
-                                0, 0, 0,0, 0,
-                                0, 0.58431373f, 0, 0, 0,
-                                0, 0,  0.52941176f,0, 0,
-                                0, 0, 0, 1, 0
-                        };
-                ColorMatrix colorMatrix = new ColorMatrix(src);
-                ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
+                0, 0, 0,0, 0,
+                0, 0.58431373f, 0, 0, 0,
+                0, 0,  0.52941176f,0, 0,
+                0, 0, 0, 1, 0
+        };
+        ColorMatrix colorMatrix = new ColorMatrix(src);
+        ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
 
         textView.setText(values[position]);
         switch (position) {
             case 0:if(myChecked.get(0)){
                 imageView.setImageResource(R.drawable.ic_action_sd_storage);
                 imageView.setColorFilter(colorMatrixColorFilter);}
-                else
+            else
                 imageView.setImageDrawable(icons.getSdDrawable1());
                 break;
             case 1:if(myChecked.get(1)){
@@ -101,12 +101,12 @@ public class DrawerAdapter extends ArrayAdapter<String> {
                 break;
 
         }
-if(myChecked.get(position)){
-    if(m.theme==0){textView.setTypeface(Typeface.DEFAULT);}else textView.setTypeface(Typeface.DEFAULT_BOLD);
-   textView.setTextColor(m.getResources().getColor(R.color.theme_primary));}
+        if(myChecked.get(position)){
+            if(m.theme==0){textView.setTypeface(Typeface.DEFAULT);}else textView.setTypeface(Typeface.DEFAULT_BOLD);
+            textView.setTextColor(m.getResources().getColor(R.color.theme_primary));}
         else
-if(m.theme==0)
-    textView.setTextColor(m.getResources().getColor(android.R.color.black));
+        if(m.theme==0)
+            textView.setTextColor(m.getResources().getColor(android.R.color.black));
         else     textView.setTextColor(m.getResources().getColor(android.R.color.white));
 
         return rowView;

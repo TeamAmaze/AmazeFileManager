@@ -1,28 +1,64 @@
 package com.amaze.filemanager.fragments;
 
 
-import android.animation.*;
-import android.app.*;
-import android.content.*;
-import android.content.res.*;
-import android.graphics.drawable.*;
-import android.net.*;
-import android.os.*;
-import android.preference.*;
-import com.faizmalkani.floatingactionbutton.FloatingActionButton;
-import android.view.*;
-import android.widget.*;
-import com.amaze.filemanager.*;
-import com.amaze.filemanager.activities.*;
-import com.amaze.filemanager.adapters.*;
-import com.amaze.filemanager.services.*;
-import com.amaze.filemanager.services.asynctasks.*;
-import com.amaze.filemanager.utils.*;
-import com.fourmob.poppyview.*;
-import java.io.*;
-import java.util.*;
-
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
+import android.view.ActionMode;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.adapters.MyAdapter;
+import com.amaze.filemanager.services.CopyService;
+import com.amaze.filemanager.services.ExtractService;
+import com.amaze.filemanager.services.asynctasks.LoadList;
+import com.amaze.filemanager.services.asynctasks.LoadSearchList;
+import com.amaze.filemanager.services.asynctasks.MoveFiles;
+import com.amaze.filemanager.services.asynctasks.SearchTask;
+import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.HistoryManager;
+import com.amaze.filemanager.utils.IconUtils;
+import com.amaze.filemanager.utils.Icons;
+import com.amaze.filemanager.utils.Layoutelements;
+import com.amaze.filemanager.utils.Shortcuts;
+import com.faizmalkani.floatingactionbutton.FloatingActionButton;
+import com.fourmob.poppyview.PoppyViewHelper;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class Main extends ListFragment {
@@ -53,6 +89,7 @@ public class Main extends ListFragment {
     ImageButton paste;
     private PoppyViewHelper mPoppyViewHelper;
     public LinearLayout pathbar;
+    private ImageButton ib;
     UpdatePathBar updatePathBar=new UpdatePathBar();
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -665,6 +702,7 @@ public class Main extends ListFragment {
             buttons.removeAllViews();
             Drawable bg=getResources().getDrawable(R.drawable.listitem1);
             Drawable arrow=getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
+            //ib.setBackgroundDrawable(bg);
             Bundle b = utils.getPaths(text, getActivity());
             ArrayList<String> names = b.getStringArrayList("names");
             ArrayList<String> rnames = new ArrayList<String>();
@@ -687,7 +725,7 @@ public class Main extends ListFragment {
                 v.setLayoutParams(params);
                 final int index = i;
                 if (rpaths.get(i).equals("/")) {
-                    ImageButton ib = new ImageButton(getActivity());
+                    ib = new ImageButton(getActivity());
                     ib.setImageDrawable(icons.getRootDrawable());
                     ib.setBackgroundDrawable(bg);
                     ib.setOnClickListener(new View.OnClickListener() {
@@ -702,7 +740,7 @@ public class Main extends ListFragment {
                     if(names.size()-i!=1)
                     buttons.addView(v);
                 } else if (rpaths.get(i).equals(Environment.getExternalStorageDirectory().getPath())) {
-                    ImageButton ib = new ImageButton(getActivity());
+                    ib = new ImageButton(getActivity());
                     ib.setImageDrawable(icons.getSdDrawable());
                     ib.setBackgroundDrawable(bg);
                     ib.setOnClickListener(new View.OnClickListener() {
@@ -720,8 +758,8 @@ public class Main extends ListFragment {
                     button.setText(rnames.get(index));
                     button.setTextColor(getResources().getColor(android.R.color.white));
                     button.setTextSize(13);
-                    button.setBackgroundDrawable(bg);
-                    //	button.setBackgroundDrawable(getResources().getDrawable(R.drawable.listitem));
+                    // button.setBackgroundDrawable(bg);
+                    button.setBackgroundDrawable(getResources().getDrawable(R.drawable.listitem));
                     button.setOnClickListener(new Button.OnClickListener() {
 
                         public void onClick(View p1) {
