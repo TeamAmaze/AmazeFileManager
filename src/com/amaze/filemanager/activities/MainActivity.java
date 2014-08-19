@@ -105,8 +105,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         tintManager.setStatusBarTintEnabled(true);
         tintManager.setStatusBarTintColor(getResources().getColor(R.color.theme_primary));
         SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
-        ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mDrawerLayout.getLayoutParams();
-        p.setMargins(0,config.getPixelInsetTop(false),0,0);}
+        DrawerLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mDrawerLayout.getLayoutParams();
+        p.setMargins(0,config.getPixelInsetTop(false),0,0);
+             }
         ((ImageButton)findViewById(R.id.settingsbutton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

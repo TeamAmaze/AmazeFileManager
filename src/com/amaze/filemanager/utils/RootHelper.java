@@ -71,7 +71,25 @@ public class RootHelper
         return input.replaceAll(UNIX_ESCAPE_EXPRESSION, "\\\\$1");
     }	private static final String UNIX_ESCAPE_EXPRESSION = "(\\(|\\)|\\[|\\]|\\s|\'|\"|`|\\{|\\}|&|\\\\|\\?)";
 
+    public static ArrayList<String[]> getFilesList(String path,boolean showHidden){
+        File f=new File(path);
+        ArrayList<String[]> files=new ArrayList<String[]>();
+        if(f.exists() && f.isDirectory()){
+            for(File x:f.listFiles()){
+                if(showHidden){
+                    files.add(new String[]{x.getPath(),"",parseFilePermission(x)});
+                }
+                else{if(!x.isHidden()){files.add(new String[]{x.getPath(),"",parseFilePermission(x)});}}
+            }
+        }
 
+        return files;}
+    public static String parseFilePermission(File f){
+        String per="";
+        if(f.canRead()){per=per+"r";}
+        if(f.canWrite()){per=per+"w";}
+        if(f.canExecute()){per=per+"x";}
+        return  per;}
     public static ArrayList<String[]> getFilesList(String path,boolean root,boolean showHidden)
     {
 String cpath=getCommandLineString(path);
@@ -108,39 +126,8 @@ return a;
 
         }
     }
-    public static ArrayList<String> getSimpleFilesList(String path,boolean root,boolean showHidden)
-    {
-        String cpath=getCommandLineString(path);
-        String p="";
-        if(showHidden)p="-a";
-        Futils futils=new Futils();
-        ArrayList<String> a=new ArrayList<String>();
-        String ls="";
-        if(futils.canListFiles(new File(path))){
-            ls = runAndWait("ls "+p+" " + cpath,false);}
-        else if(root){ls = runAndWait("ls "+p+" " + cpath,true);}
-        else{return new ArrayList<String>();}
-        if (ls == null)
-        {
-            //      Logger.errorST("Error: Could not get list of files in directory: " + path);
-            return new ArrayList<String>();
+    public static Integer getCount(File f){
+        if(f.exists() && f.canRead() && f.isDirectory()){
+            try{return f.listFiles().length;}catch(Exception e){return null;}
         }
-
-        if (ls.equals("\n") || ls.equals(""))
-        {
-            //    Logger.debug("No files in directory");
-            return new ArrayList<String>();
-        }
-        else
-        {
-            List<String> files = Arrays.asList(ls.split("\n"));
-            for (String file : files)
-            {
-
-                a.add(path+"/"+file);
-
-            }
-            return a;
-
-        }
-    }}
+    return  null;}}

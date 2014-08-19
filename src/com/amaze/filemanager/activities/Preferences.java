@@ -7,7 +7,10 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.amaze.filemanager.R;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -17,19 +20,14 @@ public class Preferences extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(this);
         if (Sp.getString("theme", "0").equals("1")) {
-            setTheme(R.style.DarkTheme);
+            setTheme(android.R.style.Theme_Holo);
         } else {
-            setTheme(R.style.LightTheme);
+            setTheme(android.R.style.Theme_Holo_Light_DarkActionBar);
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prefsfrag);
         getActionBar().setIcon(R.drawable.ic_launcher1);
-        if(Build.VERSION.SDK_INT>=19) {
-            SystemBarTintManager tintManager = new SystemBarTintManager(this);
-            // enable status bar tint
-            tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintColor(getResources().getColor(R.color.theme_primary));
-        }
+        getActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.listitem));
         getActionBar().setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
     }
 

@@ -154,7 +154,10 @@ public class Futils {
 
     public String count(File f,boolean root) {
         try {
-            return (RootHelper.getSimpleFilesList(f.getPath(),root,true).size() + " items");
+            Integer i=RootHelper.getCount(f);
+            if(i!=null){return i+" items";}
+            else{return "";}
+
         } catch (Exception e) {
             return "";
         }
@@ -259,8 +262,8 @@ public class Futils {
 
     public static long folderSize(File directory,boolean rootMode) {
         long length = 0;
-        for (String f : RootHelper.getSimpleFilesList(directory.getPath(),rootMode,true)) {
-            File file=new File(f);
+        for (File file:directory.listFiles()) {
+
             if (file.isFile())
                 length += file.length();
             else
@@ -690,7 +693,6 @@ public class Futils {
 try {if(line.length()>=40) {
     String[] lineArray = line.split(" ");
     String rawPermissions = lineArray[0];
-    System.out.println(rawPermissions);
 
 
     StringBuilder finalPermissions = new StringBuilder();

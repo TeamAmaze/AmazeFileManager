@@ -493,7 +493,7 @@ public class Main extends ListFragment {
             hideOption(R.id.ex, menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
             getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
-            getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
+            //getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
             poppyView.setVisibility(View.GONE);
             return true;
         }
