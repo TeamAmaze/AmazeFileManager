@@ -584,10 +584,10 @@ public class Futils {
         } catch (SAXException e) {
         }
     }
-    public void setPermissionsDialog(final File file, final Activity act){
-
-        AlertDialog.Builder a=new AlertDialog.Builder(act);
-        View v=act.getLayoutInflater().inflate(R.layout.permissiontable,null);
+    public void setPermissionsDialog(final File file, final Main main){
+        if(main.rootMode){
+        AlertDialog.Builder a=new AlertDialog.Builder(main.getActivity());
+        View v=main.getActivity().getLayoutInflater().inflate(R.layout.permissiontable,null);
         final CheckBox readown=(CheckBox) v.findViewById(R.id.creadown);
         final CheckBox readgroup=(CheckBox) v.findViewById(R.id.creadgroup);
         final CheckBox readother=(CheckBox) v.findViewById(R.id.creadother);
@@ -597,7 +597,7 @@ public class Futils {
         final CheckBox exeown=(CheckBox) v.findViewById(R.id.cexeown);
         final CheckBox exegroup=(CheckBox) v.findViewById(R.id.cexegroup);
         final CheckBox exeother=(CheckBox) v.findViewById(R.id.cexeother);
-        String perm=getFilePermissionsSymlinks(file.getPath(),act.getApplicationContext(), PreferenceManager.getDefaultSharedPreferences(act.getApplicationContext()).getBoolean("rootmode",false));
+        String perm=getFilePermissionsSymlinks(file.getPath(),main.getActivity(), main.rootMode);
         Boolean[] read=unparsePermissions(Integer.parseInt(""+(perm.charAt(1))));
         Boolean[] write=unparsePermissions(Integer.parseInt(""+(perm.charAt(2))));
         Boolean[] exe=unparsePermissions(Integer.parseInt(""+(perm.charAt(3))));
@@ -610,6 +610,7 @@ public class Futils {
         exeown.setChecked(exe[0]);
         exegroup.setChecked(exe[1]);
         exeother.setChecked(exe[2]);
+
         a.setPositiveButton("Set",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int j) {
@@ -629,15 +630,39 @@ public class Futils {
                 if(exeother.isChecked())i=1;
                 int other=g+h+i;
                 String  finalValue="0"+owner+group+other;
-                Toast.makeText(act,finalValue,Toast.LENGTH_LONG).show();
                 String recursive="";
-                if(file.isDirectory())recursive="-R";
-                String command="chmod "+recursive+" "+finalValue+" "+file.getPath();
+
+                String command="chmod "+finalValue+" "+file.getPath();
+                if(file.isDirectory())command="chmod -R "+finalValue+" "+file.getPath();
+                Command com=new Command(1,command) {
+                    @Override
+                    public void commandOutput(int i, String s) {
+                    Toast.makeText(main.getActivity(),s,Toast.LENGTH_LONG);
+                    }
+
+                    @Override
+                    public void commandTerminated(int i, String s) {
+                        Toast.makeText(main.getActivity(),s,Toast.LENGTH_LONG);
+                    }
+
+                    @Override
+                    public void commandCompleted(int i, int i2) {
+                        Toast.makeText(main.getActivity(),"done",Toast.LENGTH_LONG);
+                    }
+                };
+                try {//
+                    RootTools.remount(file.getPath(),"RW");
+                    RootTools.getShell(true).add(com);
+                    main.updateList();
+                } catch (Exception e1) {
+                    Toast.makeText(main.getActivity(),"Error",Toast.LENGTH_LONG).show();
+                    e1.printStackTrace();
+                }
             }
         });
         a.setTitle(file.getName());
         a.setView(v);
-        a.show();
+        a.show();}
     }String per=null;
     public String getFilePermissionsSymlinks(String file,final Context c,boolean root)
     {per=null;
