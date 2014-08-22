@@ -5,13 +5,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -28,14 +26,11 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.stericson.RootTools.RootTools;
-import com.stericson.RootTools.containers.Permissions;
 import com.stericson.RootTools.execution.Command;
-import com.stericson.RootTools.execution.CommandCapture;
-import com.stericson.RootTools.execution.Shell;
-import com.stericson.RootTools.internal.InternalVariables;
 
 import org.xml.sax.SAXException;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -628,11 +623,38 @@ public class Futils {
                 if(writeother.isChecked())h=2;
                 if(exeother.isChecked())i=1;
                 int other=g+h+i;
-                String  finalValue="0"+owner+group+other;
+                String finalValue=""+owner+group+other;
                 Toast.makeText(act,finalValue,Toast.LENGTH_LONG).show();
                 String recursive="";
                 if(file.isDirectory())recursive="-R";
-                String command="chmod "+recursive+" "+finalValue+" "+file.getPath();
+                //String command="chmod "+recursive+" "+finalValue+" "+file.getPath();
+
+                // Setting permissions
+                Process process = null;
+                DataOutputStream dataOutputStream = null;
+
+                try {
+                    process = Runtime.getRuntime().exec("su");
+                    dataOutputStream = new DataOutputStream(process.getOutputStream());
+                    RootTools.remount(file.getParent(), "rw");
+                    dataOutputStream.writeBytes("chmod " + finalValue + " " + file.getPath() + "\n");
+                    dataOutputStream.writeBytes("exit\n");
+                    dataOutputStream.flush();
+                    process.waitFor();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                } finally {
+                    if (dataOutputStream != null) {
+                        try {
+                            dataOutputStream.close();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                    process.destroy();
+                }
             }
         });
         a.setTitle(file.getName());
