@@ -16,6 +16,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
@@ -90,6 +91,7 @@ public class Main extends ListFragment {
     private PoppyViewHelper mPoppyViewHelper;
     public LinearLayout pathbar;
     private ImageButton ib;
+    CountDownTimer timer;
     UpdatePathBar updatePathBar=new UpdatePathBar();
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,7 +100,15 @@ public class Main extends ListFragment {
         showPermissions=Sp.getBoolean("showPermissions",false);
         showSize=Sp.getBoolean("showFileSize",true);
         showLastModified=Sp.getBoolean("showLastModified",true);
-        icons = new IconUtils(Sp, getActivity());        }
+        icons = new IconUtils(Sp, getActivity());
+    timer=new CountDownTimer(2000,1000) {
+        @Override
+        public void onTick(long l) {}
+        @Override
+        public void onFinish() {
+        crossfadeInverse();
+        }
+    };}
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -184,9 +194,8 @@ public class Main extends ListFragment {
             @Override
             public void onClick(View view) {
                 crossfade();
-                updatePathBar.cancel(true);
-                updatePathBar=new UpdatePathBar();
-                updatePathBar.execute();
+                timer.cancel();
+                timer.start();
             }
         });
         scroll = (HorizontalScrollView) getActivity().findViewById(R.id.scroll);
@@ -702,7 +711,6 @@ public class Main extends ListFragment {
             buttons.removeAllViews();
             Drawable bg=getResources().getDrawable(R.drawable.listitem1);
             Drawable arrow=getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
-            //ib.setBackgroundDrawable(bg);
             Bundle b = utils.getPaths(text, getActivity());
             ArrayList<String> names = b.getStringArrayList("names");
             ArrayList<String> rnames = new ArrayList<String>();
@@ -732,7 +740,8 @@ public class Main extends ListFragment {
 
                         public void onClick(View p1) {
                             loadlist(new File("/"), false);
-                            // TODO: Implement this method
+                            timer.cancel();
+                            timer.start();
                         }
                     });
 
@@ -747,7 +756,8 @@ public class Main extends ListFragment {
 
                         public void onClick(View p1) {
                             loadlist(new File(rpaths.get(index)), true);
-                            // TODO: Implement this method
+                            timer.cancel();
+                            timer.start();
                         }
                     });
                      buttons.addView(ib);
@@ -758,14 +768,13 @@ public class Main extends ListFragment {
                     button.setText(rnames.get(index));
                     button.setTextColor(getResources().getColor(android.R.color.white));
                     button.setTextSize(13);
-                    // button.setBackgroundDrawable(bg);
                     button.setBackgroundDrawable(getResources().getDrawable(R.drawable.listitem));
                     button.setOnClickListener(new Button.OnClickListener() {
 
                         public void onClick(View p1) {
                             loadlist(new File(rpaths.get(index)), true);
-                            //	Toast.makeText(getActivity(),rpaths.get(index),Toast.LENGTH_LONG).show();
-                            // TODO: Implement this method
+                            timer.cancel();
+                            timer.start();
                         }
                     });
 
@@ -785,10 +794,8 @@ public class Main extends ListFragment {
                     scroll.fullScroll(View.FOCUS_RIGHT);
                     scroll1.fullScroll(View.FOCUS_RIGHT);
                 }
-            });
-            updatePathBar.cancel(true);
-            updatePathBar=new UpdatePathBar();
-            updatePathBar.execute();
+            });timer.cancel();
+            timer.start();
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("button view not available");
@@ -884,23 +891,6 @@ public class Main extends ListFragment {
        super.onDestroy();
 		
 		history.end();     }
-    public class UpdatePathBar extends AsyncTask<Void,Void,Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }if(!isCancelled()){publishProgress();}
-            return null;
-        }
-        @Override
-        protected void onProgressUpdate(Void... bitmap) {
-            if(!isCancelled()){
-				if(buttons.getVisibility()==View.VISIBLE)
-           crossfadeInverse();}
-        }
-    }
     public void initPoppyViewListeners(View poppy){
         ((ImageView)poppy.findViewById(R.id.back)).setOnClickListener(new View.OnClickListener() {
             @Override
