@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.*;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -33,7 +33,6 @@ import org.xml.sax.SAXException;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.lang.Process;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -637,6 +636,7 @@ public class Futils {
                 try {
                     process = Runtime.getRuntime().exec("su");
                     dataOutputStream = new DataOutputStream(process.getOutputStream());
+                    RootTools.remount(file.getParent(), "rw");
                     dataOutputStream.writeBytes("chmod " + finalValue + " " + file.getPath() + "\n");
                     dataOutputStream.writeBytes("exit\n");
                     dataOutputStream.flush();
