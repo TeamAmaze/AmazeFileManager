@@ -15,6 +15,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -92,7 +93,6 @@ public class Main extends ListFragment {
     public LinearLayout pathbar;
     private ImageButton ib;
     CountDownTimer timer;
-    UpdatePathBar updatePathBar=new UpdatePathBar();
     @Override
     public void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
@@ -437,8 +437,7 @@ public class Main extends ListFragment {
                 try {
                     setListAdapter(adapter);
 
-                } catch (Exception e) {
-                }
+
                 results = false;
                 current = f.getPath();
                 if (back) {
@@ -448,16 +447,8 @@ public class Main extends ListFragment {
                         getListView().setSelectionFromTop(b.getInt("index"), b.getInt("top"));
                     }
                 }
-               /* try {
-                    Intent i = new Intent("updatepager");
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }*/
-                bbar(current);
-                getActivity().getActionBar().setSubtitle(f.getName());
-
+                bbar(current);} catch (Exception e) {
+                }
             }
         } catch (Exception e) {
         }
@@ -501,8 +492,8 @@ public class Main extends ListFragment {
             hideOption(R.id.openwith, menu);
             hideOption(R.id.ex, menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
-            //getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
-            //getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
+            if(Build.VERSION.SDK_INT<19)
+            getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
             poppyView.setVisibility(View.GONE);
             return true;
         }
@@ -794,8 +785,8 @@ public class Main extends ListFragment {
                     scroll.fullScroll(View.FOCUS_RIGHT);
                     scroll1.fullScroll(View.FOCUS_RIGHT);
                 }
-            });timer.cancel();
-            timer.start();
+            });
+            if(buttons.getVisibility()==View.VISIBLE){timer.cancel();timer.start();}
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("button view not available");
