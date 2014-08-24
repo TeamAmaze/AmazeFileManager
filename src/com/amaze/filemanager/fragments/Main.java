@@ -15,7 +15,9 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
@@ -83,22 +85,30 @@ public class Main extends ListFragment {
     public HistoryManager history;
     IconUtils icons;
     HorizontalScrollView scroll,scroll1;
-	boolean rememberLastPath;
+    boolean rememberLastPath;
     public boolean rootMode, mountSystem,showHidden,showPermissions,showSize,showLastModified;
     View footerView, poppyView;
     ImageButton paste;
     private PoppyViewHelper mPoppyViewHelper;
     public LinearLayout pathbar;
     private ImageButton ib;
-    UpdatePathBar updatePathBar=new UpdatePathBar();
+    CountDownTimer timer;
     @Override
     public void onCreate(Bundle savedInstanceState) {
-       super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         showPermissions=Sp.getBoolean("showPermissions",false);
         showSize=Sp.getBoolean("showFileSize",true);
         showLastModified=Sp.getBoolean("showLastModified",true);
-        icons = new IconUtils(Sp, getActivity());        }
+        icons = new IconUtils(Sp, getActivity());
+        timer=new CountDownTimer(2000,1000) {
+            @Override
+            public void onTick(long l) {}
+            @Override
+            public void onFinish() {
+                crossfadeInverse();
+            }
+        };}
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -148,8 +158,8 @@ public class Main extends ListFragment {
         history = new HistoryManager(getActivity(), "Table1");
         rootMode = Sp.getBoolean("rootmode", false);
         mountSystem = Sp.getBoolean("mountsystem", false);
-		showHidden=Sp.getBoolean("showHidden",true);
-		rememberLastPath=Sp.getBoolean("rememberLastPath",false);
+        showHidden=Sp.getBoolean("showHidden",true);
+        rememberLastPath=Sp.getBoolean("rememberLastPath",false);
         int foldericon = Integer.parseInt(Sp.getString("folder", "1"));
         switch (foldericon) {
             case 0:
@@ -171,12 +181,12 @@ public class Main extends ListFragment {
         getSortModes();
         home = Sp.getString("home", System.getenv("EXTERNAL_STORAGE"));
         this.setRetainInstance(false);
-		
+
         File f = new File(home);
-		if(rememberLastPath){
-			f=new File(Sp.getString("current",home));
-		
-			}
+        if(rememberLastPath){
+            f=new File(Sp.getString("current",home));
+
+        }
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
         pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
 
@@ -184,9 +194,8 @@ public class Main extends ListFragment {
             @Override
             public void onClick(View view) {
                 crossfade();
-                updatePathBar.cancel(true);
-                updatePathBar=new UpdatePathBar();
-                updatePathBar.execute();
+                timer.cancel();
+                timer.start();
             }
         });
         scroll = (HorizontalScrollView) getActivity().findViewById(R.id.scroll);
@@ -194,11 +203,11 @@ public class Main extends ListFragment {
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         ListView vl = getListView();
         if (uimode == 1) {
-           float scale = getResources().getDisplayMetrics().density;
-           int dpAsPixels = (int) (5 * scale + 0.5f);
-           vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
-           vl.setDivider(null);
-           vl.setDividerHeight(dpAsPixels);
+            float scale = getResources().getDisplayMetrics().density;
+            int dpAsPixels = (int) (5 * scale + 0.5f);
+            vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
+            vl.setDivider(null);
+            vl.setDividerHeight(dpAsPixels);
 
         }
         footerView=getActivity().getLayoutInflater().inflate(R.layout.divider,null);
@@ -220,7 +229,7 @@ public class Main extends ListFragment {
                     adapter.toggleChecked(i);
                 }
             }
-           
+
             getListView().setVisibility(View.VISIBLE);
         }
 
@@ -384,7 +393,7 @@ public class Main extends ListFragment {
 
             String path;Layoutelements l=list.get(position);
             if(!l.hasSymlink()){
-            path= l.getDesc();}
+                path= l.getDesc();}
             else{path=l.getSymlink();}
             final File f = new File(path);
             if (f.isDirectory()) {
@@ -428,27 +437,18 @@ public class Main extends ListFragment {
                 try {
                     setListAdapter(adapter);
 
-                } catch (Exception e) {
-                }
-                results = false;
-                current = f.getPath();
-                if (back) {
-                    if (scrolls.containsKey(current)) {
-                        Bundle b = scrolls.get(current);
 
-                        getListView().setSelectionFromTop(b.getInt("index"), b.getInt("top"));
+                    results = false;
+                    current = f.getPath();
+                    if (back) {
+                        if (scrolls.containsKey(current)) {
+                            Bundle b = scrolls.get(current);
+
+                            getListView().setSelectionFromTop(b.getInt("index"), b.getInt("top"));
+                        }
                     }
+                    bbar(current);} catch (Exception e) {
                 }
-               /* try {
-                    Intent i = new Intent("updatepager");
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }*/
-                bbar(current);
-                getActivity().getActionBar().setSubtitle(f.getName());
-
             }
         } catch (Exception e) {
         }
@@ -492,10 +492,9 @@ public class Main extends ListFragment {
             hideOption(R.id.openwith, menu);
             hideOption(R.id.ex, menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
-
-            // getActivity().findViewById(R.id.action_bar).setVisibility(View.INVISIBLE);
-            // getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
-             poppyView.setVisibility(View.INVISIBLE);
+            if(Build.VERSION.SDK_INT<19)
+                getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
+            poppyView.setVisibility(View.GONE);
             return true;
         }
 
@@ -676,7 +675,7 @@ public class Main extends ListFragment {
                     mode.finish();
                     return true;
                 case R.id.permissions:
-                    utils.setPermissionsDialog(new File(list.get(plist.get(0)).getDesc()),(Activity)getActivity());
+                    utils.setPermissionsDialog(new File(list.get(plist.get(0)).getDesc()),ma);
                     mode.finish();
                     return true;
                 default:
@@ -703,7 +702,6 @@ public class Main extends ListFragment {
             buttons.removeAllViews();
             Drawable bg=getResources().getDrawable(R.drawable.listitem1);
             Drawable arrow=getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
-            //ib.setBackgroundDrawable(bg);
             Bundle b = utils.getPaths(text, getActivity());
             ArrayList<String> names = b.getStringArrayList("names");
             ArrayList<String> rnames = new ArrayList<String>();
@@ -733,13 +731,14 @@ public class Main extends ListFragment {
 
                         public void onClick(View p1) {
                             loadlist(new File("/"), false);
-                            // TODO: Implement this method
+                            timer.cancel();
+                            timer.start();
                         }
                     });
 
                     buttons.addView(ib);
                     if(names.size()-i!=1)
-                    buttons.addView(v);
+                        buttons.addView(v);
                 } else if (rpaths.get(i).equals(Environment.getExternalStorageDirectory().getPath())) {
                     ib = new ImageButton(getActivity());
                     ib.setImageDrawable(icons.getSdDrawable());
@@ -748,10 +747,11 @@ public class Main extends ListFragment {
 
                         public void onClick(View p1) {
                             loadlist(new File(rpaths.get(index)), true);
-                            // TODO: Implement this method
+                            timer.cancel();
+                            timer.start();
                         }
                     });
-                     buttons.addView(ib);
+                    buttons.addView(ib);
                     if(names.size()-i!=1)
                         buttons.addView(v);
                 } else {
@@ -759,14 +759,13 @@ public class Main extends ListFragment {
                     button.setText(rnames.get(index));
                     button.setTextColor(getResources().getColor(android.R.color.white));
                     button.setTextSize(13);
-                    // button.setBackgroundDrawable(bg);
                     button.setBackgroundDrawable(getResources().getDrawable(R.drawable.listitem));
                     button.setOnClickListener(new Button.OnClickListener() {
 
                         public void onClick(View p1) {
                             loadlist(new File(rpaths.get(index)), true);
-                            //	Toast.makeText(getActivity(),rpaths.get(index),Toast.LENGTH_LONG).show();
-                            // TODO: Implement this method
+                            timer.cancel();
+                            timer.start();
                         }
                     });
 
@@ -787,9 +786,7 @@ public class Main extends ListFragment {
                     scroll1.fullScroll(View.FOCUS_RIGHT);
                 }
             });
-            updatePathBar.cancel(true);
-            updatePathBar=new UpdatePathBar();
-            updatePathBar.execute();
+            if(buttons.getVisibility()==View.VISIBLE){timer.cancel();timer.start();}
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("button view not available");
@@ -822,12 +819,12 @@ public class Main extends ListFragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-        updateList();
+            updateList();
         }
     };
-   public void updateList(){
-       computeScroll();
-       loadlist(new File(current), true);}
+    public void updateList(){
+        computeScroll();
+        loadlist(new File(current), true);}
 
     public void getSortModes() {
         int t = Integer.parseInt(Sp.getString("sortby", "0"));
@@ -851,16 +848,16 @@ public class Main extends ListFragment {
     @Override
     public void onPause() {
         super.onPause();
-		if(rememberLastPath){
-			Sp.edit().putString("current",current).apply();
-		}
+        if(rememberLastPath){
+            Sp.edit().putString("current",current).apply();
+        }
         (getActivity()).unregisterReceiver(receiver2);
     }
-	@Override
+    @Override
     public void onStop() {
         super.onStop();
-	
-		}
+
+    }
     public ArrayList<Layoutelements> addTo(ArrayList<String[]> mFile) {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         for (int i = 0; i < mFile.size(); i++) {
@@ -882,26 +879,9 @@ public class Main extends ListFragment {
 
     @Override
     public void onDestroy() {
-       super.onDestroy();
-		
-		history.end();     }
-    public class UpdatePathBar extends AsyncTask<Void,Void,Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }if(!isCancelled()){publishProgress();}
-            return null;
-        }
-        @Override
-        protected void onProgressUpdate(Void... bitmap) {
-            if(!isCancelled()){
-				if(buttons.getVisibility()==View.VISIBLE)
-           crossfadeInverse();}
-        }
-    }
+        super.onDestroy();
+
+        history.end();     }
     public void initPoppyViewListeners(View poppy){
         ((ImageView)poppy.findViewById(R.id.back)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -975,55 +955,55 @@ public class Main extends ListFragment {
         }else paste.setVisibility(View.GONE);
     }private void crossfade() {
 
-		// Set the content view to 0% opacity but visible, so that it is visible
-		// (but fully transparent) during the animation.
-		buttons.setAlpha(0f);
-		buttons.setVisibility(View.VISIBLE);
-	
-		// Animate the content view to 100% opacity, and clear any animation
-		// listener set on the view.
-		buttons.animate()
-            .alpha(1f)
-            .setDuration(100)
-            .setListener(null);
-		pathbar.animate()
-            .alpha(0f)
-            .setDuration(100)
-            .setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    pathbar.setVisibility(View.GONE);
-                }
-            });
-		// Animate the loading view to 0% opacity. After the animation ends,
-		// set its visibility to GONE as an optimization step (it won't
-		// participate in layout passes, etc.)
+        // Set the content view to 0% opacity but visible, so that it is visible
+        // (but fully transparent) during the animation.
+        buttons.setAlpha(0f);
+        buttons.setVisibility(View.VISIBLE);
 
-	}private void crossfadeInverse() {
+        // Animate the content view to 100% opacity, and clear any animation
+        // listener set on the view.
+        buttons.animate()
+                .alpha(1f)
+                .setDuration(100)
+                .setListener(null);
+        pathbar.animate()
+                .alpha(0f)
+                .setDuration(100)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        pathbar.setVisibility(View.GONE);
+                    }
+                });
+        // Animate the loading view to 0% opacity. After the animation ends,
+        // set its visibility to GONE as an optimization step (it won't
+        // participate in layout passes, etc.)
 
-		// Set the content view to 0% opacity but visible, so that it is visible
-		// (but fully transparent) during the animation.
-		pathbar.setAlpha(0f);
-		pathbar.setVisibility(View.VISIBLE);
+    }private void crossfadeInverse() {
 
-		// Animate the content view to 100% opacity, and clear any animation
-		// listener set on the view.
-	pathbar.animate()
-            .alpha(1f)
-            .setDuration(500)
-            .setListener(null);
-		buttons.animate()
-            .alpha(0f)
-            .setDuration(500)
-            .setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    buttons.setVisibility(View.GONE);
-                }
-            });
-		// Animate the loading view to 0% opacity. After the animation ends,
-		// set its visibility to GONE as an optimization step (it won't
-		// participate in layout passes, etc.)
+        // Set the content view to 0% opacity but visible, so that it is visible
+        // (but fully transparent) during the animation.
+        pathbar.setAlpha(0f);
+        pathbar.setVisibility(View.VISIBLE);
 
-	
-}}
+        // Animate the content view to 100% opacity, and clear any animation
+        // listener set on the view.
+        pathbar.animate()
+                .alpha(1f)
+                .setDuration(500)
+                .setListener(null);
+        buttons.animate()
+                .alpha(0f)
+                .setDuration(500)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        buttons.setVisibility(View.GONE);
+                    }
+                });
+        // Animate the loading view to 0% opacity. After the animation ends,
+        // set its visibility to GONE as an optimization step (it won't
+        // participate in layout passes, etc.)
+
+
+    }}
