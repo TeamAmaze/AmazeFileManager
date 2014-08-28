@@ -16,10 +16,6 @@ public class HistoryManager {
         this.c = c;
         table = x;
         open();
-        try {
-            db.execSQL("DROP TABLE " + x);
-        } catch (Exception e) {
-        }
         db.execSQL("CREATE TABLE IF NOT EXISTS " + x + " (PATH VARCHAR)");
     }
 
