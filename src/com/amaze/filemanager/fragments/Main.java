@@ -3,7 +3,6 @@ package com.amaze.filemanager.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,16 +19,18 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ListFragment;
 import android.view.ActionMode;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -63,7 +64,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class Main extends ListFragment {
+public class Main extends android.support.v4.app.Fragment {
     public File[] file;
     public ArrayList<Layoutelements> list, slist;
     public MyAdapter adapter;
@@ -93,6 +94,12 @@ public class Main extends ListFragment {
     public LinearLayout pathbar;
     private ImageButton ib;
     CountDownTimer timer;
+    private View rootView;
+    public ListView listView;
+    public GridView gridView;
+    private SharedPreferences sharedPreferences;
+    private Boolean aBoolean;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,11 +116,26 @@ public class Main extends ListFragment {
                 crossfadeInverse();
             }
         };}
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        rootView = inflater.inflate(R.layout.main_frag, container, false);
+        listView = (ListView) rootView.findViewById(R.id.listView);
+        gridView = (GridView) rootView.findViewById(R.id.gridView);
+
+        return rootView;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        aBoolean = sharedPreferences.getBoolean("view", true);
+
         ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
         overflow.setVisibility(View.VISIBLE);
         (overflow).setOnClickListener(new View.OnClickListener() {
@@ -153,7 +175,12 @@ public class Main extends ListFragment {
         utils = new Futils();
         res = getResources();
         mPoppyViewHelper = new PoppyViewHelper(getActivity());
-        poppyView = mPoppyViewHelper.createPoppyViewOnListView(android.R.id.list,R.layout.pooppybar);
+        aBoolean = sharedPreferences.getBoolean("view", true);
+        if (aBoolean) {
+            poppyView = mPoppyViewHelper.createPoppyViewOnListView(R.id.listView, R.layout.pooppybar);
+        } else {
+            poppyView = mPoppyViewHelper.createPoppyViewOnListView(R.id.listView, R.layout.pooppybar);
+        }
         initPoppyViewListeners(poppyView);
         history = new HistoryManager(getActivity(), "Table1");
         rootMode = Sp.getBoolean("rootmode", false);
@@ -201,18 +228,32 @@ public class Main extends ListFragment {
         scroll = (HorizontalScrollView) getActivity().findViewById(R.id.scroll);
         scroll1 = (HorizontalScrollView) getActivity().findViewById(R.id.scroll1);
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
-        ListView vl = getListView();
         if (uimode == 1) {
             float scale = getResources().getDisplayMetrics().density;
             int dpAsPixels = (int) (5 * scale + 0.5f);
-            vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
-            vl.setDivider(null);
-            vl.setDividerHeight(dpAsPixels);
 
+            aBoolean = sharedPreferences.getBoolean("view", true);
+            if (aBoolean) {
+
+                listView.setPadding(dpAsPixels, 0, dpAsPixels, 0);
+                listView.setDivider(null);
+                listView.setDividerHeight(dpAsPixels);
+            } else {
+
+                gridView.setPadding(dpAsPixels, 0, dpAsPixels, 0);
+            }
         }
         footerView=getActivity().getLayoutInflater().inflate(R.layout.divider,null);
-        vl.addFooterView(footerView);
-        vl.setFastScrollEnabled(true);
+
+        aBoolean = sharedPreferences.getBoolean("view", true);
+        if (aBoolean) {
+
+            listView.addFooterView(footerView);
+            listView.setFastScrollEnabled(true);
+        } else {
+
+            gridView.setFastScrollEnabled(true);
+        }
         if (savedInstanceState == null)
             loadlist(f, false);
         else {
@@ -230,7 +271,7 @@ public class Main extends ListFragment {
                 }
             }
 
-            getListView().setVisibility(View.VISIBLE);
+            listView.setVisibility(View.VISIBLE);
         }
 
     }
@@ -238,8 +279,19 @@ public class Main extends ListFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        int index = getListView().getFirstVisiblePosition();
-        View vi = getListView().getChildAt(0);
+
+        int index;
+        View vi;
+
+        aBoolean = sharedPreferences.getBoolean("view", true);
+        if (aBoolean) {
+
+            index = listView.getFirstVisiblePosition();
+            vi = listView.getChildAt(0);
+        } else {
+            index = gridView.getFirstVisiblePosition();
+            vi = gridView.getChildAt(0);
+        }
         int top = (vi == null) ? 0 : vi.getTop();
         outState.putInt("index", index);
         outState.putInt("top", top);
@@ -407,7 +459,6 @@ public class Main extends ListFragment {
         }
     }
 
-
     public void loadlist(File f, boolean back) {
         if(mActionMode!=null){mActionMode.finish();}
         new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
@@ -435,8 +486,13 @@ public class Main extends ListFragment {
                 adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
                         bitmap, ma);
                 try {
-                    setListAdapter(adapter);
 
+                    aBoolean = sharedPreferences.getBoolean("view", true);
+                    if (aBoolean) {
+                        listView.setAdapter(adapter);
+                    } else {
+                        gridView.setAdapter(adapter);
+                    }
 
                     results = false;
                     current = f.getPath();
@@ -444,7 +500,7 @@ public class Main extends ListFragment {
                         if (scrolls.containsKey(current)) {
                             Bundle b = scrolls.get(current);
 
-                            getListView().setSelectionFromTop(b.getInt("index"), b.getInt("top"));
+                            listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
                         }
                     }
                     bbar(current);} catch (Exception e) {
@@ -797,8 +853,8 @@ public class Main extends ListFragment {
 
 
     public void computeScroll() {
-        int index = getListView().getFirstVisiblePosition();
-        View vi = getListView().getChildAt(0);
+        int index = listView.getFirstVisiblePosition();
+        View vi = listView.getChildAt(0);
         int top = (vi == null) ? 0 : vi.getTop();
         Bundle b = new Bundle();
         b.putInt("index", index);
@@ -914,10 +970,23 @@ public class Main extends ListFragment {
                 utils.showBookmarkDialog(ma,sh);
             }
         });
-    }public void showPopup(View v) {
+    }
+
+    public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(getActivity(), v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.activity_extra, popup.getMenu());
+
+        // Getting option for listView and gridView
+        MenuItem s = popup.getMenu().findItem(R.id.view);
+
+        aBoolean = sharedPreferences.getBoolean("view", true);
+        if (aBoolean) {
+            s.setTitle("Grid View");
+        } else {
+            s.setTitle("List View");
+        }
+
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
             @Override
@@ -938,10 +1007,24 @@ public class Main extends ListFragment {
                     case R.id.item11:
                         utils.showDirectorySortDialog(ma);
                         break;
-
-
                     case R.id.item4:
                         search();
+                        break;
+                    case R.id.view:
+                        aBoolean = sharedPreferences.getBoolean("view", true);
+                        if (aBoolean) {
+                            Toast.makeText(getActivity(), "Setting GridView", Toast.LENGTH_SHORT).show();
+                            sharedPreferences.edit().putBoolean("view", false).commit();
+                            listView.setVisibility(View.GONE);
+                            gridView.setVisibility(View.VISIBLE);
+                            gridView.setAdapter(adapter);
+                        } else {
+                            Toast.makeText(getActivity(), "Setting ListView", Toast.LENGTH_SHORT).show();
+                            sharedPreferences.edit().putBoolean("view", true).commit();
+                            listView.setVisibility(View.VISIBLE);
+                            gridView.setVisibility(View.GONE);
+                            listView.setAdapter(adapter);
+                        }
                         break;
                 }
                 return false;
@@ -952,7 +1035,8 @@ public class Main extends ListFragment {
     public void invalidatePasteButton(){
         if(MOVE_PATH!=null || COPY_PATH!=null){
             paste.setVisibility(View.VISIBLE);
-        }else paste.setVisibility(View.GONE);
+        } else
+            paste.setVisibility(View.GONE);
     }private void crossfade() {
 
         // Set the content view to 0% opacity but visible, so that it is visible

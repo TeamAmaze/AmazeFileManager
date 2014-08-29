@@ -18,5 +18,7 @@
     <item
         android:id="@+id/item11"
         android:title="@string/directorysort" />
+    <item
+        android:id="@+id/view" />
 
 </menu>

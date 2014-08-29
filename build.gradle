@@ -13,6 +13,7 @@ dependencies {
     compile files('libs/RootTools')
     compile files('libs/poppyview')
     compile files('libs/FloatingActionButton')
+    compile files('nineoldandroids-2.4.0')
 
 }
 
