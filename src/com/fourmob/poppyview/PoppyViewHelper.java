@@ -137,7 +137,7 @@ public class PoppyViewHelper {
 					translationY = mScrollDirection == SCROLL_TO_TOP ? 0 : mPoppyViewHeight;
 					break;
 				case TOP:
-					translationY = mScrollDirection == SCROLL_TO_TOP ? -mPoppyViewHeight : 0;
+					translationY = mScrollDirection == SCROLL_TO_BOTTOM ? -mPoppyViewHeight : 0;
 					break;
 				}
 
