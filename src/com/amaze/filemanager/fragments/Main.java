@@ -124,6 +124,17 @@ public class Main extends android.support.v4.app.Fragment {
         listView = (ListView) rootView.findViewById(R.id.listView);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        aBoolean = sharedPreferences.getBoolean("view", true);
+
+        if (aBoolean) {
+            listView.setVisibility(View.VISIBLE);
+            gridView.setVisibility(View.GONE);
+        } else {
+            listView.setVisibility(View.GONE);
+            gridView.setVisibility(View.VISIBLE);
+        }
+
         return rootView;
     }
 
@@ -271,7 +282,7 @@ public class Main extends android.support.v4.app.Fragment {
                 }
             }
 
-            listView.setVisibility(View.VISIBLE);
+            //listView.setVisibility(View.VISIBLE);
         }
 
     }
