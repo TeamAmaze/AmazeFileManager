@@ -113,17 +113,6 @@ public abstract class MediaScannerUtils {
         } else
             return false;
     }
-    public void createNewFile(String file,Context  context)
-    {boolean ok=true;
-        OutputStream g = null;
-        try {
-            g = new FileOutputStream(file);
-        } catch (Exception e1) {
-            ok = false;
-        }
-        if (!ok && file.startsWith("/mnt")) {
-            g=getOutputStreamViaContentProvider(context, file); }}
-
     public static String strcatslash(String dir) {
         if (dir.length()>0 && !dir.endsWith("/"))
             return dir+"/";

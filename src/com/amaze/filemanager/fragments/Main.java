@@ -673,7 +673,6 @@ public class Main extends android.support.v4.app.Fragment {
                                                 utils.getString(getActivity(), R.string.renameerror),
                                                 Toast.LENGTH_LONG).show();
                                     }
-                                    // TODO: Implement this method
                                 }
                             }
                     );
@@ -682,7 +681,6 @@ public class Main extends android.support.v4.app.Fragment {
 
                                 public void onClick(DialogInterface p1, int p2) {
                                     m.finish();
-                                    // TODO: Implement this method
                                 }
                             }
                     );
@@ -753,8 +751,6 @@ public class Main extends android.support.v4.app.Fragment {
         // called when the user exits the action mode
         public void onDestroyActionMode(ActionMode mode) {
             mActionMode = null;
-
-
             selection = false;
             adapter.toggleChecked(false);
             poppyView.setVisibility(View.VISIBLE);
