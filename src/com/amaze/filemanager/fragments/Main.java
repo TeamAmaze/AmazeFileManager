@@ -190,7 +190,7 @@ public class Main extends android.support.v4.app.Fragment {
         if (aBoolean) {
             poppyView = mPoppyViewHelper.createPoppyViewOnListView(R.id.listView, R.layout.pooppybar);
         } else {
-            poppyView = mPoppyViewHelper.createPoppyViewOnListView(R.id.listView, R.layout.pooppybar);
+            poppyView = mPoppyViewHelper.createPoppyViewOnGridView(R.id.gridView, R.layout.pooppybar,null);
         }
         initPoppyViewListeners(poppyView);
         history = new HistoryManager(getActivity(), "Table1");
