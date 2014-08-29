@@ -6,18 +6,12 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.FileListSorter;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.RootHelper;
-import com.stericson.RootTools.RootTools;
-import com.stericson.RootTools.exceptions.RootDeniedException;
-import com.stericson.RootTools.execution.Command;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.TimeoutException;
 
 
 public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>> {
@@ -73,7 +67,8 @@ else
         }
         ma.createViews(bitmap, back, f);
 
-        ma.getListView().setVisibility(View.VISIBLE);
+        //ListView lv = (ListView) ma.listView.findViewById(R.id.listView);
+        ma.listView.setVisibility(View.VISIBLE);
     }
 
 

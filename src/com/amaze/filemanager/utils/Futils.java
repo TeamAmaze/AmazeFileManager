@@ -114,7 +114,7 @@ public class Futils {
         long i;
         if(sym!=null && sym.length()!=0){i=new File(array[1]).length();}
         else
-         i = new File(array[0]).length();
+            i = new File(array[0]).length();
 
         return readableFileSize(i);
 
@@ -140,9 +140,9 @@ public class Futils {
             public void onClick(DialogInterface p1, int p2) {
                 Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_LONG).show();
                 if(todelete.get(0).getParentFile().canWrite()){
-                Intent i = new Intent(b.getActivity(), DeleteTask.class);
-                i.putStringArrayListExtra("files", toStringArray(todelete));
-                b.getActivity().startService(i);}
+                    Intent i = new Intent(b.getActivity(), DeleteTask.class);
+                    i.putStringArrayListExtra("files", toStringArray(todelete));
+                    b.getActivity().startService(i);}
                 else if(b.rootMode){for(File f:todelete){
                     RootTools.deleteFileOrDirectory(f.getPath(),true);}
                     b.updateList();
@@ -356,7 +356,7 @@ public class Futils {
     public boolean rename(File f, String name) {
         String newname = f.getParent() + "/" + name;
         if(f.getParentFile().canWrite()){
-        boolean b = f.renameTo(new File(newname));}
+            boolean b = f.renameTo(new File(newname));}
         else{try{RootTools.getShell(true).add(new Command(0,"mv "+f.getPath()+" "+newname) {
             @Override
             public void commandOutput(int i, String s) {
@@ -586,101 +586,101 @@ public class Futils {
     }
     public void setPermissionsDialog(final File file, final Main main){
         if(main.rootMode){
-        AlertDialog.Builder a=new AlertDialog.Builder(main.getActivity());
-        View v=main.getActivity().getLayoutInflater().inflate(R.layout.permissiontable,null);
-        final CheckBox readown=(CheckBox) v.findViewById(R.id.creadown);
-        final CheckBox readgroup=(CheckBox) v.findViewById(R.id.creadgroup);
-        final CheckBox readother=(CheckBox) v.findViewById(R.id.creadother);
-        final CheckBox writeown=(CheckBox) v.findViewById(R.id.cwriteown);
-        final CheckBox writegroup=(CheckBox) v.findViewById(R.id.cwritegroup);
-        final CheckBox writeother=(CheckBox) v.findViewById(R.id.cwriteother);
-        final CheckBox exeown=(CheckBox) v.findViewById(R.id.cexeown);
-        final CheckBox exegroup=(CheckBox) v.findViewById(R.id.cexegroup);
-        final CheckBox exeother=(CheckBox) v.findViewById(R.id.cexeother);
-        String perm=getFilePermissionsSymlinks(file.getPath(),main.getActivity(), main.rootMode);
-        Boolean[] read=unparsePermissions(Integer.parseInt(""+(perm.charAt(1))));
-        Boolean[] write=unparsePermissions(Integer.parseInt(""+(perm.charAt(2))));
-        Boolean[] exe=unparsePermissions(Integer.parseInt(""+(perm.charAt(3))));
-        readown.setChecked(read[0]);
-        readgroup.setChecked(read[1]);
-        readother.setChecked(read[2]);
-        writeown.setChecked(write[0]);
-        writegroup.setChecked(write[1]);
-        writeother.setChecked(write[2]);
-        exeown.setChecked(exe[0]);
-        exegroup.setChecked(exe[1]);
-        exeother.setChecked(exe[2]);
+            AlertDialog.Builder a=new AlertDialog.Builder(main.getActivity());
+            View v=main.getActivity().getLayoutInflater().inflate(R.layout.permissiontable,null);
+            final CheckBox readown=(CheckBox) v.findViewById(R.id.creadown);
+            final CheckBox readgroup=(CheckBox) v.findViewById(R.id.creadgroup);
+            final CheckBox readother=(CheckBox) v.findViewById(R.id.creadother);
+            final CheckBox writeown=(CheckBox) v.findViewById(R.id.cwriteown);
+            final CheckBox writegroup=(CheckBox) v.findViewById(R.id.cwritegroup);
+            final CheckBox writeother=(CheckBox) v.findViewById(R.id.cwriteother);
+            final CheckBox exeown=(CheckBox) v.findViewById(R.id.cexeown);
+            final CheckBox exegroup=(CheckBox) v.findViewById(R.id.cexegroup);
+            final CheckBox exeother=(CheckBox) v.findViewById(R.id.cexeother);
+            String perm=getFilePermissionsSymlinks(file.getPath(),main.getActivity(), main.rootMode);
+            Boolean[] read=unparsePermissions(Integer.parseInt(""+(perm.charAt(1))));
+            Boolean[] write=unparsePermissions(Integer.parseInt(""+(perm.charAt(2))));
+            Boolean[] exe=unparsePermissions(Integer.parseInt(""+(perm.charAt(3))));
+            readown.setChecked(read[0]);
+            readgroup.setChecked(read[1]);
+            readother.setChecked(read[2]);
+            writeown.setChecked(write[0]);
+            writegroup.setChecked(write[1]);
+            writeother.setChecked(write[2]);
+            exeown.setChecked(exe[0]);
+            exegroup.setChecked(exe[1]);
+            exeother.setChecked(exe[2]);
 
-        a.setPositiveButton("Set",new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int j) {
-            int a=0,b=0,c=0;
-                if(readown.isChecked())a=4;
-                if(writeown.isChecked())b=2;
-                if(exeown.isChecked())c=1;
-                int owner=a+b+c;
-                int d=0,e=0,f=0;
-                if(readgroup.isChecked())d=4;
-                if(writegroup.isChecked())e=2;
-                if(exegroup.isChecked())f=1;
-                int group=d+e+f;
-                int g=0,h=0,i=0;
-                if(readother.isChecked())g=4;
-                if(writeother.isChecked())h=2;
-                if(exeother.isChecked())i=1;
-                int other=g+h+i;
-                String  finalValue="0"+owner+group+other;
-                String recursive="";
+            a.setPositiveButton("Set",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int j) {
+                    int a=0,b=0,c=0;
+                    if(readown.isChecked())a=4;
+                    if(writeown.isChecked())b=2;
+                    if(exeown.isChecked())c=1;
+                    int owner=a+b+c;
+                    int d=0,e=0,f=0;
+                    if(readgroup.isChecked())d=4;
+                    if(writegroup.isChecked())e=2;
+                    if(exegroup.isChecked())f=1;
+                    int group=d+e+f;
+                    int g=0,h=0,i=0;
+                    if(readother.isChecked())g=4;
+                    if(writeother.isChecked())h=2;
+                    if(exeother.isChecked())i=1;
+                    int other=g+h+i;
+                    String  finalValue="0"+owner+group+other;
+                    String recursive="";
 
-                String command="chmod "+finalValue+" "+file.getPath();
-                if(file.isDirectory())command="chmod -R "+finalValue+" "+file.getPath();
-                Command com=new Command(1,command) {
-                    @Override
-                    public void commandOutput(int i, String s) {
-                    Toast.makeText(main.getActivity(),s,Toast.LENGTH_LONG);
+                    String command="chmod "+finalValue+" "+file.getPath();
+                    if(file.isDirectory())command="chmod -R "+finalValue+" "+file.getPath();
+                    Command com=new Command(1,command) {
+                        @Override
+                        public void commandOutput(int i, String s) {
+                            Toast.makeText(main.getActivity(),s,Toast.LENGTH_LONG);
+                        }
+
+                        @Override
+                        public void commandTerminated(int i, String s) {
+                            Toast.makeText(main.getActivity(),s,Toast.LENGTH_LONG);
+                        }
+
+                        @Override
+                        public void commandCompleted(int i, int i2) {
+                            Toast.makeText(main.getActivity(),"done",Toast.LENGTH_LONG);
+                        }
+                    };
+                    try {//
+                        RootTools.remount(file.getPath(),"RW");
+                        RootTools.getShell(true).add(com);
+                        main.updateList();
+                    } catch (Exception e1) {
+                        Toast.makeText(main.getActivity(),"Error",Toast.LENGTH_LONG).show();
+                        e1.printStackTrace();
                     }
-
-                    @Override
-                    public void commandTerminated(int i, String s) {
-                        Toast.makeText(main.getActivity(),s,Toast.LENGTH_LONG);
-                    }
-
-                    @Override
-                    public void commandCompleted(int i, int i2) {
-                        Toast.makeText(main.getActivity(),"done",Toast.LENGTH_LONG);
-                    }
-                };
-                try {//
-                    RootTools.remount(file.getPath(),"RW");
-                    RootTools.getShell(true).add(com);
-                    main.updateList();
-                } catch (Exception e1) {
-                    Toast.makeText(main.getActivity(),"Error",Toast.LENGTH_LONG).show();
-                    e1.printStackTrace();
                 }
-            }
-        });
-        a.setTitle(file.getName());
-        a.setView(v);
-        a.show();}
+            });
+            a.setTitle(file.getName());
+            a.setView(v);
+            a.show();}
     }String per=null;
     public String getFilePermissionsSymlinks(String file,final Context c,boolean root)
     {per=null;
         File f=new File(file);
         if(f.isDirectory()){
             String ls = RootHelper.runAndWait("ls -l " + f.getParent(),root);
-           String[] array=ls.split("\n");
+            String[] array=ls.split("\n");
             for(String x:array){String[] a=x.split(" ");
-            if(a[a.length-1].equals(f.getName())){
+                if(a[a.length-1].equals(f.getName())){
 
-               return  getPermissions(x);}
+                    return  getPermissions(x);}
             }
             return  null;}else{
 
-        String ls = RootHelper.runAndWait("ls -l " + file,root);
-        if(ls!=null){
-            per=getPermissions(ls);}
-        return per;}
+            String ls = RootHelper.runAndWait("ls -l " + file,root);
+            if(ls!=null){
+                per=getPermissions(ls);}
+            return per;}
     }
     public String[] parseName(String line){
         boolean linked=false;String name="",link="";
@@ -689,7 +689,7 @@ public class Futils {
             if(array[i].contains("->")){linked=true;}
         }
         if(!linked){int p=getColonPosition(array);
-        for(int i=p+1;i<array.length;i++){name=name+" "+array[i];}
+            for(int i=p+1;i<array.length;i++){name=name+" "+array[i];}
             name=name.trim();
             return new String[]{name,"",array[0]};
         }
@@ -715,22 +715,22 @@ public class Futils {
         return  0;
     }
     public String getPermissions(String line) {
-try {if(line.length()>=40) {
-    String[] lineArray = line.split(" ");
-    String rawPermissions = lineArray[0];
+        try {if(line.length()>=40) {
+            String[] lineArray = line.split(" ");
+            String rawPermissions = lineArray[0];
 
 
-    StringBuilder finalPermissions = new StringBuilder();
-    finalPermissions.append(parseSpecialPermissions(rawPermissions));
-    finalPermissions.append(parsePermissions(rawPermissions.substring(1, 4)));
-    finalPermissions.append(parsePermissions(rawPermissions.substring(4, 7)));
-    finalPermissions.append(parsePermissions(rawPermissions.substring(7, 10)));
-    return (finalPermissions.toString());
-}}catch (Exception e)
-{e.printStackTrace();
-    return null;}
+            StringBuilder finalPermissions = new StringBuilder();
+            finalPermissions.append(parseSpecialPermissions(rawPermissions));
+            finalPermissions.append(parsePermissions(rawPermissions.substring(1, 4)));
+            finalPermissions.append(parsePermissions(rawPermissions.substring(4, 7)));
+            finalPermissions.append(parsePermissions(rawPermissions.substring(7, 10)));
+            return (finalPermissions.toString());
+        }}catch (Exception e)
+        {e.printStackTrace();
+            return null;}
         return null;
-       }
+    }
     public Boolean[] unparsePermissions(int i){
 
         switch (i){
@@ -745,7 +745,7 @@ try {if(line.length()>=40) {
             default:return null;
         }
     }
-public int parsePermissions(String permission) {
+    public int parsePermissions(String permission) {
         int tmp;
         if (permission.charAt(0) == 'r')
             tmp = 4;

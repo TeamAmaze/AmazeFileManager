@@ -3,7 +3,6 @@ package com.amaze.filemanager.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,16 +19,18 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ListFragment;
 import android.view.ActionMode;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -63,7 +64,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class Main extends ListFragment {
+public class Main extends android.support.v4.app.Fragment {
     public File[] file;
     public ArrayList<Layoutelements> list, slist;
     public MyAdapter adapter;
@@ -85,7 +86,7 @@ public class Main extends ListFragment {
     public HistoryManager history;
     IconUtils icons;
     HorizontalScrollView scroll,scroll1;
-	boolean rememberLastPath;
+    boolean rememberLastPath;
     public boolean rootMode, mountSystem,showHidden,showPermissions,showSize,showLastModified;
     View footerView, poppyView;
     ImageButton paste;
@@ -93,27 +94,59 @@ public class Main extends ListFragment {
     public LinearLayout pathbar;
     private ImageButton ib;
     CountDownTimer timer;
+    private View rootView;
+    public ListView listView;
+    public GridView gridView;
+    private SharedPreferences sharedPreferences;
+    private Boolean aBoolean;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-       super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         showPermissions=Sp.getBoolean("showPermissions",false);
         showSize=Sp.getBoolean("showFileSize",true);
         showLastModified=Sp.getBoolean("showLastModified",true);
         icons = new IconUtils(Sp, getActivity());
-    timer=new CountDownTimer(2000,1000) {
-        @Override
-        public void onTick(long l) {}
-        @Override
-        public void onFinish() {
-        crossfadeInverse();
+        timer=new CountDownTimer(2000,1000) {
+            @Override
+            public void onTick(long l) {}
+            @Override
+            public void onFinish() {
+                crossfadeInverse();
+            }
+        };}
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        rootView = inflater.inflate(R.layout.main_frag, container, false);
+        listView = (ListView) rootView.findViewById(R.id.listView);
+        gridView = (GridView) rootView.findViewById(R.id.gridView);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        aBoolean = sharedPreferences.getBoolean("view", true);
+
+        if (aBoolean) {
+            listView.setVisibility(View.VISIBLE);
+            gridView.setVisibility(View.GONE);
+        } else {
+            listView.setVisibility(View.GONE);
+            gridView.setVisibility(View.VISIBLE);
         }
-    };}
+
+        return rootView;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        aBoolean = sharedPreferences.getBoolean("view", true);
+
         ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
         overflow.setVisibility(View.VISIBLE);
         (overflow).setOnClickListener(new View.OnClickListener() {
@@ -153,13 +186,18 @@ public class Main extends ListFragment {
         utils = new Futils();
         res = getResources();
         mPoppyViewHelper = new PoppyViewHelper(getActivity());
-        poppyView = mPoppyViewHelper.createPoppyViewOnListView(android.R.id.list,R.layout.pooppybar);
+        aBoolean = sharedPreferences.getBoolean("view", true);
+        if (aBoolean) {
+            poppyView = mPoppyViewHelper.createPoppyViewOnListView(R.id.listView, R.layout.pooppybar);
+        } else {
+            poppyView = mPoppyViewHelper.createPoppyViewOnListView(R.id.listView, R.layout.pooppybar);
+        }
         initPoppyViewListeners(poppyView);
         history = new HistoryManager(getActivity(), "Table1");
         rootMode = Sp.getBoolean("rootmode", false);
         mountSystem = Sp.getBoolean("mountsystem", false);
-		showHidden=Sp.getBoolean("showHidden",true);
-		rememberLastPath=Sp.getBoolean("rememberLastPath",false);
+        showHidden=Sp.getBoolean("showHidden",true);
+        rememberLastPath=Sp.getBoolean("rememberLastPath",false);
         int foldericon = Integer.parseInt(Sp.getString("folder", "1"));
         switch (foldericon) {
             case 0:
@@ -181,12 +219,12 @@ public class Main extends ListFragment {
         getSortModes();
         home = Sp.getString("home", System.getenv("EXTERNAL_STORAGE"));
         this.setRetainInstance(false);
-		
+
         File f = new File(home);
-		if(rememberLastPath){
-			f=new File(Sp.getString("current",home));
-		
-			}
+        if(rememberLastPath){
+            f=new File(Sp.getString("current",home));
+
+        }
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
         pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
 
@@ -201,18 +239,32 @@ public class Main extends ListFragment {
         scroll = (HorizontalScrollView) getActivity().findViewById(R.id.scroll);
         scroll1 = (HorizontalScrollView) getActivity().findViewById(R.id.scroll1);
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
-        ListView vl = getListView();
         if (uimode == 1) {
-           float scale = getResources().getDisplayMetrics().density;
-           int dpAsPixels = (int) (5 * scale + 0.5f);
-           vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
-           vl.setDivider(null);
-           vl.setDividerHeight(dpAsPixels);
+            float scale = getResources().getDisplayMetrics().density;
+            int dpAsPixels = (int) (5 * scale + 0.5f);
 
+            aBoolean = sharedPreferences.getBoolean("view", true);
+            if (aBoolean) {
+
+                listView.setPadding(dpAsPixels, 0, dpAsPixels, 0);
+                listView.setDivider(null);
+                listView.setDividerHeight(dpAsPixels);
+            } else {
+
+                gridView.setPadding(dpAsPixels, 0, dpAsPixels, 0);
+            }
         }
         footerView=getActivity().getLayoutInflater().inflate(R.layout.divider,null);
-        vl.addFooterView(footerView);
-        vl.setFastScrollEnabled(true);
+
+        aBoolean = sharedPreferences.getBoolean("view", true);
+        if (aBoolean) {
+
+            listView.addFooterView(footerView);
+            listView.setFastScrollEnabled(true);
+        } else {
+
+            gridView.setFastScrollEnabled(true);
+        }
         if (savedInstanceState == null)
             loadlist(f, false);
         else {
@@ -229,8 +281,8 @@ public class Main extends ListFragment {
                     adapter.toggleChecked(i);
                 }
             }
-           
-            getListView().setVisibility(View.VISIBLE);
+
+            //listView.setVisibility(View.VISIBLE);
         }
 
     }
@@ -238,8 +290,19 @@ public class Main extends ListFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        int index = getListView().getFirstVisiblePosition();
-        View vi = getListView().getChildAt(0);
+
+        int index;
+        View vi;
+
+        aBoolean = sharedPreferences.getBoolean("view", true);
+        if (aBoolean) {
+
+            index = listView.getFirstVisiblePosition();
+            vi = listView.getChildAt(0);
+        } else {
+            index = gridView.getFirstVisiblePosition();
+            vi = gridView.getChildAt(0);
+        }
         int top = (vi == null) ? 0 : vi.getTop();
         outState.putInt("index", index);
         outState.putInt("top", top);
@@ -393,7 +456,7 @@ public class Main extends ListFragment {
 
             String path;Layoutelements l=list.get(position);
             if(!l.hasSymlink()){
-            path= l.getDesc();}
+                path= l.getDesc();}
             else{path=l.getSymlink();}
             final File f = new File(path);
             if (f.isDirectory()) {
@@ -406,7 +469,6 @@ public class Main extends ListFragment {
 
         }
     }
-
 
     public void loadlist(File f, boolean back) {
         if(mActionMode!=null){mActionMode.finish();}
@@ -435,19 +497,24 @@ public class Main extends ListFragment {
                 adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
                         bitmap, ma);
                 try {
-                    setListAdapter(adapter);
 
-
-                results = false;
-                current = f.getPath();
-                if (back) {
-                    if (scrolls.containsKey(current)) {
-                        Bundle b = scrolls.get(current);
-
-                        getListView().setSelectionFromTop(b.getInt("index"), b.getInt("top"));
+                    aBoolean = sharedPreferences.getBoolean("view", true);
+                    if (aBoolean) {
+                        listView.setAdapter(adapter);
+                    } else {
+                        gridView.setAdapter(adapter);
                     }
-                }
-                bbar(current);} catch (Exception e) {
+
+                    results = false;
+                    current = f.getPath();
+                    if (back) {
+                        if (scrolls.containsKey(current)) {
+                            Bundle b = scrolls.get(current);
+
+                            listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
+                        }
+                    }
+                    bbar(current);} catch (Exception e) {
                 }
             }
         } catch (Exception e) {
@@ -493,7 +560,7 @@ public class Main extends ListFragment {
             hideOption(R.id.ex, menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
             if(Build.VERSION.SDK_INT<19)
-            getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
+                getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
             poppyView.setVisibility(View.GONE);
             return true;
         }
@@ -734,7 +801,7 @@ public class Main extends ListFragment {
 
                     buttons.addView(ib);
                     if(names.size()-i!=1)
-                    buttons.addView(v);
+                        buttons.addView(v);
                 } else if (rpaths.get(i).equals(Environment.getExternalStorageDirectory().getPath())) {
                     ib = new ImageButton(getActivity());
                     ib.setImageDrawable(icons.getSdDrawable());
@@ -747,7 +814,7 @@ public class Main extends ListFragment {
                             timer.start();
                         }
                     });
-                     buttons.addView(ib);
+                    buttons.addView(ib);
                     if(names.size()-i!=1)
                         buttons.addView(v);
                 } else {
@@ -793,8 +860,8 @@ public class Main extends ListFragment {
 
 
     public void computeScroll() {
-        int index = getListView().getFirstVisiblePosition();
-        View vi = getListView().getChildAt(0);
+        int index = listView.getFirstVisiblePosition();
+        View vi = listView.getChildAt(0);
         int top = (vi == null) ? 0 : vi.getTop();
         Bundle b = new Bundle();
         b.putInt("index", index);
@@ -815,12 +882,12 @@ public class Main extends ListFragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-        updateList();
+            updateList();
         }
     };
-   public void updateList(){
-       computeScroll();
-       loadlist(new File(current), true);}
+    public void updateList(){
+        computeScroll();
+        loadlist(new File(current), true);}
 
     public void getSortModes() {
         int t = Integer.parseInt(Sp.getString("sortby", "0"));
@@ -844,16 +911,16 @@ public class Main extends ListFragment {
     @Override
     public void onPause() {
         super.onPause();
-		if(rememberLastPath){
-			Sp.edit().putString("current",current).apply();
-		}
+        if(rememberLastPath){
+            Sp.edit().putString("current",current).apply();
+        }
         (getActivity()).unregisterReceiver(receiver2);
     }
-	@Override
+    @Override
     public void onStop() {
         super.onStop();
-	
-		}
+
+    }
     public ArrayList<Layoutelements> addTo(ArrayList<String[]> mFile) {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         for (int i = 0; i < mFile.size(); i++) {
@@ -875,9 +942,9 @@ public class Main extends ListFragment {
 
     @Override
     public void onDestroy() {
-       super.onDestroy();
-		
-		history.end();     }
+        super.onDestroy();
+
+        history.end();     }
     public void initPoppyViewListeners(View poppy){
         ((ImageView)poppy.findViewById(R.id.back)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -910,10 +977,23 @@ public class Main extends ListFragment {
                 utils.showBookmarkDialog(ma,sh);
             }
         });
-    }public void showPopup(View v) {
+    }
+
+    public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(getActivity(), v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.activity_extra, popup.getMenu());
+
+        // Getting option for listView and gridView
+        MenuItem s = popup.getMenu().findItem(R.id.view);
+
+        aBoolean = sharedPreferences.getBoolean("view", true);
+        if (aBoolean) {
+            s.setTitle("Grid View");
+        } else {
+            s.setTitle("List View");
+        }
+
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
             @Override
@@ -934,10 +1014,24 @@ public class Main extends ListFragment {
                     case R.id.item11:
                         utils.showDirectorySortDialog(ma);
                         break;
-
-
                     case R.id.item4:
                         search();
+                        break;
+                    case R.id.view:
+                        aBoolean = sharedPreferences.getBoolean("view", true);
+                        if (aBoolean) {
+                            Toast.makeText(getActivity(), "Setting GridView", Toast.LENGTH_SHORT).show();
+                            sharedPreferences.edit().putBoolean("view", false).commit();
+                            listView.setVisibility(View.GONE);
+                            gridView.setVisibility(View.VISIBLE);
+                            gridView.setAdapter(adapter);
+                        } else {
+                            Toast.makeText(getActivity(), "Setting ListView", Toast.LENGTH_SHORT).show();
+                            sharedPreferences.edit().putBoolean("view", true).commit();
+                            listView.setVisibility(View.VISIBLE);
+                            gridView.setVisibility(View.GONE);
+                            listView.setAdapter(adapter);
+                        }
                         break;
                 }
                 return false;
@@ -948,58 +1042,59 @@ public class Main extends ListFragment {
     public void invalidatePasteButton(){
         if(MOVE_PATH!=null || COPY_PATH!=null){
             paste.setVisibility(View.VISIBLE);
-        }else paste.setVisibility(View.GONE);
+        } else
+            paste.setVisibility(View.GONE);
     }private void crossfade() {
 
-		// Set the content view to 0% opacity but visible, so that it is visible
-		// (but fully transparent) during the animation.
-		buttons.setAlpha(0f);
-		buttons.setVisibility(View.VISIBLE);
-	
-		// Animate the content view to 100% opacity, and clear any animation
-		// listener set on the view.
-		buttons.animate()
-            .alpha(1f)
-            .setDuration(100)
-            .setListener(null);
-		pathbar.animate()
-            .alpha(0f)
-            .setDuration(100)
-            .setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    pathbar.setVisibility(View.GONE);
-                }
-            });
-		// Animate the loading view to 0% opacity. After the animation ends,
-		// set its visibility to GONE as an optimization step (it won't
-		// participate in layout passes, etc.)
+        // Set the content view to 0% opacity but visible, so that it is visible
+        // (but fully transparent) during the animation.
+        buttons.setAlpha(0f);
+        buttons.setVisibility(View.VISIBLE);
 
-	}private void crossfadeInverse() {
+        // Animate the content view to 100% opacity, and clear any animation
+        // listener set on the view.
+        buttons.animate()
+                .alpha(1f)
+                .setDuration(100)
+                .setListener(null);
+        pathbar.animate()
+                .alpha(0f)
+                .setDuration(100)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        pathbar.setVisibility(View.GONE);
+                    }
+                });
+        // Animate the loading view to 0% opacity. After the animation ends,
+        // set its visibility to GONE as an optimization step (it won't
+        // participate in layout passes, etc.)
 
-		// Set the content view to 0% opacity but visible, so that it is visible
-		// (but fully transparent) during the animation.
-		pathbar.setAlpha(0f);
-		pathbar.setVisibility(View.VISIBLE);
+    }private void crossfadeInverse() {
 
-		// Animate the content view to 100% opacity, and clear any animation
-		// listener set on the view.
-	pathbar.animate()
-            .alpha(1f)
-            .setDuration(500)
-            .setListener(null);
-		buttons.animate()
-            .alpha(0f)
-            .setDuration(500)
-            .setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    buttons.setVisibility(View.GONE);
-                }
-            });
-		// Animate the loading view to 0% opacity. After the animation ends,
-		// set its visibility to GONE as an optimization step (it won't
-		// participate in layout passes, etc.)
+        // Set the content view to 0% opacity but visible, so that it is visible
+        // (but fully transparent) during the animation.
+        pathbar.setAlpha(0f);
+        pathbar.setVisibility(View.VISIBLE);
 
-	
-}}
+        // Animate the content view to 100% opacity, and clear any animation
+        // listener set on the view.
+        pathbar.animate()
+                .alpha(1f)
+                .setDuration(500)
+                .setListener(null);
+        buttons.animate()
+                .alpha(0f)
+                .setDuration(500)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        buttons.setVisibility(View.GONE);
+                    }
+                });
+        // Animate the loading view to 0% opacity. After the animation ends,
+        // set its visibility to GONE as an optimization step (it won't
+        // participate in layout passes, etc.)
+
+
+    }}

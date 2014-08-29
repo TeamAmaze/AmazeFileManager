@@ -1,17 +1,27 @@
 package com.amaze.filemanager.adapters;
 
-import android.app.*;
-import android.content.*;
-import android.graphics.*;
-import android.graphics.drawable.*;
-import android.util.*;
-import android.view.*;
-import android.widget.*;
-import com.amaze.filemanager.*;
-import com.amaze.filemanager.fragments.*;
-import com.amaze.filemanager.utils.*;
-import java.io.*;
-import java.util.*;
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Color;
+import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.IconHolder;
+import com.amaze.filemanager.utils.Icons;
+import com.amaze.filemanager.utils.Layoutelements;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyAdapter extends ArrayAdapter<Layoutelements> {
     Context context;
@@ -19,7 +29,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     Main main;
     Futils utils = new Futils();
-   IconHolder ic;
+    IconHolder ic;
     boolean showThumbs;
     public MyAdapter(Context context, int resourceId,
                      List<Layoutelements> items, Main main) {

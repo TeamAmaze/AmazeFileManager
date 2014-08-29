@@ -13,7 +13,6 @@ import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Layoutelements;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -65,7 +64,8 @@ public class LoadSearchList extends AsyncTask<ArrayList<String[]>, Void, ArrayLi
                 ma.adapter = new MyAdapter(ma.getActivity(), R.layout.rowlayout,
                         bitmap, ma);
                 try {
-                    ma.setListAdapter(ma.adapter);
+                    //ListView lv = (ListView) ma.listView.findViewById(R.id.listView);
+                    ma.listView.setAdapter(ma.adapter);
                     ma.results = true;
                     try {
                         Intent i = new Intent("updatepager");
