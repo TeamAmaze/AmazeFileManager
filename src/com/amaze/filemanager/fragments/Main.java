@@ -98,7 +98,7 @@ public class Main extends android.support.v4.app.Fragment {
     public ListView listView;
     public GridView gridView;
     private SharedPreferences sharedPreferences;
-    private Boolean aBoolean;
+    public Boolean aBoolean;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
