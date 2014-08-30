@@ -93,11 +93,12 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
     /* private view holder class */
     private class ViewHolder {
         ImageView imageView;
+        ImageView imageView1;
         TextView txtTitle;
         TextView txtDesc;
         TextView date;
         TextView perm;
-        RelativeLayout rl;
+        View rl;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -106,6 +107,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
         View view = convertView;
         final int p = position;
+        if(main.aBoolean){
         if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater) context
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -115,7 +117,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
             vholder.imageView = (ImageView) view.findViewById(R.id.icon);
 
-            vholder.rl = (RelativeLayout) view.findViewById(R.id.second);
+            vholder.rl = view.findViewById(R.id.second);
                 vholder.perm = (TextView) view.findViewById(R.id.permis);
                 vholder.date = (TextView) view.findViewById(R.id.date);
                 vholder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
@@ -180,7 +182,78 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         if(main.showSize)
         holder.txtDesc.setText(rowItem.getSize());
             holder.date.setVisibility(View.VISIBLE);
-            holder.txtDesc.setVisibility(View.VISIBLE);
+            holder.txtDesc.setVisibility(View.VISIBLE);}
+        else{if (convertView == null) {
+            LayoutInflater mInflater = (LayoutInflater) context
+                    .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            view = mInflater.inflate(R.layout.griditem, parent, false);
+            final ViewHolder vholder = new ViewHolder();
+            vholder.rl=view.findViewById(R.id.frame);
+            vholder.txtTitle = (TextView) view.findViewById(R.id.title);
+            vholder.imageView = (ImageView) view.findViewById(R.id.icon_mime);
+            vholder.imageView1 = (ImageView) view.findViewById(R.id.icon_thumb);
+            vholder.date= (TextView) view.findViewById(R.id.date);
+            vholder.txtDesc= (TextView) view.findViewById(R.id.size);
+            view.setTag(vholder);
+
+
+        }
+            final ViewHolder holder = (ViewHolder) view.getTag();
+            ic.cancelLoad(holder.imageView);
+            ic.cancelLoad(holder.imageView1);
+            Boolean checked = myChecked.get(position);
+            if (checked != null) {
+
+                if (checked) {
+                    holder.rl.setBackgroundColor(Color.parseColor("#5fcccccc"));
+                } else {
+                    if (main.uimode == 0) {
+                        holder.rl.setBackgroundResource(R.drawable.item_backgrund);
+                    } else if (main.uimode == 1) {
+                        holder.rl.setBackgroundResource(R.drawable.bg_card);
+                    }
+                }
+            }
+            holder.rl.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    main.onListItemClicked(p, v);
+                }
+            });
+
+            holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
+
+                public boolean onLongClick(View p1) {
+                    if (main.results) {
+                        utils.longClickSearchItem(main, rowItem.getDesc());
+                    } else if (!main.selection) {
+                        toggleChecked(p);
+
+                    }
+                    // TODO: Implement this method
+                    return true;
+                }
+            });
+
+
+            holder.txtTitle.setText(rowItem.getTitle());
+
+            holder.imageView.setImageDrawable(rowItem.getImageId());
+            if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
+
+                ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_image));
+                holder.imageView.setVisibility(View.GONE);
+                holder.imageView1.setVisibility(View.VISIBLE);
+            }
+            if (Icons.isApk((rowItem.getDesc()))) {
+                holder.imageView1.setVisibility(View.GONE);
+                holder.imageView.setVisibility(View.VISIBLE);
+                ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
+            }
+            if(main.showLastModified)
+                holder.date.setText(rowItem.getDate());
+            if(main.showSize)
+                holder.txtDesc.setText(rowItem.getSize());}
         return view;
     }
 }
