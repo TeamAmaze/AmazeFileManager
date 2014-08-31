@@ -3,6 +3,7 @@ package com.amaze.filemanager.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -1018,20 +1019,15 @@ public class Main extends android.support.v4.app.Fragment {
                         search();
                         break;
                     case R.id.view:
-                        aBoolean = sharedPreferences.getBoolean("view", true);
                         if (aBoolean) {
                             Toast.makeText(getActivity(), "Setting GridView", Toast.LENGTH_SHORT).show();
                             sharedPreferences.edit().putBoolean("view", false).commit();
-                            listView.setVisibility(View.GONE);
-                            gridView.setVisibility(View.VISIBLE);
-                            gridView.setAdapter(adapter);
+
                         } else {
                             Toast.makeText(getActivity(), "Setting ListView", Toast.LENGTH_SHORT).show();
                             sharedPreferences.edit().putBoolean("view", true).commit();
-                            listView.setVisibility(View.VISIBLE);
-                            gridView.setVisibility(View.GONE);
-                            listView.setAdapter(adapter);
-                        }
+
+                        }restartPC(getActivity());
                         break;
                 }
                 return false;
@@ -1070,6 +1066,15 @@ public class Main extends android.support.v4.app.Fragment {
         // set its visibility to GONE as an optimization step (it won't
         // participate in layout passes, etc.)
 
+    }public static void restartPC(final Activity activity) {
+        if (activity == null)
+            return;
+        final int enter_anim = android.R.anim.fade_in;
+        final int exit_anim = android.R.anim.fade_out;
+        activity.overridePendingTransition(enter_anim, exit_anim);
+        activity.finish();
+        activity.overridePendingTransition(enter_anim, exit_anim);
+        activity.startActivity(activity.getIntent());
     }private void crossfadeInverse() {
 
         // Set the content view to 0% opacity but visible, so that it is visible
