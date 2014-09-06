@@ -3,6 +3,7 @@ package com.amaze.filemanager.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconHolder;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
+import com.makeramen.RoundedImageView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
     Main main;
     Futils utils = new Futils();
     IconHolder ic;
-    boolean showThumbs;
+    boolean showThumbs;Drawable b;
     public MyAdapter(Context context, int resourceId,
                      List<Layoutelements> items, Main main) {
         super(context, resourceId, items);
@@ -42,6 +44,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         }
         showThumbs=main.Sp.getBoolean("showThumbs",true);
 		ic=new IconHolder(context,showThumbs);
+        b=main.getActivity().getResources().getDrawable(R.drawable.action_bar);
     }
 
 
@@ -92,6 +95,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
     /* private view holder class */
     private class ViewHolder {
+        RoundedImageView viewmageV;
         ImageView imageView;
         ImageView imageView1;
         TextView txtTitle;
@@ -105,9 +109,10 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
         final Layoutelements rowItem = getItem(position);
 
-        View view = convertView;
-        final int p = position;
+
         if(main.aBoolean){
+            View view = convertView;
+            final int p = position;
         if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater) context
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -115,8 +120,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             final ViewHolder vholder = new ViewHolder();
 
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
-            vholder.imageView = (ImageView) view.findViewById(R.id.icon);
-
+            vholder.viewmageV=(RoundedImageView)view.findViewById(R.id.icon);
             vholder.rl = view.findViewById(R.id.second);
                 vholder.perm = (TextView) view.findViewById(R.id.permis);
                 vholder.date = (TextView) view.findViewById(R.id.date);
@@ -126,7 +130,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
         }
         final ViewHolder holder = (ViewHolder) view.getTag();
-		ic.cancelLoad(holder.imageView);
+		ic.cancelLoad(holder.viewmageV);
         Boolean checked = myChecked.get(position);
         if (checked != null) {
 
@@ -164,16 +168,16 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
         holder.txtTitle.setText(rowItem.getTitle());
 
-        holder.imageView.setImageDrawable(rowItem.getImageId());
+        holder.viewmageV.setImageDrawable(rowItem.getImageId());
         if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
 
-			ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_image));
+			ic.loadDrawable(holder.viewmageV,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_image));
             
 
         }
         if (Icons.isApk((rowItem.getDesc()))) {
                
-            ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
+            ic.loadDrawable(holder.viewmageV,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
         }
             if(main.showPermissions)
             holder.perm.setText(rowItem.getPermissions());
@@ -181,9 +185,10 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.date.setText(rowItem.getDate());
         if(main.showSize)
         holder.txtDesc.setText(rowItem.getSize());
-            holder.date.setVisibility(View.VISIBLE);
-            holder.txtDesc.setVisibility(View.VISIBLE);}
-        else{if (convertView == null) {
+            return view;}
+        else{   View view;
+            final int p = position;
+            if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater) context
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             view = mInflater.inflate(R.layout.griditem, parent, false);
@@ -197,10 +202,8 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             view.setTag(vholder);
 
 
-        }
+        }else{ view = convertView;}
             final ViewHolder holder = (ViewHolder) view.getTag();
-            ic.cancelLoad(holder.imageView);
-            ic.cancelLoad(holder.imageView1);
             Boolean checked = myChecked.get(position);
             if (checked != null) {
 
@@ -208,7 +211,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     holder.rl.setBackgroundColor(Color.parseColor("#5fcccccc"));
                 } else {
                     if (main.uimode == 0) {
-                        holder.rl.setBackgroundResource(R.drawable.item_backgrund);
+                        holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
                     } else if (main.uimode == 1) {
                         holder.rl.setBackgroundResource(R.drawable.bg_card);
                     }
@@ -237,24 +240,23 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
 
             holder.txtTitle.setText(rowItem.getTitle());
-
+            holder.imageView1.setVisibility(View.GONE);
             holder.imageView.setImageDrawable(rowItem.getImageId());
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
-
+            ic.cancelLoad(holder.imageView1);
                 ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_image));
-                holder.imageView.setVisibility(View.GONE);
                 holder.imageView1.setVisibility(View.VISIBLE);
             }
             if (Icons.isApk((rowItem.getDesc()))) {
-                holder.imageView1.setVisibility(View.GONE);
-                holder.imageView.setVisibility(View.VISIBLE);
+                ic.cancelLoad(holder.imageView);
                 ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
             }
             if(main.showLastModified)
                 holder.date.setText(rowItem.getDate());
             if(main.showSize)
-                holder.txtDesc.setText(rowItem.getSize());}
-        return view;
+                holder.txtDesc.setText(rowItem.getSize());
+            return view;}
+
     }
 }
 
