@@ -6,14 +6,16 @@
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent"/>
 
     <GridView
         android:id="@+id/gridView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
-        android:numColumns="auto_fit"></GridView>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:numColumns="auto_fit"/>
 
 </RelativeLayout>

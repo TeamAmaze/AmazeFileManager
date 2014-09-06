@@ -111,7 +111,6 @@ public class IconHolder {
      */
     public void loadDrawable(ImageView iconView, File fso, Drawable defaultIcon) {
         if (!mUseThumbs) {
-            iconView.setImageDrawable(defaultIcon);
             return;
         }
 
@@ -123,8 +122,6 @@ public class IconHolder {
         }
 
         mRequests.put(iconView, fso);
-        iconView.setImageDrawable(defaultIcon);
-
         mHandler.removeMessages(MSG_DESTROY);
         if (mWorkerThread == null) {
             mWorkerThread = new HandlerThread("IconHolderLoader");

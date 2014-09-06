@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="170dp"
     android:id="@+id/frame"
-    android:background="@drawable/ic_grid_card_background"
+    android:background="@drawable/item_doc_grid"
     android:foreground="@drawable/item_backgrund">
 
     <LinearLayout
@@ -24,8 +24,9 @@
 
             <ImageView
                 android:id="@+id/icon_mime"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center"
                 android:scaleType="centerInside"
                 android:contentDescription="@null" />
 

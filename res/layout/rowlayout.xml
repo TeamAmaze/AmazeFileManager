@@ -6,8 +6,9 @@
     android:minHeight="60dip"
     android:padding="6dip">
 
-    <ImageView
+    <com.makeramen.RoundedImageView
         android:id="@+id/icon"
+        android:scaleType="centerInside"
         android:layout_width="55dip"
         android:layout_height="55dip"
         android:padding="5dip"
@@ -43,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="left"
                 android:textSize="13sp"
-                android:visibility="gone" />
+/>
 
             <TextView
                 android:id="@+id/date"
@@ -52,7 +53,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="3dip"
                 android:textSize="12sp"
-                android:visibility="gone" />
+ />
             <TextView
                 android:id="@+id/permis"
                 android:layout_width="wrap_content"
