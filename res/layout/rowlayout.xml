@@ -12,6 +12,8 @@
     <ImageView
         android:layout_width="50dip"
         android:layout_height="50dip"
+        android:background="@drawable/circle"
+        android:padding="7dp"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
         android:id="@+id/icon"/>
