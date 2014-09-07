@@ -3,6 +3,7 @@ package com.amaze.filemanager.utils;
 
 import android.content.*;
 import android.content.pm.*;
+import android.content.res.Resources;
 import android.graphics.*;
 import android.graphics.drawable.*;
 import android.os.*;
@@ -33,7 +34,7 @@ public class IconHolder {
     private final boolean mUseThumbs; 
 	private HandlerThread mWorkerThread;
     private Handler mWorkerHandler;
-
+    boolean grid;
     private static class LoadResult {
         File fso;
         Bitmap result;
@@ -77,7 +78,7 @@ public class IconHolder {
      * @param useThumbs If thumbs of images, videos, apps, ... should be returned
      * instead of the default icon.
      */
-    public IconHolder(Context context, boolean useThumbs) {
+    public IconHolder(Context context, boolean useThumbs,boolean grid) {
         super();
         this.mContext = context;
         this.mUseThumbs = useThumbs;
@@ -91,7 +92,7 @@ public class IconHolder {
             }
         };
         this.mAlbums = new HashMap<String, Long>();
-      
+        this.grid=grid;
     }
 
     /**
@@ -208,12 +209,16 @@ public class IconHolder {
 
 		public Bitmap loadImage(String path){
 			Bitmap bitsat;
+            Resources res=mContext.getResources();
+            int dp=50;
+            if(grid){dp=150;}
+            int px = (int)(dp * (res.getDisplayMetrics().densityDpi / 160));
 			try {
 				BitmapFactory.Options options = new BitmapFactory.Options();
 				options.inJustDecodeBounds = true;
 				Bitmap b = BitmapFactory.decodeFile(path, options);
 				
-				options.inSampleSize = new Futils().calculateInSampleSize(options, 50, 50);
+				options.inSampleSize = new Futils().calculateInSampleSize(options, px, px);
 
 				// Decode bitmap with inSampleSize set
 				options.inJustDecodeBounds = false;

@@ -151,7 +151,7 @@
             android:layout_height="56dp"
             android:layout_below="@id/buttonbarframe"
             android:layout_marginTop="-28dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="12dp"
             />
     </RelativeLayout>
 

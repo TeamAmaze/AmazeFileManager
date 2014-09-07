@@ -5,21 +5,36 @@
     android:clickable="true"
     android:minHeight="60dip"
     android:padding="6dip">
-
-    <com.makeramen.RoundedImageView
-        android:id="@+id/icon"
-        android:scaleType="centerInside"
-        android:layout_width="55dip"
-        android:layout_height="55dip"
-        android:padding="5dip"
+<FrameLayout
+    android:id="@+id/iconframe"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:background="@drawable/circle"
+        android:padding="7dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:id="@+id/icon"/>
+    <com.pkmmte.view.CircularImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cicon"
+        android:scaleType="centerCrop"
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        app:border="false"
+        app:border_color="#cccccc"
+        app:border_width="5dp"
+        app:shadow="false"
         android:contentDescription="@string/icon" />
-
+</FrameLayout>
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_toRightOf="@id/icon"
-        android:layout_marginLeft="3dip"
+        android:layout_toRightOf="@id/iconframe"
         android:layout_marginTop="5dip">
 
         <TextView

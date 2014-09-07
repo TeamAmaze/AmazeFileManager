@@ -19,7 +19,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconHolder;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
-import com.makeramen.RoundedImageView;
+import com.pkmmte.view.CircularImageView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
     Main main;
     Futils utils = new Futils();
     IconHolder ic;
-    boolean showThumbs;Drawable b;
+    boolean showThumbs;
     public MyAdapter(Context context, int resourceId,
                      List<Layoutelements> items, Main main) {
         super(context, resourceId, items);
@@ -43,8 +43,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             myChecked.put(i, false);
         }
         showThumbs=main.Sp.getBoolean("showThumbs",true);
-		ic=new IconHolder(context,showThumbs);
-        b=main.getActivity().getResources().getDrawable(R.drawable.action_bar);
+		ic=new IconHolder(context,showThumbs,!main.aBoolean);
     }
 
 
@@ -95,7 +94,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
     /* private view holder class */
     private class ViewHolder {
-        RoundedImageView viewmageV;
+        CircularImageView viewmageV;
         ImageView imageView;
         ImageView imageView1;
         TextView txtTitle;
@@ -120,7 +119,8 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             final ViewHolder vholder = new ViewHolder();
 
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
-            vholder.viewmageV=(RoundedImageView)view.findViewById(R.id.icon);
+            vholder.viewmageV=(CircularImageView)view.findViewById(R.id.cicon);
+            vholder.imageView=(ImageView)view.findViewById(R.id.icon);
             vholder.rl = view.findViewById(R.id.second);
                 vholder.perm = (TextView) view.findViewById(R.id.permis);
                 vholder.date = (TextView) view.findViewById(R.id.date);
@@ -130,7 +130,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
         }
         final ViewHolder holder = (ViewHolder) view.getTag();
-		ic.cancelLoad(holder.viewmageV);
         Boolean checked = myChecked.get(position);
         if (checked != null) {
 
@@ -160,24 +159,25 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     toggleChecked(p);
 
                 }
-                // TODO: Implement this method
                 return true;
             }
         });
 
 
         holder.txtTitle.setText(rowItem.getTitle());
-
-        holder.viewmageV.setImageDrawable(rowItem.getImageId());
+        holder.imageView.setImageDrawable(rowItem.getImageId());
+        holder.imageView.setVisibility(View.VISIBLE);
+        holder.viewmageV.setVisibility(View.INVISIBLE);
         if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
-
-			ic.loadDrawable(holder.viewmageV,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_image));
-            
-
+            holder.imageView.setVisibility(View.INVISIBLE);
+            holder.viewmageV.setVisibility(View.VISIBLE);
+            holder.viewmageV.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_doc_image));
+            ic.cancelLoad(holder.viewmageV);
+            ic.loadDrawable(holder.viewmageV,new File(rowItem.getDesc()),null);
         }
         if (Icons.isApk((rowItem.getDesc()))) {
-               
-            ic.loadDrawable(holder.viewmageV,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
+            ic.cancelLoad(holder.imageView);
+            ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
         }
             if(main.showPermissions)
             holder.perm.setText(rowItem.getPermissions());
@@ -240,12 +240,14 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
 
             holder.txtTitle.setText(rowItem.getTitle());
-            holder.imageView1.setVisibility(View.GONE);
+            holder.imageView1.setVisibility(View.INVISIBLE);
+            holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setImageDrawable(rowItem.getImageId());
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
-            ic.cancelLoad(holder.imageView1);
-                ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_image));
                 holder.imageView1.setVisibility(View.VISIBLE);
+                holder.imageView1.setImageDrawable(null);
+                ic.cancelLoad(holder.imageView1);
+                ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
             }
             if (Icons.isApk((rowItem.getDesc()))) {
                 ic.cancelLoad(holder.imageView);
