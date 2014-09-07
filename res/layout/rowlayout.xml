@@ -6,12 +6,16 @@
     android:minHeight="60dip"
     android:padding="6dip">
 
-    <com.makeramen.RoundedImageView
+    <com.pkmmte.view.CircularImageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/icon"
         android:scaleType="centerInside"
-        android:layout_width="55dip"
-        android:layout_height="55dip"
-        android:padding="5dip"
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        app:border_color="#cccccc"
+        app:border_width="5dp"
+        app:shadow="true"
         android:contentDescription="@string/icon" />
 
     <RelativeLayout
@@ -19,7 +23,6 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:layout_toRightOf="@id/icon"
-        android:layout_marginLeft="3dip"
         android:layout_marginTop="5dip">
 
         <TextView

@@ -19,7 +19,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconHolder;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
-import com.makeramen.RoundedImageView;
+import com.pkmmte.view.CircularImageView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
     Main main;
     Futils utils = new Futils();
     IconHolder ic;
-    boolean showThumbs;Drawable b;
+    boolean showThumbs;
     public MyAdapter(Context context, int resourceId,
                      List<Layoutelements> items, Main main) {
         super(context, resourceId, items);
@@ -44,7 +44,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         }
         showThumbs=main.Sp.getBoolean("showThumbs",true);
 		ic=new IconHolder(context,showThumbs);
-        b=main.getActivity().getResources().getDrawable(R.drawable.action_bar);
     }
 
 
@@ -95,7 +94,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
     /* private view holder class */
     private class ViewHolder {
-        RoundedImageView viewmageV;
+        CircularImageView viewmageV;
         ImageView imageView;
         ImageView imageView1;
         TextView txtTitle;
@@ -120,7 +119,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             final ViewHolder vholder = new ViewHolder();
 
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
-            vholder.viewmageV=(RoundedImageView)view.findViewById(R.id.icon);
+            vholder.viewmageV=(CircularImageView)view.findViewById(R.id.icon);
             vholder.rl = view.findViewById(R.id.second);
                 vholder.perm = (TextView) view.findViewById(R.id.permis);
                 vholder.date = (TextView) view.findViewById(R.id.date);
