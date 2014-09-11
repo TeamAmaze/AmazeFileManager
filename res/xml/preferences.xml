@@ -5,6 +5,9 @@
         android:entryValues="@array/ints"
         android:key="theme"
         android:title="@string/theme" />
+    <Preference
+        android:key="skin"
+        android:title="@string/skin" />
 
     <PreferenceCategory android:title="File Explorer">
         <CheckBoxPreference

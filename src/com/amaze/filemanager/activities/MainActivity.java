@@ -1,13 +1,12 @@
 package com.amaze.filemanager.activities;
 
-import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Typeface;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,8 +17,8 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,7 +41,6 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class MainActivity extends android.support.v4.app.FragmentActivity {
@@ -82,6 +80,22 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         setContentView(R.layout.main);
         getActionBar().hide();
         title=(TextView)findViewById(R.id.title);
+
+        // BBar
+        String skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#009688");
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.action_bar);
+        linearLayout.setBackgroundColor(Color.parseColor(skin));
+        LinearLayout linearLayout1 = (LinearLayout) findViewById(R.id.pathbar);
+        linearLayout.setBackgroundColor(Color.parseColor(skin));
+        HorizontalScrollView horizontalScrollView = (HorizontalScrollView) findViewById(R.id.scroll1);
+        horizontalScrollView.setBackgroundColor(Color.parseColor(skin));
+        HorizontalScrollView horizontalScrollView1 = (HorizontalScrollView) findViewById(R.id.scroll);
+        horizontalScrollView1.setBackgroundColor(Color.parseColor(skin));
+        LinearLayout linearLayout2 = (LinearLayout) findViewById(R.id.drawerheader);
+        linearLayout2.setBackgroundColor(Color.parseColor(skin));
+        LinearLayout linearLayout3 = (LinearLayout) findViewById(R.id.settings_bg);
+        linearLayout3.setBackgroundColor(Color.parseColor(skin));
+
         if(Sp.getBoolean("firstrun",true)){
         try {
             s.makeS();
@@ -103,7 +117,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         if(Build.VERSION.SDK_INT>=19){
         SystemBarTintManager tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
-        tintManager.setStatusBarTintColor(getResources().getColor(R.color.theme_primary));
+        tintManager.setStatusBarTintColor(Color.parseColor(skin));
         SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
         DrawerLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mDrawerLayout.getLayoutParams();
         p.setMargins(0,config.getPixelInsetTop(false),0,0);

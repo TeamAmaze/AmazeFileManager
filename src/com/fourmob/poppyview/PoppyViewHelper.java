@@ -108,7 +108,7 @@ public class PoppyViewHelper {
 	private void onScrollPositionChanged(int oldScrollPosition, int newScrollPosition) {
 		int newScrollDirection;
 
-		System.out.println(oldScrollPosition + " ->" + newScrollPosition);
+		// System.out.println(oldScrollPosition + " ->" + newScrollPosition);
 
 		if(newScrollPosition < oldScrollPosition) {
 			newScrollDirection = SCROLL_TO_TOP;
