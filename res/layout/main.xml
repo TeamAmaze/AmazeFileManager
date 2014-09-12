@@ -1,4 +1,5 @@
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -7,14 +8,12 @@
         android:id="@+id/lin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
        >
 <LinearLayout
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/actionBarSize"
     android:orientation="horizontal"
-    android:id="@+id/action_bar"
-    android:background="@color/theme_primary">
+    android:id="@+id/action_bar">
     <ImageButton
         android:id="@+id/drawer_buttton"
         android:layout_width="wrap_content"
@@ -60,9 +59,12 @@
         android:src="@drawable/ic_action_overflow"
         />
     </LinearLayout>
-<FrameLayout android:id="@+id/buttonbarframe" android:layout_below="@id/action_bar"  android:layout_height="wrap_content" android:layout_width="fill_parent">
+<FrameLayout
+    android:id="@+id/buttonbarframe"
+    android:layout_below="@id/action_bar"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent">
         <LinearLayout
-            android:background="@color/theme_primary"
             android:id="@+id/pathbar"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -94,7 +96,6 @@
                     android:scrollbars="none"
                     android:clickable="false"
                     android:id="@+id/scroll1"
-                    android:background="@color/theme_primary"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content">
 
@@ -114,7 +115,6 @@
             android:scrollbars="none"
             android:id="@+id/scroll"
 			android:paddingBottom="5dp"
-            android:background="@color/theme_primary"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
@@ -176,7 +176,6 @@
             android:layout_height="wrap_content"
             android:minHeight="50dp"
             android:padding="5dp"
-            android:background="@color/theme_primary"
             android:clickable="false">
 
             <ImageView
@@ -210,9 +209,9 @@
         android:choiceMode="singleChoice"
         android:dividerHeight="0dip" />
         <LinearLayout
+            android:id="@+id/settings_bg"
             android:layout_alignParentBottom="true"
             android:layout_width="fill_parent"
-            android:background="@color/theme_primary"
             android:layout_height="?android:attr/actionBarSize">
         <ImageButton
             android:id="@+id/settingsbutton"

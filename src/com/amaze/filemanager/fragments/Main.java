@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -188,10 +189,17 @@ public class Main extends android.support.v4.app.Fragment {
         res = getResources();
         mPoppyViewHelper = new PoppyViewHelper(getActivity());
         aBoolean = sharedPreferences.getBoolean("view", true);
+
+        String skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#009688");
+
         if (aBoolean) {
             poppyView = mPoppyViewHelper.createPoppyViewOnListView(R.id.listView, R.layout.pooppybar);
+            LinearLayout linearLayout = (LinearLayout) poppyView.findViewById(R.id.linearLayout);
+            linearLayout.setBackgroundColor(Color.parseColor(skin));
         } else {
             poppyView = mPoppyViewHelper.createPoppyViewOnGridView(R.id.gridView, R.layout.pooppybar,null);
+            LinearLayout linearLayout = (LinearLayout) poppyView.findViewById(R.id.linearLayout);
+            linearLayout.setBackgroundColor(Color.parseColor(skin));
         }
         initPoppyViewListeners(poppyView);
         history = new HistoryManager(getActivity(), "Table1");
@@ -199,10 +207,10 @@ public class Main extends android.support.v4.app.Fragment {
         mountSystem = Sp.getBoolean("mountsystem", false);
         showHidden=Sp.getBoolean("showHidden",true);
         rememberLastPath=Sp.getBoolean("rememberLastPath",false);
-        int foldericon = Integer.parseInt(Sp.getString("folder", "1"));
+        /*int foldericon = Integer.parseInt(Sp.getString("folder", "1"));
         switch (foldericon) {
             case 0:
-                folder = res.getDrawable(R.drawable.ic_grid_folder);
+                folder = res.getDrawable(R.drawable.ic_grid_folder_new);
                 break;
             case 1:
                 folder = res.getDrawable(R.drawable.ic_grid_folder1);
@@ -212,7 +220,9 @@ public class Main extends android.support.v4.app.Fragment {
                 break;
             default:
                 folder = res.getDrawable(R.drawable.ic_grid_folder);
-        }
+        }*/
+        folder = res.getDrawable(R.drawable.ic_grid_folder_new);
+
         apk = res.getDrawable(R.drawable.ic_doc_apk);
         unknown = res.getDrawable(R.drawable.ic_doc_generic_am);
         archive = res.getDrawable(R.drawable.archive_blue);
@@ -228,6 +238,8 @@ public class Main extends android.support.v4.app.Fragment {
         }
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
         pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
+
+        pathbar.setBackgroundColor(Color.parseColor(skin));
 
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -764,7 +776,8 @@ public class Main extends android.support.v4.app.Fragment {
     public void bbar(String text) {
         try {
             buttons.removeAllViews();
-            Drawable bg=getResources().getDrawable(R.drawable.listitem1);
+            //Drawable bg=getResources().getDrawable(R.drawable.listitem1);
+            String skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#009688");
             Drawable arrow=getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
             Bundle b = utils.getPaths(text, getActivity());
             ArrayList<String> names = b.getStringArrayList("names");
@@ -781,7 +794,8 @@ public class Main extends android.support.v4.app.Fragment {
                 rpaths.add(paths.get(i));
             }
             for (int i = 0; i < names.size(); i++) {
-                ImageView v=new ImageView(getActivity());v.setImageDrawable(arrow);
+                ImageView v=new ImageView(getActivity());
+                v.setImageDrawable(arrow);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 params.gravity= Gravity.CENTER_VERTICAL;
@@ -790,7 +804,7 @@ public class Main extends android.support.v4.app.Fragment {
                 if (rpaths.get(i).equals("/")) {
                     ib = new ImageButton(getActivity());
                     ib.setImageDrawable(icons.getRootDrawable());
-                    ib.setBackgroundDrawable(bg);
+                    ib.setBackgroundColor(Color.parseColor(skin));
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
@@ -806,7 +820,7 @@ public class Main extends android.support.v4.app.Fragment {
                 } else if (rpaths.get(i).equals(Environment.getExternalStorageDirectory().getPath())) {
                     ib = new ImageButton(getActivity());
                     ib.setImageDrawable(icons.getSdDrawable());
-                    ib.setBackgroundDrawable(bg);
+                    ib.setBackgroundColor(Color.parseColor(skin));
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
@@ -823,7 +837,7 @@ public class Main extends android.support.v4.app.Fragment {
                     button.setText(rnames.get(index));
                     button.setTextColor(getResources().getColor(android.R.color.white));
                     button.setTextSize(13);
-                    button.setBackgroundDrawable(getResources().getDrawable(R.drawable.listitem));
+                    button.setBackgroundResource(0);
                     button.setOnClickListener(new Button.OnClickListener() {
 
                         public void onClick(View p1) {

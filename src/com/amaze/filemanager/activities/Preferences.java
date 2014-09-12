@@ -4,16 +4,13 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.amaze.filemanager.R;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 public class Preferences extends Activity {
     @Override
@@ -26,8 +23,10 @@ public class Preferences extends Activity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prefsfrag);
+
+        String skin = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("skin_color", "#009688");
         getActionBar().setIcon(R.drawable.ic_launcher1);
-        getActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.listitem));
+        getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
         getActionBar().setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
     }
 

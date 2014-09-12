@@ -71,7 +71,7 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         });
         float[] src = {
 
-                0, 0, 0,0, 0,
+                0, 0, 0, 0, 0,
                 0, 0.58431373f, 0, 0, 0,
                 0, 0,  0.52941176f,0, 0,
                 0, 0, 0, 1, 0

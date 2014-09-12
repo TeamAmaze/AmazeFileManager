@@ -3,14 +3,14 @@ package com.amaze.filemanager.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.preference.PreferenceManager;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amaze.filemanager.R;
@@ -126,8 +126,10 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 vholder.date = (TextView) view.findViewById(R.id.date);
                 vholder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
             view.setTag(vholder);
-			
 
+            String skin = PreferenceManager.getDefaultSharedPreferences(context).getString("skin_color", "#009688");
+            GradientDrawable gradientDrawable = (GradientDrawable) vholder.imageView.getBackground();
+            gradientDrawable.setColor(Color.parseColor(skin));
         }
         final ViewHolder holder = (ViewHolder) view.getTag();
         Boolean checked = myChecked.get(position);

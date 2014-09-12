@@ -10,14 +10,16 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
     <ImageView
-        android:layout_width="50dip"
-        android:layout_height="50dip"
-        android:background="@drawable/circle"
-        android:padding="7dp"
+        android:layout_width="44dip"
+        android:layout_height="44dip"
+        android:background="@drawable/circle_shape"
+        android:padding="10dp"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
+        android:layout_gravity="center_vertical"
         android:id="@+id/icon"/>
-    <com.pkmmte.view.CircularImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+    <com.pkmmte.view.CircularImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cicon"
         android:scaleType="centerCrop"
         android:layout_width="50dip"
