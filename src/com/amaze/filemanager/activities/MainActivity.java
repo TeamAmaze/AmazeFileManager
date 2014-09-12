@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -34,6 +36,7 @@ import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.BookmarksManager;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
+import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Shortcuts;
@@ -61,6 +64,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     IconUtils util;
     RelativeLayout mDrawerLinear;
     Shortcuts s = new Shortcuts();
+    int tab=0;
     public int theme;
     /**
      * Called when the activity is first created.
@@ -86,7 +90,15 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.action_bar);
         linearLayout.setBackgroundColor(Color.parseColor(skin));
         LinearLayout linearLayout1 = (LinearLayout) findViewById(R.id.pathbar);
-        linearLayout.setBackgroundColor(Color.parseColor(skin));
+        linearLayout1.setBackgroundColor(Color.parseColor(skin));
+        title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(tab==0){
+                    replaceFragment(1);
+                }else{replaceFragment(0);}
+            }
+        });
         HorizontalScrollView horizontalScrollView = (HorizontalScrollView) findViewById(R.id.scroll1);
         horizontalScrollView.setBackgroundColor(Color.parseColor(skin));
         HorizontalScrollView horizontalScrollView1 = (HorizontalScrollView) findViewById(R.id.scroll);
@@ -186,7 +198,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public void onBackPressed() {
 
         if (select == 0) {
-            Main main = (Main) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+            Main main = ((Main) getSupportFragmentManager().findFragmentById(R.id.content_frame));
 
             if (main.results == true) {
                 main.results = false;
@@ -221,7 +233,16 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             }, 2000);
         }
     }
-
+    private void replaceFragment (int position){
+        FragmentManager manager =getSupportFragmentManager();
+        boolean fragmentPopped = manager.popBackStackImmediate ("tab"+position, 0);
+        if (!fragmentPopped){ //fragment not in back stack, create it.
+            FragmentTransaction ft = manager.beginTransaction();
+            ft.replace(R.id.content_frame, new Main());
+            ft.addToBackStack("tab"+position);
+            ft.commit();
+        }tab=position;
+    }
     public void selectItem(int i) {
         switch (i) {
             case 0:
@@ -231,6 +252,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                // transaction.addToBackStack(null);
                 select = 0;
 // Commit the transaction
+                transaction.addToBackStack("tab"+1);
                 transaction.commit();
                 title.setText(val[0]);
 
