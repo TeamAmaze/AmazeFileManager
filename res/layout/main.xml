@@ -26,10 +26,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_weight="20"
+        android:layout_weight="25"
         android:textColor="@android:color/white"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:visibility="visible"/>
+    <Spinner
+        android:id="@+id/tab_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_weight="25"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:visibility="gone"></Spinner>
     <ProgressBar
         android:background="@drawable/listitem1"
         android:layout_weight="1"
