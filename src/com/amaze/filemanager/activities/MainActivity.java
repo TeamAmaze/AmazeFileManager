@@ -119,7 +119,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         LinearLayout linearLayout3 = (LinearLayout) findViewById(R.id.settings_bg);
         linearLayout3.setBackgroundColor(Color.parseColor(skin));
 
-        tabsSpinner.setPopupBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
+        tabsSpinner.setPopupBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000")));
 
         if(Sp.getBoolean("firstrun",true)){
         try {

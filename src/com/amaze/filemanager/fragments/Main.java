@@ -520,6 +520,24 @@ public class Main extends android.support.v4.app.Fragment {
         if(mActionMode!=null){mActionMode.finish();}
         new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
 
+        // Spinner
+
+        tabHandler.updateTab(new Tab(1, f.getName(), f.getPath()));
+
+        TabHandler tabHandler1 = new TabHandler(getActivity(), null, null, 1);
+        content = tabHandler1.getAllTabs();
+        list1 = new ArrayList<String>();
+        adapter1 = new ArrayAdapter<String>(getActivity(),
+                R.layout.spinner_layout, list1);
+
+        for (Tab tab : content) {
+            adapter1.clear();
+            adapter1.add(tab.getLabel());
+        }
+        mainActivity.tabsSpinner = (android.widget.Spinner) getActivity().findViewById(R.id.tab_spinner);
+
+        mainActivity.tabsSpinner.setAdapter(adapter1);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -897,24 +915,6 @@ public class Main extends android.support.v4.app.Fragment {
                     scroll1.fullScroll(View.FOCUS_RIGHT);
                 }
             });
-
-            // Spinner
-
-            tabHandler.updateTab(new Tab(1, f.getName(), f.getPath()));
-
-            TabHandler tabHandler1 = new TabHandler(getActivity(), null, null, 1);
-            content = tabHandler1.getAllTabs();
-            list1 = new ArrayList<String>();
-            adapter1 = new ArrayAdapter<String>(getActivity(),
-                    R.layout.spinner_layout, list1);
-
-            for (Tab tab : content) {
-                adapter1.clear();
-                adapter1.add(tab.getLabel());
-            }
-            mainActivity.tabsSpinner = (android.widget.Spinner) getActivity().findViewById(R.id.tab_spinner);
-
-            mainActivity.tabsSpinner.setAdapter(adapter1);
 
             if(buttons.getVisibility()==View.VISIBLE){timer.cancel();timer.start();}
         } catch (Exception e) {
