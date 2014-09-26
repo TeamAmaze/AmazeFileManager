@@ -45,6 +45,8 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.MyAdapter;
+import com.amaze.filemanager.database.Tab;
+import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
@@ -65,6 +67,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class Main extends android.support.v4.app.Fragment {
@@ -103,6 +106,12 @@ public class Main extends android.support.v4.app.Fragment {
     private SharedPreferences sharedPreferences;
     public Boolean aBoolean,showThumbs;
     public IconHolder ic;
+    private TabHandler tabHandler;
+    private List<Tab> content;
+    private ArrayList<String> list1;
+    private ArrayAdapter<String> adapter1;
+    private MainActivity mainActivity;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +128,8 @@ public class Main extends android.support.v4.app.Fragment {
             public void onFinish() {
                 crossfadeInverse();
             }
-        };}
+        };
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -151,6 +161,20 @@ public class Main extends android.support.v4.app.Fragment {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         aBoolean = sharedPreferences.getBoolean("view", true);
+
+        mainActivity = new MainActivity();
+        mainActivity.tabsSpinner = (android.widget.Spinner) getActivity().findViewById(R.id.tab_spinner);
+
+        tabHandler = new TabHandler(getActivity(), null, null, 1);
+        content = tabHandler.getAllTabs();
+        list1 = new ArrayList<String>();
+        adapter1 = new ArrayAdapter<String>(getActivity(),
+                R.layout.spinner_layout, list1);
+        mainActivity.tabsSpinner.setAdapter(adapter1);
+        for (Tab tab : content) {
+            adapter1.clear();
+            adapter1.add(tab.getLabel());
+        }
 
         ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
         overflow.setVisibility(View.VISIBLE);
@@ -338,6 +362,7 @@ public class Main extends android.support.v4.app.Fragment {
                 getActivity(), android.R.layout.select_dialog_item);
         adapter.add(utils.getString(getActivity(), R.string.folder));
         adapter.add(utils.getString(getActivity(), R.string.file));
+        adapter.add("Tab");
         ba.setAdapter(adapter, new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface p1, int p2) {
@@ -402,6 +427,8 @@ public class Main extends android.support.v4.app.Fragment {
                         });
                         ba2.show();
                         break;
+                    case 2:
+                        tabHandler.addTab(new Tab(1, "legacy", "/storage/emulated/legacy"));
                 }
             }
         });
@@ -447,6 +474,7 @@ public class Main extends android.support.v4.app.Fragment {
 
 
     public void onListItemClicked(int position, View v) {
+        final TabHandler tabHandler = new TabHandler(getActivity(), null, null, 1);
         if (results) {
             String path = slist.get(position).getDesc();
 
@@ -470,11 +498,13 @@ public class Main extends android.support.v4.app.Fragment {
 
         } else {
 
-            String path;Layoutelements l=list.get(position);
+            String path, path_name;
+            Layoutelements l=list.get(position);
             if(!l.hasSymlink()){
                 path= l.getDesc();}
             else{path=l.getSymlink();}
             final File f = new File(path);
+
             if (f.isDirectory()) {
                 computeScroll();
                 loadlist(f, false);
@@ -489,6 +519,24 @@ public class Main extends android.support.v4.app.Fragment {
     public void loadlist(File f, boolean back) {
         if(mActionMode!=null){mActionMode.finish();}
         new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
+
+        // Spinner
+
+        tabHandler.updateTab(new Tab(1, f.getName(), f.getPath()));
+
+        TabHandler tabHandler1 = new TabHandler(getActivity(), null, null, 1);
+        content = tabHandler1.getAllTabs();
+        list1 = new ArrayList<String>();
+        adapter1 = new ArrayAdapter<String>(getActivity(),
+                R.layout.spinner_layout, list1);
+
+        for (Tab tab : content) {
+            adapter1.clear();
+            adapter1.add(tab.getLabel());
+        }
+        mainActivity.tabsSpinner = (android.widget.Spinner) getActivity().findViewById(R.id.tab_spinner);
+
+        mainActivity.tabsSpinner.setAdapter(adapter1);
 
     }
 
@@ -867,6 +915,7 @@ public class Main extends android.support.v4.app.Fragment {
                     scroll1.fullScroll(View.FOCUS_RIGHT);
                 }
             });
+
             if(buttons.getVisibility()==View.VISIBLE){timer.cancel();timer.start();}
         } catch (Exception e) {
             e.printStackTrace();

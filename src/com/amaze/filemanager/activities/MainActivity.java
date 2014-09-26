@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -27,16 +29,18 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
+import com.amaze.filemanager.database.Tab;
+import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.BookmarksManager;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
-import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Shortcuts;
@@ -44,6 +48,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends android.support.v4.app.FragmentActivity {
@@ -57,6 +62,11 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     private ListView mDrawerList;
     SharedPreferences Sp;
     private ActionBarDrawerToggle mDrawerToggle;
+    public Spinner tabsSpinner;
+    private TabHandler tabHandler;
+    private List<Tab> content;
+    private ArrayList<String> list1;
+    private ArrayAdapter<String> adapter1;
 
     String[] val;
     ProgressBar progress;
@@ -84,6 +94,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         setContentView(R.layout.main);
         getActionBar().hide();
         title=(TextView)findViewById(R.id.title);
+        tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
 
         // BBar
         String skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#009688");
@@ -94,9 +105,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(tab==0){
+                /*if(tab==0){
                     replaceFragment(1);
-                }else{replaceFragment(0);}
+                }else{replaceFragment(0);}*/
             }
         });
         HorizontalScrollView horizontalScrollView = (HorizontalScrollView) findViewById(R.id.scroll1);
@@ -107,6 +118,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         linearLayout2.setBackgroundColor(Color.parseColor(skin));
         LinearLayout linearLayout3 = (LinearLayout) findViewById(R.id.settings_bg);
         linearLayout3.setBackgroundColor(Color.parseColor(skin));
+
+        tabsSpinner.setPopupBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000")));
 
         if(Sp.getBoolean("firstrun",true)){
         try {
@@ -200,6 +213,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         if (select == 0) {
             Main main = ((Main) getSupportFragmentManager().findFragmentById(R.id.content_frame));
 
+
+
             if (main.results == true) {
                 main.results = false;
                 main.loadlist(new File(main.current), true);
@@ -207,6 +222,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 if (!main.current.equals(main.home)) {
                     if (utils.canGoBack(new File(main.current))) {
                         main.goBack();
+
                     } else {
                         exit();
                     }
@@ -255,6 +271,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 transaction.addToBackStack("tab"+1);
                 transaction.commit();
                 title.setText(val[0]);
+                title.setVisibility(View.GONE);
+                tabsSpinner.setVisibility(View.VISIBLE);
 
                 break;
 
@@ -266,6 +284,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 // Commit the transaction
                 transaction2.commit();
                 title.setText(val[1]);
+                title.setVisibility(View.VISIBLE);
+                tabsSpinner.setVisibility(View.GONE);
                 break;
             case 2:
                 android.support.v4.app.FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
@@ -275,6 +295,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 // Commit the transaction
                 transaction3.commit();
                 title.setText(val[2]);
+                title.setVisibility(View.VISIBLE);
+                tabsSpinner.setVisibility(View.GONE);
                 break;
 
 
