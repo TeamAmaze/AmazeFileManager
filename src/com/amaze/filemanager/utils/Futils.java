@@ -177,7 +177,11 @@ public class Futils {
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
         return (sdf.format(f.lastModified())).toString();
     }
+    public String getdate(long f,String form) {
 
+        SimpleDateFormat sdf = new SimpleDateFormat(form);
+        return (sdf.format(f)).toString();
+    }
     public ArrayList<File> getImages(File f) {
 
         getImage(f);

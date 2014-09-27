@@ -182,7 +182,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             if(main.showPermissions)
             holder.perm.setText(rowItem.getPermissions());
         if(main.showLastModified)
-            holder.date.setText(rowItem.getDate());
+            holder.date.setText(rowItem.getDate("MMM dd yyyy | KK:mm a"));
         if(main.showSize)
         holder.txtDesc.setText(rowItem.getSize());
             return view;}
@@ -199,6 +199,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             vholder.imageView1 = (ImageView) view.findViewById(R.id.icon_thumb);
             vholder.date= (TextView) view.findViewById(R.id.date);
             vholder.txtDesc= (TextView) view.findViewById(R.id.size);
+                vholder.perm= (TextView) view.findViewById(R.id.perm);
             view.setTag(vholder);
             }else{ view = convertView;}
             final ViewHolder holder = (ViewHolder) view.getTag();
@@ -249,9 +250,11 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
             }
             if(main.showLastModified)
-                holder.date.setText(rowItem.getDate());
+                holder.date.setText(rowItem.getDate("dd/MM/yy"));
             if(main.showSize)
                 holder.txtDesc.setText(rowItem.getSize());
+            if(main.showPermissions)
+                holder.perm.setText(rowItem.getPermissions());
             return view;}
 
     }public int calculatePx(int dp){

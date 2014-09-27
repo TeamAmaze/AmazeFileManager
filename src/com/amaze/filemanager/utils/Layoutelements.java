@@ -17,7 +17,7 @@ public class Layoutelements implements Parcelable {
         desc = im.readString();
         permissions=im.readString();
         symlink=im.readString();
-        date=im.readString();
+        date=im.readLong();
     }
 
     public static final Parcelable.Creator<Layoutelements> CREATOR =
@@ -41,7 +41,7 @@ public class Layoutelements implements Parcelable {
         p1.writeString(desc);
         p1.writeString(permissions);
         p1.writeString(symlink);
-        p1.writeString(date);
+        p1.writeLong(date);
         p1.writeParcelable(((BitmapDrawable) imageId).getBitmap(), p2);
         // TODO: Implement this method
     }
@@ -52,7 +52,7 @@ public class Layoutelements implements Parcelable {
     private String permissions;
     private String symlink;
     private String size;
-    private String date;
+    private long date;
     public Layoutelements(Drawable imageId, String title, String desc,String permissions,String symlink,String size) {
         this.imageId = imageId;
         this.title = title;
@@ -60,7 +60,7 @@ public class Layoutelements implements Parcelable {
         this.permissions=permissions.trim();
         this.symlink=symlink.trim();
         this.size=size;
-        date=new Futils().getdate(new File(desc));
+        date=new File(desc).lastModified();
     }
 
     public Drawable getImageId() {
@@ -81,7 +81,8 @@ public class Layoutelements implements Parcelable {
     public String getSize() {
         return  size;
     }
-    public String getDate(){return date;}
+    public long getDate(){return date;}
+    public String getDate(String a){return new Futils().getdate(date,a);}
     public String getPermissions() {
         return permissions;
     }

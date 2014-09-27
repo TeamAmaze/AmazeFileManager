@@ -18,7 +18,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_marginBottom="6dp"
-            android:background="#fff"
+            android:background="#000"
             android:foreground="@drawable/ic_grid_gradient_bg"
             android:foregroundGravity="fill">
 
@@ -82,6 +82,17 @@
                 style="@style/TextAppearance.Small" />
 
             <TextView
+                android:id="@+id/perm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:layout_marginStart="8dp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textAlignment="viewEnd"
+                style="@style/TextAppearance.Small" />
+
+            <TextView
                 android:id="@+id/size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -91,7 +102,6 @@
                 android:ellipsize="end"
                 android:textAlignment="viewStart"
                 style="@style/TextAppearance.Small" />
-
         </LinearLayout>
 
     </LinearLayout>
