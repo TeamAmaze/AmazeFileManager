@@ -2,6 +2,7 @@ package com.amaze.filemanager.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Typeface;
@@ -13,10 +14,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.utils.IconUtils;
+
+import java.util.HashMap;
 
 public class DrawerAdapter extends ArrayAdapter<String> {
     private final Context context;
@@ -24,7 +28,9 @@ public class DrawerAdapter extends ArrayAdapter<String> {
     MainActivity m;
 
     IconUtils icons;
+    Float[] color;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
+    HashMap<String,Float[]> colors=new HashMap<String,Float[]>();
     public void toggleChecked(int position) {
         toggleChecked(false);
         myChecked.put(position, true);
@@ -40,9 +46,32 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         }
         notifyDataSetChanged();
     }
+void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c});}
+    void putColors(){
+        putColor("#e51c23",0.89803922f,0.10980392f,0.1372549f);
+        putColor("#e91e63",0.91372549f,0.11764706f,0.38823529f);
+        putColor("#9c27b0",0.61176471f,0.15294118f,0.69019608f);
+        putColor("#673ab7",0.40392157f,0.22745098f,0.71764706f);
+        putColor("#3f51b5",0.24705882f,0.31764706f,0.70980392f);
+        putColor("#5677fc",0.3372549f,0.4666666f,0.98823529f);
+        putColor("#03a9f4",0.01176471f,0.6627451f,0.95686275f);
+        putColor("#00bcd4",0.0f,0.7372549f,0.83137255f);
+        putColor("#009688",0.0f,0.58823529f,0.34509804f);
+        putColor("#259b24",0.14509804f,0.60784314f,0.14117647f);
+        putColor("#8bc34a",0.54509804f,0.76470588f,0.29019608f);
+        putColor("#cddc39",0.80392157f,0.8627451f,0.22352941f);
+        putColor("#ffeb3b",1.0f,0.92156863f,0.23137255f);
+        putColor("#ffc107",1.0f,0.75686275f,0.02745098f);
+        putColor("#ff9800",1.0f,0.59607843f,0.0f);
+        putColor("#ff5722",1.0f,0.34117647f,0.1333333f);
+        putColor("#795548",0.4745098f,0.3333f,0.28235294f);
+        putColor("#9e9e9e",0.61960784f,0.61960784f,0.61960784f);
+        putColor("#607d8b",0.37647059f,0.49019608f,0.54509804f);
 
+    }
     public DrawerAdapter(Context context, String[] values, MainActivity m, SharedPreferences Sp) {
         super(context, R.layout.rowlayout, values);
+
         this.context = context;
         this.values = values;
 
@@ -51,8 +80,9 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         }
         icons = new IconUtils(Sp, m);
         this.m = m;
+        putColors();
+        color=colors.get(m.skin);
     }
-
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context
@@ -71,9 +101,9 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         });
         float[] src = {
 
-                0, 0, 0, 0, 0,
-                0, 0.58431373f, 0, 0, 0,
-                0, 0,  0.52941176f,0, 0,
+                color[0], 0, 0, 0, 0,
+                0, color[1], 0, 0, 0,
+                0, 0,  color[2],0, 0,
                 0, 0, 0, 1, 0
         };
         ColorMatrix colorMatrix = new ColorMatrix(src);
@@ -103,7 +133,7 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         }
         if(myChecked.get(position)){
             if(m.theme==0){textView.setTypeface(Typeface.DEFAULT);}else textView.setTypeface(Typeface.DEFAULT_BOLD);
-            textView.setTextColor(m.getResources().getColor(R.color.theme_primary));}
+            textView.setTextColor(Color.parseColor(m.skin));}
         else
         if(m.theme==0)
             textView.setTextColor(m.getResources().getColor(android.R.color.black));

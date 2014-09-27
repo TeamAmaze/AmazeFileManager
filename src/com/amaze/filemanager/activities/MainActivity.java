@@ -74,7 +74,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     IconUtils util;
     RelativeLayout mDrawerLinear;
     Shortcuts s = new Shortcuts();
-    int tab=0;
+    int tab=0; public String skin;
     public int theme;
     /**
      * Called when the activity is first created.
@@ -97,7 +97,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
 
         // BBar
-        String skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#009688");
+       skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#009688");
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.action_bar);
         linearLayout.setBackgroundColor(Color.parseColor(skin));
         LinearLayout linearLayout1 = (LinearLayout) findViewById(R.id.pathbar);
