@@ -116,7 +116,8 @@ public class Main extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
+        mainActivity=(MainActivity)getActivity();
+        tabHandler = new TabHandler(getActivity(), null, null, 1);
         showPermissions=Sp.getBoolean("showPermissions",false);
         showSize=Sp.getBoolean("showFileSize",true);
         showLastModified=Sp.getBoolean("showLastModified",true);
@@ -162,19 +163,6 @@ public class Main extends android.support.v4.app.Fragment {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         aBoolean = sharedPreferences.getBoolean("view", true);
 
-        mainActivity = new MainActivity();
-        mainActivity.tabsSpinner = (android.widget.Spinner) getActivity().findViewById(R.id.tab_spinner);
-
-        tabHandler = new TabHandler(getActivity(), null, null, 1);
-        content = tabHandler.getAllTabs();
-        list1 = new ArrayList<String>();
-        adapter1 = new ArrayAdapter<String>(getActivity(),
-                R.layout.spinner_layout, list1);
-        mainActivity.tabsSpinner.setAdapter(adapter1);
-        for (Tab tab : content) {
-            adapter1.clear();
-            adapter1.add(tab.getLabel());
-        }
 
         ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
         overflow.setVisibility(View.VISIBLE);
@@ -474,7 +462,6 @@ public class Main extends android.support.v4.app.Fragment {
 
 
     public void onListItemClicked(int position, View v) {
-        final TabHandler tabHandler = new TabHandler(getActivity(), null, null, 1);
         if (results) {
             String path = slist.get(position).getDesc();
 
@@ -523,9 +510,7 @@ public class Main extends android.support.v4.app.Fragment {
         // Spinner
 
         tabHandler.updateTab(new Tab(1, f.getName(), f.getPath()));
-
-        TabHandler tabHandler1 = new TabHandler(getActivity(), null, null, 1);
-        content = tabHandler1.getAllTabs();
+         content = tabHandler.getAllTabs();
         list1 = new ArrayList<String>();
         adapter1 = new ArrayAdapter<String>(getActivity(),
                 R.layout.spinner_layout, list1);
@@ -534,8 +519,6 @@ public class Main extends android.support.v4.app.Fragment {
             adapter1.clear();
             adapter1.add(tab.getLabel());
         }
-        mainActivity.tabsSpinner = (android.widget.Spinner) getActivity().findViewById(R.id.tab_spinner);
-
         mainActivity.tabsSpinner.setAdapter(adapter1);
 
     }

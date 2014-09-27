@@ -95,9 +95,17 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         getActionBar().hide();
         title=(TextView)findViewById(R.id.title);
         tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
-
-        // BBar
-       skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#009688");
+        tabHandler = new TabHandler(this, null, null, 1);
+        content = tabHandler.getAllTabs();
+        list1 = new ArrayList<String>();
+        adapter1 = new ArrayAdapter<String>(this,
+                R.layout.spinner_layout, list1);
+        tabsSpinner.setAdapter(adapter1);
+        for (Tab tab : content) {
+            adapter1.clear();
+            adapter1.add(tab.getLabel());
+        }
+        skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#009688");
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.action_bar);
         linearLayout.setBackgroundColor(Color.parseColor(skin));
         LinearLayout linearLayout1 = (LinearLayout) findViewById(R.id.pathbar);
@@ -119,13 +127,16 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         LinearLayout linearLayout3 = (LinearLayout) findViewById(R.id.settings_bg);
         linearLayout3.setBackgroundColor(Color.parseColor(skin));
 
-        tabsSpinner.setPopupBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000")));
+        //tabsSpinner.setPopupBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000")));
 
         if(Sp.getBoolean("firstrun",true)){
         try {
             s.makeS();
         } catch (Exception e) {
-        }Sp.edit().putBoolean("firstrun",false);}
+        }
+
+            tabHandler.addTab(new Tab(0, "legacy", "/storage/emulated/legacy"));
+            Sp.edit().putBoolean("firstrun",false);}
         mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
@@ -248,16 +259,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 }
             }, 2000);
         }
-    }
-    private void replaceFragment (int position){
-        FragmentManager manager =getSupportFragmentManager();
-        boolean fragmentPopped = manager.popBackStackImmediate ("tab"+position, 0);
-        if (!fragmentPopped){ //fragment not in back stack, create it.
-            FragmentTransaction ft = manager.beginTransaction();
-            ft.replace(R.id.content_frame, new Main());
-            ft.addToBackStack("tab"+position);
-            ft.commit();
-        }tab=position;
     }
     public void selectItem(int i) {
         switch (i) {
