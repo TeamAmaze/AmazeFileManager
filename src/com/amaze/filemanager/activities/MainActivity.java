@@ -96,12 +96,15 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         title=(TextView)findViewById(R.id.title);
         tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
         tabHandler = new TabHandler(this, null, null, 1);
-        list1 = tabHandler.getTabsNames();
-
+        content = tabHandler.getAllTabs();
+        list1 = new ArrayList<String>();
         adapter1 = new ArrayAdapter<String>(this,
                 R.layout.spinner_layout, list1);
         tabsSpinner.setAdapter(adapter1);
-
+        for (Tab tab : content) {
+            adapter1.clear();
+            adapter1.add(tab.getLabel());
+        }
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#009688");
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.action_bar);
         linearLayout.setBackgroundColor(Color.parseColor(skin));
