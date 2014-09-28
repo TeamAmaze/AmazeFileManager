@@ -23,10 +23,10 @@ public class TabHandler extends SQLiteOpenHelper {
     public static final String COLUMN_TAB_NO = "tab_no";
     public static final String COLUMN_LABEL = "label";
     public static final String COLUMN_PATH = "path";
-
+    Context c;
     public TabHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
-    }
+    this.c=context;}
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
@@ -124,10 +124,14 @@ public class TabHandler extends SQLiteOpenHelper {
                 tabList.add(tab);
             } while (cursor.moveToNext());
         }
-
         return tabList;
     }
-
+public ArrayList<String> getTabsNames(){
+    ArrayList<String> ar=new ArrayList<String>();
+    for(Tab t:getAllTabs()){
+        ar.add(t.getLabel());
+    }return  ar;
+}
     public int getTabsCount() {
         String countQuery = "Select * FROM " + TABLE_TAB;
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
