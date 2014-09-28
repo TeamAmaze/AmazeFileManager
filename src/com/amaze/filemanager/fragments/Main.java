@@ -111,6 +111,7 @@ public class Main extends android.support.v4.app.Fragment {
     private ArrayList<String> list1;
     private ArrayAdapter<String> adapter1;
     private MainActivity mainActivity;
+    private String skin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -510,13 +511,14 @@ public class Main extends android.support.v4.app.Fragment {
         // Spinner
 
         tabHandler.updateTab(new Tab(1, f.getName(), f.getPath()));
-         content = tabHandler.getAllTabs();
+        content = tabHandler.getAllTabs();
         list1 = new ArrayList<String>();
         adapter1 = new ArrayAdapter<String>(getActivity(),
-                R.layout.spinner_layout, list1);
+                R.layout.spinner_layout, R.id.spinnerText, list1);
+
+        adapter1.setDropDownViewResource(R.layout.spinner_dropdown_layout);
 
         for (Tab tab : content) {
-            adapter1.clear();
             adapter1.add(tab.getLabel());
         }
         mainActivity.tabsSpinner.setAdapter(adapter1);
@@ -811,7 +813,7 @@ public class Main extends android.support.v4.app.Fragment {
         try {
             buttons.removeAllViews();
             //Drawable bg=getResources().getDrawable(R.drawable.listitem1);
-            String skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#009688");
+            skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#009688");
             Drawable arrow=getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
             Bundle b = utils.getPaths(text, getActivity());
             ArrayList<String> names = b.getStringArrayList("names");
