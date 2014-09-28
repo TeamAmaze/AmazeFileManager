@@ -7,14 +7,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -95,16 +92,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         getActionBar().hide();
         title=(TextView)findViewById(R.id.title);
         tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
-        tabHandler = new TabHandler(this, null, null, 1);
-        content = tabHandler.getAllTabs();
-        list1 = new ArrayList<String>();
-        adapter1 = new ArrayAdapter<String>(this,
-                R.layout.spinner_layout, list1);
-        tabsSpinner.setAdapter(adapter1);
-        for (Tab tab : content) {
-            adapter1.clear();
-            adapter1.add(tab.getLabel());
-        }
+
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#009688");
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.action_bar);
         linearLayout.setBackgroundColor(Color.parseColor(skin));
@@ -136,7 +124,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         }
 
             tabHandler.addTab(new Tab(0, "legacy", "/storage/emulated/legacy"));
-            Sp.edit().putBoolean("firstrun",false);}
+            Sp.edit().putBoolean("firstrun",false).commit();
+        }
         mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);

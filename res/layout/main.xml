@@ -37,6 +37,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:layout_weight="25"
+        android:background="@drawable/item_backgrund"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:visibility="gone"></Spinner>
     <ProgressBar
