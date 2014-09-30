@@ -93,7 +93,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         title=(TextView)findViewById(R.id.title);
         tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
 
-        skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#009688");
+        skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#607d8b");
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.action_bar);
         linearLayout.setBackgroundColor(Color.parseColor(skin));
         LinearLayout linearLayout1 = (LinearLayout) findViewById(R.id.pathbar);

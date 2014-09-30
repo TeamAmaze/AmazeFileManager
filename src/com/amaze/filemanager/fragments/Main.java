@@ -117,6 +117,8 @@ public class Main extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        aBoolean = Sp.getBoolean("view", true);
+
         mainActivity=(MainActivity)getActivity();
         tabHandler = new TabHandler(getActivity(), null, null, 1);
         showPermissions=Sp.getBoolean("showPermissions",false);
@@ -139,9 +141,6 @@ public class Main extends android.support.v4.app.Fragment {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        aBoolean = sharedPreferences.getBoolean("view", true);
         showThumbs=Sp.getBoolean("showThumbs",true);
         ic=new IconHolder(getActivity(),showThumbs,!aBoolean);
         if (aBoolean) {
@@ -162,9 +161,6 @@ public class Main extends android.support.v4.app.Fragment {
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        aBoolean = sharedPreferences.getBoolean("view", true);
-
-
         ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
         overflow.setVisibility(View.VISIBLE);
         (overflow).setOnClickListener(new View.OnClickListener() {
@@ -204,9 +200,7 @@ public class Main extends android.support.v4.app.Fragment {
         utils = new Futils();
         res = getResources();
         mPoppyViewHelper = new PoppyViewHelper(getActivity());
-        aBoolean = sharedPreferences.getBoolean("view", true);
-
-        String skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#009688");
+        skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#607d8b");
 
         if (aBoolean) {
             poppyView = mPoppyViewHelper.createPoppyViewOnListView(R.id.listView, R.layout.pooppybar);
@@ -223,26 +217,19 @@ public class Main extends android.support.v4.app.Fragment {
         mountSystem = Sp.getBoolean("mountsystem", false);
         showHidden=Sp.getBoolean("showHidden",true);
         rememberLastPath=Sp.getBoolean("rememberLastPath",false);
-        /*int foldericon = Integer.parseInt(Sp.getString("folder", "1"));
-        switch (foldericon) {
-            case 0:
-                folder = res.getDrawable(R.drawable.ic_grid_folder_new);
-                break;
-            case 1:
-                folder = res.getDrawable(R.drawable.ic_grid_folder1);
-                break;
-            case 2:
-                folder = res.getDrawable(R.drawable.ic_grid_folder2);
-                break;
-            default:
-                folder = res.getDrawable(R.drawable.ic_grid_folder);
-        }*/
+        if(aBoolean){
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
 
         apk = res.getDrawable(R.drawable.ic_doc_apk);
         unknown = res.getDrawable(R.drawable.ic_doc_generic_am);
         archive = res.getDrawable(R.drawable.archive_blue);
-        text = res.getDrawable(R.drawable.ic_doc_text_am);
+        text = res.getDrawable(R.drawable.ic_doc_text_am);}
+        else{folder = res.getDrawable(R.drawable.ic_grid_folder1);
+
+            apk = res.getDrawable(R.drawable.ic_doc_apk_grid);
+            unknown = res.getDrawable(R.drawable.ic_doc_generic_am_grid);
+            archive = res.getDrawable(R.drawable.archive_blue);
+            text = res.getDrawable(R.drawable.ic_doc_text_am_grid);}
         getSortModes();
         home = Sp.getString("home", System.getenv("EXTERNAL_STORAGE"));
         this.setRetainInstance(false);
@@ -285,7 +272,6 @@ public class Main extends android.support.v4.app.Fragment {
         }
         footerView=getActivity().getLayoutInflater().inflate(R.layout.divider,null);
 
-        aBoolean = sharedPreferences.getBoolean("view", true);
         if (aBoolean) {
 
             listView.addFooterView(footerView);
@@ -813,7 +799,6 @@ public class Main extends android.support.v4.app.Fragment {
         try {
             buttons.removeAllViews();
             //Drawable bg=getResources().getDrawable(R.drawable.listitem1);
-            skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#009688");
             Drawable arrow=getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
             Bundle b = utils.getPaths(text, getActivity());
             ArrayList<String> names = b.getStringArrayList("names");
@@ -982,7 +967,7 @@ public class Main extends android.support.v4.app.Fragment {
 
             } else {
                 try {
-                    a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath()), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.getSize(mFile.get(i))));
+                    a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.getSize(mFile.get(i))));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

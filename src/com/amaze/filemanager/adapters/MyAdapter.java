@@ -125,7 +125,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 vholder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
             view.setTag(vholder);
 
-            String skin = PreferenceManager.getDefaultSharedPreferences(context).getString("skin_color", "#009688");
+            String skin = PreferenceManager.getDefaultSharedPreferences(context).getString("skin_color", "#607d8b");
             GradientDrawable gradientDrawable = (GradientDrawable) vholder.imageView.getBackground();
             gradientDrawable.setColor(Color.parseColor(skin));
         }

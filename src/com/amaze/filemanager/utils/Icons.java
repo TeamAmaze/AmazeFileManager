@@ -11,14 +11,12 @@ import java.util.HashMap;
 
 public class Icons {
     private static HashMap<String, Integer> sMimeIcons = new HashMap<String, Integer>();
-
-    private static void add(String mimeType, int resId) {
+private static void add(String mimeType, int resId) {
         if (sMimeIcons.put(mimeType, resId) != null) {
             throw new RuntimeException(mimeType + " already registered!");
         }
     }
-
-    static {
+static {
         int icon;
 
         // Package
@@ -31,7 +29,7 @@ public class Icons {
         add("application/x-flac", icon);
 
         // Certificate
-        icon = R.drawable.ic_doc_certificate;
+    icon = R.drawable.ic_doc_certificate;
         add("application/pgp-keys", icon);
         add("application/pgp-signature", icon);
         add("application/x-pkcs12", icon);
@@ -198,7 +196,7 @@ public class Icons {
         return false;
     }
 
-    public static Drawable loadMimeIcon(Context context, String path) {
+    public static Drawable loadMimeIcon(Context context, String path,boolean grid) {
         final Resources res = context.getResources();
         String mimeType = MimeTypes.getMimeType(new File(path));
         if (mimeType == null) {
@@ -209,7 +207,26 @@ public class Icons {
         // Look for exact match first
         Integer resId = sMimeIcons.get(mimeType);
 
-        if (resId != null) {
+        if (resId != null) {switch (resId){
+            case R.drawable.ic_doc_apk: if(grid)resId=R.drawable.ic_doc_apk_grid;
+       break;
+            case R.drawable.ic_doc_audio_am: if(grid)resId=R.drawable.ic_doc_audio_am_grid;
+                break;
+            case R.drawable.ic_doc_certificate: if(grid)resId=R.drawable.ic_doc_certificate_grid;
+                break;
+            case R.drawable.ic_doc_codes: if(grid)resId=R.drawable.ic_doc_codes_grid;
+                break;
+            case R.drawable.ic_doc_font: if(grid)resId=R.drawable.ic_doc_font_grid;
+                break;
+            case R.drawable.ic_doc_generic_am: if(grid)resId=R.drawable.ic_doc_generic_am_grid;
+                break;
+            case R.drawable.ic_doc_image: if(grid)resId=R.drawable.ic_doc_image_grid;
+                break;
+            case R.drawable.ic_doc_pdf: if(grid)resId=R.drawable.ic_doc_pdf_grid;
+                break;
+            case R.drawable.ic_doc_video_am: if(grid)resId=R.drawable.ic_doc_video_am_grid;
+                break;
+        }
             return res.getDrawable(resId);
         }
 
@@ -217,14 +234,13 @@ public class Icons {
         // Otherwise look for partial match
         final String typeOnly = mimeType.split("/")[0];
         if ("audio".equals(typeOnly)) {
-            return res.getDrawable(R.drawable.ic_doc_audio_am);
+            if(grid)return res.getDrawable(R.drawable.ic_doc_audio_am);else return res.getDrawable(R.drawable.ic_doc_audio_am_grid);
         } else if ("image".equals(typeOnly)) {
-            return res.getDrawable(R.drawable.ic_doc_image);
+            if(grid)return res.getDrawable(R.drawable.ic_doc_image);else return res.getDrawable(R.drawable.ic_doc_image_grid);
         } else if ("text".equals(typeOnly)) {
-            return res.getDrawable(R.drawable.ic_doc_text_am);
+            if(grid)return res.getDrawable(R.drawable.ic_doc_text_am);else return res.getDrawable(R.drawable.ic_doc_text_am_grid);
         } else if ("video".equals(typeOnly)) {
-            return res.getDrawable(R.drawable.ic_doc_video_am);
+            if(grid)return res.getDrawable(R.drawable.ic_doc_video_am);else return res.getDrawable(R.drawable.ic_doc_video_am_grid);
         }
-        return res.getDrawable(R.drawable.ic_doc_generic_am);
-    }
+        if(grid)return res.getDrawable(R.drawable.ic_doc_generic_am);else return res.getDrawable(R.drawable.ic_doc_generic_am_grid);}
 }
