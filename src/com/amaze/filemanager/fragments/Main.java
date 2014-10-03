@@ -112,13 +112,13 @@ public class Main extends android.support.v4.app.Fragment {
     private ArrayAdapter<String> adapter1;
     private MainActivity mainActivity;
     private String skin;
-
+    int theme;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         aBoolean = Sp.getBoolean("view", true);
-
+        theme=Integer.parseInt(Sp.getString("theme","0"));
         mainActivity=(MainActivity)getActivity();
         tabHandler = new TabHandler(getActivity(), null, null, 1);
         showPermissions=Sp.getBoolean("showPermissions",false);
@@ -143,6 +143,7 @@ public class Main extends android.support.v4.app.Fragment {
         gridView = (GridView) rootView.findViewById(R.id.gridView);
         showThumbs=Sp.getBoolean("showThumbs",true);
         ic=new IconHolder(getActivity(),showThumbs,!aBoolean);
+        if(theme==1)rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_dark));
         if (aBoolean) {
             listView.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.GONE);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="DarkTheme" parent="android:Theme.Holo">
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="LightTheme" parent="android:Theme.Holo.Light.DarkActionBar">

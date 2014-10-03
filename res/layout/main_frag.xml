@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/main_frag"
+    android:layout_height="match_parent"
+    android:background="#e6e6e6">
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#e6e6e6" />
+        android:layout_height="match_parent" />
 
     <GridView
         android:id="@+id/gridView"

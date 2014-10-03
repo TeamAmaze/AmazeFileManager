@@ -61,12 +61,6 @@
             android:entryValues="@array/ints2"
             android:key="sortby"
             android:title="@string/sortby" />
-        <ListPreference
-            android:defaultValue="1"
-            android:entries="@array/folder"
-            android:entryValues="@array/ints1"
-            android:key="folder"
-            android:title="@string/foldercolor" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="rootmode"
@@ -75,15 +69,4 @@
     
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/imagegallery">
-
-        <EditTextPreference
-            android:key="Ipath"
-            android:title="@string/changegallerypath" />
-           
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="Ipathset"
-            android:title="@string/usedefaultgallerypath"/>
-        </PreferenceCategory>
     </PreferenceScreen>

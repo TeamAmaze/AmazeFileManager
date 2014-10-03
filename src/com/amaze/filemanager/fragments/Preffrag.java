@@ -27,7 +27,6 @@ public class Preffrag extends PreferenceFragment {
         addPreferencesFromResource(R.xml.preferences);
 
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final EditTextPreference b = (EditTextPreference) findPreference("Ipath");
         final ListPreference ui = (ListPreference) findPreference("uimode");
         int vl = Integer.parseInt(sharedPref.getString("theme", "0"));
         if (vl == 1) {
@@ -155,23 +154,6 @@ public class Preffrag extends PreferenceFragment {
             }
         });
 
-        final CheckBoxPreference a = (CheckBoxPreference) findPreference("Ipathset");
-        b.setEnabled(!a.isChecked());
-
-        a.setOnPreferenceChangeListener(new CheckBoxPreference.OnPreferenceChangeListener() {
-
-            public boolean onPreferenceChange(Preference p1, Object p2) {
-                if (a.isChecked()) {
-                    b.setEnabled(true);
-                } else {
-                    b.setEnabled(false);
-                    sharedPref.edit().putString("Ipath", Environment.getExternalStorageDirectory().getPath() + "/" + Environment.DIRECTORY_DCIM).commit();
-                }
-                // TODO: Implement this method
-                return true;
-            }
-        });
-        
         final CheckBoxPreference rootmode = (CheckBoxPreference) findPreference("rootmode");
         rootmode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
