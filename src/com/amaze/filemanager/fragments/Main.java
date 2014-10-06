@@ -143,8 +143,11 @@ public class Main extends android.support.v4.app.Fragment {
         gridView = (GridView) rootView.findViewById(R.id.gridView);
         showThumbs=Sp.getBoolean("showThumbs",true);
         ic=new IconHolder(getActivity(),showThumbs,!aBoolean);
-        if(theme==1)rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-        if (aBoolean) {
+        res = getResources();
+        if(theme==1) {
+            rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_dark));
+            ((ImageView)getActivity().findViewById(R.id.shadow)).setImageDrawable(res.getDrawable(R.drawable.shadow_dark));
+        }if (aBoolean) {
             listView.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.GONE);
         } else {
@@ -199,7 +202,7 @@ public class Main extends android.support.v4.app.Fragment {
             }
         });
         utils = new Futils();
-        res = getResources();
+
         mPoppyViewHelper = new PoppyViewHelper(getActivity());
         skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#673ab7");
 
