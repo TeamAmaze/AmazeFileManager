@@ -24,7 +24,7 @@ public class Preferences extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prefsfrag);
 
-        String skin = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("skin_color", "#607d8b");
+        String skin = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("skin_color", "#673ab7");
         getActionBar().setIcon(R.drawable.ic_launcher1);
         getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
         getActionBar().setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);

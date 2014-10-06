@@ -125,9 +125,8 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 vholder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
             view.setTag(vholder);
 
-            String skin = PreferenceManager.getDefaultSharedPreferences(context).getString("skin_color", "#607d8b");
             GradientDrawable gradientDrawable = (GradientDrawable) vholder.imageView.getBackground();
-            gradientDrawable.setColor(Color.parseColor(skin));
+            gradientDrawable.setColor(Color.parseColor(main.skin));
         }
         final ViewHolder holder = (ViewHolder) view.getTag();
         Boolean checked = myChecked.get(position);
@@ -200,6 +199,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             vholder.date= (TextView) view.findViewById(R.id.date);
             vholder.txtDesc= (TextView) view.findViewById(R.id.size);
                 vholder.perm= (TextView) view.findViewById(R.id.perm);
+                if(main.theme==1)view.findViewById(R.id.icon_frame).setBackgroundColor(Color.parseColor("#00000000"));
             view.setTag(vholder);
             }else{ view = convertView;}
             final ViewHolder holder = (ViewHolder) view.getTag();
@@ -210,7 +210,8 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     holder.rl.setBackgroundColor(Color.parseColor("#5fcccccc"));
                 } else {
                     if (main.uimode == 0) {
-                        holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
+                        if(main.theme==0)holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
+                        else holder.rl.setBackgroundResource(R.drawable.ic_grid_card_background_dark);
                     } else if (main.uimode == 1) {
                         holder.rl.setBackgroundResource(R.drawable.bg_card);
                     }
@@ -242,6 +243,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
+                if(main.theme==1)holder.imageView1.setBackgroundColor(Color.parseColor("#000000"));
                 main.ic.cancelLoad(holder.imageView1);
                 main.ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
             }

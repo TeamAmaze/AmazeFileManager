@@ -234,13 +234,13 @@ static {
         // Otherwise look for partial match
         final String typeOnly = mimeType.split("/")[0];
         if ("audio".equals(typeOnly)) {
-            if(grid)return res.getDrawable(R.drawable.ic_doc_audio_am);else return res.getDrawable(R.drawable.ic_doc_audio_am_grid);
+            if(grid)return res.getDrawable(R.drawable.ic_doc_audio_am_grid);else return res.getDrawable(R.drawable.ic_doc_audio_am);
         } else if ("image".equals(typeOnly)) {
-            if(grid)return res.getDrawable(R.drawable.ic_doc_image);else return res.getDrawable(R.drawable.ic_doc_image_grid);
+            if(grid)return res.getDrawable(R.drawable.ic_doc_image_grid);else return res.getDrawable(R.drawable.ic_doc_image);
         } else if ("text".equals(typeOnly)) {
-            if(grid)return res.getDrawable(R.drawable.ic_doc_text_am);else return res.getDrawable(R.drawable.ic_doc_text_am_grid);
+            if(grid)return res.getDrawable(R.drawable.ic_doc_text_am_grid);else return res.getDrawable(R.drawable.ic_doc_text_am);
         } else if ("video".equals(typeOnly)) {
-            if(grid)return res.getDrawable(R.drawable.ic_doc_video_am);else return res.getDrawable(R.drawable.ic_doc_video_am_grid);
+            if(grid)return res.getDrawable(R.drawable.ic_doc_video_am_grid);else return res.getDrawable(R.drawable.ic_doc_video_am);
         }
-        if(grid)return res.getDrawable(R.drawable.ic_doc_generic_am);else return res.getDrawable(R.drawable.ic_doc_generic_am_grid);}
+        if(grid)return res.getDrawable(R.drawable.ic_doc_generic_am_grid);else return res.getDrawable(R.drawable.ic_doc_generic_am);}
 }

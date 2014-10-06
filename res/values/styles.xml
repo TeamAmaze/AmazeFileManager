@@ -17,7 +17,7 @@
 <resources>
 
     <style name="DarkTheme" parent="android:Theme.Holo">
-
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
     </style>
     <style name="TextAppearance" />
     <style name="TextAppearance.Medium">
@@ -30,10 +30,7 @@
         <item name="android:textColor">?android:attr/textColorTertiary</item>
     </style>
     <style name="LightTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-    </style>
-    <style name="DarkActionBar" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse" >
-        <item name="android:background">@color/theme_primary</item>
-        <item name="android:backgroundSplit">@color/theme_primary</item>
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
     </style>
 
     <style name="secondary_text_appearance">

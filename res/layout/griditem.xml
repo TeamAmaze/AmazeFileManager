@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:id="@+id/icon_frame"
             android:layout_marginBottom="6dp"
             android:background="#fff"
             android:foreground="@drawable/ic_grid_gradient_bg"

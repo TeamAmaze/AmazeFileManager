@@ -111,8 +111,8 @@ public class Main extends android.support.v4.app.Fragment {
     private ArrayList<String> list1;
     private ArrayAdapter<String> adapter1;
     private MainActivity mainActivity;
-    private String skin;
-    int theme;
+    public String skin;
+    public int theme;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -201,7 +201,7 @@ public class Main extends android.support.v4.app.Fragment {
         utils = new Futils();
         res = getResources();
         mPoppyViewHelper = new PoppyViewHelper(getActivity());
-        skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#607d8b");
+        skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#673ab7");
 
         if (aBoolean) {
             poppyView = mPoppyViewHelper.createPoppyViewOnListView(R.id.listView, R.layout.pooppybar);
