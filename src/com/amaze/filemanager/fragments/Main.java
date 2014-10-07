@@ -21,6 +21,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,6 +31,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -239,10 +242,11 @@ public class Main extends android.support.v4.app.Fragment {
         this.setRetainInstance(false);
 
         File f = new File(home);
-        if(rememberLastPath){
+        /*if(rememberLastPath){
             f=new File(Sp.getString("current",home));
+        }*/
+        f=new File(Sp.getString("current",home));
 
-        }
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
         pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
 
@@ -407,7 +411,10 @@ public class Main extends android.support.v4.app.Fragment {
                         ba2.show();
                         break;
                     case 2:
-                        tabHandler.addTab(new Tab(1, "legacy", "/storage/emulated/legacy"));
+                        int older = tabHandler.getTabsCount();
+                        tabHandler.addTab(new Tab(older, "legacy", "/storage/emulated/legacy"));
+                        restartPC(getActivity());
+                        Sp.edit().putInt("spinner_selected", older).commit();
                 }
             }
         });
@@ -494,13 +501,14 @@ public class Main extends android.support.v4.app.Fragment {
         }
     }
 
-    public void loadlist(File f, boolean back) {
+    public void loadlist(final File f, boolean back) {
         if(mActionMode!=null){mActionMode.finish();}
         new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
 
         // Spinner
 
-        tabHandler.updateTab(new Tab(1, f.getName(), f.getPath()));
+        int spinner_current = Sp.getInt("spinner_selected", 0);
+        tabHandler.updateTab(new Tab(spinner_current, f.getName(), f.getPath()));
         content = tabHandler.getAllTabs();
         list1 = new ArrayList<String>();
         adapter1 = new ArrayAdapter<String>(getActivity(),
@@ -512,6 +520,38 @@ public class Main extends android.support.v4.app.Fragment {
             adapter1.add(tab.getLabel());
         }
         mainActivity.tabsSpinner.setAdapter(adapter1);
+
+        mainActivity.tabsSpinner.setSelection(spinner_current);
+
+        Fragment fragment = new Main();
+        final FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        final TabHandler tabHandler1 = new TabHandler(getActivity(), null, null, 1);
+        mainActivity.tabsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                int spinner_current = Sp.getInt("spinner_selected", 0);
+                if (i == spinner_current) {
+
+                }
+                else {
+                    Tab tab = tabHandler1.findTab(i);
+                    String name  = tab.getPath();
+                    //Toast.makeText(getActivity(), name, Toast.LENGTH_SHORT).show();
+                    Sp.edit().putString("current", name).apply();
+                    Sp.edit().putInt("spinner_selected", i).apply();
+                    fragmentTransaction.replace(R.id.content_frame, new Main());
+                    fragmentTransaction.commit();
+
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
     }
 
