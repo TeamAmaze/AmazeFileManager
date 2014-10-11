@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/spinnerText"
+    android:id="@+id/spinnerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="10dp"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:textAppearance="?android:attr/textAppearanceMedium"
-    android:textColor="#000000"
-    android:gravity="center_vertical"/>
+    android:orientation="horizontal">
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/spinnerText"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#000"
+        android:layout_weight="25"
+        android:gravity="center_vertical"/>
+
+    <ImageButton
+        android:id="@+id/spinnerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        style="?android:borderlessButtonStyle"
+        android:src="@drawable/ic_action_cancel"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"/>
+
+</LinearLayout>
