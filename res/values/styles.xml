@@ -18,6 +18,7 @@
 
     <style name="DarkTheme" parent="android:Theme.Holo">
         <item name="android:actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:dropDownListViewStyle">@style/spinner_style</item>
     </style>
     <style name="TextAppearance" />
     <style name="TextAppearance.Medium">
@@ -31,6 +32,12 @@
     </style>
     <style name="LightTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:dropDownListViewStyle">@style/spinner_style</item>
+    </style>
+
+    <style name="spinner_style" parent="android:style/Widget.ListView.DropDown">
+        <item name="android:divider">@android:color/transparent</item>
+        <item name="android:dividerHeight">@null</item>
     </style>
 
     <style name="secondary_text_appearance">

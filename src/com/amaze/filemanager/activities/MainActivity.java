@@ -362,6 +362,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         }
     }
 
+
+
     @Override
     protected void onPause() {
         super.onPause();

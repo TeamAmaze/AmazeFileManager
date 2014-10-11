@@ -48,6 +48,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.MyAdapter;
+import com.amaze.filemanager.adapters.TabSpinnerAdapter;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.services.CopyService;
@@ -507,34 +508,49 @@ public class Main extends android.support.v4.app.Fragment {
 
         // Spinner
 
+        DialogInterface dialogInterface;
         int spinner_current = Sp.getInt("spinner_selected", 0);
         tabHandler.updateTab(new Tab(spinner_current, f.getName(), f.getPath()));
         content = tabHandler.getAllTabs();
         list1 = new ArrayList<String>();
+
         adapter1 = new ArrayAdapter<String>(getActivity(),
                 R.layout.spinner_layout, R.id.spinnerText, list1);
-
-        adapter1.setDropDownViewResource(R.layout.spinner_dropdown_layout);
+        final FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
 
         for (Tab tab : content) {
-            adapter1.add(tab.getLabel());
+            //adapter1.add(tab.getLabel());
+            list1.add(tab.getLabel());
         }
-        mainActivity.tabsSpinner.setAdapter(adapter1);
 
+        TabSpinnerAdapter tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, fragmentTransaction);
+
+        adapter1.setDropDownViewResource(R.layout.spinner_dropdown_layout);
+        /*LayoutInflater inflater = getActivity().getLayoutInflater();
+        View dropDown = inflater.inflate(R.layout.spinner_dropdown_layout, null, false);
+        LinearLayout linearLayout = (LinearLayout) dropDown.findViewById(R.id.spinnerLayout);
+        linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), "Testing", Toast.LENGTH_SHORT).show();
+            }
+        });*/
+
+        mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
         mainActivity.tabsSpinner.setSelection(spinner_current);
 
         Fragment fragment = new Main();
-        final FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         final TabHandler tabHandler1 = new TabHandler(getActivity(), null, null, 1);
         mainActivity.tabsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, final int i, long l) {
 
                 int spinner_current = Sp.getInt("spinner_selected", 0);
                 if (i == spinner_current) {
 
                 }
                 else {
+
                     Tab tab = tabHandler1.findTab(i);
                     String name  = tab.getPath();
                     //Toast.makeText(getActivity(), name, Toast.LENGTH_SHORT).show();
