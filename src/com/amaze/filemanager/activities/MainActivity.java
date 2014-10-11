@@ -61,9 +61,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     public Spinner tabsSpinner;
     private TabHandler tabHandler;
-    private List<Tab> content;
-    private ArrayList<String> list1;
-    private ArrayAdapter<String> adapter1;
 
     String[] val;
     ProgressBar progress;

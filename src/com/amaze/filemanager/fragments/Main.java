@@ -523,7 +523,7 @@ public class Main extends android.support.v4.app.Fragment {
             list1.add(tab.getLabel());
         }
 
-        TabSpinnerAdapter tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, fragmentTransaction);
+        TabSpinnerAdapter tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, fragmentTransaction,mainActivity.tabsSpinner);
 
         adapter1.setDropDownViewResource(R.layout.spinner_dropdown_layout);
         /*LayoutInflater inflater = getActivity().getLayoutInflater();
