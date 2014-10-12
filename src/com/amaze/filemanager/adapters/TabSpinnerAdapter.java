@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.fragments.Main;
@@ -32,7 +31,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
     Context context;
     FragmentTransaction fragmentTransaction;
 Spinner spinner;
-    public TabSpinnerAdapter(Context context, int resource, ArrayList<String> items, FragmentTransaction fragmentTransaction,Spinner spin) {
+    public TabSpinnerAdapter(Context context, int resource, ArrayList<String> items, FragmentTransaction fragmentTransaction, Spinner spin) {
         super(context, resource, items);
         this.items = items;
         this.context = context;
@@ -78,7 +77,9 @@ Spinner spinner;
 
             @Override
             public void onClick(View view) {
-hideSpinnerDropDown(spinner);
+
+                hideSpinnerDropDown(spinner);
+
                 if (position == spinner_current) {
 
                 }
@@ -93,8 +94,6 @@ hideSpinnerDropDown(spinner);
                     fragmentTransaction.replace(R.id.content_frame, new Main());
                     fragmentTransaction.commit();
 
-                    MainActivity mainActivity = (MainActivity) getContext();
-                    mainActivity.tabsSpinner.invalidate();
                 }
             }
         });
@@ -103,20 +102,46 @@ hideSpinnerDropDown(spinner);
             @Override
             public void onClick(View view) {
 
+
+                TabHandler tabHandler = new TabHandler(context, null, null, 1);
+                Tab tab = tabHandler.findTab(position);
                 if (position > spinner_current) {
 
-                    TabHandler tabHandler = new TabHandler(context, null, null, 1);
-                    Tab tab = tabHandler.findTab(position);
+                    Toast.makeText(getContext(), "Closed", Toast.LENGTH_SHORT).show();
                     String label = tab.getLabel();
-                    tabHandler.deleteTab(label);
+                    tabHandler.deleteTab(position);
                     items.remove(position);
-                } else {
+                    hideSpinnerDropDown(spinner);
+
+                } else if (position < spinner_current) {
+
+                    Toast.makeText(getContext(), "Closed", Toast.LENGTH_SHORT).show();
+                    items.remove(position);
+                    int old_tab = tab.getTab();
+                    int a;
+                    for (a = old_tab; a < tabHandler.getTabsCount()-1; a++) {
+
+                        int new_tab = a + 1;
+                        Tab tab1 = tabHandler.findTab(new_tab);
+                        String next_label = tab1.getLabel();
+                        String next_path = tab1.getPath();
+                        tabHandler.updateTab(new Tab(a, next_label, next_path));
+                    }
+                    tabHandler.deleteTab(tabHandler.getTabsCount()-1);
+                    int older_spinner_selected = sharedPreferences1.getInt("spinner_selected", 0);
+                    older_spinner_selected--;
+                    sharedPreferences1.edit().putInt("spinner_selected", older_spinner_selected).apply();
+                    hideSpinnerDropDown(spinner);
+
+                } else if (position == spinner_current) {
                     Toast.makeText(getContext(), "Not working", Toast.LENGTH_SHORT).show();
                 }
             }
         });
         return row;
-    }public static void hideSpinnerDropDown(Spinner spinner) {
+    }
+
+    public static void hideSpinnerDropDown(Spinner spinner) {
         try {
             Method method = Spinner.class.getDeclaredMethod("onDetachedFromWindow");
             method.setAccessible(true);
