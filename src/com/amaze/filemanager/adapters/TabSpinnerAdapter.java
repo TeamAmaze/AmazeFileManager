@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.fragments.Main;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 /**
@@ -29,11 +31,12 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
     ArrayList<String> items;
     Context context;
     FragmentTransaction fragmentTransaction;
-
-    public TabSpinnerAdapter(Context context, int resource, ArrayList<String> items, FragmentTransaction fragmentTransaction) {
+Spinner spinner;
+    public TabSpinnerAdapter(Context context, int resource, ArrayList<String> items, FragmentTransaction fragmentTransaction,Spinner spin) {
         super(context, resource, items);
         this.items = items;
         this.context = context;
+        this.spinner=spin;
         this.fragmentTransaction = fragmentTransaction;
     }
 
@@ -75,7 +78,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
 
             @Override
             public void onClick(View view) {
-
+hideSpinnerDropDown(spinner);
                 if (position == spinner_current) {
 
                 }
@@ -113,5 +116,13 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
             }
         });
         return row;
+    }public static void hideSpinnerDropDown(Spinner spinner) {
+        try {
+            Method method = Spinner.class.getDeclaredMethod("onDetachedFromWindow");
+            method.setAccessible(true);
+            method.invoke(spinner);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
