@@ -83,9 +83,9 @@ public class TabHandler extends SQLiteOpenHelper {
         sqLiteDatabase.close();
     }
 
-    public boolean deleteTab(String tabLabel) {
+    public boolean deleteTab(int tabNo) {
         boolean result = false;
-        String query = "Select * FROM " + TABLE_TAB + " WHERE " + COLUMN_LABEL + " = \"" + tabLabel + "\"";
+        String query = "Select * FROM " + TABLE_TAB + " WHERE " + COLUMN_TAB_NO + " = \"" + tabNo + "\"";
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
         Tab tab = new Tab();
