@@ -1,5 +1,6 @@
 package com.amaze.filemanager.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.fragments.Main;
@@ -81,7 +83,6 @@ Spinner spinner;
                 hideSpinnerDropDown(spinner);
 
                 if (position == spinner_current) {
-
                 }
                 else {
 
@@ -134,7 +135,35 @@ Spinner spinner;
                     hideSpinnerDropDown(spinner);
 
                 } else if (position == spinner_current) {
-                    Toast.makeText(getContext(), "Not working", Toast.LENGTH_SHORT).show();
+
+                    if (tabHandler.getTabsCount() == 1) {
+                        Toast.makeText(getContext(), "exits the app", Toast.LENGTH_SHORT).show();
+
+                    } else if (tabHandler.getTabsCount()-1 > position) {
+                        items.remove(position);
+                        int old_tab = tab.getTab();
+                        int a;
+                        for (a = old_tab; a < tabHandler.getTabsCount()-1; a++) {
+
+                            int new_tab = a + 1;
+                            Tab tab1 = tabHandler.findTab(new_tab);
+                            String next_label = tab1.getLabel();
+                            String next_path = tab1.getPath();
+                            tabHandler.updateTab(new Tab(a, next_label, next_path));
+                        }
+                        tabHandler.deleteTab(tabHandler.getTabsCount()-1);
+                        restartPC((MainActivity) getContext());
+
+                    } else if (tabHandler.getTabsCount()-1 == position) {
+                        items.remove(position);
+                        tabHandler.deleteTab(tabHandler.getTabsCount()-1);
+
+                        int older_spinner_selected = sharedPreferences1.getInt("spinner_selected", 0);
+                        older_spinner_selected--;
+                        sharedPreferences1.edit().putInt("spinner_selected", older_spinner_selected).apply();
+
+                        restartPC((MainActivity) getContext());
+                    }
                 }
             }
         });
@@ -149,5 +178,16 @@ Spinner spinner;
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void restartPC(final Activity activity) {
+        if (activity == null)
+            return;
+        final int enter_anim = android.R.anim.fade_in;
+        final int exit_anim = android.R.anim.fade_out;
+        activity.overridePendingTransition(enter_anim, exit_anim);
+        activity.finish();
+        activity.overridePendingTransition(enter_anim, exit_anim);
+        activity.startActivity(activity.getIntent());
     }
 }
