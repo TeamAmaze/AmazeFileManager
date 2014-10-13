@@ -72,6 +72,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 
 public class Main extends android.support.v4.app.Fragment {
@@ -1198,4 +1199,43 @@ public class Main extends android.support.v4.app.Fragment {
         // participate in layout passes, etc.)
 
 
-    }}
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        boolean check = Sp.getBoolean("random_checkbox", false);
+        if (check) {
+            random();
+        }
+    }
+
+    private void random() {
+        
+        String[] colors = new String[]{
+                "#e51c23",
+                "#e91e63",
+                "#9c27b0",
+                "#673ab7",
+                "#3f51b5",
+                "#5677fc",
+                "#03a9f4",
+                "#00bcd4",
+                "#009688",
+                "#259b24",
+                "#8bc34a",
+                "#cddc39",
+                "#ffeb3b",
+                "#ffc107",
+                "#ff9800",
+                "#ff5722",
+                "#795548",
+                "#9e9e9e",
+                "#607d8b"
+        };
+
+        Random random = new Random();
+        int pos = random.nextInt(colors.length - 1);
+        Sp.edit().putString("skin_color", colors[pos]).commit();
+    }
+}

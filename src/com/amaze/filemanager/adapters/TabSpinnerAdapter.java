@@ -32,7 +32,8 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
     ArrayList<String> items;
     Context context;
     FragmentTransaction fragmentTransaction;
-Spinner spinner;
+    Spinner spinner;
+
     public TabSpinnerAdapter(Context context, int resource, ArrayList<String> items, FragmentTransaction fragmentTransaction, Spinner spin) {
         super(context, resource, items);
         this.items = items;

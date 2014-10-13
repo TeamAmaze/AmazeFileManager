@@ -5,9 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.CheckBoxPreference;
-import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -16,6 +14,8 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.stericson.RootTools.RootTools;
+
+import java.util.Random;
 
 public class Preffrag extends PreferenceFragment {
 
@@ -56,6 +56,28 @@ public class Preffrag extends PreferenceFragment {
             @Override
             public boolean onPreferenceClick(Preference preference) {
 
+                final String[] colors = new String[]{
+                        "#e51c23",
+                        "#e91e63",
+                        "#9c27b0",
+                        "#673ab7",
+                        "#3f51b5",
+                        "#5677fc",
+                        "#03a9f4",
+                        "#00bcd4",
+                        "#009688",
+                        "#259b24",
+                        "#8bc34a",
+                        "#cddc39",
+                        "#ffeb3b",
+                        "#ffc107",
+                        "#ff9800",
+                        "#ff5722",
+                        "#795548",
+                        "#9e9e9e",
+                        "#607d8b"
+                };
+
                 new AlertDialog.Builder(getActivity())
                         .setTitle(R.string.skin)
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -64,92 +86,48 @@ public class Preffrag extends PreferenceFragment {
                                 dialogInterface.cancel();
                             }
                         })
+                        .setPositiveButton("Random", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                //sharedPref.edit().putString("skin", "" + i).commit();
+                                dialogInterface.cancel();
+                                restartPC(getActivity());
+
+                                // Random
+                                Random random = new Random();
+                                int pos = random.nextInt(colors.length - 1);
+                                sharedPref.edit().putString("skin_color", colors[pos]).commit();
+                            }
+                        })
                         .setSingleChoiceItems(R.array.skin, current, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                sharedPref.edit().putString("skin", ""+i).commit();
+                                sharedPref.edit().putString("skin", "" + i).commit();
                                 dialogInterface.cancel();
                                 restartPC(getActivity());
-                                switch (i) {
-                                    case 0:
-                                        // Red
-                                        sharedPref.edit().putString("skin_color", "#e51c23").commit();
-                                        break;
-                                    case 1:
-                                        // Pink
-                                        sharedPref.edit().putString("skin_color", "#e91e63").commit();
-                                        break;
-                                    case 2:
-                                        // Purple
-                                        sharedPref.edit().putString("skin_color", "#9c27b0").commit();
-                                        break;
-                                    case 3:
-                                        // Deep Purple
-                                        sharedPref.edit().putString("skin_color", "#673ab7").commit();
-                                        break;
-                                    case 4:
-                                        // Indigo
-                                        sharedPref.edit().putString("skin_color", "#3f51b5").commit();
-                                        break;
-                                    case 5:
-                                        // Blue
-                                        sharedPref.edit().putString("skin_color", "#5677fc").commit();
-                                        break;
-                                    case 6:
-                                        // Light Blue
-                                        sharedPref.edit().putString("skin_color", "#03a9f4").commit();
-                                        break;
-                                    case 7:
-                                        // Cyan
-                                        sharedPref.edit().putString("skin_color", "#00bcd4").commit();
-                                        break;
-                                    case 8:
-                                        // Teal
-                                        sharedPref.edit().putString("skin_color", "#009688").commit();
-                                        break;
-                                    case 9:
-                                        // Green
-                                        sharedPref.edit().putString("skin_color", "#259b24").commit();
-                                        break;
-                                    case 10:
-                                        // Light Green
-                                        sharedPref.edit().putString("skin_color", "#8bc34a").commit();
-                                        break;
-                                    case 11:
-                                        // Lime
-                                        sharedPref.edit().putString("skin_color", "#cddc39").commit();
-                                        break;
-                                    case 12:
-                                        // Yellow
-                                        sharedPref.edit().putString("skin_color", "#ffeb3b").commit();
-                                        break;
-                                    case 13:
-                                        // Amber
-                                        sharedPref.edit().putString("skin_color", "#ffc107").commit();
-                                        break;
-                                    case 14:
-                                        // Orange
-                                        sharedPref.edit().putString("skin_color", "#ff9800").commit();
-                                        break;
-                                    case 15:
-                                        // Deep Orange
-                                        sharedPref.edit().putString("skin_color", "#ff5722").commit();
-                                        break;
-                                    case 16:
-                                        // Brown
-                                        sharedPref.edit().putString("skin_color", "#795548").commit();
-                                        break;
-                                    case 17:
-                                        // Grey
-                                        sharedPref.edit().putString("skin_color", "#9e9e9e").commit();
-                                        break;
-                                    case 18:
-                                        // Blue Grey
-                                        sharedPref.edit().putString("skin_color", "#607d8b").commit();
-                                        break;
-                                }
+                                sharedPref.edit().putString("skin_color", colors[i]).apply();
+
                             }
                         }).show();
+                return false;
+            }
+        });
+
+        final CheckBoxPreference checkBoxPreference = (CheckBoxPreference) findPreference("random");
+        boolean check = sharedPref.getBoolean("random_checkbox", false);
+        checkBoxPreference.setChecked(check);
+        checkBoxPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                if (!checkBoxPreference.isChecked()) {
+                    sharedPref.edit().putBoolean("random_checkbox", true).apply();
+                    checkBoxPreference.setChecked(true);
+                } else {
+                    sharedPref.edit().putBoolean("random_checkbox", false).apply();
+                    checkBoxPreference.setChecked(false);
+                }
+                Toast.makeText(getActivity(), "Changes will take place after you restart the app", Toast.LENGTH_LONG).show();
                 return false;
             }
         });
