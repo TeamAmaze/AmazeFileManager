@@ -51,11 +51,9 @@ import com.amaze.filemanager.adapters.MyAdapter;
 import com.amaze.filemanager.adapters.TabSpinnerAdapter;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
-import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.services.asynctasks.LoadSearchList;
-import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
@@ -394,9 +392,14 @@ public class Main extends android.support.v4.app.Fragment {
                         break;
                     case 2:
                         int older = tabHandler.getTabsCount();
+                        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+
                         tabHandler.addTab(new Tab(older, "legacy", "/storage/emulated/legacy"));
-                        restartPC(getActivity());
+                        //restartPC(getActivity()); // breaks the copy feature
                         Sp.edit().putInt("spinner_selected", older).commit();
+                        Sp.edit().putString("current", "/storage/emulated/legacy").apply();
+                        fragmentTransaction.replace(R.id.content_frame, new Main());
+                        fragmentTransaction.commit();
                 }
             }
         });
@@ -507,15 +510,6 @@ public class Main extends android.support.v4.app.Fragment {
         TabSpinnerAdapter tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, fragmentTransaction,mainActivity.tabsSpinner);
 
         adapter1.setDropDownViewResource(R.layout.spinner_dropdown_layout);
-        /*LayoutInflater inflater = getActivity().getLayoutInflater();
-        View dropDown = inflater.inflate(R.layout.spinner_dropdown_layout, null, false);
-        LinearLayout linearLayout = (LinearLayout) dropDown.findViewById(R.id.spinnerLayout);
-        linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getActivity(), "Testing", Toast.LENGTH_SHORT).show();
-            }
-        });*/
 
         mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
         mainActivity.tabsSpinner.setSelection(spinner_current);
