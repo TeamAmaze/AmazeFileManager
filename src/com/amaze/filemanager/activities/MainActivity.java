@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,6 +39,8 @@ import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.BookmarksManager;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
+import com.amaze.filemanager.services.CopyService;
+import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Shortcuts;
@@ -61,7 +64,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     public Spinner tabsSpinner;
     private TabHandler tabHandler;
-
+    ImageButton paste;
     String[] val;
     ProgressBar progress;
     DrawerAdapter adapter;
@@ -70,6 +73,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     Shortcuts s = new Shortcuts();
     int tab=0; public String skin;
     public int theme;
+    public ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
+    Context con=this;
     /**
      * Called when the activity is first created.
      */
@@ -89,7 +94,27 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         getActionBar().hide();
         title=(TextView)findViewById(R.id.title);
         tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
+        paste=(ImageButton)findViewById(R.id.paste);
+        paste.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Main ma=null;//need to be done
+                if (COPY_PATH != null) {
+                    String path1 = ma.current;
+                    Intent intent = new Intent(con, CopyService.class);
+                    intent.putExtra("FILE_PATHS", COPY_PATH);
+                    intent.putExtra("COPY_DIRECTORY", path1);
+                    startService(intent);
+                    COPY_PATH = null;
+                }
+                if (MOVE_PATH != null) {
+                    new MoveFiles(utils.toFileArray(MOVE_PATH),ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,ma.current);
+                    MOVE_PATH = null;
 
+                }invalidatePasteButton();
+
+            }
+        });
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#673ab7");
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.action_bar);
         linearLayout.setBackgroundColor(Color.parseColor(skin));
@@ -230,7 +255,12 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             selectItem(0);
         }
     }
-
+    public void invalidatePasteButton(){
+        if(MOVE_PATH!=null || COPY_PATH!=null){
+            paste.setVisibility(View.VISIBLE);
+        } else
+            paste.setVisibility(View.GONE);
+    }
     public void exit() {
         if (backPressedToExitOnce) {
             finish();

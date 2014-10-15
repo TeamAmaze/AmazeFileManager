@@ -89,7 +89,6 @@ public class Main extends android.support.v4.app.Fragment {
     public LinearLayout buttons;
     public int sortby, dsort, asc;
     public int uimode;
-    ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
     public String home, current = Environment.getExternalStorageDirectory().getPath();
     Shortcuts sh = new Shortcuts();
     HashMap<String, Bundle> scrolls = new HashMap<String, Bundle>();
@@ -186,26 +185,7 @@ public class Main extends android.support.v4.app.Fragment {
             }
         });
         getActivity().findViewById(R.id.fabbutton).setVisibility(View.VISIBLE);
-        paste=(ImageButton)getActivity().findViewById(R.id.paste);
-        paste.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (COPY_PATH != null) {
-                    String path1 = ma.current;
-                    Intent intent = new Intent(getActivity(), CopyService.class);
-                    intent.putExtra("FILE_PATHS", COPY_PATH);
-                    intent.putExtra("COPY_DIRECTORY", path1);
-                    getActivity().startService(intent);
-                    COPY_PATH = null;
-                }
-                if (MOVE_PATH != null) {
-                    new MoveFiles(utils.toFileArray(MOVE_PATH),ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,current);
-                    MOVE_PATH = null;
 
-                }invalidatePasteButton();
-
-            }
-        });
         utils = new Futils();
 
         mPoppyViewHelper = new PoppyViewHelper(getActivity());
@@ -802,24 +782,24 @@ public class Main extends android.support.v4.app.Fragment {
                     mode.finish();
                     return true;
                 case R.id.cpy:
-                    MOVE_PATH=null;
+                    mainActivity.MOVE_PATH=null;
                     ArrayList<String> copies = new ArrayList<String>();
 
                     for (int i2 = 0; i2 < plist.size(); i2++) {
                         copies.add(list.get(plist.get(i2)).getDesc());
                     }
-                    COPY_PATH = copies;
-                    invalidatePasteButton();
+                    mainActivity.COPY_PATH = copies;
+                    mainActivity.invalidatePasteButton();
                     mode.finish();
                     return true;
                 case R.id.cut:
-                    COPY_PATH=null;
+                    mainActivity.COPY_PATH=null;
                     ArrayList<String> copie = new ArrayList<String>();
                     for (int i3 = 0; i3 < plist.size(); i3++) {
                         copie.add(list.get(plist.get(i3)).getDesc());
                     }
-                    MOVE_PATH = copie;
-                    invalidatePasteButton();
+                    mainActivity.MOVE_PATH = copie;
+                    mainActivity.invalidatePasteButton();
                     mode.finish();
                     return true;
                 case R.id.compress:
@@ -1132,12 +1112,7 @@ public class Main extends android.support.v4.app.Fragment {
         });
         popup.show();
     }
-    public void invalidatePasteButton(){
-        if(MOVE_PATH!=null || COPY_PATH!=null){
-            paste.setVisibility(View.VISIBLE);
-        } else
-            paste.setVisibility(View.GONE);
-    }private void crossfade() {
+    private void crossfade() {
 
         // Set the content view to 0% opacity but visible, so that it is visible
         // (but fully transparent) during the animation.
