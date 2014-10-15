@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -48,7 +47,6 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class MainActivity extends android.support.v4.app.FragmentActivity {
@@ -98,9 +96,16 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         paste.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Main ma=null;//need to be done
+
+                Main ma= new Main();
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                TabHandler tabHandler1 = new TabHandler(MainActivity.this, null, null, 1);
+                int spinner_current = sharedPreferences.getInt("spinner_selected", 0);
+                Tab tab1 = tabHandler1.findTab(spinner_current);
+                String path1 = tab1.getPath();
+
                 if (COPY_PATH != null) {
-                    String path1 = ma.current;
+
                     Intent intent = new Intent(con, CopyService.class);
                     intent.putExtra("FILE_PATHS", COPY_PATH);
                     intent.putExtra("COPY_DIRECTORY", path1);
@@ -108,7 +113,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     COPY_PATH = null;
                 }
                 if (MOVE_PATH != null) {
-                    new MoveFiles(utils.toFileArray(MOVE_PATH),ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,ma.current);
+                    new MoveFiles(utils.toFileArray(MOVE_PATH), ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path1);
                     MOVE_PATH = null;
 
                 }invalidatePasteButton();
