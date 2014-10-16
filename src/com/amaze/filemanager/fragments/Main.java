@@ -397,9 +397,8 @@ public class Main extends android.support.v4.app.Fragment {
                         tabHandler.addTab(new Tab(older, "legacy", "/storage/emulated/legacy"));
                         //restartPC(getActivity()); // breaks the copy feature
                         Sp.edit().putInt("spinner_selected", older).commit();
-                        Sp.edit().putString("current", "/storage/emulated/legacy").apply();
-                        fragmentTransaction.replace(R.id.content_frame, new Main());
-                        fragmentTransaction.commit();
+                        Sp.edit().putString("current", home).apply();
+                        loadlist(new File(home),false);
                 }
             }
         });
