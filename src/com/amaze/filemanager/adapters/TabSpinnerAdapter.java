@@ -157,9 +157,8 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
                         }
                         tabHandler.deleteTab(tabHandler.getTabsCount()-1);
                         Tab tab1 = tabHandler.findTab(spinner_current);
-                        String path1 = tab1.getPath();
                         Main ma = ((Main) fragmentTransaction.findFragmentById(R.id.content_frame));
-                        ma.loadlist(new File(tab.getPath()),false);
+                        ma.loadlist(new File(tab1.getPath()),false);
 
                     } else if (tabHandler.getTabsCount()-1 == position) {
                         items.remove(position);
@@ -169,9 +168,8 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
                         older_spinner_selected--;
                         sharedPreferences1.edit().putInt("spinner_selected", older_spinner_selected).apply();
                         Tab tab1 = tabHandler.findTab(spinner_current);
-                        String path1 = tab1.getPath();
                         Main ma = ((Main) fragmentTransaction.findFragmentById(R.id.content_frame));
-                        ma.loadlist(new File(tab.getPath()),false);
+                        ma.loadlist(new File(tab1.getPath()),false);
                     }
                 }
             }
