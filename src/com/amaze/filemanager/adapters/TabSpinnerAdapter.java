@@ -1,6 +1,7 @@
 package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -22,6 +23,7 @@ import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.fragments.Main;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
@@ -31,10 +33,10 @@ import java.util.ArrayList;
 public class TabSpinnerAdapter extends ArrayAdapter<String> {
     ArrayList<String> items;
     Context context;
-    FragmentTransaction fragmentTransaction;
+    android.support.v4.app.FragmentManager fragmentTransaction;
     Spinner spinner;
 
-    public TabSpinnerAdapter(Context context, int resource, ArrayList<String> items, FragmentTransaction fragmentTransaction, Spinner spin) {
+    public TabSpinnerAdapter(Context context, int resource, ArrayList<String> items, android.support.v4.app.FragmentManager fragmentTransaction, Spinner spin) {
         super(context, resource, items);
         this.items = items;
         this.context = context;
@@ -93,8 +95,9 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
                     //Toast.makeText(getActivity(), name, Toast.LENGTH_SHORT).show();
                     sharedPreferences1.edit().putString("current", name).apply();
                     sharedPreferences1.edit().putInt("spinner_selected", position).apply();
-                    fragmentTransaction.replace(R.id.content_frame, new Main());
-                    fragmentTransaction.commit();
+
+                    Main ma = ((Main) fragmentTransaction.findFragmentById(R.id.content_frame));
+                    ma.loadlist(new File(tab.getPath()),false);
 
                 }
             }
@@ -153,7 +156,10 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
                             tabHandler.updateTab(new Tab(a, next_label, next_path));
                         }
                         tabHandler.deleteTab(tabHandler.getTabsCount()-1);
-                        restartPC((MainActivity) getContext());
+                        Tab tab1 = tabHandler.findTab(spinner_current);
+                        String path1 = tab1.getPath();
+                        Main ma = ((Main) fragmentTransaction.findFragmentById(R.id.content_frame));
+                        ma.loadlist(new File(tab.getPath()),false);
 
                     } else if (tabHandler.getTabsCount()-1 == position) {
                         items.remove(position);
@@ -162,8 +168,10 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
                         int older_spinner_selected = sharedPreferences1.getInt("spinner_selected", 0);
                         older_spinner_selected--;
                         sharedPreferences1.edit().putInt("spinner_selected", older_spinner_selected).apply();
-
-                        restartPC((MainActivity) getContext());
+                        Tab tab1 = tabHandler.findTab(spinner_current);
+                        String path1 = tab1.getPath();
+                        Main ma = ((Main) fragmentTransaction.findFragmentById(R.id.content_frame));
+                        ma.loadlist(new File(tab.getPath()),false);
                     }
                 }
             }

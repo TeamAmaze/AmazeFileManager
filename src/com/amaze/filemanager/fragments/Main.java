@@ -500,49 +500,19 @@ public class Main extends android.support.v4.app.Fragment {
 
         adapter1 = new ArrayAdapter<String>(getActivity(),
                 R.layout.spinner_layout, R.id.spinnerText, list1);
-        final FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
 
         for (Tab tab : content) {
             //adapter1.add(tab.getLabel());
             list1.add(tab.getLabel());
         }
 
-        TabSpinnerAdapter tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, fragmentTransaction,mainActivity.tabsSpinner);
+        TabSpinnerAdapter tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, getActivity().getSupportFragmentManager(),mainActivity.tabsSpinner);
 
         adapter1.setDropDownViewResource(R.layout.spinner_dropdown_layout);
 
         mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
         mainActivity.tabsSpinner.setSelection(spinner_current);
 
-        Fragment fragment = new Main();
-        final TabHandler tabHandler1 = new TabHandler(getActivity(), null, null, 1);
-        mainActivity.tabsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, final int i, long l) {
-
-                int spinner_current = Sp.getInt("spinner_selected", 0);
-                if (i == spinner_current) {
-
-                }
-                else {
-
-                    Tab tab = tabHandler1.findTab(i);
-                    String name  = tab.getPath();
-                    //Toast.makeText(getActivity(), name, Toast.LENGTH_SHORT).show();
-                    Sp.edit().putString("current", name).apply();
-                    Sp.edit().putInt("spinner_selected", i).apply();
-                    fragmentTransaction.replace(R.id.content_frame, new Main());
-                    fragmentTransaction.commit();
-
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
     }
 

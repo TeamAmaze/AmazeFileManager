@@ -97,23 +97,18 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             @Override
             public void onClick(View view) {
 
-                Main ma= new Main();
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                TabHandler tabHandler1 = new TabHandler(MainActivity.this, null, null, 1);
-                int spinner_current = sharedPreferences.getInt("spinner_selected", 0);
-                Tab tab1 = tabHandler1.findTab(spinner_current);
-                String path1 = tab1.getPath();
+                Main ma = ((Main) getSupportFragmentManager().findFragmentById(R.id.content_frame));
 
                 if (COPY_PATH != null) {
 
                     Intent intent = new Intent(con, CopyService.class);
                     intent.putExtra("FILE_PATHS", COPY_PATH);
-                    intent.putExtra("COPY_DIRECTORY", path1);
+                    intent.putExtra("COPY_DIRECTORY", ma.current);
                     startService(intent);
                     COPY_PATH = null;
                 }
                 if (MOVE_PATH != null) {
-                    new MoveFiles(utils.toFileArray(MOVE_PATH), ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path1);
+                    new MoveFiles(utils.toFileArray(MOVE_PATH), ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ma.current);
                     MOVE_PATH = null;
 
                 }invalidatePasteButton();
