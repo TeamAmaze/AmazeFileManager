@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.ActionMode;
 import android.view.Gravity;
@@ -492,26 +491,50 @@ public class Main extends android.support.v4.app.Fragment {
         // Spinner
 
         DialogInterface dialogInterface;
-        int spinner_current = Sp.getInt("spinner_selected", 0);
+        final int spinner_current = Sp.getInt("spinner_selected", 0);
         tabHandler.updateTab(new Tab(spinner_current, f.getName(), f.getPath()));
         content = tabHandler.getAllTabs();
         list1 = new ArrayList<String>();
-
-        adapter1 = new ArrayAdapter<String>(getActivity(),
-                R.layout.spinner_layout, R.id.spinnerText, list1);
 
         for (Tab tab : content) {
             //adapter1.add(tab.getLabel());
             list1.add(tab.getLabel());
         }
 
-        TabSpinnerAdapter tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, getActivity().getSupportFragmentManager(),mainActivity.tabsSpinner);
+        adapter1 = new ArrayAdapter<String>(getActivity(),
+                R.layout.spinner_layout, R.id.spinnerText, list1);
+
+        TabSpinnerAdapter tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, getActivity().getSupportFragmentManager(), mainActivity.tabsSpinner);
 
         adapter1.setDropDownViewResource(R.layout.spinner_dropdown_layout);
 
         mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
         mainActivity.tabsSpinner.setSelection(spinner_current);
 
+        mainActivity.tabsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if (i == spinner_current) {
+                }
+                else {
+
+                    TabHandler tabHandler1 = new TabHandler(getActivity(), null, null, 1);
+                    Tab tab = tabHandler1.findTab(i);
+                    String name  = tab.getPath();
+                    //Toast.makeText(getActivity(), name, Toast.LENGTH_SHORT).show();
+                    Sp.edit().putString("current", name).apply();
+                    Sp.edit().putInt("spinner_selected", i).apply();
+
+                    loadlist(new File(tab.getPath()),false);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
     }
 
