@@ -114,6 +114,7 @@ public class Main extends android.support.v4.app.Fragment {
     private MainActivity mainActivity;
     public String skin;
     public int theme;
+    private TabSpinnerAdapter tabSpinnerAdapter;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,6 +165,15 @@ public class Main extends android.support.v4.app.Fragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
+
+        content = tabHandler.getAllTabs();
+        list1 = new ArrayList<String>();
+
+        for (Tab tab : content) {
+            //adapter1.add(tab.getLabel());
+            list1.add(tab.getLabel());
+        }
+        tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, getActivity().getSupportFragmentManager(), mainActivity.tabsSpinner);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
@@ -283,6 +293,10 @@ public class Main extends android.support.v4.app.Fragment {
                     adapter.toggleChecked(i);
                 }
             }
+
+            int pos = Sp.getInt("spinner_selected", 0);
+            mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
+            mainActivity.tabsSpinner.setSelection(pos);
 
             //listView.setVisibility(View.VISIBLE);
         }
@@ -490,7 +504,6 @@ public class Main extends android.support.v4.app.Fragment {
 
         // Spinner
 
-        DialogInterface dialogInterface;
         final int spinner_current = Sp.getInt("spinner_selected", 0);
         tabHandler.updateTab(new Tab(spinner_current, f.getName(), f.getPath()));
         content = tabHandler.getAllTabs();
@@ -501,12 +514,7 @@ public class Main extends android.support.v4.app.Fragment {
             list1.add(tab.getLabel());
         }
 
-        adapter1 = new ArrayAdapter<String>(getActivity(),
-                R.layout.spinner_layout, R.id.spinnerText, list1);
-
-        TabSpinnerAdapter tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, getActivity().getSupportFragmentManager(), mainActivity.tabsSpinner);
-
-        adapter1.setDropDownViewResource(R.layout.spinner_dropdown_layout);
+        tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, getActivity().getSupportFragmentManager(), mainActivity.tabsSpinner);
 
         mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
         mainActivity.tabsSpinner.setSelection(spinner_current);
@@ -936,7 +944,11 @@ public class Main extends android.support.v4.app.Fragment {
     public void goBack() {
         File f = new File(current);
         if (!results) {
-            loadlist(f.getParentFile(), true);
+            if (utils.canGoBack(f)) {
+                loadlist(f.getParentFile(), true);
+            } else {
+                Toast.makeText(getActivity(), "You're at the root", Toast.LENGTH_SHORT).show();
+            }
         } else {
             loadlist(f, true);
         }

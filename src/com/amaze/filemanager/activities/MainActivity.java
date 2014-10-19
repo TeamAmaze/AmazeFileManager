@@ -160,7 +160,21 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
         if (savedInstanceState == null) {
             selectItem(0);
-        }if(select<4){title.setText(val[select]);}
+        } else {
+            int pos = savedInstanceState.getInt("selectItem", 0);
+            adapter.toggleChecked(pos);
+
+            if(pos == 0) {
+
+                title.setVisibility(View.GONE);
+                tabsSpinner.setVisibility(View.VISIBLE);
+            } else {
+
+                title.setVisibility(View.VISIBLE);
+                tabsSpinner.setVisibility(View.GONE);
+            }
+        }
+        if(select<4){title.setText(val[select]);}
         if(Build.VERSION.SDK_INT>=19){
         SystemBarTintManager tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
@@ -389,7 +403,11 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         }
     }
 
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("selectItem", select);
+    }
 
     @Override
     protected void onPause() {
