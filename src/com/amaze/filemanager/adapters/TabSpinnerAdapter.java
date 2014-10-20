@@ -9,6 +9,8 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -95,6 +97,17 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
 
                     Main ma = ((Main) fragmentTransaction.findFragmentById(R.id.content_frame));
                     ma.loadlist(new File(tab.getPath()),false);
+
+                    Animation animationLeft = AnimationUtils.loadAnimation(getContext(), R.animator.tab_selection_left);
+                    Animation animationRight = AnimationUtils.loadAnimation(getContext(), R.animator.tab_selection_right);
+
+                    if (position < spinner_current) {
+                        ma.listView.setAnimation(animationLeft);
+                        ma.gridView.setAnimation(animationLeft);
+                    } else {
+                        ma.listView.setAnimation(animationRight);
+                        ma.gridView.setAnimation(animationRight);
+                    }
 
                 }
             }

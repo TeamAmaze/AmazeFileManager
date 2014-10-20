@@ -30,6 +30,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -63,6 +65,10 @@ import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.faizmalkani.floatingactionbutton.FloatingActionButton;
 import com.fourmob.poppyview.PoppyViewHelper;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
+
+import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
 
 import java.io.File;
 import java.io.IOException;
@@ -114,6 +120,7 @@ public class Main extends android.support.v4.app.Fragment {
     private MainActivity mainActivity;
     public String skin;
     public int theme;
+    private FloatingActionButton fab;
     private TabSpinnerAdapter tabSpinnerAdapter;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -184,8 +191,9 @@ public class Main extends android.support.v4.app.Fragment {
                 showPopup(view);
             }
         });
-        FloatingActionButton fab=(FloatingActionButton)getActivity().findViewById(R.id.fabbutton);
-        (fab).setDrawable(icons.getNewDrawable());fab.setOnClickListener(new View.OnClickListener() {
+        fab=(FloatingActionButton)getActivity().findViewById(R.id.fabbutton);
+        (fab).setDrawable(icons.getNewDrawable());
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 add();
@@ -331,6 +339,13 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
     public void add() {
+
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(
+                ObjectAnimator.ofFloat(fab, "rotation", 0, 180)
+        );
+        set.setDuration(350).start();
+
         AlertDialog.Builder ba = new AlertDialog.Builder(getActivity());
         ba.setTitle(utils.getString(getActivity(), R.string.add));
 
@@ -406,12 +421,17 @@ public class Main extends android.support.v4.app.Fragment {
                     case 2:
                         int older = tabHandler.getTabsCount();
                         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.animator.tab_anim);
 
                         tabHandler.addTab(new Tab(older, "legacy", "/storage/emulated/legacy"));
                         //restartPC(getActivity()); // breaks the copy feature
                         Sp.edit().putInt("spinner_selected", older).commit();
                         Sp.edit().putString("current", home).apply();
+
                         loadlist(new File(home),false);
+
+                        listView.setAnimation(animation);
+                        gridView.setAnimation(animation);
                 }
             }
         });
@@ -502,6 +522,10 @@ public class Main extends android.support.v4.app.Fragment {
         if(mActionMode!=null){mActionMode.finish();}
         new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
 
+        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.animator.load_list_anim);
+        listView.setAnimation(animation);
+        gridView.setAnimation(animation);
+
         // Spinner
 
         final int spinner_current = Sp.getInt("spinner_selected", 0);
@@ -524,6 +548,8 @@ public class Main extends android.support.v4.app.Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 if (i == spinner_current) {
+                    /*Animation animation = AnimationUtils.loadAnimation(getActivity(), R.animator.tab_anim);
+                    mainActivity.frameLayout.startAnimation(animation);*/
                 }
                 else {
 
@@ -535,6 +561,17 @@ public class Main extends android.support.v4.app.Fragment {
                     Sp.edit().putInt("spinner_selected", i).apply();
 
                     loadlist(new File(tab.getPath()),false);
+
+                    Animation animationLeft = AnimationUtils.loadAnimation(getActivity(), R.animator.tab_selection_left);
+                    Animation animationRight = AnimationUtils.loadAnimation(getActivity(), R.animator.tab_selection_right);
+
+                    if (i < spinner_current) {
+                        ma.listView.setAnimation(animationLeft);
+                        ma.gridView.setAnimation(animationLeft);
+                    } else {
+                        ma.listView.setAnimation(animationRight);
+                        ma.gridView.setAnimation(animationRight);
+                    }
                 }
             }
 
