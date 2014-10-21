@@ -1,16 +1,16 @@
 package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.fragments.Main;
@@ -99,6 +98,17 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
                     Main ma = ((Main) fragmentTransaction.findFragmentById(R.id.content_frame));
                     ma.loadlist(new File(tab.getPath()),false);
 
+                    Animation animationLeft = AnimationUtils.loadAnimation(getContext(), R.animator.tab_selection_left);
+                    Animation animationRight = AnimationUtils.loadAnimation(getContext(), R.animator.tab_selection_right);
+
+                    if (position < spinner_current) {
+                        ma.listView.setAnimation(animationLeft);
+                        ma.gridView.setAnimation(animationLeft);
+                    } else {
+                        ma.listView.setAnimation(animationRight);
+                        ma.gridView.setAnimation(animationRight);
+                    }
+
                 }
             }
         });
@@ -113,9 +123,19 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
                 if (position > spinner_current) {
 
                     Toast.makeText(getContext(), "Closed", Toast.LENGTH_SHORT).show();
-                    String label = tab.getLabel();
-                    tabHandler.deleteTab(position);
                     items.remove(position);
+
+                    int old_tab = tab.getTab();
+                    int a;
+                    for (a = old_tab; a < tabHandler.getTabsCount()-1; a++) {
+
+                        int new_tab = a + 1;
+                        Tab tab1 = tabHandler.findTab(new_tab);
+                        String next_label = tab1.getLabel();
+                        String next_path = tab1.getPath();
+                        tabHandler.updateTab(new Tab(a, next_label, next_path));
+                    }
+                    tabHandler.deleteTab(tabHandler.getTabsCount()-1);
                     hideSpinnerDropDown(spinner);
 
                 } else if (position < spinner_current) {
@@ -167,7 +187,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
                         int older_spinner_selected = sharedPreferences1.getInt("spinner_selected", 0);
                         older_spinner_selected--;
                         sharedPreferences1.edit().putInt("spinner_selected", older_spinner_selected).apply();
-                        Tab tab1 = tabHandler.findTab(spinner_current);
+                        Tab tab1 = tabHandler.findTab(older_spinner_selected);
                         Main ma = ((Main) fragmentTransaction.findFragmentById(R.id.content_frame));
                         ma.loadlist(new File(tab1.getPath()),false);
                     }

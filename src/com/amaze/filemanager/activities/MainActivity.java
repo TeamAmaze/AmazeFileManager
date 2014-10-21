@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -73,6 +74,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public int theme;
     public ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
     Context con=this;
+    public FrameLayout frameLayout;
     /**
      * Called when the activity is first created.
      */
@@ -92,6 +94,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         getActionBar().hide();
         title=(TextView)findViewById(R.id.title);
         tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
+        frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         paste=(ImageButton)findViewById(R.id.paste);
         paste.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,7 +163,21 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
         if (savedInstanceState == null) {
             selectItem(0);
-        }if(select<4){title.setText(val[select]);}
+        } else {
+            int pos = savedInstanceState.getInt("selectItem", 0);
+            adapter.toggleChecked(pos);
+
+            if(pos == 0) {
+
+                title.setVisibility(View.GONE);
+                tabsSpinner.setVisibility(View.VISIBLE);
+            } else {
+
+                title.setVisibility(View.VISIBLE);
+                tabsSpinner.setVisibility(View.GONE);
+            }
+        }
+        if(select<4){title.setText(val[select]);}
         if(Build.VERSION.SDK_INT>=19){
         SystemBarTintManager tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
@@ -389,7 +406,11 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         }
     }
 
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("selectItem", select);
+    }
 
     @Override
     protected void onPause() {
