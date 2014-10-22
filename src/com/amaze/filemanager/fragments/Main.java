@@ -91,7 +91,9 @@ import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -137,6 +139,7 @@ public class Main extends android.support.v4.app.Fragment {
     private ArrayAdapter<String> adapter1;
     private MainActivity mainActivity;
     public String skin;
+    public int skinselection;
     public int theme;
     private FloatingActionButton fab;
     private TabSpinnerAdapter tabSpinnerAdapter;
@@ -223,7 +226,7 @@ public class Main extends android.support.v4.app.Fragment {
 
         mPoppyViewHelper = new PoppyViewHelper(getActivity());
         skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#673ab7");
-
+        skinselection=Color.parseColor(getSelectionColor());
         if (aBoolean) {
             poppyView = mPoppyViewHelper.createPoppyViewOnListView(R.id.listView, R.layout.pooppybar);
             LinearLayout linearLayout = (LinearLayout) poppyView.findViewById(R.id.linearLayout);
@@ -1232,7 +1235,29 @@ if(history!=null)
             random();
         }
     }
+public String getSelectionColor(){
 
+    String[] colors = new String[]{
+            "#e51c23","#9fe84e40",
+            "#e91e63","#9fec407a",
+            "#9c27b0","#9fab47bc",
+            "#673ab7","#9f7e57c2",
+            "#3f51b5","#9f5c6bc0",
+            "#5677fc","#9f738ffe",
+            "#0288d1","#9f29b6f6",
+            "#0097a7","#9f26c6da",
+            "#009688","#9f26a69a",
+            "#259b24","#9f2baf2b",
+            "#8bc34a","#9f9ccc65",
+            "#ffa000","#9fffca28",
+            "#f57c00","#9fffa726",
+            "#e64a19","#9fff7043",
+            "#795548","#9f8d6e63",
+            "#212121","#9fbdbdbd",
+            "#607d8b","#9f78909c",
+    };
+   return colors[ Arrays.asList(colors).indexOf(skin)+1];
+}
     private void random() {
         
         String[] colors = new String[]{

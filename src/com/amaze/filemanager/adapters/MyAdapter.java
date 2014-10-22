@@ -150,7 +150,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         if (checked != null) {
 
             if (checked) {
-                holder.rl.setBackgroundColor(Color.parseColor("#9f808080"));
+                holder.rl.setBackgroundColor(main.skinselection);
             } else {
                 if (main.uimode == 0) {
                     holder.rl.setBackgroundResource(R.drawable.listitem1);
@@ -224,7 +224,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             if (checked != null) {
 
                 if (checked) {
-                    holder.rl.setBackgroundColor(Color.parseColor("#9f808080"));
+                    holder.rl.setBackgroundColor(main.skinselection);
                 } else {
                     if (main.uimode == 0) {
                         if(main.theme==0)holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
