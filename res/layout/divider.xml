@@ -1,14 +1,15 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="10dip" >
+    android:layout_height="wrap_content"
+    android:clickable="false"
+    android:minHeight="60dp">
     <TextView
         android:id="@+id/footerText"
-        android:padding="10dip"
-        android:layout_width="fill_parent"
+        android:clickable="false"
+        android:layout_width="wrap_content"
         android:textStyle="bold"
-        android:textSize="10dip"
-        android:gravity="center"
+        android:textSize="11dip"
         android:layout_gravity="center"
         android:layout_height="fill_parent"
         android:text="Tap and hold on a File or Folder for more options"/>
-    </RelativeLayout>
+    </FrameLayout>

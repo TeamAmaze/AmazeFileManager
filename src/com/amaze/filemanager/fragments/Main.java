@@ -702,7 +702,7 @@ public class Main extends android.support.v4.app.Fragment {
                 hideOption(R.id.ex, menu);
                 hideOption(R.id.sethome, menu);
                 hideOption(R.id.openwith, menu);
-                hideOption(R.id.share, menu);
+                //hideOption(R.id.share, menu);
                 hideOption(R.id.permissions,menu);
                 hideOption(R.id.about, menu);
             }
@@ -735,11 +735,15 @@ public class Main extends android.support.v4.app.Fragment {
 
                     return true;
                 case R.id.share:
-                    Intent i = new Intent();
-                    i.setAction(Intent.ACTION_SEND);
-                    i.setType("*/*");
-                    i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(list.get(plist.get(0)).getDesc())));
-                    startActivity(i);
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                    ArrayList<Uri> uris=new ArrayList<Uri>();
+                    for(int i:plist){
+                        uris.add(Uri.fromFile(new File(list.get(i).getDesc())));
+                    }
+                    sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,uris);
+                    sendIntent.setType("*/*");
+                    startActivity(sendIntent);
                     mode.finish();
                     return true;
                 case R.id.all:
@@ -839,7 +843,7 @@ public class Main extends android.support.v4.app.Fragment {
                         copies1.add(list.get(plist.get(i4)).getDesc());
                     }
                     utils.showNameDialog((MainActivity) getActivity(), copies1, current);
-                    mode.finish();
+                    mode.finish();0
                     return true;
                 case R.id.openwith:
                     utils.openWith(new File(list.get(
