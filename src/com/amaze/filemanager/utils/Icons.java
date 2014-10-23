@@ -166,7 +166,6 @@ static {
         add("application/vnd.sun.xml.calc", icon);
         add("application/vnd.sun.xml.calc.template", icon);
         add("application/x-kspread", icon);
-
         // Text
         icon = R.drawable.ic_doc_text_am;
         add("application/vnd.oasis.opendocument.text", icon);
@@ -219,6 +218,9 @@ static {
         final Resources res = context.getResources();
         String mimeType = MimeTypes.getMimeType(new File(path));
         if (mimeType == null) {
+             if(grid)
+            return res.getDrawable(R.drawable.ic_doc_generic_am_grid);
+
             return res.getDrawable(R.drawable.ic_doc_generic_am);
         }
 
