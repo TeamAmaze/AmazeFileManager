@@ -862,7 +862,7 @@ if(listView!=null){
                     mode.finish();
                     return true;
                 case R.id.permissions:
-                    utils.setPermissionsDialog(new File(list.get(plist.get(0)).getDesc()),ma);
+                    utils.setPermissionsDialog(list.get(plist.get(0)),ma);
                     mode.finish();
                     return true;
                 default:

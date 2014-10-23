@@ -600,8 +600,9 @@ public class Futils {
         } catch (SAXException e) {
         }
     }
-    public void setPermissionsDialog(final File file, final Main main){
+    public void setPermissionsDialog(final Layoutelements f, final Main main){
         if(main.rootMode){
+            final File file=new File(f.getDesc());
             AlertDialog.Builder a=new AlertDialog.Builder(main.getActivity());
             View v=main.getActivity().getLayoutInflater().inflate(R.layout.permissiontable,null);
             final CheckBox readown=(CheckBox) v.findViewById(R.id.creadown);
@@ -613,10 +614,15 @@ public class Futils {
             final CheckBox exeown=(CheckBox) v.findViewById(R.id.cexeown);
             final CheckBox exegroup=(CheckBox) v.findViewById(R.id.cexegroup);
             final CheckBox exeother=(CheckBox) v.findViewById(R.id.cexeother);
-            String perm=getFilePermissionsSymlinks(file.getPath(),main.getActivity(), main.rootMode);
-            Boolean[] read=unparsePermissions(Integer.parseInt(""+(perm.charAt(1))));
-            Boolean[] write=unparsePermissions(Integer.parseInt(""+(perm.charAt(2))));
-            Boolean[] exe=unparsePermissions(Integer.parseInt(""+(perm.charAt(3))));
+            String perm=f.getPermissions();
+            StringBuilder finalPermissions = new StringBuilder();
+            finalPermissions.append(parseSpecialPermissions(perm));
+            finalPermissions.append(parsePermissions(perm.substring(1, 4)));
+            finalPermissions.append(parsePermissions(perm.substring(4, 7)));
+            finalPermissions.append(parsePermissions(perm.substring(7, 10)));
+            Boolean[] read=unparsePermissions(Integer.parseInt(""+(finalPermissions.charAt(1))));
+            Boolean[] write=unparsePermissions(Integer.parseInt(""+(finalPermissions.charAt(2))));
+            Boolean[] exe=unparsePermissions(Integer.parseInt(""+(finalPermissions.charAt(3))));
             readown.setChecked(read[0]);
             readgroup.setChecked(read[1]);
             readother.setChecked(read[2]);
@@ -678,7 +684,7 @@ public class Futils {
             });
             a.setTitle(file.getName());
             a.setView(v);
-            a.show();}
+            a.show();}else{Toast.makeText(main.getActivity(),"Enable Root Mode",Toast.LENGTH_LONG).show();}
     }String per=null;
     public String getFilePermissionsSymlinks(String file,final Context c,boolean root)
     {per=null;
