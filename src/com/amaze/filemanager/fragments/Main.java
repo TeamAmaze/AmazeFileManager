@@ -87,8 +87,6 @@ import com.fourmob.poppyview.PoppyViewHelper;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 
-import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -436,6 +434,7 @@ if(listView!=null){
                         int older = tabHandler.getTabsCount();
                         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                         Animation animation = AnimationUtils.loadAnimation(getActivity(), R.animator.tab_anim);
+                        Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.animator.fab_newtab);
 
                         tabHandler.addTab(new Tab(older, "legacy", "/storage/emulated/legacy"));
                         //restartPC(getActivity()); // breaks the copy feature
@@ -446,6 +445,7 @@ if(listView!=null){
 
                         listView.setAnimation(animation);
                         gridView.setAnimation(animation);
+                        fab.setAnimation(animation1);
                 }
             }
         });
