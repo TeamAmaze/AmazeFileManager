@@ -255,7 +255,11 @@ public class Main extends android.support.v4.app.Fragment {
         getSortModes();
         home = Sp.getString("home", System.getenv("EXTERNAL_STORAGE"));
         this.setRetainInstance(false);
-        File f=new File(Sp.getString("current",home));
+        String path=content.get(0).getPath();
+        File f;
+        if(path!=null)f=new File(path);
+        else
+        f=new File(Sp.getString("current",home));
 
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
         pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
