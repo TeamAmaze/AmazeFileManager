@@ -49,6 +49,7 @@ public class AppsList extends ListFragment {
     public ActionMode mActionMode;
     public ArrayList<ApplicationInfo> c = new ArrayList<ApplicationInfo>();
     private LruCache<String, Bitmap> mMemoryCache;
+   ListView vl;ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -57,9 +58,9 @@ public class AppsList extends ListFragment {
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
         final int cacheSize = maxMemory / 4;
-        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
-
-        };ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
+        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {};
+        vl=getListView();
+        ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
         overflow.setVisibility(View.GONE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
@@ -71,7 +72,15 @@ public class AppsList extends ListFragment {
             vl.setDivider(null);
         }
         vl.setFastScrollEnabled(true);
-        new LoadListTask().execute();
+        if(savedInstanceState==null)new LoadListTask().execute();
+        else{
+        c=savedInstanceState.getParcelableArrayList("c");
+        a=savedInstanceState.getParcelableArrayList("list");
+            adapter = new AppsAdapter(getActivity(), R.layout.rowlayout, a, app);
+            setListAdapter(adapter);
+            vl.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
+
+        }
     }
 
     public void onLongItemClick(final int position) {
@@ -118,8 +127,19 @@ public class AppsList extends ListFragment {
         d.show();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle b) {
+        super.onSaveInstanceState(b);
+        if(vl!=null){
+        b.putParcelableArrayList("c",c);
+        b.putParcelableArrayList("list",a);
+        int index = vl.getFirstVisiblePosition();
+        View vi = vl.getChildAt(0);
+        int top = (vi == null) ? 0 : vi.getTop();
+        b.putInt("index", index);
+        b.putInt("top", top);
+    }}
     class LoadListTask extends AsyncTask<Void, Void, ArrayList<Layoutelements>> {
-        ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
 
         protected ArrayList<Layoutelements> doInBackground(Void[] p1) {
             try {
@@ -143,7 +163,7 @@ public class AppsList extends ListFragment {
                     mFile.add(file);
                 }
             } catch (Exception e) {
-                Toast.makeText(getActivity(), "" + e, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getActivity(), "" + e, Toast.LENGTH_LONG).show();
             }//ArrayAdapter<String> b=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,a);
             // TODO: Implement this method
 

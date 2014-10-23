@@ -164,10 +164,11 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         if (savedInstanceState == null) {
             selectItem(0);
         } else {
-            int pos = savedInstanceState.getInt("selectItem", 0);
-            adapter.toggleChecked(pos);
+            select= savedInstanceState.getInt("selectItem", 0);;
 
-            if(pos == 0) {
+            adapter.toggleChecked(select);
+
+            if(select == 0) {
 
                 title.setVisibility(View.GONE);
                 tabsSpinner.setVisibility(View.VISIBLE);

@@ -317,8 +317,7 @@ public class Main extends android.support.v4.app.Fragment {
 
         int index;
         View vi;
-
-        aBoolean = sharedPreferences.getBoolean("view", true);
+if(listView!=null){
         if (aBoolean) {
 
             index = listView.getFirstVisiblePosition();
@@ -336,7 +335,7 @@ public class Main extends android.support.v4.app.Fragment {
         if (selection) {
             outState.putIntegerArrayList("position", adapter.getCheckedItemPositions());
         }
-    }
+    }}
 
     public void add() {
 
@@ -843,7 +842,7 @@ public class Main extends android.support.v4.app.Fragment {
                         copies1.add(list.get(plist.get(i4)).getDesc());
                     }
                     utils.showNameDialog((MainActivity) getActivity(), copies1, current);
-                    mode.finish();0
+                    mode.finish();
                     return true;
                 case R.id.openwith:
                     utils.openWith(new File(list.get(
@@ -1060,7 +1059,7 @@ public class Main extends android.support.v4.app.Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+if(history!=null)
         history.end();     }
     public void initPoppyViewListeners(View poppy){
         ((ImageView)poppy.findViewById(R.id.back)).setOnClickListener(new View.OnClickListener() {
@@ -1069,7 +1068,8 @@ public class Main extends android.support.v4.app.Fragment {
                 goBack();if(mActionMode!=null){mActionMode.finish();}
             }
         });
-        ((ImageView)poppy.findViewById(R.id.home)).setOnClickListener(new View.OnClickListener() {
+        final ImageView homebutton=(ImageView)poppy.findViewById(R.id.home);
+        (homebutton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 home();if(mActionMode!=null){mActionMode.finish();}

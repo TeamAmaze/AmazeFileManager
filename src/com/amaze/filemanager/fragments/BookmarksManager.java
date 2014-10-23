@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -37,7 +38,7 @@ public class BookmarksManager extends ListFragment {
     SharedPreferences Sp;
     public IconUtils icons;
     ArrayList<File> bx;
-
+ListView vl;
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -51,25 +52,13 @@ public class BookmarksManager extends ListFragment {
                 .setVisibility(View.GONE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         icons = new IconUtils(Sp, getActivity());
-        ListView vl = getListView();
-//		float scale = getResources().getDisplayMetrics().density;
-//		int dpAsPixels = (int) (10*scale + 0.5f);
-//	    getListView().setPadding(dpAsPixels,0, dpAsPixels, 0);
-//	    getListView().setDivider(null);
-//		getListView().setDividerHeight(dpAsPixels);
-//		vl.setCacheColorHint(android.R.color.transparent);
-//		vl.setSelector(android.R.color.transparent);
-//		vl.setHeaderDividersEnabled(true);
-//		View divider=getActivity().getLayoutInflater().inflate(R.layout.divider,null);
-//		vl.addFooterView(divider);
-//		vl.addHeaderView(divider);
-//		vl.setFooterDividersEnabled(true);
+         vl = getListView();
         vl.setFastScrollEnabled(true);
         if (savedInstanceState == null)
             refresh();
-        else {
-            refresh(utils.toFileArray(savedInstanceState.getStringArrayList("bx")));
-            getListView().setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
+        else {bx=utils.toFileArray(savedInstanceState.getStringArrayList("bx"));
+            refresh(bx);
+            vl.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
         }
 
     }
@@ -77,14 +66,15 @@ public class BookmarksManager extends ListFragment {
     @Override
     public void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
-        b.putStringArrayList("bx", utils.toStringArray(bx));
-        int index = getListView().getFirstVisiblePosition();
-        View vi = getListView().getChildAt(0);
-        int top = (vi == null) ? 0 : vi.getTop();
-        b.putInt("index", index);
-        b.putInt("top", top);
+        if (vl != null) {
+            b.putStringArrayList("bx", utils.toStringArray(bx));
+            int index = vl.getFirstVisiblePosition();
+            View vi = vl.getChildAt(0);
+            int top = (vi == null) ? 0 : vi.getTop();
+            b.putInt("index", index);
+            b.putInt("top", top);
+        }
     }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
