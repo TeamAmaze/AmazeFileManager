@@ -141,6 +141,7 @@ public class Main extends android.support.v4.app.Fragment {
     public int theme;
     private FloatingActionButton fab;
     private TabSpinnerAdapter tabSpinnerAdapter;
+    public float[] color;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -224,7 +225,9 @@ public class Main extends android.support.v4.app.Fragment {
 
         mPoppyViewHelper = new PoppyViewHelper(getActivity());
         skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#673ab7");
-        skinselection=Color.parseColor(getSelectionColor());
+        String x=getSelectionColor();
+        skinselection=Color.parseColor(x);
+        color=calculatevalues(x);
         if (aBoolean) {
             poppyView = mPoppyViewHelper.createPoppyViewOnListView(R.id.listView, R.layout.pooppybar);
             LinearLayout linearLayout = (LinearLayout) poppyView.findViewById(R.id.linearLayout);
@@ -240,18 +243,9 @@ public class Main extends android.support.v4.app.Fragment {
         mountSystem = Sp.getBoolean("mountsystem", false);
         showHidden=Sp.getBoolean("showHidden",true);
         if(aBoolean){
+        folder = res.getDrawable(R.drawable.ic_grid_folder_new);}
+        else{folder = res.getDrawable(R.drawable.ic_grid_folder1);}
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
-
-        apk = res.getDrawable(R.drawable.ic_doc_apk);
-        unknown = res.getDrawable(R.drawable.ic_doc_generic_am);
-        archive = res.getDrawable(R.drawable.archive_blue);
-        text = res.getDrawable(R.drawable.ic_doc_text_am);}
-        else{folder = res.getDrawable(R.drawable.ic_grid_folder1);
-
-            apk = res.getDrawable(R.drawable.ic_doc_apk_grid);
-            unknown = res.getDrawable(R.drawable.ic_doc_generic_am_grid);
-            archive = res.getDrawable(R.drawable.archive_blue);
-            text = res.getDrawable(R.drawable.ic_doc_text_am_grid);}
         getSortModes();
         home = Sp.getString("home", System.getenv("EXTERNAL_STORAGE"));
         this.setRetainInstance(false);
@@ -1262,6 +1256,15 @@ public String getSelectionColor(){
     };
    return colors[ Arrays.asList(colors).indexOf(skin)+1];
 }
+    public float[] calculatevalues(String color){
+        float r=(Integer.parseInt(cutHex(color).substring(0,2),16))/255;
+        float g=(Integer.parseInt(cutHex(color).substring(2,4),16))/255;
+        float b=(Integer.parseInt(cutHex(color).substring(4,6),16))/255;
+        return new float[]{r,g,b};
+    }
+    String cutHex(String h) {
+        return h.substring(3,h.length());
+    }
     private void random() {
         
         String[] colors = new String[]{

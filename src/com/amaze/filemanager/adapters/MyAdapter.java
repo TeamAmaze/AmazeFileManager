@@ -22,6 +22,8 @@ package com.amaze.filemanager.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.GradientDrawable;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -49,6 +51,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
     Main main;
     Futils utils = new Futils();
     boolean showThumbs;
+    ColorMatrixColorFilter colorMatrixColorFilter;
     public MyAdapter(Context context, int resourceId,
                      List<Layoutelements> items, Main main) {
         super(context, resourceId, items);
@@ -58,6 +61,15 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, false);
         }
+        float[] src = {
+
+                main.color[0], 0, 0, 0, 0,
+                0, main.color[1], 0, 0, 0,
+                0, 0,  main.color[2],0, 0,
+                0, 0, 0, 1, 0
+        };
+        ColorMatrix colorMatrix = new ColorMatrix(src);
+        colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
 
     }
 
@@ -217,6 +229,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             vholder.txtDesc= (TextView) view.findViewById(R.id.size);
                 vholder.perm= (TextView) view.findViewById(R.id.perm);
                 if(main.theme==1)view.findViewById(R.id.icon_frame).setBackgroundColor(Color.parseColor("#00000000"));
+
             view.setTag(vholder);
             }else{ view = convertView;}
             final ViewHolder holder = (ViewHolder) view.getTag();
@@ -268,6 +281,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 main.ic.cancelLoad(holder.imageView);
                 main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
             }
+            if(new File(rowItem.getDesc()).isDirectory()){holder.imageView.setColorFilter(colorMatrixColorFilter);}
             if(main.showLastModified)
                 holder.date.setText(rowItem.getDate("dd/MM/yy"));
             if(main.showSize)
