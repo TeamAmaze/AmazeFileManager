@@ -99,7 +99,6 @@ public class Main extends android.support.v4.app.Fragment {
     public HistoryManager history;
     IconUtils icons;
     HorizontalScrollView scroll,scroll1;
-    boolean rememberLastPath;
     public boolean rootMode, mountSystem,showHidden,showPermissions,showSize,showLastModified;
     View footerView, poppyView;
     ImageButton paste;
@@ -220,7 +219,6 @@ public class Main extends android.support.v4.app.Fragment {
         rootMode = Sp.getBoolean("rootmode", false);
         mountSystem = Sp.getBoolean("mountsystem", false);
         showHidden=Sp.getBoolean("showHidden",true);
-        rememberLastPath=Sp.getBoolean("rememberLastPath",false);
         if(aBoolean){
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
 
@@ -237,12 +235,7 @@ public class Main extends android.support.v4.app.Fragment {
         getSortModes();
         home = Sp.getString("home", System.getenv("EXTERNAL_STORAGE"));
         this.setRetainInstance(false);
-
-        File f = new File(home);
-        /*if(rememberLastPath){
-            f=new File(Sp.getString("current",home));
-        }*/
-        f=new File(Sp.getString("current",home));
+        File f=new File(Sp.getString("current",home));
 
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
         pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
@@ -1027,9 +1020,6 @@ if(listView!=null){
     @Override
     public void onPause() {
         super.onPause();
-        if(rememberLastPath){
-            Sp.edit().putString("current",current).apply();
-        }
         (getActivity()).unregisterReceiver(receiver2);
     }
     @Override
