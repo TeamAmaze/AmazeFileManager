@@ -21,6 +21,7 @@ package com.amaze.filemanager.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -133,10 +134,11 @@ public class Futils {
     }
 
     public void deleteFiles(ArrayList<Layoutelements> a, final Main b, List<Integer> pos) {
-        AlertDialog.Builder c = new AlertDialog.Builder(b.getActivity());
+        final AlertDialog.Builder c = new AlertDialog.Builder(b.getActivity());
         View v = b.getActivity().getLayoutInflater().inflate(R.layout.dialoginfo, null);
         TextView tb = (TextView) v.findViewById(R.id.info);
         c.setTitle(getString(b.getActivity(), R.string.confirm));
+        final ContentResolver contentResolver=b.getActivity().getContentResolver();
         String names = "";
         final ArrayList<File> todelete = new ArrayList<File>();
         for (int i = 0; i < pos.size(); i++) {
@@ -151,14 +153,7 @@ public class Futils {
 
             public void onClick(DialogInterface p1, int p2) {
                 Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_LONG).show();
-                if(todelete.get(0).getParentFile().canWrite()){
-                    Intent i = new Intent(b.getActivity(), DeleteTask.class);
-                    i.putStringArrayListExtra("files", toStringArray(todelete));
-                    b.getActivity().startService(i);}
-                else if(b.rootMode){for(File f:todelete){
-                    RootTools.deleteFileOrDirectory(f.getPath(),true);}
-                    b.updateList();
-                }
+
             }
         });
         c.show();

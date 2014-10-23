@@ -20,84 +20,75 @@
 package com.amaze.filemanager.services;
 
 import android.app.Service;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.widget.Toast;
 
+import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.MediaFile;
+import com.stericson.RootTools.RootTools;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class DeleteTask extends Service {
+public class DeleteTask extends AsyncTask<ArrayList<File>, String, Boolean> {
+
+
+    ArrayList<File> files;
+    ContentResolver contentResolver;
+    Main m;
+    Futils utils = new Futils();
+public  DeleteTask(ContentResolver c,Main m){this.contentResolver=c;this.m=m;}
 
     @Override
-    public void onCreate() {
-
+    protected void onProgressUpdate(String... values) {
+        super.onProgressUpdate(values);
+        Toast.makeText(m.getActivity(),values[0],Toast.LENGTH_LONG).show();
     }
 
-    ArrayList<File> files = new ArrayList<File>();
-    // Binder given to clients
-    Futils utils = new Futils();
+    protected Boolean doInBackground(ArrayList<File>... p1) {
+            files=p1[0];
+            if(files.get(0).getParentFile().canWrite()) {
+                boolean b = true;
+                for (int i = 0; i < files.size(); i++) {
+                    boolean c = utils.deletefiles(files.get(i));
+                    if (!c) {
+                        b = false;
+                    }
 
-
-    /**
-     * Class used for the client Binder.  Because we know this service always
-     * runs in the same process as its clients, we don't need to deal with IPC.
-     */
-    Context cn = this;
-
-    public class Doback extends AsyncTask<Bundle, Void, Integer> {
-        ArrayList<File> files;
-
-        public Doback() {
-        }
-
-        protected Integer doInBackground(Bundle... p1) {
-            boolean b = true;
-            files = utils.toFileArray(p1[0].getStringArrayList("array"));
-
-            for (int i = 0; i < files.size(); i++) {
-                boolean c = utils.deletefiles(files.get(i));
-                if (!c) {
-                    b = false;
-                }
-
+                }return b;
             }
-            utils.scanFile(files.get(0).getParent(), cn);
+            else if(m.rootMode){for(File f:files){
+                RootTools.deleteFileOrDirectory(f.getPath(), true);}
+              return true;
+            }else{boolean b = true;
+                for(File f:files){
+                    MediaFile mediaFile=new MediaFile(contentResolver,f);
+                    try {
+                        boolean c=mediaFile.delete();
+                        if(!c){b=false;}
+                    } catch (IOException e) {
+                        b=false;
+                      publishProgress("Error");
+                    }
+                }
+                return b;
+            }
 
-            publishResults(b);
-            return p1[0].getInt("id");
         }
 
         @Override
-        public void onPostExecute(Integer b) {
-            stopSelf(b);
-
+        public void onPostExecute(Boolean b) {
+            m.updateList();
+            if(!b){Toast.makeText(m.getActivity(),"Error",Toast.LENGTH_LONG).show();}
+              else  Toast.makeText(m.getActivity(),"Done",Toast.LENGTH_LONG).show();
         }
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Bundle b = new Bundle();
-        ArrayList<String> a = intent.getStringArrayListExtra("files");
-        b.putInt("id", startId);
-        b.putStringArrayList("array", a);
-        new Doback().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, b);
-        // If we get killed, after returning from here, restart
-        return START_REDELIVER_INTENT;
-    }
 
-    private void publishResults(boolean b) {
-        Intent intent = new Intent("loadlist");
-        sendBroadcast(intent);
-    }
-
-    @Override
-    public IBinder onBind(Intent arg0) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-}
