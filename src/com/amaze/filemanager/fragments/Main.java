@@ -1258,10 +1258,9 @@ public String getSelectionColor(){
 }
     public float[] calculatevalues(String color){
         int c=Color.parseColor(color);
-        float r=Color.red(c)/255;
-        float g=Color.green(c)/255;
-        float b=Color.blue(c)/255;
-        Toast.makeText(getActivity(),Color.red(c)+" "+r+" "+Color.green(c)+" "+g+" "+Color.blue(c)+" "+b,Toast.LENGTH_LONG).show();
+        float r=(float)Color.red(c)/255;
+        float g=(float)Color.green(c)/255;
+        float b=(float)Color.blue(c)/255;
         return new float[]{r,g,b};
     }
     private void random() {
