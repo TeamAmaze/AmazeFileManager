@@ -1257,13 +1257,12 @@ public String getSelectionColor(){
    return colors[ Arrays.asList(colors).indexOf(skin)+1];
 }
     public float[] calculatevalues(String color){
-        float r=(Integer.parseInt(cutHex(color).substring(0,2),16))/255;
-        float g=(Integer.parseInt(cutHex(color).substring(2,4),16))/255;
-        float b=(Integer.parseInt(cutHex(color).substring(4,6),16))/255;
+        int c=Color.parseColor(color);
+        float r=Color.red(c)/255;
+        float g=Color.green(c)/255;
+        float b=Color.blue(c)/255;
+        Toast.makeText(getActivity(),Color.red(c)+" "+r+" "+Color.green(c)+" "+g+" "+Color.blue(c)+" "+b,Toast.LENGTH_LONG).show();
         return new float[]{r,g,b};
-    }
-    String cutHex(String h) {
-        return h.substring(3,h.length());
     }
     private void random() {
         
