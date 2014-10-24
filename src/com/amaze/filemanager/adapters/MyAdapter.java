@@ -282,6 +282,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
             }
             if(new File(rowItem.getDesc()).isDirectory()){holder.imageView.setColorFilter(colorMatrixColorFilter);}
+            else {holder.imageView.setColorFilter(null);}
             if(main.showLastModified)
                 holder.date.setText(rowItem.getDate("dd/MM/yy"));
             if(main.showSize)
