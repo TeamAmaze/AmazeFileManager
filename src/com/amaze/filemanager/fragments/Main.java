@@ -1258,9 +1258,9 @@ public String getSelectionColor(){
 }
     public float[] calculatevalues(String color){
         int c=Color.parseColor(color);
-        float r= (float) Color.red(c)/255;
-        float g= (float) Color.green(c)/255;
-        float b= (float) Color.blue(c)/255;
+        float r=(float)Color.red(c)/255;
+        float g=(float)Color.green(c)/255;
+        float b=(float)Color.blue(c)/255;
         return new float[]{r,g,b};
     }
     private void random() {

@@ -247,6 +247,8 @@ static {
                 break;
             case R.drawable.ic_doc_video_am: if(grid)resId=R.drawable.ic_doc_video_am_grid;
                 break;
+            case R.drawable.ic_doc_text_am: if(grid)resId=R.drawable.ic_doc_text_am_grid;
+                break;
         }
             return res.getDrawable(resId);
         }
