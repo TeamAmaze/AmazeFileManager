@@ -142,6 +142,8 @@ public class Main extends android.support.v4.app.Fragment {
     private FloatingActionButton fab;
     private TabSpinnerAdapter tabSpinnerAdapter;
     public float[] color;
+    View header;
+    ImageView headerbackbutton;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -290,7 +292,15 @@ public class Main extends android.support.v4.app.Fragment {
         footerView=getActivity().getLayoutInflater().inflate(R.layout.divider,null);
 
         if (aBoolean) {
-
+            header=getActivity().getLayoutInflater().inflate(R.layout.listheader, null);
+            header.findViewById(R.id.headerback).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    goBack();
+                }
+            });
+            headerbackbutton=(ImageView)header.findViewById(R.id.headerbackbuton);
+            listView.addHeaderView(header);
             listView.addFooterView(footerView);
             listView.setFastScrollEnabled(true);
         } else {
@@ -626,6 +636,8 @@ if(listView!=null){
 
                     results = false;
                     current = f.getPath();
+                    if(current.equals("/")){headerbackbutton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,0));}
+                    else {headerbackbutton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));}
                     if (back) {
                         if (scrolls.containsKey(current)) {
                             Bundle b = scrolls.get(current);
