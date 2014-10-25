@@ -20,16 +20,25 @@
 package com.amaze.filemanager.activities;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -52,6 +61,17 @@ public class TextReader extends Activity {
         ma = (EditText) findViewById(R.id.fname);
         p = (ProgressBar) findViewById(R.id.pbar);
         ma.setVisibility(View.GONE);
+        String skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#673ab7");
+        getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
+        if(Build.VERSION.SDK_INT>=19){
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintColor(Color.parseColor(skin));
+            FrameLayout a=(FrameLayout)ma.getParent();
+            FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) a.getLayoutParams();
+            SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
+            p.setMargins(0,config.getPixelInsetTop(true),0,0);
+        }
         path = this.getIntent().getStringExtra("path");
         if (path != null) {
             Toast.makeText(this, "" + path, Toast.LENGTH_SHORT).show();
@@ -131,12 +151,14 @@ public class TextReader extends Activity {
             output = new FileWriter(fileName);
             BufferedWriter writer = new BufferedWriter(output);
             writer.write(s);
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             if (output != null) {
                 try {
                     output.close();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
