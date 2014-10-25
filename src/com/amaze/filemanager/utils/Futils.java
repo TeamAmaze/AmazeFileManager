@@ -153,7 +153,7 @@ public class Futils {
 
             public void onClick(DialogInterface p1, int p2) {
                 Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_LONG).show();
-
+                new DeleteTask(b.getActivity().getContentResolver(),b).execute(todelete);
             }
         });
         c.show();

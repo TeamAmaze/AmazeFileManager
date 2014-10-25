@@ -92,7 +92,7 @@ static {
         add("application/x-javascript", icon);
 
         // Compressed
-        icon = R.drawable.archive_blue;
+        icon = R.drawable.ic_doc_compressed;
         add("application/mac-binhex40", icon);
         add("application/rar", icon);
         add("application/zip", icon);
@@ -218,9 +218,9 @@ static {
         final Resources res = context.getResources();
         String mimeType = MimeTypes.getMimeType(new File(path));
         if (mimeType == null) {
-             if(grid)
+            /* if(grid)
             return res.getDrawable(R.drawable.ic_doc_generic_am_grid);
-
+*/
             return res.getDrawable(R.drawable.ic_doc_generic_am);
         }
 
@@ -228,7 +228,7 @@ static {
         // Look for exact match first
         Integer resId = sMimeIcons.get(mimeType);
 
-        if (resId != null) {switch (resId){
+        if (resId != null) {/*switch (resId){
             case R.drawable.ic_doc_apk: if(grid)resId=R.drawable.ic_doc_apk_grid;
        break;
             case R.drawable.ic_doc_audio_am: if(grid)resId=R.drawable.ic_doc_audio_am_grid;
@@ -249,7 +249,7 @@ static {
                 break;
             case R.drawable.ic_doc_text_am: if(grid)resId=R.drawable.ic_doc_text_am_grid;
                 break;
-        }
+        }*/
             return res.getDrawable(resId);
         }
 
@@ -257,13 +257,13 @@ static {
         // Otherwise look for partial match
         final String typeOnly = mimeType.split("/")[0];
         if ("audio".equals(typeOnly)) {
-            if(grid)return res.getDrawable(R.drawable.ic_doc_audio_am_grid);else return res.getDrawable(R.drawable.ic_doc_audio_am);
+           /* if(grid)return res.getDrawable(R.drawable.ic_doc_audio_am_grid);else*/ return res.getDrawable(R.drawable.ic_doc_audio_am);
         } else if ("image".equals(typeOnly)) {
-            if(grid)return res.getDrawable(R.drawable.ic_doc_image_grid);else return res.getDrawable(R.drawable.ic_doc_image);
+            /*if(grid)return res.getDrawable(R.drawable.ic_doc_image_grid);else*/ return res.getDrawable(R.drawable.ic_doc_image);
         } else if ("text".equals(typeOnly)) {
-            if(grid)return res.getDrawable(R.drawable.ic_doc_text_am_grid);else return res.getDrawable(R.drawable.ic_doc_text_am);
+            /*if(grid)return res.getDrawable(R.drawable.ic_doc_text_am_grid);else*/ return res.getDrawable(R.drawable.ic_doc_text_am);
         } else if ("video".equals(typeOnly)) {
-            if(grid)return res.getDrawable(R.drawable.ic_doc_video_am_grid);else return res.getDrawable(R.drawable.ic_doc_video_am);
+            /*if(grid)return res.getDrawable(R.drawable.ic_doc_video_am_grid);else*/ return res.getDrawable(R.drawable.ic_doc_video_am);
         }
-        if(grid)return res.getDrawable(R.drawable.ic_doc_generic_am_grid);else return res.getDrawable(R.drawable.ic_doc_generic_am);}
+        /*if(grid)return res.getDrawable(R.drawable.ic_doc_generic_am_grid);else*/ return res.getDrawable(R.drawable.ic_doc_generic_am);}
 }

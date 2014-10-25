@@ -269,8 +269,10 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.txtTitle.setText(rowItem.getTitle());
             holder.imageView1.setVisibility(View.INVISIBLE);
             holder.imageView.setVisibility(View.VISIBLE);
+            holder.imageView.setColorFilter(colorMatrixColorFilter);
             holder.imageView.setImageDrawable(rowItem.getImageId());
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
+                holder.imageView.setColorFilter(null);
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
                 if(main.theme==1)holder.imageView1.setBackgroundColor(Color.parseColor("#000000"));
@@ -278,11 +280,11 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 main.ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
             }
             if (Icons.isApk((rowItem.getDesc()))) {
+                holder.imageView.setColorFilter(null);
                 main.ic.cancelLoad(holder.imageView);
                 main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
             }
-            if(new File(rowItem.getDesc()).isDirectory()){holder.imageView.setColorFilter(colorMatrixColorFilter);}
-            else {holder.imageView.setColorFilter(null);}
+
             if(main.showLastModified)
                 holder.date.setText(rowItem.getDate("dd/MM/yy"));
             if(main.showSize)
