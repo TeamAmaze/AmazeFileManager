@@ -228,9 +228,9 @@ static {
         // Look for exact match first
         Integer resId = sMimeIcons.get(mimeType);
 
-        if (resId != null) {/*switch (resId){
+        if (resId != null) {switch (resId){
             case R.drawable.ic_doc_apk: if(grid)resId=R.drawable.ic_doc_apk_grid;
-       break;
+       break;/*
             case R.drawable.ic_doc_audio_am: if(grid)resId=R.drawable.ic_doc_audio_am_grid;
                 break;
             case R.drawable.ic_doc_certificate: if(grid)resId=R.drawable.ic_doc_certificate_grid;
@@ -241,9 +241,9 @@ static {
                 break;
             case R.drawable.ic_doc_generic_am: if(grid)resId=R.drawable.ic_doc_generic_am_grid;
                 break;
-            case R.drawable.ic_doc_image: if(grid)resId=R.drawable.ic_doc_image_grid;
-                break;
-            case R.drawable.ic_doc_pdf: if(grid)resId=R.drawable.ic_doc_pdf_grid;
+            */case R.drawable.ic_doc_image: if(grid)resId=R.drawable.ic_doc_image_grid;
+                break;}
+            /*case R.drawable.ic_doc_pdf: if(grid)resId=R.drawable.ic_doc_pdf_grid;
                 break;
             case R.drawable.ic_doc_video_am: if(grid)resId=R.drawable.ic_doc_video_am_grid;
                 break;
@@ -259,7 +259,7 @@ static {
         if ("audio".equals(typeOnly)) {
            /* if(grid)return res.getDrawable(R.drawable.ic_doc_audio_am_grid);else*/ return res.getDrawable(R.drawable.ic_doc_audio_am);
         } else if ("image".equals(typeOnly)) {
-            /*if(grid)return res.getDrawable(R.drawable.ic_doc_image_grid);else*/ return res.getDrawable(R.drawable.ic_doc_image);
+            if(grid)return res.getDrawable(R.drawable.ic_doc_image_grid);else return res.getDrawable(R.drawable.ic_doc_image);
         } else if ("text".equals(typeOnly)) {
             /*if(grid)return res.getDrawable(R.drawable.ic_doc_text_am_grid);else*/ return res.getDrawable(R.drawable.ic_doc_text_am);
         } else if ("video".equals(typeOnly)) {
