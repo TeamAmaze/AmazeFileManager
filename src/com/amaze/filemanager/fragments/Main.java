@@ -502,16 +502,20 @@ if(listView!=null){
                 utils.openFile(f, (MainActivity) getActivity());
             }
         } else if (selection == true) {
+            if(position!=0){
             adapter.toggleChecked(position);
             mActionMode.invalidate();
             if (adapter.getCheckedItemPositions().size() == 0) {
                 selection = false;
                 mActionMode.finish();
                 mActionMode = null;
-            }
+            }}else{selection = false;
+                if(mActionMode!=null)
+                mActionMode.finish();
+                mActionMode = null;}
 
         } else {
-
+            if(position!=0){
             String path, path_name;
             Layoutelements l=list.get(position);
             if(!l.hasSymlink()){
@@ -525,7 +529,7 @@ if(listView!=null){
             } else {
 
                 utils.openFile(f, (MainActivity) getActivity());
-            }
+            }}else{goBack();}
 
         }
     }
@@ -612,6 +616,9 @@ if(listView!=null){
                 }
                 else{
                     footerText.setText("Tap and hold on a File or Folder for more options");
+                }
+                if(!f.getPath().equals("/")){
+                    bitmap.add(0,utils.newElement(folder,"...", "","","Go Back",true));
                 }
                 adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
                         bitmap, ma);
@@ -1052,11 +1059,11 @@ if(listView!=null){
         for (int i = 0; i < mFile.size(); i++) {
             File f=new File(mFile.get(i)[0]);
             if (f.isDirectory()) {
-                a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f,rootMode)));
+                a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f,rootMode),false));
 
             } else {
                 try {
-                    a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.getSize(mFile.get(i))));
+                    a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.getSize(mFile.get(i)),false));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

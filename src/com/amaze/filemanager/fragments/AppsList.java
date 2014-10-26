@@ -176,7 +176,7 @@ public class AppsList extends ListFragment {
                 for (int i = 0; i < c.size(); i++) {
 
 
-                    a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk), c.get(i).loadLabel(getActivity().getPackageManager()).toString(), c.get(i).publicSourceDir,"","",""));
+                    a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk), c.get(i).loadLabel(getActivity().getPackageManager()).toString(), c.get(i).publicSourceDir,"","","",false));
 
                     File file = new File(c.get(i).publicSourceDir);
                     mFile.add(file);

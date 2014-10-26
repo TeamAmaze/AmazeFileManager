@@ -183,7 +183,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             public boolean onLongClick(View p1) {
                 if (main.results) {
                     utils.longClickSearchItem(main, rowItem.getDesc());
-                } else if (!main.selection) {
+                } else if (p!=0) {
                     toggleChecked(p);
 
                 }

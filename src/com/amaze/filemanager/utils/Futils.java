@@ -417,8 +417,8 @@ public class Futils {
         }
     }
 
-    public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size) {
-        Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size);
+    public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size,boolean b) {
+        Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size,b);
         return item;
     }
 
