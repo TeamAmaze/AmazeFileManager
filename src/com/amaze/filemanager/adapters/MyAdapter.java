@@ -182,10 +182,15 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
             public boolean onLongClick(View p1) {
                 if (main.results) {
-                    utils.longClickSearchItem(main, rowItem.getDesc());
-                } else if (p!=0) {
-                    toggleChecked(p);
 
+                    utils.longClickSearchItem(main, rowItem.getDesc());
+
+                } else if (main.current.equals("/")) {
+
+                    toggleChecked(p);
+                } else if(p!=0) {
+
+                    toggleChecked(p);
                 }
                 return true;
             }
@@ -258,10 +263,14 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
                 public boolean onLongClick(View p1) {
                     if (main.results) {
-                        utils.longClickSearchItem(main, rowItem.getDesc());
-                    } else if (!main.selection) {
-                        toggleChecked(p);
 
+                        utils.longClickSearchItem(main, rowItem.getDesc());
+                    } else if (main.current.equals("/")) {
+
+                        toggleChecked(p);
+                    } else if(p!=0) {
+
+                        toggleChecked(p);
                     }
                     return true;
                 }

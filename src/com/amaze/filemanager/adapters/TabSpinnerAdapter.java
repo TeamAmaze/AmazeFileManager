@@ -117,8 +117,8 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
                     Main ma = ((Main) fragmentTransaction.findFragmentById(R.id.content_frame));
                     ma.loadlist(new File(tab.getPath()),false);
 
-                    Animation animationLeft = AnimationUtils.loadAnimation(getContext(), R.animator.tab_selection_left);
-                    Animation animationRight = AnimationUtils.loadAnimation(getContext(), R.animator.tab_selection_right);
+                    Animation animationLeft = AnimationUtils.loadAnimation(getContext(), R.anim.tab_selection_left);
+                    Animation animationRight = AnimationUtils.loadAnimation(getContext(), R.anim.tab_selection_right);
 
                     if (position < spinner_current) {
                         ma.listView.setAnimation(animationLeft);
