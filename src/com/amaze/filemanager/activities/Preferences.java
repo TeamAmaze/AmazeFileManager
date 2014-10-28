@@ -52,6 +52,7 @@ public class Preferences extends Activity {
     @Override
     public void onBackPressed() {
         Intent in = new Intent(Preferences.this, MainActivity.class);
+        in.setAction(Intent.ACTION_MAIN);
         finish();
         startActivity(in);
     }
@@ -62,8 +63,10 @@ public class Preferences extends Activity {
             case android.R.id.home:
                 // Navigate "up" the demo structure to the launchpad activity.
                 // See http://developer.android.com/design/patterns/navigation.html for more.
+                Intent in = new Intent(Preferences.this, MainActivity.class);
+                in.setAction(Intent.ACTION_MAIN);
                 finish();
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(in);
                 return true;
 
 

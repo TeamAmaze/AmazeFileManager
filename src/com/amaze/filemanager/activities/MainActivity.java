@@ -67,6 +67,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class MainActivity extends android.support.v4.app.FragmentActivity {
@@ -94,6 +95,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
     Context con=this;
     public FrameLayout frameLayout;
+    public boolean mReturnIntent = false;
+    private Intent intent;
     /**
      * Called when the activity is first created.
      */
@@ -137,6 +140,13 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
             }
         });
+
+        intent = getIntent();
+        if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
+            mReturnIntent = true;
+            Toast.makeText(this, "Pick a file", Toast.LENGTH_LONG).show();
+        }
+
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#673ab7");
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.action_bar);
         linearLayout.setBackgroundColor(Color.parseColor(skin));
@@ -444,8 +454,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public void onResume() {
         super.onResume();
         registerReceiver(RECIEVER, new IntentFilter("run"));
-
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
        if ( keyCode == KeyEvent.KEYCODE_MENU ) {
@@ -472,4 +482,42 @@ if(ib.getVisibility()==View.VISIBLE){
             }
         }
     };
+
+    private void random() {
+
+        String[] colors = new String[]{
+                "#e51c23",
+                "#e51c23",
+                "#e91e63",
+                "#9c27b0",
+                "#673ab7",
+                "#3f51b5",
+                "#5677fc",
+                "#0288d1",
+                "#0097a7",
+                "#009688",
+                "#259b24",
+                "#8bc34a",
+                "#ffa000",
+                "#f57c00",
+                "#e64a19",
+                "#795548",
+                "#212121",
+                "#607d8b"
+        };
+
+        Random random = new Random();
+        int pos = random.nextInt(colors.length - 1);
+        Sp.edit().putString("skin_color", colors[pos]).commit();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        boolean check = Sp.getBoolean("random_checkbox", false);
+        if (check) {
+            random();
+        }
+    }
 }
