@@ -89,7 +89,6 @@ import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -142,6 +141,8 @@ public class Main extends android.support.v4.app.Fragment {
     private FloatingActionButton fab;
     private TabSpinnerAdapter tabSpinnerAdapter;
     public float[] color;
+    private boolean mReturnIntent = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,6 +163,12 @@ public class Main extends android.support.v4.app.Fragment {
                 crossfadeInverse();
             }
         };
+
+        Intent intent = getActivity().getIntent();
+        if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
+            mReturnIntent = true;
+            Toast.makeText(getActivity(), "Pick a file", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -431,8 +438,8 @@ if(listView!=null){
                     case 2:
                         int older = tabHandler.getTabsCount();
                         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.animator.tab_anim);
-                        Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.animator.fab_newtab);
+                        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.tab_anim);
+                        Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
 
                         tabHandler.addTab(new Tab(older, "legacy", "/storage/emulated/legacy"));
                         //restartPC(getActivity()); // breaks the copy feature
@@ -499,7 +506,8 @@ if(listView!=null){
                 loadlist(f, false);
                 results = false;
             } else {
-                utils.openFile(f, (MainActivity) getActivity());
+
+                    utils.openFile(f, (MainActivity) getActivity());
             }
         } else if (selection == true) {
             if(position!=0){
@@ -515,30 +523,82 @@ if(listView!=null){
                 mActionMode = null;}
 
         } else {
-            if(position!=0){
-            String path, path_name;
-            Layoutelements l=list.get(position);
-            if(!l.hasSymlink()){
-                path= l.getDesc();}
-            else{path=l.getSymlink();}
-            final File f = new File(path);
+            if(current.equals("/")){
 
-            if (f.isDirectory()) {
-                computeScroll();
-                loadlist(f, false);
+                String path, path_name;
+                Layoutelements l=list.get(position);
+
+                if(!l.hasSymlink()){
+
+                    path= l.getDesc();
+                }
+                else {
+
+                    path=l.getSymlink();
+                }
+
+                final File f = new File(path);
+
+                if (f.isDirectory()) {
+
+                    computeScroll();
+                    loadlist(f, false);
+                } else {
+
+                    utils.openFile(f, (MainActivity) getActivity());
+                }
+
             } else {
+                if (position != 0) {
 
-                utils.openFile(f, (MainActivity) getActivity());
-            }}else{goBack();}
+                    String path, path_name;
+                    Layoutelements l = list.get(position);
 
+                    if (!l.hasSymlink()) {
+
+                        path = l.getDesc();
+                    } else {
+
+                        path = l.getSymlink();
+                    }
+
+                    final File f = new File(path);
+
+                    if (f.isDirectory()) {
+
+                        computeScroll();
+                        loadlist(f, false);
+                    } else {
+
+                        if (mReturnIntent) {
+                            returnIntentResults(f);
+                        } else {
+
+                            utils.openFile(f, (MainActivity) getActivity());
+                        }
+                    }
+                } else {
+
+                    goBack();
+                }
+            }
         }
+    }
+
+    private void returnIntentResults (File file) {
+        mReturnIntent = false;
+
+        Intent intent = new Intent();
+        intent.setData(Uri.fromFile(file));
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 
     public void loadlist(final File f, boolean back) {
         if(mActionMode!=null){mActionMode.finish();}
         new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
 
-        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.animator.load_list_anim);
+        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
         listView.setAnimation(animation);
         gridView.setAnimation(animation);
 
@@ -578,8 +638,8 @@ if(listView!=null){
 
                     loadlist(new File(tab.getPath()),false);
 
-                    Animation animationLeft = AnimationUtils.loadAnimation(getActivity(), R.animator.tab_selection_left);
-                    Animation animationRight = AnimationUtils.loadAnimation(getActivity(), R.animator.tab_selection_right);
+                    Animation animationLeft = AnimationUtils.loadAnimation(getActivity(), R.anim.tab_selection_left);
+                    Animation animationRight = AnimationUtils.loadAnimation(getActivity(), R.anim.tab_selection_right);
 
                     if (i < spinner_current) {
                         ma.listView.setAnimation(animationLeft);
