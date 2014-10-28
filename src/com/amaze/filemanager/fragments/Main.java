@@ -93,7 +93,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 
 public class Main extends android.support.v4.app.Fragment {
@@ -141,7 +140,6 @@ public class Main extends android.support.v4.app.Fragment {
     private FloatingActionButton fab;
     private TabSpinnerAdapter tabSpinnerAdapter;
     public float[] color;
-    private boolean mReturnIntent = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -163,12 +161,6 @@ public class Main extends android.support.v4.app.Fragment {
                 crossfadeInverse();
             }
         };
-
-        Intent intent = getActivity().getIntent();
-        if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
-            mReturnIntent = true;
-            Toast.makeText(getActivity(), "Pick a file", Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override
@@ -570,7 +562,7 @@ if(listView!=null){
                         loadlist(f, false);
                     } else {
 
-                        if (mReturnIntent) {
+                        if (mainActivity.mReturnIntent) {
                             returnIntentResults(f);
                         } else {
 
@@ -586,11 +578,11 @@ if(listView!=null){
     }
 
     private void returnIntentResults (File file) {
-        mReturnIntent = false;
+        mainActivity.mReturnIntent = false;
 
         Intent intent = new Intent();
         intent.setData(Uri.fromFile(file));
-        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().setResult(getActivity().RESULT_OK, intent);
         getActivity().finish();
     }
 
@@ -1288,73 +1280,36 @@ if(history!=null)
         // Animate the loading view to 0% opacity. After the animation ends,
         // set its visibility to GONE as an optimization step (it won't
         // participate in layout passes, etc.)
-
-
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        boolean check = Sp.getBoolean("random_checkbox", false);
-        if (check) {
-            random();
-        }
-    }
-public String getSelectionColor(){
+    public String getSelectionColor(){
 
-    String[] colors = new String[]{
-            "#e51c23","#9fe84e40",
-            "#e91e63","#9fec407a",
-            "#9c27b0","#9fab47bc",
-            "#673ab7","#9f7e57c2",
-            "#3f51b5","#9f5c6bc0",
-            "#5677fc","#9f738ffe",
-            "#0288d1","#9f29b6f6",
-            "#0097a7","#9f26c6da",
-            "#009688","#9f26a69a",
-            "#259b24","#9f2baf2b",
-            "#8bc34a","#9f9ccc65",
-            "#ffa000","#9fffca28",
-            "#f57c00","#9fffa726",
-            "#e64a19","#9fff7043",
-            "#795548","#9f8d6e63",
-            "#212121","#9fbdbdbd",
-            "#607d8b","#9f78909c",
-    };
-   return colors[ Arrays.asList(colors).indexOf(skin)+1];
-}
+        String[] colors = new String[]{
+                "#e51c23","#9fe84e40",
+                "#e91e63","#9fec407a",
+                "#9c27b0","#9fab47bc",
+                "#673ab7","#9f7e57c2",
+                "#3f51b5","#9f5c6bc0",
+                "#5677fc","#9f738ffe",
+                "#0288d1","#9f29b6f6",
+                "#0097a7","#9f26c6da",
+                "#009688","#9f26a69a",
+                "#259b24","#9f2baf2b",
+                "#8bc34a","#9f9ccc65",
+                "#ffa000","#9fffca28",
+                "#f57c00","#9fffa726",
+                "#e64a19","#9fff7043",
+                "#795548","#9f8d6e63",
+                "#212121","#9fbdbdbd",
+                "#607d8b","#9f78909c",
+        };
+       return colors[ Arrays.asList(colors).indexOf(skin)+1];
+    }
     public float[] calculatevalues(String color){
         int c=Color.parseColor(color);
         float r=(float)Color.red(c)/255;
         float g=(float)Color.green(c)/255;
         float b=(float)Color.blue(c)/255;
         return new float[]{r,g,b};
-    }
-    private void random() {
-        
-        String[] colors = new String[]{
-                "#e51c23",
-                "#e51c23",
-                "#e91e63",
-                "#9c27b0",
-                "#673ab7",
-                "#3f51b5",
-                "#5677fc",
-                "#0288d1",
-                "#0097a7",
-                "#009688",
-                "#259b24",
-                "#8bc34a",
-                "#ffa000",
-                "#f57c00",
-                "#e64a19",
-                "#795548",
-                "#212121",
-                "#607d8b"
-        };
-
-        Random random = new Random();
-        int pos = random.nextInt(colors.length - 1);
-        Sp.edit().putString("skin_color", colors[pos]).commit();
     }
 }
