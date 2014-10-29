@@ -73,5 +73,4 @@ public class Preferences extends Activity {
         }
         return true;
     }
-
 }

@@ -21,14 +21,21 @@ package com.amaze.filemanager.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.text.Html;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -168,6 +175,138 @@ public class Preffrag extends PreferenceFragment {
                 }
 
 
+                return false;
+            }
+        });
+
+        // Changelog
+        Preference preference1 = (Preference) findPreference("changelog");
+        preference1.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Changelog")
+                        .setMessage(Html.fromHtml(getActivity().getString(R.string.changelog_version_1) +
+                            getActivity().getString(R.string.changelog_change_1)))
+                        .setNegativeButton("Full Changelog", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                Intent intent = new Intent(Intent.ACTION_VIEW,
+                                        Uri.parse("https://github.com/arpitkh96/AmazeFileManager/commits/master"));
+                                startActivity(intent);
+                            }
+                        })
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        }).show();
+                return false;
+            }
+        });
+
+        // Open Source Licenses
+        Preference preference2 = (Preference) findPreference("os");
+        //Defining dialog layout
+        final Dialog dialog = new Dialog(getActivity(), android.R.style.Theme_Holo_Light_DialogWhenLarge_NoActionBar);
+        //dialog.setTitle("Open-Source Licenses");
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        final View dialog_view = inflater.inflate(R.layout.open_source_licenses, null);
+        dialog.setContentView(dialog_view);
+
+        preference2.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            @Override
+            public boolean onPreferenceClick(Preference arg0) {
+                String oss_dialog = "<html><body>" +
+                        "<h3>Notices for files:</h3> " +
+                        "<ul><li>CircularImageView</ul></li>" +	//CircularImageView
+                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
+                        "<br>/*<br>" +
+                        "&nbsp;* The MIT License (MIT)<br>" +
+                        "&nbsp;*<br>" +
+                        "&nbsp;* Copyright (c) 2014 Pkmmte Xeleon<br>" +
+                        "&nbsp;*<br>" +
+                        "&nbsp;* Permission is hereby granted, free of charge, to any person obtaining a copy<br>" +
+                        "&nbsp;* of this software and associated documentation files (the \"Software\"), to deal<br>" +
+                        "&nbsp;* in the Software without restriction, including without limitation the rights<br>" +
+                        "&nbsp;* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>" +
+                        "&nbsp;* copies of the Software, and to permit persons to whom the Software is<br>" +
+                        "&nbsp;* furnished to do so, subject to the following conditions:" +
+                        "&nbsp;*<br>" +
+                        "&nbsp;* The above copyright notice and this permission notice shall be included in<br>" +
+                        "&nbsp;* all copies or substantial portions of the Software.<br>" +
+                        "&nbsp;* THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>" +
+                        "&nbsp;* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>" +
+                        "&nbsp;* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>" +
+                        "&nbsp;* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>" +
+                        "&nbsp;* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>" +
+                        "&nbsp;* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN<br>" +
+                        "&nbsp;* THE SOFTWARE.<br>" +
+                        "&nbsp;*/ " +
+                        "<br><br></code></p>" +
+                        "<h3>Notices for files:</h3>" +
+                        "<ul><li>nineoldandroids-2.4.0.jar</ul></li>" +	//nineoldandroids
+                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
+                        "<br>/*<br>" +
+                        "&nbsp;* Copyright 2012 Jake Wharton<br>" +
+                        "&nbsp;* <br>" +
+                        "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
+                        "&nbsp;* you may not use this file except in compliance with the License.<br>" +
+                        "&nbsp;* You may obtain a copy of the License at<br>" +
+                        "&nbsp;* <br>" +
+                        "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>" +
+                        "&nbsp;* <br>" +
+                        "&nbsp;* Unless required by applicable law or agreed to in writing, software<br>" +
+                        "&nbsp;* distributed under the License is distributed on an \"AS IS\" BASIS,<br>" +
+                        "&nbsp;* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>" +
+                        "&nbsp;* See the License for the specific language governing permissions and<br>" +
+                        "&nbsp;* limitations under the License.<br>" +
+                        "&nbsp;*/ " +
+                        "<br><br></code></p>" +
+                        "<h3>Notices for files:</h3> " +
+                        "<ul><li>FloatingActionButton</ul></li>" +	//Floating Action Button
+                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
+                        "<br>/*<br>" +
+                        "&nbsp;* The MIT License (MIT)<br>" +
+                        "&nbsp;*<br>" +
+                        "&nbsp;* Copyright (c) 2014 Faiz Malkani<br>" +
+                        "&nbsp;*<br>" +
+                        "&nbsp;* Permission is hereby granted, free of charge, to any person obtaining a copy<br>" +
+                        "&nbsp;* of this software and associated documentation files (the \"Software\"), to deal<br>" +
+                        "&nbsp;* in the Software without restriction, including without limitation the rights<br>" +
+                        "&nbsp;* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>" +
+                        "&nbsp;* copies of the Software, and to permit persons to whom the Software is<br>" +
+                        "&nbsp;* furnished to do so, subject to the following conditions:" +
+                        "&nbsp;*<br>" +
+                        "&nbsp;* The above copyright notice and this permission notice shall be included in<br>" +
+                        "&nbsp;* all copies or substantial portions of the Software.<br>" +
+                        "&nbsp;* THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>" +
+                        "&nbsp;* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>" +
+                        "&nbsp;* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>" +
+                        "&nbsp;* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>" +
+                        "&nbsp;* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>" +
+                        "&nbsp;* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN<br>" +
+                        "&nbsp;* THE SOFTWARE.<br>" +
+                        "&nbsp;*/ " +
+                        "<br><br></code></p>" +
+                        "</body></html>";
+                WebView wv = (WebView) dialog_view.findViewById(R.id.webView1);
+                wv.loadData(oss_dialog, "text/html", null);
+                dialog.show();
+                return false;
+            }
+        });
+
+        // Feedback
+        Preference preference3 = (Preference) findPreference("feedback");
+        preference3.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Toast.makeText(getActivity(), "It;s coming soon", Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
