@@ -515,9 +515,9 @@ if(listView!=null){
                 mActionMode = null;}
 
         } else {
-            if(current.equals("/")){
+            if(!list.get(0).getSize().equals("Go Back")){
 
-                String path, path_name;
+                String path;
                 Layoutelements l=list.get(position);
 
                 if(!l.hasSymlink()){
@@ -536,43 +536,18 @@ if(listView!=null){
                     computeScroll();
                     loadlist(f, false);
                 } else {
+                    if (mainActivity.mReturnIntent) {
+                        returnIntentResults(f);
+                    } else {
 
-                    utils.openFile(f, (MainActivity) getActivity());
-                }
+                        utils.openFile(f, (MainActivity) getActivity());
+                    }
+                    }
 
             } else {
-                if (position != 0) {
-
-                    String path, path_name;
-                    Layoutelements l = list.get(position);
-
-                    if (!l.hasSymlink()) {
-
-                        path = l.getDesc();
-                    } else {
-
-                        path = l.getSymlink();
-                    }
-
-                    final File f = new File(path);
-
-                    if (f.isDirectory()) {
-
-                        computeScroll();
-                        loadlist(f, false);
-                    } else {
-
-                        if (mainActivity.mReturnIntent) {
-                            returnIntentResults(f);
-                        } else {
-
-                            utils.openFile(f, (MainActivity) getActivity());
-                        }
-                    }
-                } else {
 
                     goBack();
-                }
+
             }
         }
     }
@@ -670,6 +645,7 @@ if(listView!=null){
                     footerText.setText("Tap and hold on a File or Folder for more options");
                 }
                 if(!f.getPath().equals("/")){
+                    if(!bitmap.get(0).getSize().equals("Go Back"))
                     bitmap.add(0,utils.newElement(folder,"...", "","","Go Back",true));
                 }
                 adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
