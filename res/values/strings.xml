@@ -123,5 +123,9 @@
     <string name="fileexplorer">File Explorer</string>
     <string name="changegallerypath">Change Gallery Path</string>
     <string name="usedefaultgallerypath">Use Default Image Gallery Path</string>
+
+    <!-- Changelog -->
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v0.x&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov x, 2014&lt;/i>&lt;/font>&lt;br>&lt;br></string>
+    <string name="changelog_change_1">&lt;i>- Initial release&lt;/i>&lt;br>&lt;br></string>
 </resources>
 	

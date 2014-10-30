@@ -18,18 +18,28 @@
     -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListPreference
-        android:defaultValue="0"
-        android:entries="@array/theme"
-        android:entryValues="@array/ints"
-        android:key="theme"
-        android:title="@string/theme" />
-    <Preference
-        android:key="skin"
-        android:title="@string/skin" />
-    <CheckBoxPreference
-        android:key="random"
-        android:title="@string/random" />
+    <PreferenceCategory android:title="Interface">
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/theme"
+            android:entryValues="@array/ints"
+            android:key="theme"
+            android:title="@string/theme" />
+        <Preference
+            android:key="skin"
+            android:title="@string/skin" />
+        <CheckBoxPreference
+            android:key="random"
+            android:title="@string/random" />
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/uimode"
+            android:entryValues="@array/ints"
+            android:key="uimode"
+            android:summary="Choose Item Ui"
+            android:title="@string/uimode" />
+    </PreferenceCategory>
 
     <PreferenceCategory android:title="File Explorer">
         <CheckBoxPreference
@@ -43,27 +53,15 @@
           
             android:title="Show Hidden Files and Folders" />
         <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="showPermissions"
-            android:summary="Show Permissions of Files and Folders"
-            android:title="Show Permissions" />
-        <CheckBoxPreference
             android:defaultValue="true"
             android:key="showLastModified"
-            android:summary="Show the date and time when then fle was modified last time"
+            android:summary="Show the date and time when the file was modified last time"
             android:title="Show Last Modified" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="showFileSize"
             android:summary="Show size of files and number of items in folders"
             android:title="Show Sizes" />
-        <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/uimode"
-            android:entryValues="@array/ints"
-            android:key="uimode"
-            android:summary="Choose Item Ui"
-            android:title="@string/uimode" />
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/directorysortmode"
@@ -78,12 +76,39 @@
             android:entryValues="@array/ints2"
             android:key="sortby"
             android:title="@string/sortby" />
+    
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Miscellaneous">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="showPermissions"
+            android:summary="Show Permissions of Files and Folders"
+            android:title="Show Permissions" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="rootmode"
             android:summary="@string/rootmodesummary"
             android:title="@string/rootmode" />
-    
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="About">
+        <PreferenceScreen
+            android:title="About Amaze File Manager" >
+            <Preference
+                android:title="Version"
+                android:summary="v0.x"/>
+            <Preference
+                android:key="changelog"
+                android:title="Changelog" />
+            <Preference
+                android:key="os"
+                android:title="Open Source Licenses" />
+            </PreferenceScreen>
+        <Preference
+            android:key="feedback"
+            android:title="Send Feedback" />
     </PreferenceCategory>
 
     </PreferenceScreen>
