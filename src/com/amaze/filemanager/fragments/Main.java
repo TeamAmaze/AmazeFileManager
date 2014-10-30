@@ -515,7 +515,7 @@ if(listView!=null){
                 mActionMode = null;}
 
         } else {
-            if(!list.get(0).getSize().equals("Go Back")){
+            if(!list.get(position).getSize().equals("Go Back")){
 
                 String path;
                 Layoutelements l=list.get(position);
