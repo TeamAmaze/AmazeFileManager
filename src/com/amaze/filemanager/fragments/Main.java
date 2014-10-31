@@ -204,12 +204,7 @@ public class Main extends android.support.v4.app.Fragment {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
         overflow.setVisibility(View.VISIBLE);
-        (overflow).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopup(view);
-            }
-        });
+        showPopup(overflow);
         fab=(FloatingActionButton)getActivity().findViewById(R.id.fabbutton);
         (fab).setDrawable(icons.getNewDrawable());
         fab.setOnClickListener(new View.OnClickListener() {
@@ -1142,7 +1137,15 @@ if(history!=null)
     }
 
     public void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(getActivity(), v);
+        final PopupMenu popup = new PopupMenu(getActivity(), v);
+        if(Build.VERSION.SDK_INT>=19)
+        v.setOnTouchListener(popup.getDragToOpenListener());
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popup.show();
+            }
+        });
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.activity_extra, popup.getMenu());
 
@@ -1194,7 +1197,7 @@ if(history!=null)
                 return false;
             }
         });
-        popup.show();
+
     }
     private void crossfade() {
 
