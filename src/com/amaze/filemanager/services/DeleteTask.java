@@ -61,7 +61,7 @@ public  DeleteTask(ContentResolver c,Main m){this.contentResolver=c;this.m=m;}
                     boolean c = utils.deletefiles(files.get(i));
                     if (!c) {
                         b = false;
-                    }
+                    }       }
                 if(!b){
                         for(File f:files){
                             MediaFile mediaFile=new MediaFile(contentResolver,f);
@@ -74,7 +74,7 @@ public  DeleteTask(ContentResolver c,Main m){this.contentResolver=c;this.m=m;}
                             }
                         }}
                 }
-            }
+            
             else if(m.rootMode){for(File f:files){
                 RootTools.deleteFileOrDirectory(f.getPath(), true);}
               return true;
