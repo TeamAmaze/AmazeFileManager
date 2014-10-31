@@ -54,33 +54,34 @@ public  DeleteTask(ContentResolver c,Main m){this.contentResolver=c;this.m=m;}
 
     protected Boolean doInBackground(ArrayList<File>... p1) {
             files=p1[0];
+        boolean b = true;
             if(files.get(0).getParentFile().canWrite()) {
-                boolean b = true;
+
                 for (int i = 0; i < files.size(); i++) {
                     boolean c = utils.deletefiles(files.get(i));
                     if (!c) {
                         b = false;
                     }
-
-                }return b;
+                if(!b){
+                        for(File f:files){
+                            MediaFile mediaFile=new MediaFile(contentResolver,f);
+                            try {
+                                boolean delete=mediaFile.delete();
+                                if(!delete){b=false;}
+                            } catch (IOException e) {
+                                b=false;
+                                publishProgress("Error");
+                            }
+                        }}
+                }
             }
             else if(m.rootMode){for(File f:files){
                 RootTools.deleteFileOrDirectory(f.getPath(), true);}
               return true;
-            }else{boolean b = true;
-                for(File f:files){
-                    MediaFile mediaFile=new MediaFile(contentResolver,f);
-                    try {
-                        boolean c=mediaFile.delete();
-                        if(!c){b=false;}
-                    } catch (IOException e) {
-                        b=false;
-                      publishProgress("Error");
-                    }
-                }
-                return b;
-            }
 
+
+            }
+        return b;
         }
 
         @Override
