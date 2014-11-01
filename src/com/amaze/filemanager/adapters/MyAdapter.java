@@ -87,6 +87,12 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             main.mActionMode = main.getActivity().startActionMode(
                     main.mActionModeCallback);
         }
+        main.mActionMode.invalidate();
+        if (getCheckedItemPositions().size() == 0) {
+            main.selection = false;
+            main.mActionMode.finish();
+            main.mActionMode = null;
+        }
     }
 
     public void toggleChecked(boolean b) {
@@ -185,13 +191,13 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
                     utils.longClickSearchItem(main, rowItem.getDesc());
 
-                } else if (main.current.equals("/")) {
+                } else if(!main.selection){ if (main.current.equals("/")) {
 
                     toggleChecked(p);
                 } else if(p!=0) {
 
                     toggleChecked(p);
-                }
+                }}
                 return true;
             }
         });
@@ -199,6 +205,19 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
         holder.txtTitle.setText(rowItem.getTitle());
         holder.imageView.setImageDrawable(rowItem.getImageId());
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleChecked(p);
+
+            }
+        });
+            holder.viewmageV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    toggleChecked(p);
+                }
+            });
         holder.imageView.setVisibility(View.VISIBLE);
         holder.viewmageV.setVisibility(View.INVISIBLE);
         if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
@@ -300,10 +319,8 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 holder.txtDesc.setText(rowItem.getSize());
             if(main.showPermissions)
                 holder.perm.setText(rowItem.getPermissions());
-            return view;}
+            return view;}}
 
-    }public int calculatePx(int dp){
-        return (int)(dp * (main.getResources().getDisplayMetrics().densityDpi / 160));
-    }
+
 }
 

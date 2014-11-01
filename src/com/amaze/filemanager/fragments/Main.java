@@ -497,13 +497,8 @@ if(listView!=null){
             }
         } else if (selection == true) {
             if(position!=0){
-            adapter.toggleChecked(position);
-            mActionMode.invalidate();
-            if (adapter.getCheckedItemPositions().size() == 0) {
-                selection = false;
-                mActionMode.finish();
-                mActionMode = null;
-            }}else{selection = false;
+            adapter.toggleChecked(position);;
+            }else{selection = false;
                 if(mActionMode!=null)
                 mActionMode.finish();
                 mActionMode = null;}
