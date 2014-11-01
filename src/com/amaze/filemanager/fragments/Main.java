@@ -104,7 +104,7 @@ public class Main extends android.support.v4.app.Fragment {
     public boolean results = false;
     public ActionMode mActionMode;
     public SharedPreferences Sp;
-    Drawable folder, apk, unknown, archive, text;
+    Drawable folder;
     Resources res;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
@@ -118,7 +118,6 @@ public class Main extends android.support.v4.app.Fragment {
     HorizontalScrollView scroll,scroll1;
     public boolean rootMode, mountSystem,showHidden,showPermissions,showSize,showLastModified;
     View footerView, poppyView;
-    ImageButton paste;
     private PoppyViewHelper mPoppyViewHelper;
     public LinearLayout pathbar;
     private ImageButton ib;
@@ -132,7 +131,6 @@ public class Main extends android.support.v4.app.Fragment {
     private TabHandler tabHandler;
     private List<Tab> content;
     private ArrayList<String> list1;
-    private ArrayAdapter<String> adapter1;
     private MainActivity mainActivity;
     public String skin;
     public int skinselection;

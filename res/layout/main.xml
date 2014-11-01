@@ -84,6 +84,22 @@
     android:layout_below="@id/action_bar"
     android:layout_height="wrap_content"
     android:layout_width="fill_parent">
+
+    <HorizontalScrollView
+        android:scrollbars="none"
+        android:id="@+id/scroll"
+        android:paddingBottom="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/buttons"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        </LinearLayout>
+    </HorizontalScrollView>
         <LinearLayout
             android:id="@+id/pathbar"
             android:layout_width="fill_parent"
@@ -131,20 +147,6 @@
             </LinearLayout>
 
 
-        <HorizontalScrollView
-            android:scrollbars="none"
-            android:id="@+id/scroll"
-			android:paddingBottom="5dp"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:id="@+id/buttons"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                </LinearLayout>
-        </HorizontalScrollView>
 
 
 </FrameLayout>
