@@ -154,9 +154,6 @@ public class Main extends android.support.v4.app.Fragment {
         timer=new CountDownTimer(5000,1000) {
             @Override
             public void onTick(long l) {
-                Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_hide);
-                fab.setAnimation(animation);
-                fab.setVisibility(View.INVISIBLE);
             }
             @Override
             public void onFinish() {
@@ -213,7 +210,7 @@ public class Main extends android.support.v4.app.Fragment {
                 add();
             }
         });
-        getActivity().findViewById(R.id.fabbutton).setVisibility(View.VISIBLE);
+        //getActivity().findViewById(R.id.fabbutton).setVisibility(View.VISIBLE);
 
         utils = new Futils();
 
@@ -258,6 +255,7 @@ public class Main extends android.support.v4.app.Fragment {
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 crossfade();
                 timer.cancel();
                 timer.start();
@@ -1241,6 +1239,11 @@ if(history!=null)
         // (but fully transparent) during the animation.
         buttons.setAlpha(0f);
         buttons.setVisibility(View.VISIBLE);
+
+
+        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_hide);
+        fab.setAnimation(animation);
+        fab.setVisibility(View.INVISIBLE);
 
         // Animate the content view to 100% opacity, and clear any animation
         // listener set on the view.
