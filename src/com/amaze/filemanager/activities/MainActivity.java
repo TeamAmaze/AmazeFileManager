@@ -459,7 +459,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
        if ( keyCode == KeyEvent.KEYCODE_MENU ) {
-ImageButton ib=(ImageButton)findViewById(R.id.action_overflow);
+ImageView ib=(ImageView)findViewById(R.id.overflow);
 if(ib.getVisibility()==View.VISIBLE){
 	ib.performClick();
 }

@@ -17,26 +17,17 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<set xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/item4"
-        android:title="@string/refresh"
-        android:icon="@drawable/ic_action_refresh_light" />
-    <item
-        android:id="@+id/item9"
-        android:title="@string/sethome" />
-    <item
-        android:id="@+id/item10"
-        android:title="@string/sortby"/>
-    <item
-        android:id="@+id/item11"
-        android:title="@string/directorysort" />
-    <item
-        android:id="@+id/view" />
-    <item
-        android:id="@+id/item3"
-        android:title="Exit"
-        android:icon="@drawable/ic_action_cancel_light" />
-
-</menu>
+    <scale
+        android:interpolator="@android:anim/accelerate_interpolator"
+        android:fromXScale="1.0"
+        android:toXScale="0.0"
+        android:fromYScale="1.0"
+        android:toYScale="0.0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:startOffset="400"
+        android:fillAfter="false"
+        android:duration="300" />
+</set>
