@@ -293,6 +293,25 @@ public class Preffrag extends PreferenceFragment {
                         "&nbsp;* THE SOFTWARE.<br>" +
                         "&nbsp;*/ " +
                         "<br><br></code></p>" +
+                        "<h3>Notices for libraries:</h3>" +
+                        "<ul><li>PoppyView</ul></li>" +	//PoppyView
+                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
+                        "<br>/*<br>" +
+                        "&nbsp;* Copyright 2013 Flavien Laurent<br>" +
+                        "&nbsp;* <br>" +
+                        "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
+                        "&nbsp;* you may not use this file except in compliance with the License.<br>" +
+                        "&nbsp;* You may obtain a copy of the License at<br>" +
+                        "&nbsp;* <br>" +
+                        "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>" +
+                        "&nbsp;* <br>" +
+                        "&nbsp;* Unless required by applicable law or agreed to in writing, software<br>" +
+                        "&nbsp;* distributed under the License is distributed on an \"AS IS\" BASIS,<br>" +
+                        "&nbsp;* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>" +
+                        "&nbsp;* See the License for the specific language governing permissions and<br>" +
+                        "&nbsp;* limitations under the License.<br>" +
+                        "&nbsp;*/ " +
+                        "<br><br></code></p>" +
                         "</body></html>";
                 WebView wv = (WebView) dialog_view.findViewById(R.id.webView1);
                 wv.loadData(oss_dialog, "text/html", null);

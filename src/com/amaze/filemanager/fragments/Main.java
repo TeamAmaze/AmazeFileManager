@@ -153,9 +153,13 @@ public class Main extends android.support.v4.app.Fragment {
         showSize=Sp.getBoolean("showFileSize",true);
         showLastModified=Sp.getBoolean("showLastModified",true);
         icons = new IconUtils(Sp, getActivity());
-        timer=new CountDownTimer(2000,1000) {
+        timer=new CountDownTimer(5000,1000) {
             @Override
-            public void onTick(long l) {}
+            public void onTick(long l) {
+                Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_hide);
+                fab.setAnimation(animation);
+                fab.setVisibility(View.INVISIBLE);
+            }
             @Override
             public void onFinish() {
                 crossfadeInverse();
@@ -202,9 +206,7 @@ public class Main extends android.support.v4.app.Fragment {
         tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, getActivity().getSupportFragmentManager(), mainActivity.tabsSpinner);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        ImageButton overflow=(ImageButton)getActivity().findViewById(R.id.action_overflow);
-        overflow.setVisibility(View.VISIBLE);
-        showPopup(overflow);
+
         fab=(FloatingActionButton)getActivity().findViewById(R.id.fabbutton);
         (fab).setDrawable(icons.getNewDrawable());
         fab.setOnClickListener(new View.OnClickListener() {
@@ -428,7 +430,8 @@ if(listView!=null){
                         Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.tab_anim);
                         Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
 
-                        tabHandler.addTab(new Tab(older, "legacy", "/storage/emulated/legacy"));
+                        File file1 = new File(ma.home);
+                        tabHandler.addTab(new Tab(older, file1.getName(), file1.getPath()));
                         //restartPC(getActivity()); // breaks the copy feature
                         Sp.edit().putInt("spinner_selected", older).commit();
                         Sp.edit().putString("current", home).apply();
@@ -760,7 +763,7 @@ if(listView!=null){
                     int pos = plist.get(0);
                     home = list.get(pos).getDesc();
                     Toast.makeText(getActivity(),
-                            utils.getString(getActivity(), R.string.newhomedirectory) + list.get(pos).getTitle(),
+                            utils.getString(getActivity(), R.string.newhomedirectory) + " " + list.get(pos).getTitle(),
                             Toast.LENGTH_LONG).show();
                     Sp.edit().putString("home", list.get(pos).getDesc()).apply();
 
@@ -1102,36 +1105,71 @@ if(listView!=null){
 if(history!=null)
         history.end();     }
     public void initPoppyViewListeners(View poppy){
-        ((ImageView)poppy.findViewById(R.id.back)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goBack();if(mActionMode!=null){mActionMode.finish();}
-            }
-        });
+
+        ImageView imageView = ((ImageView)poppy.findViewById(R.id.overflow));
+        showPopup(imageView);
+
+
         final ImageView homebutton=(ImageView)poppy.findViewById(R.id.home);
-        (homebutton).setOnClickListener(new View.OnClickListener() {
+        homebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 home();if(mActionMode!=null){mActionMode.finish();}
             }
         });
-        ((ImageView)poppy.findViewById(R.id.refresh)).setOnClickListener(new View.OnClickListener() {
+        homebutton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(getActivity(), "Home", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+
+        ImageView imageView1 = ((ImageView)poppy.findViewById(R.id.search));
+        imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                ma.loadlist(new File(ma.current), false);if(mActionMode!=null){mActionMode.finish();}
+                search();
+                if (mActionMode != null) {
+                    mActionMode.finish();
+                }
             }
         });
-        ((ImageView)poppy.findViewById(R.id.history)).setOnClickListener(new View.OnClickListener() {
+        imageView1.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(getActivity(), "Search", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+
+        ImageView imageView2 = ((ImageView)poppy.findViewById(R.id.history));
+        imageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 utils.showHistoryDialog(ma);
             }
         });
-        ((ImageView)poppy.findViewById(R.id.books)).setOnClickListener(new View.OnClickListener() {
+        imageView2.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(getActivity(), "History", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+        ImageView imageView3 = ((ImageView)poppy.findViewById(R.id.books));
+        imageView3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                utils.showBookmarkDialog(ma,sh);
+                utils.showBookmarkDialog(ma, sh);
+            }
+        });
+        imageView3.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(getActivity(), "Bookmarks", Toast.LENGTH_SHORT).show();
+                return false;
             }
         });
     }
@@ -1180,7 +1218,7 @@ if(history!=null)
                         utils.showDirectorySortDialog(ma);
                         break;
                     case R.id.item4:
-                        search();
+                        ma.loadlist(new File(ma.current), false);
                         break;
                     case R.id.view:
                         if (aBoolean) {
@@ -1236,8 +1274,12 @@ if(history!=null)
         activity.startActivity(activity.getIntent());
     }private void crossfadeInverse() {
 
+        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
+        fab.setAnimation(animation);
+        fab.setVisibility(View.VISIBLE);
         // Set the content view to 0% opacity but visible, so that it is visible
         // (but fully transparent) during the animation.
+
         pathbar.setAlpha(0f);
         pathbar.setVisibility(View.VISIBLE);
 

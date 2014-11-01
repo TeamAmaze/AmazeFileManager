@@ -117,7 +117,7 @@
     <string name="selectall">Select All</string>
     <string name="delete">Delete</string>
     <string name="setashome"> Set As Home Folder</string>
-    <string name="sethome">Set Current Directory as Home</string>
+    <string name="sethome">Set Home Directory</string>
     <string name="foldercolor">Folder Color</string>
     <string name="imagegallery">Image Gallery</string>
     <string name="fileexplorer">File Explorer</string>

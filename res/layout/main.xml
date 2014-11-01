@@ -78,15 +78,6 @@
             android:id="@+id/paste"
             android:src="@drawable/ic_action_paste"
             />
-    <ImageButton
-        android:background="@drawable/listitem1"
-        android:layout_weight="1"
-        style="?android:borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/action_overflow"
-        android:src="@drawable/ic_action_overflow"
-        />
     </LinearLayout>
 <FrameLayout
     android:id="@+id/buttonbarframe"
