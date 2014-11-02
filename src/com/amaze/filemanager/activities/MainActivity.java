@@ -197,7 +197,11 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         list = new ArrayList<String>();
         for (int i = 0; i < val.length; i++) {
-            list.add(val[i]);
+            File file = new File(val[i]);
+            if (file.canExecute()) {
+
+                list.add(val[i]);
+            }
         }
         list.add(utils.getString(this, R.string.apps));
         list.add(utils.getString(this, R.string.bookmanag));
@@ -368,8 +372,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     }
 
     private boolean backHome(Main main) {
-        for (int i =0; i<val.length; i++) {
-            if (main.current.equals(val[i]))
+        for (int i =0; i<list.size()-2; i++) {
+            if (main.current.equals(list.get(i)))
                 return true;
             else
                 continue;
@@ -380,7 +384,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     @Override
     public void onBackPressed() {
 
-        if (select < val.length) {
+        if (select < list.size()-2) {
             Main main = ((Main) getSupportFragmentManager().findFragmentById(R.id.content_frame));
 
             if (main.results == true) {
@@ -425,7 +429,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     }
     public void selectItem(int i) {
 
-            if (i < val.length) {
+            if (i < list.size()-2) {
 
                 android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.content_frame, new Main());
@@ -436,13 +440,13 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
                 TabHandler tabHandler1 = new TabHandler(this, null, null, 1);
                 int pos = Sp.getInt("spinner_selected", 0);
-                File file = new File(val[i]);
+                File file = new File(list.get(i));
                 tabHandler1.updateTab(new Tab(pos, file.getName(), file.getPath()));
 
                 title.setVisibility(View.GONE);
                 tabsSpinner.setVisibility(View.VISIBLE);
             } else {
-                if (i == val.length) {
+                if (i == list.size()-2) {
 
                     android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                     transaction2.replace(R.id.content_frame, new AppsList());
@@ -453,7 +457,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     title.setText(utils.getString(this, R.string.apps));
                     title.setVisibility(View.VISIBLE);
                     tabsSpinner.setVisibility(View.GONE);
-                } else if (i == val.length+1) {
+                } else if (i == list.size()-1) {
 
                     android.support.v4.app.FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
                     transaction3.replace(R.id.content_frame, new BookmarksManager());
