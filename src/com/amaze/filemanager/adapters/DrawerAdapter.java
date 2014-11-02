@@ -38,11 +38,12 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.utils.IconUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DrawerAdapter extends ArrayAdapter<String> {
     private final Context context;
-    private final String[] values;
+    private final ArrayList<String> values;
     MainActivity m;
 
     IconUtils icons;
@@ -59,7 +60,7 @@ public class DrawerAdapter extends ArrayAdapter<String> {
 
     public void toggleChecked(boolean b) {
 
-        for (int i = 0; i < values.length; i++) {
+        for (int i = 0; i < values.size(); i++) {
             myChecked.put(i, b);
         }
         notifyDataSetChanged();
@@ -85,13 +86,13 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
         putColor("#607d8b",0.37647059f,0.49019608f,0.54509804f);
 
     }
-    public DrawerAdapter(Context context, String[] values, MainActivity m, SharedPreferences Sp) {
+    public DrawerAdapter(Context context, ArrayList<String> values, MainActivity m, SharedPreferences Sp) {
         super(context, R.layout.rowlayout, values);
 
         this.context = context;
         this.values = values;
 
-        for (int i = 0; i < values.length; i++) {
+        for (int i = 0; i < values.size(); i++) {
             myChecked.put(i, false);
         }
         icons = new IconUtils(Sp, m);
@@ -125,7 +126,7 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
         ColorMatrix colorMatrix = new ColorMatrix(src);
         ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
 
-        textView.setText(values[position]);
+        textView.setText(values.get(position));
         switch (position) {
             case 0:if(myChecked.get(0)){
                 imageView.setImageResource(R.drawable.ic_action_sd_storage);

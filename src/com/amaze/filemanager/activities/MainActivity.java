@@ -29,10 +29,12 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,11 +69,15 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 
 public class MainActivity extends android.support.v4.app.FragmentActivity {
-    int select;
+    public int select;
     TextView title;
 
     Futils utils;
@@ -84,7 +90,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public Spinner tabsSpinner;
     private TabHandler tabHandler;
     ImageButton paste;
-    String[] val;
+    public String[] val;
     ProgressBar progress;
     DrawerAdapter adapter;
     IconUtils util;
@@ -97,6 +103,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public FrameLayout frameLayout;
     public boolean mReturnIntent = false;
     private Intent intent;
+    private static final Pattern DIR_SEPARATOR = Pattern.compile("/");
+    private ArrayList<String> list;
+
     /**
      * Called when the activity is first created.
      */
@@ -104,7 +113,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         utils = new Futils();
-        val = new String[]{utils.getString(this, R.string.storage), utils.getString(this, R.string.apps), utils.getString(this, R.string.bookmanag)};
+
+        val = getStorageDirectories();
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         theme=Integer.parseInt(Sp.getString("theme","0"));
         util = new IconUtils(Sp, this);
@@ -177,23 +187,27 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         } catch (Exception e) {
         }
 
-            tabHandler.addTab(new Tab(0, "legacy", "/storage/emulated/legacy"));
+            File file = new File(val[0]);
+            tabHandler.addTab(new Tab(0, file.getName(), file.getPath()));
+            Sp.edit().putString("home", file.getPath()).apply();
             Sp.edit().putBoolean("firstrun",false).commit();
         }
         mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
-        ArrayList<String> list = new ArrayList<String>();
+        list = new ArrayList<String>();
         for (int i = 0; i < val.length; i++) {
             list.add(val[i]);
         }
-        adapter= new DrawerAdapter(this, val, MainActivity.this, Sp);
+        list.add(utils.getString(this, R.string.apps));
+        list.add(utils.getString(this, R.string.bookmanag));
+        adapter= new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
 
         if (savedInstanceState == null) {
             selectItem(0);
         } else {
-            select= savedInstanceState.getInt("selectItem", 0);;
+            select= savedInstanceState.getInt("selectItem", 0);
 
             adapter.toggleChecked(select);
 
@@ -207,7 +221,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 tabsSpinner.setVisibility(View.GONE);
             }
         }
-        if(select<4){title.setText(val[select]);}
+        if(select<4){title.setText(list.get(select));}
         if(Build.VERSION.SDK_INT>=19){
         SystemBarTintManager tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
@@ -219,7 +233,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         ((ImageButton)findViewById(R.id.settingsbutton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(getApplicationContext(),Preferences.class);
+                Intent i = new Intent(getApplicationContext(), Preferences.class);
                 finish();
                 startActivity(i);
             }
@@ -238,7 +252,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     transaction.replace(R.id.content_frame, new ProcessViewer());
                     //   transaction.addToBackStack(null);
                     select = 102;
-//Commit the transaction
+                    //Commit the transaction
                     transaction.commit();
                 }else{selectItem(0);}
             }
@@ -255,8 +269,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         ) {
             public void onDrawerClosed(View view) {
                 if (select <= 5) {
-                    title.setText(val[select]);
-                    getActionBar().setSubtitle(val[select]);
+                    title.setText(list.get(select));
+                    getActionBar().setSubtitle(list.get(select));
                 }// creates call to onPrepareOptionsMenu()
             }
 
@@ -276,19 +290,104 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         });
     }
 
+    /**
+     * Returns all available SD-Cards in the system (include emulated)
+     *
+     * Warning: Hack! Based on Android source code of version 4.3 (API 18)
+     * Because there is no standard way to get it.
+     * TODO: Test on future Android versions 4.4+
+     *
+     * @return paths to all available SD-Cards in the system (include emulated)
+     */
+    public static String[] getStorageDirectories()
+    {
+        // Final set of paths
+        final Set<String> rv = new HashSet<String>();
+        // Primary physical SD-CARD (not emulated)
+        final String rawExternalStorage = System.getenv("EXTERNAL_STORAGE");
+        // All Secondary SD-CARDs (all exclude primary) separated by ":"
+        final String rawSecondaryStoragesStr = System.getenv("SECONDARY_STORAGE");
+        // Primary emulated SD-CARD
+        final String rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET");
+        if(TextUtils.isEmpty(rawEmulatedStorageTarget))
+        {
+            // Device has physical external storage; use plain paths.
+            if(TextUtils.isEmpty(rawExternalStorage))
+            {
+                // EXTERNAL_STORAGE undefined; falling back to default.
+                rv.add("/storage/sdcard0");
+            }
+            else
+            {
+                rv.add(rawExternalStorage);
+            }
+        }
+        else
+        {
+            // Device has emulated storage; external storage paths should have
+            // userId burned into them.
+            final String rawUserId;
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)
+            {
+                rawUserId = "";
+            }
+            else
+            {
+                final String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+                final String[] folders = DIR_SEPARATOR.split(path);
+                final String lastFolder = folders[folders.length - 1];
+                boolean isDigit = false;
+                try
+                {
+                    Integer.valueOf(lastFolder);
+                    isDigit = true;
+                }
+                catch(NumberFormatException ignored)
+                {
+                }
+                rawUserId = isDigit ? lastFolder : "";
+            }
+            // /storage/emulated/0[1,2,...]
+            if(TextUtils.isEmpty(rawUserId))
+            {
+                rv.add(rawEmulatedStorageTarget);
+            }
+            else
+            {
+                rv.add(rawEmulatedStorageTarget + File.separator + rawUserId);
+            }
+        }
+        // Add all secondary storages
+        if(!TextUtils.isEmpty(rawSecondaryStoragesStr))
+        {
+            // All Secondary SD-CARDs splited into array
+            final String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
+            Collections.addAll(rv, rawSecondaryStorages);
+        }
+        return rv.toArray(new String[rv.size()]);
+    }
+
+    private boolean backHome(Main main) {
+        for (int i =0; i<val.length; i++) {
+            if (main.current.equals(val[i]))
+                return true;
+            else
+                continue;
+        }
+        return false;
+    }
+
     @Override
     public void onBackPressed() {
 
-        if (select == 0) {
+        if (select < val.length) {
             Main main = ((Main) getSupportFragmentManager().findFragmentById(R.id.content_frame));
-
-
 
             if (main.results == true) {
                 main.results = false;
                 main.loadlist(new File(main.current), true);
             } else {
-                if (!main.current.equals(main.home)) {
+                if (!backHome(main)) {
                     if (utils.canGoBack(new File(main.current))) {
                         main.goBack();
 
@@ -302,6 +401,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             selectItem(0);
         }
     }
+
     public void invalidatePasteButton(){
         if(MOVE_PATH!=null || COPY_PATH!=null){
             paste.setVisibility(View.VISIBLE);
@@ -324,46 +424,47 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         }
     }
     public void selectItem(int i) {
-        switch (i) {
-            case 0:
+
+            if (i < val.length) {
 
                 android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.content_frame, new Main());
-               // transaction.addToBackStack(null);
-                select = 0;
-// Commit the transaction
+                select = i;
+                // Commit the transaction
                 transaction.addToBackStack("tab"+1);
                 transaction.commit();
-                title.setText(val[0]);
+
+                TabHandler tabHandler1 = new TabHandler(this, null, null, 1);
+                int pos = Sp.getInt("spinner_selected", 0);
+                File file = new File(val[i]);
+                tabHandler1.updateTab(new Tab(pos, file.getName(), file.getPath()));
+
                 title.setVisibility(View.GONE);
                 tabsSpinner.setVisibility(View.VISIBLE);
+            } else {
+                if (i == val.length) {
 
-                break;
+                    android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                    transaction2.replace(R.id.content_frame, new AppsList());
+                    // transaction2.addToBackStack(null);
+                    select = i;
+                    // Commit the transaction
+                    transaction2.commit();
+                    title.setText(utils.getString(this, R.string.apps));
+                    title.setVisibility(View.VISIBLE);
+                    tabsSpinner.setVisibility(View.GONE);
+                } else if (i == val.length+1) {
 
-            case 1:
-                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-                transaction2.replace(R.id.content_frame, new AppsList());
-               // transaction2.addToBackStack(null);
-                select = 1;
-// Commit the transaction
-                transaction2.commit();
-                title.setText(val[1]);
-                title.setVisibility(View.VISIBLE);
-                tabsSpinner.setVisibility(View.GONE);
-                break;
-            case 2:
-                android.support.v4.app.FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
-                transaction3.replace(R.id.content_frame, new BookmarksManager());
-               // transaction3.addToBackStack(null);
-                select = 2;
-// Commit the transaction
-                transaction3.commit();
-                title.setText(val[2]);
-                title.setVisibility(View.VISIBLE);
-                tabsSpinner.setVisibility(View.GONE);
-                break;
-
-
+                    android.support.v4.app.FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
+                    transaction3.replace(R.id.content_frame, new BookmarksManager());
+                    // transaction3.addToBackStack(null);
+                    select = i;
+                    // Commit the transaction
+                    transaction3.commit();
+                    title.setText(utils.getString(this, R.string.bookmanag));
+                    title.setVisibility(View.VISIBLE);
+                    tabsSpinner.setVisibility(View.GONE);
+            }
         }
         adapter.toggleChecked(i);
         mDrawerLayout.closeDrawer(mDrawerLinear);
