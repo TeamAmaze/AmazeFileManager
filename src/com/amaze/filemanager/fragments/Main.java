@@ -238,7 +238,7 @@ public class Main extends android.support.v4.app.Fragment {
         else{folder = res.getDrawable(R.drawable.ic_grid_folder1);}
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
         getSortModes();
-        home = Sp.getString("home", System.getenv("EXTERNAL_STORAGE"));
+        home = Sp.getString("home", mainActivity.val[mainActivity.select]);
         this.setRetainInstance(false);
         int pos = Sp.getInt("spinner_selected", 0);
         String path=content.get(pos).getPath();
