@@ -208,14 +208,17 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggleChecked(p);
+                if(!rowItem.getSize().equals("Go Back"))toggleChecked(p);
+                else main.goBack();
 
             }
         });
             holder.viewmageV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if(!rowItem.getSize().equals("Go Back"))
                     toggleChecked(p);
+                    else main.goBack();
                 }
             });
         holder.imageView.setVisibility(View.VISIBLE);
@@ -223,13 +226,13 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
             holder.imageView.setVisibility(View.GONE);
             holder.viewmageV.setVisibility(View.VISIBLE);
-            holder.viewmageV.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_doc_image));
+            holder.viewmageV.setImageDrawable(rowItem.getImageId());
             main.ic.cancelLoad(holder.viewmageV);
             main.ic.loadDrawable(holder.viewmageV,new File(rowItem.getDesc()),null);
         }
        else if (Icons.isApk((rowItem.getDesc()))) {
             main.ic.cancelLoad(holder.imageView);
-            main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
+            main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),null);
         }if(checked!=null){if(checked)
                 holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
             }
@@ -312,7 +315,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             if (Icons.isApk((rowItem.getDesc()))) {
                 holder.imageView.setColorFilter(null);
                 main.ic.cancelLoad(holder.imageView);
-                main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
+                main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),null);
             }
 
             if(main.showLastModified)

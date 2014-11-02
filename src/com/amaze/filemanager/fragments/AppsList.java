@@ -48,6 +48,7 @@ import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.utils.AppsSorter;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.IconHolder;
 import com.amaze.filemanager.utils.Layoutelements;
 
 import java.io.File;
@@ -67,8 +68,14 @@ public class AppsList extends ListFragment {
     public ActionMode mActionMode;
     public ArrayList<ApplicationInfo> c = new ArrayList<ApplicationInfo>();
     private LruCache<String, Bitmap> mMemoryCache;
-   ListView vl;ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
+   ListView vl;public IconHolder ic;
+    ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ic=new IconHolder(getActivity(),true,true);
+    }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -86,8 +93,8 @@ public class AppsList extends ListFragment {
             float scale = getResources().getDisplayMetrics().density;
             int dpAsPixels = (int) (5 * scale + 0.5f);
             vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
-            vl.setDivider(null);
-        }
+            vl.setDividerHeight(dpAsPixels);
+        } vl.setDivider(null);
         vl.setFastScrollEnabled(true);
         if(savedInstanceState==null)new LoadListTask().execute();
         else{
@@ -174,7 +181,7 @@ public class AppsList extends ListFragment {
                 for (int i = 0; i < c.size(); i++) {
 
 
-                    a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk), c.get(i).loadLabel(getActivity().getPackageManager()).toString(), c.get(i).publicSourceDir,"","","",false));
+                    a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk_grid), c.get(i).loadLabel(getActivity().getPackageManager()).toString(), c.get(i).publicSourceDir,"","","",false));
 
                     File file = new File(c.get(i).publicSourceDir);
                     mFile.add(file);
@@ -218,109 +225,6 @@ public class AppsList extends ListFragment {
 
         }
     }  // copy the .apk file to wherever
-
-    class BitmapWorkerTask extends AsyncTask<ApplicationInfo, Void, Bitmap> {
-        private final WeakReference<ImageView> imageViewReference;
-
-        ApplicationInfo path;
-
-        public BitmapWorkerTask(ImageView imageView) {
-            // Use a WeakReference to ensure the ImageView can be garbage
-            // collected
-            imageViewReference = new WeakReference<ImageView>(imageView);
-        }
-
-        // Decode image in background.
-        @Override
-        protected Bitmap doInBackground(ApplicationInfo... params) {
-            path = params[0];
-            Bitmap b = ((BitmapDrawable) path.loadIcon(getActivity().getPackageManager())).getBitmap();
-            addBitmapToMemoryCache(path.publicSourceDir, b);
-            // TODO: Implement this method
-            return b;
-        }
-
-        // Once complete, see if ImageView is still around and set bitmap.
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            if (isCancelled()) {
-                bitmap = null;
-            }
-
-            if (imageViewReference != null && bitmap != null) {
-                final ImageView imageView = imageViewReference.get();
-                final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
-                if (this == bitmapWorkerTask && imageView != null) {
-                    imageView.setImageBitmap(bitmap);
-                }
-            }
-        }
-    }
-
-    static class AsyncDrawable extends BitmapDrawable {
-        private final WeakReference<BitmapWorkerTask> bitmapWorkerTaskReference;
-
-        public AsyncDrawable(Resources res, Bitmap bitmap,
-                             BitmapWorkerTask bitmapWorkerTask) {
-            super(res, bitmap);
-            bitmapWorkerTaskReference = new WeakReference<BitmapWorkerTask>(
-                    bitmapWorkerTask);
-        }
-
-        public BitmapWorkerTask getBitmapWorkerTask() {
-            return bitmapWorkerTaskReference.get();
-        }
-    }
-
-    public void loadBitmap(ApplicationInfo path, ImageView imageView, Bitmap b) {
-        if (cancelPotentialWork(path, imageView)) {
-            final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
-            final AsyncDrawable asyncDrawable = new AsyncDrawable(
-                    getResources(), b, task);
-            imageView.setImageDrawable(asyncDrawable);
-            task.execute(path);
-        }
-    }
-
-    private static BitmapWorkerTask getBitmapWorkerTask(ImageView imageView) {
-        if (imageView != null) {
-            final Drawable drawable = imageView.getDrawable();
-            if (drawable instanceof AsyncDrawable) {
-                final AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
-                return asyncDrawable.getBitmapWorkerTask();
-            }
-        }
-        return null;
-    }
-
-    public static boolean cancelPotentialWork(ApplicationInfo data, ImageView imageView) {
-        final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
-
-        if (bitmapWorkerTask != null) {
-            final ApplicationInfo bitmapData = bitmapWorkerTask.path;
-            // If bitmapData is not yet set or it differs from the new data
-            if (bitmapData.equals(null) || !bitmapData.equals(data)) {
-                // Cancel previous task
-                bitmapWorkerTask.cancel(true);
-            } else {
-                // The same work is already in progress
-                return false;
-            }
-        }
-        // No task associated with the ImageView, or an existing task was
-        // cancelled
-        return true;
-    }
-
-    public Bitmap getBitmapFromMemCache(String key) {
-        return mMemoryCache.get(key);
-    }
-
-    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
-        if (getBitmapFromMemCache(key) == null) {
-            mMemoryCache.put(key, bitmap);
-        }
-    }
 
     public void unin(String pkg) {
 

@@ -38,6 +38,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.utils.Layoutelements;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -131,15 +132,9 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
         }
         final ViewHolder holder = (ViewHolder) view.getTag();
         holder.imageView.setImageDrawable(rowItem.getImageId());
+        app.ic.cancelLoad(holder.imageView);
+        app.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),null);
 
-        final Bitmap b = app.getBitmapFromMemCache(app.c.get(p).publicSourceDir);
-        if (b != null) {
-            holder.imageView.setImageBitmap(b);
-        } else {
-            ImageView i = holder.imageView;
-            i.setTag("" + p);
-            app.loadBitmap(app.c.get(p), i, ((BitmapDrawable) rowItem.getImageId()).getBitmap());
-        }
         holder.txtTitle.setText(rowItem.getTitle());
         //	File f = new File(rowItem.getDesc());
 
