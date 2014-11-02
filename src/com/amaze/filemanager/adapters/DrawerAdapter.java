@@ -135,12 +135,18 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
                 imageView.setImageDrawable(icons.getSdDrawable1());
                 break;
             case 1:if(myChecked.get(1)){
+                imageView.setImageResource(R.drawable.ic_action_sd_storage);
+                imageView.setColorFilter(colorMatrixColorFilter);}
+            else
+                imageView.setImageDrawable(icons.getSdDrawable1());
+                break;
+            case 2:if(myChecked.get(2)){
                 imageView.setImageResource(R.drawable.ic_action_view_as_grid);
                 imageView.setColorFilter(colorMatrixColorFilter);}
             else
                 imageView.setImageDrawable(icons.getGridDrawable());
                 break;
-            case 2:if(myChecked.get(2)){
+            case 3:if(myChecked.get(3)){
                 imageView.setImageResource(R.drawable.ic_action_not_important);
                 imageView.setColorFilter(colorMatrixColorFilter);}
             else

@@ -74,7 +74,7 @@ public  DeleteTask(ContentResolver c,Main m){this.contentResolver=c;this.m=m;}
                             }
                         }}
                 }
-            
+
             else if(m.rootMode){for(File f:files){
                 RootTools.deleteFileOrDirectory(f.getPath(), true);}
               return true;

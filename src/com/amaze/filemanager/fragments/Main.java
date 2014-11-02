@@ -624,8 +624,7 @@ if(listView!=null){
 
 
     public void createViews(ArrayList<Layoutelements> bitmap, boolean back, File f) {
-        try {
-            if (bitmap != null) {
+        try {if (bitmap != null) {
                 TextView footerText=(TextView) footerView.findViewById(R.id.footerText);
                 if(bitmap.size()==0){
                     footerText.setText("No Files");
@@ -634,7 +633,7 @@ if(listView!=null){
                     footerText.setText("Tap and hold on a File or Folder for more options");
                 }
                 if(!f.getPath().equals("/")){
-                    if(!bitmap.get(0).getSize().equals("Go Back"))
+                    if(bitmap.size()==0 || !bitmap.get(0).getSize().equals("Go Back"))
                     bitmap.add(0,utils.newElement(folder,"...", "","","Go Back",true));
                 }
                 adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
@@ -660,7 +659,9 @@ if(listView!=null){
                     bbar(current);} catch (Exception e) {
                 }
             }
-        } catch (Exception e) {
+        else{Toast.makeText(getActivity(),"Error",Toast.LENGTH_LONG).show();
+            loadlist(new File(current),true);
+        }} catch (Exception e) {
         }
 
     }
