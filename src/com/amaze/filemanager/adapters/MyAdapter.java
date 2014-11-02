@@ -221,16 +221,18 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         holder.imageView.setVisibility(View.VISIBLE);
         holder.viewmageV.setVisibility(View.INVISIBLE);
         if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
-            holder.imageView.setVisibility(View.INVISIBLE);
+            holder.imageView.setVisibility(View.GONE);
             holder.viewmageV.setVisibility(View.VISIBLE);
             holder.viewmageV.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_doc_image));
             main.ic.cancelLoad(holder.viewmageV);
             main.ic.loadDrawable(holder.viewmageV,new File(rowItem.getDesc()),null);
         }
-        if (Icons.isApk((rowItem.getDesc()))) {
+       else if (Icons.isApk((rowItem.getDesc()))) {
             main.ic.cancelLoad(holder.imageView);
             main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),main.getResources().getDrawable(R.drawable.ic_doc_apk));
-        }
+        }if(checked!=null){if(checked)
+                holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+            }
             if(main.showPermissions)
             holder.perm.setText(rowItem.getPermissions());
         if(main.showLastModified)
