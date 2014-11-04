@@ -438,10 +438,15 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 transaction.addToBackStack("tab"+1);
                 transaction.commit();
 
-                TabHandler tabHandler1 = new TabHandler(this, null, null, 1);
-                int pos = Sp.getInt("spinner_selected", 0);
-                File file = new File(list.get(i));
-                tabHandler1.updateTab(new Tab(pos, file.getName(), file.getPath()));
+                boolean remember = Sp.getBoolean("remember", false);
+                if (!remember) {
+
+                    TabHandler tabHandler1 = new TabHandler(this, null, null, 1);
+                    int pos = Sp.getInt("spinner_selected", 0);
+                    File file = new File(list.get(i));
+                    tabHandler1.updateTab(new Tab(pos, file.getName(), file.getPath()));
+                }
+                Sp.edit().putBoolean("remember", false).apply();
 
                 title.setVisibility(View.GONE);
                 tabsSpinner.setVisibility(View.VISIBLE);
@@ -624,5 +629,6 @@ if(ib.getVisibility()==View.VISIBLE){
         if (check) {
             random();
         }
+        Sp.edit().putBoolean("remember", true).apply();
     }
 }
