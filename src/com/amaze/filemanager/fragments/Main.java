@@ -210,7 +210,7 @@ public class Main extends android.support.v4.app.Fragment {
                 add();
             }
         });
-        //getActivity().findViewById(R.id.fabbutton).setVisibility(View.VISIBLE);
+        fab.setVisibility(View.VISIBLE);
 
         utils = new Futils();
 
