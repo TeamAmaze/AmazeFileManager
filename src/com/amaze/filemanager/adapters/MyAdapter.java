@@ -95,9 +95,9 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         }
     }
 
-    public void toggleChecked(boolean b) {
-
-        for (int i = 0; i < items.size(); i++) {
+    public void toggleChecked(boolean b,String path) {
+       int a; if(path.equals("/"))a=0;else a=1;
+        for (int i = a; i < items.size(); i++) {
             myChecked.put(i, b);
         }
         notifyDataSetChanged();
@@ -115,9 +115,10 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         return checkedItemPositions;
     }
 
-    public boolean areAllChecked() {
+    public boolean areAllChecked(String path) {
         boolean b = true;
-        for (int i = 0; i < myChecked.size(); i++) {
+        int a; if(path.equals("/"))a=0;else a=1;
+        for (int i = a; i < myChecked.size(); i++) {
             if (!myChecked.get(i)) {
                 b = false;
             }

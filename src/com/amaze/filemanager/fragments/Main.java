@@ -784,10 +784,10 @@ if(listView!=null){
                     mode.finish();
                     return true;
                 case R.id.all:
-                    if (adapter.areAllChecked()) {
-                        adapter.toggleChecked(false);
+                    if (adapter.areAllChecked(current)) {
+                        adapter.toggleChecked(false,current);
                     } else {
-                        adapter.toggleChecked(true);
+                        adapter.toggleChecked(true,current);
                     }
                     mode.invalidate();
 
@@ -900,7 +900,7 @@ if(listView!=null){
         public void onDestroyActionMode(ActionMode mode) {
             mActionMode = null;
             selection = false;
-            adapter.toggleChecked(false);
+            adapter.toggleChecked(false,current);
             poppyView.setVisibility(View.VISIBLE);
             getActivity().findViewById(R.id.action_bar).setVisibility(View.VISIBLE);
             getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
