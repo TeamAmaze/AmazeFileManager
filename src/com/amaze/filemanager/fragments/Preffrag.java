@@ -325,7 +325,12 @@ public class Preffrag extends PreferenceFragment {
         preference3.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Toast.makeText(getActivity(), "It;s coming soon", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setType("plain/text");
+                intent.setData(Uri.parse("arpitkh96@gmail.com"));
+                intent.setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "test_subject");
+                startActivity(intent);
                 return false;
             }
         });

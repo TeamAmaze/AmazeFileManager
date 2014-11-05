@@ -28,13 +28,13 @@
 
     <style name="DarkTheme" parent="android:Theme.Holo">
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:dropDownListViewStyle">@style/spinner_style</item>
+        <!--<item name="android:dropDownListViewStyle">@style/spinner_style</item>-->
     </style>
 
     <style name="LightTheme" parent="android:Theme.Holo.Light.DarkActionBar">
 
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:dropDownListViewStyle">@style/spinner_style</item>
+        <!--<item name="android:dropDownListViewStyle">@style/spinner_style</item>-->
     </style>
     <style name="DarkActionBar" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse" >
 
