@@ -258,19 +258,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             }else{ view = convertView;}
             final ViewHolder holder = (ViewHolder) view.getTag();
             Boolean checked = myChecked.get(position);
-            if (checked != null) {
-
-                if (checked) {
-                    holder.rl.setBackgroundColor(main.skinselection);
-                } else {
-                    if (main.uimode == 0) {
-                        if(main.theme==0)holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
-                        else holder.rl.setBackgroundResource(R.drawable.ic_grid_card_background_dark);
-                    } else if (main.uimode == 1) {
-                        holder.rl.setBackgroundResource(R.drawable.bg_card);
-                    }
-                }
-            }
             holder.rl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -312,7 +299,20 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 main.ic.cancelLoad(holder.imageView);
                 main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),null);
             }
+            if (checked != null) {
 
+                if (checked) {
+                    holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                    holder.rl.setBackgroundColor(Color.parseColor("#9f757575"));
+                } else {
+                    if (main.uimode == 0) {
+                        if(main.theme==0)holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
+                        else holder.rl.setBackgroundResource(R.drawable.ic_grid_card_background_dark);
+                    } else if (main.uimode == 1) {
+                        holder.rl.setBackgroundResource(R.drawable.bg_card);
+                    }
+                }
+            }
             if(main.showLastModified)
                 holder.date.setText(rowItem.getDate("dd/MM/yy"));
             if(main.showSize)
