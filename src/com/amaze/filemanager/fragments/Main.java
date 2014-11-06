@@ -141,6 +141,7 @@ public class Main extends android.support.v4.app.Fragment {
     private TabSpinnerAdapter tabSpinnerAdapter;
     public float[] color;
     public ColorMatrixColorFilter colorMatrixColorFilter;
+    Animation animation;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,6 +174,7 @@ public class Main extends android.support.v4.app.Fragment {
         showThumbs=Sp.getBoolean("showThumbs",true);
         ic=new IconHolder(getActivity(),showThumbs,!aBoolean);
         res = getResources();
+         animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
         if(theme==1) {
             rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_dark));
             ((ImageView)getActivity().findViewById(R.id.shadow)).setImageDrawable(res.getDrawable(R.drawable.shadow_dark));
@@ -1275,7 +1277,7 @@ if(history!=null)
         activity.startActivity(activity.getIntent());
     }private void crossfadeInverse() {
 
-        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
+
         fab.setAnimation(animation);
         fab.setVisibility(View.VISIBLE);
         // Set the content view to 0% opacity but visible, so that it is visible
