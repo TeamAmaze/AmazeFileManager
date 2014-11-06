@@ -22,13 +22,14 @@ package com.amaze.filemanager.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.GradientDrawable;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -181,12 +182,17 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             });
 
 
+            final Animation animation = AnimationUtils.loadAnimation(context, R.anim.holder_anim);
+
             holder.txtTitle.setText(rowItem.getTitle());
             holder.imageView.setImageDrawable(rowItem.getImageId());
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!rowItem.getSize().equals("Go Back")) toggleChecked(p);
+                    if (!rowItem.getSize().equals("Go Back")) {
+                        holder.imageView.setAnimation(animation);
+                        toggleChecked(p);
+                    }
                     else main.goBack();
 
                 }
@@ -274,7 +280,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     } else if (main.current.equals("/")) {
 
                         toggleChecked(p);
-                    } else if(p!=0) {
+                    } else if (p != 0) {
 
                         toggleChecked(p);
                     }
