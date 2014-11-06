@@ -64,6 +64,7 @@ import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
+import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -133,20 +134,18 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             public void onClick(View view) {
 
                 Main ma = ((Main) getSupportFragmentManager().findFragmentById(R.id.content_frame));
+                String path=ma.current;
+                ArrayList<String> arrayList=new ArrayList<String>();
+                if(COPY_PATH!=null){
+                arrayList=COPY_PATH;
+                    new CheckForFiles(ma,path,false).execute(arrayList);
+                }else if(MOVE_PATH!=null){
+                    arrayList=MOVE_PATH;
+                    new CheckForFiles(ma,path,false).execute(arrayList);
+                }COPY_PATH=null;
+                MOVE_PATH=null;
 
-                if (COPY_PATH != null) {
-
-                    Intent intent = new Intent(con, CopyService.class);
-                    intent.putExtra("FILE_PATHS", COPY_PATH);
-                    intent.putExtra("COPY_DIRECTORY", ma.current);
-                    startService(intent);
-                    COPY_PATH = null;
-                }
-                if (MOVE_PATH != null) {
-                    new MoveFiles(utils.toFileArray(MOVE_PATH), ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ma.current);
-                    MOVE_PATH = null;
-
-                }invalidatePasteButton();
+invalidatePasteButton();
 
             }
         });
@@ -630,5 +629,75 @@ if(ib.getVisibility()==View.VISIBLE){
             random();
         }
         Sp.edit().putBoolean("remember", true).apply();
+    }
+    class CheckForFiles extends AsyncTask<ArrayList<String>, String,ArrayList<String>> {
+        Main ma;String path;Boolean move;
+        ArrayList<String> ab;
+        public CheckForFiles(Main main,String path,Boolean move){
+             this.ma=main;
+           this.path=path;
+            this.move=move;
+         }
+        @Override
+        public void onProgressUpdate(String... message) {
+            Toast.makeText(con, message[0], Toast.LENGTH_LONG).show();
+        }
+        @Override
+        // Actual download method, run in the task thread
+        protected ArrayList<String> doInBackground(ArrayList<String>... params) {
+           ab=params[0];
+            ArrayList<String> a=new ArrayList<String>();
+            if (!move) {
+                long totalBytes=0;
+                for (int i = 0; i < params[0].size(); i++) {
+
+                    File f1 = new File(params[0].get(i));
+                    if (f1.isDirectory()) {
+                        totalBytes = totalBytes + new Futils().folderSize(f1,false);
+                    } else {
+                        totalBytes = totalBytes + f1.length();
+                    }
+                }
+                if(new File(ma.current).getUsableSpace()>totalBytes){
+                    File f=new File(path);
+                    for(File k :f.listFiles()){
+                    for(String j:params[0]){
+                        if(k.getName().equals(new File(j).getName())){
+                            a.add(j);
+                        }
+                    }
+                    }}else publishProgress("Insufficient space");}
+            else {
+
+                long totalBytes=0;
+                for (int i = 0; i < MOVE_PATH.size(); i++) {
+
+                    File f1 = new File(MOVE_PATH.get(i));
+                    if (f1.isDirectory()) {
+                        totalBytes = totalBytes + new Futils().folderSize(f1,false);
+                    } else {
+                        totalBytes = totalBytes + f1.length();
+                    }
+                }
+                if(new File(path).getUsableSpace()>totalBytes){
+                    File f=new File(path);
+                    for(File k :f.listFiles()){
+                        for(String j:params[0]) {
+                            if (k.getName().equals(new File(j).getName())) {
+                                a.add(j);
+                            }
+                        }}
+                     }else publishProgress("Insufficient space");
+
+            }
+            return a;}
+        @Override
+        public void onPostExecute(ArrayList<String> a){}
+        //Intent intent = new Intent(con, CopyService.class);
+        //intent.putExtra("FILE_PATHS",ab );
+        //intent.putExtra("COPY_DIRECTORY", path);
+      //  startService(intent);
+//        new MoveFiles(utils.toFileArray(ab), ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+
     }
 }
