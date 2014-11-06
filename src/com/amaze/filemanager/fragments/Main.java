@@ -32,6 +32,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -138,7 +140,7 @@ public class Main extends android.support.v4.app.Fragment {
     private FloatingActionButton fab;
     private TabSpinnerAdapter tabSpinnerAdapter;
     public float[] color;
-
+    public ColorMatrixColorFilter colorMatrixColorFilter;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -219,6 +221,8 @@ public class Main extends android.support.v4.app.Fragment {
         String x=getSelectionColor();
         skinselection=Color.parseColor(x);
         color=calculatevalues(x);
+        ColorMatrix colorMatrix = new ColorMatrix(calculatefilter(color));
+         colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
         if (aBoolean) {
             poppyView = mPoppyViewHelper.createPoppyViewOnListView(R.id.listView, R.layout.pooppybar);
             LinearLayout linearLayout = (LinearLayout) poppyView.findViewById(R.id.linearLayout);
@@ -1303,25 +1307,34 @@ if(history!=null)
     public String getSelectionColor(){
 
         String[] colors = new String[]{
-                "#e51c23","#9fe84e40",
-                "#e91e63","#9fec407a",
-                "#9c27b0","#9fab47bc",
-                "#673ab7","#9f7e57c2",
-                "#3f51b5","#9f5c6bc0",
-                "#5677fc","#9f738ffe",
-                "#0288d1","#9f29b6f6",
-                "#0097a7","#9f26c6da",
-                "#009688","#9f26a69a",
-                "#259b24","#9f2baf2b",
-                "#8bc34a","#9f9ccc65",
-                "#ffa000","#9fffca28",
-                "#f57c00","#9fffa726",
-                "#e64a19","#9fff7043",
-                "#795548","#9f8d6e63",
-                "#212121","#9fbdbdbd",
-                "#607d8b","#9f78909c",
+                "#e51c23","#44e84e40",
+                "#e91e63","#44ec407a",
+                "#9c27b0","#44ab47bc",
+                "#673ab7","#447e57c2",
+                "#3f51b5","#445c6bc0",
+                "#5677fc","#44738ffe",
+                "#0288d1","#4429b6f6",
+                "#0097a7","#4426c6da",
+                "#009688","#4426a69a",
+                "#259b24","#442baf2b",
+                "#8bc34a","#449ccc65",
+                "#ffa000","#44ffca28",
+                "#f57c00","#44ffa726",
+                "#e64a19","#44ff7043",
+                "#795548","#448d6e63",
+                "#212121","#99bdbdbd",
+                "#607d8b","#4478909c",
         };
        return colors[ Arrays.asList(colors).indexOf(skin)+1];
+    }public float[] calculatefilter(float[] values){
+        float[] src= {
+
+                values[0], 0, 0, 0, 0,
+                0, values[1], 0, 0, 0,
+                0, 0,  values[2],0, 0,
+                0, 0, 0, 1, 0
+        };
+        return src;
     }
     public float[] calculatevalues(String color){
         int c=Color.parseColor(color);

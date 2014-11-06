@@ -50,7 +50,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     Main main;
     Futils utils = new Futils();
-    boolean showThumbs;
     ColorMatrixColorFilter colorMatrixColorFilter;
     public MyAdapter(Context context, int resourceId,
                      List<Layoutelements> items, Main main) {
@@ -61,16 +60,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, false);
         }
-        float[] src = {
-
-                main.color[0], 0, 0, 0, 0,
-                0, main.color[1], 0, 0, 0,
-                0, 0,  main.color[2],0, 0,
-                0, 0, 0, 1, 0
-        };
-        ColorMatrix colorMatrix = new ColorMatrix(src);
-        colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
-
+        colorMatrixColorFilter=main.colorMatrixColorFilter;
     }
 
 
@@ -143,108 +133,112 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         final Layoutelements rowItem = getItem(position);
 
 
-        if(main.aBoolean){
+        if (main.aBoolean) {
             View view = convertView;
             final int p = position;
-        if (convertView == null) {
-            LayoutInflater mInflater = (LayoutInflater) context
-                    .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            view = mInflater.inflate(R.layout.rowlayout, parent, false);
-            final ViewHolder vholder = new ViewHolder();
+            if (convertView == null) {
+                LayoutInflater mInflater = (LayoutInflater) context
+                        .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+                view = mInflater.inflate(R.layout.rowlayout, parent, false);
+                final ViewHolder vholder = new ViewHolder();
 
-            vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
-            vholder.viewmageV=(CircularImageView)view.findViewById(R.id.cicon);
-            vholder.imageView=(ImageView)view.findViewById(R.id.icon);
-            vholder.rl = view.findViewById(R.id.second);
+                vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
+                vholder.viewmageV = (CircularImageView) view.findViewById(R.id.cicon);
+                vholder.imageView = (ImageView) view.findViewById(R.id.icon);
+                vholder.rl = view.findViewById(R.id.second);
                 vholder.perm = (TextView) view.findViewById(R.id.permis);
                 vholder.date = (TextView) view.findViewById(R.id.date);
                 vholder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
-            view.setTag(vholder);
+                view.setTag(vholder);
 
-            GradientDrawable gradientDrawable = (GradientDrawable) vholder.imageView.getBackground();
-            gradientDrawable.setColor(Color.parseColor(main.skin));
-        }
-        final ViewHolder holder = (ViewHolder) view.getTag();
-        Boolean checked = myChecked.get(position);
-        if (checked != null) {
-
-            if (checked) {
-                holder.rl.setBackgroundColor(main.skinselection);
-            } else {
-                if (main.uimode == 0) {
-                    holder.rl.setBackgroundResource(R.drawable.listitem1);
-                } else if (main.uimode == 1) {
-                    holder.rl.setBackgroundResource(R.drawable.bg_card);
+            }
+            final ViewHolder holder = (ViewHolder) view.getTag();
+            holder.rl.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    main.onListItemClicked(p, v);
                 }
-            }
-        }
-        holder.rl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                main.onListItemClicked(p, v);
-            }
-        });
+            });
 
-        holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
+            holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 
-            public boolean onLongClick(View p1) {
-                if (main.results) {
+                public boolean onLongClick(View p1) {
+                    if (main.results) {
 
-                    utils.longClickSearchItem(main, rowItem.getDesc());
+                        utils.longClickSearchItem(main, rowItem.getDesc());
 
-                } else if(!main.selection){ if (main.current.equals("/")) {
+                    } else if (!main.selection) {
+                        if (main.current.equals("/")) {
 
-                    toggleChecked(p);
-                } else if(p!=0) {
+                            toggleChecked(p);
+                        } else if (p != 0) {
 
-                    toggleChecked(p);
-                }}
-                return true;
-            }
-        });
+                            toggleChecked(p);
+                        }
+                    }
+                    return true;
+                }
+            });
 
 
-        holder.txtTitle.setText(rowItem.getTitle());
-        holder.imageView.setImageDrawable(rowItem.getImageId());
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!rowItem.getSize().equals("Go Back"))toggleChecked(p);
-                else main.goBack();
+            holder.txtTitle.setText(rowItem.getTitle());
+            holder.imageView.setImageDrawable(rowItem.getImageId());
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!rowItem.getSize().equals("Go Back")) toggleChecked(p);
+                    else main.goBack();
 
-            }
-        });
+                }
+            });
             holder.viewmageV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!rowItem.getSize().equals("Go Back"))
-                    toggleChecked(p);
+                    if (!rowItem.getSize().equals("Go Back"))
+                        toggleChecked(p);
                     else main.goBack();
                 }
             });
-        holder.imageView.setVisibility(View.VISIBLE);
-        holder.viewmageV.setVisibility(View.INVISIBLE);
-        if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
-            holder.imageView.setVisibility(View.GONE);
-            holder.viewmageV.setVisibility(View.VISIBLE);
-            holder.viewmageV.setImageDrawable(rowItem.getImageId());
-            main.ic.cancelLoad(holder.viewmageV);
-            main.ic.loadDrawable(holder.viewmageV,new File(rowItem.getDesc()),null);
-        }
-       else if (Icons.isApk((rowItem.getDesc()))) {
-            main.ic.cancelLoad(holder.imageView);
-            main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),null);
-        }if(checked!=null){if(checked)
-                holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+            holder.imageView.setVisibility(View.VISIBLE);
+            holder.viewmageV.setVisibility(View.INVISIBLE);
+            if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
+                holder.imageView.setVisibility(View.GONE);
+                holder.viewmageV.setVisibility(View.VISIBLE);
+                holder.viewmageV.setImageDrawable(rowItem.getImageId());
+                main.ic.cancelLoad(holder.viewmageV);
+                main.ic.loadDrawable(holder.viewmageV, new File(rowItem.getDesc()), null);
+            } else if (Icons.isApk((rowItem.getDesc()))) {
+                main.ic.cancelLoad(holder.imageView);
+                main.ic.loadDrawable(holder.imageView, new File(rowItem.getDesc()), null);
             }
-            if(main.showPermissions)
-            holder.perm.setText(rowItem.getPermissions());
-        if(main.showLastModified)
-            holder.date.setText(rowItem.getDate("MMM dd yyyy | KK:mm a"));
-        if(main.showSize)
-        holder.txtDesc.setText(rowItem.getSize());
-            return view;}
-        else{   View view;
+            Boolean checked = myChecked.get(position);
+            if (checked != null) {
+
+                if (checked) {
+                    holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                    GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
+                    gradientDrawable.setColor(Color.parseColor("#757575"));
+
+                    holder.rl.setBackgroundColor(main.skinselection);
+                } else {
+
+                    GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
+                    gradientDrawable.setColor(Color.parseColor(main.skin));
+                    if (main.uimode == 0) {
+                        holder.rl.setBackgroundResource(R.drawable.listitem1);
+                    } else if (main.uimode == 1) {
+                        holder.rl.setBackgroundResource(R.drawable.bg_card);
+                    }
+                }
+            }
+            if (main.showPermissions)
+                holder.perm.setText(rowItem.getPermissions());
+            if (main.showLastModified)
+                holder.date.setText(rowItem.getDate("MMM dd yyyy | KK:mm a"));
+            if (main.showSize)
+                holder.txtDesc.setText(rowItem.getSize());
+            return view;
+        } else{   View view;
             final int p = position;
             if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater) context
