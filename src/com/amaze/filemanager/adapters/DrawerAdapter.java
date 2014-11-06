@@ -127,34 +127,25 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
         ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
 
         textView.setText(values.get(position));
-        switch (position) {
-            case 0:if(myChecked.get(0)){
-                imageView.setImageResource(R.drawable.ic_action_sd_storage);
-                imageView.setColorFilter(colorMatrixColorFilter);}
-            else
-                imageView.setImageDrawable(icons.getSdDrawable1());
-                break;
-            case 1:if(myChecked.get(1)){
-                imageView.setImageResource(R.drawable.ic_action_sd_storage);
-                imageView.setColorFilter(colorMatrixColorFilter);}
-            else
-                imageView.setImageDrawable(icons.getSdDrawable1());
-                break;
-            case 2:if(myChecked.get(2)){
-                imageView.setImageResource(R.drawable.ic_action_view_as_grid);
-                imageView.setColorFilter(colorMatrixColorFilter);}
-            else
-                imageView.setImageDrawable(icons.getGridDrawable());
-                break;
-            case 3:if(myChecked.get(3)){
+        if (position == values.size() - 1) {
+            if (myChecked.get(position)) {
                 imageView.setImageResource(R.drawable.ic_action_not_important);
+            } else
+                imageView.setImageDrawable(icons.getBookDrawable1());
+        }else if(position == values.size() - 2){
+            if(myChecked.get(position)) {
+                imageView.setImageResource(R.drawable.ic_action_view_as_grid);
+            } else
+                imageView.setImageDrawable(icons.getGridDrawable());
+        }else{
+            if(myChecked.get(position)){
+                imageView.setImageResource(R.drawable.ic_action_sd_storage);
                 imageView.setColorFilter(colorMatrixColorFilter);}
             else
-                imageView.setImageDrawable(icons.getBookDrawable1());
-                break;
-
+                imageView.setImageDrawable(icons.getSdDrawable1());
         }
         if(myChecked.get(position)){
+            imageView.setColorFilter(colorMatrixColorFilter);
             if(m.theme==0){textView.setTypeface(Typeface.DEFAULT);}else textView.setTypeface(Typeface.DEFAULT_BOLD);
             textView.setTextColor(Color.parseColor(m.skin));}
         else
