@@ -208,12 +208,12 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.imageView.setVisibility(View.VISIBLE);
             holder.viewmageV.setVisibility(View.INVISIBLE);
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
-                holder.imageView.setVisibility(View.GONE);
+                if(main.showThumbs){holder.imageView.setVisibility(View.GONE);
                 holder.viewmageV.setVisibility(View.VISIBLE);
                 holder.viewmageV.setImageDrawable(rowItem.getImageId());
                 main.ic.cancelLoad(holder.viewmageV);
                 main.ic.loadDrawable(holder.viewmageV, new File(rowItem.getDesc()), null);
-            } else if (Icons.isApk((rowItem.getDesc()))) {
+            } }else if (Icons.isApk((rowItem.getDesc()))) {
                 main.ic.cancelLoad(holder.imageView);
                 main.ic.loadDrawable(holder.imageView, new File(rowItem.getDesc()), null);
             }
