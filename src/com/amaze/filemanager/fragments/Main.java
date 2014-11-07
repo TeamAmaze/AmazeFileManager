@@ -692,12 +692,14 @@ if(listView!=null){
 
 
         }
-
+        View v;
         // called when the action mode is created; startActionMode() was called
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
-
+            v=getActivity().getLayoutInflater().inflate(R.layout.actionmode,null);
+            mode.setCustomView(v);
+            Toast.makeText(getActivity(),"oncreate",Toast.LENGTH_SHORT).show();
             // assumes that you have "contexual.xml" menu resources
             inflater.inflate(R.menu.contextual, menu);
             initMenu(menu);
@@ -719,8 +721,8 @@ if(listView!=null){
         // may be called multiple times if the mode is invalidated.
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             ArrayList<Integer> positions = adapter.getCheckedItemPositions();
-            mode.setSubtitle(positions.size() + " "
-                    + utils.getString(getActivity(), R.string.itemsselected));
+            ((TextView)v.findViewById(R.id.item_count)).setText(positions.size());
+            //tv.setText(positions.size());
             if (positions.size() == 1) {
                 showOption(R.id.permissions,menu);
                 showOption(R.id.about, menu);

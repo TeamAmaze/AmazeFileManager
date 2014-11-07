@@ -42,6 +42,7 @@
         android:layout_height="55dip"
         android:clickable="false"
         android:layout_gravity="center"
+        android:singleLine="true"
         android:textSize="17sp"
         android:gravity="center_vertical"
 

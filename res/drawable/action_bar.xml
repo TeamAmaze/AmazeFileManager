@@ -21,9 +21,7 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:state_pressed="true" android:drawable="@color/theme_primary" />
-    <item android:state_focused="true" android:drawable="@color/theme_primary" />
     <item
 
-        android:drawable="@color/theme_primary" />
+        android:drawable="@android:color/white" />
 </selector>

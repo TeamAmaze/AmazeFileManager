@@ -17,8 +17,6 @@
 <resources>
 
     <style name="DarkTheme" parent="android:Theme.Holo">
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <!--<item name="android:dropDownListViewStyle">@style/spinner_style</item>-->
     </style>
     <style name="TextAppearance" />
     <style name="TextAppearance.Medium">
@@ -31,7 +29,9 @@
         <item name="android:textColor">?android:attr/textColorTertiary</item>
     </style>
     <style name="LightTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+
+        <item name="android:actionModeBackground">@drawable/action_bar</item>
+        <item name="android:actionModeSplitBackground">@drawable/action_bar</item>
         <!--<item name="android:dropDownListViewStyle">@style/spinner_style</item>-->
     </style>
 
