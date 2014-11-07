@@ -190,7 +190,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!main.selection){
+                    if(!main.results){
                     if (!rowItem.getSize().equals("Go Back")) {
                         holder.imageView.setAnimation(animation);
                         toggleChecked(p);
@@ -202,7 +202,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.viewmageV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!main.selection){
+                    if(!main.results){
                         if (!rowItem.getSize().equals("Go Back"))
                         toggleChecked(p);
                     else main.goBack();
@@ -211,7 +211,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.apk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!main.selection) {
+                    if(!main.results) {
                         if (!rowItem.getSize().equals("Go Back"))
                             toggleChecked(p);
                         else main.goBack();

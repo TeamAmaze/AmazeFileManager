@@ -10,34 +10,4 @@
     android:gravity="center"
     android:layout_height="match_parent"
     android:id="@+id/item_count"/>
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        style="@android:style/Widget.DeviceDefault.Button.Borderless"
-        android:src="@drawable/ic_more_vert_black_48dp"
-        android:id="@+id/action_overflow_cab"/>
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/action_overflow_cab"
-        style="@android:style/Widget.DeviceDefault.Button.Borderless"
-        android:src="@drawable/ic_select_all_black_36dp"
-        android:id="@+id/selectall"/>
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/selectall"
-        style="@android:style/Widget.DeviceDefault.Button.Borderless"
-        android:src="@drawable/ic_content_cut_black_36dp"
-        android:id="@+id/cut"/>
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/cut"
-        style="@android:style/Widget.DeviceDefault.Button.Borderless"
-        android:src="@drawable/ic_content_copy_black_36dp"
-        android:id="@+id/copy"/>
 </RelativeLayout>

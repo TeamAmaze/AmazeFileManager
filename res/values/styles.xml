@@ -29,13 +29,15 @@
         <item name="android:textColor">?android:attr/textColorTertiary</item>
     </style>
     <style name="LightTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-
+        <item name="android:actionOverflowButtonStyle">@style/OverflowActionMode</item>
         <item name="android:actionModeBackground">@drawable/action_bar</item>
         <item name="android:actionModeSplitBackground">@drawable/action_bar</item>
         <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_48dp</item>
         <!--<item name="android:dropDownListViewStyle">@style/spinner_style</item>-->
     </style>
-
+    <style name="OverflowActionMode" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_more_vert_black_48dp</item>
+    </style>
     <style name="spinner_style" parent="android:style/Widget.ListView.DropDown">
         <item name="android:divider">@android:color/transparent</item>
         <item name="android:dividerHeight">@null</item>
