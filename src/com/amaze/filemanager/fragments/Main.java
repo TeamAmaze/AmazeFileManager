@@ -106,7 +106,7 @@ public class Main extends android.support.v4.app.Fragment {
     public boolean results = false;
     public ActionMode mActionMode;
     public SharedPreferences Sp;
-    public Drawable folder,apk;
+    public Drawable folder,apk,darkimage;
     Resources res;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
@@ -223,7 +223,8 @@ public class Main extends android.support.v4.app.Fragment {
             }
         });
         fab.setVisibility(View.VISIBLE);
-
+        getActivity().findViewById(R.id.search).setVisibility(View.VISIBLE);
+        getActivity().findViewById(R.id.action_overflow).setVisibility(View.VISIBLE);
         utils = new Futils();
 
         skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#673ab7");
@@ -241,6 +242,7 @@ public class Main extends android.support.v4.app.Fragment {
         else{folder = res.getDrawable(R.drawable.ic_grid_folder1);}
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
         getSortModes();
+        darkimage=res.getDrawable(R.drawable.ic_doc_image_dark);
         home = Sp.getString("home", mainActivity.val[mainActivity.select]);
         this.setRetainInstance(false);
         int pos = Sp.getInt("spinner_selected", 0);

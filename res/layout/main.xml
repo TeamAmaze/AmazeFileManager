@@ -55,27 +55,27 @@
     <ImageButton
         android:background="@drawable/listitem1"
         android:layout_alignParentRight="true"
-        style="?android:borderlessButtonStyle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/action_overflow"
+        android:padding="5dp"
         android:src="@drawable/ic_action_overflow"
         />
     <ImageButton
+        android:padding="6dp"
         android:background="@drawable/listitem1"
         android:layout_toLeftOf="@id/action_overflow"
-        style="?android:borderlessButtonStyle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/search"
         android:src="@drawable/ic_action_search"
         />/><ImageButton
+    android:padding="8dp"
     android:background="@drawable/listitem1"
     android:layout_toLeftOf="@id/search"
     android:visibility="gone"
-    style="?android:borderlessButtonStyle"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:id="@+id/paste"
     android:src="@drawable/ic_content_paste_white_36dp"
     />

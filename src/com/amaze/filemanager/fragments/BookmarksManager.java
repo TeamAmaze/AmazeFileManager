@@ -62,7 +62,49 @@ ListView vl;
         setHasOptionsMenu(false);
         setRetainInstance(false);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
-        getActivity().findViewById(R.id.fabbutton).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.search).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.paste).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.fabbutton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder ba1 = new AlertDialog.Builder(getActivity());
+                ba1.setTitle(utils.getString(getActivity(), R.string.addbook));
+                View v = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
+                final EditText edir = (EditText) v.findViewById(R.id.newname);
+                edir.setHint(utils.getString(getActivity(), R.string.enterpath));
+                ba1.setView(v);
+                ba1.setNegativeButton(utils.getString(getActivity(), R.string.cancel), new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface p1, int p2) {
+                        // TODO: Implement this method
+                    }
+                });
+                ba1.setPositiveButton(utils.getString(getActivity(), R.string.create), new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface p1, int p2) {
+                        try {
+                            File a = new File(edir.getText().toString());
+                            if (a.exists()) {
+                                s.addS(a);
+                                b.items.add(a);
+                                b.notifyDataSetChanged();
+                                Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.success), Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.filenotexists), Toast.LENGTH_LONG).show();
+                            }
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                            Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.error), Toast.LENGTH_LONG).show();
+                        }
+                        // TODO: Implement this method
+                    }
+                });
+                ba1.show();
+
+            }
+        });
 
         ((LinearLayout) getActivity().findViewById(R.id.buttons))
                 .setVisibility(View.GONE);

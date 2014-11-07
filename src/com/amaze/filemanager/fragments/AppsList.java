@@ -80,6 +80,9 @@ public class AppsList extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getActivity().findViewById(R.id.fabbutton).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.search).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.paste).setVisibility(View.GONE);
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
         final int cacheSize = maxMemory / 4;

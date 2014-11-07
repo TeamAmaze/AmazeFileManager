@@ -222,7 +222,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
                 if(main.showThumbs){holder.imageView.setVisibility(View.GONE);
                 holder.viewmageV.setVisibility(View.VISIBLE);
-                holder.viewmageV.setImageDrawable(rowItem.getImageId());
+                holder.viewmageV.setImageDrawable(main.darkimage);
                 main.ic.cancelLoad(holder.viewmageV);
                 main.ic.loadDrawable(holder.viewmageV, new File(rowItem.getDesc()), null);
             } }else if (Icons.isApk((rowItem.getDesc()))) {

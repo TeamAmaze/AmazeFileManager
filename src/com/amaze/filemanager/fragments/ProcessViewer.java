@@ -63,6 +63,10 @@ public class ProcessViewer extends Fragment {
         View root = (ViewGroup) inflater.inflate(R.layout.processparent,
                 container, false);
         setRetainInstance(false);
+
+        getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.fabbutton).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.paste).setVisibility(View.GONE);
         rootView = (LinearLayout) root.findViewById(R.id.secondbut);
         getActivity().getActionBar().setSubtitle("Processes");
         ((LinearLayout) getActivity().findViewById(R.id.buttons))
