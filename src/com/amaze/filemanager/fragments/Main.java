@@ -683,15 +683,6 @@ if(listView!=null){
             item.setVisible(true);
         }
 
-        public void initMenu(Menu menu) {
-            menu.findItem(R.id.cpy).setIcon(icons.getCopyDrawable());
-            menu.findItem(R.id.cut).setIcon(icons.getCutDrawable());
-            menu.findItem(R.id.delete).setIcon(icons.getDeleteDrawable());
-            menu.findItem(R.id.all).setIcon(icons.getAllDrawable());
-            menu.findItem(R.id.about).setIcon(icons.getAboutDrawable());
-
-
-        }
         View v;
         // called when the action mode is created; startActionMode() was called
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -699,17 +690,16 @@ if(listView!=null){
             MenuInflater inflater = mode.getMenuInflater();
             v=getActivity().getLayoutInflater().inflate(R.layout.actionmode,null);
             mode.setCustomView(v);
-            Toast.makeText(getActivity(),"oncreate",Toast.LENGTH_SHORT).show();
             // assumes that you have "contexual.xml" menu resources
-            inflater.inflate(R.menu.contextual, menu);
-            initMenu(menu);
+            //inflater.inflate(R.menu.contextual, menu);
+            /*initMenu(menu);
             hideOption(R.id.sethome, menu);
             hideOption(R.id.rename, menu);
             hideOption(R.id.share, menu);
             hideOption(R.id.about, menu);
             hideOption(R.id.openwith, menu);
             hideOption(R.id.ex, menu);
-            mode.setTitle(utils.getString(getActivity(), R.string.select));
+            mode.setTitle(utils.getString(getActivity(), R.string.select));*/
             if(Build.VERSION.SDK_INT<19)
                 getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
             return true;
@@ -721,9 +711,9 @@ if(listView!=null){
         // may be called multiple times if the mode is invalidated.
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             ArrayList<Integer> positions = adapter.getCheckedItemPositions();
-            ((TextView)v.findViewById(R.id.item_count)).setText(positions.size());
+            ((TextView)v.findViewById(R.id.item_count)).setText(positions.size()+"");
             //tv.setText(positions.size());
-            if (positions.size() == 1) {
+            /*if (positions.size() == 1) {
                 showOption(R.id.permissions,menu);
                 showOption(R.id.about, menu);
                 showOption(R.id.rename, menu);
@@ -748,7 +738,7 @@ if(listView!=null){
                 //hideOption(R.id.share, menu);
                 hideOption(R.id.permissions,menu);
                 hideOption(R.id.about, menu);
-            }
+            }*/
             return false; // Return false if nothing is done
         }
 

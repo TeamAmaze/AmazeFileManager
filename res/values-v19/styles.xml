@@ -34,7 +34,7 @@
     <style name="LightTheme" parent="android:Theme.Holo.Light">
         <item name="android:actionModeBackground">@drawable/action_bar</item>
         <item name="android:actionModeSplitBackground">@drawable/action_bar</item>
-
+        <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_48dp</item>
         <item name="android:windowTranslucentStatus">true</item>
         <!--<item name="android:dropDownListViewStyle">@style/spinner_style</item>-->
     </style>

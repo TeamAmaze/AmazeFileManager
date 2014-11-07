@@ -14,7 +14,6 @@
         <activity
             android:label="Amaze File Manager"
             android:name=".activities.MainActivity"
-            android:uiOptions="splitActionBarWhenNarrow"
             android:theme="@style/LightTheme">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />

@@ -190,10 +190,11 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if(!main.selection){
                     if (!rowItem.getSize().equals("Go Back")) {
                         holder.imageView.setAnimation(animation);
                         toggleChecked(p);
-                    }
+                    }}
                     else main.goBack();
 
                 }
@@ -201,18 +202,20 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.viewmageV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!rowItem.getSize().equals("Go Back"))
+                    if(!main.selection){
+                        if (!rowItem.getSize().equals("Go Back"))
                         toggleChecked(p);
                     else main.goBack();
-                }
+                }}
             });
             holder.apk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!rowItem.getSize().equals("Go Back"))
-                        toggleChecked(p);
-                    else main.goBack();
-                }
+                    if(!main.selection) {
+                        if (!rowItem.getSize().equals("Go Back"))
+                            toggleChecked(p);
+                        else main.goBack();
+                    } }
             });
             holder.imageView.setVisibility(View.VISIBLE);
             holder.viewmageV.setVisibility(View.INVISIBLE);
