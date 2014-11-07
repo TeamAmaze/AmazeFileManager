@@ -146,7 +146,7 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
         }
         if(myChecked.get(position)){
             imageView.setColorFilter(colorMatrixColorFilter);
-            if(m.theme==0){textView.setTypeface(Typeface.DEFAULT);}else textView.setTypeface(Typeface.DEFAULT_BOLD);
+           textView.setTypeface(Typeface.DEFAULT_BOLD);
             textView.setTextColor(Color.parseColor(m.skin));}
         else
         if(m.theme==0)

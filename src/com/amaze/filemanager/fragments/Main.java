@@ -119,8 +119,7 @@ public class Main extends android.support.v4.app.Fragment {
     IconUtils icons;
     HorizontalScrollView scroll,scroll1;
     public boolean rootMode, mountSystem,showHidden,showPermissions,showSize,showLastModified;
-    View footerView, poppyView;
-    private PoppyViewHelper mPoppyViewHelper;
+    View footerView;
     public LinearLayout pathbar;
     private ImageButton ib;
     CountDownTimer timer;
@@ -198,6 +197,14 @@ public class Main extends android.support.v4.app.Fragment {
         content = tabHandler.getAllTabs();
         list1 = new ArrayList<String>();
 
+        ImageButton imageView = ((ImageButton)getActivity().findViewById(R.id.action_overflow));
+        showPopup(imageView);
+        (getActivity().findViewById(R.id.search)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+          search();
+            }
+        });
         for (Tab tab : content) {
             //adapter1.add(tab.getLabel());
             list1.add(tab.getLabel());
@@ -218,23 +225,12 @@ public class Main extends android.support.v4.app.Fragment {
 
         utils = new Futils();
 
-        mPoppyViewHelper = new PoppyViewHelper(getActivity());
         skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#673ab7");
         String x=getSelectionColor();
         skinselection=Color.parseColor(x);
         color=calculatevalues(x);
         ColorMatrix colorMatrix = new ColorMatrix(calculatefilter(color));
          colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
-        if (aBoolean) {
-            poppyView = mPoppyViewHelper.createPoppyViewOnListView(R.id.listView, R.layout.pooppybar);
-            LinearLayout linearLayout = (LinearLayout) poppyView.findViewById(R.id.linearLayout);
-            linearLayout.setBackgroundColor(Color.parseColor(skin));
-        } else {
-            poppyView = mPoppyViewHelper.createPoppyViewOnGridView(R.id.gridView, R.layout.pooppybar,null);
-            LinearLayout linearLayout = (LinearLayout) poppyView.findViewById(R.id.linearLayout);
-            linearLayout.setBackgroundColor(Color.parseColor(skin));
-        }
-        initPoppyViewListeners(poppyView);
         history = new HistoryManager(getActivity(), "Table1");
         rootMode = Sp.getBoolean("rootmode", false);
         mountSystem = Sp.getBoolean("mountsystem", false);
@@ -257,6 +253,8 @@ public class Main extends android.support.v4.app.Fragment {
         pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
 
         pathbar.setBackgroundColor(Color.parseColor(skin));
+        ImageView overflow = ((ImageView)getActivity().findViewById(R.id.action_overflow));
+        showPopup(overflow);
 
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -711,7 +709,6 @@ if(listView!=null){
             mode.setTitle(utils.getString(getActivity(), R.string.select));
             if(Build.VERSION.SDK_INT<19)
                 getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
-            poppyView.setVisibility(View.GONE);
             return true;
         }
 
@@ -906,8 +903,7 @@ if(listView!=null){
         public void onDestroyActionMode(ActionMode mode) {
             mActionMode = null;
             selection = false;
-            adapter.toggleChecked(false,current);
-            poppyView.setVisibility(View.VISIBLE);
+            adapter.toggleChecked(false, current);
             getActivity().findViewById(R.id.action_bar).setVisibility(View.VISIBLE);
             getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
 
@@ -1103,7 +1099,7 @@ if(listView!=null){
 if(history!=null)
         history.end();     }
     public void initPoppyViewListeners(View poppy){
-
+/*
         ImageView imageView = ((ImageView)poppy.findViewById(R.id.overflow));
         showPopup(imageView);
 
@@ -1113,13 +1109,6 @@ if(history!=null)
             @Override
             public void onClick(View view) {
                 home();if(mActionMode!=null){mActionMode.finish();}
-            }
-        });
-        homebutton.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Toast.makeText(getActivity(), "Home", Toast.LENGTH_SHORT).show();
-                return false;
             }
         });
 
@@ -1133,43 +1122,7 @@ if(history!=null)
                     mActionMode.finish();
                 }
             }
-        });
-        imageView1.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Toast.makeText(getActivity(), "Search", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-
-        ImageView imageView2 = ((ImageView)poppy.findViewById(R.id.history));
-        imageView2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                utils.showHistoryDialog(ma);
-            }
-        });
-        imageView2.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Toast.makeText(getActivity(), "History", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-        ImageView imageView3 = ((ImageView)poppy.findViewById(R.id.books));
-        imageView3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                utils.showBookmarkDialog(ma, sh);
-            }
-        });
-        imageView3.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Toast.makeText(getActivity(), "Bookmarks", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
+        });*/
     }
 
     public void showPopup(View v) {
@@ -1188,7 +1141,6 @@ if(history!=null)
         // Getting option for listView and gridView
         MenuItem s = popup.getMenu().findItem(R.id.view);
 
-        aBoolean = sharedPreferences.getBoolean("view", true);
         if (aBoolean) {
             s.setTitle("Grid View");
         } else {
@@ -1200,7 +1152,15 @@ if(history!=null)
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-
+                    case R.id.home:
+                        home();
+                        break;
+                    case R.id.history:
+                        utils.showHistoryDialog(ma);
+                        break;
+                    case R.id.book:
+                        utils.showBookmarkDialog(ma, sh);
+                        break;
                     case R.id.item3:
                         getActivity().finish();
                         break;

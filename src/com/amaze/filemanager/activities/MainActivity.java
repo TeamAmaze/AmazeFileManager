@@ -19,8 +19,10 @@
 
 package com.amaze.filemanager.activities;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -157,7 +159,7 @@ invalidatePasteButton();
         }
 
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#673ab7");
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.action_bar);
+        RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.action_bar);
         linearLayout.setBackgroundColor(Color.parseColor(skin));
         LinearLayout linearLayout1 = (LinearLayout) findViewById(R.id.pathbar);
         linearLayout1.setBackgroundColor(Color.parseColor(skin));
@@ -691,13 +693,49 @@ if(ib.getVisibility()==View.VISIBLE){
 
             }
             return a;}
-        @Override
-        public void onPostExecute(ArrayList<String> a){}
-        //Intent intent = new Intent(con, CopyService.class);
-        //intent.putExtra("FILE_PATHS",ab );
-        //intent.putExtra("COPY_DIRECTORY", path);
-      //  startService(intent);
-//        new MoveFiles(utils.toFileArray(ab), ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+        ArrayList<String> a;int i=0;
 
+        public void showDialog(final AlertDialog.Builder x,final String l){
+
+            x.setMessage("File already exists "+new File(l).getName());
+            x.setPositiveButton("Skip",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    ab.remove(l);
+                    i=i+1;
+                    try {
+                        showDialog(x,a.get(i));
+                    }catch (Exception e){}
+                }
+            });x.setNeutralButton("Overwrite",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    i=i+1;
+                    try {
+                        showDialog(x,a.get(i));
+                    }catch (Exception e){}
+                }
+            });
+            x.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });x.show();
+        }
+        @Override
+        public void onPostExecute(ArrayList<String> a) {
+            this.a=a;
+            if(a!=null && a.size()!=0){
+            AlertDialog.Builder x=new AlertDialog.Builder(con);
+            x.setTitle("Paste");
+                showDialog(x,a.get(0));
+ }
+         /*Intent intent = new Intent(con, CopyService.class);
+         intent.putExtra("FILE_PATHS",ab );
+         intent.putExtra("COPY_DIRECTORY", path);
+         startService(intent);
+         new MoveFiles(utils.toFileArray(ab), ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+        */}
     }
 }

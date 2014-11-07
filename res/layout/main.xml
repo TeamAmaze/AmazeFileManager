@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
        >
-<LinearLayout
+<RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/actionBarSize"
     android:orientation="horizontal"
@@ -38,47 +38,66 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_drawer_l"
-        android:layout_weight="1"
         style="?android:borderlessButtonStyle"/>
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_weight="25"
+        android:layout_toRightOf="@id/drawer_buttton"
+        android:layout_marginLeft="15dp"
         android:textColor="@android:color/white"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:visibility="visible"/>
     <Spinner
+        android:layout_toRightOf="@id/drawer_buttton"
         android:id="@+id/tab_spinner"
         android:layout_width="wrap_content"
+        android:layout_marginLeft="15dp"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_weight="25"
         android:background="@drawable/item_backgrund"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:visibility="gone"></Spinner>
     <ProgressBar
         android:background="@drawable/listitem1"
-        android:layout_weight="1"
+        android:layout_toRightOf="@id/tab_spinner"
         android:visibility="gone"
         android:indeterminate="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/progressBar"
         />
-        <ImageButton
-            android:background="@drawable/listitem1"
-            android:layout_weight="1"
-            android:visibility="gone"
-            style="?android:borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/paste"
-            android:src="@drawable/ic_action_paste"
-            />
-    </LinearLayout>
+
+    <ImageButton
+        android:background="@drawable/listitem1"
+        android:layout_alignParentRight="true"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/action_overflow"
+        android:src="@drawable/ic_action_overflow"
+        />
+    <ImageButton
+        android:background="@drawable/listitem1"
+        android:layout_toLeftOf="@id/action_overflow"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/search"
+        android:src="@drawable/ic_action_search"
+        />/><ImageButton
+    android:background="@drawable/listitem1"
+    android:layout_toLeftOf="@id/search"
+    android:visibility="gone"
+    style="?android:borderlessButtonStyle"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/paste"
+    android:src="@drawable/ic_action_paste"
+    />
+    </RelativeLayout>
 <FrameLayout
     android:id="@+id/buttonbarframe"
     android:layout_below="@id/action_bar"

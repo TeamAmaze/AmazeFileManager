@@ -19,7 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -40,6 +40,8 @@
             android:layout_height="wrap_content"
             style="?android:borderlessButtonStyle"
             android:src="@drawable/spinner_triangle"
+            android:clickable="false"
+            android:layout_toRightOf="@id/spinnerText"
             android:layout_gravity="center_vertical"/>
 
-    </LinearLayout>
+    </RelativeLayout>

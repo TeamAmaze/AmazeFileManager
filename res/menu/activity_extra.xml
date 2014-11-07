@@ -18,11 +18,18 @@
     -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <item android:id="@+id/home"
+        android:title="@string/home"
+        />
+    <item android:id="@+id/history"
+        android:title="@string/history"
+/><item android:id="@+id/book"
+    android:title="@string/books"
+    />
     <item
         android:id="@+id/item4"
         android:title="@string/refresh"
-        android:icon="@drawable/ic_action_refresh_light" />
+   />
     <item
         android:id="@+id/item9"
         android:title="@string/sethome" />
