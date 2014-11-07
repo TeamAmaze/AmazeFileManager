@@ -120,7 +120,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
     /* private view holder class */
     private class ViewHolder {
         CircularImageView viewmageV;
-        ImageView imageView;
+        ImageView imageView,apk;
         ImageView imageView1;
         TextView txtTitle;
         TextView txtDesc;
@@ -150,6 +150,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 vholder.perm = (TextView) view.findViewById(R.id.permis);
                 vholder.date = (TextView) view.findViewById(R.id.date);
                 vholder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
+                vholder.apk=(ImageView)view.findViewById(R.id.bicon);
                 view.setTag(vholder);
 
             }
@@ -205,6 +206,14 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     else main.goBack();
                 }
             });
+            holder.apk.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!rowItem.getSize().equals("Go Back"))
+                        toggleChecked(p);
+                    else main.goBack();
+                }
+            });
             holder.imageView.setVisibility(View.VISIBLE);
             holder.viewmageV.setVisibility(View.INVISIBLE);
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
@@ -214,13 +223,21 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 main.ic.cancelLoad(holder.viewmageV);
                 main.ic.loadDrawable(holder.viewmageV, new File(rowItem.getDesc()), null);
             } }else if (Icons.isApk((rowItem.getDesc()))) {
-                main.ic.cancelLoad(holder.imageView);
-                main.ic.loadDrawable(holder.imageView, new File(rowItem.getDesc()), null);
-            }
+                if(main.showThumbs){
+                holder.imageView.setVisibility(View.GONE);
+                    holder.apk.setVisibility(View.VISIBLE);
+                    holder.apk.setImageDrawable(main.apk);
+                main.ic.cancelLoad(holder.apk);
+                main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);}
+            }else{holder.viewmageV.setVisibility(View.GONE);
+            holder.apk.setVisibility(View.GONE);}
             Boolean checked = myChecked.get(position);
             if (checked != null) {
 
                 if (checked) {
+                    holder.viewmageV.setVisibility(View.GONE);
+                    holder.apk.setVisibility(View.GONE);
+                    holder.imageView.setVisibility(View.VISIBLE);
                     holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
                     gradientDrawable.setColor(Color.parseColor("#757575"));

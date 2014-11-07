@@ -106,7 +106,7 @@ public class Main extends android.support.v4.app.Fragment {
     public boolean results = false;
     public ActionMode mActionMode;
     public SharedPreferences Sp;
-    Drawable folder;
+    public Drawable folder,apk;
     Resources res;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
@@ -173,6 +173,7 @@ public class Main extends android.support.v4.app.Fragment {
         showThumbs=Sp.getBoolean("showThumbs",true);
         ic=new IconHolder(getActivity(),showThumbs,!aBoolean);
         res = getResources();
+        apk=res.getDrawable(R.drawable.ic_doc_apk_grid);
          animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
         if(theme==1) {
             rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_dark));

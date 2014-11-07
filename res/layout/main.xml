@@ -50,25 +50,7 @@
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:visibility="visible"/>
-    <Spinner
-        android:layout_toRightOf="@id/drawer_buttton"
-        android:id="@+id/tab_spinner"
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:background="@drawable/item_backgrund"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:visibility="gone"></Spinner>
-    <ProgressBar
-        android:background="@drawable/listitem1"
-        android:layout_toRightOf="@id/tab_spinner"
-        android:visibility="gone"
-        android:indeterminate="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        />
+
 
     <ImageButton
         android:background="@drawable/listitem1"
@@ -97,6 +79,26 @@
     android:id="@+id/paste"
     android:src="@drawable/ic_action_paste"
     />
+    <ProgressBar
+        android:background="@drawable/listitem1"
+        android:layout_toLeftOf="@id/paste"
+        android:visibility="gone"
+        android:indeterminate="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        />
+    <Spinner
+        android:layout_toRightOf="@id/drawer_buttton"
+        android:layout_toLeftOf="@id/progressBar"
+        android:id="@+id/tab_spinner"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:background="@drawable/item_backgrund"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:visibility="gone"></Spinner>
     </RelativeLayout>
 <FrameLayout
     android:id="@+id/buttonbarframe"

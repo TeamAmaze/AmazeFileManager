@@ -37,6 +37,12 @@
         android:layout_marginRight="12dp"
         android:layout_gravity="center_vertical"
         android:id="@+id/icon"/>
+    <ImageView
+        android:layout_width="44dip"
+        android:layout_height="44dip"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:id="@+id/bicon"/>
     <com.pkmmte.view.CircularImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cicon"
