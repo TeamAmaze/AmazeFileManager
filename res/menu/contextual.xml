@@ -37,7 +37,7 @@
         android:id="@+id/all"
         android:title="@string/selectall"
         android:icon="@drawable/ic_action_select_all_light"
-        android:showAsAction="always" />
+        android:showAsAction="ifRoom" />
     <item
         android:id="@+id/about"
         android:title="@string/properties"
