@@ -69,6 +69,7 @@ import com.amaze.filemanager.utils.Shortcuts;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -665,14 +666,12 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     }
                 }
                 if (new File(ma.current).getUsableSpace() > totalBytes) {
-                    b=ab;
+
                     File f = new File(path);
                     for (File k : f.listFiles()) {
-                        for (String j : params[0]) {
+                        for (String j : ab) {
                             if (k.getName().equals(new File(j).getName())) {
-                                a.add(j);
-                                b.remove(j);
-                            }
+                                a.add(j);}
                         }
                     }
                 } else publishProgress("Insufficient space");
@@ -708,10 +707,10 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         public void showDialog() {
 
 
-            if (counter == a.size()) {
-                if (lol != null || lol.size()!=0) {
+            if (counter == a.size() || a.size()==0) {
+                if (ab != null && ab.size()!=0) {
                     Intent intent = new Intent(con, CopyService.class);
-                    intent.putExtra("FILE_PATHS", lol);
+                    intent.putExtra("FILE_PATHS", ab);
                     intent.putExtra("COPY_DIRECTORY", ma.current);
                     startService(intent);
                 } else {
@@ -726,6 +725,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                         if (counter < a.size()) {
+                            ab.remove(a.get(counter));
                             counter++;
                             showDialog();
                         }
@@ -736,7 +736,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (counter < a.size()) {
-                            lol.add(a.get(counter));
+
                             counter++;
                             showDialog();
                         }
@@ -759,17 +759,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             super.onPostExecute(strings);
             if (!move) {
 
-                if (b.size()!=0) {
-
-                    Intent intent = new Intent(con, CopyService.class);
-                    intent.putExtra("FILE_PATHS", b);
-                    intent.putExtra("COPY_DIRECTORY", ma.current);
-                    startService(intent);
-                }
-
-                if (a.size() != 0) {
                     showDialog();
-                }
+
             } else {
                 // yet to be implemented
             }
