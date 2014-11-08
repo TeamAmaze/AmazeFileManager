@@ -221,7 +221,7 @@ public class Main extends android.support.v4.app.Fragment {
         getActivity().findViewById(R.id.fab2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                add(2);
+                add(1);
             }
         });
         getActivity().findViewById(R.id.fab3).setOnClickListener(new View.OnClickListener() {
