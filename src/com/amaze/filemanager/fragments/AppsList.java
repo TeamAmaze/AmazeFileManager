@@ -67,7 +67,6 @@ public class AppsList extends ListFragment {
     public boolean selection = false;
     public ActionMode mActionMode;
     public ArrayList<ApplicationInfo> c = new ArrayList<ApplicationInfo>();
-    private LruCache<String, Bitmap> mMemoryCache;
    ListView vl;public IconHolder ic;
     ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
 
@@ -86,8 +85,6 @@ public class AppsList extends ListFragment {
         getActivity().findViewById(R.id.paste).setVisibility(View.GONE);
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
-        final int cacheSize = maxMemory / 4;
-        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {};
         vl=getListView();
 
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -130,6 +127,7 @@ public class AppsList extends ListFragment {
                         ArrayList<String> a = new ArrayList<String>();
                         a.add(info.publicSourceDir);
                         File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");
+                        if(!dst.exists() || !dst.isDirectory())dst.mkdirs();
                         Intent intent = new Intent(getActivity(), CopyService.class);
                         intent.putExtra("FILE_PATHS", a);
                         intent.putExtra("COPY_DIRECTORY", dst.getPath());
