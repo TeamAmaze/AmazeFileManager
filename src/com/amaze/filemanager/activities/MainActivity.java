@@ -629,11 +629,14 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         String path;
         Boolean move;
         ArrayList<String> ab, a, b;
+        int counter = 0;
 
         public CheckForFiles(Main main, String path, Boolean move) {
             this.ma = main;
             this.path = path;
             this.move = move;
+            a = new ArrayList<String>();
+            b = new ArrayList<String>();
         }
 
         @Override
@@ -645,8 +648,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         // Actual download method, run in the task thread
         protected ArrayList<String> doInBackground(ArrayList<String>... params) {
             ab = params[0];
-            a = new ArrayList<String>();
-            b = new ArrayList<String>();
             if (!move) {
                 long totalBytes = 0;
                 for (int i = 0; i < params[0].size(); i++) {
@@ -699,22 +700,16 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             return a;
         }
 
-        int j = 0;
-
         public void showDialog(final AlertDialog.Builder x, final String l) {
 
-            x.setMessage("File already exists " + new File(l).getName());
+            x.setMessage("File with same name already exists " + new File(l).getName());
             x.setPositiveButton("Skip", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    //ab.remove(l);
-                    j++;
-                    /*try {
-                        showDialog(x, a.get(i));
-                    } catch (Exception e) {
-                    }*/
-                    if (j < a.size()) {
-                        showDialog(x, a.get(j));
+
+                    counter++;
+                    if (counter < a.size()) {
+                        showDialog(x, a.get(counter));
                     }
                     dialogInterface.cancel();
                 }
@@ -722,17 +717,27 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             x.setNeutralButton("Overwrite", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    i = i + 1;
-                    try {
-                        showDialog(x, a.get(i));
-                    } catch (Exception e) {
+                    counter++;
+                    if (counter < a.size()) {
+                        ArrayList<String> lol = new ArrayList<String>();
+                        lol.add(a.get(counter));
+
+                        Intent intent = new Intent(con, CopyService.class);
+                        intent.putExtra("FILE_PATHS", lol);
+                        intent.putExtra("COPY_DIRECTORY", ma.current);
+                        startService(intent);
+
+                        lol.clear();
+                        showDialog(x, a.get(counter));
                     }
+                    dialogInterface.cancel();
                 }
             });
             x.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
 
+                    dialogInterface.cancel();
                 }
             });
             x.show();
@@ -743,16 +748,17 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             super.onPostExecute(strings);
             if (!move) {
 
-                if (b != null && b.size() != 0) {
+                if (b != null) {
 
                     Intent intent = new Intent(con, CopyService.class);
                     intent.putExtra("FILE_PATHS", b);
                     intent.putExtra("COPY_DIRECTORY", ma.current);
                     startService(intent);
                 }
-                if (a != null && a.size() != 0) {
-                        AlertDialog.Builder x = new AlertDialog.Builder(con);
-                        showDialog(x, a.get(0));
+
+                if (a != null) {
+                    AlertDialog.Builder x = new AlertDialog.Builder(con);
+                    showDialog(x, a.get(0));
                 }
             } else {
                 // yet to be implemented
