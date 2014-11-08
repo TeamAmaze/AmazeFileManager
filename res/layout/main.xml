@@ -19,6 +19,7 @@
 
 <android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -189,14 +190,55 @@
             android:src="@drawable/shadow"
             android:layout_below="@id/buttonbarframe"
             android:adjustViewBounds="false" />
-        <com.faizmalkani.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabbutton"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_below="@id/buttonbarframe"
-            android:layout_marginTop="-28dp"
-            android:layout_marginLeft="12dp"
-            />
+
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/pink_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            fab:fab_addButtonColorNormal="#da4336"
+            fab:fab_addButtonColorPressed="#b93221"
+            fab:fab_addButtonPlusIconColor="#ffffff"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp">
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_icon="@drawable/file"
+                android:id="@+id/fab1"
+                fab:fab_colorNormal="@android:color/white"
+                fab:fab_colorPressed="#99999999"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="#ffffff"
+                fab:fab_icon="@drawable/folder"
+                fab:fab_colorPressed="#99999999"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_icon="@drawable/add_tab"
+                android:id="@+id/fab3"
+                fab:fab_colorNormal="@android:color/white"
+                fab:fab_colorPressed="#99999999"/>
+            </com.getbase.floatingactionbutton.FloatingActionsMenu>
+        <com.getbase.floatingactionbutton.AddFloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_plusIconColor="#ffffff"
+            android:id="@+id/bookadd"
+            fab:fab_colorNormal="#da4336"
+            android:layout_alignParentBottom="true"
+            fab:fab_colorPressed="#b93221"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"/>
     </RelativeLayout>
 
     <!--

@@ -69,8 +69,9 @@ ListView vl;
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
         getActivity().findViewById(R.id.search).setVisibility(View.GONE);
         getActivity().findViewById(R.id.paste).setVisibility(View.GONE);
-        getActivity().findViewById(R.id.fabbutton).setVisibility(View.VISIBLE);
-        getActivity().findViewById(R.id.fabbutton).setOnClickListener(new View.OnClickListener() {
+        getActivity().findViewById(R.id.pink_icon).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.bookadd).setVisibility(View.VISIBLE);
+        getActivity().findViewById(R.id.bookadd).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 

@@ -136,7 +136,6 @@ public class Main extends android.support.v4.app.Fragment {
     public String skin;
     public int skinselection;
     public int theme;
-    private FloatingActionButton fab;
     private TabSpinnerAdapter tabSpinnerAdapter;
     public float[] color;
     public ColorMatrixColorFilter colorMatrixColorFilter;
@@ -213,16 +212,24 @@ public class Main extends android.support.v4.app.Fragment {
         tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, getActivity().getSupportFragmentManager(), mainActivity.tabsSpinner);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        fab=(FloatingActionButton)getActivity().findViewById(R.id.fabbutton);
-        (fab).setDrawable(icons.getNewDrawable());
-        fab.setOnClickListener(new View.OnClickListener() {
+        getActivity().findViewById(R.id.fab1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                add();
+                add(0);
             }
         });
-        fab.setVisibility(View.VISIBLE);
+        getActivity().findViewById(R.id.fab2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                add(1);
+            }
+        });
+        getActivity().findViewById(R.id.fab3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                add(2);
+            }
+        });
         getActivity().findViewById(R.id.search).setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.VISIBLE);
         utils = new Futils();
@@ -269,6 +276,8 @@ public class Main extends android.support.v4.app.Fragment {
                 timer.start();
             }
         });
+        getActivity().findViewById(R.id.bookadd).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.pink_icon).setVisibility(View.VISIBLE);
         scroll = (HorizontalScrollView) getActivity().findViewById(R.id.scroll);
         scroll1 = (HorizontalScrollView) getActivity().findViewById(R.id.scroll1);
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
@@ -348,26 +357,8 @@ if(listView!=null){
         }
     }}
 
-    public void add() {
-
-        AnimatorSet set = new AnimatorSet();
-        set.playTogether(
-                ObjectAnimator.ofFloat(fab, "rotation", 0, 180)
-        );
-        set.setDuration(350).start();
-
-        AlertDialog.Builder ba = new AlertDialog.Builder(getActivity());
-        ba.setTitle(utils.getString(getActivity(), R.string.add));
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                getActivity(), android.R.layout.select_dialog_item);
-        adapter.add(utils.getString(getActivity(), R.string.folder));
-        adapter.add(utils.getString(getActivity(), R.string.file));
-        adapter.add("Tab");
-        ba.setAdapter(adapter, new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface p1, int p2) {
-                switch (p2) {
+    public void add(int pos) {
+ switch (pos) {
 
                     case 0:
                         final String path = ma.current;
@@ -444,14 +435,11 @@ if(listView!=null){
 
                         listView.setAnimation(animation);
                         gridView.setAnimation(animation);
-                        fab.setAnimation(animation1);
                 }
             }
-        });
-        ba.show();
 
 
-    }
+
 
     public void home() {
         ma.loadlist(new File(ma.home), false);
@@ -1206,9 +1194,6 @@ if(history!=null)
         buttons.setVisibility(View.VISIBLE);
 
 
-        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_hide);
-        fab.setAnimation(animation);
-        fab.setVisibility(View.INVISIBLE);
 
         // Animate the content view to 100% opacity, and clear any animation
         // listener set on the view.
@@ -1241,8 +1226,6 @@ if(history!=null)
     }private void crossfadeInverse() {
 
 
-        fab.setAnimation(animation);
-        fab.setVisibility(View.VISIBLE);
         // Set the content view to 0% opacity but visible, so that it is visible
         // (but fully transparent) during the animation.
 
