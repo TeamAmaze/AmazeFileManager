@@ -259,6 +259,10 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     transaction.replace(R.id.content_frame, new ProcessViewer());
                     //   transaction.addToBackStack(null);
                     select = 102;
+
+                    title.setText("Process Viewer");
+                    title.setVisibility(View.VISIBLE);
+                    tabsSpinner.setVisibility(View.GONE);
                     //Commit the transaction
                     transaction.commit();
                 } else {
