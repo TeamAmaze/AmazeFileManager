@@ -127,7 +127,7 @@ public class Main extends android.support.v4.app.Fragment {
     public ListView listView;
     public GridView gridView;
     private SharedPreferences sharedPreferences;
-    public Boolean aBoolean,showThumbs;
+    public Boolean aBoolean,showThumbs,coloriseIcons;
     public IconHolder ic;
     private TabHandler tabHandler;
     private List<Tab> content;
@@ -237,6 +237,7 @@ public class Main extends android.support.v4.app.Fragment {
         rootMode = Sp.getBoolean("rootmode", false);
         mountSystem = Sp.getBoolean("mountsystem", false);
         showHidden=Sp.getBoolean("showHidden",true);
+        coloriseIcons=Sp.getBoolean("coloriseIcons",false);
         if(aBoolean){
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);}
         else{folder = res.getDrawable(R.drawable.ic_grid_folder1);}

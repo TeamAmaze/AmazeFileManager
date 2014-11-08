@@ -191,14 +191,44 @@ static {
     }
 
     public static boolean isText(String name) {
-        Integer res = sMimeIcons.get(MimeTypes.getMimeType(new File(name)));
+        String mimeType=MimeTypes.getMimeType(new File(name));
+
+        Integer res = sMimeIcons.get(mimeType);
         if (res != null && res == R.drawable.ic_doc_text_am) return true;
+        if(mimeType!=null && mimeType.contains("/")){
+        final String typeOnly = mimeType.split("/")[0];
+        if ("text".equals(typeOnly)) {
+        return true;}}
+            return false;
+    }
+    public static boolean isVideo(String name){
+        String mimeType=MimeTypes.getMimeType(new File(name));
+        Integer res = sMimeIcons.get(mimeType);
+        if (res != null && res == R.drawable.ic_doc_video_am) return true;
+        if(mimeType!=null && mimeType.contains("/")){
+            final String typeOnly = mimeType.split("/")[0];
+            if ("video".equals(typeOnly)) {
+                return true;}}
         return false;
     }
-
+    public static boolean isAudio(String name){
+        String mimeType=MimeTypes.getMimeType(new File(name));
+        Integer res = sMimeIcons.get(mimeType);
+        if (res != null && res == R.drawable.ic_doc_audio_am) return true;
+        if(mimeType!=null && mimeType.contains("/")){
+            final String typeOnly = mimeType.split("/")[0];
+            if ("audio".equals(typeOnly)) {
+                return true;}}
+        return false;
+    }
     public static boolean isCode(String name) {
         Integer res = sMimeIcons.get(MimeTypes.getMimeType(new File(name)));
         if (res != null && res == R.drawable.ic_doc_codes) return true;
+        return false;
+    }
+    public static boolean isArchive(String name) {
+        Integer res = sMimeIcons.get(MimeTypes.getMimeType(new File(name)));
+        if (res != null && res == R.drawable.ic_doc_compressed) return true;
         return false;
     }
 
@@ -207,13 +237,25 @@ static {
         if (res != null && res == R.drawable.ic_doc_apk) return true;
         return false;
     }
+    public static boolean isPdf(String name) {
+        Integer res = sMimeIcons.get(MimeTypes.getMimeType(new File(name)));
+        if (res != null && res == R.drawable.ic_doc_pdf) return true;
+        return false;
+    }
 
     public static boolean isPicture(String name) {
         Integer res = sMimeIcons.get(MimeTypes.getMimeType(new File(name)));
         if (res != null && res == R.drawable.ic_doc_image) return true;
         return false;
     }
-
+public static boolean isgeneric(String name){
+    String mimeType = MimeTypes.getMimeType(new File(name));
+    if (mimeType == null) {
+            /* if(grid)
+            return res.getDrawable(R.drawable.ic_doc_generic_am_grid);
+*/
+        return true;
+    }return false;}
     public static Drawable loadMimeIcon(Context context, String path,boolean grid) {
         final Resources res = context.getResources();
         String mimeType = MimeTypes.getMimeType(new File(path));
