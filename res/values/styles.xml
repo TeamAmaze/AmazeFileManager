@@ -17,6 +17,10 @@
 <resources>
 
     <style name="DarkTheme" parent="android:Theme.Holo">
+
+        <item name="android:actionOverflowButtonStyle">@style/OverflowActionModeDark</item>
+        <item name="android:actionModeBackground">@drawable/action_bar_dark</item>
+        <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_36dp</item>
     </style>
     <style name="TextAppearance" />
     <style name="TextAppearance.Medium">
@@ -31,9 +35,12 @@
     <style name="LightTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <item name="android:actionOverflowButtonStyle">@style/OverflowActionMode</item>
         <item name="android:actionModeBackground">@drawable/action_bar</item>
-        <item name="android:actionModeSplitBackground">@drawable/action_bar</item>
         <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_48dp</item>
         <!--<item name="android:dropDownListViewStyle">@style/spinner_style</item>-->
+    </style>
+
+    <style name="OverflowActionModeDark" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_action_overflow</item>
     </style>
     <style name="OverflowActionMode" parent="@android:style/Widget.Holo.ActionButton.Overflow">
         <item name="android:src">@drawable/ic_more_vert_black_48dp</item>
