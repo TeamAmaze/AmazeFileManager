@@ -28,6 +28,10 @@
 
     <style name="DarkTheme" parent="android:Theme.Holo">
         <item name="android:windowTranslucentStatus">true</item>
+
+        <item name="android:actionOverflowButtonStyle">@style/OverflowActionModeDark</item>
+        <item name="android:actionModeBackground">@drawable/action_bar_dark</item>
+        <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_36dp</item>
         <!--<item name="android:dropDownListViewStyle">@style/spinner_style</item>-->
     </style>
 

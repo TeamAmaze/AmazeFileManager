@@ -504,7 +504,7 @@ if(listView!=null){
                     utils.openFile(f, (MainActivity) getActivity());
             }
         } else if (selection == true) {
-            if(position!=0){
+            if(!list.get(position).getSize().equals("Go Back")){
             adapter.toggleChecked(position);;
             }else{selection = false;
                 if(mActionMode!=null)
@@ -686,11 +686,10 @@ if(listView!=null){
             item.setVisible(true);
         }
         public void initMenu(Menu menu) {
-            menu.findItem(R.id.cpy).setIcon(getResources().getDrawable(R.drawable.ic_content_copy_black_36dp));
-            menu.findItem(R.id.cut).setIcon(getResources().getDrawable(R.drawable.ic_content_cut_black_36dp));
-            menu.findItem(R.id.delete).setIcon(getResources().getDrawable(R.drawable.ic_delete_black_48dp));
-            menu.findItem(R.id.all).setIcon(getResources().getDrawable(R.drawable.ic_select_all_black_36dp));
-            menu.findItem(R.id.about).setIcon(icons.getAboutDrawable());
+            menu.findItem(R.id.cpy).setIcon(icons.getCopyDrawable());
+            menu.findItem(R.id.cut).setIcon(icons.getCutDrawable());
+            menu.findItem(R.id.delete).setIcon(icons.getDeleteDrawable());
+            menu.findItem(R.id.all).setIcon(icons.getAllDrawable());
 
 
         }
