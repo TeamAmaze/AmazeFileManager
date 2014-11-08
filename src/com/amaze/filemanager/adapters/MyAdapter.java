@@ -249,7 +249,17 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 } else {
 
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
-                    gradientDrawable.setColor(Color.parseColor(main.skin));
+                    if(main.coloriseIcons){
+                        if(new File(rowItem.getDesc()).isDirectory())gradientDrawable.setColor(Color.parseColor(main.skin));
+                        else if(Icons.isVideo(rowItem.getDesc()))gradientDrawable.setColor(Color.parseColor("#f06292"));
+                        else if(Icons.isAudio(rowItem.getDesc()))gradientDrawable.setColor(Color.parseColor("#9575cd"));
+                        else if(Icons.isPdf(rowItem.getDesc()))gradientDrawable.setColor(Color.parseColor("#da4336"));
+                        else if(Icons.isCode(rowItem.getDesc()))gradientDrawable.setColor(Color.parseColor("#00bfa5"));
+                        else if(Icons.isText(rowItem.getDesc()))gradientDrawable.setColor(Color.parseColor("#e06055"));
+                        else if(Icons.isArchive(rowItem.getDesc()))gradientDrawable.setColor(Color.parseColor("#f9a825"));
+                        else if(Icons.isgeneric(rowItem.getDesc()))gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
+                        else gradientDrawable.setColor(Color.parseColor(main.skin));
+                    }else gradientDrawable.setColor(Color.parseColor(main.skin));
                     if (main.uimode == 0) {
                         holder.rl.setBackgroundResource(R.drawable.listitem1);
                     } else if (main.uimode == 1) {

@@ -30,6 +30,10 @@
             android:key="skin"
             android:title="@string/skin" />
         <CheckBoxPreference
+            android:key="coloriseIcons"
+            android:checked="true"
+            android:title="Colorise icons" />
+        <CheckBoxPreference
             android:key="random"
             android:title="@string/random" />
         <ListPreference
