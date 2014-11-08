@@ -79,7 +79,8 @@ public class AppsList extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getActivity().findViewById(R.id.fabbutton).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.pink_icon).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.bookadd).setVisibility(View.GONE);
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
         getActivity().findViewById(R.id.search).setVisibility(View.GONE);
         getActivity().findViewById(R.id.paste).setVisibility(View.GONE);

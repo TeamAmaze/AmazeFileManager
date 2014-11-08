@@ -65,7 +65,8 @@ public class ProcessViewer extends Fragment {
         setRetainInstance(false);
 
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
-        getActivity().findViewById(R.id.fabbutton).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.pink_icon).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.bookadd).setVisibility(View.GONE);
         getActivity().findViewById(R.id.paste).setVisibility(View.GONE);
         rootView = (LinearLayout) root.findViewById(R.id.secondbut);
         getActivity().getActionBar().setSubtitle("Processes");

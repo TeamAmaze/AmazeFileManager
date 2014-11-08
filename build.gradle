@@ -11,6 +11,8 @@ repositories {
     mavenCentral()
 }
 dependencies {
+
+    compile 'com.getbase:floatingactionbutton:1.1.0'
     compile 'com.pkmmte.view:circularimageview:1.1'
     compile fileTree(dir: 'libs', include: '*.jar')
     compile files('libs/RootTools')
