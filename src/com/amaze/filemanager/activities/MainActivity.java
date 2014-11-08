@@ -259,6 +259,10 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     transaction.replace(R.id.content_frame, new ProcessViewer());
                     //   transaction.addToBackStack(null);
                     select = 102;
+
+                    title.setText("Process Viewer");
+                    title.setVisibility(View.VISIBLE);
+                    tabsSpinner.setVisibility(View.GONE);
                     //Commit the transaction
                     transaction.commit();
                 } else {
@@ -560,7 +564,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
-            ImageView ib = (ImageView) findViewById(R.id.overflow);
+            ImageView ib = (ImageView) findViewById(R.id.action_overflow);
             if (ib.getVisibility() == View.VISIBLE) {
                 ib.performClick();
             }
@@ -661,13 +665,13 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     }
                 }
                 if (new File(ma.current).getUsableSpace() > totalBytes) {
+                    b=ab;
                     File f = new File(path);
                     for (File k : f.listFiles()) {
                         for (String j : params[0]) {
                             if (k.getName().equals(new File(j).getName())) {
                                 a.add(j);
-                            } else {
-                                b.add(j);
+                                b.remove(j);
                             }
                         }
                     }
@@ -705,7 +709,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
 
             if (counter == a.size()) {
-                if (lol != null && lol.size() != 0) {
+                if (lol != null || lol.size()!=0) {
                     Intent intent = new Intent(con, CopyService.class);
                     intent.putExtra("FILE_PATHS", lol);
                     intent.putExtra("COPY_DIRECTORY", ma.current);
@@ -755,7 +759,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             super.onPostExecute(strings);
             if (!move) {
 
-                if (b != null && b.size() != 0) {
+                if (b.size()!=0) {
 
                     Intent intent = new Intent(con, CopyService.class);
                     intent.putExtra("FILE_PATHS", b);
@@ -763,7 +767,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     startService(intent);
                 }
 
-                if (a != null && a.size() != 0) {
+                if (a.size() != 0) {
                     showDialog();
                 }
             } else {
