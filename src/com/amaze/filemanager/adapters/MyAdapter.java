@@ -238,9 +238,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             if (checked != null) {
 
                 if (checked) {
-                    holder.viewmageV.setVisibility(View.GONE);
-                    holder.apk.setVisibility(View.GONE);
-                    holder.imageView.setVisibility(View.VISIBLE);
                     holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
                     gradientDrawable.setColor(Color.parseColor("#757575"));
