@@ -1167,6 +1167,7 @@ if(history!=null)
                         utils.showDirectorySortDialog(ma);
                         break;
                     case R.id.item4:
+                        ic.cleanup();
                         ma.loadlist(new File(ma.current), false);
                         break;
                     case R.id.view:

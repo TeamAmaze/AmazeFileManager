@@ -196,72 +196,7 @@ public class CopyService extends Service {
                 } catch (RootDeniedException e) {
                     e.printStackTrace();
                 }}
-            }
-            else{for (int i = 0; i < files.size(); i++) {
-                    File f1 = new File(files.get(i));
-                    if (f1.isDirectory()) {
-                        totalBytes = totalBytes + new Futils().folderSize(f1,false);
-                    } else {
-                        totalBytes = totalBytes + f1.length();
-                    }
-                }
-                    for (int i = 0; i < files.size(); i++) {
-                        File f1 = new File(files.get(i));
-                        try {
-
-                            copyFiles1((f1), new File(FILE2, f1.getName()), id);
-                        } catch (IOException e) {
-                            System.out.println("amaze " + e);
-                            publishResults("" + e, 0, 0, id, 0, 0, false);
-                        }
-
-                    }
-            }
-            utils.scanFile(new File(files.get(0)).getParent(),c);
-            Intent intent = new Intent("loadlist");
-            sendBroadcast(intent);
-
-        }
-        private void copyFiles1(File sourceFile, File targetFile, int id) throws IOException {
-            if (sourceFile.isDirectory()) {
-                if (!targetFile.exists()) targetFile.mkdirs();
-
-                String[] filePaths = sourceFile.list();
-
-                for (String filePath : filePaths) {
-                    File srcFile = new File(sourceFile, filePath);
-                    File destFile = new File(targetFile, filePath);
-
-                    copyFiles1(srcFile, destFile, id);
-                }
-            } else {
-                long size = sourceFile.length(), fileBytes = 0l;
-                // txtDetails.append("Copying " + sourceFile.getAbsolutePath() + " ... ");
-                InputStream in = new FileInputStream(sourceFile);
-                OutputStream out = new MediaFile(getContentResolver(),targetFile).write();
-
-                byte[] buffer = new byte[8192];
-
-                int length;
-                //copy the file content in bytes
-                while ((length = in.read(buffer)) > 0) {
-                    boolean b = hash.get(id);
-                    if (b) {
-                        out.write(buffer, 0, length);
-                        copiedBytes += length;
-                        fileBytes += length;
-                        publishResults(sourceFile.getName(), Math.round(copiedBytes * 100 / totalBytes), Math.round(fileBytes * 100 / size), id, totalBytes, copiedBytes, false);
-                        publishResults(true);
-                    }
-                    //	System.out.println(sourceFile.getName()+" "+id+" " +Math.round(copiedBytes*100/totalBytes)+"  "+Math.round(fileBytes*100/size));
-                }
-
-
-                in.close();
-                out.close();
-
-                utils.scanFile(sourceFile.getPath(), c);
-            }}
+            }else{System.out.println("Not Allowed");}}
         private void copyFiles(File sourceFile, File targetFile, int id) throws IOException {
             if (sourceFile.isDirectory()) {
                 if (!targetFile.exists()) targetFile.mkdirs();
@@ -278,7 +213,10 @@ public class CopyService extends Service {
                 long size = sourceFile.length(), fileBytes = 0l;
                 // txtDetails.append("Copying " + sourceFile.getAbsolutePath() + " ... ");
                 InputStream in = new FileInputStream(sourceFile);
-                OutputStream out = new FileOutputStream(targetFile);
+                OutputStream out;
+                try {
+                out= new FileOutputStream(targetFile);
+}catch (Exception e){out=new MediaFile(getContentResolver(),targetFile).write();}
 
                 byte[] buffer = new byte[8192];
 
