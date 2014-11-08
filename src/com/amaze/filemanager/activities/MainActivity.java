@@ -628,7 +628,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         Main ma;
         String path;
         Boolean move;
-        ArrayList<String> ab, a, b;
+        ArrayList<String> ab, a, b, lol;
         int counter = 0;
 
         public CheckForFiles(Main main, String path, Boolean move) {
@@ -637,6 +637,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             this.move = move;
             a = new ArrayList<String>();
             b = new ArrayList<String>();
+            lol = new ArrayList<String>();
         }
 
         @Override
@@ -700,47 +701,53 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             return a;
         }
 
-        public void showDialog(final AlertDialog.Builder x, final String l) {
+        public void showDialog() {
 
-            x.setMessage("File with same name already exists " + new File(l).getName());
-            x.setPositiveButton("Skip", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
 
-                    counter++;
-                    if (counter < a.size()) {
-                        showDialog(x, a.get(counter));
+            if (counter == a.size()) {
+                if (lol != null) {
+                    Intent intent = new Intent(con, CopyService.class);
+                    intent.putExtra("FILE_PATHS", lol);
+                    intent.putExtra("COPY_DIRECTORY", ma.current);
+                    startService(intent);
+                } else {
+                    Toast.makeText(MainActivity.this, "No file was overwritten", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+
+                AlertDialog.Builder x = new AlertDialog.Builder(MainActivity.this);
+                x.setMessage("File with same name already exists " + new File(a.get(counter)).getName());
+                x.setPositiveButton("Skip", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        if (counter < a.size()) {
+                            counter++;
+                            showDialog();
+                        }
+                        dialogInterface.cancel();
                     }
-                    dialogInterface.cancel();
-                }
-            });
-            x.setNeutralButton("Overwrite", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    counter++;
-                    if (counter < a.size()) {
-                        ArrayList<String> lol = new ArrayList<String>();
-                        lol.add(a.get(counter));
-
-                        Intent intent = new Intent(con, CopyService.class);
-                        intent.putExtra("FILE_PATHS", lol);
-                        intent.putExtra("COPY_DIRECTORY", ma.current);
-                        startService(intent);
-
-                        lol.clear();
-                        showDialog(x, a.get(counter));
+                });
+                x.setNeutralButton("Overwrite", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (counter < a.size()) {
+                            lol.add(a.get(counter));
+                            counter++;
+                            showDialog();
+                        }
+                        dialogInterface.cancel();
                     }
-                    dialogInterface.cancel();
-                }
-            });
-            x.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+                });
+                x.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
-                    dialogInterface.cancel();
-                }
-            });
-            x.show();
+                        dialogInterface.cancel();
+                    }
+                });
+                x.show();
+            }
         }
 
         @Override
@@ -757,8 +764,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 }
 
                 if (a != null) {
-                    AlertDialog.Builder x = new AlertDialog.Builder(con);
-                    showDialog(x, a.get(0));
+                    showDialog();
                 }
             } else {
                 // yet to be implemented
