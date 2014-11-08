@@ -53,12 +53,12 @@ import com.amaze.filemanager.utils.Layoutelements;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class AppsList extends ListFragment {
-    ArrayList<File> mFile = new ArrayList<File>();
     Futils utils = new Futils();
     AppsList app = this;
     AppsAdapter adapter;
@@ -168,8 +168,8 @@ public class AppsList extends ListFragment {
     class LoadListTask extends AsyncTask<Void, Void, ArrayList<Layoutelements>> {
 
         protected ArrayList<Layoutelements> doInBackground(Void[] p1) {
-            try {
-                List<ApplicationInfo> all_apps = getActivity().getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+            try {PackageManager p=getActivity().getPackageManager();
+                List<ApplicationInfo> all_apps = p.getInstalledApplications(PackageManager.GET_META_DATA);
 
 
                 for (ApplicationInfo object : all_apps) {
@@ -178,16 +178,12 @@ public class AppsList extends ListFragment {
                     c.add(object);
 
 
+
                 }
-                Collections.sort(c, new AppsSorter(getActivity().getPackageManager()));
-                for (int i = 0; i < c.size(); i++) {
+                Collections.sort(c, new AppsSorter(p));
+                for (ApplicationInfo object:c)
+                a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk_grid), object.loadLabel(getActivity().getPackageManager()).toString(), object.publicSourceDir,"","","",false));
 
-
-                    a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk_grid), c.get(i).loadLabel(getActivity().getPackageManager()).toString(), c.get(i).publicSourceDir,"","","",false));
-
-                    File file = new File(c.get(i).publicSourceDir);
-                    mFile.add(file);
-                }
             } catch (Exception e) {
                 //Toast.makeText(getActivity(), "" + e, Toast.LENGTH_LONG).show();
             }//ArrayAdapter<String> b=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,a);
