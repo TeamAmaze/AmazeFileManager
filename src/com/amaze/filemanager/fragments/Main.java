@@ -1034,6 +1034,7 @@ if(listView!=null){
     };
     public void updateList(){
         computeScroll();
+        ic.cleanup();
         loadlist(new File(current), true);}
 
     public void getSortModes() {
