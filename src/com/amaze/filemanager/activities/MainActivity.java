@@ -69,6 +69,7 @@ import com.amaze.filemanager.utils.Shortcuts;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -665,14 +666,12 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     }
                 }
                 if (new File(ma.current).getUsableSpace() > totalBytes) {
-                    b=ab;
+                    b=params[0];
                     File f = new File(path);
                     for (File k : f.listFiles()) {
-                        for (String j : params[0]) {
+                        for (String j : ab) {
                             if (k.getName().equals(new File(j).getName())) {
-                                a.add(j);
-                                b.remove(j);
-                            }
+                                a.add(j);b.remove(j);}
                         }
                     }
                 } else publishProgress("Insufficient space");
@@ -709,7 +708,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
 
             if (counter == a.size()) {
-                if (lol != null || lol.size()!=0) {
+                if (lol != null && lol.size()!=0) {
                     Intent intent = new Intent(con, CopyService.class);
                     intent.putExtra("FILE_PATHS", lol);
                     intent.putExtra("COPY_DIRECTORY", ma.current);
@@ -760,7 +759,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             if (!move) {
 
                 if (b.size()!=0) {
-
                     Intent intent = new Intent(con, CopyService.class);
                     intent.putExtra("FILE_PATHS", b);
                     intent.putExtra("COPY_DIRECTORY", ma.current);
