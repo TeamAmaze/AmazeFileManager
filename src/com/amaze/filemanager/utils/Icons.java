@@ -251,11 +251,13 @@ static {
 public static boolean isgeneric(String name){
     String mimeType = MimeTypes.getMimeType(new File(name));
     if (mimeType == null) {
-            /* if(grid)
-            return res.getDrawable(R.drawable.ic_doc_generic_am_grid);
-*/
         return true;
-    }return false;}
+    }
+    Integer resId = sMimeIcons.get(mimeType);
+if(resId==null){return true;}
+
+
+    return false;}
     public static Drawable loadMimeIcon(Context context, String path,boolean grid) {
         final Resources res = context.getResources();
         String mimeType = MimeTypes.getMimeType(new File(path));
