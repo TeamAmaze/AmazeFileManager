@@ -560,7 +560,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
-            ImageView ib = (ImageView) findViewById(R.id.overflow);
+            ImageView ib = (ImageView) findViewById(R.id.action_overflow);
             if (ib.getVisibility() == View.VISIBLE) {
                 ib.performClick();
             }
@@ -661,13 +661,13 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     }
                 }
                 if (new File(ma.current).getUsableSpace() > totalBytes) {
+                    b=ab;
                     File f = new File(path);
                     for (File k : f.listFiles()) {
                         for (String j : params[0]) {
                             if (k.getName().equals(new File(j).getName())) {
                                 a.add(j);
-                            } else {
-                                b.add(j);
+                                b.remove(j);
                             }
                         }
                     }
@@ -705,7 +705,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
 
             if (counter == a.size()) {
-                if (lol != null) {
+                if (lol != null || lol.size()!=0) {
                     Intent intent = new Intent(con, CopyService.class);
                     intent.putExtra("FILE_PATHS", lol);
                     intent.putExtra("COPY_DIRECTORY", ma.current);
@@ -755,7 +755,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             super.onPostExecute(strings);
             if (!move) {
 
-                if (b != null) {
+                if (b.size()!=0) {
 
                     Intent intent = new Intent(con, CopyService.class);
                     intent.putExtra("FILE_PATHS", b);
@@ -763,7 +763,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     startService(intent);
                 }
 
-                if (a != null) {
+                if (a.size() != 0) {
                     showDialog();
                 }
             } else {
