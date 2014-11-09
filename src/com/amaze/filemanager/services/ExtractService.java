@@ -56,7 +56,7 @@ public class ExtractService extends Service {
 
     @Override
     public void onCreate() {
-        Notification notification = new Notification(R.drawable.ic_action_search_light, "Extracting Files", System.currentTimeMillis());
+        Notification notification = new Notification(R.drawable.ic_doc_compressed, "Extracting Files", System.currentTimeMillis());
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         notification.setLatestEventInfo(this, "Extracting Files", "", pendingIntent);

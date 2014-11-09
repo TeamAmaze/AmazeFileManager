@@ -207,7 +207,7 @@ public class ProcessViewer extends Fragment {
                     } else {
                         View root = getActivity().getLayoutInflater().inflate(R.layout.processrow, null);
                         root.setTag("extract" + id);
-                        ((ImageView) root.findViewById(R.id.progressImage)).setImageDrawable(getResources().getDrawable(R.drawable.archive_blue));
+                        ((ImageView) root.findViewById(R.id.progressImage)).setImageDrawable(getResources().getDrawable(R.drawable.ic_doc_compressed_black));
                         ImageButton cancel = (ImageButton) root.findViewById(R.id.delete_button);
                         cancel.setOnClickListener(new View.OnClickListener() {
 
@@ -271,7 +271,7 @@ public class ProcessViewer extends Fragment {
                     } else {
                         View root = getActivity().getLayoutInflater().inflate(R.layout.processrow, null);
                         root.setTag("zip" + id);
-                        ((ImageView) root.findViewById(R.id.progressImage)).setImageDrawable(getResources().getDrawable(R.drawable.archive_blue));
+                        ((ImageView) root.findViewById(R.id.progressImage)).setImageDrawable(getResources().getDrawable(R.drawable.ic_doc_compressed_black));
                         ImageButton cancel = (ImageButton) root.findViewById(R.id.delete_button);
                         cancel.setOnClickListener(new View.OnClickListener() {
 

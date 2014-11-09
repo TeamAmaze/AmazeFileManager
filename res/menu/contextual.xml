@@ -21,27 +21,26 @@
     <item
         android:id="@+id/cpy"
         android:title="@string/copy"
-        android:icon="@drawable/ic_action_copy_light"
+        android:icon="@drawable/ic_content_copy_white_36dp"
         android:showAsAction="always" />
     <item
         android:id="@+id/cut"
         android:title="@string/cut"
-        android:icon="@drawable/ic_action_cut_light"
+        android:icon="@drawable/ic_content_cut_white_36dp"
         android:showAsAction="always" />
     <item
         android:id="@+id/delete"
         android:title="@string/delete"
-        android:icon="@drawable/ic_action_delete_light"
+        android:icon="@drawable/ic_delete_white_36dp"
         android:showAsAction="always" />
     <item
         android:id="@+id/all"
         android:title="@string/selectall"
-        android:icon="@drawable/ic_action_select_all_light"
+        android:icon="@drawable/ic_select_all_white_36dp"
         android:showAsAction="ifRoom" />
     <item
         android:id="@+id/about"
         android:title="@string/properties"
-        android:icon="@drawable/ic_action_about_light"
         android:showAsAction="ifRoom" />
     <item
         android:id="@+id/rename"

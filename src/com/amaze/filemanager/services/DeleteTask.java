@@ -42,13 +42,14 @@ public class DeleteTask extends AsyncTask<ArrayList<File>, String, Boolean> {
 
     ArrayList<File> files;
     ContentResolver contentResolver;
-    Main m;
+    Main m;Context cd;
     Futils utils = new Futils();
-public  DeleteTask(ContentResolver c,Main m){this.contentResolver=c;this.m=m;}
+public  DeleteTask(ContentResolver c,Main m,Context cd){this.contentResolver=c;this.m=m;this.cd=cd;}
 
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
+        if(m!=null)
         Toast.makeText(m.getActivity(),values[0],Toast.LENGTH_LONG).show();
     }
 
@@ -86,9 +87,13 @@ public  DeleteTask(ContentResolver c,Main m){this.contentResolver=c;this.m=m;}
 
         @Override
         public void onPostExecute(Boolean b) {
-            m.updateList();
-            if(!b){Toast.makeText(m.getActivity(),"Error",Toast.LENGTH_LONG).show();}
-              else  Toast.makeText(m.getActivity(),"Done",Toast.LENGTH_LONG).show();
+            if(m!=null) {
+                m.updateList();
+                utils.scanFile(files.get(0).getParent(), m.getActivity());
+                if (!b) {
+                    Toast.makeText(m.getActivity(), "Error", Toast.LENGTH_LONG).show();
+                } else Toast.makeText(m.getActivity(), "Done", Toast.LENGTH_LONG).show();
+            }  else utils.scanFile(files.get(0).getParent(), cd);
         }
     }
 

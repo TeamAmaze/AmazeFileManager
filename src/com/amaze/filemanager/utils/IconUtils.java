@@ -48,47 +48,12 @@ public class IconUtils {
         else
             return c.getResources().getDrawable(R.drawable.ic_content_cut_white_36dp);
     }
-
-    public Drawable getPasteDrawable() {
-        if (CURRENT == LIGHT)
-            return c.getResources().getDrawable(R.drawable.ic_action_paste);
-        else
-            return c.getResources().getDrawable(R.drawable.ic_action_paste);
-    }
-
-    public Drawable getBookDrawable() {
-        if (CURRENT == LIGHT)
-            return c.getResources().getDrawable(R.drawable.ic_action_not_important);
-        else
-            return c.getResources().getDrawable(R.drawable.ic_action_not_important);
-    }
     public Drawable getBookDrawable1() {
         if (CURRENT == LIGHT)
             return c.getResources().getDrawable(R.drawable.ic_action_not_important_light);
         else
             return c.getResources().getDrawable(R.drawable.ic_action_not_important);
     }
-    public Drawable getBackDrawable() {
-        if (CURRENT == LIGHT)
-            return c.getResources().getDrawable(R.drawable.ic_action_back);
-        else
-            return c.getResources().getDrawable(R.drawable.ic_action_back);
-    }
-
-    public Drawable getHomeDrawable() {
-        if (CURRENT == LIGHT)
-            return c.getResources().getDrawable(R.drawable.home);
-        else
-            return c.getResources().getDrawable(R.drawable.home);
-    }
-
-    public Drawable getRefreshDrawable() {
-        if (CURRENT == LIGHT)
-            return c.getResources().getDrawable(R.drawable.ic_action_refresh);
-        else
-            return c.getResources().getDrawable(R.drawable.ic_action_refresh);
-    }
-
     public Drawable getCancelDrawable() {
         if (CURRENT == LIGHT)
             return c.getResources().getDrawable(R.drawable.ic_action_cancel_light);
@@ -137,7 +102,12 @@ public class IconUtils {
         else
             return c.getResources().getDrawable(R.drawable.root);
     }
-
+    public int getDrawerDrawable() {
+        if (CURRENT == LIGHT)
+            return (R.drawable.ic_drawer_l);
+        else
+            return (R.drawable.ic_drawer_l);
+    }
     public Drawable getSdDrawable() {
         if (CURRENT == LIGHT)
             return c.getResources().getDrawable(R.drawable.ic_action_sd_storage);
@@ -150,20 +120,6 @@ public class IconUtils {
         else
             return c.getResources().getDrawable(R.drawable.ic_action_sd_storage);
     }
-    public Drawable getSettingDrawable() {
-        if (CURRENT == LIGHT)
-            return c.getResources().getDrawable(R.drawable.ic_action_settings_light);
-        else
-            return c.getResources().getDrawable(R.drawable.ic_action_settings);
-    }
-
-    public Drawable getImageDrawable() {
-        if (CURRENT == LIGHT)
-            return c.getResources().getDrawable(R.drawable.ic_action_picture_light);
-        else
-            return c.getResources().getDrawable(R.drawable.ic_action_picture);
-    }
-
     public Drawable getGridDrawable() {
         if (CURRENT == LIGHT)
             return c.getResources().getDrawable(R.drawable.ic_action_view_as_grid_light);
@@ -171,10 +127,4 @@ public class IconUtils {
             return c.getResources().getDrawable(R.drawable.ic_action_view_as_grid);
     }
 
-    public int getDrawerDrawable() {
-        if (CURRENT == LIGHT)
-            return (R.drawable.ic_drawer_light);
-        else
-            return (R.drawable.ic_drawer_light);
-    }
 }

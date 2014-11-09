@@ -38,6 +38,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.utils.IconUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -125,8 +126,13 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
         };
         ColorMatrix colorMatrix = new ColorMatrix(src);
         ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
-
-        textView.setText(values.get(position));
+        if(values.get(position).equals("/storage/emulated/0"))
+            textView.setText("Storage");
+        else {
+            if (position != values.size() - 1 && position != values.size() - 2){
+                textView.setText(new File(values.get(position)).getName());
+            }else textView.setText(values.get(position));
+        }
         if (position == values.size() - 1) {
             if (myChecked.get(position)) {
                 imageView.setImageResource(R.drawable.ic_action_not_important);

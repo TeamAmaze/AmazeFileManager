@@ -27,7 +27,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -51,6 +53,7 @@ import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -67,11 +70,20 @@ public class Futils {
     AlertDialog.Builder b = null;
 
     public void scanFile(String path, Context c) {
+        System.out.println(path+" "+Build.VERSION.SDK_INT);
+        if(Build.VERSION.SDK_INT>=19){
+        MediaScannerConnection.scanFile(c, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
 
+            @Override
+            public void onScanCompleted(String path, Uri uri) {
+                System.out.println("SCAN COMPLETED: " + path);
+
+            }
+        });}else{
         Uri contentUri = Uri.fromFile(new File(path));
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, contentUri);
         c.sendBroadcast(mediaScanIntent);
-    }
+    }}
 
     public String getString(Context c, int a) {
         return c.getResources().getString(a);
@@ -153,7 +165,7 @@ public class Futils {
 
             public void onClick(DialogInterface p1, int p2) {
                 Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_LONG).show();
-                new DeleteTask(b.getActivity().getContentResolver(),b).execute(todelete);
+                new DeleteTask(b.getActivity().getContentResolver(),b,b.getActivity()).execute(todelete);
             }
         });
         c.show();
