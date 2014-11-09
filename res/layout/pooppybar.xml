@@ -64,7 +64,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/home"
-        android:src="@drawable/home"
         />
     <ImageView
         android:background="@drawable/listitem1"

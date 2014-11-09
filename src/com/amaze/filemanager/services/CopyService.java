@@ -59,7 +59,7 @@ public class CopyService extends Service {
     boolean rootmode;
     @Override
     public void onCreate() {
-        notification = new Notification(R.drawable.ic_action_copy, "Copying Files", System.currentTimeMillis());
+        notification = new Notification(R.drawable.ic_content_copy_white_36dp, "Copying Files", System.currentTimeMillis());
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         notification.setLatestEventInfo(this, "Copying Files", "", pendingIntent);
