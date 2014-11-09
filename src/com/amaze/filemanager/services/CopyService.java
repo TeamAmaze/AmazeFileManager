@@ -27,7 +27,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -73,7 +76,7 @@ public class CopyService extends Service {
         String FILE2 = intent.getStringExtra("COPY_DIRECTORY");
 
         b.putInt("id", startId);
-
+        b.putBoolean("move",intent.getBooleanExtra("move",false));
         b.putString("FILE2", FILE2);
         b.putStringArrayList("files", files);
         new Doback().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, b);
@@ -95,7 +98,7 @@ public class CopyService extends Service {
 
     public class Doback extends AsyncTask<Bundle, Void, Integer> {
         ArrayList<String> files;
-
+        boolean move;
         public Doback() {
         }
 
@@ -103,8 +106,8 @@ public class CopyService extends Service {
             String FILE2 = p1[0].getString("FILE2");
             int id = p1[0].getInt("id");
             files = p1[0].getStringArrayList("files");
-
-            new copy().execute(id, files, FILE2);
+            move=p1[0].getBoolean("move");
+            new copy().execute(id, files, FILE2,move);
 
             // TODO: Implement this method
             return id;
@@ -148,7 +151,7 @@ public class CopyService extends Service {
 
         long totalBytes = 0L, copiedBytes = 0L;
 
-        public void execute(int id, final ArrayList<String> files,final String FILE2) {
+        public void execute(int id, final ArrayList<String> files,final String FILE2,final boolean move) {
             if(new File(FILE2).canWrite() && new File(files.get(0)).canRead()){for (int i = 0; i < files.size(); i++) {
 
                 File f1 = new File(files.get(i));
@@ -168,7 +171,8 @@ public class CopyService extends Service {
                     publishResults("" + e, 0, 0, id, 0, 0, false);
                 }
 
-            }}else if(rootmode){
+            }if(move){new DeleteTask(getContentResolver(),null,c).execute(utils.toFileArray(files));}
+            }else if(rootmode){
                 RootTools.remount(FILE2,"rw");
                 for (int i = 0; i < files.size(); i++) {
                 Command a=new Command(0,"cp "+files.get(i) +" "+FILE2) {
@@ -184,6 +188,7 @@ public class CopyService extends Service {
 
                     @Override
                     public void commandCompleted(int i, int i2) {
+                        if(move){new DeleteTask(getContentResolver(),null,c).execute(utils.toFileArray(files));}
                         utils.scanFile(FILE2+"/"+new File(files.get(i)).getName(), c);
                     }
                 };
@@ -196,7 +201,9 @@ public class CopyService extends Service {
                 } catch (RootDeniedException e) {
                     e.printStackTrace();
                 }}
-            }else{System.out.println("Not Allowed");}}
+            }else{System.out.println("Not Allowed");}
+            Intent intent = new Intent("loadlist");
+            sendBroadcast(intent);}
         private void copyFiles(File sourceFile, File targetFile, int id) throws IOException {
             if (sourceFile.isDirectory()) {
                 if (!targetFile.exists()) targetFile.mkdirs();
@@ -238,11 +245,10 @@ public class CopyService extends Service {
                 in.close();
                 out.close();
 
-                utils.scanFile(sourceFile.getPath(), c);
+                utils.scanFile(targetFile.getPath(), c);
             }
         }
     }
-
     Futils utils = new Futils();
     private BroadcastReceiver receiver3 = new BroadcastReceiver() {
 
