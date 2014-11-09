@@ -101,6 +101,9 @@
         <PreferenceScreen
             android:title="About Amaze File Manager" >
             <Preference
+                android:key="authors"
+                android:title="Authors" />
+            <Preference
                 android:title="Version"
                 android:summary="v0.x"/>
             <Preference

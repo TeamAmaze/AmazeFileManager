@@ -142,19 +142,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-            <TextView
-                android:clickable="false"
-                android:layout_width="wrap_content"
-                android:textSize="18sp"
-               style="@android:style/TextAppearance.Large"
-                android:textColor="@android:color/white"
-                android:layout_height="wrap_content"
-                android:id="@+id/pathname" />
                 <HorizontalScrollView
                     android:scrollbars="none"
                     android:clickable="false"
                     android:id="@+id/scroll1"
                     android:layout_width="fill_parent"
+                    android:layout_marginBottom="5dp"
                     android:layout_height="wrap_content">
 
                 <TextView
@@ -165,6 +158,15 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/fullpath" />
             </HorizontalScrollView>
+                <TextView
+                    android:clickable="false"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="right"
+                    android:textSize="10dp"
+                    android:textColor="@android:color/white"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="7dp"
+                    android:id="@+id/pathname" />
             </LinearLayout>
             </LinearLayout>
 

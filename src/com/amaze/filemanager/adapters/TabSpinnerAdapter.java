@@ -53,6 +53,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
     Context context;
     android.support.v4.app.FragmentManager fragmentTransaction;
     Spinner spinner;
+    Main ma;
 
     public TabSpinnerAdapter(Context context, int resource, ArrayList<String> items, android.support.v4.app.FragmentManager fragmentTransaction, Spinner spin) {
         super(context, resource, items);
@@ -80,6 +81,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.spinner_dropdown_layout, parent, false);
 
+        ma = ((Main) fragmentTransaction.findFragmentById(R.id.content_frame));
         final TextView textView = (TextView) row.findViewById(R.id.spinnerText);
         final SharedPreferences sharedPreferences1 = PreferenceManager.getDefaultSharedPreferences(context);
         String skin = sharedPreferences1.getString("skin_color", "#673ab7");
@@ -180,7 +182,8 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
                 } else if (position == spinner_current) {
 
                     if (tabHandler.getTabsCount() == 1) {
-                        Toast.makeText(getContext(), "exits the app", Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(getContext(), "exits the app", Toast.LENGTH_SHORT).show();
+                        ma.home();
 
                     } else if (tabHandler.getTabsCount()-1 > position) {
                         items.remove(position);
@@ -196,7 +199,6 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
                         }
                         tabHandler.deleteTab(tabHandler.getTabsCount()-1);
                         Tab tab1 = tabHandler.findTab(spinner_current);
-                        Main ma = ((Main) fragmentTransaction.findFragmentById(R.id.content_frame));
                         ma.loadlist(new File(tab1.getPath()),false);
 
                     } else if (tabHandler.getTabsCount()-1 == position) {

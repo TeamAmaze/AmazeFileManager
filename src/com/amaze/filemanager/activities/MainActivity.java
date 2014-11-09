@@ -38,10 +38,12 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -693,9 +695,10 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             if (counter == a.size() || a.size()==0) {
 
                 if (ab != null && ab.size()!=0) {
-                    if(!move){
-                        Intent intent = new Intent(con, CopyService.class);
 
+                    if(!move){
+
+                        Intent intent = new Intent(con, CopyService.class);
                         intent.putExtra("FILE_PATHS", ab);
                         intent.putExtra("COPY_DIRECTORY", path);
                         startService(intent);
@@ -710,8 +713,17 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             } else {
 
                 AlertDialog.Builder x = new AlertDialog.Builder(MainActivity.this);
+                LayoutInflater layoutInflater = (LayoutInflater) MainActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                View view = layoutInflater.inflate(R.layout.copy_dialog, null);
+                x.setView(view);
 
-                x.setMessage("File with same name already exists " + new File(a.get(counter)).getName());
+                // textView
+                TextView textView = (TextView) view.findViewById(R.id.textView);
+                textView.setText("File with same name already exists " + new File(a.get(counter)).getName());
+                // checkBox
+                final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+
+                x.setTitle("Paste");
                 x.setPositiveButton("Skip", new DialogInterface.OnClickListener() {
 
                     @Override
@@ -719,8 +731,18 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
                         if (counter < a.size()) {
 
-                            ab.remove(a.get(counter));
-                            counter++;
+                            if (!checkBox.isChecked()) {
+
+                                ab.remove(a.get(counter));
+                                counter++;
+
+                            } else {
+                                for (int j = counter; j<a.size(); j++) {
+
+                                    ab.remove(a.get(j));
+                                }
+                                counter = a.size();
+                            }
                             showDialog();
                         }
                         dialogInterface.cancel();
@@ -733,7 +755,13 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
                         if (counter < a.size()) {
 
-                            counter++;
+                            if (!checkBox.isChecked()) {
+
+                                counter++;
+                            } else {
+
+                                counter = a.size();
+                            }
                             showDialog();
                         }
                         dialogInterface.cancel();

@@ -54,7 +54,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -84,10 +83,7 @@ import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.Shortcuts;
-import com.faizmalkani.floatingactionbutton.FloatingActionButton;
-import com.fourmob.poppyview.PoppyViewHelper;
-import com.nineoldandroids.animation.AnimatorSet;
-import com.nineoldandroids.animation.ObjectAnimator;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.io.File;
 import java.io.IOException;
@@ -197,6 +193,7 @@ public class Main extends android.support.v4.app.Fragment {
         content = tabHandler.getAllTabs();
         list1 = new ArrayList<String>();
 
+        FloatingActionsMenu floatingActionsMenu = (FloatingActionsMenu) getActivity().findViewById(R.id.pink_icon);
         ImageButton imageView = ((ImageButton)getActivity().findViewById(R.id.action_overflow));
         showPopup(imageView);
         (getActivity().findViewById(R.id.search)).setOnClickListener(new View.OnClickListener() {
@@ -215,13 +212,13 @@ public class Main extends android.support.v4.app.Fragment {
         getActivity().findViewById(R.id.fab1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                add(0);
+                add(1);
             }
         });
         getActivity().findViewById(R.id.fab2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                add(1);
+                add(0);
             }
         });
         getActivity().findViewById(R.id.fab3).setOnClickListener(new View.OnClickListener() {
@@ -435,6 +432,9 @@ if(listView!=null){
 
                         listView.setAnimation(animation);
                         gridView.setAnimation(animation);
+                        FloatingActionsMenu floatingActionMenu = (FloatingActionsMenu) getActivity().findViewById(R.id.pink_icon);
+                        floatingActionMenu.collapse();
+                        floatingActionMenu.setAnimation(animation1);
                 }
             }
 
@@ -448,7 +448,7 @@ if(listView!=null){
     public void search() {
         final String fpath = ma.current;
 
-        Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.searchpath) + fpath, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.searchpath) + fpath, Toast.LENGTH_LONG).show();
         AlertDialog.Builder a = new AlertDialog.Builder(getActivity());
         a.setTitle(utils.getString(getActivity(), R.string.search));
         View v = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
@@ -980,7 +980,12 @@ if(listView!=null){
                 }
             }
             File f=new File(text);
-            ((TextView)pathbar.findViewById(R.id.pathname)).setText(f.getName());
+
+            TextView textView = (TextView)pathbar.findViewById(R.id.pathname);
+            String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
+            String free = utils.readableFileSize(f.getFreeSpace());
+            textView.setText("Used : " + used + ", Free : " + free);
+
             TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
             bapath.setAllCaps(true);
             bapath.setText(f.getPath());
