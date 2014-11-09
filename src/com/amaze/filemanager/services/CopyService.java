@@ -116,14 +116,14 @@ public class CopyService extends Service {
         @Override
         public void onPostExecute(Integer b) {
             publishResults(false);
-            publishResults("", 0, 0, b, 0, 0, true);
+            publishResults("", 0, 0, b, 0, 0, true,move);
             stopSelf(b);
 
         }
 
     }
 
-    private void publishResults(String a, int p1, int p2, int id, long total, long done, boolean b) {
+    private void publishResults(String a, int p1, int p2, int id, long total, long done, boolean b,boolean move) {
         Intent intent = new Intent("copy");
         intent.putExtra("name", a);
         intent.putExtra("total", total);
@@ -131,6 +131,7 @@ public class CopyService extends Service {
         intent.putExtra("id", id);
         intent.putExtra("p1", p1);
         intent.putExtra("p2", p2);
+        intent.putExtra("move", move);
         intent.putExtra("COPY_COMPLETED", b);
         sendBroadcast(intent);
 
@@ -165,10 +166,10 @@ public class CopyService extends Service {
                 File f1 = new File(files.get(i));
                 try {
 
-                    copyFiles((f1), new File(FILE2, f1.getName()), id);
+                    copyFiles((f1), new File(FILE2, f1.getName()), id,move);
                 } catch (IOException e) {
                     System.out.println("amaze " + e);
-                    publishResults("" + e, 0, 0, id, 0, 0, false);
+                    publishResults("" + e, 0, 0, id, 0, 0, false,move);
                 }
 
             }if(move){new DeleteTask(getContentResolver(),null,c).execute(utils.toFileArray(files));}
@@ -204,7 +205,7 @@ public class CopyService extends Service {
             }else{System.out.println("Not Allowed");}
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);}
-        private void copyFiles(File sourceFile, File targetFile, int id) throws IOException {
+        private void copyFiles(File sourceFile, File targetFile, int id,boolean move) throws IOException {
             if (sourceFile.isDirectory()) {
                 if (!targetFile.exists()) targetFile.mkdirs();
 
@@ -214,7 +215,7 @@ public class CopyService extends Service {
                     File srcFile = new File(sourceFile, filePath);
                     File destFile = new File(targetFile, filePath);
 
-                    copyFiles(srcFile, destFile, id);
+                    copyFiles(srcFile, destFile, id,move);
                 }
             } else {
                 long size = sourceFile.length(), fileBytes = 0l;
@@ -235,7 +236,7 @@ public class CopyService extends Service {
                         out.write(buffer, 0, length);
                         copiedBytes += length;
                         fileBytes += length;
-                        publishResults(sourceFile.getName(), Math.round(copiedBytes * 100 / totalBytes), Math.round(fileBytes * 100 / size), id, totalBytes, copiedBytes, false);
+                        publishResults(sourceFile.getName(), Math.round(copiedBytes * 100 / totalBytes), Math.round(fileBytes * 100 / size), id, totalBytes, copiedBytes, false,move);
                         publishResults(true);
                     }
                     //	System.out.println(sourceFile.getName()+" "+id+" " +Math.round(copiedBytes*100/totalBytes)+"  "+Math.round(fileBytes*100/size));
