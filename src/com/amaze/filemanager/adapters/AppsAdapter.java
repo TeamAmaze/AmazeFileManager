@@ -20,11 +20,14 @@
 package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +39,8 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.AppsList;
+import com.amaze.filemanager.services.CopyService;
+import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Layoutelements;
 
 import java.io.File;
@@ -48,13 +53,15 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
     List<Layoutelements> items;
     public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
     AppsList app;
+    ArrayList<ApplicationInfo> c = new ArrayList<ApplicationInfo>();
 
     public AppsAdapter(Context context, int resourceId,
-                       List<Layoutelements> items, AppsList app) {
+                       List<Layoutelements> items, AppsList app, ArrayList<ApplicationInfo> c) {
         super(context, resourceId, items);
         this.context = context;
         this.items = items;
         this.app = app;
+        this.c = c;
         for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, false);
         }
@@ -110,7 +117,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
 
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         final Layoutelements rowItem = getItem(position);
 
@@ -146,11 +153,60 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                     toggleChecked(p);
                     app.mActionMode.invalidate();
                 } else {
-                    Intent i = app.getActivity().getPackageManager().getLaunchIntentForPackage(app.c.get(p).packageName);
-                    if (i != null)
-                        app.startActivity(i);
-                    else
-                       Toast.makeText(app.getActivity(), "Not Allowed", Toast.LENGTH_LONG).show();
+
+                    AlertDialog.Builder d = new AlertDialog.Builder(context);
+                    final Futils utils = new Futils();
+                    final AppsList appsList = new AppsList();
+                    ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(
+                            context, android.R.layout.select_dialog_item);
+                    adapter1.add(utils.getString(context, R.string.open));
+                    adapter1.add(utils.getString(context, R.string.backup));
+                    adapter1.add(utils.getString(context, R.string.uninstall));
+                    adapter1.add(utils.getString(context, R.string.properties));
+                    adapter1.add(utils.getString(context, R.string.play));
+                    d.setAdapter(adapter1, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface p1, int p2) {
+                            switch (p2) {
+                                case 0:
+                                    Intent i = app.getActivity().getPackageManager().getLaunchIntentForPackage(app.c.get(p).packageName);
+                                    if (i != null)
+                                        app.startActivity(i);
+                                    else
+                                       Toast.makeText(app.getActivity(), "Not Allowed", Toast.LENGTH_LONG).show();
+                                    break;
+
+                                case 1:
+                                    Toast.makeText(context, utils.getString(context, R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
+                                    ApplicationInfo info = c.get(p);
+                                    File f = new File(info.publicSourceDir);
+                                    ArrayList<String> a = new ArrayList<String>();
+                                    a.add(info.publicSourceDir);
+                                    File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");
+                                    if(!dst.exists() || !dst.isDirectory())dst.mkdirs();
+                                    Intent intent = new Intent(context, CopyService.class);
+                                    intent.putExtra("FILE_PATHS", a);
+                                    intent.putExtra("COPY_DIRECTORY", dst.getPath());
+                                    context.startService(intent);
+                                    break;
+                                case 2:
+                                    unin(c.get(p).packageName);
+                                    break;
+                                case 3:
+                                    context.startActivity(new Intent(
+                                            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                            Uri.parse("package:" + c.get(p).packageName)));
+                                    break;
+                                case 4:
+                                    Intent intent1 = new Intent(Intent.ACTION_VIEW);
+                                    intent1.setData(Uri.parse("market://details?id=" + c.get(p).packageName));
+                                    context.startActivity(intent1);
+                                    break;
+                            }
+                            // TODO: Implement this method
+                        }
+                    });
+                    d.show();
                 }
                 // TODO: Implement this method
             }
@@ -179,5 +235,18 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
             }
         }
         return view;
+    }
+
+    public void unin(String pkg) {
+
+        try {
+            Intent intent = new Intent(Intent.ACTION_DELETE);
+            intent.setData(Uri.parse("package:" + pkg));
+            context.startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+
     }
 }

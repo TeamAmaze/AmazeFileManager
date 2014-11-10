@@ -25,21 +25,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
-import android.support.v4.util.LruCache;
 import android.view.ActionMode;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -52,8 +46,6 @@ import com.amaze.filemanager.utils.IconHolder;
 import com.amaze.filemanager.utils.Layoutelements;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -82,7 +74,7 @@ public class AppsList extends ListFragment {
         getActivity().findViewById(R.id.bookadd).setVisibility(View.GONE);
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
         getActivity().findViewById(R.id.search).setVisibility(View.GONE);
-        getActivity().findViewById(R.id.paste).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
         vl=getListView();
@@ -101,7 +93,7 @@ public class AppsList extends ListFragment {
         else{
         c=savedInstanceState.getParcelableArrayList("c");
         a=savedInstanceState.getParcelableArrayList("list");
-            adapter = new AppsAdapter(getActivity(), R.layout.rowlayout, a, app);
+            adapter = new AppsAdapter(getActivity(), R.layout.rowlayout, a, app, c);
             setListAdapter(adapter);
             vl.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
 
@@ -112,6 +104,7 @@ public class AppsList extends ListFragment {
         AlertDialog.Builder d = new AlertDialog.Builder(getActivity());
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(
                 getActivity(), android.R.layout.select_dialog_item);
+        adapter1.add(utils.getString(getActivity(), R.string.open));
         adapter1.add(utils.getString(getActivity(), R.string.backup));
         adapter1.add(utils.getString(getActivity(), R.string.uninstall));
         adapter1.add(utils.getString(getActivity(), R.string.properties));
@@ -121,6 +114,14 @@ public class AppsList extends ListFragment {
             public void onClick(DialogInterface p1, int p2) {
                 switch (p2) {
                     case 0:
+                        Intent i = app.getActivity().getPackageManager().getLaunchIntentForPackage(c.get(position).packageName);
+                        if (i != null)
+                            app.startActivity(i);
+                        else
+                            Toast.makeText(app.getActivity(), "Not Allowed", Toast.LENGTH_LONG).show();
+                        break;
+
+                    case 1:
                         Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
                         ApplicationInfo info = c.get(position);
                         File f = new File(info.publicSourceDir);
@@ -133,15 +134,15 @@ public class AppsList extends ListFragment {
                         intent.putExtra("COPY_DIRECTORY", dst.getPath());
                         getActivity().startService(intent);
                         break;
-                    case 1:
+                    case 2:
                         unin(c.get(position).packageName);
                         break;
-                    case 2:
+                    case 3:
                         startActivity(new Intent(
                                 android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                                 Uri.parse("package:" + c.get(position).packageName)));
                         break;
-                    case 3:
+                    case 4:
                         Intent intent1 = new Intent(Intent.ACTION_VIEW);
                         intent1.setData(Uri.parse("market://details?id=" + c.get(position).packageName));
                         startActivity(intent1);
@@ -214,7 +215,7 @@ public class AppsList extends ListFragment {
                 if (bitmap != null) {
 
 
-                    adapter = new AppsAdapter(getActivity(), R.layout.rowlayout, bitmap, app);
+                    adapter = new AppsAdapter(getActivity(), R.layout.rowlayout, bitmap, app, c);
                     setListAdapter(adapter);
 
                 }

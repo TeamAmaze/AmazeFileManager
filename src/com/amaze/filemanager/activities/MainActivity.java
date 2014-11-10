@@ -38,10 +38,12 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -63,13 +65,13 @@ import com.amaze.filemanager.fragments.BookmarksManager;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.services.CopyService;
+import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -143,7 +145,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     new CheckForFiles(ma, path, false).execute(arrayList);
                 } else if (MOVE_PATH != null) {
                     arrayList = MOVE_PATH;
-                    new CheckForFiles(ma, path, false).execute(arrayList);
+                    new CheckForFiles(ma, path, true).execute(arrayList);
                 }
                 COPY_PATH = null;
                 MOVE_PATH = null;
@@ -653,97 +655,120 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         @Override
         // Actual download method, run in the task thread
         protected ArrayList<String> doInBackground(ArrayList<String>... params) {
+
             ab = params[0];
-            if (!move) {
-                long totalBytes = 0;
-                for (int i = 0; i < params[0].size(); i++) {
+            long totalBytes = 0;
 
-                    File f1 = new File(params[0].get(i));
-                    if (f1.isDirectory()) {
-                        totalBytes = totalBytes + new Futils().folderSize(f1, false);
-                    } else {
-                        totalBytes = totalBytes + f1.length();
-                    }
+            for (int i = 0; i < params[0].size(); i++) {
+
+                File f1 = new File(params[0].get(i));
+
+                if (f1.isDirectory()) {
+
+                    totalBytes = totalBytes + new Futils().folderSize(f1, false);
+                } else {
+
+                    totalBytes = totalBytes + f1.length();
                 }
-                if (new File(ma.current).getUsableSpace() > totalBytes) {
-
-                    File f = new File(path);
-                    for (File k : f.listFiles()) {
-                        for (String j : ab) {
-                            if (k.getName().equals(new File(j).getName())) {
-                                a.add(j);}
-                        }
-                    }
-                } else publishProgress("Insufficient space");
-            } else {
-
-                long totalBytes = 0;
-                for (int i = 0; i < MOVE_PATH.size(); i++) {
-
-                    File f1 = new File(MOVE_PATH.get(i));
-                    if (f1.isDirectory()) {
-                        totalBytes = totalBytes + new Futils().folderSize(f1, false);
-                    } else {
-                        totalBytes = totalBytes + f1.length();
-                    }
-                }
-                if (new File(path).getUsableSpace() > totalBytes) {
-                    File f = new File(path);
-                    for (File k : f.listFiles()) {
-                        for (String j : params[0]) {
-                            if (k.getName().equals(new File(j).getName())) {
-                                a.add(j);
-                            } else {
-                                b.add(j);
-                            }
-                        }
-                    }
-                } else publishProgress("Insufficient space");
-
             }
+
+            if (new File(path).getUsableSpace() > totalBytes) {
+
+                File f = new File(path);
+
+                for (File k : f.listFiles()) {
+
+                    for (String j : ab) {
+
+                        if (k.getName().equals(new File(j).getName())) {
+
+                            a.add(j);}
+                    }
+                }
+            } else publishProgress("Insufficient space");
+
             return a;
         }
 
         public void showDialog() {
 
-
             if (counter == a.size() || a.size()==0) {
+
                 if (ab != null && ab.size()!=0) {
-                    Intent intent = new Intent(con, CopyService.class);
-                    intent.putExtra("FILE_PATHS", ab);
-                    intent.putExtra("COPY_DIRECTORY", ma.current);
-                    startService(intent);
+
+                    if(!move){
+
+                        Intent intent = new Intent(con, CopyService.class);
+                        intent.putExtra("FILE_PATHS", ab);
+                        intent.putExtra("COPY_DIRECTORY", path);
+                        startService(intent);
+                    } else{
+
+                        new MoveFiles(utils.toFileArray(ab), ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                    }
                 } else {
+
                     Toast.makeText(MainActivity.this, "No file was overwritten", Toast.LENGTH_SHORT).show();
                 }
             } else {
 
                 AlertDialog.Builder x = new AlertDialog.Builder(MainActivity.this);
-                x.setMessage("File with same name already exists " + new File(a.get(counter)).getName());
+                LayoutInflater layoutInflater = (LayoutInflater) MainActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                View view = layoutInflater.inflate(R.layout.copy_dialog, null);
+                x.setView(view);
+
+                // textView
+                TextView textView = (TextView) view.findViewById(R.id.textView);
+                textView.setText("File with same name already exists " + new File(a.get(counter)).getName());
+                // checkBox
+                final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+
+                x.setTitle("Paste");
                 x.setPositiveButton("Skip", new DialogInterface.OnClickListener() {
+
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                         if (counter < a.size()) {
-                            ab.remove(a.get(counter));
-                            counter++;
+
+                            if (!checkBox.isChecked()) {
+
+                                ab.remove(a.get(counter));
+                                counter++;
+
+                            } else {
+                                for (int j = counter; j<a.size(); j++) {
+
+                                    ab.remove(a.get(j));
+                                }
+                                counter = a.size();
+                            }
                             showDialog();
                         }
                         dialogInterface.cancel();
                     }
                 });
                 x.setNeutralButton("Overwrite", new DialogInterface.OnClickListener() {
+
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+
                         if (counter < a.size()) {
 
-                            counter++;
+                            if (!checkBox.isChecked()) {
+
+                                counter++;
+                            } else {
+
+                                counter = a.size();
+                            }
                             showDialog();
                         }
                         dialogInterface.cancel();
                     }
                 });
                 x.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -751,19 +776,14 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     }
                 });
                 x.show();
+
             }
         }
 
         @Override
         protected void onPostExecute(ArrayList<String> strings) {
             super.onPostExecute(strings);
-            if (!move) {
-
-                    showDialog();
-
-            } else {
-                // yet to be implemented
-            }
+            showDialog();
         }
     }
 }
