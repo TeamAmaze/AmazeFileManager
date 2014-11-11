@@ -7,6 +7,7 @@ buildscript {
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'android'
 repositories {
     mavenCentral()
 }
@@ -16,6 +17,7 @@ dependencies {
     compile 'com.pkmmte.view:circularimageview:1.1'
     compile fileTree(dir: 'libs', include: '*.jar')
     compile files('libs/RootTools')
+    compile files('libs/google-play-services')
     compile files('nineoldandroids-2.4.0')
 }
 

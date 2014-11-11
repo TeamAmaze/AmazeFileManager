@@ -24,16 +24,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
-        <TextView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/spinnerText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:gravity="center_vertical"/>
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/spinnerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        style="@android:style/TextAppearance.Medium"
+        android:textColor="#ffffff"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:maxWidth="150dp"
+        android:gravity="center_vertical"/>
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -41,6 +44,7 @@
             style="?android:borderlessButtonStyle"
             android:src="@drawable/spinner_triangle"
             android:clickable="false"
+            android:background="@null"
             android:layout_toRightOf="@id/spinnerText"
             android:layout_gravity="center_vertical"/>
 

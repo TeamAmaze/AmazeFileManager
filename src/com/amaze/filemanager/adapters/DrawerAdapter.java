@@ -155,9 +155,10 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
            textView.setTypeface(Typeface.DEFAULT_BOLD);
             textView.setTextColor(Color.parseColor(m.skin));}
         else
-        if(m.theme==0)
+        if(m.theme1==0)
             textView.setTextColor(m.getResources().getColor(android.R.color.black));
-        else     textView.setTextColor(m.getResources().getColor(android.R.color.white));
+        else
+            textView.setTextColor(m.getResources().getColor(android.R.color.white));
 
         return rowView;
     }

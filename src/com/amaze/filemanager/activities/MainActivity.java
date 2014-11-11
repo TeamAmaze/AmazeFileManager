@@ -69,10 +69,12 @@ import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Shortcuts;
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
@@ -110,6 +112,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     private Intent intent;
     private static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     private ArrayList<String> list;
+    public int theme1;
 
     /**
      * Called when the activity is first created.
@@ -119,14 +122,31 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         super.onCreate(savedInstanceState);
         utils = new Futils();
 
+        // Google Analytics
+        // Get a Tracker (should auto-report)
+        ((Amaze) getApplication()).getTracker(Amaze.TrackerName.APP_TRACKER);
+
         val = getStorageDirectories();
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         util = new IconUtils(Sp, this);
+
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int th = Integer.parseInt(Sp.getString("theme", "0"));
-        if (th == 1) {
+        theme1 = th;
+        if (th == 2) {
+            Sp.edit().putString("uimode", "0").commit();
+            if(hour<=6 || hour>=18) {
+                theme1 = 1;
+            } else
+                theme1 = 0;
+        }
+
+        if (theme1 == 1) {
             setTheme(R.style.DarkTheme);
         }
+
         setContentView(R.layout.main);
         getActionBar().hide();
         title = (TextView) findViewById(R.id.title);
@@ -248,7 +268,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 startActivity(i);
             }
         });
-        if (th == 1) {
+        if (theme1 == 1) {
             mDrawerList.setBackgroundResource(android.R.drawable.screen_background_dark);
         }
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -305,6 +325,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 } else mDrawerLayout.openDrawer(mDrawerLinear);
             }
         });
+
     }
 
     /**
@@ -737,7 +758,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                                 counter++;
 
                             } else {
-                                for (int j = counter; j<a.size(); j++) {
+                                for (int j = counter; j < a.size(); j++) {
 
                                     ab.remove(a.get(j));
                                 }
@@ -775,8 +796,13 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                         dialogInterface.cancel();
                     }
                 });
-                x.show();
 
+                AlertDialog dialog = x.create();
+
+                dialog.show();
+                if (new File(ab.get(0)).getParent().equals(path)) {
+                    dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setEnabled(false);
+                }
             }
         }
 
@@ -785,5 +811,21 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             super.onPostExecute(strings);
             showDialog();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //Get an Analytics tracker to report app starts & uncaught exceptions etc.
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        //Stop the analytics tracking
+        GoogleAnalytics.getInstance(this).reportActivityStop(this);
     }
 }

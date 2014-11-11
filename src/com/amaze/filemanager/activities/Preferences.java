@@ -31,11 +31,27 @@ import android.view.MenuItem;
 
 import com.amaze.filemanager.R;
 
+import java.util.Calendar;
+
 public class Preferences extends Activity {
+    int theme;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(this);
-        if (Sp.getString("theme", "0").equals("1")) {
+
+        int th = Integer.parseInt(Sp.getString("theme", "0"));
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        theme = th;
+        if (th == 2) {
+            if(hour<=6 || hour>=18) {
+                theme = 1;
+            } else
+                theme = 0;
+        }
+
+        if (theme == 1) {
             setTheme(android.R.style.Theme_Holo);
         } else {
             setTheme(android.R.style.Theme_Holo_Light_DarkActionBar);

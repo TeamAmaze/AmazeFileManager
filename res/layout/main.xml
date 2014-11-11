@@ -144,9 +144,8 @@
                 android:orientation="vertical">
                 <HorizontalScrollView
                     android:scrollbars="none"
-                    android:clickable="false"
                     android:id="@+id/scroll1"
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:layout_height="wrap_content">
 

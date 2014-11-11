@@ -23,7 +23,7 @@
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/theme"
-            android:entryValues="@array/ints"
+            android:entryValues="@array/ints1"
             android:key="theme"
             android:title="@string/theme" />
         <Preference
@@ -32,10 +32,12 @@
         <CheckBoxPreference
             android:key="coloriseIcons"
             android:checked="true"
-            android:title="Colorise icons" />
+            android:title="@string/colorize"
+            android:summary="@string/colorize_summary" />
         <CheckBoxPreference
             android:key="random"
-            android:title="@string/random" />
+            android:title="@string/random"
+            android:summary="@string/random_summary"/>
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/uimode"
@@ -45,7 +47,7 @@
             android:title="@string/uimode" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="File Explorer">
+    <PreferenceCategory android:title="General">
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="showThumbs"
@@ -105,10 +107,13 @@
                 android:title="Authors" />
             <Preference
                 android:title="Version"
-                android:summary="v0.x"/>
+                android:summary="v1.0"/>
             <Preference
                 android:key="changelog"
                 android:title="Changelog" />
+            <Preference
+                android:key="rate"
+                android:title="Rate the app" />
             <Preference
                 android:key="os"
                 android:title="Open Source Licenses" />

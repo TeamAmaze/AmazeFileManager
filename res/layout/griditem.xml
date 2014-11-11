@@ -62,8 +62,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|top"
+                android:layout_marginRight="5dp"
                 android:singleLine="true"
-                android:background="#ffffff"
+                android:textColor="#80000000"
                 android:ellipsize="end"
                 android:textAlignment="viewEnd"
                 style="@style/TextAppearance.Small" />

@@ -19,13 +19,9 @@
 
 package com.amaze.filemanager.services;
 
-import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.IBinder;
 import android.widget.Toast;
 
 import com.amaze.filemanager.fragments.Main;
@@ -51,6 +47,10 @@ public  DeleteTask(ContentResolver c,Main m,Context cd){this.contentResolver=c;t
         super.onProgressUpdate(values);
         if(m!=null)
         Toast.makeText(m.getActivity(),values[0],Toast.LENGTH_LONG).show();
+    }
+
+    public DeleteTask() {
+
     }
 
     protected Boolean doInBackground(ArrayList<File>... p1) {

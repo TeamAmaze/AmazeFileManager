@@ -28,6 +28,7 @@
     <string-array name="theme">
         <item>Light</item>
         <item>Dark</item>
+        <item>Daytime</item>
 
     </string-array>
     <string-array name="skin">

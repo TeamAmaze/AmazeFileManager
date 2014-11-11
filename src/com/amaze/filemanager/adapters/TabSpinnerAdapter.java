@@ -32,9 +32,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.Tab;
@@ -71,6 +71,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
 
         TextView textView = (TextView) row.findViewById(R.id.spinnerText);
         textView.setText(items.get(position));
+        LinearLayout linearLayout = (LinearLayout) row.findViewById(R.id.textParent);
 
         return row;
     }
@@ -83,6 +84,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
 
         ma = ((Main) fragmentTransaction.findFragmentById(R.id.content_frame));
         final TextView textView = (TextView) row.findViewById(R.id.spinnerText);
+        LinearLayout linearLayout = (LinearLayout) row.findViewById(R.id.textParent);
         final SharedPreferences sharedPreferences1 = PreferenceManager.getDefaultSharedPreferences(context);
         String skin = sharedPreferences1.getString("skin_color", "#673ab7");
         final int spinner_current = sharedPreferences1.getInt("spinner_selected", 0);
@@ -98,7 +100,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
 
         }
 
-        textView.setOnClickListener(new View.OnClickListener() {
+        linearLayout.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -143,7 +145,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
                 Tab tab = tabHandler.findTab(position);
                 if (position > spinner_current) {
 
-                    Toast.makeText(getContext(), "Closed", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Closed", Toast.LENGTH_SHORT).show();
                     items.remove(position);
 
                     int old_tab = tab.getTab();
@@ -161,7 +163,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
 
                 } else if (position < spinner_current) {
 
-                    Toast.makeText(getContext(), "Closed", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getContext(), "Closed", Toast.LENGTH_SHORT).show();
                     items.remove(position);
                     int old_tab = tab.getTab();
                     int a;
