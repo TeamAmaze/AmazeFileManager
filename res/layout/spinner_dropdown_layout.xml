@@ -20,24 +20,29 @@
     -->
 
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/spinnerLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
-    <TextView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/spinnerText"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#000"
-        android:singleLine="true"
-        android:layout_weight="25"
-        android:gravity="center_vertical"/>
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/textParent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/spinnerText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:minHeight="?android:attr/listPreferredItemHeightSmall"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#000"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:maxWidth="120dp"
+            android:gravity="center_vertical"/>
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/spinnerButton"
@@ -45,7 +50,6 @@
         android:layout_height="match_parent"
         style="?android:borderlessButtonStyle"
         android:src="@drawable/ic_action_cancel"
-        android:layout_weight="1"
-        android:layout_gravity="center_vertical"/>
+        android:layout_alignParentRight="true"/>
 
-</LinearLayout>
+</RelativeLayout>

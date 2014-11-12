@@ -25,12 +25,23 @@ import android.graphics.drawable.Drawable;
 
 import com.amaze.filemanager.R;
 
+import java.util.Calendar;
+
 public class IconUtils {
-    int LIGHT = 0, DARK = 1, CURRENT;
+    int LIGHT = 0, DARK = 1, CURRENT, rand;
     Context c;
 
     public IconUtils(SharedPreferences Sp, Context c) {
-        CURRENT = Integer.parseInt(Sp.getString("theme", "0"));
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        rand = Integer.parseInt(Sp.getString("theme", "0"));
+        CURRENT = rand;
+        if (rand == 2) {
+            if(hour<=6 || hour>=18) {
+                CURRENT = 1;
+            } else
+                CURRENT = 0;
+        }
         this.c = c;
 
     }

@@ -27,10 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -61,6 +58,7 @@ public class CopyService extends Service {
     public void onCreate() {
         notification = new Notification(R.drawable.ic_content_copy_white_36dp, "Copying Files", System.currentTimeMillis());
         Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setAction(Intent.ACTION_MAIN);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         notification.setLatestEventInfo(this, "Copying Files", "", pendingIntent);
         startForeground(001, notification);

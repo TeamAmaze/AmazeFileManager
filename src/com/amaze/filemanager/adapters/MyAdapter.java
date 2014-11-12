@@ -285,7 +285,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             vholder.date= (TextView) view.findViewById(R.id.date);
             vholder.txtDesc= (TextView) view.findViewById(R.id.size);
                 vholder.perm= (TextView) view.findViewById(R.id.perm);
-                if(main.theme==1)view.findViewById(R.id.icon_frame).setBackgroundColor(Color.parseColor("#00000000"));
+                if(main.theme1==1)view.findViewById(R.id.icon_frame).setBackgroundColor(Color.parseColor("#00000000"));
 
             view.setTag(vholder);
             }else{ view = convertView;}
@@ -339,7 +339,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     holder.rl.setBackgroundColor(Color.parseColor("#9f757575"));
                 } else {
                     if (main.uimode == 0) {
-                        if(main.theme==0)holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
+                        if(main.theme1==0)holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
                         else holder.rl.setBackgroundResource(R.drawable.ic_grid_card_background_dark);
                     } else if (main.uimode == 1) {
                         holder.rl.setBackgroundResource(R.drawable.bg_card);

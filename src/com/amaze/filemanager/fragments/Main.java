@@ -89,6 +89,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -117,6 +118,7 @@ public class Main extends android.support.v4.app.Fragment {
     public boolean rootMode, mountSystem,showHidden,showPermissions,showSize,showLastModified;
     View footerView;
     public LinearLayout pathbar;
+    private TextView textView;
     private ImageButton ib;
     CountDownTimer timer;
     private View rootView;
@@ -132,16 +134,27 @@ public class Main extends android.support.v4.app.Fragment {
     public String skin;
     public int skinselection;
     public int theme;
+    public int theme1;
     private TabSpinnerAdapter tabSpinnerAdapter;
     public float[] color;
     public ColorMatrixColorFilter colorMatrixColorFilter;
     Animation animation;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         aBoolean = Sp.getBoolean("view", true);
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
         theme=Integer.parseInt(Sp.getString("theme","0"));
+        theme1 = theme;
+        if (theme == 2) {
+            if(hour<=6 || hour>=18) {
+                theme1 = 1;
+            } else
+                theme1 = 0;
+        }
         mainActivity=(MainActivity)getActivity();
         tabHandler = new TabHandler(getActivity(), null, null, 1);
         showPermissions=Sp.getBoolean("showPermissions",false);
@@ -170,7 +183,7 @@ public class Main extends android.support.v4.app.Fragment {
         res = getResources();
         apk=res.getDrawable(R.drawable.ic_doc_apk_grid);
          animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
-        if(theme==1) {
+        if(theme1==1) {
             rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_dark));
             ((ImageView)getActivity().findViewById(R.id.shadow)).setImageDrawable(res.getDrawable(R.drawable.shadow_dark));
         }if (aBoolean) {
@@ -259,6 +272,7 @@ public class Main extends android.support.v4.app.Fragment {
 
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
         pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
+        textView = (TextView) getActivity().findViewById(R.id.fullpath);
 
         pathbar.setBackgroundColor(Color.parseColor(skin));
         ImageView overflow = ((ImageView)getActivity().findViewById(R.id.action_overflow));
@@ -273,6 +287,16 @@ public class Main extends android.support.v4.app.Fragment {
                 timer.start();
             }
         });
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                crossfade();
+                timer.cancel();
+                timer.start();
+            }
+        });
+
         getActivity().findViewById(R.id.bookadd).setVisibility(View.GONE);
         getActivity().findViewById(R.id.pink_icon).setVisibility(View.VISIBLE);
         scroll = (HorizontalScrollView) getActivity().findViewById(R.id.scroll);
@@ -973,6 +997,16 @@ if(listView!=null){
                             timer.start();
                         }
                     });
+                    button.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
+
+                            File file1 = new File(rpaths.get(index));
+                            copyToClipboard(getActivity(), file1.getPath());
+                            Toast.makeText(getActivity(), "Path copied to clipboard", Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                    });
 
                     buttons.addView(button);
                     if(names.size()-i!=1)
@@ -1005,6 +1039,18 @@ if(listView!=null){
 
     }
 
+    public boolean copyToClipboard(Context context, String text) {
+        try {
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context
+                        .getSystemService(context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip = android.content.ClipData
+                        .newPlainText("Path copied to clipboard", text);
+                clipboard.setPrimaryClip(clip);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
 
     public void computeScroll() {

@@ -37,14 +37,17 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.stericson.RootTools.RootTools;
 
+import java.util.Calendar;
 import java.util.Random;
 
 public class Preffrag extends PreferenceFragment {
+    int theme;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,18 +57,26 @@ public class Preffrag extends PreferenceFragment {
         addPreferencesFromResource(R.xml.preferences);
 
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+
         final ListPreference ui = (ListPreference) findPreference("uimode");
-        int vl = Integer.parseInt(sharedPref.getString("theme", "0"));
-        if (vl == 1) {
+        int th1 = Integer.parseInt(sharedPref.getString("theme", "0"));
+        theme = th1;
+        if (th1 == 2) {
             ui.setEnabled(false);
+            if(hour<=6 || hour>=18) {
+                theme = 1;
+            } else
+                theme = 0;
         }
         ListPreference th = (ListPreference) findPreference("theme");
         th.setOnPreferenceChangeListener(new ListPreference.OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference p1, Object p2) {
-                int value = Integer.parseInt(sharedPref.getString("theme", "0"));
+                //int value = Integer.parseInt(sharedPref.getString("theme", "0"));
 
-                if (value == 0) {
+                if (theme == 0) {
                     sharedPref.edit().putString("uimode", "0").commit();
                     ui.setEnabled(false);
                 } else {
@@ -185,6 +196,7 @@ public class Preffrag extends PreferenceFragment {
         preference4.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
+
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                 LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = layoutInflater.inflate(R.layout.authors, null);
@@ -197,6 +209,44 @@ public class Preffrag extends PreferenceFragment {
                     }
                 });
                 alertDialog.show();
+
+                final Intent intent = new Intent(Intent.ACTION_VIEW);
+
+                TextView googlePlus1 = (TextView) view.findViewById(R.id.googlePlus1);
+                TextView googlePlus2 = (TextView) view.findViewById(R.id.googlePlus2);
+                TextView git1 = (TextView) view.findViewById(R.id.git1);
+                TextView git2 = (TextView) view.findViewById(R.id.git2);
+
+                googlePlus1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        intent.setData(Uri.parse("https://plus.google.com/u/0/110424067388738907251/"));
+                        startActivity(intent);
+                    }
+                });
+                googlePlus2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        intent.setData(Uri.parse("https://plus.google.com/+VishalNehra/"));
+                        startActivity(intent);
+                    }
+                });
+                git1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        intent.setData(Uri.parse("https://github.com/arpitkh96"));
+                        startActivity(intent);
+                    }
+                });
+                git2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        intent.setData(Uri.parse("https://github.com/vishal0071"));
+                        startActivity(intent);
+                    }
+                });
+
+
                 return false;
             }
         });
@@ -350,8 +400,20 @@ public class Preffrag extends PreferenceFragment {
                 intent.setType("plain/text");
                 intent.setData(Uri.parse("arpitkh96@gmail.com"));
                 intent.setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
-                intent.putExtra(Intent.EXTRA_SUBJECT, "test_subject");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
                 startActivity(intent);
+                return false;
+            }
+        });
+
+        // rate
+        Preference preference5 = (Preference) findPreference("rate");
+        preference5.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent1 = new Intent(Intent.ACTION_VIEW);
+                intent1.setData(Uri.parse("market://details?id=com.amaze.filemanager"));
+                startActivity(intent1);
                 return false;
             }
         });

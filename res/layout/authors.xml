@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="5dp">
+        android:layout_marginLeft="15dp">
 
         <TextView
             android:id="@+id/name1"
@@ -22,22 +22,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/name1"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
+            android:textColor="#e91e63"
             style="@style/TextAppearance.Small"
             android:text="Github"/>
         <TextView
+            android:id="@+id/googlePlus1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/git1"
             android:layout_below="@+id/name1"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
+            android:textColor="#e91e63"
             style="@style/TextAppearance.Small"
             android:text="Google+"/>
         </RelativeLayout>
     <RelativeLayout
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp">
 
         <TextView
             android:id="@+id/name2"
@@ -51,15 +57,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/name2"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
+            android:textColor="#e91e63"
             style="@style/TextAppearance.Small"
             android:text="Github"/>
         <TextView
+            android:id="@+id/googlePlus2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/git2"
             android:layout_below="@+id/name2"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
+            android:textColor="#e91e63"
             style="@style/TextAppearance.Small"
             android:text="Google+"/>
     </RelativeLayout>

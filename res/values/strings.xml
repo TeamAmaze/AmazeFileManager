@@ -102,6 +102,9 @@
     <string name="theme">Theme</string>
     <string name="skin">Skin</string>
     <string name="random">Random Skin</string>
+    <string name="random_summary">Sets random theme at startup</string>
+    <string name="colorize">Colorize Icons</string>
+    <string name="colorize_summary">Sets some icons color different than theme</string>
     <string name="back">Back</string>
     <string name="home">Home</string>
     <string name="paste">Paste</string>
@@ -110,7 +113,7 @@
     <string name="refresh">Refresh</string>
     <string name="copy">Copy</string>
     <string name="rootmode">Root Explorer</string>
-    <string name="rootmodesummary">For rooted device only.Check it only if you are sure about it.</string>
+    <string name="rootmodesummary">For rooted device only. Check it only if you are sure about it.</string>
     <string name="mountsystemsummary">Enable this if you want to edit System Files</string>
     <string name="mountsystem">Mount System Folders as Writable</string>
     <string name="rootfailure">Root Access not granted</string>
@@ -126,7 +129,7 @@
     <string name="usedefaultgallerypath">Use Default Image Gallery Path</string>
 
     <!-- Changelog -->
-    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v0.x&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov x, 2014&lt;/i>&lt;/font>&lt;br>&lt;br></string>
-    <string name="changelog_change_1">&lt;i>- Initial release&lt;/i>&lt;br>&lt;br></string>
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br>&lt;br></string>
+    <string name="changelog_change_1">- Initial release&lt;br>&lt;br></string>
 </resources>
 	
