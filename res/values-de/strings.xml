@@ -1,0 +1,130 @@
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+    This file is part of Amaze File Manager.
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources>
+    <string name="app_name">Beispiel der Navigationsleiste</string> <!--do you actually need that one?-->
+    <string name="drawer_open">Öffne Navigationsleiste</string>
+    <string name="drawer_close">Schließe Navigationsleiste</string>
+    <string name="books">Lesezeichen</string>
+    <string name="icon">Symbol</string>
+    <string name="efn">Dateiname eingeben</string>
+    <string name="storage">Speicher</string>
+    <string name="gallery">Gallerie</string>
+    <string name="apps">App Manager</string>
+    <string name="bookmanag">Lesezeichen Manager</string>
+    <string name="setting">Einstellungen</string>
+    <string name="select">Auswählen</string>
+    <string name="pressagain">Drücke  erneut zum Schließen</string>
+    <string name="open">Öffnen</string>
+    <string name="backup">Sicherung</string>
+    <string name="uninstall">Deinstallieren</string>
+    <string name="play">Play Store</string>
+    <string name="properties">Eigenschaften</string>
+    <string name="copyingapk">Kopiere apk nach </string>
+    <string name="addbook">Lesezeichen hinzufügen</string>
+    <string name="addtobook">Zu Lesezeichen hinzufügen</string>
+    <string name="enterpath">Pfad eingeben</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="create">Erstellen</string>
+    <string name="success">Erfolgreich</string>
+    <string name="filenotexists">Datei existiert nicht</string>
+    <string name="error">Error</string>
+    <string name="cantlistfiles">Kann Dateien ohne Root-Rechte nicht auflisten</string>
+    <string name="searchresults">Suchergebnisse</string>
+    <string name="itemsselected">Elemente ausgewählt</string>
+    <string name="newhomedirectory">Neues Home-Verzeichnis</string>
+    <string name="rename">Umbenennen</string>
+    <string name="save">Speichern</string>
+    <string name="renameerror">Umbenennen abgebrochen</string>
+    <string name="renamed">Erfolgreich umbenannt</string>
+    <string name="bookmarksadded">Lesezeichen hinzugefügt</string>
+    <string name="fileexist">Datei existiert bereits</string>
+    <string name="filecreated">Datei erstellt</string>
+    <string name="searchpath">Suchpfad</string>
+    <string name="search">Suchen</string>
+    <string name="enterfile">Dateinamen eingeben</string>
+    <string name="name">Name:</string>
+    <string name="date">Datum:</string>
+    <string name="location">Dateipfad:</string>
+    <string name="size">Größe:</string>
+    <string name="totalitems">Gesamtanzahl:</string>
+    <string name="enterzipname">Zip-Namen eingeben</string>
+    <string name="noappfound">Keine App zum Öffnen gefunden</string>
+    <string name="copying">Kopiert</string>
+    <string name="moving">Verschiebt</string>
+    <string name="add">Hinzufügen</string>
+    <string name="tab">Tab</string>
+    <string name="file">Datei</string>
+    <string name="folder">Ordner</string>
+    <string name="newfolder">Neuer Ordner</string>
+    <string name="entername">Namen eingeben</string>
+    <string name="extracting">Extrahiert</string>
+    <string name="zipping">Komprimiert</string>
+    <string name="stopping">Aktion gestoppt</string>
+    <string name="guide1">Willkommen beim Amaze File Manager</string>
+    <string name="guide2">Tippe den blauen Balken um die Pfadanzeige anzuzeigen oder zu verstecken.</string>
+    <string name="guide3">Berühre und halte irgendeine Datei für mehr Optionen...</string>
+    <string name="guide4">Wie Kopieren, Verschieben, Eigenschaften, etc.</string>
+    <string name="guide5">Benutze die Zurück-Taste um die App jederzeit zu schließen...</string>
+    <string name="guide6">..Und den Pfeil nach links zur Navigation in der App.</string>
+    <string name="maintab">Letzter Tab kann nicht entfernt werden!</string>
+    <string name="openparent">Öffne übergeordnetes Verzeichnis</string>
+    <string name="openwith">Öffne mit</string>
+    <string name="share">Teilen</string>
+    <string name="about">Über</string>
+    <string name="extract">Extrahieren</string>
+    <string name="compress">Komprimieren</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="confirm">Bestätigen</string>
+    <string name="deleting">Löschen</string>
+    <string name="questiondelete">Möchten Sie die folgenden Dateien wirklich endgültig löschen?</string>
+    <string name="viewmode">Ansichtsmodus</string>
+    <string name="uimode">Listenmodus</string>
+    <string name="directorysort">Sortierungsmodus der Verzeichnisse</string>
+    <string name="sortby">Sortieren nach</string>
+    <string name="theme">Thema</string>
+    <string name="skin">Skin</string>
+    <string name="random">Zufälliger Skin</string>
+    <string name="random_summary">Nimm zufälliges Thema beimStarten</string>
+    <string name="colorize">Symbole einfärben</string>
+    <string name="colorize_summary">Setzt ein paar andere Symbolfarben als das Farbthema.</string>
+    <string name="back">Zurück</string>
+    <string name="home">Startseite</string>
+    <string name="paste">Einfügen</string>
+    <string name="close">Schließen</string>
+    <string name="history">Verlauf</string>
+    <string name="refresh">Aktualisieren</string>
+    <string name="copy">Kopieren</string>
+    <string name="rootmode">Root Explorer</string>
+    <string name="rootmodesummary">Nur für gerootete Geräte. Nur aktivieren wenn Sie ganz sicher sind.</string>
+    <string name="mountsystemsummary">Ermöglicht Modifizieren der Systemdateien</string>
+    <string name="mountsystem">Systemordner als beschreibbar einhängen</string>
+    <string name="rootfailure">Root-Zugriff nicht gewährt</string>
+    <string name="cut">Ausschneiden</string>
+    <string name="selectall">Alles auswählen</string>
+    <string name="delete">Löschen</string>
+    <string name="setashome"> Als Home-Verzeichnis festlegen</string>
+    <string name="sethome">Home-Verzeichnis festlegen</string>
+    <string name="foldercolor">Ordnerfarbe</string>
+    <string name="imagegallery">Bildergalerie</string>
+    <string name="fileexplorer">Datei-Explorer</string>
+    <string name="changegallerypath">Galleriepfad ändern</string>
+    <string name="usedefaultgallerypath">Standard-Galleriepfad verwenden</string>
+
+    <!-- Changelog -->
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br>&lt;br></string>
+    <string name="changelog_change_1">- Initial release&lt;br>&lt;br></string>
+</resources>
