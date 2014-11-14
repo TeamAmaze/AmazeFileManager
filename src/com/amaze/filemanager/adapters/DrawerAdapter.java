@@ -36,6 +36,7 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 
 import java.io.File;
@@ -46,7 +47,7 @@ public class DrawerAdapter extends ArrayAdapter<String> {
     private final Context context;
     private final ArrayList<String> values;
     MainActivity m;
-
+    Futils futils=new Futils();
     IconUtils icons;
     Float[] color;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
@@ -127,7 +128,7 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
         ColorMatrix colorMatrix = new ColorMatrix(src);
         ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
         if(values.get(position).equals("/storage/emulated/0"))
-            textView.setText("Storage");
+            textView.setText(futils.getString(context,R.string.storage));
         else {
             if (position != values.size() - 1 && position != values.size() - 2){
                 textView.setText(new File(values.get(position)).getName());

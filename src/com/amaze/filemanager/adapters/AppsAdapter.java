@@ -173,7 +173,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                     if (i != null)
                                         app.startActivity(i);
                                     else
-                                       Toast.makeText(app.getActivity(), "Not Allowed", Toast.LENGTH_LONG).show();
+                                       Toast.makeText(app.getActivity(), utils.getString(context,R.string.not_allowed), Toast.LENGTH_LONG).show();
                                     break;
 
                                 case 1:

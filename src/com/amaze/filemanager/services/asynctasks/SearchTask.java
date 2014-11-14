@@ -24,8 +24,10 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.RootHelper;
 
 import java.io.File;
@@ -36,7 +38,7 @@ public class SearchTask extends AsyncTask<Bundle, String, ArrayList<String[]>> {
     boolean run = true;
     MainActivity m;
     Main tab;
-
+Futils futils=new Futils();
     public SearchTask(MainActivity m, Main tab) {
         this.m = m;
         this.tab = tab;
@@ -46,8 +48,8 @@ public class SearchTask extends AsyncTask<Bundle, String, ArrayList<String[]>> {
     public void onPreExecute() {
         a = new ProgressDialog(m);
         a.setIndeterminate(true);
-        a.setTitle("Searching");
-        a.setButton("Cancel", new DialogInterface.OnClickListener() {
+        a.setTitle(futils.getString(tab.getActivity(), R.string.searching));
+        a.setButton(futils.getString(tab.getActivity(), R.string.cancel), new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface p1, int p2) {
                 run = false;
@@ -63,7 +65,7 @@ public class SearchTask extends AsyncTask<Bundle, String, ArrayList<String[]>> {
     @Override
     public void onProgressUpdate(String... val) {
         if (a != null) {
-            a.setMessage("Searching " + val[0]);
+            a.setMessage(futils.getString(tab.getActivity(), R.string.searching)+" " + val[0]);
         }
 
     }

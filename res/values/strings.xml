@@ -54,7 +54,7 @@
     <string name="renameerror">Rename Unsuccessful</string>
     <string name="renamed">Rename Successful</string>
     <string name="bookmarksadded">Bookmarks Added</string>
-    <string name="fileexist">File Already Exists</string>
+    <string name="fileexist">File with same name already exists </string>
     <string name="filecreated">File Created</string>
     <string name="searchpath">Search Path</string>
     <string name="search">Search</string>
@@ -176,7 +176,36 @@
     <string name="simpleView">Simple View</string>
     <!--Folder-->
     <string name="Yellow">Yellow</string>
-
+    <string name="pick_a_file">Pick a file</string>
+    <string name="process_viewer">Process Viewer</string>
+    <string name="in_safe">Insufficient space</string>
+    <string name="no_file_overwrite">No File Overwritten</string>
+    <string name="skip">Skip</string>
+    <string name="overwrite">Overwrite</string>
+    <string name="cant_read_file">Can\'t read file</string>
+    <string name="not_allowed">Not Allowed</string>
+    <string name="processes">Processes</string>
+    <string name="searching">Searching</string>
+    <string name="copying_fles">Copying Files</string>
+    <string name="done">Done</string>
+    <string name="Extracting_fles">Extracting Files</string>
+    <string name="Zipping_fles">Zipping Files</string>
+    <string name="items">Items</string>
+    <string name="set">Set</string>
+    <string name="enablerootmde">Enable Root Mode</string>
+    <string name="goback">Go Back</string>
+    <string name="foldercreated">Folder Created</string>
+    <string name="newfile">New File</string>
+    <string name="nofiles">No Files</string>
+    <string name="tapnhold">Tap and hold on a File or Folder for more options</string>
+    <string name="pathcopied">Path copied to clipboard</string>
+    <string name="used">Used :  </string>
+    <string name="free">Free :  </string>
+    <string name="atroot">You are at the root</string>
+    <string name="listview">List View</string>
+    <string name="gridview">Grid View</string>
+    <string name="setlistview">Setting ListView</string>
+    <string name="setgridview">Setting GridView</string>
 
 </resources>
 	

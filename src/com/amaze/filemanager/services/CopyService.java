@@ -56,11 +56,11 @@ public class CopyService extends Service {
     boolean rootmode;
     @Override
     public void onCreate() {
-        notification = new Notification(R.drawable.ic_content_copy_white_36dp, "Copying Files", System.currentTimeMillis());
+        notification = new Notification(R.drawable.ic_content_copy_white_36dp, getResources().getString(R.string.copying_fles), System.currentTimeMillis());
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notification.setLatestEventInfo(this, "Copying Files", "", pendingIntent);
+        notification.setLatestEventInfo(this, getResources().getString(R.string.copying_fles), "", pendingIntent);
         startForeground(001, notification);
         SharedPreferences Sp=PreferenceManager.getDefaultSharedPreferences(this);
         rootmode=Sp.getBoolean("rootmode",false);

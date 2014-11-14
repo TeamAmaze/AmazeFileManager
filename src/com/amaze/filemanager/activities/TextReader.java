@@ -38,6 +38,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.Futils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.BufferedReader;
@@ -52,7 +53,7 @@ public class TextReader extends Activity {
     EditText ma;
     String path;
     ProgressBar p;
-
+    Futils utils=new Futils();;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +78,7 @@ public class TextReader extends Activity {
             Toast.makeText(this, "" + path, Toast.LENGTH_SHORT).show();
             new LoadText().execute(path);
         } else {
-            Toast.makeText(this, "Could not read file", Toast.LENGTH_LONG).show();
+            Toast.makeText(this,utils.getString(this,R.string.cant_read_file) , Toast.LENGTH_LONG).show();
             finish();
         }
         getActionBar().setTitle(new File(path).getName());
@@ -122,10 +123,10 @@ public class TextReader extends Activity {
             }
             reader.close();
         } catch (FileNotFoundException e) {
-            Toast.makeText(this, "Could not read file", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, utils.getString(this,R.string.cant_read_file), Toast.LENGTH_LONG).show();
             finish();
         } catch (IOException e) {
-            Toast.makeText(this, "Could not read file", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, utils.getString(this,R.string.cant_read_file), Toast.LENGTH_LONG).show();
             finish();
         } finally {
             if (file != null) {
@@ -133,7 +134,7 @@ public class TextReader extends Activity {
                     file.close();
 
                 } catch (IOException e) {
-                    Toast.makeText(this, "Could not read file", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this,utils.getString(this,R.string.cant_read_file), Toast.LENGTH_LONG).show();
                     finish();
                     e.printStackTrace();
                 }
@@ -169,7 +170,8 @@ public class TextReader extends Activity {
     }
 
     class LoadText extends AsyncTask<String, String, String> {
-        public void onpreExecute() {
+        @Override
+        public void onPreExecute() {
             ma.setVisibility(View.GONE);
             p.setVisibility(View.VISIBLE);
         }

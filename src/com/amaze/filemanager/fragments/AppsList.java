@@ -75,7 +75,6 @@ public class AppsList extends ListFragment {
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
         getActivity().findViewById(R.id.search).setVisibility(View.GONE);
         getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
-        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
         vl=getListView();
 
@@ -118,7 +117,7 @@ public class AppsList extends ListFragment {
                         if (i != null)
                             app.startActivity(i);
                         else
-                            Toast.makeText(app.getActivity(), "Not Allowed", Toast.LENGTH_LONG).show();
+                            Toast.makeText(app.getActivity(),utils.getString(getActivity(),R.string.not_allowed), Toast.LENGTH_LONG).show();
                         break;
 
                     case 1:

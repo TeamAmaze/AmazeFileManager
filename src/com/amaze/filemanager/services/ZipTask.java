@@ -56,10 +56,10 @@ public class ZipTask extends Service {
     @SuppressWarnings("deprecation")
     @Override
     public void onCreate() {
-        Notification notification = new Notification(R.drawable.ic_doc_compressed, "Zipping Files", System.currentTimeMillis());
+        Notification notification = new Notification(R.drawable.ic_doc_compressed,getResources().getString(R.string.Zipping_fles), System.currentTimeMillis());
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notification.setLatestEventInfo(this, "Zipping Files", "", pendingIntent);
+        notification.setLatestEventInfo(this,getResources().getString(R.string.Zipping_fles), "", pendingIntent);
         startForeground(004, notification);
         registerReceiver(receiver1, new IntentFilter("zipcancel"));
     }

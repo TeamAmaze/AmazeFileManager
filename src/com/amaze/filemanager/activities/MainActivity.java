@@ -178,7 +178,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         intent = getIntent();
         if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
             mReturnIntent = true;
-            Toast.makeText(this, "Pick a file", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, utils.getString(con,R.string.pick_a_file), Toast.LENGTH_LONG).show();
         }
 
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#5677fc");
@@ -283,7 +283,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     //   transaction.addToBackStack(null);
                     select = 102;
 
-                    title.setText("Process Viewer");
+                    title.setText(utils.getString(con,R.string.process_viewer));
                     title.setVisibility(View.VISIBLE);
                     tabsSpinner.setVisibility(View.GONE);
                     //Commit the transaction
@@ -706,7 +706,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                             a.add(j);}
                     }
                 }
-            } else publishProgress("Insufficient space");
+            } else publishProgress(utils.getString(con,R.string.in_safe));
 
             return a;
         }
@@ -729,7 +729,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     }
                 } else {
 
-                    Toast.makeText(MainActivity.this, "No file was overwritten", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, utils.getString(con,R.string.no_file_overwrite), Toast.LENGTH_SHORT).show();
                 }
             } else {
 
@@ -740,12 +740,12 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
                 // textView
                 TextView textView = (TextView) view.findViewById(R.id.textView);
-                textView.setText("File with same name already exists " + new File(a.get(counter)).getName());
+                textView.setText(utils.getString(con,R.string.fileexist) + new File(a.get(counter)).getName());
                 // checkBox
                 final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
 
-                x.setTitle("Paste");
-                x.setPositiveButton("Skip", new DialogInterface.OnClickListener() {
+                x.setTitle(utils.getString(con,R.string.paste));
+                x.setPositiveButton(utils.getString(con,R.string.skip), new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -769,7 +769,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                         dialogInterface.cancel();
                     }
                 });
-                x.setNeutralButton("Overwrite", new DialogInterface.OnClickListener() {
+                x.setNeutralButton(utils.getString(con,R.string.overwrite), new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -788,7 +788,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                         dialogInterface.cancel();
                     }
                 });
-                x.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                x.setNegativeButton(utils.getString(con,R.string.cancel), new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

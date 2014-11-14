@@ -56,10 +56,10 @@ public class ExtractService extends Service {
 
     @Override
     public void onCreate() {
-        Notification notification = new Notification(R.drawable.ic_doc_compressed, "Extracting Files", System.currentTimeMillis());
+        Notification notification = new Notification(R.drawable.ic_doc_compressed, utils.getString(this,R.string.Extracting_fles), System.currentTimeMillis());
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notification.setLatestEventInfo(this, "Extracting Files", "", pendingIntent);
+        notification.setLatestEventInfo(this, utils.getString(this,R.string.Extracting_fles), "", pendingIntent);
         startForeground(002, notification);
         registerReceiver(receiver1, new IntentFilter("excancel"));
     }

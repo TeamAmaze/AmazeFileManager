@@ -25,6 +25,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
@@ -171,10 +172,10 @@ public class Futils {
         c.show();
     }
 
-    public String count(File f,boolean root) {
+    public String count(File f,Resources root) {
         try {
             Integer i=RootHelper.getCount(f);
-            if(i!=null){return i+" items";}
+            if(i!=null){return i+" "+root.getString(R.string.items);}
             else{return "";}
 
         } catch (Exception e) {
@@ -271,7 +272,7 @@ public class Futils {
         parent = getString(c, R.string.location) + f.getParent();
         if (f.isDirectory()) {
             size = getString(c, R.string.size) + readableFileSize(folderSize(f,root));
-            items = getString(c, R.string.totalitems) + count(f,root);
+            items = getString(c, R.string.totalitems) + count(f,c.getResources());
         } else if (f.isFile()) {
             items = "";
             size = getString(c, R.string.size) + getSize(f);
@@ -643,7 +644,7 @@ public class Futils {
             exegroup.setChecked(exe[1]);
             exeother.setChecked(exe[2]);
 
-            a.setPositiveButton("Set",new DialogInterface.OnClickListener() {
+            a.setPositiveButton(main.getResources().getString(R.string.set),new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int j) {
                     int a=0,b=0,c=0;
@@ -679,7 +680,7 @@ public class Futils {
 
                         @Override
                         public void commandCompleted(int i, int i2) {
-                            Toast.makeText(main.getActivity(),"done",Toast.LENGTH_LONG);
+                            Toast.makeText(main.getActivity(),main.getResources().getString(R.string.done),Toast.LENGTH_LONG);
                         }
                     };
                     try {//
@@ -687,14 +688,14 @@ public class Futils {
                         RootTools.getShell(true).add(com);
                         main.updateList();
                     } catch (Exception e1) {
-                        Toast.makeText(main.getActivity(),"Error",Toast.LENGTH_LONG).show();
+                        Toast.makeText(main.getActivity(),main.getResources().getString(R.string.error),Toast.LENGTH_LONG).show();
                         e1.printStackTrace();
                     }
                 }
             });
             a.setTitle(file.getName());
             a.setView(v);
-            a.show();}else{Toast.makeText(main.getActivity(),"Enable Root Mode",Toast.LENGTH_LONG).show();}
+            a.show();}else{Toast.makeText(main.getActivity(),main.getResources().getString(R.string.enablerootmde),Toast.LENGTH_LONG).show();}
     }String per=null;
     public String getFilePermissionsSymlinks(String file,final Context c,boolean root)
     {per=null;

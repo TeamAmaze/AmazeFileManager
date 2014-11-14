@@ -192,7 +192,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 @Override
                 public void onClick(View view) {
                     if(!main.results){
-                    if (!rowItem.getSize().equals("Go Back")) {
+                    if (!rowItem.getSize().equals(main.goback)) {
                         holder.imageView.setAnimation(animation);
                         toggleChecked(p);
                     }}
@@ -204,7 +204,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 @Override
                 public void onClick(View view) {
                     if(!main.results){
-                        if (!rowItem.getSize().equals("Go Back"))
+                        if (!rowItem.getSize().equals(main.goback))
                         toggleChecked(p);
                     else main.goBack();
                 }}
@@ -213,7 +213,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 @Override
                 public void onClick(View view) {
                     if(!main.results) {
-                        if (!rowItem.getSize().equals("Go Back"))
+                        if (!rowItem.getSize().equals(main.goback))
                             toggleChecked(p);
                         else main.goBack();
                     } }

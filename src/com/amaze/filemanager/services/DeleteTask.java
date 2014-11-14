@@ -24,6 +24,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MediaFile;
@@ -49,10 +50,6 @@ public  DeleteTask(ContentResolver c,Main m,Context cd){this.contentResolver=c;t
         Toast.makeText(m.getActivity(),values[0],Toast.LENGTH_LONG).show();
     }
 
-    public DeleteTask() {
-
-    }
-
     protected Boolean doInBackground(ArrayList<File>... p1) {
             files=p1[0];
         boolean b = true;
@@ -71,7 +68,7 @@ public  DeleteTask(ContentResolver c,Main m,Context cd){this.contentResolver=c;t
                                 if(!delete){b=false;}
                             } catch (IOException e) {
                                 b=false;
-                                publishProgress("Error");
+                                publishProgress(utils.getString(cd, R.string.error));
                             }
                         }}
                 }
@@ -91,8 +88,8 @@ public  DeleteTask(ContentResolver c,Main m,Context cd){this.contentResolver=c;t
                 m.updateList();
                 utils.scanFile(files.get(0).getParent(), m.getActivity());
                 if (!b) {
-                    Toast.makeText(m.getActivity(), "Error", Toast.LENGTH_LONG).show();
-                } else Toast.makeText(m.getActivity(), "Done", Toast.LENGTH_LONG).show();
+                    Toast.makeText(m.getActivity(), utils.getString(cd, R.string.error), Toast.LENGTH_LONG).show();
+                } else Toast.makeText(m.getActivity(), utils.getString(cd, R.string.done), Toast.LENGTH_LONG).show();
             }  else utils.scanFile(files.get(0).getParent(), cd);
         }
     }

@@ -53,6 +53,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -139,7 +140,7 @@ public class Main extends android.support.v4.app.Fragment {
     public float[] color;
     public ColorMatrixColorFilter colorMatrixColorFilter;
     Animation animation;
-    public String year;
+    public String year,goback;
     FloatingActionsMenu floatingActionsMenu;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -183,6 +184,7 @@ public class Main extends android.support.v4.app.Fragment {
         showThumbs=Sp.getBoolean("showThumbs",true);
         ic=new IconHolder(getActivity(),showThumbs,!aBoolean);
         res = getResources();
+        goback=res.getString(R.string.goback);
         apk=res.getDrawable(R.drawable.ic_doc_apk_grid);
          animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
         if(theme1==1) {
@@ -245,7 +247,6 @@ public class Main extends android.support.v4.app.Fragment {
         getActivity().findViewById(R.id.search).setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.VISIBLE);
         utils = new Futils();
-
         skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#5677fc");
         String x=getSelectionColor();
         skinselection=Color.parseColor(x);
@@ -400,7 +401,7 @@ if(listView!=null){
                                 if (!f.exists()) {
                                     f.mkdirs();
                                     updateList();
-                                    Toast.makeText(getActivity(), "Folder Created", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), res.getString(R.string.foldercreated), Toast.LENGTH_LONG).show();
                                 } else {
                                     Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Toast.LENGTH_LONG).show();
                                 }
@@ -411,7 +412,7 @@ if(listView!=null){
                     case 1:
                         final String path1 = ma.current;
                         AlertDialog.Builder ba2 = new AlertDialog.Builder(getActivity());
-                        ba2.setTitle("New File");
+                        ba2.setTitle(res.getString(R.string.newfile));
                         View v1 = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
                         final EditText edir1 = (EditText) v1.findViewById(R.id.newname);
                         edir1.setHint(utils.getString(getActivity(), R.string.entername));
@@ -518,7 +519,7 @@ if(listView!=null){
                     utils.openFile(f, (MainActivity) getActivity());
             }
         } else if (selection == true) {
-            if(!list.get(position).getSize().equals("Go Back")){
+            if(!list.get(position).getSize().equals(goback)){
             adapter.toggleChecked(position);;
             }else{selection = false;
                 if(mActionMode!=null)
@@ -526,7 +527,7 @@ if(listView!=null){
                 mActionMode = null;}
 
         } else {
-            if(!list.get(position).getSize().equals("Go Back")){
+            if(!list.get(position).getSize().equals(goback)){
 
                 String path;
                 Layoutelements l=list.get(position);
@@ -649,14 +650,14 @@ if(listView!=null){
         try {if (bitmap != null) {
                 TextView footerText=(TextView) footerView.findViewById(R.id.footerText);
                 if(bitmap.size()==0){
-                    footerText.setText("No Files");
+                    footerText.setText(res.getString(R.string.nofiles));
                 }
                 else{
-                    footerText.setText("Tap and hold on a File or Folder for more options");
+                    footerText.setText(res.getString(R.string.tapnhold));
                 }
                 if(!f.getPath().equals("/")){
-                    if(bitmap.size()==0 || !bitmap.get(0).getSize().equals("Go Back"))
-                    bitmap.add(0,utils.newElement(folder,"...", "","","Go Back",true));
+                    if(bitmap.size()==0 || !bitmap.get(0).getSize().equals(goback))
+                    bitmap.add(0,utils.newElement(folder,"...", "","",goback,true));
                 }
                 adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
                         bitmap, ma);
@@ -682,7 +683,7 @@ if(listView!=null){
                     floatingActionsMenu.collapse();} catch (Exception e) {
                 }
             }
-        else{Toast.makeText(getActivity(),"Error",Toast.LENGTH_LONG).show();
+        else{Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
             loadlist(new File(current),true);
         }} catch (Exception e) {
         }
@@ -1006,7 +1007,7 @@ if(listView!=null){
 
                             File file1 = new File(rpaths.get(index));
                             copyToClipboard(getActivity(), file1.getPath());
-                            Toast.makeText(getActivity(), "Path copied to clipboard", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), res.getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
                             return false;
                         }
                     });
@@ -1021,7 +1022,7 @@ if(listView!=null){
             TextView textView = (TextView)pathbar.findViewById(R.id.pathname);
             String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
             String free = utils.readableFileSize(f.getFreeSpace());
-            textView.setText("Used : " + used + ", Free : " + free);
+            textView.setText(res.getString(R.string.used) + used + res.getString(R.string.free) + free);
 
             TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
             bapath.setAllCaps(true);
@@ -1072,7 +1073,7 @@ if(listView!=null){
             if (utils.canGoBack(f)) {
                 loadlist(f.getParentFile(), true);
             } else {
-                Toast.makeText(getActivity(), "You're at the root", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), res.getString(R.string.atroot), Toast.LENGTH_SHORT).show();
             }
         } else {
             loadlist(f, true);
@@ -1125,7 +1126,7 @@ if(listView!=null){
         for (int i = 0; i < mFile.size(); i++) {
             File f=new File(mFile.get(i)[0]);
             if (f.isDirectory()) {
-                a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f,rootMode),false));
+                a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f,res),false));
 
             } else {
                 try {
@@ -1188,9 +1189,9 @@ if(history!=null)
         MenuItem s = popup.getMenu().findItem(R.id.view);
 
         if (aBoolean) {
-            s.setTitle("Grid View");
+            s.setTitle(res.getString(R.string.gridview));
         } else {
-            s.setTitle("List View");
+            s.setTitle(res.getString(R.string.listview));
         }
 
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -1227,11 +1228,11 @@ if(history!=null)
                         break;
                     case R.id.view:
                         if (aBoolean) {
-                            Toast.makeText(getActivity(), "Setting GridView", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), res.getString(R.string.setgridview), Toast.LENGTH_SHORT).show();
                             sharedPreferences.edit().putBoolean("view", false).commit();
 
                         } else {
-                            Toast.makeText(getActivity(), "Setting ListView", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(),res.getString(R.string.setlistview), Toast.LENGTH_SHORT).show();
                             sharedPreferences.edit().putBoolean("view", true).commit();
 
                         }restartPC(getActivity());

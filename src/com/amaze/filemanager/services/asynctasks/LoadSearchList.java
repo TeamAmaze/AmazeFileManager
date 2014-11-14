@@ -79,7 +79,7 @@ public class LoadSearchList extends AsyncTask<ArrayList<String[]>, Void, ArrayLi
         }
         try {
             if (bitmap != null) {
-                ((TextView)ma.pathbar.findViewById(R.id.pathname)).setText("Search Results");
+                ((TextView)ma.pathbar.findViewById(R.id.pathname)).setText(ma.utils.getString(ma.getActivity(),R.string.searchresults));
                 ma.adapter = new MyAdapter(ma.getActivity(), R.layout.rowlayout,
                         bitmap, ma);
                 try {

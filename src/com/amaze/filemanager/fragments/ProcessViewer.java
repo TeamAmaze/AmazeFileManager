@@ -69,7 +69,7 @@ public class ProcessViewer extends Fragment {
         getActivity().findViewById(R.id.bookadd).setVisibility(View.GONE);
         getActivity().findViewById(R.id.paste).setVisibility(View.GONE);
         rootView = (LinearLayout) root.findViewById(R.id.secondbut);
-        getActivity().getActionBar().setSubtitle("Processes");
+        getActivity().getActionBar().setSubtitle(utils.getString(getActivity(),R.string.processes));
         ((LinearLayout) getActivity().findViewById(R.id.buttons))
                 .setVisibility(View.GONE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
