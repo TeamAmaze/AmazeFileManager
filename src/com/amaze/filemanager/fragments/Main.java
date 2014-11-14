@@ -139,6 +139,7 @@ public class Main extends android.support.v4.app.Fragment {
     public float[] color;
     public ColorMatrixColorFilter colorMatrixColorFilter;
     Animation animation;
+    public String year;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -147,6 +148,7 @@ public class Main extends android.support.v4.app.Fragment {
         aBoolean = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        year=(""+calendar.get(Calendar.YEAR)).substring(2,4);
         theme=Integer.parseInt(Sp.getString("theme","0"));
         theme1 = theme;
         if (theme == 2) {
