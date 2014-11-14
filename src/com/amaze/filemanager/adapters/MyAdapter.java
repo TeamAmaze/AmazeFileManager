@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -317,7 +318,17 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.txtTitle.setText(rowItem.getTitle());
             holder.imageView1.setVisibility(View.INVISIBLE);
             holder.imageView.setVisibility(View.VISIBLE);
-            holder.imageView.setColorFilter(colorMatrixColorFilter);
+            if(main.coloriseIcons){
+                if(new File(rowItem.getDesc()).isDirectory())holder.imageView.setColorFilter(Color.parseColor("#9e9e9e"));
+                else if(Icons.isVideo(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#f06292"));
+                else if(Icons.isAudio(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#9575cd"));
+                else if(Icons.isPdf(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#da4336"));
+                else if(Icons.isCode(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#00bfa5"));
+                else if(Icons.isText(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#e06055"));
+                else if(Icons.isArchive(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#f9a825"));
+                else if(Icons.isgeneric(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#9e9e9e"));
+                else holder.imageView.setColorFilter(Color.parseColor(main.skin));
+            }else holder.imageView.setColorFilter(Color.parseColor(main.skin));
             holder.imageView.setImageDrawable(rowItem.getImageId());
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
                 holder.imageView.setColorFilter(null);
@@ -328,13 +339,15 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 main.ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
             }
             if (Icons.isApk((rowItem.getDesc()))) {
+                if(checked!=null && !checked)
                 holder.imageView.setColorFilter(null);
                 main.ic.cancelLoad(holder.imageView);
                 main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),null);
             }
             if (checked != null) {
 
-                if (checked) {
+                if (checked) {holder.imageView1.setVisibility(View.GONE);
+                    holder.imageView.setVisibility(View.VISIBLE);
                     holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                     holder.rl.setBackgroundColor(Color.parseColor("#9f757575"));
                 } else {
