@@ -181,7 +181,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             Toast.makeText(this, "Pick a file", Toast.LENGTH_LONG).show();
         }
 
-        skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#673ab7");
+        skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#5677fc");
         RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.action_bar);
         linearLayout.setBackgroundColor(Color.parseColor(skin));
         LinearLayout linearLayout1 = (LinearLayout) findViewById(R.id.pathbar);
