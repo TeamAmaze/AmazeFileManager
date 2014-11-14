@@ -139,7 +139,8 @@ public class Main extends android.support.v4.app.Fragment {
     public float[] color;
     public ColorMatrixColorFilter colorMatrixColorFilter;
     Animation animation;
-
+    public String year;
+    FloatingActionsMenu floatingActionsMenu;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,6 +148,7 @@ public class Main extends android.support.v4.app.Fragment {
         aBoolean = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        year=(""+calendar.get(Calendar.YEAR)).substring(2,4);
         theme=Integer.parseInt(Sp.getString("theme","0"));
         theme1 = theme;
         if (theme == 2) {
@@ -185,7 +187,6 @@ public class Main extends android.support.v4.app.Fragment {
          animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
         if(theme1==1) {
             rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-            ((ImageView)getActivity().findViewById(R.id.shadow)).setImageDrawable(res.getDrawable(R.drawable.shadow_dark));
         }if (aBoolean) {
             listView.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.GONE);
@@ -206,7 +207,8 @@ public class Main extends android.support.v4.app.Fragment {
         content = tabHandler.getAllTabs();
         list1 = new ArrayList<String>();
 
-        FloatingActionsMenu floatingActionsMenu = (FloatingActionsMenu) getActivity().findViewById(R.id.pink_icon);
+        floatingActionsMenu = (FloatingActionsMenu) getActivity().findViewById(R.id.pink_icon);
+
         ImageButton imageView = ((ImageButton)getActivity().findViewById(R.id.action_overflow));
         showPopup(imageView);
         (getActivity().findViewById(R.id.search)).setOnClickListener(new View.OnClickListener() {
@@ -244,7 +246,7 @@ public class Main extends android.support.v4.app.Fragment {
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.VISIBLE);
         utils = new Futils();
 
-        skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#673ab7");
+        skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#5677fc");
         String x=getSelectionColor();
         skinselection=Color.parseColor(x);
         color=calculatevalues(x);
@@ -676,7 +678,8 @@ if(listView!=null){
                             listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
                         }
                     }
-                    bbar(current);} catch (Exception e) {
+                    bbar(current);
+                    floatingActionsMenu.collapse();} catch (Exception e) {
                 }
             }
         else{Toast.makeText(getActivity(),"Error",Toast.LENGTH_LONG).show();

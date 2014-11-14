@@ -89,7 +89,7 @@ public class Preffrag extends PreferenceFragment {
         });
 
         final Preference preference = (Preference) findPreference("skin");
-        final int current = Integer.parseInt(sharedPref.getString("skin", ""+3));
+        final int current = Integer.parseInt(sharedPref.getString("skin", ""+6));
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {

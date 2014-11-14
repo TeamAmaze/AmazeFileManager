@@ -196,10 +196,13 @@ public class Futils {
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
         return (sdf.format(f.lastModified())).toString();
     }
-    public String getdate(long f,String form) {
+    public String getdate(long f,String form,String year) {
 
         SimpleDateFormat sdf = new SimpleDateFormat(form);
-        return (sdf.format(f)).toString();
+        String date=(sdf.format(f)).toString();
+        if(date.substring(date.length()-2,date.length()).equals(year))
+            date=date.substring(0,date.length()-6);
+        return date;
     }
     public ArrayList<File> getImages(File f) {
 

@@ -61,7 +61,7 @@ public class TextReader extends Activity {
         ma = (EditText) findViewById(R.id.fname);
         p = (ProgressBar) findViewById(R.id.pbar);
         ma.setVisibility(View.GONE);
-        String skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#673ab7");
+        String skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#5677fc");
         getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
         if(Build.VERSION.SDK_INT>=19){
             SystemBarTintManager tintManager = new SystemBarTintManager(this);

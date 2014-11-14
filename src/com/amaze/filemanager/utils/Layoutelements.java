@@ -109,7 +109,7 @@ public class Layoutelements implements Parcelable {
         return  size;
     }
     public long getDate(){return date;}
-    public String getDate(String a){if(!header)return new Futils().getdate(date,a);else return "";}
+    public String getDate(String a,String year){if(!header)return new Futils().getdate(date,a,year);else return "";}
     public String getPermissions() {
         return permissions;
     }

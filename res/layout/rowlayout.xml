@@ -80,31 +80,30 @@
             android:layout_below="@id/firstline"
             android:layout_marginTop="5dip">
 
-            <TextView
-                android:id="@+id/secondLine"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:textSize="13sp"
-                android:textColor="?android:attr/textColorTertiary"
-/>
 
             <TextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="5dip"
-                android:textSize="12sp"
+                android:textSize="13sp"
+                android:layout_alignParentLeft="true"
                 android:textColor="?android:attr/textColorTertiary"
- />
+                />
+            <TextView
+                android:id="@+id/secondLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/date"
+                android:layout_marginLeft="10dip"
+                android:textSize="13sp"
+                android:textColor="?android:attr/textColorTertiary"
+/>
+
             <TextView
                 android:id="@+id/permis"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/date"
-                android:layout_marginLeft="2dip"
-                android:layout_marginRight="9dip"
+                android:layout_alignParentRight="true"
                 android:textColor="?android:attr/textColorTertiary"
                 android:textSize="13sp"
                 />

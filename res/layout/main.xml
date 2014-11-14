@@ -184,13 +184,7 @@
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-        <ImageView android:layout_width="match_parent"
-            android:scaleType="fitXY"
-            android:layout_height="7dp"
-            android:id="@+id/shadow"
-            android:src="@drawable/shadow"
-            android:layout_below="@id/buttonbarframe"
-            android:adjustViewBounds="false" />
+        
 
         <com.getbase.floatingactionbutton.FloatingActionsMenu
             android:id="@+id/pink_icon"
