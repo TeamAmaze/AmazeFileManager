@@ -21,48 +21,48 @@
 
 <resources>
     <string-array name="uimode">
-        <item>Simple Ui</item>
-        <item>Card Ui</item>
+        <item>@string/simple</item>
+        <item>@string/card</item>
 
     </string-array>
     <string-array name="theme">
-        <item>Light</item>
-        <item>Dark</item>
-        <item>Daytime</item>
+        <item>@string/light</item>
+        <item>@string/dark</item>
+        <item>@string/daytime</item>
 
     </string-array>
     <string-array name="skin">
-        <item>Red</item>
-        <item>Pink</item>
-        <item>Purple</item>
-        <item>Deep Purple</item>
-        <item>Indigo</item>
-        <item>Blue</item>
-        <item>Light Blue</item>
-        <item>Cyan</item>
-        <item>Teal</item>
-        <item>Green</item>
-        <item>Light Green</item>
-        <item>Amber</item>
-        <item>Orange</item>
-        <item>Deep Orange</item>
-        <item>Brown</item>
-        <item>Black</item>
-        <item>Blue Grey</item>
+        <item>@string/red</item>
+        <item>@string/pink</item>
+        <item>@string/purple</item>
+        <item>@string/deep_purple</item>
+        <item>@string/indigo</item>
+        <item>@string/blue</item>
+        <item>@string/light_blue</item>
+        <item>@string/cyan</item>
+        <item>@string/teal</item>
+        <item>@string/green</item>
+        <item>@string/light_green</item>
+        <item>@string/amber</item>
+        <item>@string/orange</item>
+        <item>@string/deep_orange</item>
+        <item>@string/brown</item>
+        <item>@string/black</item>
+        <item>@string/blue_grey</item>
 
     </string-array>
     <string-array name="directorysortmode">
-        <item>Folders on Top</item>
-        <item>Files on Top</item>
-        <item>None on Top</item>
+        <item>@string/foldersOnTop</item>
+        <item>@string/filesOnTop</item>
+        <item>@string/noneOnTop</item>
     </string-array>
     <string-array name="sortby">
-        <item>Name</item>
-        <item>Last Modified</item>
-        <item>Size</item>
-        <item>Name (Desc)</item>
-        <item>Last Modified (Desc)</item>
-        <item>Size (Desc)</item>
+        <item>@string/sortName</item>
+        <item>@string/lastModified</item>
+        <item>@string/sortSize</item>
+        <item>@string/sortNameDesc</item>
+        <item>@string/lastModifiedDesc</item>
+        <item>@string/sortSizeDesc</item>
     </string-array>
 
 
@@ -80,13 +80,13 @@
         <item>2</item>
     </string-array>
     <string-array name="listmode">
-        <item>Detailed View</item>
-        <item>Simple View</item>
+        <item>@string/detailedView</item>
+        <item>@string/simpleView</item>
     </string-array>
     <string-array name="folder">
-        <item>Orange</item>
-        <item>Yellow</item>
-        <item>Blue</item>
+        <item>@string/orange</item>
+        <item>@string/Yellow</item>
+        <item>@string/blue</item>
     </string-array>
 
     <string-array name="ints">

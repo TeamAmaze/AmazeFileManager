@@ -131,5 +131,52 @@
     <!-- Changelog -->
     <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br>&lt;br></string>
     <string name="changelog_change_1">- Initial release&lt;br>&lt;br></string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <string name="simple">Simple UI</string>
+    <string name="card">Card UI</string>
+    <!-- Theme -->
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="daytime">Daytime</string>
+    <!--Skin-->
+    <string name="red">Red</string>
+    <string name="pink">Pink</string>
+    <string name="purple">Purple</string>
+    <string name="deep_purple">Deep Purple</string>
+    <string name="indigo">Indigo</string>
+    <string name="blue">Blue</string>
+    <string name="light_blue">Light Blue</string>
+    <string name="cyan">Cyan</string>
+    <string name="teal">Teal</string>
+    <string name="green">Green</string>
+    <string name="light_green">Light Green</string>
+    <string name="amber">Amber</string>
+    <string name="orange">Orange</string>
+    <string name="deep_orange">Deep Orange</string>
+    <string name="brown">Brown</string>
+    <string name="black">Black</string>
+    <string name="blue_grey">Blue Grey</string>
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">Folders On Top</string>
+    <string name="filesOnTop">Files On Top</string>
+    <string name="noneOnTop">None On Top</string>
+    <!--SortBy-->
+    <string name="sortName">Name</string>
+    <string name="lastModified">Last Modified</string>
+    <string name="sortSize">Size</string>
+    <string name="sortNameDesc">Name (Desc)</string>
+    <string name="lastModifiedDesc">Last Modified (Desc)</string>
+    <string name="sortSizeDesc">Size (Desc)</string>
+    <!--ListMode-->
+    <string name="detailedView">Detailed View</string>
+    <string name="simpleView">Simple View</string>
+    <!--Folder-->
+    <string name="Yellow">Yellow</string>
+
+
 </resources>
 	
