@@ -247,7 +247,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
                     if(main.coloriseIcons){
-                        if(new File(rowItem.getDesc()).isDirectory())gradientDrawable.setColor(Color.parseColor(main.skin));
+                        if(new File(rowItem.getDesc()).isDirectory())gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
                         else if(Icons.isVideo(rowItem.getDesc()))gradientDrawable.setColor(Color.parseColor("#f06292"));
                         else if(Icons.isAudio(rowItem.getDesc()))gradientDrawable.setColor(Color.parseColor("#9575cd"));
                         else if(Icons.isPdf(rowItem.getDesc()))gradientDrawable.setColor(Color.parseColor("#da4336"));

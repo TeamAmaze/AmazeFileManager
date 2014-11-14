@@ -200,7 +200,7 @@ public class Futils {
 
         SimpleDateFormat sdf = new SimpleDateFormat(form);
         String date=(sdf.format(f)).toString();
-        if(date.substring(date.length()-2,date.length()).equals("14"))
+        if(date.substring(date.length()-2,date.length()).equals(year))
             date=date.substring(0,date.length()-6);
         return date;
     }
