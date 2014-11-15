@@ -18,7 +18,7 @@
     -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Interface">
+    <PreferenceCategory android:title="@string/ui">
 
         <ListPreference
             android:defaultValue="0"
@@ -43,31 +43,31 @@
             android:entries="@array/uimode"
             android:entryValues="@array/ints"
             android:key="uimode"
-            android:summary="Choose Item Ui"
+            android:summary="@string/chooseUI"
             android:title="@string/uimode" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="General">
+    <PreferenceCategory android:title="@string/general">
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="showThumbs"
-            android:summary="Show Thumbnails of apps and images"
-            android:title="Show Thumbnails" />
+            android:summary="@string/thumbSummary"
+            android:title="@string/thumb" />
 		<CheckBoxPreference
             android:defaultValue="true"
             android:key="showHidden"
           
-            android:title="Show Hidden Files and Folders" />
+            android:title="@string/hidden" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="showLastModified"
-            android:summary="Show the date and time when the file was modified last time"
-            android:title="Show Last Modified" />
+            android:summary="@string/lastModifiedSummary"
+            android:title="@string/lastModifiedPref" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="showFileSize"
-            android:summary="Show size of files and number of items in folders"
-            android:title="Show Sizes" />
+            android:summary="@string/sizePrefSummary"
+            android:title="@string/sizePref" />
         <ListPreference
             android:entries="@array/columns"
             android:entryValues="@array/columns"
@@ -91,13 +91,13 @@
     
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Miscellaneous">
+    <PreferenceCategory android:title="@string/miscellaneous">
 
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="showPermissions"
-            android:summary="Show Permissions of Files and Folders"
-            android:title="Show Permissions" />
+            android:summary="@string/rootPrefSummary"
+            android:title="@string/rootPref" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="rootmode"
@@ -105,28 +105,28 @@
             android:title="@string/rootmode" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="About">
+    <PreferenceCategory android:title="@string/about">
         <PreferenceScreen
-            android:title="About Amaze File Manager" >
+            android:title="@string/aboutFileManager" >
             <Preference
                 android:key="authors"
-                android:title="Authors" />
+                android:title="@string/authors" />
             <Preference
-                android:title="Version"
+                android:title="@string/version"
                 android:summary="v1.0"/>
             <Preference
                 android:key="changelog"
-                android:title="Changelog" />
+                android:title="@string/changelog" />
             <Preference
                 android:key="rate"
-                android:title="Rate the app" />
+                android:title="@string/rate" />
             <Preference
                 android:key="os"
-                android:title="Open Source Licenses" />
+                android:title="@string/license" />
             </PreferenceScreen>
         <Preference
             android:key="feedback"
-            android:title="Send Feedback" />
+            android:title="@string/feedback" />
     </PreferenceCategory>
 
     </PreferenceScreen>
