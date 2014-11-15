@@ -114,7 +114,7 @@ public class Main extends android.support.v4.app.Fragment {
     Shortcuts sh = new Shortcuts();
     HashMap<String, Bundle> scrolls = new HashMap<String, Bundle>();
     Main ma = this;
-    public HistoryManager history;
+    public HistoryManager history,hidden;
     IconUtils icons;
     HorizontalScrollView scroll,scroll1;
     public boolean rootMode, mountSystem,showHidden,showPermissions,showSize,showLastModified;
@@ -143,6 +143,7 @@ public class Main extends android.support.v4.app.Fragment {
     Animation animation;
     public String year,goback;
     FloatingActionsMenu floatingActionsMenu;
+    ArrayList<String> hiddenfiles;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -264,6 +265,8 @@ public class Main extends android.support.v4.app.Fragment {
         ColorMatrix colorMatrix = new ColorMatrix(calculatefilter(color));
          colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
         history = new HistoryManager(getActivity(), "Table1");
+        hidden = new HistoryManager(getActivity(), "Table2");
+        hiddenfiles=hidden.readTable();
         rootMode = Sp.getBoolean("rootmode", false);
         mountSystem = Sp.getBoolean("mountsystem", false);
         showHidden=Sp.getBoolean("showHidden",true);
@@ -867,6 +870,12 @@ if(listView!=null){
                     a.show();
                     mode.finish();
                     return true;
+                case R.id.hide:
+                    for (int i1 = 0; i1 < plist.size(); i1++) {
+                    hide(list.get(plist.get(i1)).getDesc());
+                    }
+                    updateList();
+                    return true;
                 case R.id.book:
                     for (int i1 = 0; i1 < plist.size(); i1++) {
                         try {
@@ -1135,6 +1144,7 @@ if(listView!=null){
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         for (int i = 0; i < mFile.size(); i++) {
             File f=new File(mFile.get(i)[0]);
+            if(!hiddenfiles.contains(mFile.get(i)[0])){
             if (f.isDirectory()) {
                 a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f,res),false));
 
@@ -1143,7 +1153,7 @@ if(listView!=null){
                     a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.getSize(mFile.get(i)),false));
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
+                }}
             }
         }
         return a;
@@ -1251,6 +1261,20 @@ if(history!=null)
                 return false;
             }
         });
+
+    }
+    public void hide(String path){
+        hidden.addPath(path);
+        hiddenfiles=hidden.readTable();
+        if(new File(path).isDirectory()){
+            File f1 = new File(path + "/" + ".nomedia");
+            if (!f1.exists()) {
+                try {
+                    boolean b = f1.createNewFile();
+                 } catch (IOException e) {
+                    e.printStackTrace();
+                }    }
+        utils.scanFile(path,getActivity());}
 
     }
     private void crossfade() {

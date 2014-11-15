@@ -66,4 +66,7 @@
     <item
         android:id="@+id/permissions"
         android:title="Permissions" />
+    <item
+        android:id="@+id/hide"
+        android:title="Hide" />
 </menu>

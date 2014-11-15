@@ -43,7 +43,11 @@ public class HistoryManager {
         c.moveToLast();
         ArrayList<String> paths = new ArrayList<String>();
         do {
-            paths.add(c.getString(c.getColumnIndex("PATH")));
+            try {
+                paths.add(c.getString(c.getColumnIndex("PATH")));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } while (c.moveToPrevious());
         return paths;
     }
