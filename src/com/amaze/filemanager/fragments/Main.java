@@ -1032,7 +1032,7 @@ if(listView!=null){
             TextView textView = (TextView)pathbar.findViewById(R.id.pathname);
             String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
             String free = utils.readableFileSize(f.getFreeSpace());
-            textView.setText(res.getString(R.string.used) + used + res.getString(R.string.free) + free);
+            textView.setText(res.getString(R.string.used)+" " + used +" "+ res.getString(R.string.free)+" " + free);
 
             TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
             bapath.setAllCaps(true);
