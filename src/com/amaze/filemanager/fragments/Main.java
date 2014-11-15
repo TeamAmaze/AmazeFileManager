@@ -43,6 +43,7 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.DisplayMetrics;
 import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -193,6 +194,15 @@ public class Main extends android.support.v4.app.Fragment {
             listView.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.GONE);
         } else {
+            float density=res.getDisplayMetrics().densityDpi;
+            int columns=Integer.parseInt(Sp.getString("columns","10"));
+            if(columns==10){
+            if(density>= DisplayMetrics.DENSITY_LOW && density<DisplayMetrics.DENSITY_HIGH)
+                columns=2;
+            else if(density>=DisplayMetrics.DENSITY_HIGH && density<DisplayMetrics.DENSITY_XXHIGH)
+                columns=3;
+            else columns=4;}
+            gridView.setNumColumns(columns);
             listView.setVisibility(View.GONE);
             gridView.setVisibility(View.VISIBLE);
         }

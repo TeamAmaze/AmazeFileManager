@@ -39,6 +39,6 @@
         android:layout_height="match_parent"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:numColumns="3"/>
+        android:numColumns="auto_fit"/>
 
 </RelativeLayout>

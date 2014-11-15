@@ -69,6 +69,12 @@
             android:summary="Show size of files and number of items in folders"
             android:title="Show Sizes" />
         <ListPreference
+            android:entries="@array/columns"
+            android:entryValues="@array/columns"
+            android:key="columns"
+            android:title="@string/gridcolumnno" />
+
+        <ListPreference
             android:defaultValue="0"
             android:entries="@array/directorysortmode"
             android:entryValues="@array/ints1"
