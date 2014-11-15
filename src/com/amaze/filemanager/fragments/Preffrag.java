@@ -69,20 +69,14 @@ public class Preffrag extends PreferenceFragment {
                 theme = 1;
             } else
                 theme = 0;
-        }
+        }if(th1==1){ui.setEnabled(false);}
         ListPreference th = (ListPreference) findPreference("theme");
         th.setOnPreferenceChangeListener(new ListPreference.OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference p1, Object p2) {
-                //int value = Integer.parseInt(sharedPref.getString("theme", "0"));
-
-                if (theme == 0) {
-                    sharedPref.edit().putString("uimode", "0").commit();
-                    ui.setEnabled(false);
-                } else {
-                    ui.setEnabled(true);
-                }
-                restartPC(getActivity());
+                if(!sharedPref.getString("theme","0").equals("0"))
+                sharedPref.edit().putString("uimode","0").commit();
+                    restartPC(getActivity());
                 // TODO: Implement this method
                 return true;
             }
