@@ -206,6 +206,30 @@
     <string name="gridview">Grid View</string>
     <string name="setlistview">Setting ListView</string>
     <string name="setgridview">Setting GridView</string>
+    <string name="randomDialog">Random</string>
+    <string name="setRandom">Changes will take place after you restart the app</string>
+    <string name="authors">Authors</string>
+    <string name="changelog">Changelog</string>
+    <string name="fullChangelog">Full Changelog</string>
+    <string name="ok">OK</string>
+    <string name="chooseUI">Choose Item UI</string>
+    <string name="ui">Interface</string>
+    <string name="general">General</string>
+    <string name="thumbSummary">Show Thumbnails of apps and images</string>
+    <string name="thumb">Show Thumbnails</string>
+    <string name="hidden">Show Hidden Files and Folders</string>
+    <string name="lastModifiedSummary">Show the date and time when the file was modified last time</string>
+    <string name="lastModifiedPref">Show Last Modified</string>
+    <string name="sizePrefSummary">Show size of files and number of items in folders</string>
+    <string name="sizePref">Show Sizes</string>
+    <string name="miscellaneous">Miscellaneous</string>
+    <string name="rootPrefSummary">Show Permissions of Files and Folders</string>
+    <string name="rootPref">Show Permissions</string>
+    <string name="aboutFileManager">About Amaze File Manager</string>
+    <string name="version">Version</string>
+    <string name="rate">Rate the app</string>
+    <string name="license">Open Source Licenses</string>
+    <string name="feedback">Send Feedback</string>
 
 </resources>
 	
