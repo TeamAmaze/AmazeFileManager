@@ -110,13 +110,13 @@ public class Preffrag extends PreferenceFragment {
 
                 new AlertDialog.Builder(getActivity())
                         .setTitle(R.string.skin)
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.cancel();
                             }
                         })
-                        .setPositiveButton("Random", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.randomDialog, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -157,7 +157,7 @@ public class Preffrag extends PreferenceFragment {
                     sharedPref.edit().putBoolean("random_checkbox", false).apply();
                     checkBoxPreference.setChecked(false);
                 }
-                Toast.makeText(getActivity(), "Changes will take place after you restart the app", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.setRandom, Toast.LENGTH_LONG).show();
                 return false;
             }
         });
@@ -195,8 +195,8 @@ public class Preffrag extends PreferenceFragment {
                 LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = layoutInflater.inflate(R.layout.authors, null);
                 alertDialog.setView(view);
-                alertDialog.setTitle("Authors");
-                alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                alertDialog.setTitle(R.string.authors);
+                alertDialog.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.cancel();
@@ -252,10 +252,10 @@ public class Preffrag extends PreferenceFragment {
             public boolean onPreferenceClick(Preference preference) {
 
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("Changelog")
+                        .setTitle(R.string.changelog)
                         .setMessage(Html.fromHtml(getActivity().getString(R.string.changelog_version_1) +
                             getActivity().getString(R.string.changelog_change_1)))
-                        .setNegativeButton("Full Changelog", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.fullChangelog, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -264,7 +264,7 @@ public class Preffrag extends PreferenceFragment {
                                 startActivity(intent);
                             }
                         })
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.cancel();
