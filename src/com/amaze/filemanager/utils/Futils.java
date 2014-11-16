@@ -43,6 +43,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.TextReader;
 import com.amaze.filemanager.adapters.DialogAdapter;
+import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
@@ -582,7 +583,23 @@ public class Futils {
         a.show();
 
     }
+    public void showHiddenDialog(final Main m) {
 
+            final ArrayList<String> paths = m.hidden.readTable();
+            final ArrayList<File> fu=toFileArray(paths);
+            AlertDialog.Builder a = new AlertDialog.Builder(m.getActivity());
+            a.setTitle(getString(m.getActivity(), R.string.hiddenfiles));    HiddenAdapter adapter = new HiddenAdapter(
+                    m.getActivity(),m, android.R.layout.select_dialog_item, fu,m.hidden);
+            a.setAdapter(adapter, new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface p1, int p2) {
+
+                }
+            });
+            a.setNegativeButton(getString(m.getActivity(), R.string.cancel), null);
+            a.show();
+
+    }
     public void showBookmarkDialog(final Main m, Shortcuts sh) {
         try {
             final ArrayList<File> fu = sh.readS();

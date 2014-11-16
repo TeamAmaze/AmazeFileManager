@@ -59,7 +59,12 @@ public class HistoryManager {
         }
         db.execSQL("INSERT INTO " + table + " VALUES" + "('" + path + "');");
     }
-
+    public void removePath(String path){
+        try {
+            db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "'");
+        } catch (Exception e) {
+        }
+    }
     public void end() {
         db.close();
     }

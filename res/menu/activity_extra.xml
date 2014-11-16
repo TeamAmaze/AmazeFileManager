@@ -42,6 +42,9 @@
     <item
         android:id="@+id/view" />
     <item
+        android:id="@+id/hiddenitems"
+        android:title="@string/hiddenfiles" />
+    <item
         android:id="@+id/item3"
         android:title="@string/exit"
         android:icon="@drawable/ic_action_cancel_light" />

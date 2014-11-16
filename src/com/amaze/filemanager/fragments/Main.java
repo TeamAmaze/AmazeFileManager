@@ -1164,7 +1164,10 @@ if(listView!=null){
     public void onDestroy() {
         super.onDestroy();
 if(history!=null)
-        history.end();     }
+        history.end(); hidden.end();    }
+    public void updatehiddenfiles(){
+        hiddenfiles=hidden.readTable();
+    }
     public void initPoppyViewListeners(View poppy){
 /*
         ImageView imageView = ((ImageView)poppy.findViewById(R.id.overflow));
@@ -1241,6 +1244,9 @@ if(history!=null)
                         break;
                     case R.id.item11:
                         utils.showDirectorySortDialog(ma);
+                        break;
+                    case R.id.hiddenitems:
+                        utils.showHiddenDialog(ma);
                         break;
                     case R.id.item4:
                         ic.cleanup();

@@ -209,7 +209,7 @@
     <string name="permission">Permissions</string>
     <string name="hide">Hide</string>
     <string name="exit">Exit</string>
-    <string name="enternewname">Enter new name</string>
+    <string name="enternewname">Enter new nameA</string>
     <string name="doforall">Do for all items</string>
     <string name="gridcolumnno">Number of columns in grid view</string>
     <string name="randomDialog">Random</string>
@@ -236,7 +236,6 @@
     <string name="rate">Rate the app</string>
     <string name="license">Open Source Licenses</string>
     <string name="feedback">Send Feedback</string>
-
->>>>>>> d0ba4f4506619b652987b760772bedb4bf3de1af
+    <string name="hiddenfiles">Hidden Files</string>
 </resources>
 	
