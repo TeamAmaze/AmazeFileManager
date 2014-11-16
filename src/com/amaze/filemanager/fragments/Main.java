@@ -54,7 +54,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -190,8 +189,8 @@ public class Main extends android.support.v4.app.Fragment {
         res = getResources();
         goback=res.getString(R.string.goback);
         apk=res.getDrawable(R.drawable.ic_doc_apk_grid);
-         animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
-         animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
+         animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
+         animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
          if(theme1==1) {
             rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_dark));
         }if (aBoolean) {
@@ -468,8 +467,9 @@ if(listView!=null){
                     case 2:
                         int older = tabHandler.getTabsCount();
                         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.tab_anim);
-                        Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
+
+                        animation = AnimationUtils.loadAnimation(getActivity(), R.anim.tab_anim);
+                        animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
 
                         File file1 = new File(ma.home);
                         tabHandler.addTab(new Tab(older, file1.getName(), file1.getPath()));
@@ -598,6 +598,8 @@ if(listView!=null){
     public void loadlist(final File f, boolean back) {
         if(mActionMode!=null){mActionMode.finish();}
         new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
+
+        animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
 
         listView.setAnimation(animation);
         gridView.setAnimation(animation);
