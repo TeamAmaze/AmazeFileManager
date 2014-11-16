@@ -26,26 +26,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.Shortcuts;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import me.drakeet.materialdialog.MaterialDialog;
+
 public class DialogAdapter extends ArrayAdapter<File> {
     Shortcuts s = new Shortcuts();
     Activity context;
+    Main m;
     public ArrayList<File> items;
+    MaterialDialog materialDialog;
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public DialogAdapter(Activity context, int resourceId, ArrayList<File> items) {
+    public DialogAdapter(Main m,Activity context, int resourceId, ArrayList<File> items,MaterialDialog materialDialog) {
         super(context, resourceId, items);
         this.context = context;
         this.items = items;
-
-
+        this.m=m;
+        this.materialDialog=materialDialog;
     }
 
 
@@ -53,7 +60,7 @@ public class DialogAdapter extends ArrayAdapter<File> {
         ImageButton image;
         TextView txtTitle;
         TextView txtDesc;
-
+        LinearLayout row;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -71,7 +78,7 @@ public class DialogAdapter extends ArrayAdapter<File> {
             vholder.image = (ImageButton) view.findViewById(R.id.delete_button);
             vholder.image.setVisibility(View.GONE);
             vholder.txtDesc = (TextView) view.findViewById(R.id.text2);
-
+            vholder.row=(LinearLayout)view.findViewById(R.id.bookmarkrow);
             view.setTag(vholder);
 
         } else {
@@ -81,6 +88,19 @@ public class DialogAdapter extends ArrayAdapter<File> {
         final ViewHolder holder = (ViewHolder) view.getTag();
         holder.txtTitle.setText(f.getName());
         holder.txtDesc.setText(f.getPath());
+        holder.row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                materialDialog.dismiss();
+                final File f = items.get(p);
+                if (f.isDirectory()) {
+
+                    m.loadlist(f, false);
+                } else {
+                    m.utils.openFile(f, (MainActivity) m.getActivity());
+                }
+            }
+        });
         return view;
     }
 }

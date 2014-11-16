@@ -21,6 +21,8 @@ import com.amaze.filemanager.utils.Shortcuts;
 import java.io.File;
 import java.util.ArrayList;
 
+import me.drakeet.materialdialog.MaterialDialog;
+
 /**
  * Created by Arpit on 16-11-2014.
  */
@@ -29,14 +31,16 @@ public class HiddenAdapter extends ArrayAdapter<File> {
     Main context;Context c;
     public ArrayList<File> items;
     HistoryManager hidden;
+    MaterialDialog materialDialog;
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public HiddenAdapter(Context c,Main context, int resourceId, ArrayList<File> items,HistoryManager hidden) {
+    public HiddenAdapter(Context c,Main context, int resourceId, ArrayList<File> items,HistoryManager hidden,MaterialDialog materialDialog) {
         super(c, resourceId, items);
         this.c=c;
         this.context = context;
         this.items = items;
         this.hidden=hidden;
+        this.materialDialog=materialDialog;
 
     }
 
@@ -85,6 +89,7 @@ public class HiddenAdapter extends ArrayAdapter<File> {
         holder.row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                materialDialog.dismiss();
                 final File f = (items.get(p));
                 if (f.isDirectory()) {
 

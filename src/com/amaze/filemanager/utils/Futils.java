@@ -36,6 +36,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,6 +63,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
+
+import me.drakeet.materialdialog.MaterialDialog;
 
 public class Futils {
     public Futils() {
@@ -570,33 +573,48 @@ public class Futils {
     public void showHistoryDialog(final Main m) {
         final ArrayList<String> paths = m.history.readTable();
 
-        AlertDialog.Builder a = new AlertDialog.Builder(m.getActivity());
-        a.setTitle(getString(m.getActivity(), R.string.history));
-        DialogAdapter adapter = new DialogAdapter(m.getActivity(), R.layout.bookmarkrow, toFileArray(paths));
-        a.setAdapter(adapter, new DialogInterface.OnClickListener() {
+        final MaterialDialog ba = new MaterialDialog(m.getActivity());
+        ba.setTitle(getString(m.getActivity(), R.string.history));
+        DialogAdapter adapter = new DialogAdapter(m,m.getActivity(), R.layout.bookmarkrow, toFileArray(paths),ba);
+        ListView listView = new ListView(m.getActivity());
+        float scale = m.getResources().getDisplayMetrics().density;
+        int dpAsPixels = (int) (8 * scale + 0.5f);
+        listView.setPadding(0, dpAsPixels, 0, dpAsPixels);
+        listView.setDividerHeight(0);
+        listView.setAdapter(adapter);
+        ba.setContentView(listView);
+        ba.setCanceledOnTouchOutside(true);
+        ba.setNegativeButton(getString(m.getActivity(), R.string.cancel), new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                m.loadlist(new File(paths.get(i)), true);
+            public void onClick(View view) {
+                ba.dismiss();
             }
         });
-        a.setNegativeButton(getString(m.getActivity(), R.string.cancel), null);
-        a.show();
+        ba.show();
 
     }
     public void showHiddenDialog(final Main m) {
 
             final ArrayList<String> paths = m.hidden.readTable();
             final ArrayList<File> fu=toFileArray(paths);
-            AlertDialog.Builder a = new AlertDialog.Builder(m.getActivity());
-            a.setTitle(getString(m.getActivity(), R.string.hiddenfiles));    HiddenAdapter adapter = new HiddenAdapter(
-                    m.getActivity(),m, android.R.layout.select_dialog_item, fu,m.hidden);
-            a.setAdapter(adapter, new DialogInterface.OnClickListener() {
-
-                public void onClick(DialogInterface p1, int p2) {
-
+            final MaterialDialog a = new MaterialDialog(m.getActivity());
+            a.setTitle(getString(m.getActivity(), R.string.hiddenfiles));
+        HiddenAdapter adapter = new HiddenAdapter(
+                    m.getActivity(),m, android.R.layout.select_dialog_item, fu,m.hidden,a);
+        ListView listView = new ListView(m.getActivity());
+        float scale = m.getResources().getDisplayMetrics().density;
+        int dpAsPixels = (int) (8 * scale + 0.5f);
+        listView.setPadding(0, dpAsPixels, 0, dpAsPixels);
+        listView.setDividerHeight(0);
+        listView.setAdapter(adapter);
+            a.setContentView(listView);
+            a.setNegativeButton(getString(m.getActivity(), R.string.cancel), new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                  a.dismiss();
                 }
             });
-            a.setNegativeButton(getString(m.getActivity(), R.string.cancel), null);
+        a.setCanceledOnTouchOutside(true);
             a.show();
 
     }
@@ -604,24 +622,25 @@ public class Futils {
         try {
             final ArrayList<File> fu = sh.readS();
 
-            AlertDialog.Builder ba = new AlertDialog.Builder(m.getActivity());
+            final MaterialDialog ba = new MaterialDialog(m.getActivity());
             ba.setTitle(getString(m.getActivity(), R.string.books));
 
-            DialogAdapter adapter = new DialogAdapter(
-                    m.getActivity(), android.R.layout.select_dialog_item, fu);
-            ba.setAdapter(adapter, new DialogInterface.OnClickListener() {
-
-                public void onClick(DialogInterface p1, int p2) {
-                    final File f = fu.get(p2);
-                    if (f.isDirectory()) {
-
-                        m.loadlist(f, false);
-                    } else {
-                        openFile(f, (MainActivity) m.getActivity());
-                    }
+            DialogAdapter adapter = new DialogAdapter(m,
+                    m.getActivity(), android.R.layout.select_dialog_item, fu,ba);
+            ListView listView = new ListView(m.getActivity());
+            float scale = m.getResources().getDisplayMetrics().density;
+            int dpAsPixels = (int) (8 * scale + 0.5f);
+            listView.setPadding(0, dpAsPixels, 0, dpAsPixels);
+            listView.setDividerHeight(0);
+            listView.setAdapter(adapter);
+            ba.setContentView(listView);
+            ba.setCanceledOnTouchOutside(true);
+            ba.setNegativeButton(getString(m.getActivity(), R.string.cancel), new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ba.dismiss();
                 }
             });
-            ba.setNegativeButton(getString(m.getActivity(), R.string.cancel), null);
             ba.show();
         } catch (IOException e) {
         } catch (ParserConfigurationException e) {
@@ -631,7 +650,7 @@ public class Futils {
     public void setPermissionsDialog(final Layoutelements f, final Main main){
         if(main.rootMode){
             final File file=new File(f.getDesc());
-            AlertDialog.Builder a=new AlertDialog.Builder(main.getActivity());
+            final MaterialDialog a=new MaterialDialog(main.getActivity());
             View v=main.getActivity().getLayoutInflater().inflate(R.layout.permissiontable,null);
             final CheckBox readown=(CheckBox) v.findViewById(R.id.creadown);
             final CheckBox readgroup=(CheckBox) v.findViewById(R.id.creadgroup);
@@ -661,9 +680,9 @@ public class Futils {
             exegroup.setChecked(exe[1]);
             exeother.setChecked(exe[2]);
 
-            a.setPositiveButton(main.getResources().getString(R.string.set),new DialogInterface.OnClickListener() {
+            a.setPositiveButton(main.getResources().getString(R.string.set),new View.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialogInterface, int j) {
+                public void onClick(View j) {
                     int a=0,b=0,c=0;
                     if(readown.isChecked())a=4;
                     if(writeown.isChecked())b=2;
@@ -711,7 +730,8 @@ public class Futils {
                 }
             });
             a.setTitle(file.getName());
-            a.setView(v);
+            a.setContentView(v);
+            a.setCanceledOnTouchOutside(true);
             a.show();}else{Toast.makeText(main.getActivity(),main.getResources().getString(R.string.enablerootmde),Toast.LENGTH_LONG).show();}
     }String per=null;
     public String getFilePermissionsSymlinks(String file,final Context c,boolean root)

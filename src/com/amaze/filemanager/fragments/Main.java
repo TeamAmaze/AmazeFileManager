@@ -142,7 +142,7 @@ public class Main extends android.support.v4.app.Fragment {
     private TabSpinnerAdapter tabSpinnerAdapter;
     public float[] color;
     public ColorMatrixColorFilter colorMatrixColorFilter;
-    Animation animation;
+    Animation animation,animation1;
     public String year,goback;
     FloatingActionsMenu floatingActionsMenu;
     ArrayList<String> hiddenfiles;
@@ -191,7 +191,8 @@ public class Main extends android.support.v4.app.Fragment {
         goback=res.getString(R.string.goback);
         apk=res.getDrawable(R.drawable.ic_doc_apk_grid);
          animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
-        if(theme1==1) {
+         animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
+         if(theme1==1) {
             rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_dark));
         }if (aBoolean) {
             listView.setVisibility(View.VISIBLE);
@@ -598,7 +599,6 @@ if(listView!=null){
         if(mActionMode!=null){mActionMode.finish();}
         new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
 
-        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
         listView.setAnimation(animation);
         gridView.setAnimation(animation);
 

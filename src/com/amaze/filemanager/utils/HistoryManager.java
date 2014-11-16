@@ -22,6 +22,7 @@ package com.amaze.filemanager.utils;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
@@ -54,10 +55,16 @@ public class HistoryManager {
 
     public void addPath(String path) {
         try {
-            db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "'");
+            try {
+                db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "'");
+            } catch (Exception e) {
+            }
+            db.execSQL("INSERT INTO " + table + " VALUES" + "('" + path + "');");
         } catch (Exception e) {
+            open();
+            addPath(path);
+            e.printStackTrace();
         }
-        db.execSQL("INSERT INTO " + table + " VALUES" + "('" + path + "');");
     }
     public void removePath(String path){
         try {
