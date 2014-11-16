@@ -65,8 +65,8 @@
         android:title="@string/openwith" />
     <item
         android:id="@+id/permissions"
-        android:title="Permissions" />
+        android:title="@string/permission" />
     <item
         android:id="@+id/hide"
-        android:title="Hide" />
+        android:title="@string/hide" />
 </menu>
