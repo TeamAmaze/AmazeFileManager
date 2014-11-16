@@ -95,6 +95,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
+import me.drakeet.materialdialog.MaterialDialog;
+
 
 public class Main extends android.support.v4.app.Fragment {
     public File[] file;
@@ -399,16 +401,22 @@ if(listView!=null){
 
                     case 0:
                         final String path = ma.current;
-                        AlertDialog.Builder ba1 = new AlertDialog.Builder(getActivity());
-                        ba1.setTitle(utils.getString(getActivity(), R.string.newfolder));
+                        final MaterialDialog ba1 = new MaterialDialog(getActivity());
+                        ba1.setTitle(R.string.newfolder);
                         View v = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
                         final EditText edir = (EditText) v.findViewById(R.id.newname);
                         edir.setHint(utils.getString(getActivity(), R.string.entername));
-                        ba1.setView(v);
-                        ba1.setNegativeButton(utils.getString(getActivity(), R.string.cancel), null);
-                        ba1.setPositiveButton(utils.getString(getActivity(), R.string.create), new DialogInterface.OnClickListener() {
+                        ba1.setContentView(v);
+                        ba1.setNegativeButton(utils.getString(getActivity(), R.string.cancel), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ba1.dismiss();
+                            }
+                        });
+                        ba1.setPositiveButton(utils.getString(getActivity(), R.string.create), new View.OnClickListener() {
 
-                            public void onClick(DialogInterface p1, int p2) {
+                            @Override
+                            public void onClick(View view) {
                                 String a = edir.getText().toString();
                                 File f = new File(path + "/" + a);
                                 if (!f.exists()) {
@@ -424,21 +432,21 @@ if(listView!=null){
                         break;
                     case 1:
                         final String path1 = ma.current;
-                        AlertDialog.Builder ba2 = new AlertDialog.Builder(getActivity());
-                        ba2.setTitle(res.getString(R.string.newfile));
+                        final MaterialDialog ba2 = new MaterialDialog(getActivity());
+                        ba2.setTitle((R.string.newfile));
                         View v1 = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
                         final EditText edir1 = (EditText) v1.findViewById(R.id.newname);
                         edir1.setHint(utils.getString(getActivity(), R.string.entername));
-                        ba2.setView(v1);
-                        ba2.setNegativeButton(utils.getString(getActivity(), R.string.cancel), new DialogInterface.OnClickListener() {
+                        ba2.setContentView(v1);
+                        ba2.setNegativeButton( R.string.cancel, new View.OnClickListener() {
 
-                            public void onClick(DialogInterface p1, int p2) {
-                                // TODO: Implement this method
+                            public void onClick(View v) {
+                              ba2.dismiss();
                             }
                         });
-                        ba2.setPositiveButton(utils.getString(getActivity(), R.string.create), new DialogInterface.OnClickListener() {
+                        ba2.setPositiveButton(R.string.create, new View.OnClickListener() {
 
-                            public void onClick(DialogInterface p1, int p2) {
+                            public void onClick(View p2) {
                                 String a = edir1.getText().toString();
                                 File f1 = new File(path1 + "/" + a);
                                 if (!f1.exists()) {
@@ -489,21 +497,21 @@ if(listView!=null){
         final String fpath = ma.current;
 
         //Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.searchpath) + fpath, Toast.LENGTH_LONG).show();
-        AlertDialog.Builder a = new AlertDialog.Builder(getActivity());
-        a.setTitle(utils.getString(getActivity(), R.string.search));
+        final MaterialDialog a = new MaterialDialog(getActivity());
+        a.setTitle(R.string.search);
         View v = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
         final EditText e = (EditText) v.findViewById(R.id.newname);
         e.setHint(utils.getString(getActivity(), R.string.enterfile));
-        a.setView(v);
-        a.setNeutralButton(utils.getString(getActivity(), R.string.cancel), new DialogInterface.OnClickListener() {
+        a.setContentView(v);
+        a.setNegativeButton( R.string.cancel, new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
+            public void onClick(View which) {
+            a.dismiss();}
         });
-        a.setPositiveButton(utils.getString(getActivity(), R.string.search), new DialogInterface.OnClickListener() {
+        a.setPositiveButton(R.string.search, new View.OnClickListener() {
 
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View which) {
                 // TODO Auto-generated method stub
                 String a = e.getText().toString();
                 Bundle b = new Bundle();

@@ -12,7 +12,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-
+    compile 'me.drakeet.materialdialog:library:1.0.9'
     compile 'com.getbase:floatingactionbutton:1.1.0'
     compile 'com.pkmmte.view:circularimageview:1.1'
     compile fileTree(dir: 'libs', include: '*.jar')

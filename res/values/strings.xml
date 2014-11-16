@@ -40,8 +40,8 @@
     <string name="addbook">Add Bookmark</string>
     <string name="addtobook">Add to Bookmark</string>
     <string name="enterpath">Enter Path</string>
-    <string name="cancel">Cancel</string>
-    <string name="create">Create</string>
+    <string name="cancel">CANCEL</string>
+    <string name="create">CREATE</string>
     <string name="success">Success</string>
     <string name="filenotexists">File Not Exists</string>
     <string name="error">Error</string>
@@ -57,7 +57,7 @@
     <string name="fileexist">File with same name already exists </string>
     <string name="filecreated">File Created</string>
     <string name="searchpath">Search Path</string>
-    <string name="search">Search</string>
+    <string name="search">SEARCH</string>
     <string name="enterfile">Enter File Name</string>
     <string name="name">Name:</string>
     <string name="date">Date:</string>

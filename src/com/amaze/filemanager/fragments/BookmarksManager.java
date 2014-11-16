@@ -51,6 +51,8 @@ import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import me.drakeet.materialdialog.MaterialDialog;
+
 public class BookmarksManager extends ListFragment {
     Futils utils = new Futils();
     Shortcuts s = new Shortcuts();
@@ -75,21 +77,21 @@ ListView vl;
             @Override
             public void onClick(View view) {
 
-                AlertDialog.Builder ba1 = new AlertDialog.Builder(getActivity());
+                final MaterialDialog ba1 = new MaterialDialog(getActivity());
                 ba1.setTitle(utils.getString(getActivity(), R.string.addbook));
                 View v = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
                 final EditText edir = (EditText) v.findViewById(R.id.newname);
                 edir.setHint(utils.getString(getActivity(), R.string.enterpath));
-                ba1.setView(v);
-                ba1.setNegativeButton(utils.getString(getActivity(), R.string.cancel), new DialogInterface.OnClickListener() {
+                ba1.setContentView(v);
+                ba1.setNegativeButton(utils.getString(getActivity(), R.string.cancel), new View.OnClickListener() {
 
-                    public void onClick(DialogInterface p1, int p2) {
-                        // TODO: Implement this method
+                    public void onClick(View p2) {
+                  ba1.dismiss();      // TODO: Implement this method
                     }
                 });
-                ba1.setPositiveButton(utils.getString(getActivity(), R.string.create), new DialogInterface.OnClickListener() {
+                ba1.setPositiveButton(utils.getString(getActivity(), R.string.create), new View.OnClickListener() {
 
-                    public void onClick(DialogInterface p1, int p2) {
+                    public void onClick(View p2) {
                         try {
                             File a = new File(edir.getText().toString());
                             if (a.exists()) {
