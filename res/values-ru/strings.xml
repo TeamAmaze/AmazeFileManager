@@ -230,5 +230,6 @@
     <string name="rate">Оцените приложение</string>
     <string name="license">Open Source Licenses</string>
     <string name="feedback">Отправить отзыв</string>
+    <string name="hiddenfiles">Скрытые файлы</string>
 
 </resources>

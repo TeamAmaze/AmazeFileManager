@@ -487,9 +487,6 @@ if(listView!=null){
                 }
             }
 
-
-
-
     public void home() {
         ma.loadlist(new File(ma.home), false);
     }
