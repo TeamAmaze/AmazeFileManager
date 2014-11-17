@@ -562,6 +562,8 @@ public class Futils {
                 m.Sp.edit().putString("dirontop", "" + i).commit();
                 m.getSortModes();
                 m.loadlist(new File(m.current), false);
+                // dismiss the dialog since we don't want it open after selection:
+                dialogInterface.dismiss();
             }
         });
 
