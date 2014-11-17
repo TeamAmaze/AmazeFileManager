@@ -79,7 +79,7 @@
     <string name="stopping">Arrêt</string>
     <string name="guide1">Bienvenue sur Amaze File Manager</string>
     <string name="guide2">Toucher le bandeau bleu pour afficher ou masquer la barre de répertoires</string>
-    <string name="guide3">Appuyer et maintenir n'importe quel fichier pour plus d\'options...</string>
+    <string name="guide3">Appuyer et maintenir n\'importe quel fichier pour plus d\'options...</string>
     <string name="guide4">Comme copier, déplacer, propriétés, etc</string>
     <string name="guide5">Utiliser le bouton Retour de votre appareil pour sortir de l\'appli à n\'importe quel moment...</string>
     <string name="guide6">..Et utiliser la flèche de gauche pour naviguer dans le gestionnaire de fichiers</string>
