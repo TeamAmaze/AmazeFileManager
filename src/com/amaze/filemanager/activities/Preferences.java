@@ -85,7 +85,6 @@ public class Preferences extends Activity {
                 startActivity(in);
                 return true;
 
-
         }
         return true;
     }

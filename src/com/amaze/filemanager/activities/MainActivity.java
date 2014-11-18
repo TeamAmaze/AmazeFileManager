@@ -69,7 +69,7 @@ import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Shortcuts;
-import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
@@ -113,6 +113,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     private static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     private ArrayList<String> list;
     public int theme1;
+    private EasyTracker easyTracker = null;
 
     /**
      * Called when the activity is first created.
@@ -124,7 +125,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
         // Google Analytics
         // Get a Tracker (should auto-report)
-        ((Amaze) getApplication()).getTracker(Amaze.TrackerName.APP_TRACKER);
+        //((Amaze) getApplication()).getTracker(Amaze.TrackerName.APP_TRACKER);
+        easyTracker = EasyTracker.getInstance(this);
 
         val = getStorageDirectories();
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -818,7 +820,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         super.onStart();
 
         //Get an Analytics tracker to report app starts & uncaught exceptions etc.
-        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+        EasyTracker.getInstance(this).activityStart(this);
     }
 
     @Override
@@ -826,6 +828,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         super.onStop();
 
         //Stop the analytics tracking
-        GoogleAnalytics.getInstance(this).reportActivityStop(this);
+        EasyTracker.getInstance(this).activityStop(this);
     }
 }

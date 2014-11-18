@@ -43,6 +43,7 @@ import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.utils.AppsSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconHolder;
+import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 
 import java.io.File;
@@ -59,7 +60,8 @@ public class AppsList extends ListFragment {
     public boolean selection = false;
     public ActionMode mActionMode;
     public ArrayList<ApplicationInfo> c = new ArrayList<ApplicationInfo>();
-   ListView vl;public IconHolder ic;
+    ListView vl;
+    public IconHolder ic;
     ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
 
     @Override
@@ -134,7 +136,17 @@ public class AppsList extends ListFragment {
                         getActivity().startService(intent);
                         break;
                     case 2:
-                        unin(c.get(position).packageName);
+                        if (!unin(c.get(position).packageName)) {
+                            ArrayList<Layoutelements> arrayList = new ArrayList<Layoutelements>();
+                            ApplicationInfo info1 = c.get(position);
+                            ArrayList<Integer> arrayList1 = new ArrayList<Integer>();
+                            arrayList1.add(position);
+                            File f1 = new File(info1.publicSourceDir);
+                            arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1), false));
+                            utils.deleteFiles(arrayList, null, arrayList1);
+                        } else {
+                            unin(c.get(position).packageName);
+                        }
                         break;
                     case 3:
                         startActivity(new Intent(
@@ -224,7 +236,7 @@ public class AppsList extends ListFragment {
         }
     }  // copy the .apk file to wherever
 
-    public void unin(String pkg) {
+    public boolean unin(String pkg) {
 
         try {
             Intent intent = new Intent(Intent.ACTION_DELETE);
@@ -233,7 +245,8 @@ public class AppsList extends ListFragment {
         } catch (Exception e) {
             Toast.makeText(getActivity(), "" + e, Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+            return false;
         }
-
+        return true;
     }
 }

@@ -30,16 +30,11 @@
 
     <uses-sdk 
         android:minSdkVersion="14" 
-        android:targetSdkVersion="15" />
+        android:targetSdkVersion="21" />
 
     <application
-        android:name=".activities.Amaze"
         android:icon="@drawable/ic_launcher"
         android:label="Amaze File Manager" >
-
-        <!-- Google Analytics Version v4 needs this value for easy tracking -->
-        <meta-data android:name="com.google.android.gms.analytics.globalConfigResource"
-            android:resource="@xml/global_tracker" />
 
         <activity
             android:label="Amaze File Manager"
