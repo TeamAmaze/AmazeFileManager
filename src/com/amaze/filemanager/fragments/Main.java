@@ -1261,7 +1261,14 @@ if(history!=null)
                         break;
                     case R.id.view:
                         // Save the changes, but don't show a disruptive Toast:
-                        sharedPreferences.edit().putBoolean("view", aBoolean).commit();
+                        if (aBoolean) {
+                            Toast.makeText(getActivity(), res.getString(R.string.setgridview), Toast.LENGTH_SHORT).show();
+                            sharedPreferences.edit().putBoolean("view", false).commit();
+
+                        } else {
+                            Toast.makeText(getActivity(),res.getString(R.string.setlistview), Toast.LENGTH_SHORT).show();
+                            sharedPreferences.edit().putBoolean("view", true).commit();
+                        }
                         restartPC(getActivity());
                         break;
                 }
