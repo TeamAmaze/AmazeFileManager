@@ -113,12 +113,12 @@ static {
         add("application/x-rar-compressed", icon);
 
         // Contact
-        icon = R.drawable.ic_doc_certificate;
+        icon = R.drawable.ic_doc_contact_am;
         add("text/x-vcard", icon);
         add("text/vcard", icon);
 
         // Event
-        icon = R.drawable.ic_doc_certificate;
+        icon = R.drawable.ic_doc_event_am;
         add("text/calendar", icon);
         add("text/x-vcalendar", icon);
 
@@ -144,7 +144,7 @@ static {
         add("application/pdf", icon);
 
         // Presentation
-        icon = R.drawable.ic_doc_generic_am;
+        icon = R.drawable.ic_doc_presentation;
         add("application/vnd.ms-powerpoint", icon);
         add("application/vnd.openxmlformats-officedocument.presentationml.presentation", icon);
         add("application/vnd.openxmlformats-officedocument.presentationml.template", icon);
@@ -156,7 +156,7 @@ static {
         add("application/vnd.oasis.opendocument.presentation", icon);
 
         // Spreadsheet
-        icon = R.drawable.ic_doc_generic_am;
+        icon = R.drawable.ic_doc_spreadsheet_am;
         add("application/vnd.oasis.opendocument.spreadsheet", icon);
         add("application/vnd.oasis.opendocument.spreadsheet-template", icon);
         add("application/vnd.ms-excel", icon);
@@ -166,15 +166,19 @@ static {
         add("application/vnd.sun.xml.calc", icon);
         add("application/vnd.sun.xml.calc.template", icon);
         add("application/x-kspread", icon);
+
+        // Doc
+        icon = R.drawable.ic_doc_doc_am;
+        add("application/msword", icon);
+        add("application/vnd.openxmlformats-officedocument.wordprocessingml.document", icon);
+        add("application/vnd.openxmlformats-officedocument.wordprocessingml.template", icon);
+
         // Text
         icon = R.drawable.ic_doc_text_am;
         add("application/vnd.oasis.opendocument.text", icon);
         add("application/vnd.oasis.opendocument.text-master", icon);
         add("application/vnd.oasis.opendocument.text-template", icon);
         add("application/vnd.oasis.opendocument.text-web", icon);
-        add("application/msword", icon);
-        add("application/vnd.openxmlformats-officedocument.wordprocessingml.document", icon);
-        add("application/vnd.openxmlformats-officedocument.wordprocessingml.template", icon);
         add("application/vnd.stardivision.writer", icon);
         add("application/vnd.stardivision.writer-global", icon);
         add("application/vnd.sun.xml.writer", icon);
