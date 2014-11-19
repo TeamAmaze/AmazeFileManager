@@ -166,19 +166,11 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 
                 public boolean onLongClick(View p1) {
-                    if (main.results) {
-
-                        utils.longClickSearchItem(main, rowItem.getDesc());
-
-                    } else if (!main.selection) {
-                        if (main.current.equals("/")) {
-
-                            toggleChecked(p);
-                        } else if (p != 0) {
+                        if (!rowItem.getSize().equals(main.goback)) {
 
                             toggleChecked(p);
                         }
-                    }
+
                     return true;
                 }
             });
@@ -191,11 +183,10 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!main.results){
                     if (!rowItem.getSize().equals(main.goback)) {
                         holder.imageView.setAnimation(animation);
                         toggleChecked(p);
-                    }}
+                    }
                     else main.goBack();
 
                 }
@@ -203,20 +194,18 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.viewmageV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!main.results){
                         if (!rowItem.getSize().equals(main.goback))
                         toggleChecked(p);
                     else main.goBack();
-                }}
+                }
             });
             holder.apk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!main.results) {
                         if (!rowItem.getSize().equals(main.goback))
                             toggleChecked(p);
                         else main.goBack();
-                    } }
+                     }
             });
             holder.imageView.setVisibility(View.VISIBLE);
             holder.viewmageV.setVisibility(View.INVISIBLE);
@@ -302,17 +291,10 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 
                 public boolean onLongClick(View p1) {
-                    if (main.results) {
-
-                        utils.longClickSearchItem(main, rowItem.getDesc());
-                    } else if (main.current.equals("/")) {
+                    if (!rowItem.getSize().equals(main.goback)) {
 
                         toggleChecked(p);
-                    } else if (p != 0) {
-
-                        toggleChecked(p);
-                    }
-                    return true;
+                    } return true;
                 }
             });
             holder.txtTitle.setText(rowItem.getTitle());

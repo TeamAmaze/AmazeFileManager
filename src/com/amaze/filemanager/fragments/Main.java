@@ -795,6 +795,9 @@ if(listView!=null){
             switch (item.getItemId()) {
                 case R.id.sethome:
                     int pos = plist.get(0);
+                    if(results)
+                        home = slist.get(pos).getDesc();
+                    else
                     home = list.get(pos).getDesc();
                     Toast.makeText(getActivity(),
                             utils.getString(getActivity(), R.string.newhomedirectory) + " " + list.get(pos).getTitle(),
@@ -804,10 +807,18 @@ if(listView!=null){
                     mode.finish();
                     return true;
                 case R.id.about:
-                    utils.showProps(new File(list.get((plist.get(0))).getDesc()), getActivity(),rootMode);
+                    String x;
+                    if(results)
+                        x=slist.get((plist.get(0))).getDesc();
+                    else
+                    x=list.get((plist.get(0))).getDesc();
+                    utils.showProps(new File(x), getActivity(),rootMode);
                     mode.finish();
                     return true;
                 case R.id.delete:
+                    if(results)
+                        utils.deleteFiles(slist,ma,plist);
+                        else
                     utils.deleteFiles(list,ma, plist);
 
                     mode.finish();
@@ -817,9 +828,15 @@ if(listView!=null){
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
                     ArrayList<Uri> uris=new ArrayList<Uri>();
+                    if(results){
+                        for(int i:plist){
+                            uris.add(Uri.fromFile(new File(slist.get(i).getDesc())));
+                        }
+                    }
+                    else{
                     for(int i:plist){
                         uris.add(Uri.fromFile(new File(list.get(i).getDesc())));
-                    }
+                    }}
                     sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,uris);
                     sendIntent.setType("*/*");
                     startActivity(sendIntent);
@@ -836,7 +853,11 @@ if(listView!=null){
                     return true;
                 case R.id.rename:
                     final ActionMode m = mode;
-                    final File f = new File(list.get(
+                    final File f;
+                    if(results)
+                        f=new File(slist.get(
+                                (plist.get(0))).getDesc());
+                    else     f= new File(list.get(
                             (plist.get(0))).getDesc());
                     View dialog = getActivity().getLayoutInflater().inflate(
                             R.layout.dialog, null);
@@ -878,36 +899,57 @@ if(listView!=null){
                     mode.finish();
                     return true;
                 case R.id.hide:
+                    if(results){for (int i1 = 0; i1 < plist.size(); i1++) {
+                        hide(slist.get(plist.get(i1)).getDesc());
+                    }}
+                        else{
                     for (int i1 = 0; i1 < plist.size(); i1++) {
                     hide(list.get(plist.get(i1)).getDesc());
-                    }
+                    }}
                     updateList();
                     return true;
                 case R.id.book:
+                    if(results)
+                    {for (int i1 = 0; i1 < plist.size(); i1++) {
+                        try {
+                            sh.addS(new File(slist.get(plist.get(i1)).getDesc()));
+
+                        } catch (Exception e) {
+                        }
+                    }}else{
                     for (int i1 = 0; i1 < plist.size(); i1++) {
                         try {
                             sh.addS(new File(list.get(plist.get(i1)).getDesc()));
 
                         } catch (Exception e) {
                         }
-                    }
+                    }}
                     Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                     mode.finish();
                     return true;
                 case R.id.ex:
                     Intent intent = new Intent(getActivity(), ExtractService.class);
-                    intent.putExtra("zip", list.get(
+
+                    if(results)intent.putExtra("zip", slist.get(
                             (plist.get(0))).getDesc());
+                    else intent.putExtra("zip", list.get(
+                            (plist.get(0))).getDesc());
+
                     getActivity().startService(intent);
                     mode.finish();
                     return true;
                 case R.id.cpy:
                     mainActivity.MOVE_PATH=null;
                     ArrayList<String> copies = new ArrayList<String>();
-
+                    if(results){
+                        for (int i2 = 0; i2 < plist.size(); i2++) {
+                            copies.add(slist.get(plist.get(i2)).getDesc());
+                        }
+                    }
+                    else{
                     for (int i2 = 0; i2 < plist.size(); i2++) {
                         copies.add(list.get(plist.get(i2)).getDesc());
-                    }
+                    }}
                     mainActivity.COPY_PATH = copies;
                     mainActivity.invalidatePasteButton();
                     mode.finish();
@@ -915,27 +957,45 @@ if(listView!=null){
                 case R.id.cut:
                     mainActivity.COPY_PATH=null;
                     ArrayList<String> copie = new ArrayList<String>();
+                    if(results){
+                        for (int i3 = 0; i3 < plist.size(); i3++) {
+                            copie.add(slist.get(plist.get(i3)).getDesc());
+                        }
+                    }
+                    else{
                     for (int i3 = 0; i3 < plist.size(); i3++) {
                         copie.add(list.get(plist.get(i3)).getDesc());
-                    }
+                    }}
                     mainActivity.MOVE_PATH = copie;
                     mainActivity.invalidatePasteButton();
                     mode.finish();
                     return true;
                 case R.id.compress:
                     ArrayList<String> copies1 = new ArrayList<String>();
+                    if(results){
+                        for (int i4 = 0; i4 < plist.size(); i4++) {
+                            copies1.add(slist.get(plist.get(i4)).getDesc());
+                        }
+                    }
+                    else {
                     for (int i4 = 0; i4 < plist.size(); i4++) {
                         copies1.add(list.get(plist.get(i4)).getDesc());
-                    }
+                    }}
                     utils.showNameDialog((MainActivity) getActivity(), copies1, current);
                     mode.finish();
                     return true;
                 case R.id.openwith:
+                    if (results)utils.openWith(new File(slist.get(
+                            (plist.get(0))).getDesc()), getActivity());
+                    else
                     utils.openWith(new File(list.get(
                             (plist.get(0))).getDesc()), getActivity());
                     mode.finish();
                     return true;
                 case R.id.permissions:
+                    if(results)
+                        utils.setPermissionsDialog(slist.get(plist.get(0)),ma);
+                    else
                     utils.setPermissionsDialog(list.get(plist.get(0)),ma);
                     mode.finish();
                     return true;
