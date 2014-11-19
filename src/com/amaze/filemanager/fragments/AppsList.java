@@ -134,6 +134,12 @@ public class AppsList extends ListFragment {
                         intent.putExtra("FILE_PATHS", a);
                         intent.putExtra("COPY_DIRECTORY", dst.getPath());
                         getActivity().startService(intent);
+
+                        if (!f.getParent().equals("/data/app")) {
+
+                            File new1 = new File(dst.getPath() + "/" + f.getName());
+                            utils.rename(new1, info.packageName+".apk");
+                        }
                         break;
                     case 2:
                         if (!unin(c.get(position).packageName)) {
