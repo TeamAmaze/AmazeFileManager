@@ -29,6 +29,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.Main;
@@ -37,17 +38,15 @@ import com.amaze.filemanager.utils.Shortcuts;
 import java.io.File;
 import java.util.ArrayList;
 
-import me.drakeet.materialdialog.MaterialDialog;
-
 public class DialogAdapter extends ArrayAdapter<File> {
     Shortcuts s = new Shortcuts();
     Activity context;
     Main m;
     public ArrayList<File> items;
-    MaterialDialog materialDialog;
+    MaterialDialog.Builder materialDialog;
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public DialogAdapter(Main m,Activity context, int resourceId, ArrayList<File> items,MaterialDialog materialDialog) {
+    public DialogAdapter(Main m,Activity context, int resourceId, ArrayList<File> items,MaterialDialog.Builder materialDialog) {
         super(context, resourceId, items);
         this.context = context;
         this.items = items;
@@ -91,7 +90,7 @@ public class DialogAdapter extends ArrayAdapter<File> {
         holder.row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                materialDialog.dismiss();
+//                materialDialog.dismiss();
                 final File f = items.get(p);
                 if (f.isDirectory()) {
 

@@ -67,6 +67,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.MyAdapter;
@@ -93,8 +95,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-
-import me.drakeet.materialdialog.MaterialDialog;
 
 
 public class Main extends android.support.v4.app.Fragment {
@@ -189,9 +189,9 @@ public class Main extends android.support.v4.app.Fragment {
         res = getResources();
         goback=res.getString(R.string.goback);
         apk=res.getDrawable(R.drawable.ic_doc_apk_grid);
-         animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
-         animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
-         if(theme1==1) {
+        animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
+        animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
+        if(theme1==1) {
             rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_dark));
         }if (aBoolean) {
             listView.setVisibility(View.VISIBLE);
@@ -200,11 +200,11 @@ public class Main extends android.support.v4.app.Fragment {
             float density=res.getDisplayMetrics().densityDpi;
             int columns=Integer.parseInt(Sp.getString("columns","10"));
             if(columns==10){
-            if(density>= DisplayMetrics.DENSITY_LOW && density<DisplayMetrics.DENSITY_HIGH)
-                columns=2;
-            else if(density>=DisplayMetrics.DENSITY_HIGH && density<DisplayMetrics.DENSITY_XXHIGH)
-                columns=3;
-            else columns=4;}
+                if(density>= DisplayMetrics.DENSITY_LOW && density<DisplayMetrics.DENSITY_HIGH)
+                    columns=2;
+                else if(density>=DisplayMetrics.DENSITY_HIGH && density<DisplayMetrics.DENSITY_XXHIGH)
+                    columns=3;
+                else columns=4;}
             gridView.setNumColumns(columns);
             listView.setVisibility(View.GONE);
             gridView.setVisibility(View.VISIBLE);
@@ -229,7 +229,7 @@ public class Main extends android.support.v4.app.Fragment {
         (getActivity().findViewById(R.id.search)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-          search();
+                search();
             }
         });
         for (Tab tab : content) {
@@ -265,7 +265,7 @@ public class Main extends android.support.v4.app.Fragment {
         skinselection=Color.parseColor(x);
         color=calculatevalues(x);
         ColorMatrix colorMatrix = new ColorMatrix(calculatefilter(color));
-         colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
+        colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
         history = new HistoryManager(getActivity(), "Table1");
         hidden = new HistoryManager(getActivity(), "Table2");
         hiddenfiles=hidden.readTable();
@@ -274,7 +274,7 @@ public class Main extends android.support.v4.app.Fragment {
         showHidden=Sp.getBoolean("showHidden",true);
         coloriseIcons=Sp.getBoolean("coloriseIcons",false);
         if(aBoolean){
-        folder = res.getDrawable(R.drawable.ic_grid_folder_new);}
+            folder = res.getDrawable(R.drawable.ic_grid_folder_new);}
         else{folder = res.getDrawable(R.drawable.ic_grid_folder1);}
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
         getSortModes();
@@ -286,7 +286,7 @@ public class Main extends android.support.v4.app.Fragment {
         File f;
         if(path!=null)f=new File(path);
         else
-        f=new File(Sp.getString("current",home));
+            f=new File(Sp.getString("current",home));
 
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
         pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
@@ -376,116 +376,119 @@ public class Main extends android.support.v4.app.Fragment {
 
         int index;
         View vi;
-if(listView!=null){
-        if (aBoolean) {
+        if(listView!=null){
+            if (aBoolean) {
 
-            index = listView.getFirstVisiblePosition();
-            vi = listView.getChildAt(0);
-        } else {
-            index = gridView.getFirstVisiblePosition();
-            vi = gridView.getChildAt(0);
-        }
-        int top = (vi == null) ? 0 : vi.getTop();
-        outState.putInt("index", index);
-        outState.putInt("top", top);
-        outState.putParcelableArrayList("list", list);
-        outState.putString("current", current);
-        outState.putBoolean("selection", selection);
-        if (selection) {
-            outState.putIntegerArrayList("position", adapter.getCheckedItemPositions());
-        }
-    }}
+                index = listView.getFirstVisiblePosition();
+                vi = listView.getChildAt(0);
+            } else {
+                index = gridView.getFirstVisiblePosition();
+                vi = gridView.getChildAt(0);
+            }
+            int top = (vi == null) ? 0 : vi.getTop();
+            outState.putInt("index", index);
+            outState.putInt("top", top);
+            outState.putParcelableArrayList("list", list);
+            outState.putString("current", current);
+            outState.putBoolean("selection", selection);
+            if (selection) {
+                outState.putIntegerArrayList("position", adapter.getCheckedItemPositions());
+            }
+        }}
 
     public void add(int pos) {
- switch (pos) {
+        switch (pos) {
 
-                    case 0:
-                        final String path = ma.current;
-                        final MaterialDialog ba1 = new MaterialDialog(getActivity());
-                        ba1.setTitle(R.string.newfolder);
-                        View v = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
-                        final EditText edir = (EditText) v.findViewById(R.id.newname);
-                        edir.setHint(utils.getString(getActivity(), R.string.entername));
-                        ba1.setContentView(v);
-                        ba1.setNegativeButton(utils.getString(getActivity(), R.string.cancel), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                ba1.dismiss();
+            case 0:
+                final String path = ma.current;
+                final MaterialDialog.Builder ba1 = new MaterialDialog.Builder(getActivity());
+                ba1.title(R.string.newfolder);
+                View v = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
+                final EditText edir = (EditText) v.findViewById(R.id.newname);
+                edir.setHint(utils.getString(getActivity(), R.string.entername));
+                ba1.customView(v);
+                if(theme1==1)ba1.theme(Theme.DARK);
+                ba1.positiveText(R.string.create);
+                ba1.negativeText(R.string.cancel);
+                ba1.callback(new MaterialDialog.Callback() {
+                    @Override
+                    public void onPositive(MaterialDialog materialDialog) {
+                        String a = edir.getText().toString();
+                        File f = new File(path + "/" + a);
+                        if (!f.exists()) {
+                            f.mkdirs();
+                            updateList();
+                            Toast.makeText(getActivity(), res.getString(R.string.foldercreated), Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog materialDialog) {
+
+                    }
+                });
+                ba1.build().show();
+                break;
+            case 1:
+                final String path1 = ma.current;
+                final MaterialDialog.Builder ba2 = new MaterialDialog.Builder(getActivity());
+                ba2.title((R.string.newfile));
+                View v1 = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
+                final EditText edir1 = (EditText) v1.findViewById(R.id.newname);
+                edir1.setHint(utils.getString(getActivity(), R.string.entername));
+                ba2.customView(v1);
+                if(theme1==1)ba2.theme(Theme.DARK);
+                ba2.negativeText(R.string.cancel);
+                ba2.positiveText(R.string.create);
+                ba2.callback(new MaterialDialog.Callback() {
+                    @Override
+                    public void onPositive(MaterialDialog materialDialog) {
+                        String a = edir1.getText().toString();
+                        File f1 = new File(path1 + "/" + a);
+                        if (!f1.exists()) {
+                            try {
+                                boolean b = f1.createNewFile();
+                                updateList();
+                                Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.filecreated), Toast.LENGTH_LONG).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
-                        });
-                        ba1.setPositiveButton(utils.getString(getActivity(), R.string.create), new View.OnClickListener() {
+                        } else {
+                            Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Toast.LENGTH_LONG).show();
+                        }
+                    }
 
-                            @Override
-                            public void onClick(View view) {
-                                String a = edir.getText().toString();
-                                File f = new File(path + "/" + a);
-                                if (!f.exists()) {
-                                    f.mkdirs();
-                                    updateList();
-                                    Toast.makeText(getActivity(), res.getString(R.string.foldercreated), Toast.LENGTH_LONG).show();
-                                } else {
-                                    Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
-                        ba1.show();
-                        break;
-                    case 1:
-                        final String path1 = ma.current;
-                        final MaterialDialog ba2 = new MaterialDialog(getActivity());
-                        ba2.setTitle((R.string.newfile));
-                        View v1 = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
-                        final EditText edir1 = (EditText) v1.findViewById(R.id.newname);
-                        edir1.setHint(utils.getString(getActivity(), R.string.entername));
-                        ba2.setContentView(v1);
-                        ba2.setNegativeButton( R.string.cancel, new View.OnClickListener() {
+                    @Override
+                    public void onNegative(MaterialDialog materialDialog) {
 
-                            public void onClick(View v) {
-                              ba2.dismiss();
-                            }
-                        });
-                        ba2.setPositiveButton(R.string.create, new View.OnClickListener() {
+                    }
+                });
+                ba2.build().show();
+                break;
+            case 2:
+                int older = tabHandler.getTabsCount();
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
 
-                            public void onClick(View p2) {
-                                String a = edir1.getText().toString();
-                                File f1 = new File(path1 + "/" + a);
-                                if (!f1.exists()) {
-                                    try {
-                                        boolean b = f1.createNewFile();
-                                        updateList();
-                                        Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.filecreated), Toast.LENGTH_LONG).show();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                } else {
-                                    Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
-                        ba2.show();
-                        break;
-                    case 2:
-                        int older = tabHandler.getTabsCount();
-                        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                animation = AnimationUtils.loadAnimation(getActivity(), R.anim.tab_anim);
+                animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
 
-                        animation = AnimationUtils.loadAnimation(getActivity(), R.anim.tab_anim);
-                        animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
+                File file1 = new File(ma.home);
+                tabHandler.addTab(new Tab(older, file1.getName(), file1.getPath()));
+                //restartPC(getActivity()); // breaks the copy feature
+                Sp.edit().putInt("spinner_selected", older).commit();
+                Sp.edit().putString("current", home).apply();
 
-                        File file1 = new File(ma.home);
-                        tabHandler.addTab(new Tab(older, file1.getName(), file1.getPath()));
-                        //restartPC(getActivity()); // breaks the copy feature
-                        Sp.edit().putInt("spinner_selected", older).commit();
-                        Sp.edit().putString("current", home).apply();
+                loadlist(new File(home),false);
 
-                        loadlist(new File(home),false);
-
-                        listView.setAnimation(animation);
-                        gridView.setAnimation(animation);
-                        FloatingActionsMenu floatingActionMenu = (FloatingActionsMenu) getActivity().findViewById(R.id.pink_icon);
-                        floatingActionMenu.collapse();
-                        floatingActionMenu.setAnimation(animation1);
-                }
-            }
+                listView.setAnimation(animation);
+                gridView.setAnimation(animation);
+                FloatingActionsMenu floatingActionMenu = (FloatingActionsMenu) getActivity().findViewById(R.id.pink_icon);
+                floatingActionMenu.collapse();
+                floatingActionMenu.setAnimation(animation1);
+        }
+    }
 
     public void home() {
         ma.loadlist(new File(ma.home), false);
@@ -495,22 +498,18 @@ if(listView!=null){
         final String fpath = ma.current;
 
         //Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.searchpath) + fpath, Toast.LENGTH_LONG).show();
-        final MaterialDialog a = new MaterialDialog(getActivity());
-        a.setTitle(R.string.search);
+        final MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+        a.title(R.string.search);
         View v = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
         final EditText e = (EditText) v.findViewById(R.id.newname);
         e.setHint(utils.getString(getActivity(), R.string.enterfile));
-        a.setContentView(v);
-        a.setNegativeButton( R.string.cancel, new View.OnClickListener() {
+        a.customView(v);
+        if(theme1==1)a.theme(Theme.DARK);
+        a.negativeText(R.string.cancel);
+        a.positiveText(R.string.search);
+        a.callback(new MaterialDialog.Callback() {
             @Override
-            public void onClick(View which) {
-            a.dismiss();}
-        });
-        a.setPositiveButton(R.string.search, new View.OnClickListener() {
-
-            @Override
-            public void onClick(View which) {
-                // TODO Auto-generated method stub
+            public void onPositive(MaterialDialog materialDialog) {
                 String a = e.getText().toString();
                 Bundle b = new Bundle();
                 b.putString("FILENAME", a);
@@ -518,8 +517,13 @@ if(listView!=null){
                 new SearchTask((MainActivity) getActivity(), ma).execute(b);
 
             }
+
+            @Override
+            public void onNegative(MaterialDialog materialDialog) {
+
+            }
         });
-        a.show();
+        a.build().show();
     }
 
 
@@ -535,14 +539,14 @@ if(listView!=null){
                 results = false;
             } else {
 
-                    utils.openFile(f, (MainActivity) getActivity());
+                utils.openFile(f, (MainActivity) getActivity());
             }
         } else if (selection == true) {
             if(!list.get(position).getSize().equals(goback)){
-            adapter.toggleChecked(position);;
+                adapter.toggleChecked(position);;
             }else{selection = false;
                 if(mActionMode!=null)
-                mActionMode.finish();
+                    mActionMode.finish();
                 mActionMode = null;}
 
         } else {
@@ -573,11 +577,11 @@ if(listView!=null){
 
                         utils.openFile(f, (MainActivity) getActivity());
                     }
-                    }
+                }
 
             } else {
 
-                    goBack();
+                goBack();
 
             }
         }
@@ -668,41 +672,41 @@ if(listView!=null){
 
     public void createViews(ArrayList<Layoutelements> bitmap, boolean back, File f) {
         try {if (bitmap != null) {
-                TextView footerText=(TextView) footerView.findViewById(R.id.footerText);
-                if(bitmap.size()==0){
-                    footerText.setText(res.getString(R.string.nofiles));
-                }
-                else{
-                    footerText.setText(res.getString(R.string.tapnhold));
-                }
-                if(!f.getPath().equals("/")){
-                    if(bitmap.size()==0 || !bitmap.get(0).getSize().equals(goback))
-                    bitmap.add(0,utils.newElement(folder,"...", "","",goback,true));
-                }
-                adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
-                        bitmap, ma);
-                try {
-
-                    aBoolean = sharedPreferences.getBoolean("view", true);
-                    if (aBoolean) {
-                        listView.setAdapter(adapter);
-                    } else {
-                        gridView.setAdapter(adapter);
-                    }
-
-                    results = false;
-                    current = f.getPath();
-                    if (back) {
-                        if (scrolls.containsKey(current)) {
-                            Bundle b = scrolls.get(current);
-
-                            listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
-                        }
-                    }
-                    bbar(current);
-                    floatingActionsMenu.collapse();} catch (Exception e) {
-                }
+            TextView footerText=(TextView) footerView.findViewById(R.id.footerText);
+            if(bitmap.size()==0){
+                footerText.setText(res.getString(R.string.nofiles));
             }
+            else{
+                footerText.setText(res.getString(R.string.tapnhold));
+            }
+            if(!f.getPath().equals("/")){
+                if(bitmap.size()==0 || !bitmap.get(0).getSize().equals(goback))
+                    bitmap.add(0,utils.newElement(folder,"...", "","",goback,true));
+            }
+            adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
+                    bitmap, ma);
+            try {
+
+                aBoolean = sharedPreferences.getBoolean("view", true);
+                if (aBoolean) {
+                    listView.setAdapter(adapter);
+                } else {
+                    gridView.setAdapter(adapter);
+                }
+
+                results = false;
+                current = f.getPath();
+                if (back) {
+                    if (scrolls.containsKey(current)) {
+                        Bundle b = scrolls.get(current);
+
+                        listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
+                    }
+                }
+                bbar(current);
+                floatingActionsMenu.collapse();} catch (Exception e) {
+            }
+        }
         else{Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
             loadlist(new File(current),true);
         }} catch (Exception e) {
@@ -795,7 +799,10 @@ if(listView!=null){
             switch (item.getItemId()) {
                 case R.id.sethome:
                     int pos = plist.get(0);
-                    home = list.get(pos).getDesc();
+                    if(results)
+                        home = slist.get(pos).getDesc();
+                    else
+                        home = list.get(pos).getDesc();
                     Toast.makeText(getActivity(),
                             utils.getString(getActivity(), R.string.newhomedirectory) + " " + list.get(pos).getTitle(),
                             Toast.LENGTH_LONG).show();
@@ -804,11 +811,19 @@ if(listView!=null){
                     mode.finish();
                     return true;
                 case R.id.about:
-                    utils.showProps(new File(list.get((plist.get(0))).getDesc()), getActivity(),rootMode);
+                    String x;
+                    if(results)
+                        x=slist.get((plist.get(0))).getDesc();
+                    else
+                        x=list.get((plist.get(0))).getDesc();
+                    utils.showProps(new File(x), getActivity(),rootMode);
                     mode.finish();
                     return true;
                 case R.id.delete:
-                    utils.deleteFiles(list,ma, plist);
+                    if(results)
+                        utils.deleteFiles(slist,ma,plist);
+                    else
+                        utils.deleteFiles(list,ma, plist);
 
                     mode.finish();
 
@@ -817,9 +832,15 @@ if(listView!=null){
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
                     ArrayList<Uri> uris=new ArrayList<Uri>();
-                    for(int i:plist){
-                        uris.add(Uri.fromFile(new File(list.get(i).getDesc())));
+                    if(results){
+                        for(int i:plist){
+                            uris.add(Uri.fromFile(new File(slist.get(i).getDesc())));
+                        }
                     }
+                    else{
+                        for(int i:plist){
+                            uris.add(Uri.fromFile(new File(list.get(i).getDesc())));
+                        }}
                     sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,uris);
                     sendIntent.setType("*/*");
                     startActivity(sendIntent);
@@ -836,7 +857,11 @@ if(listView!=null){
                     return true;
                 case R.id.rename:
                     final ActionMode m = mode;
-                    final File f = new File(list.get(
+                    final File f;
+                    if(results)
+                        f=new File(slist.get(
+                                (plist.get(0))).getDesc());
+                    else     f= new File(list.get(
                             (plist.get(0))).getDesc());
                     View dialog = getActivity().getLayoutInflater().inflate(
                             R.layout.dialog, null);
@@ -878,36 +903,57 @@ if(listView!=null){
                     mode.finish();
                     return true;
                 case R.id.hide:
-                    for (int i1 = 0; i1 < plist.size(); i1++) {
-                    hide(list.get(plist.get(i1)).getDesc());
-                    }
+                    if(results){for (int i1 = 0; i1 < plist.size(); i1++) {
+                        hide(slist.get(plist.get(i1)).getDesc());
+                    }}
+                    else{
+                        for (int i1 = 0; i1 < plist.size(); i1++) {
+                            hide(list.get(plist.get(i1)).getDesc());
+                        }}
                     updateList();
                     return true;
                 case R.id.book:
-                    for (int i1 = 0; i1 < plist.size(); i1++) {
+                    if(results)
+                    {for (int i1 = 0; i1 < plist.size(); i1++) {
                         try {
-                            sh.addS(new File(list.get(plist.get(i1)).getDesc()));
+                            sh.addS(new File(slist.get(plist.get(i1)).getDesc()));
 
                         } catch (Exception e) {
                         }
-                    }
+                    }}else{
+                        for (int i1 = 0; i1 < plist.size(); i1++) {
+                            try {
+                                sh.addS(new File(list.get(plist.get(i1)).getDesc()));
+
+                            } catch (Exception e) {
+                            }
+                        }}
                     Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                     mode.finish();
                     return true;
                 case R.id.ex:
                     Intent intent = new Intent(getActivity(), ExtractService.class);
-                    intent.putExtra("zip", list.get(
+
+                    if(results)intent.putExtra("zip", slist.get(
                             (plist.get(0))).getDesc());
+                    else intent.putExtra("zip", list.get(
+                            (plist.get(0))).getDesc());
+
                     getActivity().startService(intent);
                     mode.finish();
                     return true;
                 case R.id.cpy:
                     mainActivity.MOVE_PATH=null;
                     ArrayList<String> copies = new ArrayList<String>();
-
-                    for (int i2 = 0; i2 < plist.size(); i2++) {
-                        copies.add(list.get(plist.get(i2)).getDesc());
+                    if(results){
+                        for (int i2 = 0; i2 < plist.size(); i2++) {
+                            copies.add(slist.get(plist.get(i2)).getDesc());
+                        }
                     }
+                    else{
+                        for (int i2 = 0; i2 < plist.size(); i2++) {
+                            copies.add(list.get(plist.get(i2)).getDesc());
+                        }}
                     mainActivity.COPY_PATH = copies;
                     mainActivity.invalidatePasteButton();
                     mode.finish();
@@ -915,28 +961,46 @@ if(listView!=null){
                 case R.id.cut:
                     mainActivity.COPY_PATH=null;
                     ArrayList<String> copie = new ArrayList<String>();
-                    for (int i3 = 0; i3 < plist.size(); i3++) {
-                        copie.add(list.get(plist.get(i3)).getDesc());
+                    if(results){
+                        for (int i3 = 0; i3 < plist.size(); i3++) {
+                            copie.add(slist.get(plist.get(i3)).getDesc());
+                        }
                     }
+                    else{
+                        for (int i3 = 0; i3 < plist.size(); i3++) {
+                            copie.add(list.get(plist.get(i3)).getDesc());
+                        }}
                     mainActivity.MOVE_PATH = copie;
                     mainActivity.invalidatePasteButton();
                     mode.finish();
                     return true;
                 case R.id.compress:
                     ArrayList<String> copies1 = new ArrayList<String>();
-                    for (int i4 = 0; i4 < plist.size(); i4++) {
-                        copies1.add(list.get(plist.get(i4)).getDesc());
+                    if(results){
+                        for (int i4 = 0; i4 < plist.size(); i4++) {
+                            copies1.add(slist.get(plist.get(i4)).getDesc());
+                        }
                     }
+                    else {
+                        for (int i4 = 0; i4 < plist.size(); i4++) {
+                            copies1.add(list.get(plist.get(i4)).getDesc());
+                        }}
                     utils.showNameDialog((MainActivity) getActivity(), copies1, current);
                     mode.finish();
                     return true;
                 case R.id.openwith:
-                    utils.openWith(new File(list.get(
+                    if (results)utils.openWith(new File(slist.get(
                             (plist.get(0))).getDesc()), getActivity());
+                    else
+                        utils.openWith(new File(list.get(
+                                (plist.get(0))).getDesc()), getActivity());
                     mode.finish();
                     return true;
                 case R.id.permissions:
-                    utils.setPermissionsDialog(list.get(plist.get(0)),ma);
+                    if(results)
+                        utils.setPermissionsDialog(slist.get(plist.get(0)),ma);
+                    else
+                        utils.setPermissionsDialog(list.get(plist.get(0)),ma);
                     mode.finish();
                     return true;
                 default:
@@ -1071,11 +1135,11 @@ if(listView!=null){
 
     public boolean copyToClipboard(Context context, String text) {
         try {
-                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context
-                        .getSystemService(context.CLIPBOARD_SERVICE);
-                android.content.ClipData clip = android.content.ClipData
-                        .newPlainText("Path copied to clipboard", text);
-                clipboard.setPrimaryClip(clip);
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context
+                    .getSystemService(context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData
+                    .newPlainText("Path copied to clipboard", text);
+            clipboard.setPrimaryClip(clip);
             return true;
         } catch (Exception e) {
             return false;
@@ -1120,12 +1184,12 @@ if(listView!=null){
 
     public void getSortModes() {
         int t = Integer.parseInt(Sp.getString("sortby", "0"));
-        if (t <= 2) {
+        if (t <= 3) {
             sortby = t;
             asc = 1;
-        } else if (t >= 3) {
+        } else if (t > 3) {
             asc = -1;
-            sortby = t - 3;
+            sortby = t - 4;
         }
         dsort = Integer.parseInt(Sp.getString("dirontop", "0"));
 
@@ -1152,15 +1216,15 @@ if(listView!=null){
         for (int i = 0; i < mFile.size(); i++) {
             File f=new File(mFile.get(i)[0]);
             if(!hiddenfiles.contains(mFile.get(i)[0])){
-            if (f.isDirectory()) {
-                a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f,res),false));
+                if (f.isDirectory()) {
+                    a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f,res),false));
 
-            } else {
-                try {
-                    a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.getSize(mFile.get(i)),false));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }}
+                } else {
+                    try {
+                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.getSize(mFile.get(i)),false));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }}
             }
         }
         return a;
@@ -1170,8 +1234,8 @@ if(listView!=null){
     @Override
     public void onDestroy() {
         super.onDestroy();
-if(history!=null)
-        history.end(); hidden.end();    }
+        if(history!=null)
+            history.end(); hidden.end();    }
     public void updatehiddenfiles(){
         hiddenfiles=hidden.readTable();
     }
@@ -1179,8 +1243,6 @@ if(history!=null)
 /*
         ImageView imageView = ((ImageView)poppy.findViewById(R.id.overflow));
         showPopup(imageView);
-
-
         final ImageView homebutton=(ImageView)poppy.findViewById(R.id.home);
         homebutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1188,12 +1250,10 @@ if(history!=null)
                 home();if(mActionMode!=null){mActionMode.finish();}
             }
         });
-
         ImageView imageView1 = ((ImageView)poppy.findViewById(R.id.search));
         imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 search();
                 if (mActionMode != null) {
                     mActionMode.finish();
@@ -1205,7 +1265,7 @@ if(history!=null)
     public void showPopup(View v) {
         final PopupMenu popup = new PopupMenu(getActivity(), v);
         if(Build.VERSION.SDK_INT>=19)
-        v.setOnTouchListener(popup.getDragToOpenListener());
+            v.setOnTouchListener(popup.getDragToOpenListener());
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1261,14 +1321,7 @@ if(history!=null)
                         break;
                     case R.id.view:
                         // Save the changes, but don't show a disruptive Toast:
-                        if (aBoolean) {
-                            Toast.makeText(getActivity(), res.getString(R.string.setgridview), Toast.LENGTH_SHORT).show();
-                            sharedPreferences.edit().putBoolean("view", false).commit();
-
-                        } else {
-                            Toast.makeText(getActivity(),res.getString(R.string.setlistview), Toast.LENGTH_SHORT).show();
-                            sharedPreferences.edit().putBoolean("view", true).commit();
-                        }
+                        sharedPreferences.edit().putBoolean("view", !aBoolean).commit();
                         restartPC(getActivity());
                         break;
                 }
@@ -1285,10 +1338,10 @@ if(history!=null)
             if (!f1.exists()) {
                 try {
                     boolean b = f1.createNewFile();
-                 } catch (IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }    }
-        utils.scanFile(path,getActivity());}
+            utils.scanFile(path,getActivity());}
 
     }
     private void crossfade() {
@@ -1378,7 +1431,7 @@ if(history!=null)
                 "#212121","#99bdbdbd",
                 "#607d8b","#4478909c",
         };
-       return colors[ Arrays.asList(colors).indexOf(skin)+1];
+        return colors[ Arrays.asList(colors).indexOf(skin)+1];
     }public float[] calculatefilter(float[] values){
         float[] src= {
 

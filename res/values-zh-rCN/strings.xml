@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+      
+-->
+
+<resources>
+  <string name="books">书签</string>
+  <string name="icon">图标</string>
+  <string name="efn">请输入文件名</string>
+  <string name="storage">本机存储</string>
+  <string name="gallery">画廊</string>
+  <string name="apps">应用管理</string>
+  <string name="bookmanag">书签管理</string>
+  <string name="setting">设置</string>
+  <string name="select">选择项目</string>
+  <string name="pressagain">再按一次返回键退出</string>
+  <string name="open">打开</string>
+  <string name="backup">备份</string>
+  <string name="uninstall">卸载</string>
+  <string name="play">去Play store上查看</string>
+  <string name="properties">属性</string>
+  <string name="copyingapk">将应用程序包复制到</string>
+  <string name="addbook">添加书签</string>
+  <string name="addtobook">添加到书签</string>
+  <string name="enterpath">输入路径</string>
+  <string name="success">成功</string>
+  <string name="filenotexists">找不到文件</string>
+  <string name="error">哎呀，出错了</string>
+  <string name="cantlistfiles">权限不足，请切换到root权限下操作</string>
+  <string name="searchresults">搜索结果</string>
+  <string name="itemsselected">项目已选中</string>
+  <string name="newhomedirectory">新的主目录</string>
+  <string name="rename">重命名</string>
+  <string name="save">保存</string>
+  <string name="renameerror">重命名时出现问题</string>
+  <string name="renamed">重命名成功</string>
+  <string name="bookmarksadded">书签已添加</string>
+  <string name="fileexist">文件已存在</string>
+  <string name="filecreated">文件创建成功</string>
+  <string name="searchpath">搜索路径</string>
+  <string name="enterfile">请输入文件名</string>
+  <string name="name">名称：</string>
+  <string name="date">修改时间：</string>
+  <string name="location">位置：</string>
+  <string name="size">大小：</string>
+  <string name="totalitems">项目数：</string>
+  <string name="enterzipname">请输入打包后的文件名</string>
+  <string name="noappfound">找不到与此文件类型相关联的应用，将列举出所有应用选项</string>
+  <string name="copying">正在复制</string>
+  <string name="moving">正在移动</string>
+  <string name="add">添加</string>
+  <string name="tab">页面</string>
+  <string name="file">文件</string>
+  <string name="folder">文件夹</string>
+  <string name="newfolder">新文件夹</string>
+  <string name="entername">请输入名称</string>
+  <string name="extracting">解压中</string>
+  <string name="zipping">打包中</string>
+  <string name="stopping">正在试图停止</string>
+  <string name="guide1">欢迎使用Amaze文件管理器！</string>
+  <string name="guide2">触摸以显示或隐藏地址栏</string>
+  <string name="guide3">长按项目以使用更多选项</string>
+  <string name="guide4">譬如复制、粘贴，以及查看属性</string>
+  <string name="guide5">按返回键退出，不要告诉我你不知道</string>
+  <string name="guide6">另外也可以使用左侧栏进行浏览</string>
+  <string name="maintab">无法移除主选项卡</string>
+  <string name="openparent">向上</string>
+  <string name="openwith">打开方式</string>
+  <string name="share">发送</string>
+  <string name="about">关于</string>
+  <string name="extract">解压</string>
+  <string name="compress">打包</string>
+  <string name="yes">@android:string/yes</string>
+  <string name="no">@android:string/no</string>
+  <string name="confirm">现在轮到你来做出选择</string>
+  <string name="deleting">删除中</string>
+  <string name="questiondelete">主人你真的忍心删掉我们么么哒</string>
+  <string name="viewmode">视图</string>
+  <string name="uimode">项目视图</string>
+  <string name="directorysort">文件夹的位置</string>
+  <string name="sortby">排序方式</string>
+  <string name="theme">主题</string>
+  <string name="skin">皮肤</string>
+  <string name="random">随机皮肤</string>
+  <string name="random_summary">每次启动都有意想不到的主题</string>
+  <string name="colorize">多彩图标</string>
+  <string name="colorize_summary">让图标缤纷起来</string>
+  <string name="back">后退</string>
+  <string name="home">主目录</string>
+  <string name="paste">粘贴</string>
+  <string name="close">关闭</string>
+  <string name="history">历史</string>
+  <string name="refresh">刷新</string>
+  <string name="copy">复制</string>
+  <string name="rootmode">超级用户模式</string>
+  <string name="rootmodesummary">仅供内部人员测试使用，点了地球会爆炸，真的</string>
+  <string name="mountsystemsummary">你确定你要修改系统文件？</string>
+  <string name="mountsystem">你确定你要修改系统文件。</string>
+  <string name="rootfailure">未取得超级用户授权</string>
+  <string name="cut">剪切</string>
+  <string name="selectall">全选</string>
+  <string name="delete">删除</string>
+  <string name="setashome">以此为主目录</string>
+  <string name="sethome">设置主目录</string>
+  <string name="foldercolor">文件夹颜色</string>
+  <string name="imagegallery">一号图片展厅</string>
+  <string name="fileexplorer">文件管理器</string>
+  <string name="changegallerypath">选择目录</string>
+  <string name="usedefaultgallerypath">使用默认目录</string>
+
+  <!-- Changelog -->
+  <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br>&lt;br></string>
+  <string name="changelog_change_1">- Initial release&lt;br>&lt;br></string>
+
+  <!-- New -->
+  <!-- Array -->
+
+  <!-- UI -->
+  <string name="simple">简单</string>
+  <string name="card">卡片</string>
+  <!-- Theme -->
+  <string name="light">亮</string>
+  <string name="dark">暗</string>
+  <string name="daytime">随日夜变化</string>
+  <!--Skin-->
+  <string name="red">红</string>
+  <string name="pink">粉</string>
+  <string name="purple">淡紫</string>
+  <string name="deep_purple">深紫</string>
+  <string name="indigo">靛蓝</string>
+  <string name="blue">蓝</string>
+  <string name="light_blue">亮蓝</string>
+  <string name="cyan">青</string>
+  <string name="teal">蓝绿</string>
+  <string name="green">绿</string>
+  <string name="light_green">草绿</string>
+  <string name="amber">琥珀</string>
+  <string name="orange">橙</string>
+  <string name="deep_orange">暗橙</string>
+  <string name="brown">棕</string>
+  <string name="black">黑</string>
+  <string name="blue_grey">蓝灰</string>
+  <!--DirectorySortMode-->
+  <string name="foldersOnTop">文件夹在上方</string>
+  <string name="filesOnTop">文件夹在下方</string>
+  <string name="noneOnTop">混杂</string>
+  <!--SortBy-->
+  <string name="sortName">按名称降序排序</string>
+  <string name="lastModified">按修改时间升序排序</string>
+  <string name="sortSize">按大小升序排序</string>
+  <string name="sortNameDesc">按名称降序排序</string>
+  <string name="lastModifiedDesc">按修改时间降序排序</string>
+  <string name="sortSizeDesc">按大小降序排序</string>
+  <!--ListMode-->
+  <string name="detailedView">丰富</string>
+  <string name="simpleView">简洁</string>
+  <!--Folder-->
+  <string name="Yellow">黄</string>
+  <string name="pick_a_file">选择一个文件</string>
+  <string name="process_viewer">进程管理器</string>
+  <string name="in_safe">空间不足</string>
+  <string name="no_file_overwrite">没有文件被覆盖</string>
+  <string name="skip">跳过</string>
+  <string name="overwrite">覆盖</string>
+  <string name="cant_read_file">无法读取文件</string>
+  <string name="not_allowed">此操作不被允许</string>
+  <string name="processes">进程列表</string>
+  <string name="searching">搜索中</string>
+  <string name="copying_fles">复制文件</string>
+  <string name="done">完成</string>
+  <string name="Extracting_fles">解压文件</string>
+  <string name="Zipping_fles">打包文件</string>
+  <string name="items">项目</string>
+  <string name="set">集合</string>
+  <string name="enablerootmde">允许超级用户授权</string>
+  <string name="goback">返回</string>
+  <string name="foldercreated">文件夹创建成功</string>
+  <string name="newfile">新文件</string>
+  <string name="nofiles">没有文件</string>
+  <string name="tapnhold">长按文件或文件夹，发现更多惊喜</string>
+  <string name="pathcopied">看，路径成功地被复制到了剪贴板</string>
+  <string name="used">已用空间：</string>
+  <string name="free">可用空间：</string>
+  <string name="atroot">以获得超级用户授权</string>
+  <string name="listview">列表模式</string>
+  <string name="gridview">网格模式</string>
+  <string name="setlistview">列表模式的设置页面</string>
+  <string name="setgridview">网格模式的设置页面</string>
+  <string name="permission">权限</string>
+  <string name="hide">隐藏</string>
+  <string name="exit">退出</string>
+  <string name="enternewname">请输入新的文件名：</string>
+  <string name="doforall">为所有项目执行操作</string>
+  <string name="gridcolumnno">网格模式的列数</string>
+  <string name="randomDialog">随机</string>
+  <string name="setRandom">重启应用以使更改生效</string>
+  <string name="authors">作者</string>
+  <string name="changelog">更新记录</string>
+  <string name="fullChangelog">完整的更新记录</string>
+  <string name="ok">@android:string/ok</string>
+  <string name="chooseUI">选择界面</string>
+  <string name="ui">界面</string>
+  <string name="general">通用</string>
+  <string name="thumbSummary">显示应用包和图片的缩略图</string>
+  <string name="thumb">显示缩略图</string>
+  <string name="hidden">显示隐藏文件</string>
+  <string name="lastModifiedSummary">显示项目的修改时间</string>
+  <string name="lastModifiedPref">显示修改时间</string>
+  <string name="sizePrefSummary">显示文件及文件夹的大小</string>
+  <string name="sizePref">显示大小</string>
+  <string name="miscellaneous">杂项</string>
+  <string name="rootPrefSummary">显示文件及文件夹的权限</string>
+  <string name="rootPref">显示权限</string>
+  <string name="aboutFileManager">关于</string>
+  <string name="version">版本</string>
+  <string name="rate">去Play上评分</string>
+  <string name="license">开源许可证</string>
+  <string name="feedback">提意见</string>
+  <string name="hiddenfiles">隐藏文件</string>
+</resources>

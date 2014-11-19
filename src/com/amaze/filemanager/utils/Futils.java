@@ -33,13 +33,17 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.TextReader;
@@ -62,8 +66,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
-
-import me.drakeet.materialdialog.MaterialDialog;
 
 public class Futils {
     public Futils() {
@@ -480,169 +482,93 @@ public class Futils {
         a.show();
     }
 
-    public void longClickSearchItem(final Main main, String files) {
-        final File f = new File(files);
-        AlertDialog.Builder ba = new AlertDialog.Builder(main.getActivity());
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                main.getActivity(), android.R.layout.select_dialog_item);
-        Toast.makeText(main.getActivity(), files, Toast.LENGTH_SHORT).show();
-        ba.setTitle(f.getName());
-        adapter.add(getString(main.getActivity(), R.string.openparent));
-        adapter.add(getString(main.getActivity(), R.string.openwith));
-        adapter.add(getString(main.getActivity(), R.string.about));
-        adapter.add(getString(main.getActivity(), R.string.share));
-        adapter.add(getString(main.getActivity(), R.string.compress));
-        if (!f.isDirectory() && f.getName().endsWith(".zip"))
-            adapter.add(getString(main.getActivity(), R.string.extract));
-        ba.setAdapter(adapter, new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface p1, int p2) {
-                switch (p2) {
-                    case 0:
-                        main.loadlist(new File(main.slist.get(p2).getDesc()).getParentFile(), true);
-                        break;
-                    case 1:
-                        openunknown(f, main.getActivity());
-                        break;
-                    case 2:
-                        showProps(f, main.getActivity(),main.rootMode);
-                        break;
-                    case 3:
-                        Intent i = new Intent();
-                        i.setAction(Intent.ACTION_SEND);
-                        i.setType("*/*");
-                        i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
-                        main.startActivity(i);
-                        break;
-                    case 4:
-                        ArrayList<String> copies1 = new ArrayList<String>();
-                        copies1.add(f.getPath());
-                        showNameDialog((MainActivity) main.getActivity(), copies1, main.current);
-
-                        break;
-                    case 5:
-                        Intent intent = new Intent(main.getActivity(), ExtractService.class);
-                        intent.putExtra("zip", f.getPath());
-                        main.getActivity().startService(intent);
-                        break;
-                }
-            }
-        });
-        ba.show();
-    }
-
     public void showSortDialog(final Main m) {
         String[] sort = m.getResources().getStringArray(R.array.sortby);
         int current = Integer.parseInt(m.Sp.getString("sortby", "0"));
-        AlertDialog.Builder a = new AlertDialog.Builder(m.getActivity());
+        MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
+        if(m.theme1==1)a.theme(Theme.DARK);
+        a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
+            @Override
+            public void onSelection(MaterialDialog dialog, View view, int which, String text) {
 
-        a.setSingleChoiceItems(new ArrayAdapter<String>(m.getActivity(), android.R.layout.select_dialog_singlechoice, sort), current, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int i) {
-
-                m.Sp.edit().putString("sortby", "" + i).commit();
+                m.Sp.edit().putString("sortby", "" + which).commit();
                 m.getSortModes();
                 m.loadlist(new File(m.current), false);
                 dialog.cancel();
             }
         });
-        a.setTitle(getString(m.getActivity(), R.string.sortby));
-        a.setNegativeButton(getString(m.getActivity(), R.string.cancel), null);
-        a.show();
+        a.title( R.string.sortby);
+        a.negativeText( R.string.cancel);
+        a.build().show();
     }
 
     public void showDirectorySortDialog(final Main m) {
         String[] sort = m.getResources().getStringArray(R.array.directorysortmode);
-        AlertDialog.Builder a = new AlertDialog.Builder(m.getActivity());
+        MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
+        if(m.theme1==1)a.theme(Theme.DARK);
         int current = Integer.parseInt(m.Sp.getString("dirontop", "0"));
-
-        a.setSingleChoiceItems(new ArrayAdapter<String>(m.getActivity(), android.R.layout.select_dialog_singlechoice, sort), current, new DialogInterface.OnClickListener() {
+        a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                m.Sp.edit().putString("dirontop", "" + i).commit();
+            public void onSelection(MaterialDialog dialog, View view, int which, String text) {
+                m.Sp.edit().putString("dirontop", "" + which).commit();
                 m.getSortModes();
                 m.loadlist(new File(m.current), false);
                 // dismiss the dialog since we don't want it open after selection:
-                dialogInterface.dismiss();
+                dialog.dismiss();
             }
         });
-
-        a.setTitle(getString(m.getActivity(), R.string.directorysort));
-        a.setNegativeButton(getString(m.getActivity(), R.string.cancel), null);
-        a.show();
+        a.title(R.string.directorysort);
+        a.negativeText(R.string.cancel);
+        a.build().show();
     }
 
     public void showHistoryDialog(final Main m) {
         final ArrayList<String> paths = m.history.readTable();
 
-        final MaterialDialog ba = new MaterialDialog(m.getActivity());
-        ba.setTitle(getString(m.getActivity(), R.string.history));
+        final MaterialDialog.Builder ba = new MaterialDialog.Builder(m.getActivity());
+        ba.title(getString(m.getActivity(), R.string.history));
         DialogAdapter adapter = new DialogAdapter(m,m.getActivity(), R.layout.bookmarkrow, toFileArray(paths),ba);
         ListView listView = new ListView(m.getActivity());
-        float scale = m.getResources().getDisplayMetrics().density;
-        int dpAsPixels = (int) (8 * scale + 0.5f);
-        listView.setPadding(0, dpAsPixels, 0, dpAsPixels);
         listView.setDividerHeight(0);
         listView.setAdapter(adapter);
-        ba.setContentView(listView);
-        ba.setCanceledOnTouchOutside(true);
-        ba.setNegativeButton(getString(m.getActivity(), R.string.cancel), new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ba.dismiss();
-            }
-        });
-        ba.show();
+        if(m.theme1==1)ba.theme(Theme.DARK);
+        ba.customView(listView);
+        ba.negativeText(R.string.cancel);
+        ba.build().show();
 
     }
     public void showHiddenDialog(final Main m) {
-
-            final ArrayList<String> paths = m.hidden.readTable();
+          final ArrayList<String> paths = m.hidden.readTable();
             final ArrayList<File> fu=toFileArray(paths);
-            final MaterialDialog a = new MaterialDialog(m.getActivity());
-            a.setTitle(getString(m.getActivity(), R.string.hiddenfiles));
-        HiddenAdapter adapter = new HiddenAdapter(
-                    m.getActivity(),m, android.R.layout.select_dialog_item, fu,m.hidden,a);
-        ListView listView = new ListView(m.getActivity());
-        float scale = m.getResources().getDisplayMetrics().density;
-        int dpAsPixels = (int) (8 * scale + 0.5f);
-        listView.setPadding(0, dpAsPixels, 0, dpAsPixels);
-        listView.setDividerHeight(0);
-        listView.setAdapter(adapter);
-            a.setContentView(listView);
-            a.setNegativeButton(getString(m.getActivity(), R.string.cancel), new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                  a.dismiss();
-                }
-            });
-        a.setCanceledOnTouchOutside(true);
-            a.show();
+            final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
+            a.title(getString(m.getActivity(), R.string.hiddenfiles));
+            HiddenAdapter adapter = new HiddenAdapter(
+            m.getActivity(),m, android.R.layout.select_dialog_item, fu,m.hidden,a);
+            ListView listView = new ListView(m.getActivity());
+            listView.setAdapter(adapter);
+            a.customView(listView);
+            a.negativeText(R.string.cancel);
+            a.build().show();
 
     }
     public void showBookmarkDialog(final Main m, Shortcuts sh) {
         try {
             final ArrayList<File> fu = sh.readS();
 
-            final MaterialDialog ba = new MaterialDialog(m.getActivity());
-            ba.setTitle(getString(m.getActivity(), R.string.books));
+            final MaterialDialog.Builder ba = new MaterialDialog.Builder(m.getActivity());
+            ba.title(getString(m.getActivity(), R.string.books));
 
             DialogAdapter adapter = new DialogAdapter(m,
                     m.getActivity(), android.R.layout.select_dialog_item, fu,ba);
             ListView listView = new ListView(m.getActivity());
-            float scale = m.getResources().getDisplayMetrics().density;
-            int dpAsPixels = (int) (8 * scale + 0.5f);
-            listView.setPadding(0, dpAsPixels, 0, dpAsPixels);
             listView.setDividerHeight(0);
             listView.setAdapter(adapter);
-            ba.setContentView(listView);
-            ba.setCanceledOnTouchOutside(true);
-            ba.setNegativeButton(getString(m.getActivity(), R.string.cancel), new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ba.dismiss();
-                }
-            });
-            ba.show();
+            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            listView.setLayoutParams(params);
+            if(m.theme1==1)ba.theme(Theme.DARK);
+            ba.customView(listView);
+            ba.negativeText(R.string.cancel);
+            ba.build().show();
         } catch (IOException e) {
         } catch (ParserConfigurationException e) {
         } catch (SAXException e) {
@@ -651,7 +577,7 @@ public class Futils {
     public void setPermissionsDialog(final Layoutelements f, final Main main){
         if(main.rootMode){
             final File file=new File(f.getDesc());
-            final MaterialDialog a=new MaterialDialog(main.getActivity());
+            final MaterialDialog.Builder a=new MaterialDialog.Builder(main.getActivity());
             View v=main.getActivity().getLayoutInflater().inflate(R.layout.permissiontable,null);
             final CheckBox readown=(CheckBox) v.findViewById(R.id.creadown);
             final CheckBox readgroup=(CheckBox) v.findViewById(R.id.creadgroup);
@@ -680,10 +606,10 @@ public class Futils {
             exeown.setChecked(exe[0]);
             exegroup.setChecked(exe[1]);
             exeother.setChecked(exe[2]);
-
-            a.setPositiveButton(main.getResources().getString(R.string.set),new View.OnClickListener() {
+            a.positiveText(R.string.set);
+            a.callback(new MaterialDialog.Callback() {
                 @Override
-                public void onClick(View j) {
+                public void onPositive(MaterialDialog materialDialog) {
                     int a=0,b=0,c=0;
                     if(readown.isChecked())a=4;
                     if(writeown.isChecked())b=2;
@@ -728,12 +654,18 @@ public class Futils {
                         Toast.makeText(main.getActivity(),main.getResources().getString(R.string.error),Toast.LENGTH_LONG).show();
                         e1.printStackTrace();
                     }
+
+                }
+
+                @Override
+                public void onNegative(MaterialDialog materialDialog) {
+
                 }
             });
-            a.setTitle(file.getName());
-            a.setContentView(v);
-            a.setCanceledOnTouchOutside(true);
-            a.show();}else{Toast.makeText(main.getActivity(),main.getResources().getString(R.string.enablerootmde),Toast.LENGTH_LONG).show();}
+            a.title(file.getName());
+            a.customView(v);
+            if(main.theme1==1)a.theme(Theme.DARK);
+            a.build().show();}else{Toast.makeText(main.getActivity(),main.getResources().getString(R.string.enablerootmde),Toast.LENGTH_LONG).show();}
     }String per=null;
     public String getFilePermissionsSymlinks(String file,final Context c,boolean root)
     {per=null;

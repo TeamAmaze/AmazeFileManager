@@ -70,8 +70,21 @@ File f1;if(!file1.hasSymlink()){
             if (f1.isFile() && f2.isFile()) {
                 return asc * Long.valueOf(f1.length()).compareTo(Long.valueOf(f2.length()));
             } else {
-                return 1 * f1.getName().compareToIgnoreCase(f2.getName());
+                return f1.getName().compareToIgnoreCase(f2.getName());
             }
+        }
+        else if(sort ==3){
+if(f1.isFile() && f2.isFile()){
+            final String ext_a = getExtension(f1.getName());
+            final String ext_b = getExtension(f2.getName());
+
+
+            final int res = asc*ext_a.compareTo(ext_b);
+            if (res == 0) {
+                return asc * f1.getName().compareToIgnoreCase(f2.getName());
+            }
+            return res;}
+            else{return  f1.getName().compareToIgnoreCase(f2.getName());}
         }
 
 
@@ -79,5 +92,8 @@ File f1;if(!file1.hasSymlink()){
 
     }
 
+    public static String getExtension(String a) {
+        return a.substring(a.lastIndexOf(".") + 1).toLowerCase();
+    }
 
 }
