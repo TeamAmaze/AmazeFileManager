@@ -29,9 +29,11 @@ import java.io.File;
 
 public class Layoutelements implements Parcelable {
     public Layoutelements(Parcel im) {
-        Bitmap bitmap = (Bitmap) im.readParcelable(getClass().getClassLoader());
-        // Convert Bitmap to Drawable:
-        imageId = new BitmapDrawable(bitmap);
+        try {
+            Bitmap bitmap = (Bitmap) im.readParcelable(getClass().getClassLoader());
+            // Convert Bitmap to Drawable:
+            imageId = new BitmapDrawable(bitmap);
+
         title = im.readString();
         desc = im.readString();
         permissions=im.readString();
@@ -40,18 +42,11 @@ public class Layoutelements implements Parcelable {
         if(i==0){header=false;}
         else{header=true;}
         date=im.readLong();
-    }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }}
 
-    public static final Parcelable.Creator<Layoutelements> CREATOR =
-            new Parcelable.Creator<Layoutelements>() {
-                public Layoutelements createFromParcel(Parcel in) {
-                    return new Layoutelements(in);
-                }
 
-                public Layoutelements[] newArray(int size) {
-                    return new Layoutelements[size];
-                }
-            };
 
     public int describeContents() {
         // TODO: Implement this method

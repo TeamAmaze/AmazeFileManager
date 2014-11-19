@@ -67,6 +67,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.MyAdapter;
@@ -93,8 +95,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-
-import me.drakeet.materialdialog.MaterialDialog;
 
 
 public class Main extends android.support.v4.app.Fragment {
@@ -401,22 +401,18 @@ if(listView!=null){
 
                     case 0:
                         final String path = ma.current;
-                        final MaterialDialog ba1 = new MaterialDialog(getActivity());
-                        ba1.setTitle(R.string.newfolder);
+                        final MaterialDialog.Builder ba1 = new MaterialDialog.Builder(getActivity());
+                        ba1.title(R.string.newfolder);
                         View v = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
                         final EditText edir = (EditText) v.findViewById(R.id.newname);
                         edir.setHint(utils.getString(getActivity(), R.string.entername));
-                        ba1.setContentView(v);
-                        ba1.setNegativeButton(utils.getString(getActivity(), R.string.cancel), new View.OnClickListener() {
+                        ba1.customView(v);
+                        if(theme1==1)ba1.theme(Theme.DARK);
+                        ba1.positiveText(R.string.create);
+                        ba1.negativeText(R.string.cancel);
+                        ba1.callback(new MaterialDialog.Callback() {
                             @Override
-                            public void onClick(View view) {
-                                ba1.dismiss();
-                            }
-                        });
-                        ba1.setPositiveButton(utils.getString(getActivity(), R.string.create), new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View view) {
+                            public void onPositive(MaterialDialog materialDialog) {
                                 String a = edir.getText().toString();
                                 File f = new File(path + "/" + a);
                                 if (!f.exists()) {
@@ -427,26 +423,28 @@ if(listView!=null){
                                     Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Toast.LENGTH_LONG).show();
                                 }
                             }
+
+                            @Override
+                            public void onNegative(MaterialDialog materialDialog) {
+
+                            }
                         });
-                        ba1.show();
+                        ba1.build().show();
                         break;
                     case 1:
                         final String path1 = ma.current;
-                        final MaterialDialog ba2 = new MaterialDialog(getActivity());
-                        ba2.setTitle((R.string.newfile));
+                        final MaterialDialog.Builder ba2 = new MaterialDialog.Builder(getActivity());
+                        ba2.title((R.string.newfile));
                         View v1 = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
                         final EditText edir1 = (EditText) v1.findViewById(R.id.newname);
                         edir1.setHint(utils.getString(getActivity(), R.string.entername));
-                        ba2.setContentView(v1);
-                        ba2.setNegativeButton( R.string.cancel, new View.OnClickListener() {
-
-                            public void onClick(View v) {
-                              ba2.dismiss();
-                            }
-                        });
-                        ba2.setPositiveButton(R.string.create, new View.OnClickListener() {
-
-                            public void onClick(View p2) {
+                        ba2.customView(v1);
+                        if(theme1==1)ba2.theme(Theme.DARK);
+                        ba2.negativeText(R.string.cancel);
+                        ba2.positiveText(R.string.create);
+                        ba2.callback(new MaterialDialog.Callback() {
+                            @Override
+                            public void onPositive(MaterialDialog materialDialog) {
                                 String a = edir1.getText().toString();
                                 File f1 = new File(path1 + "/" + a);
                                 if (!f1.exists()) {
@@ -461,8 +459,13 @@ if(listView!=null){
                                     Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Toast.LENGTH_LONG).show();
                                 }
                             }
+
+                            @Override
+                            public void onNegative(MaterialDialog materialDialog) {
+
+                            }
                         });
-                        ba2.show();
+                        ba2.build().show();
                         break;
                     case 2:
                         int older = tabHandler.getTabsCount();
@@ -495,22 +498,18 @@ if(listView!=null){
         final String fpath = ma.current;
 
         //Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.searchpath) + fpath, Toast.LENGTH_LONG).show();
-        final MaterialDialog a = new MaterialDialog(getActivity());
-        a.setTitle(R.string.search);
+        final MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+        a.title(R.string.search);
         View v = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
         final EditText e = (EditText) v.findViewById(R.id.newname);
         e.setHint(utils.getString(getActivity(), R.string.enterfile));
-        a.setContentView(v);
-        a.setNegativeButton( R.string.cancel, new View.OnClickListener() {
+        a.customView(v);
+        if(theme1==1)a.theme(Theme.DARK);
+        a.negativeText(R.string.cancel);
+        a.positiveText(R.string.search);
+        a.callback(new MaterialDialog.Callback() {
             @Override
-            public void onClick(View which) {
-            a.dismiss();}
-        });
-        a.setPositiveButton(R.string.search, new View.OnClickListener() {
-
-            @Override
-            public void onClick(View which) {
-                // TODO Auto-generated method stub
+            public void onPositive(MaterialDialog materialDialog) {
                 String a = e.getText().toString();
                 Bundle b = new Bundle();
                 b.putString("FILENAME", a);
@@ -518,8 +517,13 @@ if(listView!=null){
                 new SearchTask((MainActivity) getActivity(), ma).execute(b);
 
             }
+
+            @Override
+            public void onNegative(MaterialDialog materialDialog) {
+
+            }
         });
-        a.show();
+        a.build().show();
     }
 
 

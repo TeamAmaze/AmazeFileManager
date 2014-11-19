@@ -37,6 +37,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.BooksAdapter;
 import com.amaze.filemanager.utils.Futils;
@@ -48,10 +50,10 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import me.drakeet.materialdialog.MaterialDialog;
 
 public class BookmarksManager extends ListFragment {
     Futils utils = new Futils();
@@ -60,12 +62,22 @@ public class BookmarksManager extends ListFragment {
     SharedPreferences Sp;
     public IconUtils icons;
     ArrayList<File> bx;
-ListView vl;
+ListView vl;int theme,theme1;
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
         setRetainInstance(false);
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        theme=Integer.parseInt(Sp.getString("theme","0"));
+        theme1 = theme;
+        if (theme == 2) {
+            if(hour<=6 || hour>=18) {
+                theme1 = 1;
+            } else
+                theme1 = 0;
+        }
         getListView().setDivider(null);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
@@ -77,21 +89,18 @@ ListView vl;
             @Override
             public void onClick(View view) {
 
-                final MaterialDialog ba1 = new MaterialDialog(getActivity());
-                ba1.setTitle(utils.getString(getActivity(), R.string.addbook));
+                final MaterialDialog.Builder ba1 = new MaterialDialog.Builder(getActivity());
+                ba1.title(utils.getString(getActivity(), R.string.addbook));
                 View v = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
                 final EditText edir = (EditText) v.findViewById(R.id.newname);
                 edir.setHint(utils.getString(getActivity(), R.string.enterpath));
-                ba1.setContentView(v);
-                ba1.setNegativeButton(utils.getString(getActivity(), R.string.cancel), new View.OnClickListener() {
-
-                    public void onClick(View p2) {
-                  ba1.dismiss();      // TODO: Implement this method
-                    }
-                });
-                ba1.setPositiveButton(utils.getString(getActivity(), R.string.create), new View.OnClickListener() {
-
-                    public void onClick(View p2) {
+                ba1.customView(v);
+                if(theme1==1)ba1.theme(Theme.DARK);
+                ba1.negativeText(R.string.cancel);
+                ba1.positiveText(R.string.create);
+                ba1.callback(new MaterialDialog.Callback() {
+                    @Override
+                    public void onPositive(MaterialDialog materialDialog) {
                         try {
                             File a = new File(edir.getText().toString());
                             if (a.exists()) {
@@ -106,10 +115,14 @@ ListView vl;
                             // TODO Auto-generated catch block
                             Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.error), Toast.LENGTH_LONG).show();
                         }
-                        // TODO: Implement this method
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog materialDialog) {
+
                     }
                 });
-                ba1.show();
+                ba1.build().show();
 
             }
         });
