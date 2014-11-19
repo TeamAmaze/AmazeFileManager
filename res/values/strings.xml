@@ -237,5 +237,6 @@
     <string name="license">Open Source Licenses</string>
     <string name="feedback">Send Feedback</string>
     <string name="hiddenfiles">Hidden Files</string>
+    <string name="type">Type</string>
 </resources>
 

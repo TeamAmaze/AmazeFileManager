@@ -84,8 +84,8 @@
   <string name="about">关于</string>
   <string name="extract">解压</string>
   <string name="compress">打包</string>
-  <string name="yes">@android.R.string.yes</string>
-  <string name="no">@android.R.string.no</string>
+  <string name="yes">@android:string/yes</string>
+  <string name="no">@android:string/no</string>
   <string name="confirm">现在轮到你来做出选择</string>
   <string name="deleting">删除中</string>
   <string name="questiondelete">主人你真的忍心删掉我们么么哒</string>
@@ -211,7 +211,7 @@
   <string name="authors">作者</string>
   <string name="changelog">更新记录</string>
   <string name="fullChangelog">完整的更新记录</string>
-  <string name="ok">@android.R.string.ok</string>
+  <string name="ok">@android:string/ok</string>
   <string name="chooseUI">选择界面</string>
   <string name="ui">界面</string>
   <string name="general">通用</string>

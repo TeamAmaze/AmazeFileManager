@@ -1123,9 +1123,12 @@ if(listView!=null){
         if (t <= 2) {
             sortby = t;
             asc = 1;
-        } else if (t >= 3) {
+        } else if (t >= 3 && t<6) {
             asc = -1;
             sortby = t - 3;
+        }else if(t==6){
+            sortby=3;
+            asc=1;
         }
         dsort = Integer.parseInt(Sp.getString("dirontop", "0"));
 
@@ -1261,7 +1264,7 @@ if(history!=null)
                         break;
                     case R.id.view:
                         // Save the changes, but don't show a disruptive Toast:
-                        sharedPreferences.edit().putBoolean("view", aBoolean).commit();
+                        sharedPreferences.edit().putBoolean("view", !aBoolean).commit();
                         restartPC(getActivity());
                         break;
                 }
