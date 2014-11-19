@@ -1120,15 +1120,12 @@ if(listView!=null){
 
     public void getSortModes() {
         int t = Integer.parseInt(Sp.getString("sortby", "0"));
-        if (t <= 2) {
+        if (t <= 3) {
             sortby = t;
             asc = 1;
-        } else if (t >= 3 && t<6) {
+        } else if (t > 3) {
             asc = -1;
-            sortby = t - 3;
-        }else if(t==6){
-            sortby=3;
-            asc=1;
+            sortby = t - 4;
         }
         dsort = Integer.parseInt(Sp.getString("dirontop", "0"));
 

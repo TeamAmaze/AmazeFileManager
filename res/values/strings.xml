@@ -238,5 +238,6 @@
     <string name="feedback">Send Feedback</string>
     <string name="hiddenfiles">Hidden Files</string>
     <string name="type">Type</string>
+    <string name="typeDesc">Type (Desc)</string>
 </resources>
 
