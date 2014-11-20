@@ -64,10 +64,10 @@
     <string name="location">Расположен в:</string>
     <string name="size">Размер:</string>
     <string name="totalitems">Всего элементов:</string>
-    <string name="enterzipname">Введите имя архива</string>
+    <string name="enterzipname">Введите имя zip архива</string>
     <string name="noappfound">Нет приложений для открытия этого файла</string>
     <string name="copying">Копирование...</string>
-    <string name="moving">Перемещени...е</string>
+    <string name="moving">Перемещение</string>
     <string name="add">Добавить</string>
     <string name="tab">Вкладка</string>
     <string name="file">Файл</string>
@@ -139,25 +139,25 @@
     <string name="simple">Simple UI</string>
     <string name="card">Card UI</string>
     <!-- Theme -->
-    <string name="light">Свет</string>
+    <string name="light">Светлый</string>
     <string name="dark">Темный</string>
     <string name="daytime">Дневное время</string>
     <!--Skin-->
     <string name="red">Красный</string>
     <string name="pink">Розовый</string>
     <string name="purple">Фиолетовый</string>
-    <string name="deep_purple">Deep Purple</string>
+    <string name="deep_purple">Багровый</string>
     <string name="indigo">Индиго</string>
     <string name="blue">Синий</string>
     <string name="light_blue">Светло-голубой</string>
     <string name="cyan">Голубой</string>
     <string name="teal">Чирок</string>
-    <string name="green">Грин</string>
+    <string name="green">Зеленый</string>
     <string name="light_green">Светло-зеленый</string>
     <string name="amber">Янтарь</string>
     <string name="orange">Оранжевый</string>
     <string name="deep_orange">Глубокий оранжевый</string>
-    <string name="brown">Браун</string>
+    <string name="brown">Коричневый</string>
     <string name="black">Черный</string>
     <string name="blue_grey">Синий серый</string>
     <!--DirectorySortMode-->
@@ -170,7 +170,7 @@
     <string name="sortSize">Размер</string>
     <string name="sortNameDesc">Имя (по убыванию)</string>
     <string name="lastModifiedDesc">Дата последнего изменения (Desc)</string>
-    <string name="sortSizeDesc">Размер (Desc)</string>
+    <string name="sortSizeDesc">Размер (по убыванию)</string>
     <!--ListMode-->
     <string name="detailedView">Подробный вид</string>
     <string name="simpleView">Простой вид</string>
@@ -181,7 +181,7 @@
     <string name="in_safe">Недостаточно свободного места</string>
     <string name="no_file_overwrite">Не перезаписывать файл</string>
     <string name="skip">Пропуск</string>
-    <string name="overwrite">Перезапись</string>
+    <string name="overwrite">Перезаписать</string>
     <string name="cant_read_file">Не удается прочитать файл</string>
     <string name="not_allowed">Не допускается</string>
     <string name="processes">Процессы</string>
@@ -231,5 +231,12 @@
     <string name="license">Open Source Licenses</string>
     <string name="feedback">Отправить отзыв</string>
     <string name="hiddenfiles">Скрытые файлы</string>
+    <string name="doforall">Выполнить для всех элементов</string>
+    <string name="gridcolumnno">Кол-во колонок в сетке</string>
+    <string name="hide">Скрыть</string>
+    <string name="permission">Права</string>
+    <string name="type">Тип</string>
+    <string name="typeDesc">Тип (по убыванию)</string>
+    <string name="exit">Выйти</string>
 
 </resources>
