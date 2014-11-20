@@ -25,7 +25,9 @@ import android.content.pm.*;
 import android.content.res.Resources;
 import android.graphics.*;
 import android.graphics.drawable.*;
+import android.media.ThumbnailUtils;
 import android.os.*;
+import android.provider.MediaStore;
 import android.widget.*;
 import com.amaze.filemanager.*;
 import java.io.*;
@@ -191,12 +193,22 @@ public class IconHolder {
                 return getAppDrawable(fso);
             }else if(Icons.isPicture(filePath)){
 			return	loadImage(fso.getPath());
-			}
+			}else if(Icons.isVideo(filePath))
+                return getVideoDrawable(fso);
 
             return null;
         }
-
-        /**
+    private Bitmap getVideoDrawable(File fso) {
+        String path = fso.getPath();
+        try {
+            Bitmap thumb = ThumbnailUtils.createVideoThumbnail(path,
+                    MediaStore.Images.Thumbnails.MINI_KIND);
+            return thumb;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }/**
          * Method that returns the main icon of the app
          *
          * @param fso The FileSystemObject

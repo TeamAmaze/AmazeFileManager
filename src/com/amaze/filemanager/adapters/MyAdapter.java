@@ -215,15 +215,26 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 holder.viewmageV.setImageDrawable(main.darkimage);
                 main.ic.cancelLoad(holder.viewmageV);
                 main.ic.loadDrawable(holder.viewmageV, new File(rowItem.getDesc()), null);
-            } }else if (Icons.isApk((rowItem.getDesc()))) {
+            }}else if (Icons.isApk((rowItem.getDesc()))) {
                 if(main.showThumbs){
                 holder.imageView.setVisibility(View.GONE);
-                    holder.apk.setVisibility(View.VISIBLE);
-                    holder.apk.setImageDrawable(main.apk);
+                holder.apk.setVisibility(View.VISIBLE);
+                holder.apk.setImageDrawable(main.apk);
                 main.ic.cancelLoad(holder.apk);
                 main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);}
-            }else{holder.viewmageV.setVisibility(View.GONE);
+
+            }else if(Icons.isVideo(rowItem.getDesc())){
+                if(main.showThumbs){holder.imageView.setVisibility(View.GONE);
+                    holder.viewmageV.setVisibility(View.VISIBLE);
+                    holder.viewmageV.setImageDrawable(main.darkvideo);
+                    main.ic.cancelLoad(holder.viewmageV);
+                    main.ic.loadDrawable(holder.viewmageV, new File(rowItem.getDesc()), null);
+                }
+                System.out.println("Video: "+rowItem.getDesc());
+            }
+            else{holder.viewmageV.setVisibility(View.GONE);
             holder.apk.setVisibility(View.GONE);}
+
             Boolean checked = myChecked.get(position);
             if (checked != null) {
 
@@ -300,17 +311,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.txtTitle.setText(rowItem.getTitle());
             holder.imageView1.setVisibility(View.INVISIBLE);
             holder.imageView.setVisibility(View.VISIBLE);
-            if(main.coloriseIcons){
-                if(new File(rowItem.getDesc()).isDirectory())holder.imageView.setColorFilter(Color.parseColor("#9e9e9e"));
-                else if(Icons.isVideo(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#f06292"));
-                else if(Icons.isAudio(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#9575cd"));
-                else if(Icons.isPdf(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#da4336"));
-                else if(Icons.isCode(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#00bfa5"));
-                else if(Icons.isText(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#e06055"));
-                else if(Icons.isArchive(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#f9a825"));
-                else if(Icons.isgeneric(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#9e9e9e"));
-                else holder.imageView.setColorFilter(Color.parseColor(main.skin));
-            }else holder.imageView.setColorFilter(Color.parseColor(main.skin));
             holder.imageView.setImageDrawable(rowItem.getImageId());
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
                 holder.imageView.setColorFilter(null);
@@ -320,12 +320,33 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 main.ic.cancelLoad(holder.imageView1);
                 main.ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
             }
-            if (Icons.isApk((rowItem.getDesc()))) {
+            else if (Icons.isApk((rowItem.getDesc()))) {
                 if(checked!=null && !checked)
                 holder.imageView.setColorFilter(null);
                 main.ic.cancelLoad(holder.imageView);
                 main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),null);
+            } if(Icons.isVideo(rowItem.getDesc())){
+                System.out.println("Video: "+rowItem.getDesc());
+                holder.imageView.setColorFilter(null);
+                holder.imageView1.setVisibility(View.VISIBLE);
+                holder.imageView1.setImageDrawable(null);
+                if(main.theme==1)holder.imageView1.setBackgroundColor(Color.parseColor("#000000"));
+                main.ic.cancelLoad(holder.imageView1);
+                main.ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
+
             }
+            if(main.coloriseIcons){
+                if(new File(rowItem.getDesc()).isDirectory())holder.imageView.setColorFilter(Color.parseColor("#9e9e9e"));
+                else if(Icons.isVideo(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#f06292"));
+                else if(Icons.isAudio(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#9575cd"));
+                else if(Icons.isPdf(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#da4336"));
+                else if(Icons.isCode(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#00bfa5"));
+                else if(Icons.isText(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#e06055"));
+                else if(Icons.isArchive(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#f9a825"));
+                else if(Icons.isgeneric(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#9e9e9e"));
+                else if(Icons.isApk(rowItem.getDesc()) || Icons.isPicture(rowItem.getDesc()))holder.imageView.setColorFilter(null);
+                else holder.imageView.setColorFilter(Color.parseColor(main.skin));
+            }else holder.imageView.setColorFilter(Color.parseColor(main.skin));
             if (checked != null) {
 
                 if (checked) {holder.imageView1.setVisibility(View.GONE);

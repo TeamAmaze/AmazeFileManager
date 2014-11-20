@@ -106,7 +106,7 @@ public class Main extends android.support.v4.app.Fragment {
     public boolean results = false;
     public ActionMode mActionMode;
     public SharedPreferences Sp;
-    public Drawable folder,apk,darkimage;
+    public Drawable folder,apk,darkimage,darkvideo;
     Resources res;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
@@ -279,6 +279,7 @@ public class Main extends android.support.v4.app.Fragment {
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
         getSortModes();
         darkimage=res.getDrawable(R.drawable.ic_doc_image_dark);
+        darkvideo=res.getDrawable(R.drawable.ic_doc_video_dark);
         home = Sp.getString("home", mainActivity.val[mainActivity.select]);
         this.setRetainInstance(false);
         int pos = Sp.getInt("spinner_selected", 0);

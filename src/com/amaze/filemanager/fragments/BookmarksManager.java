@@ -69,6 +69,7 @@ ListView vl;int theme,theme1;
         setHasOptionsMenu(false);
         setRetainInstance(false);
         Calendar calendar = Calendar.getInstance();
+        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         theme=Integer.parseInt(Sp.getString("theme","0"));
         theme1 = theme;
@@ -129,7 +130,6 @@ ListView vl;int theme,theme1;
 
         ((LinearLayout) getActivity().findViewById(R.id.buttons))
                 .setVisibility(View.GONE);
-        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         icons = new IconUtils(Sp, getActivity());
          vl = getListView();
         vl.setFastScrollEnabled(true);
