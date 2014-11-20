@@ -70,8 +70,10 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         View row = inflater.inflate(R.layout.spinner_layout, parent, false);
 
         TextView textView = (TextView) row.findViewById(R.id.spinnerText);
-        textView.setText(items.get(position));
-        LinearLayout linearLayout = (LinearLayout) row.findViewById(R.id.textParent);
+        if(items.get(position).equals("/"))
+            textView.setText(R.string.rootdirectory);
+        else
+            textView.setText(new File(items.get(position)).getName());
 
         return row;
     }
@@ -86,11 +88,13 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         final TextView textView = (TextView) row.findViewById(R.id.spinnerText);
         LinearLayout linearLayout = (LinearLayout) row.findViewById(R.id.textParent);
         final SharedPreferences sharedPreferences1 = PreferenceManager.getDefaultSharedPreferences(context);
-        String skin = sharedPreferences1.getString("skin_color", "#673ab7");
+        String skin = sharedPreferences1.getString("skin_color", "#5677fc");
         final int spinner_current = sharedPreferences1.getInt("spinner_selected", 0);
         ImageButton imageButton = (ImageButton) row.findViewById(R.id.spinnerButton);
-
-        textView.setText(items.get(position));
+        if(items.get(position).equals("/"))
+            textView.setText(R.string.rootdirectory);
+        else
+        textView.setText(new File(items.get(position)).getName());
         imageButton.setBackgroundColor(Color.parseColor(skin));
 
         if (position == spinner_current) {

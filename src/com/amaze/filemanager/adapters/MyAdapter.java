@@ -230,8 +230,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     main.ic.cancelLoad(holder.viewmageV);
                     main.ic.loadDrawable(holder.viewmageV, new File(rowItem.getDesc()), null);
                 }
-                System.out.println("Video: "+rowItem.getDesc());
-            }
+             }
             else{holder.viewmageV.setVisibility(View.GONE);
             holder.apk.setVisibility(View.GONE);}
 
@@ -326,7 +325,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 main.ic.cancelLoad(holder.imageView);
                 main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),null);
             } if(Icons.isVideo(rowItem.getDesc())){
-                System.out.println("Video: "+rowItem.getDesc());
                 holder.imageView.setColorFilter(null);
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);

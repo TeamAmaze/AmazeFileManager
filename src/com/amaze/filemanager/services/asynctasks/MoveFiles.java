@@ -20,6 +20,7 @@
 package com.amaze.filemanager.services.asynctasks;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -34,8 +35,10 @@ public class MoveFiles extends AsyncTask<String,Void,Boolean> {
     ArrayList<File> files;
     Main ma;
     String path;
-    public MoveFiles(ArrayList<File> files,Main ma){
+    Context context;
+    public MoveFiles(ArrayList<File> files,Main ma,Context context){
         this.ma=ma;
+        this.context=context;
         this.files=files;
     }
 
@@ -51,10 +54,11 @@ public class MoveFiles extends AsyncTask<String,Void,Boolean> {
     }
     @Override
     public void onPostExecute(Boolean b){
-        if(b && ma.current.equals(path)){ma.updateList();}
-        if(!b){Intent intent = new Intent(ma.getActivity(), CopyService.class);
+        if(b && ma!=null){if(ma.current.equals(path))ma.updateList();}
+        if(!b){
+            Intent intent = new Intent(context, CopyService.class);
             intent.putExtra("FILE_PATHS", files);
             intent.putExtra("COPY_DIRECTORY", path);
-            ma.getActivity().startService(intent);}
+            context.startService(intent);}
     }
 }

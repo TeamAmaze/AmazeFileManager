@@ -209,7 +209,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         tabHandler = new TabHandler(this, "", null, 1);
         if (Sp.getBoolean("firstrun", true)) {
             try {
-                s.makeS();
+                s.makeS(this);
             } catch (Exception e) {
             }
 
@@ -727,7 +727,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                         startService(intent);
                     } else{
 
-                        new MoveFiles(utils.toFileArray(ab), ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                        new MoveFiles(utils.toFileArray(ab), ma,ma.getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     }
                 } else {
 

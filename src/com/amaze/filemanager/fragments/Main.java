@@ -612,59 +612,6 @@ public class Main extends android.support.v4.app.Fragment {
 
         // Spinner
 
-        final int spinner_current = Sp.getInt("spinner_selected", 0);
-        tabHandler.updateTab(new Tab(spinner_current, f.getName(), f.getPath()));
-        content = tabHandler.getAllTabs();
-        list1 = new ArrayList<String>();
-
-        for (Tab tab : content) {
-            //adapter1.add(tab.getLabel());
-            list1.add(tab.getLabel());
-        }
-
-        tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, getActivity().getSupportFragmentManager(), mainActivity.tabsSpinner);
-
-        mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
-        mainActivity.tabsSpinner.setSelection(spinner_current);
-
-        mainActivity.tabsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                if (i == spinner_current) {
-                    /*Animation animation = AnimationUtils.loadAnimation(getActivity(), R.animator.tab_anim);
-                    mainActivity.frameLayout.startAnimation(animation);*/
-                }
-                else {
-
-                    TabHandler tabHandler1 = new TabHandler(getActivity(), null, null, 1);
-                    Tab tab = tabHandler1.findTab(i);
-                    String name  = tab.getPath();
-                    //Toast.makeText(getActivity(), name, Toast.LENGTH_SHORT).show();
-                    Sp.edit().putString("current", name).apply();
-                    Sp.edit().putInt("spinner_selected", i).apply();
-
-                    loadlist(new File(tab.getPath()),false);
-
-                    Animation animationLeft = AnimationUtils.loadAnimation(getActivity(), R.anim.tab_selection_left);
-                    Animation animationRight = AnimationUtils.loadAnimation(getActivity(), R.anim.tab_selection_right);
-
-                    if (i < spinner_current) {
-                        ma.listView.setAnimation(animationLeft);
-                        ma.gridView.setAnimation(animationLeft);
-                    } else {
-                        ma.listView.setAnimation(animationRight);
-                        ma.gridView.setAnimation(animationRight);
-                    }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
     }
 
     @SuppressWarnings("unchecked")
@@ -699,6 +646,21 @@ public class Main extends android.support.v4.app.Fragment {
                     gridView.setAdapter(adapter);
                 }
 
+                final int spinner_current = Sp.getInt("spinner_selected", 0);
+                tabHandler.updateTab(new Tab(spinner_current, f.getName(), f.getPath()));
+                content = tabHandler.getAllTabs();
+                list1 = new ArrayList<String>();
+
+                for (Tab tab : content) {
+                    //adapter1.add(tab.getLabel());
+                    list1.add(tab.getPath());
+                }
+
+                tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, getActivity().getSupportFragmentManager(), mainActivity.tabsSpinner);
+
+                mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
+                mainActivity.tabsSpinner.setSelection(spinner_current);
+
                 results = false;
                 current = f.getPath();
                 if (back) {
@@ -712,7 +674,7 @@ public class Main extends android.support.v4.app.Fragment {
                 floatingActionsMenu.collapse();} catch (Exception e) {
             }
         }
-        else{Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
+        else{//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
             loadlist(new File(current),true);
         }} catch (Exception e) {
         }

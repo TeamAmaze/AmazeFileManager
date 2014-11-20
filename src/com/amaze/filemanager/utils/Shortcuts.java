@@ -20,6 +20,7 @@
 package com.amaze.filemanager.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Environment;
 import android.widget.Toast;
 
@@ -48,10 +49,10 @@ public class Shortcuts {
     public Shortcuts() {
     }
 
-    public void makeS() throws ParserConfigurationException, TransformerException {
+    public void makeS(Context context) throws ParserConfigurationException, TransformerException {
         String sd = Environment.getExternalStorageDirectory() + "/";
         String[] a = new String[]{sd + Environment.DIRECTORY_DCIM, sd + Environment.DIRECTORY_DOWNLOADS, sd + Environment.DIRECTORY_MOVIES, sd + Environment.DIRECTORY_MUSIC, sd + Environment.DIRECTORY_PICTURES};
-        File g = new File("/data/data/com.amaze.filemanager/shortcut.xml");
+        File g = new File(context.getFilesDir()+"/shortcut.xml");
         if (!g.exists()) {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();

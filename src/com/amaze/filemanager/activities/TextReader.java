@@ -38,6 +38,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.Futils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -48,6 +49,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class TextReader extends Activity {
     EditText ma;
@@ -146,10 +148,11 @@ public class TextReader extends Activity {
 
     public void writeTextFile(String fileName, String s) {
         File f = new File(fileName);
-
+        File f1=f;
+        if(!f1.canWrite()){f=new File(this.getFilesDir()+"/"+f.getName());}
         FileWriter output = null;
         try {
-            output = new FileWriter(fileName);
+            output = new FileWriter(f.getPath());
             BufferedWriter writer = new BufferedWriter(output);
             writer.write(s);
             writer.close();
@@ -164,8 +167,10 @@ public class TextReader extends Activity {
                     e.printStackTrace();
                 }
             }
-        }
-
+        }if(!f1.canWrite()){
+        ArrayList<File> a=new ArrayList<File>();
+            a.add(f);
+new MoveFiles(a,null,this).execute(f1.getParent());}
 
     }
 
@@ -180,8 +185,6 @@ public class TextReader extends Activity {
 
         public String doInBackground(String... p) {
             String returnValue = "";
-            if (new File(p[0]).canWrite()) editable = true;
-            else editable = false;
             FileReader file = null;
             String line = "";
             try {
@@ -213,8 +216,7 @@ public class TextReader extends Activity {
         @Override
         public void onPostExecute(String s) {
             p.setVisibility(View.GONE);
-            ma.setFocusable(editable);
-            save = editable;
+
             TextReader.this.invalidateOptionsMenu();
             ma.setVisibility(View.VISIBLE);
             ma.setText(s);
