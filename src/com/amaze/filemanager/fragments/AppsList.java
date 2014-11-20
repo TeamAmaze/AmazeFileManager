@@ -127,10 +127,17 @@ public class AppsList extends ListFragment {
                         ApplicationInfo info = c.get(position);
                         File f = new File(info.publicSourceDir);
                         ArrayList<String> a = new ArrayList<String>();
-                        a.add(info.publicSourceDir);
+                        //a.add(info.publicSourceDir);
                         File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");
                         if(!dst.exists() || !dst.isDirectory())dst.mkdirs();
                         Intent intent = new Intent(getActivity(), CopyService.class);
+                        Toast.makeText(getActivity(), f.getParent(), Toast.LENGTH_LONG).show();
+
+                        if (!f.getParent().equals("/data/app") || !f.getParent().equals("/system/app") || !f.getParent().equals("/system/priv-app")) {
+                            a.add(f.getParent());
+                        } else {
+                            a.add(f.getPath());
+                        }
                         intent.putExtra("FILE_PATHS", a);
                         intent.putExtra("COPY_DIRECTORY", dst.getPath());
                         getActivity().startService(intent);

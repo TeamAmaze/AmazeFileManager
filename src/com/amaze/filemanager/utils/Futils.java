@@ -32,9 +32,9 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -51,7 +51,6 @@ import com.amaze.filemanager.adapters.DialogAdapter;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.DeleteTask;
-import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
@@ -528,12 +527,15 @@ public class Futils {
         final MaterialDialog.Builder ba = new MaterialDialog.Builder(m.getActivity());
         ba.title(getString(m.getActivity(), R.string.history));
         DialogAdapter adapter = new DialogAdapter(m,m.getActivity(), R.layout.bookmarkrow, toFileArray(paths),ba);
-        ListView listView = new ListView(m.getActivity());
-        listView.setDividerHeight(0);
+        LayoutInflater layoutInflater = (LayoutInflater) m.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = layoutInflater.inflate(R.layout.list_dialog, null);
+        ListView listView = (ListView) view.findViewById(R.id.listView);
         listView.setAdapter(adapter);
-        if(m.theme1==1)ba.theme(Theme.DARK);
-        ba.customView(listView);
+        if(m.theme1==1)
+            ba.theme(Theme.DARK);
+        ba.customView(view);
         ba.negativeText(R.string.cancel);
+        ba.autoDismiss(true);
         ba.build().show();
 
     }
