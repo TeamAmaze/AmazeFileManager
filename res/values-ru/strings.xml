@@ -237,5 +237,6 @@
     <string name="permission">Права</string>
     <string name="type">Тип</string>
     <string name="typeDesc">Тип (по убыванию)</string>
+    <string name="exit">Выйти</string>
 
 </resources>
