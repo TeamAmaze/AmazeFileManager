@@ -408,6 +408,10 @@ public class Main extends android.support.v4.app.Fragment {
                 edir.setHint(utils.getString(getActivity(), R.string.entername));
                 ba1.customView(v);
                 if(theme1==1)ba1.theme(Theme.DARK);
+                ba1.positiveColor(Color.parseColor(skin));
+                //ba1.negativeColor(Color.parseColor(skin));
+                //ba1.neutralColor(Color.parseColor(skin));
+                //ba1.titleColor(Color.parseColor(skin));
                 ba1.positiveText(R.string.create);
                 ba1.negativeText(R.string.cancel);
                 ba1.callback(new MaterialDialog.Callback() {
