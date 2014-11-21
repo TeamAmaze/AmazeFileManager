@@ -53,11 +53,11 @@
   <string name="filecreated">文件创建成功</string>
   <string name="searchpath">搜索路径</string>
   <string name="enterfile">请输入文件名</string>
-  <string name="name">名称：</string>
-  <string name="date">修改时间：</string>
-  <string name="location">位置：</string>
-  <string name="size">大小：</string>
-  <string name="totalitems">项目数：</string>
+  <string name="name">名称： </string>
+  <string name="date">修改时间： </string>
+  <string name="location">位置： </string>
+  <string name="size">大小： </string>
+  <string name="totalitems">项目数： </string>
   <string name="enterzipname">请输入打包后的文件名</string>
   <string name="noappfound">找不到与此文件类型相关联的应用，将列举出所有应用选项</string>
   <string name="copying">正在复制</string>

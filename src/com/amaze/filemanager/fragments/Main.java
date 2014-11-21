@@ -54,7 +54,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -86,7 +85,7 @@ import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.Shortcuts;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
@@ -143,12 +142,15 @@ public class Main extends android.support.v4.app.Fragment {
     public ColorMatrixColorFilter colorMatrixColorFilter;
     Animation animation,animation1;
     public String year,goback;
-    FloatingActionsMenu floatingActionsMenu;
     ArrayList<String> hiddenfiles;
+    private FloatingActionButton floatingActionButton;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#5677fc");
+
         aBoolean = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -184,6 +186,35 @@ public class Main extends android.support.v4.app.Fragment {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
+
+        floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        floatingActionButton.attachToListView(listView);
+        floatingActionButton.attachToListView(gridView);
+        floatingActionButton.setColorNormal(Color.parseColor(skin));
+        floatingActionButton.setColorPressed(Color.parseColor(skin));
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+                builder.items(new String[]{
+                        getResources().getString(R.string.folder),
+                        getResources().getString(R.string.file),
+                        getResources().getString(R.string.tab)
+                });
+                builder.itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog materialDialog, View view, int i, String s) {
+                        add(i);
+                    }
+                });
+                builder.title(getResources().getString(R.string.new_string));
+                if(theme1==1)
+                    builder.theme(Theme.DARK);
+                builder.build().show();
+            }
+        });
+
         showThumbs=Sp.getBoolean("showThumbs",true);
         ic=new IconHolder(getActivity(),showThumbs,!aBoolean);
         res = getResources();
@@ -222,8 +253,6 @@ public class Main extends android.support.v4.app.Fragment {
         content = tabHandler.getAllTabs();
         list1 = new ArrayList<String>();
 
-        floatingActionsMenu = (FloatingActionsMenu) getActivity().findViewById(R.id.pink_icon);
-
         ImageButton imageView = ((ImageButton)getActivity().findViewById(R.id.action_overflow));
         showPopup(imageView);
         (getActivity().findViewById(R.id.search)).setOnClickListener(new View.OnClickListener() {
@@ -239,28 +268,10 @@ public class Main extends android.support.v4.app.Fragment {
         tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, getActivity().getSupportFragmentManager(), mainActivity.tabsSpinner);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        getActivity().findViewById(R.id.fab1).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                add(1);
-            }
-        });
-        getActivity().findViewById(R.id.fab2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                add(0);
-            }
-        });
-        getActivity().findViewById(R.id.fab3).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                add(2);
-            }
-        });
+
         getActivity().findViewById(R.id.search).setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.VISIBLE);
         utils = new Futils();
-        skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#5677fc");
         String x=getSelectionColor();
         skinselection=Color.parseColor(x);
         color=calculatevalues(x);
@@ -316,8 +327,6 @@ public class Main extends android.support.v4.app.Fragment {
             }
         });
 
-        getActivity().findViewById(R.id.bookadd).setVisibility(View.GONE);
-        getActivity().findViewById(R.id.pink_icon).setVisibility(View.VISIBLE);
         scroll = (HorizontalScrollView) getActivity().findViewById(R.id.scroll);
         scroll1 = (HorizontalScrollView) getActivity().findViewById(R.id.scroll1);
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
@@ -409,12 +418,10 @@ public class Main extends android.support.v4.app.Fragment {
                 edir.setHint(utils.getString(getActivity(), R.string.entername));
                 ba1.customView(v);
                 if(theme1==1)ba1.theme(Theme.DARK);
-                ba1.positiveColor(Color.parseColor(skin));
-                //ba1.negativeColor(Color.parseColor(skin));
-                //ba1.neutralColor(Color.parseColor(skin));
-                //ba1.titleColor(Color.parseColor(skin));
                 ba1.positiveText(R.string.create);
                 ba1.negativeText(R.string.cancel);
+                ba1.positiveColor(Color.parseColor(skin));
+                ba1.negativeColor(Color.parseColor(skin));
                 ba1.callback(new MaterialDialog.Callback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -447,6 +454,8 @@ public class Main extends android.support.v4.app.Fragment {
                 if(theme1==1)ba2.theme(Theme.DARK);
                 ba2.negativeText(R.string.cancel);
                 ba2.positiveText(R.string.create);
+                ba2.positiveColor(Color.parseColor(skin));
+                ba2.negativeColor(Color.parseColor(skin));
                 ba2.callback(new MaterialDialog.Callback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -489,9 +498,7 @@ public class Main extends android.support.v4.app.Fragment {
 
                 listView.setAnimation(animation);
                 gridView.setAnimation(animation);
-                FloatingActionsMenu floatingActionMenu = (FloatingActionsMenu) getActivity().findViewById(R.id.pink_icon);
-                floatingActionMenu.collapse();
-                floatingActionMenu.setAnimation(animation1);
+                floatingActionButton.setAnimation(animation1);
         }
     }
 
@@ -512,6 +519,8 @@ public class Main extends android.support.v4.app.Fragment {
         if(theme1==1)a.theme(Theme.DARK);
         a.negativeText(R.string.cancel);
         a.positiveText(R.string.search);
+        a.positiveColor(Color.parseColor(skin));
+        a.negativeColor(Color.parseColor(skin));
         a.callback(new MaterialDialog.Callback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -670,8 +679,7 @@ public class Main extends android.support.v4.app.Fragment {
                         listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
                     }
                 }
-                bbar(current);
-                floatingActionsMenu.collapse();} catch (Exception e) {
+                bbar(current);} catch (Exception e) {
             }
         }
         else{//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
@@ -783,7 +791,7 @@ public class Main extends android.support.v4.app.Fragment {
                         x=slist.get((plist.get(0))).getDesc();
                     else
                         x=list.get((plist.get(0))).getDesc();
-                    utils.showProps(new File(x), getActivity(),rootMode);
+                    utils.showProps(new File(x), ma,rootMode);
                     mode.finish();
                     return true;
                 case R.id.delete:

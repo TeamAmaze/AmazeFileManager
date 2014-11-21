@@ -25,14 +25,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -82,11 +79,9 @@ ListView vl;int theme,theme1;
         getListView().setDivider(null);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
-        getActivity().findViewById(R.id.search).setVisibility(View.GONE);
-        getActivity().findViewById(R.id.paste).setVisibility(View.GONE);
-        getActivity().findViewById(R.id.pink_icon).setVisibility(View.GONE);
-        getActivity().findViewById(R.id.bookadd).setVisibility(View.VISIBLE);
-        getActivity().findViewById(R.id.bookadd).setOnClickListener(new View.OnClickListener() {
+        getActivity().findViewById(R.id.search).setVisibility(View.INVISIBLE);
+        getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
+        getActivity().findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 

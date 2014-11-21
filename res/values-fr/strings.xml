@@ -59,11 +59,11 @@
     <string name="searchpath">Rechercher le répertoire</string>
     <string name="search">RECHERCHER</string>
     <string name="enterfile">Entrer le nom du fichier</string>
-    <string name="name">Nom :</string>
-    <string name="date">Date :</string>
-    <string name="location">Stocké dans :</string>
-    <string name="size">Taille :</string>
-    <string name="totalitems">Total Eléments :</string>
+    <string name="name">Nom: </string>
+    <string name="date">Date: </string>
+    <string name="location">Stocké dans: </string>
+    <string name="size">Taille: </string>
+    <string name="totalitems">Total Eléments: </string>
     <string name="enterzipname">Entrer le nom du ZIP</string>
     <string name="noappfound">Aucun applications trouvées pour ouvrir ce fichier</string>
     <string name="copying">Copier</string>
