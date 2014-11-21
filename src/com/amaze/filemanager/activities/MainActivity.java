@@ -50,7 +50,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -70,6 +69,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.pnikosis.materialishprogress.ProgressWheel;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
@@ -97,7 +97,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     private TabHandler tabHandler;
     ImageButton paste;
     public String[] val;
-    ProgressBar progress;
+    ProgressWheel progress;
     DrawerAdapter adapter;
     IconUtils util;
     RelativeLayout mDrawerLinear;
@@ -275,7 +275,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         }
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerList.setDivider(null);
-        progress = (ProgressBar) findViewById(R.id.progressBar);
+        progress = (ProgressWheel) findViewById(R.id.progressBar);
         progress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -429,7 +429,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         if (MOVE_PATH != null || COPY_PATH != null) {
             paste.setVisibility(View.VISIBLE);
         } else
-            paste.setVisibility(View.GONE);
+            paste.setVisibility(View.INVISIBLE);
     }
 
     public void exit() {
@@ -578,7 +578,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         super.onPause();
         killToast();
         unregisterReceiver(RECIEVER);
-        progress.setVisibility(View.GONE);
+        progress.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -610,7 +610,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         public void onReceive(Context context, Intent intent) {
             Bundle b = intent.getExtras();
             if (b != null) {
-                progress.setVisibility(b.getBoolean("run", false) ? View.VISIBLE : View.GONE);
+                progress.setVisibility(b.getBoolean("run", false) ? View.VISIBLE : View.INVISIBLE);
             }
         }
     };

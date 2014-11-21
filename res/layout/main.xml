@@ -20,6 +20,7 @@
 <android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -74,24 +75,30 @@
     android:padding="8dp"
     android:background="@drawable/listitem1"
     android:layout_toLeftOf="@id/search"
-    android:visibility="gone"
+    android:visibility="invisible"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:id="@+id/paste"
     android:src="@drawable/ic_content_paste_white_36dp"
     />
-    <ProgressBar
+    <com.pnikosis.materialishprogress.ProgressWheel
         android:background="@drawable/listitem1"
-        android:layout_toLeftOf="@id/paste"
-        android:visibility="gone"
-        android:indeterminate="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/search"
+        android:visibility="invisible"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        wheel:barColor="#ffffff"
+        wheel:progressIndeterminate="true"
+        wheel:barWidth="3dp"
+        wheel:spinSpeed="1.0"
         android:id="@+id/progressBar"
         />
     <Spinner
         android:layout_toRightOf="@id/drawer_buttton"
-        android:layout_toLeftOf="@id/progressBar"
+        android:layout_toLeftOf="@id/paste"
         android:id="@+id/tab_spinner"
         android:layout_width="wrap_content"
         android:layout_marginLeft="15dp"
@@ -186,54 +193,15 @@
             android:layout_height="match_parent" />
         
 
-        <com.getbase.floatingactionbutton.FloatingActionsMenu
-            android:id="@+id/pink_icon"
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            fab:fab_addButtonColorNormal="#da4336"
-            fab:fab_addButtonColorPressed="#b93221"
-            fab:fab_addButtonPlusIconColor="#ffffff"
-            android:layout_marginBottom="16dp"
-            android:layout_marginRight="16dp">
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                fab:fab_icon="@drawable/file"
-                android:id="@+id/fab1"
-                fab:fab_colorNormal="@android:color/white"
-                fab:fab_colorPressed="#99999999"/>
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                fab:fab_colorNormal="#ffffff"
-                fab:fab_icon="@drawable/folder"
-                fab:fab_colorPressed="#99999999"/>
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                fab:fab_icon="@drawable/add_tab"
-                android:id="@+id/fab3"
-                fab:fab_colorNormal="@android:color/white"
-                fab:fab_colorPressed="#99999999"/>
-            </com.getbase.floatingactionbutton.FloatingActionsMenu>
-        <com.getbase.floatingactionbutton.AddFloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_plusIconColor="#ffffff"
-            android:id="@+id/bookadd"
-            fab:fab_colorNormal="#da4336"
-            android:layout_alignParentBottom="true"
-            fab:fab_colorPressed="#b93221"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
             android:layout_marginBottom="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginEnd="16dp"/>
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_action_new" />
     </RelativeLayout>
 
     <!--

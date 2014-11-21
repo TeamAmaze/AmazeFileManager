@@ -57,11 +57,11 @@
     <string name="searchpath">Cerca Scorciatoia</string>
     <string name="search">Cerca</string>
     <string name="enterfile">Inserire nome file</string>
-    <string name="name">Nome:</string>
-    <string name="date">Data:</string>
-    <string name="location">Collocato in:</string>
-    <string name="size">Dimensione:</string>
-    <string name="totalitems">Elementi totali:</string>
+    <string name="name">Nome: </string>
+    <string name="date">Data: </string>
+    <string name="location">Collocato in: </string>
+    <string name="size">Dimensione: </string>
+    <string name="totalitems">Elementi totali: </string>
     <string name="enterzipname">Inserire Nome Zip</string>
     <string name="noappfound">Nessuna app trovata per aprire questo file</string>
     <string name="copying">Copiando</string>

@@ -59,11 +59,11 @@
     <string name="searchpath">Путь поиска</string>
     <string name="search">Поиск</string>
     <string name="enterfile">Введите имя файла</string>
-    <string name="name">Имя:</string>
-    <string name="date">Дата:</string>
-    <string name="location">Расположен в:</string>
-    <string name="size">Размер:</string>
-    <string name="totalitems">Всего элементов:</string>
+    <string name="name">Имя: </string>
+    <string name="date">Дата: </string>
+    <string name="location">Расположен в: </string>
+    <string name="size">Размер: </string>
+    <string name="totalitems">Всего элементов: </string>
     <string name="enterzipname">Введите имя zip архива</string>
     <string name="noappfound">Нет приложений для открытия этого файла</string>
     <string name="copying">Копирование...</string>

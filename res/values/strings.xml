@@ -59,11 +59,11 @@
     <string name="searchpath">Search Path</string>
     <string name="search">SEARCH</string>
     <string name="enterfile">Enter File Name</string>
-    <string name="name">Name:</string>
-    <string name="date">Date:</string>
-    <string name="location">Located in:</string>
-    <string name="size">Size:</string>
-    <string name="totalitems">Total Items:</string>
+    <string name="name">Name: </string>
+    <string name="date">Date: </string>
+    <string name="location">Located in: </string>
+    <string name="size">Size: </string>
+    <string name="totalitems">Total Items: </string>
     <string name="enterzipname">Enter Zip Name</string>
     <string name="noappfound">No App found to open this file</string>
     <string name="copying">Copying</string>
@@ -239,6 +239,7 @@
     <string name="hiddenfiles">Hidden Files</string>
     <string name="type">Type</string>
     <string name="typeDesc">Type (Desc)</string>
-    <string name="rootdirectory">Root</string>
+    <string name="rootdirectory">root</string>
+    <string name="new_string">New</string>
 </resources>
 

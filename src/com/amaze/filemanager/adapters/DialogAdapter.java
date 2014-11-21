@@ -90,7 +90,6 @@ public class DialogAdapter extends ArrayAdapter<File> {
         holder.row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-          // materialDialog.build().dismiss();
                 final File f = items.get(p);
                 if (f.isDirectory()) {
 

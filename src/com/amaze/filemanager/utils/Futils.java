@@ -19,7 +19,6 @@
 
 package com.amaze.filemanager.utils;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -27,6 +26,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -34,12 +34,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -67,6 +64,7 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class Futils {
+
     public Futils() {
     }
 
@@ -151,29 +149,39 @@ public class Futils {
     }
 
     public void deleteFiles(ArrayList<Layoutelements> a, final Main b, List<Integer> pos) {
-        final AlertDialog.Builder c = new AlertDialog.Builder(b.getActivity());
-        View v = b.getActivity().getLayoutInflater().inflate(R.layout.dialoginfo, null);
-        TextView tb = (TextView) v.findViewById(R.id.info);
-        c.setTitle(getString(b.getActivity(), R.string.confirm));
+        final MaterialDialog.Builder c = new MaterialDialog.Builder(b.getActivity());
+        c.title(getString(b.getActivity(), R.string.confirm));
         final ContentResolver contentResolver=b.getActivity().getContentResolver();
         String names = "";
         final ArrayList<File> todelete = new ArrayList<File>();
         for (int i = 0; i < pos.size(); i++) {
             String path = a.get(pos.get(i)).getDesc();
             todelete.add(new File(path));
-            names = names + "\n" + "(" + (i + 1) + ".)" + new File(path).getName();
+            names = names + "\n" + (i + 1) + ". " + new File(path).getName();
         }
-        tb.setText(getString(b.getActivity(), R.string.questiondelete) + names);
-        c.setView(v);
-        c.setNegativeButton(getString(b.getActivity(), R.string.no), null);
-        c.setPositiveButton(getString(b.getActivity(), R.string.yes), new DialogInterface.OnClickListener() {
+        c.content(getString(b.getActivity(), R.string.questiondelete) + names);
 
-            public void onClick(DialogInterface p1, int p2) {
+        c.positiveColor(Color.parseColor(b.skin));
+        c.negativeColor(Color.parseColor(b.skin));
+        if(b.theme1==1)
+            c.theme(Theme.DARK);
+        c.negativeText(getString(b.getActivity(), R.string.no));
+        c.positiveText(getString(b.getActivity(), R.string.yes));
+
+        c.callback(new MaterialDialog.Callback() {
+            @Override
+            public void onPositive(MaterialDialog materialDialog) {
                 Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_LONG).show();
-                new DeleteTask(b.getActivity().getContentResolver(),b,b.getActivity()).execute(todelete);
+                new DeleteTask(b.getActivity().getContentResolver(), b, b.getActivity()).execute(todelete);
+            }
+
+            @Override
+            public void onNegative(MaterialDialog materialDialog) {
+
+                //materialDialog.cancel();
             }
         });
-        c.show();
+        c.build().show();
     }
 
     public String count(File f,Resources root) {
@@ -269,26 +277,26 @@ public class Futils {
         return inSampleSize;
     }
 
-    public void showProps(File f, Activity c,boolean root) {
-        String date = getString(c, R.string.date) + getdate(f);
+    public void showProps(File f, Main c,boolean root) {
+        String date = getString(c.getActivity(), R.string.date) + getdate(f);
         String items = "", size = "", name, parent;
-        name = getString(c, R.string.name) + f.getName();
-        parent = getString(c, R.string.location) + f.getParent();
+        name = getString(c.getActivity(), R.string.name) + f.getName();
+        parent = getString(c.getActivity(), R.string.location) + f.getParent();
         if (f.isDirectory()) {
-            size = getString(c, R.string.size) + readableFileSize(folderSize(f,root));
-            items = getString(c, R.string.totalitems) + count(f,c.getResources());
+            size = getString(c.getActivity(), R.string.size) + readableFileSize(folderSize(f,root));
+            items = getString(c.getActivity(), R.string.totalitems) + count(f,c.getResources());
         } else if (f.isFile()) {
             items = "";
-            size = getString(c, R.string.size) + getSize(f);
+            size = getString(c.getActivity(), R.string.size) + getSize(f);
         }
-        AlertDialog.Builder a = new AlertDialog.Builder(c);
-        View v = c.getLayoutInflater().inflate(R.layout.dialoginfo, null);
-        TextView tb = (TextView) v.findViewById(R.id.info);
-        a.setTitle(getString(c, R.string.properties));
-        tb.setText(name + "\n" + parent + "\n" + size + "\n" + items + "\n"
+        MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
+        a.title(getString(c.getActivity(), R.string.properties));
+
+        if(c.theme1==1)
+            a.theme(Theme.DARK);
+        a.content(name + "\n" + parent + "\n" + size + "\n" + items + "\n"
                 + date);
-        a.setView(v);
-        a.show();
+        a.build().show();
     }
 
     public static long folderSize(File directory,boolean rootMode) {
@@ -562,13 +570,12 @@ public class Futils {
 
             DialogAdapter adapter = new DialogAdapter(m,
                     m.getActivity(), android.R.layout.select_dialog_item, fu,ba);
-            ListView listView = new ListView(m.getActivity());
-            listView.setDividerHeight(0);
+            LayoutInflater layoutInflater = (LayoutInflater) m.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = layoutInflater.inflate(R.layout.list_dialog, null);
+            ListView listView = (ListView) view.findViewById(R.id.listView);
             listView.setAdapter(adapter);
-            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            listView.setLayoutParams(params);
             if(m.theme1==1)ba.theme(Theme.DARK);
-            ba.customView(listView);
+            ba.customView(view);
             ba.negativeText(R.string.cancel);
             ba.build().show();
         } catch (IOException e) {

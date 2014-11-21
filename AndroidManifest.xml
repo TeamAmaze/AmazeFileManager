@@ -33,8 +33,7 @@
         android:targetSdkVersion="21" />
 
     <application
-        android:icon="@drawable/ic_launcher"
-        android:label="Amaze File Manager" >
+        android:icon="@drawable/ic_launcher" >
 
         <activity
             android:label="Amaze File Manager"
