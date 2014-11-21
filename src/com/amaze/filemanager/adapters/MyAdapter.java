@@ -31,7 +31,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -334,17 +333,33 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
             }
             if(main.coloriseIcons){
+
                 if(new File(rowItem.getDesc()).isDirectory())holder.imageView.setColorFilter(Color.parseColor("#9e9e9e"));
+
                 else if(Icons.isVideo(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#f06292"));
+
                 else if(Icons.isAudio(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#9575cd"));
+
                 else if(Icons.isPdf(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#da4336"));
+
                 else if(Icons.isCode(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#00bfa5"));
+
                 else if(Icons.isText(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#e06055"));
+
                 else if(Icons.isArchive(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#f9a825"));
+
                 else if(Icons.isgeneric(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#9e9e9e"));
-                else if(Icons.isApk(rowItem.getDesc()) || Icons.isPicture(rowItem.getDesc()))holder.imageView.setColorFilter(null);
+
+                else if(Icons.isApk(rowItem.getDesc()))holder.imageView.setColorFilter(null);
+
                 else holder.imageView.setColorFilter(Color.parseColor(main.skin));
-            }else holder.imageView.setColorFilter(Color.parseColor(main.skin));
+
+            }else
+            if(!Icons.isApk(rowItem.getDesc()))
+                holder.imageView.setColorFilter(Color.parseColor(main.skin));
+            else
+                holder.imageView.setColorFilter(null);
+
             if (checked != null) {
 
                 if (checked) {holder.imageView1.setVisibility(View.GONE);
