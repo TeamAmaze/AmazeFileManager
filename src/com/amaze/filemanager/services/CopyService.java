@@ -37,8 +37,6 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MediaFile;
 import com.stericson.RootTools.RootTools;
-import com.stericson.RootTools.exceptions.RootDeniedException;
-import com.stericson.RootTools.execution.Command;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,7 +46,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.TimeoutException;
 
 public class CopyService extends Service {
     HashMap<Integer, Boolean> hash = new HashMap<Integer, Boolean>();
@@ -151,58 +148,61 @@ public class CopyService extends Service {
         long totalBytes = 0L, copiedBytes = 0L;
 
         public void execute(int id, final ArrayList<String> files,final String FILE2,final boolean move) {
-            if(new File(FILE2).canWrite() && new File(files.get(0)).canRead()){for (int i = 0; i < files.size(); i++) {
-
-                File f1 = new File(files.get(i));
-                if (f1.isDirectory()) {
-                    totalBytes = totalBytes + new Futils().folderSize(f1,false);
-                } else {
-                    totalBytes = totalBytes + f1.length();
-                }
-            }
-            for (int i = 0; i < files.size(); i++) {
-                File f1 = new File(files.get(i));
-                try {
-
-                    copyFiles((f1), new File(FILE2, f1.getName()), id,move);
-                } catch (IOException e) {
-                    System.out.println("amaze " + e);
-                    publishResults("" + e, 0, 0, id, 0, 0, false,move);
-                }
-
-            }if(move){new DeleteTask(getContentResolver(),null,c).execute(utils.toFileArray(files));}
-            }else if(rootmode){
-                RootTools.remount(FILE2,"rw");
+            if (new File(FILE2).canWrite() && new File(files.get(0)).canRead()) {
                 for (int i = 0; i < files.size(); i++) {
-                Command a=new Command(0,"cp "+files.get(i) +" "+FILE2) {
-                    @Override
-                    public void commandOutput(int i, String s) {
 
+                    File f1 = new File(files.get(i));
+                    if (f1.isDirectory()) {
+                        totalBytes = totalBytes + new Futils().folderSize(f1, false);
+                    } else {
+                        totalBytes = totalBytes + f1.length();
+                    }
+                }
+                for (int i = 0; i < files.size(); i++) {
+                    File f1 = new File(files.get(i));
+                    try {
+
+                        copyFiles((f1), new File(FILE2, f1.getName()), id, move);
+                    } catch (IOException e) {
+                        System.out.println("amaze " + e);
+                        publishResults("" + e, 0, 0, id, 0, 0, false, move);
                     }
 
-                    @Override
-                    public void commandTerminated(int i, String s) {
+                }
+                if (move) {
+                    new DeleteTask(getContentResolver(), null, c).execute(utils.toFileArray(files));
+                }
+            } else if (rootmode) {
+                RootTools.remount(FILE2, "ro");
 
+                for (int i = 0; i < files.size(); i++) {
+                    File f1 = new File(files.get(i));
+                    if (f1.isDirectory()) {
+                        totalBytes = totalBytes + new Futils().folderSize(f1, false);
+                    } else {
+                        totalBytes = totalBytes + f1.length();
+                    }
+                }
+                for (int i = 0; i < files.size(); i++) {
+                    File f1 = new File(files.get(i));
+                    try {
+
+                        copyFiles((f1), new File(FILE2, f1.getName()), id, move);
+                    } catch (IOException e) {
+                        System.out.println("amaze " + e);
+                        publishResults("" + e, 0, 0, id, 0, 0, false, move);
                     }
 
-                    @Override
-                    public void commandCompleted(int i, int i2) {
-                        if(move){new DeleteTask(getContentResolver(),null,c).execute(utils.toFileArray(files));}
-                        utils.scanFile(FILE2+"/"+new File(files.get(i)).getName(), c);
-                    }
-                };
-                try {
-                    RootTools.getShell(true).add(a);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (TimeoutException e) {
-                    e.printStackTrace();
-                } catch (RootDeniedException e) {
-                    e.printStackTrace();
-                }}
-            }else{System.out.println("Not Allowed");}
-            Intent intent = new Intent("loadlist");
-            sendBroadcast(intent);}
+                }
+                if (move) {
+                    new DeleteTask(getContentResolver(), null, c).execute(utils.toFileArray(files));}
+                } else {
+                    System.out.println("Not Allowed");
+                }
+                Intent intent = new Intent("loadlist");
+                sendBroadcast(intent);
+            }
+
         private void copyFiles(File sourceFile, File targetFile, int id,boolean move) throws IOException {
             if (sourceFile.isDirectory()) {
                 if (!targetFile.exists()) targetFile.mkdirs();

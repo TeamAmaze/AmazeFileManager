@@ -21,7 +21,7 @@
     <item
         android:id="@+id/save"
         android:title="@string/save"
-        android:icon="@drawable/ic_action_save_light"
+        android:icon="@drawable/ic_action_save"
         android:showAsAction="always" />
 
 </menu>

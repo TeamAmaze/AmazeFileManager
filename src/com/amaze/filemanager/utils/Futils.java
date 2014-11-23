@@ -32,6 +32,8 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -47,6 +49,7 @@ import com.amaze.filemanager.activities.TextReader;
 import com.amaze.filemanager.adapters.DialogAdapter;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ZipTask;
 import com.stericson.RootTools.RootTools;
@@ -435,6 +438,16 @@ public class Futils {
             Intent i = new Intent(m, TextReader.class);
             i.putExtra("path", f.getPath());
             m.startActivity(i);
+        } else if (Icons.isArchive(f.getPath())) {
+
+            FragmentTransaction fragmentTransaction = m.getSupportFragmentManager().beginTransaction();
+            Fragment fragment = new ZipViewer();
+            Bundle bundle = new Bundle();
+            bundle.putString("path", f.getPath());
+            fragment.setArguments(bundle);
+            fragmentTransaction.replace(R.id.content_frame, fragment);
+            fragmentTransaction.commit();
+
         } else {
             try {
                 openunknown(f, m);

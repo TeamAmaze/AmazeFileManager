@@ -29,9 +29,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
+import com.amaze.filemanager.utils.Futils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 
@@ -39,13 +45,16 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
     Context c;
     Drawable folder, unknown;
     ArrayList<ZipEntry> enter;
+    ZipViewer zipViewer;
+    Futils futils;
 
-    public ZipAdapter(Context c, int id, ArrayList<ZipEntry> enter) {
+    public ZipAdapter(Context c, int id, ArrayList<ZipEntry> enter, ZipViewer zipViewer) {
         super(c, id, enter);
         this.enter = enter;
         this.c = c;
         folder = c.getResources().getDrawable(R.drawable.ic_grid_folder1);
         unknown = c.getResources().getDrawable(R.drawable.ic_doc_generic_am);
+        this.zipViewer = zipViewer;
     }
 
     private class ViewHolder {
@@ -57,7 +66,7 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
 
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         final ZipEntry rowItem = enter.get(position);
 
@@ -82,7 +91,25 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
 
         }
         final ViewHolder holder = (ViewHolder) view.getTag();
-        holder.txtTitle.setText(rowItem.getName());
+
+        final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
+        if (rowItem.isDirectory()) {
+            stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
+            holder.txtTitle.setText(stringBuilder.toString());
+        } else {
+            File file = new File(rowItem.getName());
+            if (file.getParent()!=null){
+
+                String parentLength = file.getParent();
+                StringBuilder stringBuilder1 = new StringBuilder(rowItem.getName());
+                stringBuilder1.delete(0, parentLength.length()+1);
+                holder.txtTitle.setText(stringBuilder1.toString());
+            } else {
+
+                holder.txtTitle.setText(stringBuilder.toString());
+            }
+        }
+
         if (rowItem.isDirectory()) {
             holder.imageView.setImageDrawable(folder);
         } else {
@@ -92,6 +119,17 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
 
             public void onClick(View p1) {
                 // TODO: Implement this method
+                if (rowItem.isDirectory()) {
+
+                    new ZipHelperTask(zipViewer, 1, stringBuilder.toString()).execute(zipViewer.f);
+                } else {
+
+                    futils = new Futils();
+                    Toast.makeText(c, zipViewer.f.getPath() + "/" + stringBuilder.toString(), Toast.LENGTH_LONG).show();
+                    File file = new File(zipViewer.f.getPath() + "/" + stringBuilder.toString());
+                    futils.openFile(file, (MainActivity) zipViewer.getActivity());
+
+                }
             }
         });
         return view;

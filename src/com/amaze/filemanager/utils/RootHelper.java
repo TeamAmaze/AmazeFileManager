@@ -38,12 +38,12 @@ public class RootHelper
         try
         {if(root)
             Shell.runRootCommand(cc);
-            else
+        else
             Shell.runCommand(cc);
         }
         catch (Exception e)
         {
-     //       Logger.errorST("Exception when trying to run shell command", e);
+            //       Logger.errorST("Exception when trying to run shell command", e);
 
             return null;
         }
@@ -77,7 +77,7 @@ public class RootHelper
 
             if (!cmd.isExecuting() && !cmd.isFinished())
             {
-       //         Logger.errorST("Error: Command is not executing and is not finished!");
+                //         Logger.errorST("Error: Command is not executing and is not finished!");
                 return false;
             }
         }
@@ -111,42 +111,46 @@ public class RootHelper
         return  per;}
     public static ArrayList<String[]> getFilesList(String path,boolean root,boolean showHidden)
     {
-String cpath=getCommandLineString(path);
+        String cpath=getCommandLineString(path);
         String p="";
         if(showHidden)p="a";
         Futils futils=new Futils();
         ArrayList<String[]> a=new ArrayList<String[]>();
         String ls="";
+
         if(futils.canListFiles(new File(path))){
-        ls = runAndWait("ls -l"+p+" " + cpath,false);}
+
+            ls = runAndWait("ls -l"+p+" " + cpath,false);}
+
         else if(root){ls = runAndWait("ls -l"+p+" " + cpath,true);}
+
         else{return new ArrayList<String[]>();}
+
         if (ls == null)
         {
-      //      Logger.errorST("Error: Could not get list of files in directory: " + path);
-            return new ArrayList<String[]>();
+            // Logger.errorST("Error: Could not get list of files in directory: " + path);
+            return getFilesList(path,showHidden);
         }
-
         if (ls.equals("\n") || ls.equals(""))
+
         {
-        //    Logger.debug("No files in directory");
-            return new ArrayList<String[]>();
+            return getFilesList(path,showHidden);
         }
-        else
-        {
+        else {
             List<String> files = Arrays.asList(ls.split("\n"));
-            for (String file : files)
-            {String[] array=futils.parseName(file);
+
+            for (String file : files) {
+
+                String[] array=futils.parseName(file);
                 array[0]=path+"/"+array[0];
                 a.add(array);
-
             }
-return a;
-
+            return a;
         }
     }
+
     public static Integer getCount(File f){
         if(f.exists() && f.canRead() && f.isDirectory()){
             try{return f.listFiles().length;}catch(Exception e){return null;}
         }
-    return  null;}}
+        return  null;}}
