@@ -29,6 +29,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -81,6 +83,12 @@ ListView vl;int theme,theme1;
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
         getActivity().findViewById(R.id.search).setVisibility(View.INVISIBLE);
         getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
+
+
+        getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
+        Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
+        getActivity().findViewById(R.id.fab).setAnimation(animation1);
+
         getActivity().findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

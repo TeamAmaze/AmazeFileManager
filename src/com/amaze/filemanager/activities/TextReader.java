@@ -26,8 +26,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -168,10 +166,10 @@ public class TextReader extends Activity {
                 }
             }
         }if(!f1.canWrite()){
-        ArrayList<File> a=new ArrayList<File>();
+            ArrayList<File> a=new ArrayList<File>();
             a.add(f);
-new MoveFiles(a,null,this).execute(f1.getParent());}
-
+            new MoveFiles(a,null,this).execute(f1.getParent());
+        }
     }
 
     class LoadText extends AsyncTask<String, String, String> {

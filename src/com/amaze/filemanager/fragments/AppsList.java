@@ -33,6 +33,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.view.ActionMode;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -76,9 +78,12 @@ public class AppsList extends ListFragment {
         getActivity().findViewById(R.id.search).setVisibility(View.INVISIBLE);
         getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
-        getActivity().findViewById(R.id.fab).setVisibility(View.GONE);
+
         vl=getListView();
 
+        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_hide);
+        getActivity().findViewById(R.id.fab).setAnimation(animation);
+        getActivity().findViewById(R.id.fab).setVisibility(View.GONE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         ListView vl = getListView();

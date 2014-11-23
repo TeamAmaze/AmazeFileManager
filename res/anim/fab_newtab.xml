@@ -20,6 +20,18 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android">
 
     <scale
+        android:interpolator="@android:anim/accelerate_interpolator"
+        android:fromXScale="1.0"
+        android:toXScale="0.0"
+        android:fromYScale="1.0"
+        android:toYScale="0.0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:startOffset="400"
+        android:fillAfter="false"
+        android:duration="300" />
+    <set>
+    <scale
         android:interpolator="@android:anim/decelerate_interpolator"
         android:fromXScale="0.0"
         android:toXScale="1.0"
@@ -27,7 +39,8 @@
         android:toYScale="1.0"
         android:pivotX="50%"
         android:pivotY="50%"
-        android:startOffset="600"
+        android:startOffset="800"
         android:fillAfter="false"
         android:duration="300" />
+    </set>
 </set>

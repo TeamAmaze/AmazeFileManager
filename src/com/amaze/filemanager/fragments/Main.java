@@ -250,6 +250,9 @@ public class Main extends android.support.v4.app.Fragment {
         setHasOptionsMenu(false);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
 
+        Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
+        getActivity().findViewById(R.id.fab).setAnimation(animation1);
+
         content = tabHandler.getAllTabs();
         list1 = new ArrayList<String>();
 
