@@ -32,29 +32,29 @@
     <string name="open">Apri</string>
     <string name="backup">Backup</string>
     <string name="uninstall">Disinstalla</string>
-    <string name="play">Play store</string>
+    <string name="play">Play Store</string>
     <string name="properties">Proprietà</string>
     <string name="copyingapk">Copiare apk in </string>
     <string name="addbook">Aggiungi Segnalibro</string>
     <string name="addtobook">Aggiungere al Segnalibro</string>
     <string name="enterpath">Inserisci percorso</string>
-    <string name="cancel">Cancella</string>
+    <string name="cancel">Annulla</string>
     <string name="create">Crea</string>
     <string name="success">Riuscito</string>
     <string name="filenotexists">Il file non esiste</string>
     <string name="error">Errore</string>
     <string name="cantlistfiles">Non posso catalogare il file senza root</string>
-    <string name="searchresults">Risultati della Ricerca</string>
-    <string name="itemsselected">Elementi Selezionati</string>
+    <string name="searchresults">Risultati della ricerca</string>
+    <string name="itemsselected">Elementi selezionati</string>
     <string name="newhomedirectory">Nuovo collegamento Home</string>
     <string name="rename">Rinomina</string>
     <string name="save">Salva</string>
     <string name="renameerror">Rinominazione non riuscita</string>
-    <string name="renamed">Rinominazione Riuscita</string>
+    <string name="renamed">Rinominazione riuscita</string>
     <string name="bookmarksadded">Segnalibri aggiunti</string>
     <string name="fileexist">Esiste già un file con lo stesso nome </string>
-    <string name="filecreated">File Creato</string>
-    <string name="searchpath">Cerca Scorciatoia</string>
+    <string name="filecreated">File creato</string>
+    <string name="searchpath">Cerca scorciatoia</string>
     <string name="search">Cerca</string>
     <string name="enterfile">Inserire nome file</string>
     <string name="name">Nome: </string>
@@ -82,27 +82,27 @@
     <string name="guide5">Usa il tasto indietro del tuo dispositivo per uscire dallapp quando vuoi</string>
     <string name="guide6">..E usa il tasto freccia sinistra per la navigazione in questo file manager</string>
     <string name="maintab">La scheda principale non può essere rimossa</string>
-    <string name="openparent">Apri la Cartella Principale</string>
+    <string name="openparent">Apri la cartella principale</string>
     <string name="openwith">Apri con</string>
     <string name="share">Condividi</string>
     <string name="about">A proposito di</string>
     <string name="extract">Estrai</string>
     <string name="compress">Comprimi</string>
-    <string name="yes">Sì</string>
+    <string name="yes">Si</string>
     <string name="no">No</string>
     <string name="confirm">Conferma</string>
-    <string name="deleting">Cancellazione</string>
-    <string name="questiondelete">Sei sicuro di voler cancellare i file seguenti?</string>
-    <string name="viewmode">Modalità di Visualizzazione</string>
+    <string name="deleting">Eliminazione</string>
+    <string name="questiondelete">Sei sicuro di voler eliminare i file seguenti?</string>
+    <string name="viewmode">Modalità di visualizzazione</string>
     <string name="uimode">Modalità UI</string>
     <string name="directorysort">Modalità elenco ordinato</string>
     <string name="sortby">Ordina Per</string>
     <string name="theme">Tema</string>
-    <string name="skin">Skin</string>
-    <string name="random">Skin Casuale</string>
+    <string name="skin">Schemi</string>
+    <string name="random">Schema Casuale</string>
     <string name="random_summary">Imposta un tema casuale allavvio</string>
-    <string name="colorize">Colora le Icone</string>
-    <string name="colorize_summary">Imposta qualche colore di icone differenti dal tema</string>
+    <string name="colorize">Colora le icone</string>
+    <string name="colorize_summary">Imposta un colore per le icone differente dal tema</string>
     <string name="back">Indietro</string>
     <string name="home">Home</string>
     <string name="paste">Incolla</string>
@@ -113,7 +113,7 @@
     <string name="rootmode">Modalità Root Explorer</string>
     <string name="rootmodesummary">Solo per dispositivi rootati. Spunta solo se sei sicuro di questo.</string>
     <string name="mountsystemsummary">Abilita se vuoi modificare i file di Sistema</string>
-    <string name="mountsystem">Monta Cartelle di Sistema come scrivibili</string>
+    <string name="mountsystem">Monta cartelle di sistema come scrivibili</string>
     <string name="rootfailure">Accesso root non concesso</string>
     <string name="cut">Taglia</string>
     <string name="selectall">Seleziona tutto</string>
@@ -121,9 +121,9 @@
     <string name="setashome"> Imposta come cartella Home</string>
     <string name="sethome">Imposta cartella Home</string>
     <string name="foldercolor">Colore cartella</string>
-    <string name="imagegallery">Immagine Galleria</string>
-    <string name="fileexplorer">Gestore di Files</string>
-    <string name="changegallerypath">Cambia Scorciatoia Galleria</string>
+    <string name="imagegallery">Immagine galleria</string>
+    <string name="fileexplorer">Gestore di files</string>
+    <string name="changegallerypath">Cambia scorciatoia galleria</string>
     <string name="usedefaultgallerypath"> Utilizzare il percorso Immagini Galleria predefinito </string>
     <!-- Changelog -->
     <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br>&lt;br></string>
@@ -132,11 +132,11 @@
     <!-- Array -->
     <!-- UI -->
     <string name="simple">UI semplice</string>
-    <string name="card">Card UI</string>
+    <string name="card">UI schede</string>
     <!-- Theme -->
     <string name="light">Chiaro</string>
     <string name="dark">Scuro</string>
-    <string name="daytime">Momento della giornata</string>
+    <string name="daytime">Giornaliero</string>
     <!--Skin-->
     <string name="red">Rosso</string>
     <string name="pink">Rosa</string>
@@ -146,7 +146,7 @@
     <string name="blue">Blu</string>
     <string name="light_blue">Blu chiaro</string>
     <string name="cyan">Ciano</string>
-    <string name="teal">Foglia di tè</string>
+    <string name="teal">Foglia di thè</string>
     <string name="green">Verde</string>
     <string name="light_green">Verde Chiaro</string>
     <string name="amber">Ambra</string>
@@ -154,7 +154,7 @@
     <string name="deep_orange">Arancione Scuro</string>
     <string name="brown">Marrone</string>
     <string name="black">Nero</string>
-    <string name="blue_grey">Blue Grigio</string>
+    <string name="blue_grey">Blu Grigio</string>
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Cartelle in cima</string>
     <string name="filesOnTop">Files in cima</string>
@@ -192,7 +192,7 @@
     <string name="foldercreated">Cartella creata</string>
     <string name="newfile">Nuovo File</string>
     <string name="nofiles">Nessun File</string>
-    <string name="tapnhold">Tappa e tieni premuto su un file o su una cartella per più opzioni</string>
+    <string name="tapnhold">Tocca e tieni premuto su un file o su una cartella per più opzioni</string>
     <string name="pathcopied">Scorciatoia copiata negli appunti</string>
     <string name="used">Usato : </string>
     <string name="free">Libero : </string>
