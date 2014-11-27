@@ -29,13 +29,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.asynctasks.ZipExtractTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
-import com.amaze.filemanager.utils.Futils;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +46,6 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
     Drawable folder, unknown;
     ArrayList<ZipEntry> enter;
     ZipViewer zipViewer;
-    Futils futils;
     StringBuilder stringBuilder1;
 
     public ZipAdapter(Context c, int id, ArrayList<ZipEntry> enter, ZipViewer zipViewer) {
@@ -102,6 +99,7 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
             holder.txtTitle.setText(stringBuilder.toString());
         } else {
             File file = new File(rowItem.getName());
+            stringBuilder1 = new StringBuilder(rowItem.getName());
             if (file.getParent()!=null){
 
                 String parentLength = file.getParent();
@@ -110,7 +108,7 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
                 holder.txtTitle.setText(stringBuilder1.toString());
             } else {
 
-                holder.txtTitle.setText(stringBuilder.toString());
+                holder.txtTitle.setText(stringBuilder1.toString());
             }
         }
 
@@ -122,17 +120,15 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
         holder.rl.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View p1) {
-                // TODO: Implement this method
+
                 if (rowItem.isDirectory()) {
 
                     new ZipHelperTask(zipViewer, 1, stringBuilder.toString()).execute(zipViewer.f);
                 } else {
 
-                    futils = new Futils();
-                    Toast.makeText(c, zipViewer.f.getPath() + "/" + stringBuilder.toString(), Toast.LENGTH_LONG).show();
-                    File file = new File(zipViewer.f.getPath() + "/" + stringBuilder.toString());
-                    //File file1 = new File(zipViewer.getActivity().getCacheDir().getPath());
-                    //futils.openFile(file, (MainActivity) zipViewer.getActivity());
+                    File file = new File(zipViewer.f.getParent() + "/" + stringBuilder1.toString());
+                    zipViewer.files.clear();
+                    zipViewer.files.add(0, file);
 
                     try {
                         ZipFile zipFile = new ZipFile(zipViewer.f);
