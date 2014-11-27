@@ -32,14 +32,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.services.asynctasks.ZipExtractTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.utils.Futils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class ZipAdapter extends ArrayAdapter<ZipEntry> {
     Context c;
@@ -92,6 +94,7 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
         }
         final ViewHolder holder = (ViewHolder) view.getTag();
 
+
         final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
         if (rowItem.isDirectory()) {
             stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
@@ -127,8 +130,15 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
                     futils = new Futils();
                     Toast.makeText(c, zipViewer.f.getPath() + "/" + stringBuilder.toString(), Toast.LENGTH_LONG).show();
                     File file = new File(zipViewer.f.getPath() + "/" + stringBuilder.toString());
-                    futils.openFile(file, (MainActivity) zipViewer.getActivity());
+                    //File file1 = new File(zipViewer.getActivity().getCacheDir().getPath());
+                    //futils.openFile(file, (MainActivity) zipViewer.getActivity());
 
+                    try {
+                        ZipFile zipFile = new ZipFile(zipViewer.f);
+                        new ZipExtractTask(zipFile, zipViewer.f.getParent(), zipViewer).execute(rowItem);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

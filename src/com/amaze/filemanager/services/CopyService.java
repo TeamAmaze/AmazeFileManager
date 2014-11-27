@@ -148,16 +148,17 @@ public class CopyService extends Service {
         long totalBytes = 0L, copiedBytes = 0L;
 
         public void execute(int id, final ArrayList<String> files,final String FILE2,final boolean move) {
-            if (new File(FILE2).canWrite() && new File(files.get(0)).canRead()) {
-                for (int i = 0; i < files.size(); i++) {
+            if (new File(FILE2).canWrite()) {
+                try{
+                    for (int i = 0; i < files.size(); i++) {
 
-                    File f1 = new File(files.get(i));
-                    if (f1.isDirectory()) {
-                        totalBytes = totalBytes + new Futils().folderSize(f1, false);
-                    } else {
-                        totalBytes = totalBytes + f1.length();
-                    }
-                }
+                        File f1 = new File(files.get(i));
+                        if (f1.isDirectory()) {
+                            totalBytes = totalBytes + new Futils().folderSize(f1, false);
+                        } else {
+                            totalBytes = totalBytes + f1.length();
+                        }
+                    }}catch(Exception e){}
                 for (int i = 0; i < files.size(); i++) {
                     File f1 = new File(files.get(i));
                     try {

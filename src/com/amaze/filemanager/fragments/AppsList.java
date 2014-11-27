@@ -27,6 +27,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -137,7 +138,7 @@ public class AppsList extends ListFragment {
                         Intent intent = new Intent(getActivity(), CopyService.class);
                         Toast.makeText(getActivity(), f.getParent(), Toast.LENGTH_LONG).show();
 
-                        if (!f.getParent().equals("/data/app") || !f.getParent().equals("/system/app") || !f.getParent().equals("/system/priv-app")) {
+                        if (Build.VERSION.SDK_INT == 21) {
                             a.add(f.getParent());
                         } else {
                             a.add(f.getPath());
