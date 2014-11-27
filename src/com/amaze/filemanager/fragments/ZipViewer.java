@@ -22,14 +22,18 @@ package com.amaze.filemanager.fragments;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 
+import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class ZipViewer extends ListFragment {
 
     String s;
     public File f;
+    public ArrayList<File> files;
+    private Main ma;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -37,5 +41,16 @@ public class ZipViewer extends ListFragment {
         s = getArguments().getString("path");
         f = new File(s);
         new ZipHelperTask(this).execute(f);
+        files = new ArrayList<File>();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (files.size()==1) {
+
+            new DeleteTask(getActivity().getContentResolver(), ma, getActivity()).execute(files);
+        }
     }
 }
