@@ -49,6 +49,7 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
     ArrayList<ZipEntry> enter;
     ZipViewer zipViewer;
     Futils futils;
+    StringBuilder stringBuilder1;
 
     public ZipAdapter(Context c, int id, ArrayList<ZipEntry> enter, ZipViewer zipViewer) {
         super(c, id, enter);
@@ -104,7 +105,7 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
             if (file.getParent()!=null){
 
                 String parentLength = file.getParent();
-                StringBuilder stringBuilder1 = new StringBuilder(rowItem.getName());
+                stringBuilder1 = new StringBuilder(rowItem.getName());
                 stringBuilder1.delete(0, parentLength.length()+1);
                 holder.txtTitle.setText(stringBuilder1.toString());
             } else {
@@ -135,7 +136,7 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
 
                     try {
                         ZipFile zipFile = new ZipFile(zipViewer.f);
-                        new ZipExtractTask(zipFile, zipViewer.f.getParent(), zipViewer).execute(rowItem);
+                        new ZipExtractTask(zipFile, zipViewer.f.getParent(), zipViewer, stringBuilder1.toString()).execute(rowItem);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

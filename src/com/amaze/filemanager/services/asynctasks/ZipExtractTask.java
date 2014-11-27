@@ -1,7 +1,6 @@
 package com.amaze.filemanager.services.asynctasks;
 
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.ZipViewer;
@@ -18,61 +17,58 @@ import java.util.zip.ZipFile;
 /**
  * Created by Vishal on 11/27/2014.
  */
-public class ZipExtractTask extends AsyncTask<ZipEntry, Void, String> {
+public class ZipExtractTask extends AsyncTask<ZipEntry, Void, Void> {
     private String outputDir;
     private ZipFile zipFile;
-    private BufferedOutputStream bufferedOutputStream;
-    private BufferedInputStream bufferedInputStream;
     private ZipViewer zipViewer;
+    private String fileName;
 
-    public ZipExtractTask(ZipFile zipFile, String outputDir, ZipViewer zipViewer) {
+    public ZipExtractTask(ZipFile zipFile, String outputDir, ZipViewer zipViewer, String fileName) {
 
         this.outputDir = outputDir;
         this.zipFile = zipFile;
         this.zipViewer = zipViewer;
+        this.fileName = fileName;
     }
 
     @Override
-    protected String doInBackground(ZipEntry... zipEntries) {
+    protected Void doInBackground(ZipEntry... zipEntries) {
 
         ZipEntry zipEntry = zipEntries[0];
-        File outputFile = new File(outputDir, zipEntry.getName());
         try {
-            bufferedInputStream = new BufferedInputStream(zipFile.getInputStream(zipEntry));
-            bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
-            int len;
-            byte buf[] = new byte[1024];
-            while ((len = bufferedInputStream.read(buf)) > 0) {
-                bufferedOutputStream.write(buf, 0, len);
-            }
-
-            try {
-                bufferedOutputStream.close();
-                bufferedInputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            unzipEntry(zipFile, zipEntry, outputDir);
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            /*try {
-                bufferedOutputStream.close();
-                bufferedInputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
         }
-
-        return outputFile.getPath();
+        return null;
     }
 
     @Override
-    protected void onPostExecute(String aVoid) {
+    protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
 
         Futils futils = new Futils();
-        futils.openFile(new File(aVoid), (MainActivity) zipViewer.getActivity());
-        Toast.makeText(zipViewer.getActivity(), outputDir, Toast.LENGTH_LONG).show();
+        futils.openFile(new File(outputDir + "/" + fileName), (MainActivity) zipViewer.getActivity());
+    }
+
+    private void unzipEntry(ZipFile zipfile, ZipEntry entry, String outputDir)
+            throws IOException {
+
+        File outputFile = new File(outputDir, fileName);
+        BufferedInputStream inputStream = new BufferedInputStream(
+                zipfile.getInputStream(entry));
+        BufferedOutputStream outputStream = new BufferedOutputStream(
+                new FileOutputStream(outputFile));
+        try {
+            int len;
+            byte buf[] = new byte[1024];
+            while ((len = inputStream.read(buf)) > 0) {
+
+                outputStream.write(buf, 0, len);
+            }
+        } finally {
+            outputStream.close();
+            inputStream.close();
+        }
     }
 }
