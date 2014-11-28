@@ -72,7 +72,10 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
+import org.xml.sax.SAXException;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -80,6 +83,8 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 
 public class MainActivity extends android.support.v4.app.FragmentActivity {
@@ -101,7 +106,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     DrawerAdapter adapter;
     IconUtils util;
     RelativeLayout mDrawerLinear;
-    Shortcuts s = new Shortcuts();
+    Shortcuts s;
     int tab = 0;
     public String skin;
     public int theme;
@@ -114,7 +119,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     private ArrayList<String> list;
     public int theme1;
     private EasyTracker easyTracker = null;
-
+    boolean rootmode;
     /**
      * Called when the activity is first created.
      */
@@ -122,14 +127,14 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         utils = new Futils();
-
+        s=new Shortcuts(this);
         // Google Analytics
         // Get a Tracker (should auto-report)
         //((Amaze) getApplication()).getTracker(Amaze.TrackerName.APP_TRACKER);
         easyTracker = EasyTracker.getInstance(this);
-
         val = getStorageDirectories();
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
+        rootmode = Sp.getBoolean("rootmode", false);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         util = new IconUtils(Sp, this);
 
@@ -209,7 +214,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         tabHandler = new TabHandler(this, "", null, 1);
         if (Sp.getBoolean("firstrun", true)) {
             try {
-                s.makeS(this);
+                s.makeS();
             } catch (Exception e) {
             }
 
@@ -339,7 +344,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
      *
      * @return paths to all available SD-Cards in the system (include emulated)
      */
-    public static String[] getStorageDirectories() {
+    public  String[] getStorageDirectories() {
         // Final set of paths
         final Set<String> rv = new HashSet<String>();
         // Primary physical SD-CARD (not emulated)
@@ -386,6 +391,19 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             // All Secondary SD-CARDs splited into array
             final String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
             Collections.addAll(rv, rawSecondaryStorages);
+        }
+        if(rootmode)
+        rv.add("/");
+        try {
+           for(File file: s.readS()){
+               rv.add(file.getPath());
+           }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
         }
         return rv.toArray(new String[rv.size()]);
     }
@@ -447,7 +465,11 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             }, 2000);
         }
     }
-
+public void updateDrawer(String path){
+    if(list.contains(path))
+    {select= list.indexOf(path);
+        adapter.toggleChecked(select);
+}}
     public void selectItem(int i) {
 
         if (i < list.size() - 2) {

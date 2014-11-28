@@ -56,7 +56,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class BookmarksManager extends ListFragment {
     Futils utils = new Futils();
-    Shortcuts s = new Shortcuts();
+    Shortcuts s;
     BooksAdapter b;
     SharedPreferences Sp;
     public IconUtils icons;
@@ -67,6 +67,7 @@ ListView vl;int theme,theme1;
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
         setRetainInstance(false);
+        s = new Shortcuts(getActivity());
         Calendar calendar = Calendar.getInstance();
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         int hour = calendar.get(Calendar.HOUR_OF_DAY);

@@ -129,6 +129,9 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
         ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
         if(values.get(position).equals("/storage/emulated/0"))
             textView.setText(futils.getString(context,R.string.storage));
+        else if(values.get(position).equals("/")){
+            textView.setText(R.string.rootdirectory);
+        }
         else {
             if (position != values.size() - 1 && position != values.size() - 2){
                 textView.setText(new File(values.get(position)).getName());

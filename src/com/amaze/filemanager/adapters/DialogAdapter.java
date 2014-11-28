@@ -39,7 +39,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class DialogAdapter extends ArrayAdapter<File> {
-    Shortcuts s = new Shortcuts();
+    Shortcuts s;
     Activity context;
     Main m;
     public ArrayList<File> items;
@@ -52,6 +52,7 @@ public class DialogAdapter extends ArrayAdapter<File> {
         this.items = items;
         this.m=m;
         this.materialDialog=materialDialog;
+        s = new Shortcuts(context);
     }
 
 

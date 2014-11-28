@@ -111,7 +111,7 @@ public class Main extends android.support.v4.app.Fragment {
     public int sortby, dsort, asc;
     public int uimode;
     public String home, current = Environment.getExternalStorageDirectory().getPath();
-    Shortcuts sh = new Shortcuts();
+    Shortcuts sh;
     HashMap<String, Bundle> scrolls = new HashMap<String, Bundle>();
     Main ma = this;
     public HistoryManager history,hidden;
@@ -150,7 +150,7 @@ public class Main extends android.support.v4.app.Fragment {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#5677fc");
-
+        sh = new Shortcuts(getActivity());
         aBoolean = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -682,7 +682,7 @@ public class Main extends android.support.v4.app.Fragment {
                         listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
                     }
                 }
-                bbar(current);} catch (Exception e) {
+                bbar(current);mainActivity.updateDrawer(current);} catch (Exception e) {
             }
         }
         else{//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();

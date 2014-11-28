@@ -36,7 +36,7 @@ import com.amaze.filemanager.utils.Shortcuts;
 import java.io.File;
 import java.util.ArrayList;
 public class BooksAdapter extends ArrayAdapter<File> {
-    Shortcuts s = new Shortcuts();
+    Shortcuts s;
     Activity context;
     public ArrayList<File> items;
     BookmarksManager b;
@@ -47,6 +47,7 @@ public class BooksAdapter extends ArrayAdapter<File> {
         this.context = context;
         this.items = items;
         this.b = b;
+        s = new Shortcuts(context);
     }
 
 
