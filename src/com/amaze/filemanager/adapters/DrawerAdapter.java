@@ -149,10 +149,10 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
                 imageView.setImageDrawable(icons.getGridDrawable());
         }else{
             if(myChecked.get(position)){
-                imageView.setImageResource(R.drawable.ic_action_sd_storage);
+                imageView.setImageResource(R.drawable.folder_drawer_white);
                 imageView.setColorFilter(colorMatrixColorFilter);}
             else
-                imageView.setImageDrawable(icons.getSdDrawable1());
+                imageView.setImageResource(R.drawable.folder_drawer);
         }
         if(myChecked.get(position)){
             imageView.setColorFilter(colorMatrixColorFilter);
