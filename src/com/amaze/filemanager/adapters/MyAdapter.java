@@ -269,8 +269,9 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 holder.date.setText(rowItem.getDate("MMM dd, yyyy",main.year));
             if (main.showSize){
                 String size=rowItem.getSize();
-                if(size.equals(main.goback))
+                if(size.equals(main.goback)){
                     holder.date.setText(size);
+                holder.txtDesc.setText("");}
                     else
                 holder.txtDesc.setText(rowItem.getSize());}
             return view;
