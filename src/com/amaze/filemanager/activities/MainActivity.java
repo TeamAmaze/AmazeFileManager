@@ -76,10 +76,13 @@ import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -101,7 +104,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public Spinner tabsSpinner;
     private TabHandler tabHandler;
     ImageButton paste;
-    public String[] val;
+    public List<String> val;
     ProgressWheel progress;
     DrawerAdapter adapter;
     IconUtils util;
@@ -218,7 +221,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             } catch (Exception e) {
             }
 
-            File file = new File(val[0]);
+            File file = new File(val.get(0));
             tabHandler.addTab(new Tab(0, file.getName(), file.getPath()));
             Sp.edit().putString("home", file.getPath()).apply();
             Sp.edit().putBoolean("firstrun", false).commit();
@@ -227,11 +230,11 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         list = new ArrayList<String>();
-        for (int i = 0; i < val.length; i++) {
-            File file = new File(val[i]);
+        for (int i = 0; i < val.size(); i++) {
+            File file = new File(val.get(i));
             if (file.canExecute()) {
 
-                list.add(val[i]);
+                list.add(val.get(i));
             }
         }
         list.add(utils.getString(this, R.string.apps));
@@ -344,9 +347,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
      *
      * @return paths to all available SD-Cards in the system (include emulated)
      */
-    public  String[] getStorageDirectories() {
+    public  List<String> getStorageDirectories() {
         // Final set of paths
-        final Set<String> rv = new HashSet<String>();
+        final ArrayList<String> rv=new ArrayList<String>();
         // Primary physical SD-CARD (not emulated)
         final String rawExternalStorage = System.getenv("EXTERNAL_STORAGE");
         // All Secondary SD-CARDs (all exclude primary) separated by ":"
@@ -393,11 +396,11 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             Collections.addAll(rv, rawSecondaryStorages);
         }
         if(rootmode)
-        rv.add("/");
+            rv.add("/");
         try {
-           for(File file: s.readS()){
-               rv.add(file.getPath());
-           }
+            for(File file: s.readS()){
+                rv.add(file.getPath());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SAXException e) {
@@ -405,7 +408,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
-        return rv.toArray(new String[rv.size()]);
+
+        return rv;
     }
 
     private boolean backHome(Main main) {

@@ -294,7 +294,7 @@ public class Main extends android.support.v4.app.Fragment {
         getSortModes();
         darkimage=res.getDrawable(R.drawable.ic_doc_image_dark);
         darkvideo=res.getDrawable(R.drawable.ic_doc_video_dark);
-        home = Sp.getString("home", mainActivity.val[mainActivity.select]);
+        home = Sp.getString("home", mainActivity.val.get(mainActivity.select));
         this.setRetainInstance(false);
         int pos = Sp.getInt("spinner_selected", 0);
         String path=content.get(pos).getPath();
