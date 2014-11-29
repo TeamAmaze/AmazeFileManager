@@ -55,6 +55,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.Tab;
@@ -67,6 +69,7 @@ import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
+import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.pnikosis.materialishprogress.ProgressWheel;
@@ -725,8 +728,8 @@ public void updateDrawer(String path){
 
                 File f = new File(path);
 
-                for (File k : f.listFiles()) {
-
+                for (String k1[] : RootHelper.getFilesList(f.getPath(),rootmode,true)) {
+                    File k=new File(k1[0]);
                     for (String j : ab) {
 
                         if (k.getName().equals(new File(j).getName())) {
@@ -761,22 +764,23 @@ public void updateDrawer(String path){
                 }
             } else {
 
-                AlertDialog.Builder x = new AlertDialog.Builder(MainActivity.this);
+                final MaterialDialog.Builder x = new MaterialDialog.Builder(MainActivity.this);
                 LayoutInflater layoutInflater = (LayoutInflater) MainActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
                 View view = layoutInflater.inflate(R.layout.copy_dialog, null);
-                x.setView(view);
-
+                x.customView(view);
                 // textView
                 TextView textView = (TextView) view.findViewById(R.id.textView);
                 textView.setText(utils.getString(con,R.string.fileexist) + new File(a.get(counter)).getName());
                 // checkBox
                 final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
 
-                x.setTitle(utils.getString(con,R.string.paste));
-                x.setPositiveButton(utils.getString(con,R.string.skip), new DialogInterface.OnClickListener() {
-
+                x.title(utils.getString(con, R.string.paste));
+                x.positiveText(R.string.skip);
+                x.negativeText(R.string.overwrite);
+                x.neutralText(R.string.cancel);
+                x.callback(new MaterialDialog.Callback() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onPositive(MaterialDialog materialDialog) {
 
                         if (counter < a.size()) {
 
@@ -794,13 +798,10 @@ public void updateDrawer(String path){
                             }
                             showDialog();
                         }
-                        dialogInterface.cancel();
                     }
-                });
-                x.setNeutralButton(utils.getString(con,R.string.overwrite), new DialogInterface.OnClickListener() {
 
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onNegative(MaterialDialog materialDialog) {
 
                         if (counter < a.size()) {
 
@@ -813,23 +814,14 @@ public void updateDrawer(String path){
                             }
                             showDialog();
                         }
-                        dialogInterface.cancel();
+
                     }
                 });
-                x.setNegativeButton(utils.getString(con,R.string.cancel), new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        dialogInterface.cancel();
-                    }
-                });
-
-                AlertDialog dialog = x.create();
-
-                dialog.show();
+                final MaterialDialog y=x.build();
+                y.show();
                 if (new File(ab.get(0)).getParent().equals(path)) {
-                    dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setEnabled(false);
+                    View negative = y.getActionButton(DialogAction.NEGATIVE);
+                    negative.setEnabled(false);
                 }
             }
         }
