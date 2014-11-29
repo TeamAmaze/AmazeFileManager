@@ -154,7 +154,7 @@ public class AppsList extends ListFragment {
                             ArrayList<Integer> arrayList1 = new ArrayList<Integer>();
                             arrayList1.add(position);
                             File f1 = new File(info1.publicSourceDir);
-                            arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1), false));
+                            arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1),"", false));
                             utils.deleteFiles(arrayList, null, arrayList1);
                         } else {
                             unin(c.get(position).packageName);
@@ -206,7 +206,7 @@ public class AppsList extends ListFragment {
                 }
                 Collections.sort(c, new AppsSorter(p));
                 for (ApplicationInfo object:c)
-                a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk_grid), object.loadLabel(getActivity().getPackageManager()).toString(), object.publicSourceDir,"","","",false));
+                a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk_grid), object.loadLabel(getActivity().getPackageManager()).toString(), object.publicSourceDir,"","","","",false));
 
             } catch (Exception e) {
                 //Toast.makeText(getActivity(), "" + e, Toast.LENGTH_LONG).show();

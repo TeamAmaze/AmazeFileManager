@@ -47,6 +47,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.annotation.StringDef;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.view.ActionMode;
@@ -555,7 +556,7 @@ public class Main extends android.support.v4.app.Fragment {
 
 
             final File f = new File(path);
-            if (f.isDirectory()) {
+            if (slist.get(position).isDirectory(rootMode)) {
 
                 loadlist(f, false);
                 results = false;
@@ -590,7 +591,7 @@ public class Main extends android.support.v4.app.Fragment {
 
                 final File f = new File(path);
 
-                if (f.isDirectory()) {
+                if (l.isDirectory(rootMode)) {
 
                     computeScroll();
                     loadlist(f, false);
@@ -652,7 +653,7 @@ public class Main extends android.support.v4.app.Fragment {
             }
             if(!f.getPath().equals("/")){
                 if(bitmap.size()==0 || !bitmap.get(0).getSize().equals(goback))
-                    bitmap.add(0,utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha),"...", "","",goback,true));
+                    bitmap.add(0,utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha),"...", "","",goback,"",true));
             }
             adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
                     bitmap, ma);
@@ -1209,17 +1210,24 @@ public class Main extends android.support.v4.app.Fragment {
         super.onStop();
 
     }
+
+    public boolean isDirectory(boolean rootmode,String[] val){
+        if(rootmode)
+            return val[3]=="-1";
+        else
+            return new File(val[0]).isDirectory();
+    }
     public ArrayList<Layoutelements> addTo(ArrayList<String[]> mFile) {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         for (int i = 0; i < mFile.size(); i++) {
             File f=new File(mFile.get(i)[0]);
             if(!hiddenfiles.contains(mFile.get(i)[0])){
-                if (f.isDirectory()) {
-                    a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f,res),false));
+                if (isDirectory(rootMode,mFile.get(i))) {
+                    a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f,res),mFile.get(i)[3],false));
 
                 } else {
                     try {
-                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.getSize(mFile.get(i)),false));
+                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.getSize(mFile.get(i)),mFile.get(i)[3],false));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }}

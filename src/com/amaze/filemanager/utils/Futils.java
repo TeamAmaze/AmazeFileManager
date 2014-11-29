@@ -458,8 +458,8 @@ public class Futils {
         }
     }
 
-    public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size,boolean b) {
-        Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size,b);
+    public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size,String directorybool,boolean b) {
+        Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size,directorybool,b);
         return item;
     }
 
@@ -708,24 +708,29 @@ public class Futils {
             return per;}
     }
     public String[] parseName(String line){
-        boolean linked=false;String name="",link="";
+        boolean linked=false;String name="",link="",size="-1";
         String[] array=line.split(" ");
         for(int i=0;i<array.length;i++){
             if(array[i].contains("->")){linked=true;}
         }
         if(!linked){int p=getColonPosition(array);
+            size=array[p-2];
             for(int i=p+1;i<array.length;i++){name=name+" "+array[i];}
             name=name.trim();
-            return new String[]{name,"",array[0]};
+            if(size.equals(""))size="-1";
+            return new String[]{name,"",array[0],size};
         }
         else if(linked){int p=getColonPosition(array);
+            size=array[p-2];
             int q=getLinkPosition(array);
             for(int i=p+1;i<q;i++){name=name+" "+array[i];}
             name=name.trim();
             for(int i=q+1;i<array.length;i++){link=link+" "+array[i];}
-            return  new String[]{name,link,array[0]};
+            if(size.equals(""))size="-1";
+            return  new String[]{name,link,array[0],size};
         }
-        return new String[]{name,"",array[0]};
+        if(size.equals(""))size="-1";
+        return new String[]{name,"",array[0],size};
     }
     public int getLinkPosition(String[] array){
         for(int i=0;i<array.length;i++){

@@ -38,6 +38,7 @@ public class Layoutelements implements Parcelable {
         desc = im.readString();
         permissions=im.readString();
         symlink=im.readString();
+        directorybool=im.readString();
         int i=im.readInt();
         if(i==0){header=false;}
         else{header=true;}
@@ -58,6 +59,7 @@ public class Layoutelements implements Parcelable {
         p1.writeString(desc);
         p1.writeString(permissions);
         p1.writeString(symlink);
+        p1.writeString(directorybool);
         p1.writeLong(date);
         p1.writeInt(header ? 1 : 0);
         p1.writeParcelable(((BitmapDrawable) imageId).getBitmap(), p2);
@@ -70,9 +72,10 @@ public class Layoutelements implements Parcelable {
     private String permissions;
     private String symlink;
     private String size;
+    private String directorybool;
     private long date;
     boolean header;
-    public Layoutelements(Drawable imageId, String title, String desc,String permissions,String symlink,String size,boolean header) {
+    public Layoutelements(Drawable imageId, String title, String desc,String permissions,String symlink,String size,String direcorybool,boolean header) {
         this.imageId = imageId;
         this.title = title;
         this.desc = desc;
@@ -80,6 +83,7 @@ public class Layoutelements implements Parcelable {
         this.symlink=symlink.trim();
         this.size=size;
         this.header=header;
+        this.directorybool=direcorybool;
         if(!header)
         date=new File(desc).lastModified();
 
@@ -99,7 +103,12 @@ public class Layoutelements implements Parcelable {
         return title.toString();
     }
 
-
+public boolean isDirectory(boolean rootmode){
+    if(rootmode)
+        return directorybool=="-1";
+        else
+    return new File(getDesc()).isDirectory();
+    }
     public String getSize() {
         return  size;
     }
