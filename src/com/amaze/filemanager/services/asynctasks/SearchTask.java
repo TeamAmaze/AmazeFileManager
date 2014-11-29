@@ -20,7 +20,9 @@
 package com.amaze.filemanager.services.asynctasks;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -32,6 +34,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.RootHelper;
+import com.pnikosis.materialishprogress.ProgressWheel;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -68,6 +71,7 @@ Futils futils=new Futils();
         a.cancelable(false);
         View v=m.getLayoutInflater().inflate(R.layout.progressdialog,null);
         textView=(TextView)v.findViewById(R.id.title);
+        ((ProgressWheel)v.findViewById(R.id.progressBar)).setBarColor(Color.parseColor(m.skin));
         a.customView(v);
         b=a.build();
         b.show();
