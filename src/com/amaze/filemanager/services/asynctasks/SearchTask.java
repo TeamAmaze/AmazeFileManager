@@ -23,7 +23,10 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.Main;
@@ -34,10 +37,12 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class SearchTask extends AsyncTask<Bundle, String, ArrayList<String[]>> {
-    ProgressDialog a;
+    MaterialDialog.Builder a;
+    MaterialDialog b;
     boolean run = true;
     MainActivity m;
     Main tab;
+    TextView textView;
 Futils futils=new Futils();
     public SearchTask(MainActivity m, Main tab) {
         this.m = m;
@@ -46,26 +51,33 @@ Futils futils=new Futils();
 
     @Override
     public void onPreExecute() {
-        a = new ProgressDialog(m);
-        a.setIndeterminate(true);
-        a.setTitle(futils.getString(tab.getActivity(), R.string.searching));
-        a.setButton(futils.getString(tab.getActivity(), R.string.cancel), new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface p1, int p2) {
+        a = new MaterialDialog.Builder(m);
+        a.title(futils.getString(tab.getActivity(), R.string.searching));
+        a.positiveText(futils.getString(tab.getActivity(), R.string.cancel));
+        a.callback(new MaterialDialog.Callback() {
+            @Override
+            public void onPositive(MaterialDialog materialDialog) {
                 run = false;
-                a.dismiss();
-                // TODO: Implement this method
+            }
+
+            @Override
+            public void onNegative(MaterialDialog materialDialog) {
+
             }
         });
-        a.setCancelable(false);
-        a.show();
+        a.cancelable(false);
+        View v=m.getLayoutInflater().inflate(R.layout.progressdialog,null);
+        textView=(TextView)v.findViewById(R.id.title);
+        a.customView(v);
+        b=a.build();
+        b.show();
 
     }
 
     @Override
     public void onProgressUpdate(String... val) {
         if (a != null) {
-            a.setMessage(futils.getString(tab.getActivity(), R.string.searching)+" " + val[0]);
+           textView.setText(futils.getString(tab.getActivity(), R.string.searching)+" " + val[0]);
         }
 
     }
@@ -85,7 +97,7 @@ Futils futils=new Futils();
 
             tab.loadsearchlist(c);
         }
-        a.dismiss();
+        b.dismiss();
     }
 
     ArrayList<String[]> lis = new ArrayList<String[]>();
