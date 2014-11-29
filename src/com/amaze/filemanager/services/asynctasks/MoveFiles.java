@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.CopyService;
+import com.amaze.filemanager.utils.Futils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class MoveFiles extends AsyncTask<String,Void,Boolean> {
         if(b && ma!=null){if(ma.current.equals(path))ma.updateList();}
         if(!b){
             Intent intent = new Intent(context, CopyService.class);
-            intent.putExtra("FILE_PATHS", files);
+            intent.putExtra("FILE_PATHS", new Futils().toStringArray(files));
             intent.putExtra("COPY_DIRECTORY", path);
             context.startService(intent);}
     }
