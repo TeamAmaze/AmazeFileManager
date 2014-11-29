@@ -86,6 +86,7 @@ public class RootHelper
         return true;
     }
 
+
     public static String getCommandLineString(String input) {
         return input.replaceAll(UNIX_ESCAPE_EXPRESSION, "\\\\$1");
     }	private static final String UNIX_ESCAPE_EXPRESSION = "(\\(|\\)|\\[|\\]|\\s|\'|\"|`|\\{|\\}|&|\\\\|\\?)";
@@ -96,10 +97,13 @@ public class RootHelper
         try {
             if(f.exists() && f.isDirectory()){
                 for(File x:f.listFiles()){
+                    String k="";
+                    if(x.isDirectory())
+                        k="-1";
                     if(showHidden){
-                        files.add(new String[]{x.getPath(),"",parseFilePermission(x)});
+                        files.add(new String[]{x.getPath(),"",parseFilePermission(x),k});
                     }
-                    else{if(!x.isHidden()){files.add(new String[]{x.getPath(),"",parseFilePermission(x)});}}
+                    else{if(!x.isHidden()){files.add(new String[]{x.getPath(),"",parseFilePermission(x),k});}}
                 }
             }}catch (Exception e){}
 
@@ -142,10 +146,10 @@ public class RootHelper
             List<String> files = Arrays.asList(ls.split("\n"));
 
             for (String file : files) {
-
-                String[] array=futils.parseName(file);
+                if(!file.contains("Permissioon denied"))
+                {String[] array=futils.parseName(file);
                 array[0]=path+"/"+array[0];
-                a.add(array);
+                a.add(array);}
             }
             return a;
         }
