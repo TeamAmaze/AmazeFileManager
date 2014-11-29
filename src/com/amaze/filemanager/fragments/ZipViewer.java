@@ -21,6 +21,7 @@ package com.amaze.filemanager.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.widget.Toast;
 
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
@@ -42,6 +43,7 @@ public class ZipViewer extends ListFragment {
         f = new File(s);
         new ZipHelperTask(this).execute(f);
         files = new ArrayList<File>();
+        Toast.makeText(getActivity(), "test commit", Toast.LENGTH_LONG).show();
     }
 
     @Override
