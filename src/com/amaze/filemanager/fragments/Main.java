@@ -25,6 +25,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,6 +37,7 @@ import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -42,6 +45,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.view.ActionMode;
@@ -727,6 +732,7 @@ public class Main extends android.support.v4.app.Fragment {
             hideOption(R.id.about, menu);
             hideOption(R.id.openwith, menu);
             hideOption(R.id.ex, menu);
+            hideOption(R.id.setringtone,menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
             if(Build.VERSION.SDK_INT<19)
                 getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
@@ -753,7 +759,9 @@ public class Main extends android.support.v4.app.Fragment {
                     showOption(R.id.ex, menu);
                     hideOption(R.id.sethome, menu);
                     showOption(R.id.share, menu);
-                } else {
+                }else if(x.getName().endsWith(".mp3"))
+                {showOption(R.id.setringtone,menu);}
+                else {
                     hideOption(R.id.ex, menu);
                     hideOption(R.id.sethome, menu);
                     showOption(R.id.openwith, menu);
@@ -797,6 +805,16 @@ public class Main extends android.support.v4.app.Fragment {
                     utils.showProps(new File(x), ma,rootMode);
                     mode.finish();
                     return true;
+                case R.id.setringtone:
+                    File fx;
+                    if(results)
+                        fx=new File(slist.get((plist.get(0))).getDesc());
+                        else
+                    fx=new File(list.get((plist.get(0))).getDesc());
+                    Uri uri = MediaStore.Audio.Media.getContentUriForPath(fx.getPath());
+                    Settings.System.putString(getActivity().getContentResolver(),
+                            Settings.System.RINGTONE, uri.toString());
+                                        return true;
                 case R.id.delete:
                     if(results)
                         utils.deleteFiles(slist,ma,plist);

@@ -93,14 +93,16 @@ public class RootHelper
     public static ArrayList<String[]> getFilesList(String path,boolean showHidden){
         File f=new File(path);
         ArrayList<String[]> files=new ArrayList<String[]>();
-        if(f.exists() && f.isDirectory()){
-            for(File x:f.listFiles()){
-                if(showHidden){
-                    files.add(new String[]{x.getPath(),"",parseFilePermission(x)});
+        try {
+            if(f.exists() && f.isDirectory()){
+                for(File x:f.listFiles()){
+                    if(showHidden){
+                        files.add(new String[]{x.getPath(),"",parseFilePermission(x)});
+                    }
+                    else{if(!x.isHidden()){files.add(new String[]{x.getPath(),"",parseFilePermission(x)});}}
                 }
-                else{if(!x.isHidden()){files.add(new String[]{x.getPath(),"",parseFilePermission(x)});}}
-            }
-        }
+            }}catch (Exception e){}
+
 
         return files;}
     public static String parseFilePermission(File f){

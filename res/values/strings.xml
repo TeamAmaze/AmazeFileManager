@@ -241,5 +241,6 @@
     <string name="typeDesc">Type (Desc)</string>
     <string name="rootdirectory">root</string>
     <string name="new_string">New</string>
+    <string name="setringtone">Set as ringtone</string>
 </resources>
 
