@@ -504,7 +504,7 @@ public class Futils {
         String[] sort = m.getResources().getStringArray(R.array.sortby);
         int current = Integer.parseInt(m.Sp.getString("sortby", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-        if(m.theme1==1)a.theme(Theme.DARK);
+        a.positiveText(R.string.cancel);if(m.theme1==1)a.theme(Theme.DARK);
         a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog dialog, View view, int which, String text) {
@@ -515,8 +515,7 @@ public class Futils {
                 dialog.cancel();
             }
         });
-        a.title( R.string.sortby);
-        a.negativeText( R.string.cancel);
+        a.title(R.string.sortby);
         a.build().show();
     }
 
