@@ -175,6 +175,8 @@ public class CopyService extends Service {
                 if (move) {
                     new DeleteTask(getContentResolver(), null, c).execute(utils.toFileArray(files));
                 }
+                Intent intent = new Intent("loadlist");
+                sendBroadcast(intent);
             } else if (rootmode) {
                 RootTools.remount(FILE2, "rw");
                 for (int i = 0; i < files.size(); i++) {
@@ -193,6 +195,8 @@ public class CopyService extends Service {
                     public void commandCompleted(int i, int i2) {
                         if(move){new DeleteTask(getContentResolver(),null,c).execute(utils.toFileArray(files));}
                         utils.scanFile(FILE2+"/"+new File(files.get(i)).getName(), c);
+                        Intent intent = new Intent("loadlist");
+                        sendBroadcast(intent);
                     }
                 };
                 try {
@@ -207,8 +211,6 @@ public class CopyService extends Service {
                 } }else {
                     System.out.println("Not Allowed");
                 }
-                Intent intent = new Intent("loadlist");
-                sendBroadcast(intent);
             }
 
         private void copyFiles(File sourceFile, File targetFile, int id,boolean move) throws IOException {

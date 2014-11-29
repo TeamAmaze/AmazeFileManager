@@ -50,7 +50,7 @@ File f1;if(!file1.hasSymlink()){
 
             } else if (f2.isDirectory() && (f1).isFile()) {
                 return 1;
-            }
+            } //else {return 1;}
         } else if (dirsOnTop == 1) {
             if (f1.isDirectory() && f2.isFile()) {
                 return 1;
@@ -58,33 +58,33 @@ File f1;if(!file1.hasSymlink()){
 
             } else if (f2.isDirectory() && (f1).isFile()) {
                 return -1;
-            }
+            }else{return 1;}
         } else {
         }
 
         if (sort == 0) {
-            return asc * f1.getName().compareToIgnoreCase(f2.getName());
+            return asc * file1.getTitle().compareToIgnoreCase(file2.getTitle());
         } else if (sort == 1) {
             return asc * Long.valueOf(f1.lastModified()).compareTo(Long.valueOf(f2.lastModified()));
         } else if (sort == 2) {
             if (f1.isFile() && f2.isFile()) {
                 return asc * Long.valueOf(f1.length()).compareTo(Long.valueOf(f2.length()));
             } else {
-                return f1.getName().compareToIgnoreCase(f2.getName());
+                return file1.getTitle().compareToIgnoreCase(file2.getTitle());
             }
         }
         else if(sort ==3){
 if(f1.isFile() && f2.isFile()){
-            final String ext_a = getExtension(f1.getName());
-            final String ext_b = getExtension(f2.getName());
+            final String ext_a = getExtension(file1.getTitle());
+            final String ext_b = getExtension(file2.getTitle());
 
 
             final int res = asc*ext_a.compareTo(ext_b);
             if (res == 0) {
-                return asc * f1.getName().compareToIgnoreCase(f2.getName());
+                return asc * file1.getTitle().compareToIgnoreCase(file2.getTitle());
             }
             return res;}
-            else{return  f1.getName().compareToIgnoreCase(f2.getName());}
+            else{return  file1.getTitle().compareToIgnoreCase(file2.getTitle());}
         }
 
 
