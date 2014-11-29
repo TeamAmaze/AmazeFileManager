@@ -38,15 +38,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.afollestad.materialdialogs.list.ItemProcessor;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.TextReader;
-import com.amaze.filemanager.adapters.DialogAdapter;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ZipViewer;
@@ -55,16 +57,12 @@ import com.amaze.filemanager.services.ZipTask;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
 
-import org.xml.sax.SAXException;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 public class Futils {
 
@@ -522,79 +520,121 @@ public class Futils {
         a.build().show();
     }
 
-    public void showDirectorySortDialog(final Main m) {
-        String[] sort = m.getResources().getStringArray(R.array.directorysortmode);
-        MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-        if(m.theme1==1)a.theme(Theme.DARK);
-        int current = Integer.parseInt(m.Sp.getString("dirontop", "0"));
-        a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
-            @Override
-            public void onSelection(MaterialDialog dialog, View view, int which, String text) {
-                m.Sp.edit().putString("dirontop", "" + which).commit();
-                m.getSortModes();
-                m.loadlist(new File(m.current), false);
-                // dismiss the dialog since we don't want it open after selection:
-                dialog.dismiss();
-            }
-        });
-        a.title(R.string.directorysort);
-        a.negativeText(R.string.cancel);
-        a.build().show();
-    }
-
     public void showHistoryDialog(final Main m) {
         final ArrayList<String> paths = m.history.readTable();
-
+        String[] a=new String[paths.size()];
+        for(int i=0;i<paths.size();i++){a[i]=paths.get(i);}
         final MaterialDialog.Builder ba = new MaterialDialog.Builder(m.getActivity());
         ba.title(getString(m.getActivity(), R.string.history));
-        DialogAdapter adapter = new DialogAdapter(m,m.getActivity(), R.layout.bookmarkrow, toFileArray(paths),ba);
-        LayoutInflater layoutInflater = (LayoutInflater) m.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.list_dialog, null);
-        ListView listView = (ListView) view.findViewById(R.id.listView);
-        listView.setAdapter(adapter);
         if(m.theme1==1)
             ba.theme(Theme.DARK);
-        ba.customView(view);
-        ba.negativeText(R.string.cancel);
-        ba.autoDismiss(true);
+        ba.positiveText(R.string.cancel);
+        ba.items(a);
+        ba.itemsCallback(new MaterialDialog.ListCallback() {
+            @Override
+            public void onSelection(MaterialDialog materialDialog, View view, int i, String s) {
+                final File f = new File(s);
+                if (f.isDirectory()) {
+
+                    m.loadlist(f, false);
+                } else {
+                    m.utils.openFile(f, (MainActivity) m.getActivity());
+                }
+            }
+        });
+        ba.itemProcessor(new ButtonItemProcessor(m.getActivity(), m));
         ba.build().show();
 
     }
+    public class ButtonItemProcessor extends ItemProcessor implements View.OnClickListener {
+      Main main;
+        public ButtonItemProcessor(Context context,Main main) {
+            super(context);
+            this.main=main;
+        }
+
+        @Override
+        protected int getLayout(int forIndex) {
+            // Returning 0 would use the default list item layout
+            return R.layout.bookmarkrow;
+        }
+
+        @Override
+        protected void onViewInflated(final int i,final String s, View view) {
+             view.findViewById(R.id.delete_button).setVisibility(View.GONE);
+            TextView txtDesc = (TextView) view.findViewById(R.id.text2);
+            LinearLayout row=(LinearLayout)view.findViewById(R.id.bookmarkrow);
+            TextView txtTitle = (TextView) view.findViewById(R.id.text1);
+            txtTitle.setText(new File(s).getName());
+            txtDesc.setText(s);
+
+
+        }
+
+        @Override
+        public void onClick(View view) {
+
+        }
+    }
+    public class ButtonItemProcessor1 extends ItemProcessor implements View.OnClickListener {
+        Main main;
+       HistoryManager historyManager;
+        public ButtonItemProcessor1(Context context,Main main,HistoryManager historyManager) {
+            super(context);
+            this.main=main;
+            this.historyManager=historyManager;
+        }
+
+        @Override
+        protected int getLayout(int forIndex) {
+            // Returning 0 would use the default list item layout
+            return R.layout.bookmarkrow;
+        }
+
+        @Override
+        protected void onViewInflated(final int i,final String s, View view) {
+            view.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    historyManager.removePath(s);
+                    if(new File(s).isDirectory()){ArrayList<File> a=new ArrayList<File>();a.add(new File(s+"/.nomedia"));new DeleteTask(main.getActivity().getContentResolver(),main,main.getActivity()).execute(a);}
+       //             items.remove(items.get(p));
+                    main.updatehiddenfiles();
+
+                }
+            });
+            TextView txtDesc = (TextView) view.findViewById(R.id.text2);
+            LinearLayout row=(LinearLayout)view.findViewById(R.id.bookmarkrow);
+            TextView txtTitle = (TextView) view.findViewById(R.id.text1);
+            txtTitle.setText(new File(s).getName());
+            txtDesc.setText(s);
+
+
+        }
+
+        @Override
+        public void onClick(View view) {
+
+        }
+    }
+
     public void showHiddenDialog(final Main m) {
           final ArrayList<String> paths = m.hidden.readTable();
-            final ArrayList<File> fu=toFileArray(paths);
             final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-            a.title(getString(m.getActivity(), R.string.hiddenfiles));
-            HiddenAdapter adapter = new HiddenAdapter(
-            m.getActivity(),m, android.R.layout.select_dialog_item, fu,m.hidden,a);
-            ListView listView = new ListView(m.getActivity());
-            listView.setAdapter(adapter);
-            a.customView(listView);
-            a.negativeText(R.string.cancel);
-            a.build().show();
+        a.positiveText(R.string.cancel);
+        a.title(R.string.hiddenfiles);
+        if(m.theme1==1)
+            a.theme(Theme.DARK);
+        LayoutInflater layoutInflater = (LayoutInflater) m.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = layoutInflater.inflate(R.layout.list_dialog, null);
+        ListView listView = (ListView) view.findViewById(R.id.listView);
+        a.customView(view);
+        a.autoDismiss(true);
+        MaterialDialog x=a.build();
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.hidden,x);
+        listView.setAdapter(adapter);
+        x.show();
 
-    }
-    public void showBookmarkDialog(final Main m, Shortcuts sh) {
-        try {
-            final ArrayList<File> fu = sh.readS();
-
-            final MaterialDialog.Builder ba = new MaterialDialog.Builder(m.getActivity());
-            ba.title(getString(m.getActivity(), R.string.books));
-
-            DialogAdapter adapter = new DialogAdapter(m,
-                    m.getActivity(), android.R.layout.select_dialog_item, fu,ba);
-            LayoutInflater layoutInflater = (LayoutInflater) m.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = layoutInflater.inflate(R.layout.list_dialog, null);
-            ListView listView = (ListView) view.findViewById(R.id.listView);
-            listView.setAdapter(adapter);
-            if(m.theme1==1)ba.theme(Theme.DARK);
-            ba.customView(view);
-            ba.negativeText(R.string.cancel);
-            ba.build().show();
-        } catch (IOException e) {
-        } catch (ParserConfigurationException e) {
-        } catch (SAXException e) {
-        }
     }
     public void setPermissionsDialog(final Layoutelements f, final Main main){
         if(main.rootMode){

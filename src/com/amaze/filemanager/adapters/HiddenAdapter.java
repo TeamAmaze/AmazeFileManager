@@ -31,10 +31,10 @@ public class HiddenAdapter extends ArrayAdapter<File> {
     Main context;Context c;
     public ArrayList<File> items;
     HistoryManager hidden;
-    MaterialDialog.Builder materialDialog;
+    MaterialDialog materialDialog;
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public HiddenAdapter(Context c,Main context, int resourceId, ArrayList<File> items,HistoryManager hidden,MaterialDialog.Builder materialDialog) {
+    public HiddenAdapter(Context c,Main context, int resourceId, ArrayList<File> items,HistoryManager hidden,MaterialDialog materialDialog) {
         super(c, resourceId, items);
         this.c=c;
         this.context = context;
@@ -89,7 +89,7 @@ public class HiddenAdapter extends ArrayAdapter<File> {
         holder.row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //materialDialog.dismiss();
+                materialDialog.dismiss();
                 final File f = (items.get(p));
                 if (f.isDirectory()) {
 

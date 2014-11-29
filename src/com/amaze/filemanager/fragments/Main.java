@@ -1301,9 +1301,6 @@ public class Main extends android.support.v4.app.Fragment {
                     case R.id.history:
                         utils.showHistoryDialog(ma);
                         break;
-                    case R.id.book:
-                        utils.showBookmarkDialog(ma, sh);
-                        break;
                     case R.id.item3:
                         getActivity().finish();
                         break;

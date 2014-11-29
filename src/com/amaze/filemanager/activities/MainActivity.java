@@ -57,6 +57,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.Tab;
@@ -773,7 +774,7 @@ public void updateDrawer(String path){
                 textView.setText(utils.getString(con,R.string.fileexist) + new File(a.get(counter)).getName());
                 // checkBox
                 final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
-
+                if(theme1==1)x.theme(Theme.DARK);
                 x.title(utils.getString(con, R.string.paste));
                 x.positiveText(R.string.skip);
                 x.negativeText(R.string.overwrite);
