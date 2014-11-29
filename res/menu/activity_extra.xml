@@ -23,22 +23,13 @@
         />
     <item android:id="@+id/history"
         android:title="@string/history"
-/><item android:id="@+id/book"
-    android:title="@string/books"
-    />
-    <item
+/>  <item
         android:id="@+id/item4"
         android:title="@string/refresh"
    />
     <item
-        android:id="@+id/item9"
-        android:title="@string/sethome" />
-    <item
         android:id="@+id/item10"
         android:title="@string/sortby"/>
-    <item
-        android:id="@+id/item11"
-        android:title="@string/directorysort" />
     <item
         android:id="@+id/view" />
     <item

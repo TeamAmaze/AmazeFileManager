@@ -560,7 +560,9 @@ public class Main extends android.support.v4.app.Fragment {
                 loadlist(f, false);
                 results = false;
             } else {
-
+                if (mainActivity.mReturnIntent) {
+                    returnIntentResults(f);
+                } else
                 utils.openFile(f, (MainActivity) getActivity());
             }
         } else if (selection == true) {
@@ -1297,16 +1299,8 @@ public class Main extends android.support.v4.app.Fragment {
                     case R.id.item3:
                         getActivity().finish();
                         break;
-                    case R.id.item9:
-                        Sp.edit().putString("home", ma.current).apply();
-                        Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.newhomedirectory) + ma.home, Toast.LENGTH_LONG).show();
-                        ma.home = ma.current;
-                        break;
                     case R.id.item10:
                         utils.showSortDialog(ma);
-                        break;
-                    case R.id.item11:
-                        utils.showDirectorySortDialog(ma);
                         break;
                     case R.id.hiddenitems:
                         utils.showHiddenDialog(ma);
