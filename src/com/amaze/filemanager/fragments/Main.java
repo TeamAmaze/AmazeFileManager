@@ -155,7 +155,7 @@ public class Main extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        skin = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("skin_color", "#5677fc");
+        skin = Sp.getString("skin_color", "#5677fc");
         sh = new Shortcuts(getActivity());
         aBoolean = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();

@@ -481,33 +481,40 @@ public class Futils {
     }
 
     public void showNameDialog(final MainActivity m, final ArrayList<String> b, final String current) {
-        AlertDialog.Builder a = new AlertDialog.Builder(m);
+        MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         View v = m.getLayoutInflater().inflate(R.layout.dialog, null);
         final EditText e = (EditText) v.findViewById(R.id.newname);
         e.setText("Newzip.zip");
-        a.setView(v);
-        a.setTitle(getString(m, R.string.enterzipname));
+        a.customView(v);
+        a.title(getString(m, R.string.enterzipname));
         e.setHint(getString(m, R.string.enterzipname));
-        a.setPositiveButton(getString(m, R.string.create), new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface p1, int p2) {
+        a.positiveText(R.string.create);
+        a.callback(new MaterialDialog.Callback() {
+            @Override
+            public void onPositive(MaterialDialog materialDialog) {
                 Intent intent2 = new Intent(m, ZipTask.class);
                 String name = current + "/" + e.getText().toString();
                 intent2.putExtra("name", name);
                 intent2.putExtra("files", b);
                 m.startService(intent2);
-                // TODO: Implement this method
+            }
+
+            @Override
+            public void onNegative(MaterialDialog materialDialog) {
+
             }
         });
-        a.setNegativeButton(getString(m, R.string.cancel), null);
-        a.show();
+        a.negativeText(getString(m, R.string.cancel));
+        a.positiveColor(Color.parseColor(m.skin));
+        a.negativeColor(Color.parseColor(m.skin));
+        a.build().show();
     }
 
     public void showSortDialog(final Main m) {
         String[] sort = m.getResources().getStringArray(R.array.sortby);
         int current = Integer.parseInt(m.Sp.getString("sortby", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-        a.positiveText(R.string.cancel);if(m.theme1==1)a.theme(Theme.DARK);
+        if(m.theme1==1)a.theme(Theme.DARK);
         a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog dialog, View view, int which, String text) {
@@ -515,7 +522,7 @@ public class Futils {
                 m.Sp.edit().putString("sortby", "" + which).commit();
                 m.getSortModes();
                 m.loadlist(new File(m.current), false);
-                dialog.cancel();
+                dialog.dismiss();
             }
         });
         a.title(R.string.sortby);
@@ -531,6 +538,7 @@ public class Futils {
         if(m.theme1==1)
             ba.theme(Theme.DARK);
         ba.positiveText(R.string.cancel);
+        ba.positiveColor(Color.parseColor(m.skin));
         ba.items(a);
         ba.itemsCallback(new MaterialDialog.ListCallback() {
             @Override
@@ -578,52 +586,12 @@ public class Futils {
 
         }
     }
-    public class ButtonItemProcessor1 extends ItemProcessor implements View.OnClickListener {
-        Main main;
-       HistoryManager historyManager;
-        public ButtonItemProcessor1(Context context,Main main,HistoryManager historyManager) {
-            super(context);
-            this.main=main;
-            this.historyManager=historyManager;
-        }
-
-        @Override
-        protected int getLayout(int forIndex) {
-            // Returning 0 would use the default list item layout
-            return R.layout.bookmarkrow;
-        }
-
-        @Override
-        protected void onViewInflated(final int i,final String s, View view) {
-            view.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    historyManager.removePath(s);
-                    if(new File(s).isDirectory()){ArrayList<File> a=new ArrayList<File>();a.add(new File(s+"/.nomedia"));new DeleteTask(main.getActivity().getContentResolver(),main,main.getActivity()).execute(a);}
-       //             items.remove(items.get(p));
-                    main.updatehiddenfiles();
-
-                }
-            });
-            TextView txtDesc = (TextView) view.findViewById(R.id.text2);
-            LinearLayout row=(LinearLayout)view.findViewById(R.id.bookmarkrow);
-            TextView txtTitle = (TextView) view.findViewById(R.id.text1);
-            txtTitle.setText(new File(s).getName());
-            txtDesc.setText(s);
-
-
-        }
-
-        @Override
-        public void onClick(View view) {
-
-        }
-    }
 
     public void showHiddenDialog(final Main m) {
           final ArrayList<String> paths = m.hidden.readTable();
             final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
+        a.positiveColor(Color.parseColor(m.skin));
         a.title(R.string.hiddenfiles);
         if(m.theme1==1)
             a.theme(Theme.DARK);
@@ -671,6 +639,7 @@ public class Futils {
             exegroup.setChecked(exe[1]);
             exeother.setChecked(exe[2]);
             a.positiveText(R.string.set);
+            a.positiveColor(Color.parseColor(main.skin));
             a.callback(new MaterialDialog.Callback() {
                 @Override
                 public void onPositive(MaterialDialog materialDialog) {

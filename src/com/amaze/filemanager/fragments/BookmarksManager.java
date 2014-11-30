@@ -22,6 +22,7 @@ package com.amaze.filemanager.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
@@ -103,6 +104,9 @@ ListView vl;int theme,theme1;
                 if(theme1==1)ba1.theme(Theme.DARK);
                 ba1.negativeText(R.string.cancel);
                 ba1.positiveText(R.string.create);
+                String skin=Sp.getString("skin_color", "#5677fc");
+                ba1.positiveColor(Color.parseColor(skin));
+                ba1.negativeColor(Color.parseColor(skin));
                 ba1.callback(new MaterialDialog.Callback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {

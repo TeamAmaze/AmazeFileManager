@@ -789,6 +789,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 x.positiveText(R.string.skip);
                 x.negativeText(R.string.overwrite);
                 x.neutralText(R.string.cancel);
+                x.positiveColor(Color.parseColor(skin));
+                x.negativeColor(Color.parseColor(skin));
+                x.neutralColor(Color.parseColor(skin));
                 x.callback(new MaterialDialog.Callback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {

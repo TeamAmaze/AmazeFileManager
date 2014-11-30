@@ -126,7 +126,7 @@ public class ProcessViewer extends Fragment {
                             boolean move = b.getBoolean("move", false);
                             String text = utils.getString(getActivity(), R.string.copying) + "\n" + name + "\n" + utils.readableFileSize(done) + "/" + utils.readableFileSize(total) + "\n" + p1 + "%";
                             if (move) {
-                                text = utils.getString(getActivity(), R.string.copying) + "\n" + name + "\n" + utils.readableFileSize(done) + "/" + utils.readableFileSize(total) + "\n" + p1 + "%";
+                                text = utils.getString(getActivity(), R.string.moving) + "\n" + name + "\n" + utils.readableFileSize(done) + "/" + utils.readableFileSize(total) + "\n" + p1 + "%";
                             }
                             ((TextView) process.findViewById(R.id.progressText)).setText(text);
                             ProgressBar p = (ProgressBar) process.findViewById(R.id.progressBar1);

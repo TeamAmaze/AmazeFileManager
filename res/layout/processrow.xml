@@ -34,6 +34,7 @@
         <ImageView
             android:id="@+id/progressImage"
             android:layout_width="40dip"
+            android:padding="5dp"
             android:layout_height="match_parent" />
 
         <TextView

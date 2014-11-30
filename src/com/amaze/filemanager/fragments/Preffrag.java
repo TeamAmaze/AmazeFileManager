@@ -40,9 +40,12 @@ import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.stericson.RootTools.RootTools;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -60,7 +63,7 @@ public class Preffrag extends PreferenceFragment {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
-        final ListPreference ui = (ListPreference) findPreference("uimode");
+        final Preference ui = (Preference) findPreference("uimode");
         int th1 = Integer.parseInt(sharedPref.getString("theme", "0"));
         theme = th1;
         if (th1 == 2) {
@@ -70,24 +73,113 @@ public class Preffrag extends PreferenceFragment {
             } else
                 theme = 0;
         }if(th1==1){ui.setEnabled(false);}
-        ListPreference th = (ListPreference) findPreference("theme");
-        th.setOnPreferenceChangeListener(new ListPreference.OnPreferenceChangeListener() {
 
-            public boolean onPreferenceChange(Preference p1, Object p2) {
-                if(!sharedPref.getString("theme","0").equals("0"))
-                sharedPref.edit().putString("uimode","0").commit();
-                    restartPC(getActivity());
-                // TODO: Implement this method
+        findPreference("columns").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                final String[] sort = getResources().getStringArray(R.array.columns);
+                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                if(theme==1)a.theme(Theme.DARK);
+                a.title(R.string.gridcolumnno);
+                int current = Integer.parseInt(sharedPref.getString("columns", "0"));
+                if(current!=0)current=current-2;
+                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, String text) {
+                        sharedPref.edit().putString("columns", "" + sort[which]).commit();
+                        dialog.dismiss();
+                    }
+                });
+                a.build().show();
+                return true;
+            }
+        });
+        findPreference("uimode").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String[] sort = getResources().getStringArray(R.array.uimode);
+                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                if(theme==1)a.theme(Theme.DARK);
+                a.title(R.string.directorysort);
+                int current = Integer.parseInt(sharedPref.getString("uimode", "0"));
+                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, String text) {
+                        sharedPref.edit().putString("uimode", "" + which).commit();
+                        dialog.dismiss();
+                    }
+                });
+                a.build().show();
+                return true;
+            }
+        });
+        findPreference("dirontop").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String[] sort = getResources().getStringArray(R.array.directorysortmode);
+                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                if(theme==1)a.theme(Theme.DARK);
+                a.title(R.string.directorysort);
+                int current = Integer.parseInt(sharedPref.getString("dirontop", "0"));
+                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, String text) {
+                        sharedPref.edit().putString("dirontop", "" + which).commit();
+                        dialog.dismiss();
+                    }
+                });
+                a.build().show();
                 return true;
             }
         });
 
+        findPreference("theme").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String[] sort = getResources().getStringArray(R.array.theme);
+                int current = Integer.parseInt(sharedPref.getString("theme", "0"));
+                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                if(theme==1)a.theme(Theme.DARK);
+                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, String text) {
+                       sharedPref.edit().putString("theme", "" + which).commit();
+                        if(which!=0)
+                            sharedPref.edit().putString("uimode","0").commit();
+
+                        restartPC(getActivity());}
+                });
+                a.title(R.string.sortby);
+                a.build().show();
+                return true;
+            }
+        });
+        findPreference("sortby").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String[] sort = getResources().getStringArray(R.array.sortby);
+                int current = Integer.parseInt(sharedPref.getString("sortby", "0"));
+                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                if(theme==1)a.theme(Theme.DARK);
+                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, String text) {
+
+                        sharedPref.edit().putString("sortby", "" + which).commit();
+                dialog.dismiss();    }
+                });
+                a.title(R.string.sortby);
+                a.build().show();
+                return true;
+            }
+        });
         final Preference preference = (Preference) findPreference("skin");
         final int current = Integer.parseInt(sharedPref.getString("skin", ""+6));
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
 
+                final int current = Integer.parseInt(sharedPref.getString("skin", ""+6));
                 final String[] colors = new String[]{
                         "#e51c23",
                         "#e91e63",
@@ -108,38 +200,17 @@ public class Preffrag extends PreferenceFragment {
                         "#607d8b"
                 };
 
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.skin)
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        })
-                        .setPositiveButton(R.string.randomDialog, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                new MaterialDialog.Builder(getActivity())
+                        .title(R.string.skin).negativeText(R.string.cancel).items(R.array.skin).itemsCallbackSingleChoice(
+                current, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, String text) {
+                        sharedPref.edit().putString("skin", "" + which).commit();
 
-                                //sharedPref.edit().putString("skin", "" + i).commit();
-                                dialogInterface.cancel();
-                                restartPC(getActivity());
+                        restartPC(getActivity());
+                        sharedPref.edit().putString("skin_color", colors[which]).apply();
 
-                                // Random
-                                Random random = new Random();
-                                int pos = random.nextInt(colors.length - 1);
-                                sharedPref.edit().putString("skin_color", colors[pos]).commit();
-                            }
-                        })
-                        .setSingleChoiceItems(R.array.skin, current, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                sharedPref.edit().putString("skin", "" + i).commit();
-                                dialogInterface.cancel();
-                                restartPC(getActivity());
-                                sharedPref.edit().putString("skin_color", colors[i]).apply();
-
-                            }
-                        }).show();
+                    }}).build().show();
                 return false;
             }
         });

@@ -57,6 +57,7 @@ Futils futils=new Futils();
         a = new MaterialDialog.Builder(m);
         a.title(futils.getString(tab.getActivity(), R.string.searching));
         a.positiveText(futils.getString(tab.getActivity(), R.string.cancel));
+        a.positiveColor(Color.parseColor(m.skin));
         a.callback(new MaterialDialog.Callback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
