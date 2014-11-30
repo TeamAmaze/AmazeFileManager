@@ -66,6 +66,7 @@ import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.BookmarksManager;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
+import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.Futils;
@@ -263,7 +264,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 tabsSpinner.setVisibility(View.GONE);
             }
         }
-        if (select < 4) {
+        if (select < 4 &&select!=-2) {
             title.setText(list.get(select));
         }
         if (Build.VERSION.SDK_INT >= 19) {
@@ -318,10 +319,12 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 R.string.drawer_close  /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
-                if (select <= 5) {
+                if (select <= 5 && select!=-2) {
                     title.setText(list.get(select));
                     getActionBar().setSubtitle(list.get(select));
-                }// creates call to onPrepareOptionsMenu()
+                }else if(select==102)title.setText(R.string.process_viewer);
+                else if(select==-2){ ZipViewer zipViewer  = ((ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame));
+          title.setText(zipViewer.f.getName());     }// creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
@@ -429,7 +432,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     @Override
     public void onBackPressed() {
 
-        if (select < list.size() - 2) {
+        if (select < list.size() - 2 && select!=-2) {
             Main main = ((Main) getSupportFragmentManager().findFragmentById(R.id.content_frame));
 
             if (main.results == true) {
@@ -446,7 +449,14 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 } else exit();
 
             }
-        } else {
+        }else if(select==-2){
+            ZipViewer zipViewer  = ((ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame));
+            if (zipViewer.results) {
+
+                zipViewer.goBack();
+            } else selectItem(0);
+        }
+        else {
             selectItem(0);
         }
     }

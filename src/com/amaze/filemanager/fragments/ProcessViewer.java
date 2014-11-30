@@ -64,6 +64,8 @@ public class ProcessViewer extends Fragment {
                 container, false);
         setRetainInstance(false);
 
+        getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.search).setVisibility(View.INVISIBLE);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
         getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
         getActivity().findViewById(R.id.fab).setVisibility(View.GONE);

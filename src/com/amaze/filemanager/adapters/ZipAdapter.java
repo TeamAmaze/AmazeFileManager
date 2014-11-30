@@ -53,7 +53,7 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
         super(c, id, enter);
         this.enter = enter;
         this.c = c;
-        folder = c.getResources().getDrawable(R.drawable.ic_grid_folder1);
+        folder = c.getResources().getDrawable(R.drawable.folder);
         unknown = c.getResources().getDrawable(R.drawable.ic_doc_generic_am);
         this.zipViewer = zipViewer;
     }
