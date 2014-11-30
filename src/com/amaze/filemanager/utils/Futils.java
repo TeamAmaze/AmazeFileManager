@@ -138,15 +138,17 @@ public class Futils {
 
     }
 
-    public String getSize(String[] array) {
-        String sym=array[1];
-        long i;
-        if(sym!=null && sym.length()!=0){i=new File(array[1]).length();}
-        else
-            i = new File(array[0]).length();
+    public String getSize(String[] array,boolean showsize) {
+        if(showsize) {
+            String sym = array[1];
+            long i;
+            if (sym != null && sym.length() != 0) {
+                i = new File(array[1]).length();
+            } else
+                i = new File(array[0]).length();
 
-        return readableFileSize(i);
-
+            return readableFileSize(i);
+        }else return "";
     }
 
     public void deleteFiles(ArrayList<Layoutelements> a, final Main b, List<Integer> pos) {
@@ -185,15 +187,15 @@ public class Futils {
         c.build().show();
     }
 
-    public String count(File f,Resources root) {
-        try {
+    public String count(File f,Resources root,boolean showSize) {
+        if(showSize)try {
             Integer i=RootHelper.getCount(f);
             if(i!=null){return i+" "+root.getString(R.string.items);}
             else{return "";}
 
         } catch (Exception e) {
             return "";
-        }
+        }else{return "";}
     }
     public boolean canGoBack(File f) {
         try {
@@ -285,7 +287,7 @@ public class Futils {
         parent = getString(c.getActivity(), R.string.location) + f.getParent();
         if (f.isDirectory()) {
             size = getString(c.getActivity(), R.string.size) + readableFileSize(folderSize(f));
-            items = getString(c.getActivity(), R.string.totalitems) + count(f,c.getResources());
+            items = getString(c.getActivity(), R.string.totalitems) + count(f,c.getResources(),true);
         } else if (f.isFile()) {
             items = "";
             size = getString(c.getActivity(), R.string.size) + getSize(f);

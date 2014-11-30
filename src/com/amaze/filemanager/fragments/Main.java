@@ -123,7 +123,7 @@ public class Main extends android.support.v4.app.Fragment {
     public HistoryManager history,hidden;
     IconUtils icons;
     HorizontalScrollView scroll,scroll1;
-    public boolean rootMode, mountSystem,showHidden,showPermissions,showSize,showLastModified;
+    public boolean rootMode,showHidden,showPermissions,showSize,showLastModified;
     View footerView;
     public LinearLayout pathbar;
     private TextView textView;
@@ -172,7 +172,7 @@ public class Main extends android.support.v4.app.Fragment {
         mainActivity=(MainActivity)getActivity();
         tabHandler = new TabHandler(getActivity(), null, null, 1);
         showPermissions=Sp.getBoolean("showPermissions",false);
-        showSize=Sp.getBoolean("showFileSize",true);
+        showSize=Sp.getBoolean("showFileSize",false);
         showLastModified=Sp.getBoolean("showLastModified",true);
         icons = new IconUtils(Sp, getActivity());
         timer=new CountDownTimer(5000,1000) {
@@ -290,8 +290,7 @@ public class Main extends android.support.v4.app.Fragment {
         hidden = new HistoryManager(getActivity(), "Table2");
         hiddenfiles=hidden.readTable();
         rootMode = Sp.getBoolean("rootmode", false);
-        mountSystem = Sp.getBoolean("mountsystem", false);
-        showHidden=Sp.getBoolean("showHidden",true);
+        showHidden=Sp.getBoolean("showHidden",false);
         coloriseIcons=Sp.getBoolean("coloriseIcons",false);
         if(aBoolean){
             folder = res.getDrawable(R.drawable.ic_grid_folder_new);}
@@ -1223,11 +1222,11 @@ public class Main extends android.support.v4.app.Fragment {
             File f=new File(mFile.get(i)[0]);
             if(!hiddenfiles.contains(mFile.get(i)[0])){
                 if (isDirectory(rootMode,mFile.get(i))) {
-                    a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f,res),mFile.get(i)[3],false));
+                    a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f,res,showSize),mFile.get(i)[3],false));
 
                 } else {
                     try {
-                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.getSize(mFile.get(i)),mFile.get(i)[3],false));
+                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.getSize(mFile.get(i),showSize),mFile.get(i)[3],false));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }}
