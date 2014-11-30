@@ -718,7 +718,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
                 if (f1.isDirectory()) {
 
-                    totalBytes = totalBytes + new Futils().folderSize(f1, false);
+                    totalBytes = totalBytes + new Futils().folderSize(f1);
                 } else {
 
                     totalBytes = totalBytes + f1.length();

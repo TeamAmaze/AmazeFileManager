@@ -60,6 +60,7 @@ public class MoveFiles extends AsyncTask<String,Void,Boolean> {
             Intent intent = new Intent(context, CopyService.class);
             intent.putExtra("FILE_PATHS", new Futils().toStringArray(files));
             intent.putExtra("COPY_DIRECTORY", path);
+            intent.putExtra("move",true);
             context.startService(intent);}
     }
 }

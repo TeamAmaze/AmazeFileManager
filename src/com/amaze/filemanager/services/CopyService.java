@@ -156,7 +156,7 @@ public class CopyService extends Service {
                     for (int i = 0; i < files.size(); i++) {
                         File f1 = new File(files.get(i));
                         if (f1.isDirectory()) {
-                            totalBytes = totalBytes + new Futils().folderSize(f1, false);
+                            totalBytes = totalBytes + new Futils().folderSize(f1);
                         } else {
                             totalBytes = totalBytes + f1.length();
                         }
@@ -173,7 +173,8 @@ public class CopyService extends Service {
 
                 }
                 if (move) {
-                    new DeleteTask(getContentResolver(), null, c).execute(utils.toFileArray(files));
+                    boolean b = hash.get(id);
+                    if (b) new DeleteTask(getContentResolver(), null, c).execute(utils.toFileArray(files));
                 }
                 Intent intent = new Intent("loadlist");
                 sendBroadcast(intent);

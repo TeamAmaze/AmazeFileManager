@@ -284,7 +284,7 @@ public class Futils {
         name = getString(c.getActivity(), R.string.name) + f.getName();
         parent = getString(c.getActivity(), R.string.location) + f.getParent();
         if (f.isDirectory()) {
-            size = getString(c.getActivity(), R.string.size) + readableFileSize(folderSize(f,root));
+            size = getString(c.getActivity(), R.string.size) + readableFileSize(folderSize(f));
             items = getString(c.getActivity(), R.string.totalitems) + count(f,c.getResources());
         } else if (f.isFile()) {
             items = "";
@@ -300,14 +300,14 @@ public class Futils {
         a.build().show();
     }
 
-    public static long folderSize(File directory,boolean rootMode) {
+    public static long folderSize(File directory) {
         long length = 0;
         for (File file:directory.listFiles()) {
 
             if (file.isFile())
                 length += file.length();
             else
-                length += folderSize(file,rootMode);
+                length += folderSize(file);
         }
         return length;
     }
@@ -437,7 +437,7 @@ public class Futils {
             i.putExtra("path", f.getPath());
             m.startActivity(i);
         } else if (Icons.isArchive(f.getPath())) {
-
+            m.select=-2;
             FragmentTransaction fragmentTransaction = m.getSupportFragmentManager().beginTransaction();
             Fragment fragment = new ZipViewer();
             Bundle bundle = new Bundle();
