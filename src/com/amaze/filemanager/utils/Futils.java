@@ -444,6 +444,7 @@ public class Futils {
             bundle.putString("path", f.getPath());
             fragment.setArguments(bundle);
             fragmentTransaction.replace(R.id.content_frame, fragment);
+            //fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
 
         } else {

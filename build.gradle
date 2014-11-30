@@ -25,6 +25,7 @@ dependencies {
     compile files('libs/RootTools')
     compile files('libs/libGoogleAnalyticsServices')
     compile files('libs/nineoldandroids-2.4.0')
+    compile files('raroscope-1.0')
 }
 configurations {
     all*.exclude group: 'com.android.support', module: 'support-v4'

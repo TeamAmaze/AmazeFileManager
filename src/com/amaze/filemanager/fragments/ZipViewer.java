@@ -34,6 +34,8 @@ public class ZipViewer extends ListFragment {
     String s;
     public File f;
     public ArrayList<File> files;
+    public Boolean results;
+    public String current;
     private Main ma;
 
     @Override
@@ -41,9 +43,9 @@ public class ZipViewer extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         s = getArguments().getString("path");
         f = new File(s);
-        new ZipHelperTask(this).execute(f);
+        new ZipHelperTask(this, 0).execute(f);
         files = new ArrayList<File>();
-        Toast.makeText(getActivity(), "test commit", Toast.LENGTH_LONG).show();
+        results = false;
     }
 
     @Override
@@ -54,5 +56,10 @@ public class ZipViewer extends ListFragment {
 
             new DeleteTask(getActivity().getContentResolver(), ma, getActivity()).execute(files);
         }
+    }
+
+    public void goBack() {
+
+        new ZipHelperTask(this, 2, current).execute(f);
     }
 }

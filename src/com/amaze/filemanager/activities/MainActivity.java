@@ -473,11 +473,11 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             }, 2000);
         }
     }
-public void updateDrawer(String path){
-    if(list.contains(path))
-    {select= list.indexOf(path);
-        adapter.toggleChecked(select);
-}}
+    public void updateDrawer(String path){
+        if(list.contains(path))
+        {select= list.indexOf(path);
+            adapter.toggleChecked(select);
+        }}
     public void selectItem(int i) {
 
         if (i < list.size() - 2) {

@@ -29,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.ZipViewer;
@@ -124,6 +125,8 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
                 if (rowItem.isDirectory()) {
 
                     new ZipHelperTask(zipViewer, 1, stringBuilder.toString()).execute(zipViewer.f);
+                    File file = new File(rowItem.getName());
+                    zipViewer.current = file.getParent();
                 } else {
 
                     File file = new File(zipViewer.f.getParent() + "/" + stringBuilder1.toString());

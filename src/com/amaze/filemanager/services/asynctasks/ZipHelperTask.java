@@ -1,8 +1,12 @@
 package com.amaze.filemanager.services.asynctasks;
 
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.adarshr.raroscope.RARFile;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.ZipAdapter;
 import com.amaze.filemanager.fragments.ZipViewer;
 
@@ -29,9 +33,9 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
         this.dir = dir;
     }
 
-    public ZipHelperTask(ZipViewer zipViewer) {
+    public ZipHelperTask(ZipViewer zipViewer, int counter) {
         this.zipViewer = zipViewer;
-        counter = 0;
+        this.counter = counter;
     }
 
     @Override
@@ -49,11 +53,28 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
 
                     if (file.getParent() == null) {
                         elements.add(entry);
+                        zipViewer.results = false;
                     }
                 } else if (counter==1) {
 
+                    Log.d("Test", dir);
                     if (file.getParent()!=null && file.getParent().equals(dir)) {
                         elements.add(entry);
+                        zipViewer.results = true;
+                    }
+                } else if (counter==2) {
+
+                    if (file.getParent()!=null && file.getParent().equals(dir)) {
+
+                        elements.add(entry);
+                        zipViewer.results = true;
+
+                    } else if (file.getParent()==null) {
+                        if (dir==null) {
+
+                            elements.add(entry);
+                            zipViewer.results = false;
+                        }
                     }
                 }
             }

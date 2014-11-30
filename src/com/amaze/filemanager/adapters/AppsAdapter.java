@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -187,7 +188,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                     Intent intent = new Intent(context, CopyService.class);
                                     Toast.makeText(context, f.getParent(), Toast.LENGTH_LONG).show();
 
-                                    if (!f.getParent().equals("/data/app") || !f.getParent().equals("/system/app") || !f.getParent().equals("/system/priv-app")) {
+                                    if (Build.VERSION.SDK_INT == 21) {
                                         a.add(f.getParent());
                                     } else {
                                         a.add(f.getPath());
