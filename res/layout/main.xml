@@ -247,29 +247,31 @@
                 android:text="Amaze File Manager"
                 android:gravity="center_vertical" />
         </LinearLayout>
-    <ListView
-        android:id="@+id/menu_drawer"
-        style="@android:style/Theme.Holo.Light"
-        android:layout_width="250dp"
-        android:layout_below="@id/drawerheader"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@drawable/drawer_bg"
-        android:choiceMode="singleChoice"
-        android:dividerHeight="0dip" />
+
         <LinearLayout
             android:id="@+id/settings_bg"
             android:layout_alignParentBottom="true"
             android:layout_width="fill_parent"
             android:layout_height="?android:attr/actionBarSize">
-        <ImageButton
-            android:id="@+id/settingsbutton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@drawable/listitem1"
-            android:src="@drawable/ic_action_settings"
-            /></LinearLayout>
+            <ImageButton
+                android:id="@+id/settingsbutton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/listitem1"
+                android:src="@drawable/ic_action_settings"
+                /></LinearLayout>
+    <ListView
+        android:id="@+id/menu_drawer"
+        style="@android:style/Theme.Holo.Light"
+        android:layout_width="250dp"
+        android:layout_below="@id/drawerheader"
+        android:layout_above="@id/settings_bg"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:background="@drawable/drawer_bg"
+        android:choiceMode="singleChoice"
+        android:dividerHeight="0dip" />
     </RelativeLayout>
     <!--
     <ListView
