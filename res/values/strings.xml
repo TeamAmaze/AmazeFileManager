@@ -239,7 +239,7 @@
     <string name="hiddenfiles">Hidden Files</string>
     <string name="type">Type</string>
     <string name="typeDesc">Type (Desc)</string>
-    <string name="rootdirectory">root</string>
+    <string name="rootdirectory">Root</string>
     <string name="new_string">New</string>
     <string name="setringtone">Set as ringtone</string>
 </resources>

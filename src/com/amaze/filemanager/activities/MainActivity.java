@@ -134,6 +134,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Sp = PreferenceManager.getDefaultSharedPreferences(this);
         utils = new Futils();
         s=new Shortcuts(this);
         // Google Analytics
@@ -141,7 +142,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         //((Amaze) getApplication()).getTracker(Amaze.TrackerName.APP_TRACKER);
         easyTracker = EasyTracker.getInstance(this);
         val = getStorageDirectories();
-        Sp = PreferenceManager.getDefaultSharedPreferences(this);
         rootmode = Sp.getBoolean("rootmode", false);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         util = new IconUtils(Sp, this);
@@ -401,7 +401,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             // All Secondary SD-CARDs splited into array
             final String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
             Collections.addAll(rv, rawSecondaryStorages);
-        }
+        }rootmode = Sp.getBoolean("rootmode", false);
         if(rootmode)
             rv.add("/");
         try {

@@ -54,8 +54,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="owner"
-            android:padding="5dp"
+            android:text="Owner"
             />
 
         <CheckBox
@@ -86,7 +85,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="group" />
+            android:text="Group" />
 
         <CheckBox
             android:id="@+id/creadgroup"
