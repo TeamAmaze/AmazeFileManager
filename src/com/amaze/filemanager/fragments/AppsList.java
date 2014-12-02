@@ -38,6 +38,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -48,6 +49,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconHolder;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -82,9 +84,12 @@ public class AppsList extends ListFragment {
 
         vl=getListView();
 
-        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_hide);
-        getActivity().findViewById(R.id.fab).setAnimation(animation);
-        getActivity().findViewById(R.id.fab).setVisibility(View.GONE);
+        ((TextView) getActivity().findViewById(R.id.title)).setText(utils.getString(getActivity(), R.string.apps));
+
+        FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        floatingActionButton.hide(true);
+
+        //getActivity().findViewById(R.id.fab).setVisibility(View.INVISIBLE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         ListView vl = getListView();

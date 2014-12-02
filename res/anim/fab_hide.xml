@@ -17,7 +17,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<set xmlns:android="http://schemas.android.com/apk/res/android">
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillAfter="true">
 
     <scale
         android:interpolator="@android:anim/accelerate_interpolator"
@@ -27,7 +28,6 @@
         android:toYScale="0.0"
         android:pivotX="50%"
         android:pivotY="50%"
-        android:startOffset="400"
-        android:fillAfter="false"
-        android:duration="300" />
+        android:startOffset="500"
+        android:duration="250" />
 </set>

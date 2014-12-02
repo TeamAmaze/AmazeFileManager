@@ -267,13 +267,17 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 holder.perm.setText(rowItem.getPermissions());
             if (main.showLastModified)
                 holder.date.setText(rowItem.getDate("MMM dd, yyyy",main.year));
-            if (main.showSize){
-                String size=rowItem.getSize();
-                if(size.equals(main.goback)){
-                    holder.date.setText(size);
+            String size=rowItem.getSize();
+
+            if(size.equals(main.goback)){
+
+                holder.date.setText(size);
+
                 holder.txtDesc.setText("");}
-                    else
-                holder.txtDesc.setText(rowItem.getSize());}
+
+            else if(main.showSize)
+
+                holder.txtDesc.setText(rowItem.getSize());
             return view;
         } else{   View view;
             final int p = position;

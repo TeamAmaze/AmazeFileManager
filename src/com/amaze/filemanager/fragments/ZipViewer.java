@@ -22,12 +22,15 @@ package com.amaze.filemanager.fragments;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,14 +49,18 @@ public class ZipViewer extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         s = getArguments().getString("path");
         f = new File(s);
+
         ((TextView) getActivity().findViewById(R.id.title)).setText(f.getName());
+
+        FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        floatingActionButton.hide(true);
 
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
         getActivity().findViewById(R.id.search).setVisibility(View.INVISIBLE);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
         getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
-        getActivity().findViewById(R.id.fab).setVisibility(View.GONE);
-       getActivity().findViewById(R.id.title).setVisibility(View.VISIBLE);
+        getActivity().findViewById(R.id.title).setVisibility(View.VISIBLE);
+
         new ZipHelperTask(this, 0).execute(f);
         files = new ArrayList<File>();
         results = false;

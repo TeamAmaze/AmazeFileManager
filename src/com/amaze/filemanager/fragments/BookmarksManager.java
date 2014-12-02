@@ -23,18 +23,22 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -44,6 +48,7 @@ import com.amaze.filemanager.adapters.BooksAdapter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Shortcuts;
+import com.melnykov.fab.FloatingActionButton;
 
 import org.xml.sax.SAXException;
 
@@ -85,11 +90,13 @@ ListView vl;int theme,theme1;
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
         getActivity().findViewById(R.id.search).setVisibility(View.INVISIBLE);
         getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
+        ((TextView) getActivity().findViewById(R.id.title)).setText(utils.getString(getActivity(), R.string.bookmanag));
 
-
-        getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
         Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
-        getActivity().findViewById(R.id.fab).setAnimation(animation1);
+        FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        floatingActionButton.show(true);
+        floatingActionButton.setAnimation(animation1);
+        //getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
 
         getActivity().findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,13 +171,39 @@ ListView vl;int theme,theme1;
     }
 
     public void refresh() {
-        try {
-            bx = s.readS();
-            b = new BooksAdapter(getActivity(), R.layout.bookmarkrow, bx, this);
-            setListAdapter(b);
-        } catch (IOException e) {
-        } catch (SAXException e) {
-        } catch (ParserConfigurationException e) {
+
+        new LoadList().execute();
+
+    }
+    public class LoadList extends AsyncTask<Void, Void, ArrayList<File>> {
+
+        public LoadList() {
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+
+        @Override
+        // Actual download method, run in the task thread
+        protected ArrayList<File> doInBackground(Void... params) {
+
+            // params comes from the execute() call: params[0] is the url.
+            try {
+
+                bx = s.readS();
+            } catch (IOException e) {
+            } catch (SAXException e) {
+            } catch (ParserConfigurationException e) {
+            }
+            return bx;
+        }
+        @Override
+        // Once the image is downloaded, associates it to the imageView
+        protected void onPostExecute(ArrayList<File> bitmap) {
+            refresh(bitmap);
         }
     }
 

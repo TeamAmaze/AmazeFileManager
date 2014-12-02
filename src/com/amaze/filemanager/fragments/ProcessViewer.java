@@ -31,6 +31,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,6 +43,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -64,11 +67,13 @@ public class ProcessViewer extends Fragment {
                 container, false);
         setRetainInstance(false);
 
+        FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        floatingActionButton.hide(true);
+
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
         getActivity().findViewById(R.id.search).setVisibility(View.INVISIBLE);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
         getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
-        getActivity().findViewById(R.id.fab).setVisibility(View.GONE);
         rootView = (LinearLayout) root.findViewById(R.id.secondbut);
         getActivity().getActionBar().setSubtitle(utils.getString(getActivity(),R.string.processes));
         ((LinearLayout) getActivity().findViewById(R.id.buttons))

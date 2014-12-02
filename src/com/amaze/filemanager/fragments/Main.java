@@ -193,11 +193,17 @@ public class Main extends android.support.v4.app.Fragment {
         listView = (ListView) rootView.findViewById(R.id.listView);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
 
+        animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
+        animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
+
         floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         floatingActionButton.attachToListView(listView);
         floatingActionButton.attachToListView(gridView);
         floatingActionButton.setColorNormal(Color.parseColor(skin));
         floatingActionButton.setColorPressed(Color.parseColor(skin));
+        floatingActionButton.setAnimation(animation1);
+        //floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.show(true);
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,13 +227,11 @@ public class Main extends android.support.v4.app.Fragment {
             }
         });
 
-        showThumbs=Sp.getBoolean("showThumbs",true);
+        showThumbs=Sp.getBoolean("showThumbs", true);
         ic=new IconHolder(getActivity(),showThumbs,!aBoolean);
         res = getResources();
         goback=res.getString(R.string.goback);
         apk=res.getDrawable(R.drawable.ic_doc_apk_grid);
-        animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
-        animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
         if(theme1==1) {
             rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_dark));
         }if (aBoolean) {
@@ -256,8 +260,8 @@ public class Main extends android.support.v4.app.Fragment {
         setHasOptionsMenu(false);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
 
-        Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
-        getActivity().findViewById(R.id.fab).setAnimation(animation1);
+        /*Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
+        getActivity().findViewById(R.id.fab).setAnimation(animation1);*/
 
         content = tabHandler.getAllTabs();
         list1 = new ArrayList<String>();
@@ -747,36 +751,71 @@ public class Main extends android.support.v4.app.Fragment {
         // may be called multiple times if the mode is invalidated.
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             ArrayList<Integer> positions = adapter.getCheckedItemPositions();
-            ((TextView)v.findViewById(R.id.item_count)).setText(positions.size()+"");
+            ((TextView) v.findViewById(R.id.item_count)).setText(positions.size() + "");
             //tv.setText(positions.size());
             if (positions.size() == 1) {
-                showOption(R.id.permissions,menu);
+
+                showOption(R.id.permissions, menu);
+
                 showOption(R.id.about, menu);
+
                 showOption(R.id.rename, menu);
+
                 File x = new File(list.get(adapter.getCheckedItemPositions().get(0))
+
                         .getDesc());
+
                 if (x.isDirectory()) {
+
                     showOption(R.id.sethome, menu);
+
                 } else if (x.getName().toLowerCase().endsWith(".zip") || x.getName().toLowerCase().endsWith(".jar") || x.getName().toLowerCase().endsWith(".apk")) {
+
                     showOption(R.id.ex, menu);
+
                     hideOption(R.id.sethome, menu);
+
                     showOption(R.id.share, menu);
-                }else if(x.getName().endsWith(".mp3"))
-                {showOption(R.id.setringtone,menu);}
-                else {
+
+                } else {
+                    if (x.getName().endsWith(".mp3"))
+
+                    {
+                        showOption(R.id.setringtone, menu);
+                    }
+
+
                     hideOption(R.id.ex, menu);
+
                     hideOption(R.id.sethome, menu);
+
                     showOption(R.id.openwith, menu);
+
                     showOption(R.id.share, menu);
+
                 }
+
             } else {
-                hideOption(R.id.ex, menu);
-                hideOption(R.id.sethome, menu);
-                hideOption(R.id.openwith, menu);
-                //hideOption(R.id.share, menu);
-                hideOption(R.id.permissions,menu);
-                hideOption(R.id.about, menu);
+                for (int c : adapter.getCheckedItemPositions()) {
+                    File x = new File(list.get(c).getDesc());
+                    if (x.isDirectory()) {
+                        hideOption(R.id.share, menu);
+                    }
+                    hideOption(R.id.ex, menu);
+
+                    hideOption(R.id.sethome, menu);
+
+                    hideOption(R.id.openwith, menu);
+
+                    hideOption(R.id.setringtone, menu);
+
+                    hideOption(R.id.permissions, menu);
+
+                    hideOption(R.id.about, menu);
+
+                }
             }
+
             return false; // Return false if nothing is done
         }
 
@@ -1210,6 +1249,12 @@ public class Main extends android.support.v4.app.Fragment {
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        history = new HistoryManager(getActivity(), "Table1");
+    }
+
     public boolean isDirectory(boolean rootmode,String[] val){
         if(rootmode)
             return val[3]=="-1";
@@ -1240,7 +1285,11 @@ public class Main extends android.support.v4.app.Fragment {
     public void onDestroy() {
         super.onDestroy();
         if(history!=null)
-            history.end(); hidden.end();    }
+            history.end();
+        //hidden.end();
+
+    }
+
     public void updatehiddenfiles(){
         hiddenfiles=hidden.readTable();
     }
