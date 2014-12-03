@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/name1"
             android:layout_marginTop="15dp"
-            android:textColor="#e91e63"
             style="@style/TextAppearance.Small"
             android:text="Github"/>
         <TextView
@@ -34,7 +33,6 @@
             android:layout_below="@+id/name1"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="15dp"
-            android:textColor="#e91e63"
             style="@style/TextAppearance.Small"
             android:text="Google+"/>
         </RelativeLayout>
@@ -58,7 +56,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/name2"
             android:layout_marginTop="15dp"
-            android:textColor="#e91e63"
             style="@style/TextAppearance.Small"
             android:text="Github"/>
         <TextView
@@ -69,7 +66,6 @@
             android:layout_below="@+id/name2"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="15dp"
-            android:textColor="#e91e63"
             style="@style/TextAppearance.Small"
             android:text="Google+"/>
     </RelativeLayout>

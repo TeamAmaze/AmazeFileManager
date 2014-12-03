@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -43,6 +44,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.Preferences;
 import com.stericson.RootTools.RootTools;
 
 import java.io.File;
@@ -51,6 +53,8 @@ import java.util.Random;
 
 public class Preffrag extends PreferenceFragment {
     int theme;
+    SharedPreferences sharedPref;
+    String skin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +63,8 @@ public class Preffrag extends PreferenceFragment {
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
-        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        skin = sharedPref.getString("skin_color", "#5677fc");
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
@@ -200,17 +205,38 @@ public class Preffrag extends PreferenceFragment {
                         "#607d8b"
                 };
 
-                new MaterialDialog.Builder(getActivity())
-                        .title(R.string.skin).negativeText(R.string.cancel).items(R.array.skin).itemsCallbackSingleChoice(
-                current, new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog dialog, View view, int which, String text) {
-                        sharedPref.edit().putString("skin", "" + which).commit();
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.skin)
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        })
+                        .setPositiveButton(R.string.randomDialog, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
 
-                        restartPC(getActivity());
-                        sharedPref.edit().putString("skin_color", colors[which]).apply();
+                                //sharedPref.edit().putString("skin", "" + i).commit();
+                                dialogInterface.cancel();
+                                restartPC(getActivity());
 
-                    }}).build().show();
+                                // Random
+                                Random random = new Random();
+                                int pos = random.nextInt(colors.length - 1);
+                                sharedPref.edit().putString("skin_color", colors[pos]).commit();
+                            }
+                        })
+                        .setSingleChoiceItems(R.array.skin, current, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                sharedPref.edit().putString("skin", "" + i).commit();
+                                dialogInterface.cancel();
+                                restartPC(getActivity());
+                                sharedPref.edit().putString("skin_color", colors[i]).apply();
+
+                            }
+                        }).show();
                 return false;
             }
         });
@@ -262,25 +288,47 @@ public class Preffrag extends PreferenceFragment {
             @Override
             public boolean onPreferenceClick(Preference preference) {
 
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                skin = sharedPref.getString("skin_color", "#5677fc");
+                if(theme==1)
+                    a.theme(Theme.DARK);
+
+                a.positiveText(R.string.close);
+                a.positiveColor(Color.parseColor(skin));
                 LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = layoutInflater.inflate(R.layout.authors, null);
-                alertDialog.setView(view);
-                alertDialog.setTitle(R.string.authors);
-                alertDialog.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+                a.customView(view);
+                a.title(R.string.authors);
+                a.callback(new MaterialDialog.Callback() {
+                    @Override
+                    public void onPositive(MaterialDialog materialDialog) {
+
+                        materialDialog.cancel();
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog materialDialog) {
+
+                    }
+                });
+                /*a.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.cancel();
                     }
-                });
-                alertDialog.show();
+                });*/
+                a.build().show();
 
                 final Intent intent = new Intent(Intent.ACTION_VIEW);
 
                 TextView googlePlus1 = (TextView) view.findViewById(R.id.googlePlus1);
+                googlePlus1.setTextColor(Color.parseColor(skin));
                 TextView googlePlus2 = (TextView) view.findViewById(R.id.googlePlus2);
+                googlePlus2.setTextColor(Color.parseColor(skin));
                 TextView git1 = (TextView) view.findViewById(R.id.git1);
+                git1.setTextColor(Color.parseColor(skin));
                 TextView git2 = (TextView) view.findViewById(R.id.git2);
+                git2.setTextColor(Color.parseColor(skin));
 
                 googlePlus1.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -322,25 +370,30 @@ public class Preffrag extends PreferenceFragment {
             @Override
             public boolean onPreferenceClick(Preference preference) {
 
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.changelog)
-                        .setMessage(Html.fromHtml(getActivity().getString(R.string.changelog_version_1) +
-                            getActivity().getString(R.string.changelog_change_1)))
-                        .setNegativeButton(R.string.fullChangelog, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                if(theme==1)a.theme(Theme.DARK);
+                a.title(R.string.changelog);
+                a.content(Html.fromHtml(getActivity().getString(R.string.changelog_version_1) +
+                        getActivity().getString(R.string.changelog_change_1)));
+                a.negativeText(R.string.close);
+                a.negativeColor(Color.parseColor(skin));
+                a.positiveText(R.string.fullChangelog);
+                a.positiveColor(Color.parseColor(skin));
+                a.callback(new MaterialDialog.Callback() {
+                    @Override
+                    public void onPositive(MaterialDialog materialDialog) {
 
-                                Intent intent = new Intent(Intent.ACTION_VIEW,
-                                        Uri.parse("https://github.com/arpitkh96/AmazeFileManager/commits/master"));
-                                startActivity(intent);
-                            }
-                        })
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        }).show();
+                        Intent intent = new Intent(Intent.ACTION_VIEW,
+                                Uri.parse("https://github.com/arpitkh96/AmazeFileManager/commits/master"));
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog materialDialog) {
+
+                        materialDialog.cancel();
+                    }
+                }).build().show();
                 return false;
             }
         });
