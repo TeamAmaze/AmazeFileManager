@@ -15,7 +15,9 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
     <string name="app_name">Esempio del Drawer di Navigazione</string>
     <string name="drawer_open">Apri il Drawer di navigazione</string>
     <string name="drawer_close">Chiudi il Drawer di navigazione</string>

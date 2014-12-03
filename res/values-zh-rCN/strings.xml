@@ -14,10 +14,12 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-      
+
 -->
 
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
   <string name="books">书签</string>
   <string name="icon">图标</string>
   <string name="efn">请输入文件名</string>

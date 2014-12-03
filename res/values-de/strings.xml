@@ -17,7 +17,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
     <string name="app_name">Beispiel der Navigationsleiste</string> <!--do you actually need that one?-->
     <string name="drawer_open">Öffne Navigationsleiste</string>
     <string name="drawer_close">Schließe Navigationsleiste</string>

@@ -17,7 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
     <string name="app_name">Пример навигации по меню</string>
     <string name="drawer_open">Открыть меню навигации</string>
     <string name="drawer_close">Закрыть меню навигации</string>

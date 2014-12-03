@@ -17,7 +17,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
     <string name="app_name">Exemple de tiroir de navigation</string>
     <string name="drawer_open">Ouvrir le panneau de navigation</string>
     <string name="drawer_close">Fermer le panneau de navigation</string>
