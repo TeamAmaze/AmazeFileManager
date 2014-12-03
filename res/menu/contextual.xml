@@ -69,7 +69,7 @@
     <item
         android:id="@+id/hide"
         android:title="@string/hide" />
-    <item
+    <!--<item
         android:id="@+id/setringtone"
-        android:title="@string/setringtone" />
+        android:title="@string/setringtone" />-->
 </menu>

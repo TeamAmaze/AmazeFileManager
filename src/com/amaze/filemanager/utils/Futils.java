@@ -24,6 +24,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -32,6 +33,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -280,7 +282,7 @@ public class Futils {
         return inSampleSize;
     }
 
-    public void showProps(File f, Main c,boolean root) {
+    public void showProps(final File f, final Main c,boolean root) {
         String date = getString(c.getActivity(), R.string.date) + getdate(f);
         String items = "", size = "", name, parent;
         name = getString(c.getActivity(), R.string.name) + f.getName();
@@ -292,6 +294,8 @@ public class Futils {
             items = "";
             size = getString(c.getActivity(), R.string.size) + getSize(f);
         }
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c.getActivity());
+        String skin = sp.getString("skin_color", "#5677fc");
         MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
         a.title(getString(c.getActivity(), R.string.properties));
 
@@ -299,6 +303,23 @@ public class Futils {
             a.theme(Theme.DARK);
         a.content(name + "\n" + parent + "\n" + size + "\n" + items + "\n"
                 + date);
+        a.positiveText(R.string.copy_path);
+        a.negativeText(R.string.close);
+        a.positiveColor(Color.parseColor(skin)).negativeColor(Color.parseColor(skin));
+        a.callback(new MaterialDialog.Callback() {
+            @Override
+            public void onPositive(MaterialDialog materialDialog) {
+
+                c.copyToClipboard(c.getActivity(), f.getPath());
+                Toast.makeText(c.getActivity(), c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNegative(MaterialDialog materialDialog) {
+
+                materialDialog.cancel();
+            }
+        });
         a.build().show();
     }
 
@@ -486,6 +507,8 @@ public class Futils {
         final EditText e = (EditText) v.findViewById(R.id.newname);
         e.setText("Newzip.zip");
         a.customView(v);
+        if(m.theme1==1)
+            a.theme(Theme.DARK);
         a.title(getString(m, R.string.enterzipname));
         e.setHint(getString(m, R.string.enterzipname));
         a.positiveText(R.string.create);

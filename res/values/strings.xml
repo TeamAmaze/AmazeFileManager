@@ -104,7 +104,7 @@
     <string name="random">Random Skin</string>
     <string name="random_summary">Sets random theme at startup</string>
     <string name="colorize">Colorize Icons</string>
-    <string name="colorize_summary">Sets some icons color different than theme</string>
+    <string name="colorize_summary">Sets static icon color</string>
     <string name="back">Back</string>
     <string name="home">Home</string>
     <string name="paste">Paste</string>
@@ -129,8 +129,15 @@
     <string name="usedefaultgallerypath">Use Default Image Gallery Path</string>
 
     <!-- Changelog -->
-    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br>&lt;br></string>
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_1">- Initial release&lt;br>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Dec 04, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_2">- Fixed cut/paste&lt;br>
+                                      - Fixed text editor for root&lt;br>
+                                      - Added German, French, Italian, Russian and Chinese languages&lt;br>
+                                      - Added bookmarks to navigation drawer&lt;br>
+                                      - Added material dialogs&lt;br>
+                                      - more...&lt;br>&lt;br></string>
 
     <!-- New -->
     <!-- Array -->
@@ -242,5 +249,6 @@
     <string name="rootdirectory">Root</string>
     <string name="new_string">New</string>
     <string name="setringtone">Set as ringtone</string>
+    <string name="copy_path">Copy Path</string>
 </resources>
 

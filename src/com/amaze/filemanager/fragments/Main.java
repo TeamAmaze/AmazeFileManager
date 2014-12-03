@@ -752,7 +752,7 @@ public class Main extends android.support.v4.app.Fragment {
             hideOption(R.id.about, menu);
             hideOption(R.id.openwith, menu);
             hideOption(R.id.ex, menu);
-            hideOption(R.id.setringtone,menu);
+            //hideOption(R.id.setringtone,menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
             if(Build.VERSION.SDK_INT<19)
                 getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
@@ -792,11 +792,11 @@ public class Main extends android.support.v4.app.Fragment {
                     showOption(R.id.share, menu);
 
                 } else {
-                    if (x.getName().endsWith(".mp3"))
+                    /*if (x.getName().endsWith(".mp3"))
 
                     {
                         showOption(R.id.setringtone, menu);
-                    }
+                    }*/
 
 
                     hideOption(R.id.ex, menu);
@@ -821,7 +821,7 @@ public class Main extends android.support.v4.app.Fragment {
 
                     hideOption(R.id.openwith, menu);
 
-                    hideOption(R.id.setringtone, menu);
+                    //hideOption(R.id.setringtone, menu);
 
                     hideOption(R.id.permissions, menu);
 
@@ -860,16 +860,35 @@ public class Main extends android.support.v4.app.Fragment {
                     utils.showProps(new File(x), ma,rootMode);
                     mode.finish();
                     return true;
-                case R.id.setringtone:
+                /*case R.id.setringtone:
                     File fx;
                     if(results)
                         fx=new File(slist.get((plist.get(0))).getDesc());
                         else
-                    fx=new File(list.get((plist.get(0))).getDesc());
-                    Uri uri = MediaStore.Audio.Media.getContentUriForPath(fx.getPath());
-                    Settings.System.putString(getActivity().getContentResolver(),
-                            Settings.System.RINGTONE, uri.toString());
-                                        return true;
+                        fx=new File(list.get((plist.get(0))).getDesc());
+
+                    ContentValues values = new ContentValues();
+                    values.put(MediaStore.MediaColumns.DATA, fx.getAbsolutePath());
+                    values.put(MediaStore.MediaColumns.TITLE, "Amaze");
+                    values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3");
+                    //values.put(MediaStore.MediaColumns.SIZE, fx.);
+                    values.put(MediaStore.Audio.Media.ARTIST, R.string.app_name);
+                    values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
+                    values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
+                    values.put(MediaStore.Audio.Media.IS_ALARM, false);
+                    values.put(MediaStore.Audio.Media.IS_MUSIC, false);
+
+                    Uri uri = MediaStore.Audio.Media.getContentUriForPath(fx.getAbsolutePath());
+                    Uri newUri = getActivity().getContentResolver().insert(uri, values);
+                    try {
+                        RingtoneManager.setActualDefaultRingtoneUri(getActivity(), RingtoneManager.TYPE_RINGTONE, newUri);
+                        //Settings.System.putString(getActivity().getContentResolver(), Settings.System.RINGTONE, newUri.toString());
+                        Toast.makeText(getActivity(), "Successful" + fx.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                    } catch (Throwable t) {
+
+                        Log.d("ringtone", "failed");
+                    }
+                    return true;*/
                 case R.id.delete:
                     if(results)
                         utils.deleteFiles(slist,ma,plist);
@@ -907,6 +926,7 @@ public class Main extends android.support.v4.app.Fragment {
 
                     return true;
                 case R.id.rename:
+
                     final ActionMode m = mode;
                     final File f;
                     if(results)
@@ -916,41 +936,46 @@ public class Main extends android.support.v4.app.Fragment {
                             (plist.get(0))).getDesc());
                     View dialog = getActivity().getLayoutInflater().inflate(
                             R.layout.dialog, null);
-                    AlertDialog.Builder a = new AlertDialog.Builder(getActivity());
+                    MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
                     final EditText edit = (EditText) dialog
                             .findViewById(R.id.newname);
                     edit.setText(f.getName());
-                    a.setView(dialog);
-                    a.setTitle(utils.getString(getActivity(), R.string.rename));
-                    a.setPositiveButton(utils.getString(getActivity(), R.string.save),
-                            new DialogInterface.OnClickListener() {
+                    a.customView(dialog);
+                    if(theme1==1)
+                        a.theme(Theme.DARK);
+                    a.title(utils.getString(getActivity(), R.string.rename));
 
-                                public void onClick(DialogInterface p1, int p2) {
-                                    boolean b = utils.rename(f, edit.getText()
-                                            .toString());
-                                    m.finish();
-                                    updateList();
-                                    if (b) {
-                                        Toast.makeText(getActivity(),
-                                                utils.getString(getActivity(), R.string.renamed),
-                                                Toast.LENGTH_LONG).show();
-                                    } else {
-                                        Toast.makeText(getActivity(),
-                                                utils.getString(getActivity(), R.string.renameerror),
-                                                Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            }
-                    );
-                    a.setNegativeButton(utils.getString(getActivity(), R.string.cancel),
-                            new DialogInterface.OnClickListener() {
+                    a.callback(new MaterialDialog.Callback() {
+                        @Override
+                        public void onPositive(MaterialDialog materialDialog) {
 
-                                public void onClick(DialogInterface p1, int p2) {
-                                    m.finish();
-                                }
+                            boolean b = utils.rename(f, edit.getText()
+                                    .toString());
+                            m.finish();
+                            updateList();
+                            if (b) {
+                                Toast.makeText(getActivity(),
+                                        utils.getString(getActivity(), R.string.renamed),
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getActivity(),
+                                        utils.getString(getActivity(), R.string.renameerror),
+                                        Toast.LENGTH_LONG).show();
+
                             }
-                    );
-                    a.show();
+                        }
+
+                        @Override
+                        public void onNegative(MaterialDialog materialDialog) {
+
+                            materialDialog.cancel();
+                        }
+                    });
+                    a.positiveText(R.string.save);
+                    a.negativeText(R.string.cancel);
+                    a.positiveColor(Color.parseColor(skin));
+                    a.negativeColor(Color.parseColor(skin));
+                    a.build().show();
                     mode.finish();
                     return true;
                 case R.id.hide:

@@ -373,7 +373,9 @@ public class Preffrag extends PreferenceFragment {
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
                 if(theme==1)a.theme(Theme.DARK);
                 a.title(R.string.changelog);
-                a.content(Html.fromHtml(getActivity().getString(R.string.changelog_version_1) +
+                a.content(Html.fromHtml(getActivity().getString(R.string.changelog_version_2) +
+                        getActivity().getString(R.string.changelog_change_2) +
+                        getActivity().getString(R.string.changelog_version_1) +
                         getActivity().getString(R.string.changelog_change_1)));
                 a.negativeText(R.string.close);
                 a.negativeColor(Color.parseColor(skin));
@@ -486,7 +488,33 @@ public class Preffrag extends PreferenceFragment {
                         "<ul><li>FloatingActionButton</ul></li>" +	//FloatingActionBar
                         "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
                         "<br>/*<br>" +
-                        "&nbsp;* Copyright 2014 Jerzy Chalupski<br>" +
+                        "&nbsp;* The MIT License (MIT)<br>" +
+                        "&nbsp;*<br>" +
+                        "&nbsp;* Copyright (c) 2014 Oleksandr Melnykov<br>" +
+                        "&nbsp;*<br>" +
+                        "&nbsp;* Permission is hereby granted, free of charge, to any person obtaining a copy<br>" +
+                        "&nbsp;* of this software and associated documentation files (the \"Software\"), to deal<br>" +
+                        "&nbsp;* in the Software without restriction, including without limitation the rights<br>" +
+                        "&nbsp;* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>" +
+                        "&nbsp;* copies of the Software, and to permit persons to whom the Software is<br>" +
+                        "&nbsp;* furnished to do so, subject to the following conditions:" +
+                        "&nbsp;*<br>" +
+                        "&nbsp;* The above copyright notice and this permission notice shall be included in<br>" +
+                        "&nbsp;* all copies or substantial portions of the Software.<br>" +
+                        "&nbsp;* THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>" +
+                        "&nbsp;* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>" +
+                        "&nbsp;* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>" +
+                        "&nbsp;* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>" +
+                        "&nbsp;* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>" +
+                        "&nbsp;* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN<br>" +
+                        "&nbsp;* THE SOFTWARE.<br>" +
+                        "&nbsp;*/ " +
+                        "<br><br></code></p>" +
+                        "<h3>Notices for libraries:</h3>" +
+                        "<ul><li>Material-ish Progress</ul></li>" +	//progressBar
+                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
+                        "<br>/*<br>" +
+                        "&nbsp;* Copyright 2014 Nico Hormazábal<br>" +
                         "&nbsp;* <br>" +
                         "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
                         "&nbsp;* you may not use this file except in compliance with the License.<br>" +
@@ -499,6 +527,32 @@ public class Preffrag extends PreferenceFragment {
                         "&nbsp;* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>" +
                         "&nbsp;* See the License for the specific language governing permissions and<br>" +
                         "&nbsp;* limitations under the License.<br>" +
+                        "&nbsp;*/ " +
+                        "<br><br></code></p>" +
+                        "<h3>Notices for libraries:</h3> " +
+                        "<ul><li>Material Dialogs</ul></li>" +	//Material Dialogs
+                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
+                        "<br>/*<br>" +
+                        "&nbsp;* The MIT License (MIT)<br>" +
+                        "&nbsp;*<br>" +
+                        "&nbsp;* Copyright (c) 2014 Aidan Michael Follestad<br>" +
+                        "&nbsp;*<br>" +
+                        "&nbsp;* Permission is hereby granted, free of charge, to any person obtaining a copy<br>" +
+                        "&nbsp;* of this software and associated documentation files (the \"Software\"), to deal<br>" +
+                        "&nbsp;* in the Software without restriction, including without limitation the rights<br>" +
+                        "&nbsp;* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>" +
+                        "&nbsp;* copies of the Software, and to permit persons to whom the Software is<br>" +
+                        "&nbsp;* furnished to do so, subject to the following conditions:" +
+                        "&nbsp;*<br>" +
+                        "&nbsp;* The above copyright notice and this permission notice shall be included in<br>" +
+                        "&nbsp;* all copies or substantial portions of the Software.<br>" +
+                        "&nbsp;* THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>" +
+                        "&nbsp;* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>" +
+                        "&nbsp;* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>" +
+                        "&nbsp;* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>" +
+                        "&nbsp;* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>" +
+                        "&nbsp;* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN<br>" +
+                        "&nbsp;* THE SOFTWARE.<br>" +
                         "&nbsp;*/ " +
                         "<br><br></code></p>" +
                         "</body></html>";

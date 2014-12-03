@@ -105,7 +105,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     private boolean backPressedToExitOnce = false;
     private Toast toast = null;
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    public ListView mDrawerList;
     SharedPreferences Sp;
     private ActionBarDrawerToggle mDrawerToggle;
     public Spinner tabsSpinner;
@@ -126,7 +126,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public boolean mReturnIntent = false;
     private Intent intent;
     private static final Pattern DIR_SEPARATOR = Pattern.compile("/");
-    private ArrayList<String> list;
+    public ArrayList<String> list;
     public int theme1;
     private EasyTracker easyTracker = null;
     boolean rootmode;
@@ -240,6 +240,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
+
         list = new ArrayList<String>();
         for (int i = 0; i < val.size(); i++) {
             File file = new File(val.get(i));
