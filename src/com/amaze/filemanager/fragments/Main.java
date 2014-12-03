@@ -625,16 +625,6 @@ public class Main extends android.support.v4.app.Fragment {
 
             Log.d("pickup", "ringtone");
             Uri uri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
-            ContentValues values = new ContentValues();
-            values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
-
-            values.put(MediaStore.MediaColumns.TITLE, file.getName()); //Ringtone name
-            values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/*");
-            values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
-            values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
-            values.put(MediaStore.Audio.Media.IS_ALARM, false);
-            values.put(MediaStore.Audio.Media.IS_MUSIC, true);
-            Uri newUri = getActivity().getContentResolver().insert(uri, values);
 
             intent.putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_PICKED_URI, uri);
             getActivity().setResult(getActivity().RESULT_OK, intent);

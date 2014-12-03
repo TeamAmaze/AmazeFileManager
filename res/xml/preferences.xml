@@ -99,7 +99,7 @@
                 android:title="@string/authors" />
             <Preference
                 android:title="@string/version"
-                android:summary="v1.0"/>
+                android:summary="v1.1"/>
             <Preference
                 android:key="changelog"
                 android:title="@string/changelog" />

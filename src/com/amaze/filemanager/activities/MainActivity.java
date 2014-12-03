@@ -498,33 +498,22 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
         if (i < list.size() - 2) {
 
-            if (i!=select || select == 0) {
+            if (i!=select || select==0) {
+
+                android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.content_frame, new Main());
+                select = i;
+                // Commit the transaction
+                transaction.addToBackStack("tab" + 1);
+                transaction.commit();
 
                 boolean remember = Sp.getBoolean("remember", false);
                 if (!remember) {
 
-                    new rememberHandler() {
-                        @Override
-                        protected Void doInBackground(Integer... integers) {
-                            TabHandler tabHandler1 = new TabHandler(MainActivity.this, null, null, 1);
-                            int pos = Sp.getInt("spinner_selected", 0);
-                            File file = new File(list.get(i));
-                            tabHandler1.updateTab(new Tab(pos, file.getName(), file.getPath()));
-                            return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(Void aVoid) {
-                            super.onPostExecute(aVoid);
-
-                            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                            transaction.replace(R.id.content_frame, new Main());
-                            select = i;
-                            // Commit the transaction
-                            transaction.addToBackStack("tab" + 1);
-                            transaction.commit();
-                        }
-                    }.execute(i);
+                    TabHandler tabHandler1 = new TabHandler(this, null, null, 1);
+                    int pos = Sp.getInt("spinner_selected", 0);
+                    File file = new File(list.get(i));
+                    tabHandler1.updateTab(new Tab(pos, file.getName(), file.getPath()));
                 }
                 Sp.edit().putBoolean("remember", false).apply();
 
@@ -882,9 +871,5 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
         //Stop the analytics tracking
         EasyTracker.getInstance(this).activityStop(this);
-    }
-
-    private abstract class rememberHandler extends AsyncTask<Integer, Void, Void> {
-
     }
 }

@@ -17,10 +17,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/second"
     android:layout_width="fill_parent"
-    android:layout_height="60dip"
+    android:layout_height="48dp"
     android:background="@drawable/listitem1"
     android:clickable="true">
 
@@ -28,16 +28,16 @@
         android:id="@+id/icon"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
+        android:layout_marginLeft="16dp"
         android:clickable="false"
         android:gravity="center_vertical"
         android:contentDescription="@string/icon" />
 
     <TextView
         android:id="@+id/firstline"
-        android:layout_marginLeft="10dp"
         android:layout_width="wrap_content"
-        android:layout_toRightOf="@id/icon"
         android:layout_height="fill_parent"
+        android:layout_marginLeft="72dp"
         android:clickable="false"
         android:gravity="center_vertical" />
-</LinearLayout>
+</RelativeLayout>

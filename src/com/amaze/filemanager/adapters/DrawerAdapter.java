@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amaze.filemanager.R;
@@ -109,7 +110,7 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
         View rowView = inflater.inflate(R.layout.drawerrow, parent, false);
         TextView textView = (TextView) rowView.findViewById(R.id.firstline);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-        LinearLayout l = (LinearLayout) rowView.findViewById(R.id.second);
+        RelativeLayout l = (RelativeLayout) rowView.findViewById(R.id.second);
         l.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View p1) {
