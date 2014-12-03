@@ -50,6 +50,7 @@ import android.provider.Settings;
 import android.support.annotation.StringDef;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -95,6 +96,7 @@ import com.melnykov.fab.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -619,9 +621,19 @@ public class Main extends android.support.v4.app.Fragment {
         mainActivity.mReturnIntent = false;
 
         Intent intent = new Intent();
-        intent.setData(Uri.fromFile(file));
-        getActivity().setResult(getActivity().RESULT_OK, intent);
-        getActivity().finish();
+        if (mainActivity.mRingtonePickerIntent) {
+
+            Log.d("pickup", "ringtone");
+            intent.setData(Uri.fromFile(file));
+            getActivity().setResult(getActivity().RESULT_OK, intent);
+            getActivity().finish();
+        } else {
+
+            Log.d("pickup", "file");
+            intent.setData(Uri.fromFile(file));
+            getActivity().setResult(getActivity().RESULT_OK, intent);
+            getActivity().finish();
+        }
     }
 
     public void loadlist(final File f, boolean back) {

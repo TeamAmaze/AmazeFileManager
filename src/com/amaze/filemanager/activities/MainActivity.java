@@ -28,6 +28,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -128,6 +130,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public int theme1;
     private EasyTracker easyTracker = null;
     boolean rootmode;
+    public boolean mRingtonePickerIntent = false;
     /**
      * Called when the activity is first created.
      */
@@ -191,8 +194,11 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         });
 
         intent = getIntent();
-        if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
+        if (intent.getAction().equals(Intent.ACTION_GET_CONTENT) || intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
             mReturnIntent = true;
+            if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
+                mRingtonePickerIntent = true;
+            }
             Toast.makeText(this, utils.getString(con,R.string.pick_a_file), Toast.LENGTH_LONG).show();
         }
 
@@ -488,29 +494,44 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         {select= list.indexOf(path);
             adapter.toggleChecked(select);
         }}
-    public void selectItem(int i) {
+    public void selectItem(final int i) {
 
         if (i < list.size() - 2) {
 
-            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.content_frame, new Main());
-            select = i;
-            // Commit the transaction
-            transaction.addToBackStack("tab" + 1);
-            transaction.commit();
+            if (i!=select || select == 0) {
 
-            boolean remember = Sp.getBoolean("remember", false);
-            if (!remember) {
+                boolean remember = Sp.getBoolean("remember", false);
+                if (!remember) {
 
-                TabHandler tabHandler1 = new TabHandler(this, null, null, 1);
-                int pos = Sp.getInt("spinner_selected", 0);
-                File file = new File(list.get(i));
-                tabHandler1.updateTab(new Tab(pos, file.getName(), file.getPath()));
+                    new rememberHandler() {
+                        @Override
+                        protected Void doInBackground(Integer... integers) {
+                            TabHandler tabHandler1 = new TabHandler(MainActivity.this, null, null, 1);
+                            int pos = Sp.getInt("spinner_selected", 0);
+                            File file = new File(list.get(i));
+                            tabHandler1.updateTab(new Tab(pos, file.getName(), file.getPath()));
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Void aVoid) {
+                            super.onPostExecute(aVoid);
+
+                            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.content_frame, new Main());
+                            select = i;
+                            // Commit the transaction
+                            transaction.addToBackStack("tab" + 1);
+                            transaction.commit();
+                        }
+                    }.execute(i);
+                }
+                Sp.edit().putBoolean("remember", false).apply();
+
+                title.setVisibility(View.GONE);
+                tabsSpinner.setVisibility(View.VISIBLE);
             }
-            Sp.edit().putBoolean("remember", false).apply();
 
-            title.setVisibility(View.GONE);
-            tabsSpinner.setVisibility(View.VISIBLE);
         } else {
             if (i == list.size() - 2) {
 
@@ -861,5 +882,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
         //Stop the analytics tracking
         EasyTracker.getInstance(this).activityStop(this);
+    }
+
+    private abstract class rememberHandler extends AsyncTask<Integer, Void, Void> {
+
     }
 }
