@@ -118,7 +118,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     RelativeLayout mDrawerLinear;
     Shortcuts s;
     int tab = 0;
-    public String skin;
+    public String skin,path;
     public int theme;
     public ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
     Context con = this;
@@ -140,6 +140,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         utils = new Futils();
         s=new Shortcuts(this);
+        path=getIntent().getStringExtra("path");
+
         // Google Analytics
         // Get a Tracker (should auto-report)
         //((Amaze) getApplication()).getTracker(Amaze.TrackerName.APP_TRACKER);
@@ -500,9 +502,14 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         if (i < list.size() - 2) {
 
             if (i!=select || select==0) {
-
+                Main m=new Main();
+                if(path!=null){
+                    Bundle a=new Bundle();
+                    a.putString("path",path);
+                m.setArguments(a);}
                 android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.content_frame, new Main());
+
+                transaction.replace(R.id.content_frame, m);
                 select = i;
                 // Commit the transaction
                 transaction.addToBackStack("tab" + 1);

@@ -152,7 +152,7 @@ public class Main extends android.support.v4.app.Fragment {
     public String year,goback;
     ArrayList<String> hiddenfiles;
     private FloatingActionButton floatingActionButton;
-
+    String Intentpath;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,7 +194,8 @@ public class Main extends android.support.v4.app.Fragment {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
-
+        if(getArguments()!=null)
+        Intentpath=getArguments().getString("path");
         animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
         animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
 
@@ -240,14 +241,7 @@ public class Main extends android.support.v4.app.Fragment {
             listView.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.GONE);
         } else {
-            float density=res.getDisplayMetrics().densityDpi;
-            int columns=Integer.parseInt(Sp.getString("columns","10"));
-            if(columns==10){
-                if(density>= DisplayMetrics.DENSITY_LOW && density<DisplayMetrics.DENSITY_HIGH)
-                    columns=2;
-                else if(density>=DisplayMetrics.DENSITY_HIGH && density<DisplayMetrics.DENSITY_XXHIGH)
-                    columns=3;
-                else columns=4;}
+            int columns=Integer.parseInt(Sp.getString("columns","3"));
             gridView.setNumColumns(columns);
             listView.setVisibility(View.GONE);
             gridView.setVisibility(View.VISIBLE);
@@ -369,8 +363,13 @@ public class Main extends android.support.v4.app.Fragment {
 
             gridView.setFastScrollEnabled(true);
         }
-        if (savedInstanceState == null)
-            loadlist(f, false);
+        if (savedInstanceState == null){
+            if(Intentpath!=null){File file1=new File(Intentpath);
+            if(file1.isDirectory())loadlist(file1,false);
+                else {utils.openFile(f,(MainActivity)getActivity());
+            loadlist(f,false);}
+            }else
+            loadlist(f, false);}
         else {
             Bundle b = new Bundle();
             String cur = savedInstanceState.getString("current");
@@ -1079,6 +1078,11 @@ public class Main extends android.support.v4.app.Fragment {
                         utils.setPermissionsDialog(list.get(plist.get(0)),ma);
                     mode.finish();
                     return true;
+                case R.id.addshortcut:
+                    if(results)
+                        addShortcut(slist.get(plist.get(0)));
+                    else addShortcut(list.get(plist.get(0)));
+                    mode.finish();return true;
                 default:
                     return false;
             }
@@ -1530,5 +1534,25 @@ public class Main extends android.support.v4.app.Fragment {
         float g=(float)Color.green(c)/255;
         float b=(float)Color.blue(c)/255;
         return new float[]{r,g,b};
+    }private void addShortcut(Layoutelements path) {
+        //Adding shortcut for MainActivity
+        //on Home screen
+        Intent shortcutIntent = new Intent(getActivity().getApplicationContext(),
+                MainActivity.class);
+        shortcutIntent.putExtra("path", path);
+        shortcutIntent.setAction(Intent.ACTION_MAIN);
+
+        Intent addIntent = new Intent();
+        addIntent
+                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, new File(path.getDesc()).getName());
+
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+                Intent.ShortcutIconResource.fromContext(getActivity(),
+                        R.drawable.ic_launcher));
+
+        addIntent
+                .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+        getActivity().sendBroadcast(addIntent);
     }
 }
