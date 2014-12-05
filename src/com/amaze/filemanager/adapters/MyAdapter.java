@@ -320,7 +320,8 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setImageDrawable(rowItem.getImageId());
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
-                holder.imageView.setColorFilter(null);
+                if(checked!=null && !checked)
+                    holder.imageView.setColorFilter(null);
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
                 if(main.theme==1)holder.imageView1.setBackgroundColor(Color.parseColor("#000000"));
@@ -359,12 +360,12 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
                 else if(Icons.isgeneric(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#9e9e9e"));
 
-                else if(Icons.isApk(rowItem.getDesc()))holder.imageView.setColorFilter(null);
+                else if(Icons.isApk(rowItem.getDesc()) || Icons.isPicture(rowItem.getDesc()))holder.imageView.setColorFilter(null);
 
                 else holder.imageView.setColorFilter(Color.parseColor(main.skin));
 
             }else
-            if(!Icons.isApk(rowItem.getDesc()))
+            if(!Icons.isApk(rowItem.getDesc()) && !Icons.isPicture(rowItem.getDesc()))
                 holder.imageView.setColorFilter(Color.parseColor(main.skin));
             else
                 holder.imageView.setColorFilter(null);
@@ -386,7 +387,8 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             }
             if(main.showLastModified)
                 holder.date.setText(rowItem.getDate("MMM dd, yyyy",main.year));
-            if(main.showSize)
+            if(rowItem.getSize().equals(main.goback))
+                holder.date.setText(rowItem.getSize());else
                 holder.txtDesc.setText(rowItem.getSize());
             if(main.showPermissions)
                 holder.perm.setText(rowItem.getPermissions());

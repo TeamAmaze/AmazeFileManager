@@ -745,6 +745,7 @@ public class Main extends android.support.v4.app.Fragment {
             // assumes that you have "contexual.xml" menu resources
             inflater.inflate(R.menu.contextual, menu);
             initMenu(menu);
+            hideOption(R.id.addshortcut,menu);
             hideOption(R.id.sethome, menu);
             hideOption(R.id.rename, menu);
             hideOption(R.id.share, menu);
@@ -767,7 +768,7 @@ public class Main extends android.support.v4.app.Fragment {
             ((TextView) v.findViewById(R.id.item_count)).setText(positions.size() + "");
             //tv.setText(positions.size());
             if (positions.size() == 1) {
-
+                showOption(R.id.addshortcut,menu);
                 showOption(R.id.permissions, menu);
 
                 showOption(R.id.about, menu);
@@ -814,19 +815,19 @@ public class Main extends android.support.v4.app.Fragment {
                     if (x.isDirectory()) {
                         hideOption(R.id.share, menu);
                     }
-                    hideOption(R.id.ex, menu);
 
-                    hideOption(R.id.sethome, menu);
+                }       hideOption(R.id.ex, menu);
 
-                    hideOption(R.id.openwith, menu);
+                hideOption(R.id.sethome, menu);
 
-                    //hideOption(R.id.setringtone, menu);
+                hideOption(R.id.openwith, menu);
 
-                    hideOption(R.id.permissions, menu);
+                //hideOption(R.id.setringtone, menu);
 
-                    hideOption(R.id.about, menu);
+                hideOption(R.id.permissions, menu);
 
-                }
+                hideOption(R.id.about, menu);
+
             }
 
             return false; // Return false if nothing is done
