@@ -20,9 +20,14 @@
 package com.amaze.filemanager.fragments;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -78,6 +83,67 @@ SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(getActivity
         results = false;
     }
 
+    public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+        private void hideOption(int id, Menu menu) {
+            MenuItem item = menu.findItem(id);
+            item.setVisible(false);
+        }
+
+        private void showOption(int id, Menu menu) {
+            MenuItem item = menu.findItem(id);
+            item.setVisible(true);
+        }
+        View v;
+        // called when the action mode is created; startActionMode() was called
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate a menu resource providing context menu items
+            MenuInflater inflater = mode.getMenuInflater();
+            v=getActivity().getLayoutInflater().inflate(R.layout.actionmode,null);
+            mode.setCustomView(v);
+            // assumes that you have "contexual.xml" menu resources
+            inflater.inflate(R.menu.contextual, menu);
+            hideOption(R.id.cpy, menu);
+            hideOption(R.id.cut,menu);
+            hideOption(R.id.delete,menu);
+            hideOption(R.id.addshortcut,menu);
+            hideOption(R.id.sethome, menu);
+            hideOption(R.id.rename, menu);
+            hideOption(R.id.share, menu);
+            hideOption(R.id.about, menu);
+            hideOption(R.id.openwith, menu);
+            hideOption(R.id.ex, menu);
+            hideOption(R.id.book, menu);
+            hideOption(R.id.compress, menu);
+            hideOption(R.id.permissions, menu);
+            hideOption(R.id.hide, menu);
+            //hideOption(R.id.setringtone,menu);
+            mode.setTitle(utils.getString(getActivity(), R.string.select));
+            if(Build.VERSION.SDK_INT<19)
+                getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
+            return true;
+        }
+
+        // the following method is called each time
+        // the action mode is shown. Always called after
+        // onCreateActionMode, but
+        // may be called multiple times if the mode is invalidated.
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+
+            return false; // Return false if nothing is done
+        }
+
+        // called when the user selects a contextual menu item
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.ex:
+                    mode.finish();
+                    return true;}return false;}
+
+        @Override
+        public void onDestroyActionMode(ActionMode actionMode) {
+
+        }
+    };
     @Override
     public void onResume() {
         super.onResume();

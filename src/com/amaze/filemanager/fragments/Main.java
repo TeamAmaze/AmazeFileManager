@@ -91,8 +91,10 @@ import com.amaze.filemanager.utils.IconHolder;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
+import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.melnykov.fab.FloatingActionButton;
+import com.stericson.RootTools.RootTools;
 
 import java.io.File;
 import java.io.IOException;
@@ -440,13 +442,20 @@ public class Main extends android.support.v4.app.Fragment {
                     public void onPositive(MaterialDialog materialDialog) {
                         String a = edir.getText().toString();
                         File f = new File(path + "/" + a);
+                        boolean b=false;
                         if (!f.exists()) {
-                            f.mkdirs();
+                             b=f.mkdirs();
                             updateList();
+                            if(b)
                             Toast.makeText(getActivity(), res.getString(R.string.foldercreated), Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Toast.LENGTH_LONG).show();
                         }
+                        if(!b && rootMode){
+                            RootTools.remount(f.getParent(),"rw");
+                            RootHelper.runAndWait("mkdir "+f.getPath(),true);
+                            updateList();
+                            }
                     }
 
                     @Override
@@ -472,11 +481,11 @@ public class Main extends android.support.v4.app.Fragment {
                 ba2.callback(new MaterialDialog.Callback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
-                        String a = edir1.getText().toString();
+                        String a = edir1.getText().toString();boolean b=false;
                         File f1 = new File(path1 + "/" + a);
                         if (!f1.exists()) {
                             try {
-                                boolean b = f1.createNewFile();
+                                 b = f1.createNewFile();
                                 updateList();
                                 Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.filecreated), Toast.LENGTH_LONG).show();
                             } catch (IOException e) {
@@ -484,7 +493,9 @@ public class Main extends android.support.v4.app.Fragment {
                             }
                         } else {
                             Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Toast.LENGTH_LONG).show();
-                        }
+                        }if(!b && rootMode)RootTools.remount(f1.getParent(),"rw");
+                        RootHelper.runAndWait("touch "+f1.getPath(),true);
+                        updateList();
                     }
 
                     @Override
