@@ -440,10 +440,10 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
     @Override
     public void onBackPressed() {
-
         if (select < list.size() - 2 && select!=-2) {
-            Main main = ((Main) getSupportFragmentManager().findFragmentById(R.id.content_frame));
-
+            try {
+                Main main = ((Main) getSupportFragmentManager().findFragmentById(R.id.content_frame));
+            
             if (main.results == true) {
                 main.results = false;
                 main.loadlist(new File(main.current), true);
@@ -457,7 +457,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     }
                 } else exit();
 
-            }
+            }}catch (ClassCastException e){selectItem(0);}
         }else if(select==-2){
             ZipViewer zipViewer  = ((ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame));
             if (zipViewer.results) {

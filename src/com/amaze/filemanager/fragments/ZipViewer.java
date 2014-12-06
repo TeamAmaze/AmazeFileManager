@@ -57,10 +57,11 @@ public class ZipViewer extends ListFragment {
 
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
         getActivity().findViewById(R.id.search).setVisibility(View.INVISIBLE);
-        getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
         getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
         getActivity().findViewById(R.id.title).setVisibility(View.VISIBLE);
-
+        getActivity().findViewById(R.id.pathbar).setOnClickListener(null);
+        ((TextView)getActivity().findViewById(R.id.pathname)).setText("");
+        getActivity().findViewById(R.id.fullpath).setOnClickListener(null);
         new ZipHelperTask(this, 0).execute(f);
         files = new ArrayList<File>();
         results = false;
@@ -78,6 +79,6 @@ public class ZipViewer extends ListFragment {
 
     public void goBack() {
 
-        new ZipHelperTask(this, 2, current).execute(f);
+        new ZipHelperTask(this, 2, new File(current).getParent()).execute(f);
     }
 }

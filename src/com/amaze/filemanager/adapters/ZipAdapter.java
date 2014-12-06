@@ -128,9 +128,11 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
 
                     new ZipHelperTask(zipViewer, 1, stringBuilder.toString()).execute(zipViewer.f);
                     File file = new File(rowItem.getName());
-                    zipViewer.current = file.getParent();
+                    //zipViewer.current = file.getParent();
                 } else {
-
+                    String parentLength = new File(rowItem.getName()).getParent();
+                    stringBuilder1 = new StringBuilder(rowItem.getName());
+                    stringBuilder1.delete(0, parentLength.length()+1);
                     File file = new File(zipViewer.f.getParent() + "/" + stringBuilder1.toString());
                     zipViewer.files.clear();
                     zipViewer.files.add(0, file);

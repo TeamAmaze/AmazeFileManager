@@ -459,7 +459,7 @@ public class Futils {
             Intent i = new Intent(m, TextReader.class);
             i.putExtra("path", f.getPath());
             m.startActivity(i);
-        } else if (Icons.isArchive(f.getPath())) {
+        } else if (f.getName().toLowerCase().endsWith(".zip")) {
             m.select=-2;
             FragmentTransaction fragmentTransaction = m.getSupportFragmentManager().beginTransaction();
             Fragment fragment = new ZipViewer();

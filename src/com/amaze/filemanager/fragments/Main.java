@@ -366,7 +366,7 @@ public class Main extends android.support.v4.app.Fragment {
         if (savedInstanceState == null){
             if(Intentpath!=null){File file1=new File(Intentpath);
             if(file1.isDirectory())loadlist(file1,false);
-                else {utils.openFile(f,(MainActivity)getActivity());
+                else {utils.openFile(file1,mainActivity);
             loadlist(f,false);}
             }else
             loadlist(f, false);}
@@ -1540,7 +1540,7 @@ public class Main extends android.support.v4.app.Fragment {
         //on Home screen
         Intent shortcutIntent = new Intent(getActivity().getApplicationContext(),
                 MainActivity.class);
-        shortcutIntent.putExtra("path", path);
+        shortcutIntent.putExtra("path", path.getDesc());
         shortcutIntent.setAction(Intent.ACTION_MAIN);
 
         Intent addIntent = new Intent();

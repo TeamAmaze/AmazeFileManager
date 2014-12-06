@@ -320,7 +320,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setImageDrawable(rowItem.getImageId());
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
-                if(checked!=null && !checked)
                     holder.imageView.setColorFilter(null);
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
@@ -329,7 +328,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 main.ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
             }
             else if (Icons.isApk((rowItem.getDesc()))) {
-                if(checked!=null && !checked)
                 holder.imageView.setColorFilter(null);
                 main.ic.cancelLoad(holder.imageView);
                 main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),null);
@@ -372,8 +370,8 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
             if (checked != null) {
 
-                if (checked) {holder.imageView1.setVisibility(View.GONE);
-                    holder.imageView.setVisibility(View.VISIBLE);
+                if (checked) {
+                    holder.imageView.setColorFilter(Color.parseColor(main.skin));
                     holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                     holder.rl.setBackgroundColor(Color.parseColor("#9f757575"));
                 } else {

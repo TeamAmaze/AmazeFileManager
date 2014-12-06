@@ -42,16 +42,17 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
     @Override
     protected ArrayList<ZipEntry> doInBackground(File... params) {
         ArrayList<ZipEntry> elements = new ArrayList<ZipEntry>();
+
         try {
             ZipFile zipfile = new ZipFile(params[0]);
-
+            int i=0;
             //  int fileCount = zipfile.size();
             for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
                 ZipEntry entry = (ZipEntry) e.nextElement();
+                i++;
                 String s = entry.getName().toString();
                 File file = new File(entry.getName());
                 if (counter==0) {
-
                     if (file.getParent() == null) {
                         elements.add(entry);
                         zipViewer.results = false;
@@ -77,7 +78,12 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
                     }
                 }
             }
-
+        if(counter ==0 && elements.size()==0 && i!=0){
+            for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
+                ZipEntry entry = (ZipEntry) e.nextElement();
+                elements.add(entry);
+            }
+            }
         } catch (IOException e) {
         }
         return elements;
@@ -86,8 +92,8 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
     @Override
     protected void onPostExecute(ArrayList<ZipEntry> zipEntries) {
         super.onPostExecute(zipEntries);
-        ZipAdapter z = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, zipEntries, zipViewer);
-        zipViewer.setListAdapter(z);       ((TextView) zipViewer.getActivity().findViewById(R.id.title)).setText(zipViewer.current);
+         ZipAdapter z = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, zipEntries, zipViewer);
+        zipViewer.setListAdapter(z);zipViewer.current=dir;       ((TextView) zipViewer.getActivity().findViewById(R.id.fullpath)).setText(zipViewer.current);
 
     }
 }
