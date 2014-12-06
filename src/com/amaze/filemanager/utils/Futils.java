@@ -325,12 +325,16 @@ public class Futils {
 
     public static long folderSize(File directory) {
         long length = 0;
-        for (File file:directory.listFiles()) {
+        try {
+            for (File file:directory.listFiles()) {
 
-            if (file.isFile())
-                length += file.length();
-            else
-                length += folderSize(file);
+                if (file.isFile())
+                    length += file.length();
+                else
+                    length += folderSize(file);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return length;
     }

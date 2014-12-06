@@ -48,7 +48,7 @@ public class ZipViewer extends ListFragment {
     public String current;
     public Futils utils=new Futils();
     public String skin,year;
-    public boolean coloriseIcons;
+    public boolean coloriseIcons,showSize,showLastModified;
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -57,7 +57,8 @@ public class ZipViewer extends ListFragment {
 SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         coloriseIcons=Sp.getBoolean("coloriseIcons",false);
         Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        showSize=Sp.getBoolean("showFileSize",false);
+        showLastModified=Sp.getBoolean("showLastModified",true);
         year=(""+calendar.get(Calendar.YEAR)).substring(2,4);
         skin = Sp.getString("skin_color", "#5677fc");
         ((TextView) getActivity().findViewById(R.id.title)).setText(f.getName());

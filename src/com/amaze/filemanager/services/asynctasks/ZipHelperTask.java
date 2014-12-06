@@ -10,10 +10,14 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.ZipAdapter;
 import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.utils.Layoutelements;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -86,6 +90,7 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
             }
         } catch (IOException e) {
         }
+        Collections.sort(elements,new FileListSorter());
         return elements;
     }
 
@@ -95,5 +100,20 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
          ZipAdapter z = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, zipEntries, zipViewer);
         zipViewer.setListAdapter(z);zipViewer.current=dir;       ((TextView) zipViewer.getActivity().findViewById(R.id.fullpath)).setText(zipViewer.current);
 
-    }
-}
+    } class FileListSorter implements Comparator<ZipEntry> {
+
+
+        public FileListSorter() {
+
+        }
+
+        @Override
+        public int compare(ZipEntry file1, ZipEntry file2) {
+            if (file1.isDirectory() && !file2.isDirectory()) {
+                return -1;
+
+
+            } else if (file2.isDirectory() && !(file1).isDirectory()) {
+                return 1;
+            } return  file1.getName().compareToIgnoreCase(file2.getName());}}
+        }

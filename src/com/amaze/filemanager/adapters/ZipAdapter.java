@@ -108,18 +108,30 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
             holder.txtTitle.setText(rowItem.getName().substring(0, rowItem.getName().lastIndexOf("/")));
         }} else {
                 holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1));
-            holder.txtDesc.setText(new Futils().readableFileSize(rowItem.getSize()));
+         if(zipViewer.showSize)   holder.txtDesc.setText(new Futils().readableFileSize(rowItem.getSize()));
         }
         GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
         if(zipViewer.coloriseIcons)gradientDrawable.setColor(Color.parseColor("#757575"));
         else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
-        holder.date.setText(new Futils().getdate(rowItem.getTime(),"MMM dd, yyyy",zipViewer.year));
+        if(zipViewer.showLastModified)holder.date.setText(new Futils().getdate(rowItem.getTime(),"MMM dd, yyyy",zipViewer.year));
         if (rowItem.isDirectory()) {
             holder.imageView.setImageDrawable(folder);
         } else {
             holder.imageView.setImageDrawable(unknown);
         }
         holder.rl.setBackgroundResource(R.drawable.listitem1);
+        holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                try {
+                    ZipFile zipFile = new ZipFile(zipViewer.f);
+                    new ZipExtractTask(zipFile, zipViewer.f.getParent(), zipViewer,stringBuilder.toString().substring(stringBuilder.toString().lastIndexOf("/") + 1),false).execute(rowItem);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }
+        });
         holder.rl.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View p1) {
@@ -138,7 +150,7 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
 
                     try {
                         ZipFile zipFile = new ZipFile(zipViewer.f);
-                        new ZipExtractTask(zipFile, zipViewer.f.getParent(), zipViewer, stringBuilder1.toString()).execute(rowItem);
+                        new ZipExtractTask(zipFile, zipViewer.f.getParent(), zipViewer, stringBuilder1.toString(),true).execute(rowItem);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
