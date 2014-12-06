@@ -97,20 +97,22 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
         final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
         if (rowItem.isDirectory()) {
             stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
-            holder.txtTitle.setText(stringBuilder.toString());
-        } else {
-            File file = new File(rowItem.getName());
-            stringBuilder1 = new StringBuilder(rowItem.getName());
-            if (file.getParent()!=null){
+        try {
+            holder.txtTitle.setText(stringBuilder.toString().substring(stringBuilder.toString().lastIndexOf("/")+1));
+        }catch (Exception e)
+        {
+            holder.txtTitle.setText(rowItem.getName().substring(0,rowItem.getName().lastIndexOf("/")));
+        }} else {
+            /*if (file.getParent()!=null){
 
                 String parentLength = file.getParent();
                 stringBuilder1 = new StringBuilder(rowItem.getName());
                 stringBuilder1.delete(0, parentLength.length()+1);
                 holder.txtTitle.setText(stringBuilder1.toString());
-            } else {
+            } else {*/
 
-                holder.txtTitle.setText(stringBuilder1.toString());
-            }
+                holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1));
+            //}
         }
 
         if (rowItem.isDirectory()) {

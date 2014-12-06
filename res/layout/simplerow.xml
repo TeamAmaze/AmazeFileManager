@@ -21,6 +21,7 @@
     android:id="@+id/second"
     android:layout_width="fill_parent"
     android:minHeight="50dip"
+    android:background="@drawable/listitem1"
     android:layout_height="wrap_content"
     android:clickable="true"
     android:padding="6dip">

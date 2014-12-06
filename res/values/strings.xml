@@ -254,5 +254,6 @@
     <string name="new_string">New</string>
     <string name="setringtone">Set as ringtone</string>
     <string name="copy_path">Copy Path</string>
+    <string name="addshortcut">Add Shortcut</string>
 </resources>
 

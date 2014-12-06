@@ -71,5 +71,5 @@
         android:title="@string/hide" />
     <item
         android:id="@+id/addshortcut"
-        android:title="Add shortcut" />
+        android:title="@string/addshortcut" />
 </menu>

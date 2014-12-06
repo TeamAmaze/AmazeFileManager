@@ -2,6 +2,7 @@ package com.amaze.filemanager.services.asynctasks;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.adarshr.raroscope.RARFile;
@@ -63,12 +64,10 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
                         zipViewer.results = true;
                     }
                 } else if (counter==2) {
-
                     if (file.getParent()!=null && file.getParent().equals(dir)) {
 
                         elements.add(entry);
                         zipViewer.results = true;
-
                     } else if (file.getParent()==null) {
                         if (dir==null) {
 
@@ -88,6 +87,7 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
     protected void onPostExecute(ArrayList<ZipEntry> zipEntries) {
         super.onPostExecute(zipEntries);
         ZipAdapter z = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, zipEntries, zipViewer);
-        zipViewer.setListAdapter(z);
+        zipViewer.setListAdapter(z);       ((TextView) zipViewer.getActivity().findViewById(R.id.title)).setText(zipViewer.current);
+
     }
 }

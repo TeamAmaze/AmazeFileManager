@@ -459,7 +459,7 @@ public class Futils {
             Intent i = new Intent(m, TextReader.class);
             i.putExtra("path", f.getPath());
             m.startActivity(i);
-        } /*else if (Icons.isArchive(f.getPath())) {
+        } else if (Icons.isArchive(f.getPath())) {
             m.select=-2;
             FragmentTransaction fragmentTransaction = m.getSupportFragmentManager().beginTransaction();
             Fragment fragment = new ZipViewer();
@@ -470,7 +470,7 @@ public class Futils {
             //fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
 
-        }*/ else {
+        } else {
             try {
                 openunknown(f, m);
             } catch (Exception e) {
