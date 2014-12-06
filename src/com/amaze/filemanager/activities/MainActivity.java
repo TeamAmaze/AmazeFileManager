@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.IntegerRes;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -98,7 +99,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 
 public class MainActivity extends android.support.v4.app.FragmentActivity {
-    public int select;
+    public Integer select;
     TextView title;
 
     Futils utils;
@@ -328,17 +329,12 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 R.string.drawer_close  /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
-                if (select <= 5 && select!=-2) {
-                    title.setText(list.get(select));
-                    getActionBar().setSubtitle(list.get(select));
-                }else if(select==102)title.setText(R.string.process_viewer);
-                else if(select==-2){ ZipViewer zipViewer  = ((ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame));
-          title.setText(zipViewer.f.getName());     }// creates call to onPrepareOptionsMenu()
+                if(select==102)title.setText(R.string.process_viewer);
+                // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
                 //title.setText("Amaze File Manager");
-                getActionBar().setSubtitle(utils.getString(MainActivity.this, R.string.select));
                 // creates call to onPrepareOptionsMenu()
             }
         };
@@ -443,7 +439,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         if (select < list.size() - 2 && select!=-2) {
             try {
                 Main main = ((Main) getSupportFragmentManager().findFragmentById(R.id.content_frame));
-            
+
             if (main.results == true) {
                 main.results = false;
                 main.loadlist(new File(main.current), true);
@@ -501,7 +497,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
         if (i < list.size() - 2) {
 
-            if (i!=select || select==0) {
+            if (select==null || select>=list.size()-2) {
                 Main m=new Main();
                 if(path!=null){
                     Bundle a=new Bundle();
@@ -523,10 +519,17 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     File file = new File(list.get(i));
                     tabHandler1.updateTab(new Tab(pos, file.getName(), file.getPath()));
                 }
-                Sp.edit().putBoolean("remember", false).apply();
+                Sp.edit().putBoolean("remember", false).commit();
 
                 title.setVisibility(View.GONE);
                 tabsSpinner.setVisibility(View.VISIBLE);
+            }else{
+                try {
+                    Main m=(Main)getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                    m.loadlist(new File(list.get(i)),false);
+                } catch (ClassCastException e) {
+                    select=null;selectItem(0);
+                }
             }
 
         } else {

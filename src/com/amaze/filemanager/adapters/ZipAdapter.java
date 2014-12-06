@@ -21,7 +21,9 @@ package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +37,8 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.asynctasks.ZipExtractTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
+import com.amaze.filemanager.utils.Futils;
+import com.pkmmte.view.CircularImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,42 +57,42 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
         super(c, id, enter);
         this.enter = enter;
         this.c = c;
-        folder = c.getResources().getDrawable(R.drawable.folder);
+        folder = c.getResources().getDrawable(R.drawable.ic_grid_folder_new);
         unknown = c.getResources().getDrawable(R.drawable.ic_doc_generic_am);
         this.zipViewer = zipViewer;
     }
-
     private class ViewHolder {
-        ImageView imageView;
+        CircularImageView viewmageV;
+        ImageView imageView,apk;
+        ImageView imageView1;
         TextView txtTitle;
         TextView txtDesc;
         TextView date;
-        RelativeLayout rl;
-
+        TextView perm;
+        View rl;
     }
 
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         final ZipEntry rowItem = enter.get(position);
 
-        View view;
+        View view = convertView;
         final int p = position;
         if (convertView == null) {
-            int i = R.layout.simplerow;
-
             LayoutInflater mInflater = (LayoutInflater) c
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            view = mInflater.inflate(i, null);
+            view = mInflater.inflate(R.layout.rowlayout, parent, false);
             final ViewHolder vholder = new ViewHolder();
 
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
+            vholder.viewmageV = (CircularImageView) view.findViewById(R.id.cicon);
             vholder.imageView = (ImageView) view.findViewById(R.id.icon);
-            vholder.rl = (RelativeLayout) view.findViewById(R.id.second);
-
+            vholder.rl = view.findViewById(R.id.second);
+            vholder.perm = (TextView) view.findViewById(R.id.permis);
+            vholder.date = (TextView) view.findViewById(R.id.date);
+            vholder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
+            vholder.apk=(ImageView)view.findViewById(R.id.bicon);
             view.setTag(vholder);
-
-        } else {
-            view = convertView;
 
         }
         final ViewHolder holder = (ViewHolder) view.getTag();
@@ -98,28 +102,24 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
         if (rowItem.isDirectory()) {
             stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
         try {
-            holder.txtTitle.setText(stringBuilder.toString().substring(stringBuilder.toString().lastIndexOf("/")+1));
+            holder.txtTitle.setText(stringBuilder.toString().substring(stringBuilder.toString().lastIndexOf("/") + 1));
         }catch (Exception e)
         {
-            holder.txtTitle.setText(rowItem.getName().substring(0,rowItem.getName().lastIndexOf("/")));
+            holder.txtTitle.setText(rowItem.getName().substring(0, rowItem.getName().lastIndexOf("/")));
         }} else {
-            /*if (file.getParent()!=null){
-
-                String parentLength = file.getParent();
-                stringBuilder1 = new StringBuilder(rowItem.getName());
-                stringBuilder1.delete(0, parentLength.length()+1);
-                holder.txtTitle.setText(stringBuilder1.toString());
-            } else {*/
-
                 holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1));
-            //}
+            holder.txtDesc.setText(new Futils().readableFileSize(rowItem.getSize()));
         }
-
+        GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
+        if(zipViewer.coloriseIcons)gradientDrawable.setColor(Color.parseColor("#757575"));
+        else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+        holder.date.setText(new Futils().getdate(rowItem.getTime(),"MMM dd, yyyy",zipViewer.year));
         if (rowItem.isDirectory()) {
             holder.imageView.setImageDrawable(folder);
         } else {
             holder.imageView.setImageDrawable(unknown);
         }
+        holder.rl.setBackgroundResource(R.drawable.listitem1);
         holder.rl.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View p1) {
@@ -127,8 +127,7 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
                 if (rowItem.isDirectory()) {
 
                     new ZipHelperTask(zipViewer, 1, stringBuilder.toString()).execute(zipViewer.f);
-                    File file = new File(rowItem.getName());
-                    //zipViewer.current = file.getParent();
+
                 } else {
                     String parentLength = new File(rowItem.getName()).getParent();
                     stringBuilder1 = new StringBuilder(rowItem.getName());

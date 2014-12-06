@@ -50,7 +50,7 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
             for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
                 ZipEntry entry = (ZipEntry) e.nextElement();
                 i++;
-                String s = entry.getName().toString();
+                //String s = entry.getName().toString();
                 File file = new File(entry.getName());
                 if (counter==0) {
                     if (file.getParent() == null) {
@@ -59,7 +59,7 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
                     }
                 } else if (counter==1) {
 
-                    Log.d("Test", dir);
+                    //Log.d("Test", dir);
                     if (file.getParent()!=null && file.getParent().equals(dir)) {
                         elements.add(entry);
                         zipViewer.results = true;

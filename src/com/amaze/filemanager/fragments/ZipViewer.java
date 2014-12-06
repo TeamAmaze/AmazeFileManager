@@ -19,7 +19,9 @@
 
 package com.amaze.filemanager.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.view.animation.Animation;
@@ -30,10 +32,12 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
+import com.amaze.filemanager.utils.Futils;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ZipViewer extends ListFragment {
 
@@ -42,14 +46,20 @@ public class ZipViewer extends ListFragment {
     public ArrayList<File> files;
     public Boolean results;
     public String current;
-    private Main ma;
-
+    public Futils utils=new Futils();
+    public String skin,year;
+    public boolean coloriseIcons;
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         s = getArguments().getString("path");
         f = new File(s);
-
+SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        coloriseIcons=Sp.getBoolean("coloriseIcons",false);
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        year=(""+calendar.get(Calendar.YEAR)).substring(2,4);
+        skin = Sp.getString("skin_color", "#5677fc");
         ((TextView) getActivity().findViewById(R.id.title)).setText(f.getName());
 
         FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
@@ -73,7 +83,7 @@ public class ZipViewer extends ListFragment {
 
         if (files.size()==1) {
 
-            new DeleteTask(getActivity().getContentResolver(), ma, getActivity()).execute(files);
+            new DeleteTask(getActivity().getContentResolver(), null, getActivity()).execute(files);
         }
     }
 
