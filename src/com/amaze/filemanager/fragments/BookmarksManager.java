@@ -194,9 +194,9 @@ ListView vl;int theme,theme1;
             try {
 
                 bx = s.readS();
-            } catch (IOException e) {
-            } catch (SAXException e) {
-            } catch (ParserConfigurationException e) {
+                if(bx==null || bx.size()==0)s.makeS();
+                bx=s.readS();
+            } catch (Exception e) {
             }
             return bx;
         }

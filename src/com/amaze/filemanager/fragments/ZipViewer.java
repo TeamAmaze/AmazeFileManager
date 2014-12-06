@@ -62,7 +62,7 @@ SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(getActivity
         year=(""+calendar.get(Calendar.YEAR)).substring(2,4);
         skin = Sp.getString("skin_color", "#5677fc");
         ((TextView) getActivity().findViewById(R.id.title)).setText(f.getName());
-
+        getListView().setDividerHeight(0);
         FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         floatingActionButton.hide(true);
 

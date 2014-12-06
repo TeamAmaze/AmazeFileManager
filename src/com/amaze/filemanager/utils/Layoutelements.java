@@ -88,6 +88,16 @@ public class Layoutelements implements Parcelable {
         date=new File(desc).lastModified();
 
     }
+    public static final Parcelable.Creator<Layoutelements> CREATOR =
+            new Parcelable.Creator<Layoutelements>() {
+                public Layoutelements createFromParcel(Parcel in) {
+                    return new Layoutelements(in);
+                }
+
+                public Layoutelements[] newArray(int size) {
+                    return new Layoutelements[size];
+                }
+            };
 
     public Drawable getImageId() {
         return imageId;

@@ -353,7 +353,7 @@ public class Main extends android.support.v4.app.Fragment {
                 gridView.setPadding(dpAsPixels, 0, dpAsPixels, 0);
             }
         }
-        footerView=getActivity().getLayoutInflater().inflate(R.layout.divider,null);
+        footerView=getActivity().getLayoutInflater().inflate(R.layout.divider, null);
 
         if (aBoolean) {
 
@@ -641,7 +641,11 @@ public class Main extends android.support.v4.app.Fragment {
         if(mActionMode!=null){mActionMode.finish();}
         new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
 
-        animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
+        try {
+            animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         listView.setAnimation(animation);
         gridView.setAnimation(animation);
@@ -810,13 +814,18 @@ public class Main extends android.support.v4.app.Fragment {
                 }
 
             } else {
-                for (int c : adapter.getCheckedItemPositions()) {
-                    File x = new File(list.get(c).getDesc());
-                    if (x.isDirectory()) {
-                        hideOption(R.id.share, menu);
-                    }
+                try {
+                    for (int c : adapter.getCheckedItemPositions()) {
+                        File x = new File(list.get(c).getDesc());
+                        if (x.isDirectory()) {
+                            hideOption(R.id.share, menu);
+                        }
 
-                }       hideOption(R.id.ex, menu);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                hideOption(R.id.ex, menu);
 
                 hideOption(R.id.sethome, menu);
 
@@ -895,7 +904,6 @@ public class Main extends android.support.v4.app.Fragment {
                     else
                         utils.deleteFiles(list,ma, plist);
 
-                    mode.finish();
 
                     return true;
                 case R.id.share:
@@ -911,10 +919,9 @@ public class Main extends android.support.v4.app.Fragment {
                         for(int i:plist){
                             uris.add(Uri.fromFile(new File(list.get(i).getDesc())));
                         }}
-                    sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,uris);
+                    sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
                     sendIntent.setType("*/*");
                     startActivity(sendIntent);
-                    mode.finish();
                     return true;
                 case R.id.all:
                     if (adapter.areAllChecked(current)) {
@@ -986,7 +993,7 @@ public class Main extends android.support.v4.app.Fragment {
                         for (int i1 = 0; i1 < plist.size(); i1++) {
                             hide(list.get(plist.get(i1)).getDesc());
                         }}
-                    updateList();
+                    updateList();mode.finish();
                     return true;
                 case R.id.book:
                     if(results)
@@ -1070,7 +1077,7 @@ public class Main extends android.support.v4.app.Fragment {
                     else
                         utils.openunknown(new File(list.get(
                                 (plist.get(0))).getDesc()), getActivity());
-                    mode.finish();
+
                     return true;
                 case R.id.permissions:
                     if(results)

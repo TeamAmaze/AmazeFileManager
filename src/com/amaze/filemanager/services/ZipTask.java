@@ -197,10 +197,7 @@ public class ZipTask extends Service {
                 byte[] buf = new byte[1024];
                 int len;
                 FileInputStream in = new FileInputStream(file);
-                if (path.length() > 0)
                     zos.putNextEntry(new ZipEntry(path + "/" + file.getName()));
-                else
-                    zos.putNextEntry(new ZipEntry(file.getName()));
                 while ((len = in.read(buf)) > 0) {
                     if (hash.get(id)) {
                         zos.write(buf, 0, len);

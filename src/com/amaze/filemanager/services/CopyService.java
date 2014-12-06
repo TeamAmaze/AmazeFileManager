@@ -181,7 +181,7 @@ public class CopyService extends Service {
             } else if (rootmode) {
                 RootTools.remount(FILE2, "rw");
                 for (int i = 0; i < files.size(); i++) {
-                    Command a=new Command(0,"cp "+files.get(i) +" "+FILE2) {
+                    Command a=new Command(0,"cp "+getCommandLineString(files.get(i)) +" "+getCommandLineString(FILE2)) {
                     @Override
                     public void commandOutput(int i, String s) {
                     System.out.println(s);
@@ -213,6 +213,11 @@ public class CopyService extends Service {
                     System.out.println("Not Allowed");
                 }
             }
+        private static final String UNIX_ESCAPE_EXPRESSION = "(\\(|\\)|\\[|\\]|\\s|\'|\"|`|\\{|\\}|&|\\\\|\\?)";
+
+        private  String getCommandLineString(String input) {
+            return input.replaceAll(UNIX_ESCAPE_EXPRESSION, "\\\\$1");
+        }
 
         private void copyFiles(File sourceFile, File targetFile, int id,boolean move) throws IOException {
             if (sourceFile.isDirectory()) {

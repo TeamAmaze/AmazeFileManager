@@ -51,8 +51,6 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
     Drawable folder, unknown;
     ArrayList<ZipEntry> enter;
     ZipViewer zipViewer;
-    StringBuilder stringBuilder1;
-
     public ZipAdapter(Context c, int id, ArrayList<ZipEntry> enter, ZipViewer zipViewer) {
         super(c, id, enter);
         this.enter = enter;
@@ -123,7 +121,7 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
         holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                try {
+                try {Toast.makeText(zipViewer.getActivity(), new Futils().getString(zipViewer.getActivity(),R.string.extracting),Toast.LENGTH_SHORT).show();
                     ZipFile zipFile = new ZipFile(zipViewer.f);
                     new ZipExtractTask(zipFile, zipViewer.f.getParent(), zipViewer,stringBuilder.toString().substring(stringBuilder.toString().lastIndexOf("/") + 1),false).execute(rowItem);
                 } catch (IOException e) {
