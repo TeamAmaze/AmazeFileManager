@@ -140,17 +140,14 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
 
                     new ZipHelperTask(zipViewer, 1, stringBuilder.toString()).execute(zipViewer.f);
 
-                } else {
-                    String parentLength = new File(rowItem.getName()).getParent();
-                    stringBuilder1 = new StringBuilder(rowItem.getName());
-                    stringBuilder1.delete(0, parentLength.length()+1);
-                    File file = new File(zipViewer.f.getParent() + "/" + stringBuilder1.toString());
+                } else {String x=rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1);
+                    File file = new File(zipViewer.f.getParent() + "/" + x);
                     zipViewer.files.clear();
                     zipViewer.files.add(0, file);
 
                     try {
                         ZipFile zipFile = new ZipFile(zipViewer.f);
-                        new ZipExtractTask(zipFile, zipViewer.f.getParent(), zipViewer, stringBuilder1.toString(),true).execute(rowItem);
+                        new ZipExtractTask(zipFile, zipViewer.f.getParent(), zipViewer, x,true).execute(rowItem);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

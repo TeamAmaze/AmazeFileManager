@@ -453,16 +453,16 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     }
                 } else exit();
 
-            }}catch (ClassCastException e){selectItem(0);}
+            }}catch (ClassCastException e){goToMain();}
         }else if(select==-2){
             ZipViewer zipViewer  = ((ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame));
             if (zipViewer.results) {
 
                 zipViewer.goBack();
-            } else selectItem(0);
+            } else goToMain();
         }
         else {
-            selectItem(0);
+            goToMain();
         }
     }
 
@@ -493,6 +493,21 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         {select= list.indexOf(path);
             adapter.toggleChecked(select);
         }}
+    public void goToMain(){
+        Main m=new Main();
+        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.content_frame, m);
+        // Commit the transaction
+        select=0;
+        transaction.addToBackStack("tab" + 1);
+        transaction.commit();
+
+
+        title.setVisibility(View.GONE);
+        tabsSpinner.setVisibility(View.VISIBLE);
+
+    }
     public void selectItem(final int i) {
 
         if (i < list.size() - 2) {

@@ -13,6 +13,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -67,7 +68,11 @@ if(open){
             throws IOException {
         if (entry.isDirectory()) {
             createDir(new File(outputDir, entry.getName()));
-            return;
+            /*for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
+                ZipEntry entry1 = (ZipEntry) e.nextElement();
+                if(entry1.getName().contains(entry.getName())){System.out.println(entry1.getName());}
+            }*/
+                return;
         }
         File outputFile = new File(outputDir, entry.getName());
         if (!outputFile.getParentFile().exists()) {
