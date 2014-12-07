@@ -40,6 +40,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.zip.ZipEntry;
@@ -63,12 +64,17 @@ public class ExtractService extends Service {
         startForeground(002, notification);
         registerReceiver(receiver1, new IntentFilter("excancel"));
     }
-
+ArrayList<String> entries=new ArrayList<String>();
+    boolean eentries;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle b = new Bundle();
         b.putInt("id", startId);
         String file = intent.getStringExtra("zip");
+        eentries=intent.getBooleanExtra("entries1",false);
+        if(eentries){
+            entries=intent.getStringArrayListExtra("entries");
+        }
         b.putString("file", file);
         new Doback().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, b);
         hash.put(startId, true);
@@ -80,7 +86,7 @@ public class ExtractService extends Service {
         if (dir.exists()) {
             return;
         }
-        Log.i("Amaze", "Creating dir " + dir.getName());
+       // Log.i("Amaze", "Creating dir " + dir.getName());
         if (!dir.mkdirs()) {
             throw new RuntimeException("Can not create dir " + dir);
         }
@@ -105,7 +111,7 @@ public class ExtractService extends Service {
             int len;
             byte buf[] = new byte[1024];
             while ((len = inputStream.read(buf)) > 0) {
-                System.out.println(id + " " + hash.get(id));
+                //System.out.println(id + " " + hash.get(id));
                 if (hash.get(id)) {
                     publishResults(true);
                     outputStream.write(buf, 0, len);
@@ -121,13 +127,47 @@ public class ExtractService extends Service {
         }
     }
 
+    public boolean extract(int id, File archive, String destinationPath,ArrayList<String> x) {
+        int i = 0;
+        try {
+            ZipFile zipfile = new ZipFile(archive);
+            int fileCount = zipfile.size();
+            for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
+                //Log.i("Amaze", id + " " + hash.get(id));
+                if (hash.get(id)) {
+                    publishResults(true);
+                    ZipEntry entry = (ZipEntry) e.nextElement();
+                    for(String y:x){
+                        if(new ZipEntry(y).isDirectory()){
+                        if(entry.getName().contains(y))
+                        unzipEntry(id, zipfile, entry, destinationPath);}
+                    else unzipEntry(id, zipfile, new ZipEntry(y), destinationPath);
+                    }
+                    i++;
+                    publishResults(id, archive.getName(), i * 100 / fileCount, false);
+                } else {
+                    stopSelf(id);
+                    publishResults(false);
+                }
+            }
+            Intent intent = new Intent("loadlist");
+            sendBroadcast(intent);
+            return true;
+        } catch (Exception e) {
+            Log.e("amaze", "Error while extracting file " + archive, e);
+            Intent intent = new Intent("loadlist");
+            sendBroadcast(intent);
+            return false;
+        }
+
+    }
     public boolean extract(int id, File archive, String destinationPath) {
         int i = 0;
         try {
             ZipFile zipfile = new ZipFile(archive);
             int fileCount = zipfile.size();
             for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
-                Log.i("Amaze", id + " " + hash.get(id));
+                //Log.i("Amaze", id + " " + hash.get(id));
                 if (hash.get(id)) {
                     publishResults(true);
                     ZipEntry entry = (ZipEntry) e.nextElement();
@@ -155,6 +195,10 @@ public class ExtractService extends Service {
         protected Integer doInBackground(Bundle... p1) {
             String file = p1[0].getString("file");
             File f = new File(file);
+            System.out.println(f.getName()+""+eentries);
+            if(eentries) {
+                extract(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")), entries);
+            }else
             extract(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")));
 
 

@@ -175,13 +175,13 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             });
 
 
-            final Animation animation = AnimationUtils.loadAnimation(context, R.anim.holder_anim);
 
             holder.txtTitle.setText(rowItem.getTitle());
             holder.imageView.setImageDrawable(rowItem.getImageId());
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    final Animation animation = AnimationUtils.loadAnimation(context, R.anim.holder_anim);
                     if (!rowItem.getSize().equals(main.goback)) {
                         holder.imageView.setAnimation(animation);
                         toggleChecked(p);

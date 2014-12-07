@@ -68,10 +68,9 @@ if(open){
             throws IOException {
         if (entry.isDirectory()) {
             createDir(new File(outputDir, entry.getName()));
-            /*for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
-                ZipEntry entry1 = (ZipEntry) e.nextElement();
-                if(entry1.getName().contains(entry.getName())){System.out.println(entry1.getName());}
-            }*/
+            for (ZipEntry entry1:zipViewer.wholelist ) {
+                if(entry1.getName().contains(entry.getName())){unzipEntry(zipfile,entry1,outputDir);}
+            }
                 return;
         }
         File outputFile = new File(outputDir, entry.getName());

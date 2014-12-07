@@ -19,7 +19,10 @@
 
 package com.amaze.filemanager.fragments;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -35,31 +38,45 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.ZipAdapter;
 import com.amaze.filemanager.services.DeleteTask;
+import com.amaze.filemanager.services.ExtractService;
+import com.amaze.filemanager.services.asynctasks.ZipExtractTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.IconUtils;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class ZipViewer extends ListFragment {
 
     String s;
     public File f;
     public ArrayList<File> files;
-    public Boolean results;
+    public Boolean results,selection=false;
     public String current;
     public Futils utils=new Futils();
-    public String skin,year;
+    public String skin,year;public ZipAdapter zipAdapter;
+    public ActionMode mActionMode;public int skinselection;
     public boolean coloriseIcons,showSize,showLastModified;
+SharedPreferences Sp;
+    ZipViewer zipViewer=this;
+    public ArrayList<ZipEntry> wholelist=new ArrayList<ZipEntry>();
+public     ArrayList<ZipEntry> elements = new ArrayList<ZipEntry>();
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         s = getArguments().getString("path");
         f = new File(s);
-SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+ Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         coloriseIcons=Sp.getBoolean("coloriseIcons",false);
         Calendar calendar = Calendar.getInstance();
         showSize=Sp.getBoolean("showFileSize",false);
@@ -68,9 +85,11 @@ SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(getActivity
         skin = Sp.getString("skin_color", "#5677fc");
         ((TextView) getActivity().findViewById(R.id.title)).setText(f.getName());
         getListView().setDividerHeight(0);
+        getListView().setDivider(null);
         FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         floatingActionButton.hide(true);
-
+        String x=getSelectionColor();
+        skinselection= Color.parseColor(x);
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
         getActivity().findViewById(R.id.search).setVisibility(View.INVISIBLE);
         getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
@@ -82,7 +101,29 @@ SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(getActivity
         files = new ArrayList<File>();
         results = false;
     }
+    public String getSelectionColor(){
 
+        String[] colors = new String[]{
+                "#e51c23","#44e84e40",
+                "#e91e63","#44ec407a",
+                "#9c27b0","#44ab47bc",
+                "#673ab7","#447e57c2",
+                "#3f51b5","#445c6bc0",
+                "#5677fc","#44738ffe",
+                "#0288d1","#4429b6f6",
+                "#0097a7","#4426c6da",
+                "#009688","#4426a69a",
+                "#259b24","#442baf2b",
+                "#8bc34a","#449ccc65",
+                "#ffa000","#44ffca28",
+                "#f57c00","#44ffa726",
+                "#e64a19","#44ff7043",
+                "#795548","#448d6e63",
+                "#212121","#99bdbdbd",
+                "#607d8b","#4478909c",
+        };
+        return colors[ Arrays.asList(colors).indexOf(skin)+1];
+    }
     public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
         private void hideOption(int id, Menu menu) {
             MenuItem item = menu.findItem(id);
@@ -103,6 +144,7 @@ SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(getActivity
             // assumes that you have "contexual.xml" menu resources
             inflater.inflate(R.menu.contextual, menu);
             hideOption(R.id.cpy, menu);
+            menu.findItem(R.id.all).setIcon(new IconUtils(Sp,getActivity()).getAllDrawable());
             hideOption(R.id.cut,menu);
             hideOption(R.id.delete,menu);
             hideOption(R.id.addshortcut,menu);
@@ -111,7 +153,7 @@ SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(getActivity
             hideOption(R.id.share, menu);
             hideOption(R.id.about, menu);
             hideOption(R.id.openwith, menu);
-            hideOption(R.id.ex, menu);
+            showOption(R.id.all,menu);
             hideOption(R.id.book, menu);
             hideOption(R.id.compress, menu);
             hideOption(R.id.permissions, menu);
@@ -128,6 +170,8 @@ SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(getActivity
         // onCreateActionMode, but
         // may be called multiple times if the mode is invalidated.
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            ArrayList<Integer> positions = zipAdapter.getCheckedItemPositions();
+            ((TextView) v.findViewById(R.id.item_count)).setText(positions.size() + "");
 
             return false; // Return false if nothing is done
         }
@@ -135,13 +179,29 @@ SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(getActivity
         // called when the user selects a contextual menu item
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
+                case R.id.all:zipAdapter.toggleChecked(true,"");
+         mode.invalidate();
+                    return true;
                 case R.id.ex:
+                    try {Toast.makeText(getActivity(), new Futils().getString(getActivity(),R.string.extracting),Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getActivity(), ExtractService.class);
+                        ArrayList<String> a=new ArrayList<String>();
+                        for(int i:zipAdapter.getCheckedItemPositions()){
+                            a.add(elements.get(i).getName());
+                        }
+                       intent.putExtra("zip",f.getPath());
+                        intent.putExtra("entries1",true);
+                        intent.putExtra("entries",a);
+                        getActivity().startService(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();}
                     mode.finish();
                     return true;}return false;}
 
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {
-
+        if(zipAdapter!=null)zipAdapter.toggleChecked(false,"");
+            selection=false;
         }
     };
     @Override

@@ -50,12 +50,17 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
         try {
             ZipFile zipfile = new ZipFile(params[0]);
             int i=0;
+            if(zipViewer.wholelist.size()==0){
+                for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
+                    ZipEntry entry = (ZipEntry) e.nextElement();
+                zipViewer.wholelist.add(entry);}
+            }
             //  int fileCount = zipfile.size();
-            for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
-                ZipEntry entry = (ZipEntry) e.nextElement();
+            for (ZipEntry entry:zipViewer.wholelist ) {
+
                 i++;
                 //String s = entry.getName().toString();
-                File file = new File(entry.getName());
+               File file = new File(entry.getName());
                 if (counter==0) {
                     if (file.getParent() == null) {
                         elements.add(entry);
@@ -91,14 +96,15 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
         } catch (IOException e) {
         }
         Collections.sort(elements,new FileListSorter());
+       zipViewer.elements=elements;
         return elements;
     }
 
     @Override
     protected void onPostExecute(ArrayList<ZipEntry> zipEntries) {
         super.onPostExecute(zipEntries);
-         ZipAdapter z = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, zipEntries, zipViewer);
-        zipViewer.setListAdapter(z);zipViewer.current=dir;       ((TextView) zipViewer.getActivity().findViewById(R.id.fullpath)).setText(zipViewer.current);
+         zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, zipEntries, zipViewer);
+        zipViewer.setListAdapter(zipViewer.zipAdapter);zipViewer.current=dir;       ((TextView) zipViewer.getActivity().findViewById(R.id.fullpath)).setText(zipViewer.current);
 
     } class FileListSorter implements Comparator<ZipEntry> {
 

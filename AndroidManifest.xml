@@ -87,7 +87,6 @@
 			<service
 			android:name = "com.amaze.filemanager.services.CopyService"
 			android:label = "Copying"
-		android:process=":amaze"	
 		>
 		</service>
     </application>
