@@ -239,4 +239,5 @@
     <string name="license">Licences Open Source</string>
     <string name="feedback">Envoyer votre avis</string>
     <string name="hiddenfiles">Masquer des fichiers</string>
+    <string name="addshortcut">Ajouter Raccourci</string>
 </resources>
