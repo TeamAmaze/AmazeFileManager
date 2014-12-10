@@ -247,10 +247,10 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         list = new ArrayList<String>();
         for (int i = 0; i < val.size(); i++) {
             File file = new File(val.get(i));
-            if (file.canExecute()) {
-
+            if(!file.isDirectory())
                 list.add(val.get(i));
-            }
+            else if(file.canExecute())
+                list.add(val.get(i));
         }
         list.add(utils.getString(this, R.string.apps));
         list.add(utils.getString(this, R.string.bookmanag));
@@ -412,6 +412,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         try {
             for(File file: s.readS()){
                 rv.add(file.getPath());
+           //     System.out.println(file.getPath());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -488,7 +489,22 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             }, 2000);
         }
     }
+    public void updateDrawer(){
+    list.clear();
+        for (String file:getStorageDirectories()) {
+            File f=new File(file);
+            if(!f.isDirectory())
+                list.add(file);
+            else if(f.canExecute())
+                list.add(file);
+        }
+        list.add(utils.getString(this, R.string.apps));
+        list.add(utils.getString(this, R.string.bookmanag));
+        adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
+        mDrawerList.setAdapter(adapter);
+    }
     public void updateDrawer(String path){
+
         if(list.contains(path))
         {select= list.indexOf(path);
             adapter.toggleChecked(select);
@@ -511,40 +527,43 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public void selectItem(final int i) {
 
         if (i < list.size() - 2) {
+            if(new File(val.get(i)).isDirectory()) {
 
-            if (select==null || select>=list.size()-2) {
-                Main m=new Main();
-                if(path!=null){
-                    Bundle a=new Bundle();
-                    a.putString("path",path);
-                m.setArguments(a);}
-                android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                if (select == null || select >= list.size() - 2) {
+                    Main m = new Main();
+                    if (path != null) {
+                        Bundle a = new Bundle();
+                        a.putString("path", path);
+                        m.setArguments(a);
+                    }
+                    android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-                transaction.replace(R.id.content_frame, m);
-                select = i;
-                // Commit the transaction
-                transaction.addToBackStack("tab" + 1);
-                transaction.commit();
+                    transaction.replace(R.id.content_frame, m);
+                    select = i;
+                    // Commit the transaction
+                    transaction.addToBackStack("tab" + 1);
+                    transaction.commit();
 
-                boolean remember = Sp.getBoolean("remember", false);
-                if (!remember) {
+                    boolean remember = Sp.getBoolean("remember", false);
+                    if (!remember) {
 
-                    TabHandler tabHandler1 = new TabHandler(this, null, null, 1);
-                    int pos = Sp.getInt("spinner_selected", 0);
-                    File file = new File(list.get(i));
-                    tabHandler1.updateTab(new Tab(pos, file.getName(), file.getPath()));
-                }
-                Sp.edit().putBoolean("remember", false).commit();
+                        TabHandler tabHandler1 = new TabHandler(this, null, null, 1);
+                        int pos = Sp.getInt("spinner_selected", 0);
+                        File file = new File(list.get(i));
+                        tabHandler1.updateTab(new Tab(pos, file.getName(), file.getPath()));
+                    }
+                    Sp.edit().putBoolean("remember", false).commit();
 
-                title.setVisibility(View.GONE);
-                tabsSpinner.setVisibility(View.VISIBLE);
-            }else{
-                try {
-                    Main m=(Main)getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                    m.loadlist(new File(list.get(i)),false);
-                } catch (ClassCastException e) {
-                    select=null;selectItem(0);
-                }
+                    title.setVisibility(View.GONE);
+                    tabsSpinner.setVisibility(View.VISIBLE);
+                }else{
+                    try {
+                        Main m=(Main)getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                        m.loadlist(new File(list.get(i)),false);
+                    } catch (ClassCastException e) {
+                        select=null;selectItem(0);
+                    }
+            }}else {utils.openFile(new File(val.get(i)),this);
             }
 
         } else {

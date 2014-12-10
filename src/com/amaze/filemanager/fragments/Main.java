@@ -1022,6 +1022,7 @@ public class Main extends android.support.v4.app.Fragment {
                             } catch (Exception e) {
                             }
                         }}
+                    mainActivity.updateDrawer();
                     Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                     mode.finish();
                     return true;

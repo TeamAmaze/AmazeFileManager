@@ -44,6 +44,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.BooksAdapter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
@@ -67,6 +68,7 @@ public class BookmarksManager extends ListFragment {
     SharedPreferences Sp;
     public IconUtils icons;
     ArrayList<File> bx;
+  public   MainActivity m;
 ListView vl;int theme,theme1;
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -84,7 +86,7 @@ ListView vl;int theme,theme1;
                 theme1 = 1;
             } else
                 theme1 = 0;
-        }
+        }m=(MainActivity)getActivity();
         getListView().setDivider(null);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
@@ -130,7 +132,7 @@ ListView vl;int theme,theme1;
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
                             Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.error), Toast.LENGTH_LONG).show();
-                        }
+                        }m.updateDrawer();
                     }
 
                     @Override

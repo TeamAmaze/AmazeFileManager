@@ -93,6 +93,7 @@ public class BooksAdapter extends ArrayAdapter<File> {
                     s.removeS(items.get(p), context);
                     items.remove(p);
                     notifyDataSetChanged();
+           b.m.updateDrawer();
                 } catch (Exception e) {
                     Toast.makeText(context, e + "", Toast.LENGTH_LONG).show();
                 }

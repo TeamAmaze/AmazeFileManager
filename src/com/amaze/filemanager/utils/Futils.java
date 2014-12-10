@@ -20,6 +20,7 @@
 package com.amaze.filemanager.utils;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -123,7 +124,12 @@ public class Futils {
 
         String type = MimeTypes.getMimeType(f);
         intent.setDataAndType(Uri.fromFile(f), type);
-        c.startActivity(intent);
+        try {
+            c.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            openWith(f,c);
+        }
 
     }
 
