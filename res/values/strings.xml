@@ -257,5 +257,6 @@
     <string name="addshortcut">Add Shortcut</string>
     <string name="unsavedchanges">Unsaved Changes</string>
     <string name="unsavedchangesdesc">You have unsaved changes,do you want to save them before exiting?</string>
+    <string name="saving">Saving</string>
 </resources>
 

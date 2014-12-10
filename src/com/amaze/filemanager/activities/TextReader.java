@@ -186,9 +186,10 @@ TextWatcher t=new TextWatcher() {
     File f;
     public void writeTextFile(String fileName, String s) {
        f = new File(fileName);
+        mOriginal=s;
        final String s1=s;
         if(!file.canWrite()){f=new File(this.getFilesDir()+"/"+f.getName());}
-
+        Toast.makeText(c,R.string.saving,Toast.LENGTH_SHORT).show();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -227,7 +228,6 @@ TextWatcher t=new TextWatcher() {
             p.setVisibility(View.VISIBLE);
         }
 
-        boolean editable = true;
         @Override
         public void onProgressUpdate(String... x){
 Toast.makeText(c,R.string.cant_read_file,Toast.LENGTH_SHORT).show();    }
