@@ -248,12 +248,14 @@
     <string name="license">Open Source Licenses</string>
     <string name="feedback">Send Feedback</string>
     <string name="hiddenfiles">Hidden Files</string>
-    <string name="type">Type</string>
+    <string name="te">Type</string>
     <string name="typeDesc">Type (Desc)</string>
     <string name="rootdirectory">Root</string>
     <string name="new_string">New</string>
     <string name="setringtone">Set as ringtone</string>
     <string name="copy_path">Copy Path</string>
     <string name="addshortcut">Add Shortcut</string>
+    <string name="unsavedchanges">Unsaved Changes</string>
+    <string name="unsavedchangesdesc">You have unsaved changes,do you want to save them before exiting?</string>
 </resources>
 

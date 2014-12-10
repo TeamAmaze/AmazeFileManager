@@ -47,7 +47,7 @@ public class HistoryManager {
             try {
                 paths.add(c.getString(c.getColumnIndex("PATH")));
             } catch (Exception e) {
-                e.printStackTrace();
+     //           e.printStackTrace();
             }
         } while (c.moveToPrevious());
         return paths;

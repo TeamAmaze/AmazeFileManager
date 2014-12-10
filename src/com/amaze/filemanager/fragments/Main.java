@@ -136,7 +136,6 @@ public class Main extends android.support.v4.app.Fragment {
     private View rootView;
     public ListView listView;
     public GridView gridView;
-    private SharedPreferences sharedPreferences;
     public Boolean aBoolean,showThumbs,coloriseIcons;
     public IconHolder ic;
     private TabHandler tabHandler;
@@ -278,7 +277,6 @@ public class Main extends android.support.v4.app.Fragment {
         }
         tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, getActivity().getSupportFragmentManager(), mainActivity.tabsSpinner);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         getActivity().findViewById(R.id.search).setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.VISIBLE);
@@ -344,7 +342,6 @@ public class Main extends android.support.v4.app.Fragment {
             float scale = getResources().getDisplayMetrics().density;
             int dpAsPixels = (int) (5 * scale + 0.5f);
 
-            aBoolean = sharedPreferences.getBoolean("view", true);
             if (aBoolean) {
 
                 listView.setPadding(dpAsPixels, 0, dpAsPixels, 0);
@@ -690,7 +687,6 @@ public class Main extends android.support.v4.app.Fragment {
                     bitmap, ma);
             try {
 
-                aBoolean = sharedPreferences.getBoolean("view", true);
                 if (aBoolean) {
                     listView.setAdapter(adapter);
                 } else {
@@ -1084,10 +1080,10 @@ public class Main extends android.support.v4.app.Fragment {
                     mode.finish();
                     return true;
                 case R.id.openwith:
-                    if (results)utils.openunknown(new File(slist.get(
+                    if (results)utils.openWith(new File(slist.get(
                             (plist.get(0))).getDesc()), getActivity());
                     else
-                        utils.openunknown(new File(list.get(
+                        utils.openWith(new File(list.get(
                                 (plist.get(0))).getDesc()), getActivity());
 
                     return true;
@@ -1427,7 +1423,7 @@ public class Main extends android.support.v4.app.Fragment {
                         break;
                     case R.id.view:
                         // Save the changes, but don't show a disruptive Toast:
-                        sharedPreferences.edit().putBoolean("view", !aBoolean).commit();
+                        Sp.edit().putBoolean("view", !aBoolean).commit();
                         restartPC(getActivity());
                         break;
                 }

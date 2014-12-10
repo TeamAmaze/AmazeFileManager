@@ -151,10 +151,10 @@ public class Preffrag extends PreferenceFragment {
                        sharedPref.edit().putString("theme", "" + which).commit();
                         if(which!=0)
                             sharedPref.edit().putString("uimode","0").commit();
-
+                        dialog.dismiss();
                         restartPC(getActivity());}
                 });
-                a.title(R.string.sortby);
+                a.title(R.string.theme);
                 a.build().show();
                 return true;
             }

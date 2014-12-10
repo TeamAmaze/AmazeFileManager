@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 
 public class BookmarksManager extends ListFragment {
@@ -196,9 +197,17 @@ ListView vl;int theme,theme1;
             try {
 
                 bx = s.readS();
-                if(bx==null || bx.size()==0)s.makeS();
-                bx=s.readS();
+                if(bx==null || bx.size()==0){
+                     s.makeS();
+                    bx=s.readS();
+                }
             } catch (Exception e) {
+                try {
+                    s.makeS();
+                    bx=s.readS();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
             }
             return bx;
         }
