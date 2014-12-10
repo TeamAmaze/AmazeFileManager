@@ -425,15 +425,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         return rv;
     }
 
-    private boolean backHome(Main main) {
-        for (int i = 0; i < list.size() - 2; i++) {
-            if (main.current.equals(list.get(i)))
-                return true;
-            else
-                continue;
-        }
-        return false;
-    }
 
     @Override
     public void onBackPressed() {
@@ -445,14 +436,12 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 main.results = false;
                 main.loadlist(new File(main.current), true);
             } else {
-                if (!backHome(main)) {
-                    if (utils.canGoBack(new File(main.current))) {
+                    if (!main.current.equals(main.home) && !main.current.equals("/")) {
                         main.goBack();
 
                     } else {
                         exit();
                     }
-                } else exit();
 
             }}catch (ClassCastException e){goToMain();}
         }else if(select==-2){
