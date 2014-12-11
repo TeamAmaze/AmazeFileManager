@@ -147,9 +147,15 @@ public class RootHelper
 
             for (String file : files) {
                 if(!file.contains("Permissioon denied"))
-                {String[] array=futils.parseName(file);
-                array[0]=path+"/"+array[0];
-                a.add(array);}
+                {
+                    try {
+                        String[] array=futils.parseName(file);
+                        array[0]=path+"/"+array[0];
+                        a.add(array);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return a;
         }

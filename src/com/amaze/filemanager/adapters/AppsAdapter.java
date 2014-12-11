@@ -154,68 +154,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                     toggleChecked(p);
                     app.mActionMode.invalidate();
                 } else {
-
-                    AlertDialog.Builder d = new AlertDialog.Builder(context);
-                    final Futils utils = new Futils();
-                    final AppsList appsList = new AppsList();
-                    ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(
-                            context, android.R.layout.select_dialog_item);
-                    adapter1.add(utils.getString(context, R.string.open));
-                    adapter1.add(utils.getString(context, R.string.backup));
-                    adapter1.add(utils.getString(context, R.string.uninstall));
-                    adapter1.add(utils.getString(context, R.string.properties));
-                    adapter1.add(utils.getString(context, R.string.play));
-                    d.setAdapter(adapter1, new DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface p1, int p2) {
-                            switch (p2) {
-                                case 0:
-                                    Intent i = app.getActivity().getPackageManager().getLaunchIntentForPackage(app.c.get(p).packageName);
-                                    if (i != null)
-                                        app.startActivity(i);
-                                    else
-                                       Toast.makeText(app.getActivity(), utils.getString(context,R.string.not_allowed), Toast.LENGTH_LONG).show();
-                                    break;
-
-                                case 1:
-                                    Toast.makeText(context, utils.getString(context, R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
-                                    ApplicationInfo info = c.get(position);
-                                    File f = new File(info.publicSourceDir);
-                                    ArrayList<String> a = new ArrayList<String>();
-                                    //a.add(info.publicSourceDir);
-                                    File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");
-                                    if(!dst.exists() || !dst.isDirectory())dst.mkdirs();
-                                    Intent intent = new Intent(context, CopyService.class);
-                                    Toast.makeText(context, f.getParent(), Toast.LENGTH_LONG).show();
-
-                                    if (Build.VERSION.SDK_INT == 21) {
-                                        a.add(f.getParent());
-                                    } else {
-                                        a.add(f.getPath());
-                                    }
-                                    intent.putExtra("FILE_PATHS", a);
-                                    intent.putExtra("COPY_DIRECTORY", dst.getPath());
-                                    context.startService(intent);
-                                    break;
-                                case 2:
-                                    unin(c.get(p).packageName);
-                                    break;
-                                case 3:
-                                    context.startActivity(new Intent(
-                                            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                            Uri.parse("package:" + c.get(p).packageName)));
-                                    break;
-                                case 4:
-                                    Intent intent1 = new Intent(Intent.ACTION_VIEW);
-                                    intent1.setData(Uri.parse("market://details?id=" + c.get(p).packageName));
-                                    context.startActivity(intent1);
-                                    break;
-                            }
-                            // TODO: Implement this method
-                        }
-                    });
-                    d.show();
-                }
+app.onLongItemClick(p);   }
                 // TODO: Implement this method
             }
         });

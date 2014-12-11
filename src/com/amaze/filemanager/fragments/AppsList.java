@@ -41,6 +41,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.services.CopyService;
@@ -112,74 +113,67 @@ public class AppsList extends ListFragment {
     }
 
     public void onLongItemClick(final int position) {
-        AlertDialog.Builder d = new AlertDialog.Builder(getActivity());
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(
-                getActivity(), android.R.layout.select_dialog_item);
-        adapter1.add(utils.getString(getActivity(), R.string.open));
-        adapter1.add(utils.getString(getActivity(), R.string.backup));
-        adapter1.add(utils.getString(getActivity(), R.string.uninstall));
-        adapter1.add(utils.getString(getActivity(), R.string.properties));
-        adapter1.add(utils.getString(getActivity(), R.string.play));
-        d.setAdapter(adapter1, new DialogInterface.OnClickListener() {
+        new MaterialDialog.Builder(getActivity())
+                .items(new String[]{utils.getString(getActivity(), R.string.open),utils.getString(getActivity(), R.string.backup), utils.getString(getActivity(), R.string.uninstall),
+                        utils.getString(getActivity(), R.string.properties),utils.getString(getActivity(), R.string.play)})
+                .itemsCallback(new MaterialDialog.ListCallback() {
 
-            public void onClick(DialogInterface p1, int p2) {
-                switch (p2) {
-                    case 0:
-                        Intent i = app.getActivity().getPackageManager().getLaunchIntentForPackage(c.get(position).packageName);
-                        if (i != null)
-                            app.startActivity(i);
-                        else
-                            Toast.makeText(app.getActivity(),utils.getString(getActivity(),R.string.not_allowed), Toast.LENGTH_LONG).show();
-                        break;
+                    @Override
+                    public void onSelection(MaterialDialog materialDialog, View view, int i, String s) {
+                        switch (i) {
+                            case 0:
+                                Intent i1 = app.getActivity().getPackageManager().getLaunchIntentForPackage(c.get(position).packageName);
+                                if (i1!= null)
+                                    app.startActivity(i1);
+                                else
+                                    Toast.makeText(app.getActivity(),utils.getString(getActivity(),R.string.not_allowed), Toast.LENGTH_LONG).show();
+                                break;
 
-                    case 1:
-                        Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
-                        ApplicationInfo info = c.get(position);
-                        File f = new File(info.publicSourceDir);
-                        ArrayList<String> a = new ArrayList<String>();
-                        //a.add(info.publicSourceDir);
-                        File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");
-                        if(!dst.exists() || !dst.isDirectory())dst.mkdirs();
-                        Intent intent = new Intent(getActivity(), CopyService.class);
-                        Toast.makeText(getActivity(), f.getParent(), Toast.LENGTH_LONG).show();
+                            case 1:
+                                Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
+                                ApplicationInfo info = c.get(position);
+                                File f = new File(info.publicSourceDir);
+                                ArrayList<String> a = new ArrayList<String>();
+                                //a.add(info.publicSourceDir);
+                                File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");
+                                if(!dst.exists() || !dst.isDirectory())dst.mkdirs();
+                                Intent intent = new Intent(getActivity(), CopyService.class);
+                                //Toast.makeText(getActivity(), f.getParent(), Toast.LENGTH_LONG).show();
 
-                        if (Build.VERSION.SDK_INT == 21) {
-                            a.add(f.getParent());
-                        } else {
-                            a.add(f.getPath());
+                                if (Build.VERSION.SDK_INT == 21) {
+                                    a.add(f.getParent());
+                                } else {
+                                    a.add(f.getPath());
+                                }
+                                intent.putExtra("FILE_PATHS", a);
+                                intent.putExtra("COPY_DIRECTORY", dst.getPath());
+                                getActivity().startService(intent);
+                                break;
+                            case 2:
+                                if (!unin(c.get(position).packageName)) {
+                                    ArrayList<Layoutelements> arrayList = new ArrayList<Layoutelements>();
+                                    ApplicationInfo info1 = c.get(position);
+                                    ArrayList<Integer> arrayList1 = new ArrayList<Integer>();
+                                    arrayList1.add(position);
+                                    File f1 = new File(info1.publicSourceDir);
+                                    arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1),"", false));
+                                    utils.deleteFiles(arrayList, null, arrayList1);
+                                } 
+                                break;
+                            case 3:
+                                startActivity(new Intent(
+                                        android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        Uri.parse("package:" + c.get(position).packageName)));
+                                break;
+                            case 4:
+                                Intent intent1 = new Intent(Intent.ACTION_VIEW);
+                                intent1.setData(Uri.parse("market://details?id=" + c.get(position).packageName));
+                                startActivity(intent1);
+                                break;
                         }
-                        intent.putExtra("FILE_PATHS", a);
-                        intent.putExtra("COPY_DIRECTORY", dst.getPath());
-                        getActivity().startService(intent);
-                        break;
-                    case 2:
-                        if (!unin(c.get(position).packageName)) {
-                            ArrayList<Layoutelements> arrayList = new ArrayList<Layoutelements>();
-                            ApplicationInfo info1 = c.get(position);
-                            ArrayList<Integer> arrayList1 = new ArrayList<Integer>();
-                            arrayList1.add(position);
-                            File f1 = new File(info1.publicSourceDir);
-                            arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1),"", false));
-                            utils.deleteFiles(arrayList, null, arrayList1);
-                        } else {
-                            unin(c.get(position).packageName);
-                        }
-                        break;
-                    case 3:
-                        startActivity(new Intent(
-                                android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.parse("package:" + c.get(position).packageName)));
-                        break;
-                    case 4:
-                        Intent intent1 = new Intent(Intent.ACTION_VIEW);
-                        intent1.setData(Uri.parse("market://details?id=" + c.get(position).packageName));
-                        startActivity(intent1);
-                        break;
-                }
-                // TODO: Implement this method
-            }
-        });
-        d.show();
+                    }
+                }).title(a.get(position).getTitle()).build()
+                .show();
     }
 
     @Override
