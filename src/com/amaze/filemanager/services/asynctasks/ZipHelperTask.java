@@ -29,19 +29,17 @@ import java.util.zip.ZipFile;
 public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
 
     ZipViewer zipViewer;
-    int counter;
     String dir;
 
-    public ZipHelperTask(ZipViewer zipViewer, int counter, String dir) {
+    public ZipHelperTask(ZipViewer zipViewer, String dir) {
 
         this.zipViewer = zipViewer;
-        this.counter = counter;
         this.dir = dir;
     }
 
     public ZipHelperTask(ZipViewer zipViewer, int counter) {
         this.zipViewer = zipViewer;
-        this.counter = counter;
+
     }
 
     @Override
@@ -65,19 +63,6 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
                 String s = entry.getName().toString();
                 //System.out.println(s);
                 File file = new File(entry.getName());
-                if (counter == 0) {
-                    if (file.getParent() == null) {
-                        elements.add(new ZipObj(entry, entry.isDirectory()));
-                        zipViewer.results = false;
-                        strings.add(entry.getName());
-                    } else {
-                        String path=entry.getName().substring(0, entry.getName().indexOf("/")+1);
-                        if(!strings.contains(path)){
-                        ZipObj zipObj = new ZipObj(new ZipEntry(entry.getName().substring(0, entry.getName().indexOf("/")+1)), true);
-                        strings.add(path);
-                        elements.add(zipObj);}
-
-                }} else if (counter==1 || counter==2) {
                     if(dir==null || dir.trim().length()==0){
                         if (file.getParent() == null) {
                             elements.add(new ZipObj(entry, entry.isDirectory()));
@@ -110,7 +95,7 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
                             //System.out.println(path);
                             elements.add(zipObj);}}}
 
-                    } }}/*else if (counter==2) {
+                    } }/*else if (counter==2) {
                     if (file.getParent()!=null && file.getParent().equals(dir)) {
 
                         elements.add(entry);

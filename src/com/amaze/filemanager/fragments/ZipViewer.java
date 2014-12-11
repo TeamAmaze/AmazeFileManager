@@ -217,6 +217,6 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
 
     public void goBack() {
 
-        new ZipHelperTask(this, 2, new File(current).getParent()).execute(f);
+        new ZipHelperTask(this, new File(current).getParent()).execute(f);
     }
 }
