@@ -196,14 +196,14 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             }
         });
 
-        intent = getIntent();
+        /*intent = getIntent();
         if (intent.getAction().equals(Intent.ACTION_GET_CONTENT) || intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
             mReturnIntent = true;
             if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
                 mRingtonePickerIntent = true;
             }
             Toast.makeText(this, utils.getString(con,R.string.pick_a_file), Toast.LENGTH_LONG).show();
-        }
+        }*/
 
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#5677fc");
         RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.action_bar);
@@ -412,7 +412,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         try {
             for(File file: s.readS()){
                 rv.add(file.getPath());
-           //     System.out.println(file.getPath());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -479,7 +478,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         }
     }
     public void updateDrawer(){
-    list.clear();
+        list.clear();
         for (String file:getStorageDirectories()) {
             File f=new File(file);
             if(!f.isDirectory())

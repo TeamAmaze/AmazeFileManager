@@ -42,6 +42,7 @@ import com.amaze.filemanager.services.asynctasks.ZipExtractTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Icons;
+import com.amaze.filemanager.utils.ZipObj;
 import com.pkmmte.view.CircularImageView;
 
 import java.io.File;
@@ -50,13 +51,13 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class ZipAdapter extends ArrayAdapter<ZipEntry> {
+public class ZipAdapter extends ArrayAdapter<ZipObj> {
     Context c;
     Drawable folder, unknown;
-    ArrayList<ZipEntry> enter;
+    ArrayList<ZipObj> enter;
     ZipViewer zipViewer;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
-    public ZipAdapter(Context c, int id, ArrayList<ZipEntry> enter, ZipViewer zipViewer) {
+    public ZipAdapter(Context c, int id, ArrayList<ZipObj> enter, ZipViewer zipViewer) {
         super(c, id, enter);
         this.enter = enter;
         for (int i = 0; i < enter.size(); i++) {
@@ -130,7 +131,7 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
 
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        final ZipEntry rowItem = enter.get(position);
+        final ZipObj rowItem = enter.get(position);
 
         View view = convertView;
         final int p = position;
@@ -221,7 +222,7 @@ public class ZipAdapter extends ArrayAdapter<ZipEntry> {
 
                     try {
                         ZipFile zipFile = new ZipFile(zipViewer.f);
-                        new ZipExtractTask(zipFile, zipViewer.f.getParent(), zipViewer, x,true).execute(rowItem);
+                     //   new ZipExtractTask(zipFile, zipViewer.f.getParent(), zipViewer, x,true).execute(rowItem);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

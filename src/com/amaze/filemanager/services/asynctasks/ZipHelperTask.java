@@ -11,6 +11,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.ZipAdapter;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.utils.Layoutelements;
+import com.amaze.filemanager.utils.ZipObj;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +26,7 @@ import java.util.zip.ZipFile;
 /**
  * Created by Vishal on 11/23/2014.
  */
-public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
+public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
 
     ZipViewer zipViewer;
     int counter;
@@ -44,36 +45,72 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
     }
 
     @Override
-    protected ArrayList<ZipEntry> doInBackground(File... params) {
-        ArrayList<ZipEntry> elements = new ArrayList<ZipEntry>();
+    protected ArrayList<ZipObj> doInBackground(File... params) {
+        ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
 
         try {
             ZipFile zipfile = new ZipFile(params[0]);
-            int i=0;
-            if(zipViewer.wholelist.size()==0){
+            int i = 0;
+            if (zipViewer.wholelist.size() == 0) {
                 for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
                     ZipEntry entry = (ZipEntry) e.nextElement();
-                zipViewer.wholelist.add(entry);}
-            }
+                    zipViewer.wholelist.add(entry);
+                }
+            }ArrayList<String> strings=new ArrayList<String>();
             //  int fileCount = zipfile.size();
-            for (ZipEntry entry:zipViewer.wholelist ) {
+
+            for (ZipEntry entry : zipViewer.wholelist) {
 
                 i++;
-                //String s = entry.getName().toString();
-               File file = new File(entry.getName());
-                if (counter==0) {
+                String s = entry.getName().toString();
+                //System.out.println(s);
+                File file = new File(entry.getName());
+                if (counter == 0) {
                     if (file.getParent() == null) {
-                        elements.add(entry);
+                        elements.add(new ZipObj(entry, entry.isDirectory()));
                         zipViewer.results = false;
-                    }
-                } else if (counter==1) {
+                        strings.add(entry.getName());
+                    } else {
+                        String path=entry.getName().substring(0, entry.getName().indexOf("/")+1);
+                        if(!strings.contains(path)){
+                        ZipObj zipObj = new ZipObj(new ZipEntry(entry.getName().substring(0, entry.getName().indexOf("/")+1)), true);
+                        strings.add(path);
+                        elements.add(zipObj);}
 
+                }} else if (counter==1 || counter==2) {
+                    if(dir==null || dir.trim().length()==0){
+                        if (file.getParent() == null) {
+                            elements.add(new ZipObj(entry, entry.isDirectory()));
+                            zipViewer.results = false;
+                            strings.add(entry.getName());
+                        } else {
+                            String path=entry.getName().substring(0, entry.getName().indexOf("/")+1);
+                            if(!strings.contains(path)){
+                                ZipObj zipObj = new ZipObj(new ZipEntry(entry.getName().substring(0, entry.getName().indexOf("/")+1)), true);
+                                strings.add(path);
+                                elements.add(zipObj);}
+
+                        }
+                    }
+                    else{
                     //Log.d("Test", dir);
                     if (file.getParent()!=null && file.getParent().equals(dir)) {
-                        elements.add(entry);
+                        elements.add(new ZipObj(entry,entry.isDirectory()));
                         zipViewer.results = true;
-                    }
-                } else if (counter==2) {
+                        strings.add(entry.getName());
+                    }else {
+                        if(entry.getName().startsWith(dir+"/")){
+                        String path1=entry.getName().substring(dir.length()+1,entry.getName().length());
+
+                        int index=dir.length()+1+path1.indexOf("/");
+                        String path=entry.getName().substring(0, index+1);
+                        if(!strings.contains(path)){
+                            ZipObj zipObj = new ZipObj(new ZipEntry(entry.getName().substring(0, index+1)), true);
+                            strings.add(path);
+                            //System.out.println(path);
+                            elements.add(zipObj);}}}
+
+                    } }}/*else if (counter==2) {
                     if (file.getParent()!=null && file.getParent().equals(dir)) {
 
                         elements.add(entry);
@@ -93,33 +130,39 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipEntry>> {
                 elements.add(entry);
             }
             }
-        } catch (IOException e) {
-        }
-        Collections.sort(elements,new FileListSorter());
-       zipViewer.elements=elements;
-        return elements;
-    }
+        */}catch (Exception e){e.printStackTrace();}
 
-    @Override
-    protected void onPostExecute(ArrayList<ZipEntry> zipEntries) {
-        super.onPostExecute(zipEntries);
-         zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, zipEntries, zipViewer);
-        zipViewer.setListAdapter(zipViewer.zipAdapter);zipViewer.current=dir;       ((TextView) zipViewer.getActivity().findViewById(R.id.fullpath)).setText(zipViewer.current);
+                Collections.sort(elements, new FileListSorter());
+                zipViewer.elements = elements;
+                return elements;
+            }
 
-    } class FileListSorter implements Comparator<ZipEntry> {
+            @Override
+            protected void onPostExecute (ArrayList < ZipObj > zipEntries) {
+                super.onPostExecute(zipEntries);
+                zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, zipEntries, zipViewer);
+                zipViewer.setListAdapter(zipViewer.zipAdapter);
+                zipViewer.current = dir;
+                ((TextView) zipViewer.getActivity().findViewById(R.id.fullpath)).setText(zipViewer.current);
 
-
-        public FileListSorter() {
-
-        }
-
-        @Override
-        public int compare(ZipEntry file1, ZipEntry file2) {
-            if (file1.isDirectory() && !file2.isDirectory()) {
-                return -1;
+            }
+            class FileListSorter implements Comparator<ZipObj> {
 
 
-            } else if (file2.isDirectory() && !(file1).isDirectory()) {
-                return 1;
-            } return  file1.getName().compareToIgnoreCase(file2.getName());}}
+                public FileListSorter() {
+
+                }
+
+                @Override
+                public int compare(ZipObj file1, ZipObj file2) {
+                    if (file1.isDirectory() && !file2.isDirectory()) {
+                        return -1;
+
+
+                    } else if (file2.isDirectory() && !(file1).isDirectory()) {
+                        return 1;
+                    }
+                    return file1.getEntry().getName().compareToIgnoreCase(file2.getEntry().getName());
+                }
+            }
         }

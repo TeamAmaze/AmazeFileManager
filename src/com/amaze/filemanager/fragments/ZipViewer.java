@@ -45,6 +45,7 @@ import com.amaze.filemanager.services.asynctasks.ZipExtractTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
+import com.amaze.filemanager.utils.ZipObj;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.io.File;
@@ -69,7 +70,7 @@ public class ZipViewer extends ListFragment {
 SharedPreferences Sp;
     ZipViewer zipViewer=this;
     public ArrayList<ZipEntry> wholelist=new ArrayList<ZipEntry>();
-public     ArrayList<ZipEntry> elements = new ArrayList<ZipEntry>();
+public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -187,7 +188,7 @@ public     ArrayList<ZipEntry> elements = new ArrayList<ZipEntry>();
                         Intent intent = new Intent(getActivity(), ExtractService.class);
                         ArrayList<String> a=new ArrayList<String>();
                         for(int i:zipAdapter.getCheckedItemPositions()){
-                            a.add(elements.get(i).getName());
+                            a.add(elements.get(i).getEntry().getName());
                         }
                        intent.putExtra("zip",f.getPath());
                         intent.putExtra("entries1",true);
