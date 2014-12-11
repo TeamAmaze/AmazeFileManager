@@ -155,21 +155,22 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
         final ViewHolder holder = (ViewHolder) view.getTag();
 
 
+        GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
         final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
         if (rowItem.isDirectory()) {
+            gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
             stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
         try {
             holder.txtTitle.setText(stringBuilder.toString().substring(stringBuilder.toString().lastIndexOf("/") + 1));
         }catch (Exception e)
         {
             holder.txtTitle.setText(rowItem.getName().substring(0, rowItem.getName().lastIndexOf("/")));
-        }} else {
-                holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1));
+        }} else {if(zipViewer.coloriseIcons)gradientDrawable.setColor(Color.parseColor("#757575"));
+        else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+
+            holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1));
          if(zipViewer.showSize)   holder.txtDesc.setText(new Futils().readableFileSize(rowItem.getSize()));
         }
-        GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
-        if(zipViewer.coloriseIcons)gradientDrawable.setColor(Color.parseColor("#757575"));
-        else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
         if(zipViewer.showLastModified)holder.date.setText(new Futils().getdate(rowItem.getTime(),"MMM dd, yyyy",zipViewer.year));
         if (rowItem.isDirectory()) {
             holder.imageView.setImageDrawable(folder);
