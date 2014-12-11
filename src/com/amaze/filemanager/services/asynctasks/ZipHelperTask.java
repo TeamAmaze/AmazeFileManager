@@ -84,7 +84,7 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
                         zipViewer.results = true;
                         strings.add(entry.getName());
                     }else {
-                        if(entry.getName().startsWith(dir+"/")){
+                        if(entry.getName().startsWith(dir+"/") && entry.getName().length()>dir.length()+1){
                         String path1=entry.getName().substring(dir.length()+1,entry.getName().length());
 
                         int index=dir.length()+1+path1.indexOf("/");
