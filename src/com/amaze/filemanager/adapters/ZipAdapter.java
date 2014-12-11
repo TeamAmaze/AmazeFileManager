@@ -165,8 +165,18 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
         }catch (Exception e)
         {
             holder.txtTitle.setText(rowItem.getName().substring(0, rowItem.getName().lastIndexOf("/")));
-        }} else {if(zipViewer.coloriseIcons)gradientDrawable.setColor(Color.parseColor("#757575"));
-        else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+        }} else {
+            if(zipViewer.coloriseIcons){
+                 if(Icons.isVideo(rowItem.getName()))gradientDrawable.setColor(Color.parseColor("#f06292"));
+                else if(Icons.isAudio(rowItem.getName()))gradientDrawable.setColor(Color.parseColor("#9575cd"));
+                else if(Icons.isPdf(rowItem.getName()))gradientDrawable.setColor(Color.parseColor("#da4336"));
+                else if(Icons.isCode(rowItem.getName()))gradientDrawable.setColor(Color.parseColor("#00bfa5"));
+                else if(Icons.isText(rowItem.getName()))gradientDrawable.setColor(Color.parseColor("#e06055"));
+                else if(Icons.isArchive(rowItem.getName()))gradientDrawable.setColor(Color.parseColor("#f9a825"));
+                else if(Icons.isgeneric(rowItem.getName()))gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
+                else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+            }else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+
 
             holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1));
          if(zipViewer.showSize)   holder.txtDesc.setText(new Futils().readableFileSize(rowItem.getSize()));
@@ -175,7 +185,8 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
         if (rowItem.isDirectory()) {
             holder.imageView.setImageDrawable(folder);
         } else {
-            holder.imageView.setImageDrawable(unknown);
+         //   holder.imageView.setImageDrawable(unknown);
+           holder.imageView.setImageDrawable( Icons.loadMimeIcon(zipViewer.getActivity(),rowItem.getName(),false));
         }
         holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -223,7 +234,7 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
 
                     try {
                         ZipFile zipFile = new ZipFile(zipViewer.f);
-                     //   new ZipExtractTask(zipFile, zipViewer.f.getParent(), zipViewer, x,true).execute(rowItem);
+                     new ZipExtractTask(zipFile, zipViewer.f.getParent(), zipViewer, x,true).execute(rowItem.getEntry());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

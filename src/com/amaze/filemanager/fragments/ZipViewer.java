@@ -188,7 +188,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
                         Intent intent = new Intent(getActivity(), ExtractService.class);
                         ArrayList<String> a=new ArrayList<String>();
                         for(int i:zipAdapter.getCheckedItemPositions()){
-                            a.add(elements.get(i).getEntry().getName());
+                            a.add(elements.get(i).getName());
                         }
                        intent.putExtra("zip",f.getPath());
                         intent.putExtra("entries1",true);

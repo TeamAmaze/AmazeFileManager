@@ -138,10 +138,9 @@ ArrayList<String> entries=new ArrayList<String>();
                     publishResults(true);
                     ZipEntry entry = (ZipEntry) e.nextElement();
                     for(String y:x){
-                        if(new ZipEntry(y).isDirectory()){
+                        if(y.endsWith("/")){
                         if(entry.getName().contains(y))
                         unzipEntry(id, zipfile, entry, destinationPath);}
-                    else unzipEntry(id, zipfile, new ZipEntry(y), destinationPath);
                     }
                     i++;
                     publishResults(id, archive.getName(), i * 100 / fileCount, false);
@@ -149,7 +148,8 @@ ArrayList<String> entries=new ArrayList<String>();
                     stopSelf(id);
                     publishResults(false);
                 }
-            }
+            }for(String y:x){
+                if(!y.endsWith("/")){unzipEntry(id, zipfile, new ZipEntry(y), destinationPath);}}
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
             return true;
