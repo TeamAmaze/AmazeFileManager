@@ -131,7 +131,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public int theme1;
     private EasyTracker easyTracker = null;
     boolean rootmode;
-    public boolean mRingtonePickerIntent = false;
+    public boolean mRingtonePickerIntent = false,restart=false;
     /**
      * Called when the activity is first created.
      */
@@ -142,7 +142,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         utils = new Futils();
         s=new Shortcuts(this);
         path=getIntent().getStringExtra("path");
-
+        restart=getIntent().getBooleanExtra("restart",false);
         // Google Analytics
         // Get a Tracker (should auto-report)
         //((Amaze) getApplication()).getTracker(Amaze.TrackerName.APP_TRACKER);
@@ -258,7 +258,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         mDrawerList.setAdapter(adapter);
 
         if (savedInstanceState == null) {
+            if(!restart)
             selectItem(0);
+            else goToMain();
         } else {
             select = savedInstanceState.getInt("selectItem", 0);
 

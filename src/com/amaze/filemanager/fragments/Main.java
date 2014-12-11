@@ -1474,7 +1474,7 @@ public class Main extends android.support.v4.app.Fragment {
         // set its visibility to GONE as an optimization step (it won't
         // participate in layout passes, etc.)
 
-    }public static void restartPC(final Activity activity) {
+    }public  void restartPC(final Activity activity) {
         if (activity == null)
             return;
         final int enter_anim = android.R.anim.fade_in;
@@ -1482,7 +1482,9 @@ public class Main extends android.support.v4.app.Fragment {
         activity.overridePendingTransition(enter_anim, exit_anim);
         activity.finish();
         activity.overridePendingTransition(enter_anim, exit_anim);
-        activity.startActivity(activity.getIntent());
+        Intent i=new Intent(getActivity(),MainActivity.class);
+        i.putExtra("restart",true);
+        activity.startActivity(i);
     }private void crossfadeInverse() {
 
 
