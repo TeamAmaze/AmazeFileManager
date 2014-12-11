@@ -213,7 +213,7 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
                 if(zipViewer.selection)toggleChecked(p);else {
                 if (rowItem.isDirectory()) {
 
-                    new ZipHelperTask(zipViewer, 1, stringBuilder.toString()).execute(zipViewer.f);
+                    new ZipHelperTask(zipViewer,  stringBuilder.toString()).execute(zipViewer.f);
 
                 } else {String x=rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1);
                     File file = new File(zipViewer.f.getParent() + "/" + x);
