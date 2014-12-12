@@ -1487,6 +1487,7 @@ public class Main extends android.support.v4.app.Fragment {
         activity.overridePendingTransition(enter_anim, exit_anim);
         Intent i=new Intent(getActivity(),MainActivity.class);
         i.putExtra("restart",true);
+        i.setAction(Intent.ACTION_MAIN);
         activity.startActivity(i);
     }private void crossfadeInverse() {
 
