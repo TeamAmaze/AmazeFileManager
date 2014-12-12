@@ -89,7 +89,9 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
     }
 
     public void toggleChecked(boolean b,String path) {
-        for (int i = 0; i < enter.size(); i++) {
+        int k=0;
+        if(enter.get(0).getEntry()==null)k=1;
+        for (int i = k; i < enter.size(); i++) {
             myChecked.put(i, b);
         }
         notifyDataSetChanged();
@@ -107,21 +109,10 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
         return checkedItemPositions;
     }
 
-    public boolean areAllChecked(String path) {
-        boolean b = true;
-        int a; if(path.equals("/"))a=0;else a=1;
-        for (int i = a; i < myChecked.size(); i++) {
-            if (!myChecked.get(i)) {
-                b = false;
-            }
-        }
-        return b;
-    }
 
     private class ViewHolder {
         CircularImageView viewmageV;
         ImageView imageView,apk;
-        ImageView imageView1;
         TextView txtTitle;
         TextView txtDesc;
         TextView date;
@@ -156,8 +147,19 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
 
 
         GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
-        final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
-        if (rowItem.isDirectory()) {
+        if(rowItem.getEntry()==null){
+            holder.imageView.setImageResource(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            gradientDrawable.setColor(Color.parseColor("#757575"));
+            holder.txtTitle.setText("...");
+            holder.txtDesc.setText("");
+            holder.date.setText(R.string.goback);
+        }
+        else {   holder.imageView.setImageDrawable( Icons.loadMimeIcon(zipViewer.getActivity(),rowItem.getName(),false));
+            final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
+            if(zipViewer.showSize)   holder.txtDesc.setText(new Futils().readableFileSize(rowItem.getSize()));
+            if(zipViewer.showLastModified)holder.date.setText(new Futils().getdate(rowItem.getTime(),"MMM dd, yyyy",zipViewer.year));
+            if (rowItem.isDirectory()) {
+            holder.imageView.setImageDrawable(folder);
             gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
             stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
         try {
@@ -165,43 +167,42 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
         }catch (Exception e)
         {
             holder.txtTitle.setText(rowItem.getName().substring(0, rowItem.getName().lastIndexOf("/")));
-        }} else {
-            if(zipViewer.coloriseIcons){
-                 if(Icons.isVideo(rowItem.getName()))gradientDrawable.setColor(Color.parseColor("#f06292"));
-                else if(Icons.isAudio(rowItem.getName()))gradientDrawable.setColor(Color.parseColor("#9575cd"));
-                else if(Icons.isPdf(rowItem.getName()))gradientDrawable.setColor(Color.parseColor("#da4336"));
-                else if(Icons.isCode(rowItem.getName()))gradientDrawable.setColor(Color.parseColor("#00bfa5"));
-                else if(Icons.isText(rowItem.getName()))gradientDrawable.setColor(Color.parseColor("#e06055"));
-                else if(Icons.isArchive(rowItem.getName()))gradientDrawable.setColor(Color.parseColor("#f9a825"));
-                else if(Icons.isgeneric(rowItem.getName()))gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
-                else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
-            }else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+        } }else{holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/") + 1));
+                if (zipViewer.coloriseIcons) {
+                    if (Icons.isVideo(rowItem.getName()))
+                        gradientDrawable.setColor(Color.parseColor("#f06292"));
+                    else if (Icons.isAudio(rowItem.getName()))
+                        gradientDrawable.setColor(Color.parseColor("#9575cd"));
+                    else if (Icons.isPdf(rowItem.getName()))
+                        gradientDrawable.setColor(Color.parseColor("#da4336"));
+                    else if (Icons.isCode(rowItem.getName()))
+                        gradientDrawable.setColor(Color.parseColor("#00bfa5"));
+                    else if (Icons.isText(rowItem.getName()))
+                        gradientDrawable.setColor(Color.parseColor("#e06055"));
+                    else if (Icons.isArchive(rowItem.getName()))
+                        gradientDrawable.setColor(Color.parseColor("#f9a825"));
+                    else if (Icons.isgeneric(rowItem.getName()))
+                        gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
+                    else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+                } else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+            }}
 
 
-            holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1));
-         if(zipViewer.showSize)   holder.txtDesc.setText(new Futils().readableFileSize(rowItem.getSize()));
-        }
-        if(zipViewer.showLastModified)holder.date.setText(new Futils().getdate(rowItem.getTime(),"MMM dd, yyyy",zipViewer.year));
-        if (rowItem.isDirectory()) {
-            holder.imageView.setImageDrawable(folder);
-        } else {
-         //   holder.imageView.setImageDrawable(unknown);
-           holder.imageView.setImageDrawable( Icons.loadMimeIcon(zipViewer.getActivity(),rowItem.getName(),false));
-        }
         holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                toggleChecked(p);/*
+                if(rowItem.getEntry()!=null)  toggleChecked(p);/*
                 }*/
                 return false;
             }
         });holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(rowItem.getEntry()!=null){
                 final Animation animation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.holder_anim);
 
                 holder.imageView.setAnimation(animation);
-                toggleChecked(p);
+                toggleChecked(p);}
 
             }
         });
@@ -222,8 +223,15 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
         holder.rl.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View p1) {
+                if(rowItem.getEntry()==null)
+                    zipViewer.goBack();
+                    else{
                 if(zipViewer.selection)toggleChecked(p);else {
-                if (rowItem.isDirectory()) {
+                    final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
+                    if (rowItem.isDirectory())
+                        stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
+
+                        if (rowItem.isDirectory()) {
 
                     new ZipHelperTask(zipViewer,  stringBuilder.toString()).execute(zipViewer.f);
 
@@ -238,7 +246,7 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
+                }}
             }}
         });
         return view;
