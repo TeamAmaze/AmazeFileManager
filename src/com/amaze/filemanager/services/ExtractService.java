@@ -129,7 +129,7 @@ ArrayList<String> entries=new ArrayList<String>();
             inputStream.close();
         }
     }
-    private void unzipRAREntry(int id, Archive zipfile, FileHeader entry, String outputDir)
+    private void unzipRAREntry(int id, Archive zipfile, FileHeader entry, String outputDir,String string)
             throws IOException, RarException {
         String name=entry.getFileNameString();
         name=name.replaceAll("\\\\","/");
@@ -153,6 +153,7 @@ ArrayList<String> entries=new ArrayList<String>();
                 //System.out.println(id + " " + hash.get(id));
                 if (hash.get(id)) {
                     publishResults(true);
+                    publishResults(id,string,true,false);
                     outputStream.write(buf, 0, len);
 
                 } else {
@@ -182,7 +183,7 @@ ArrayList<String> entries=new ArrayList<String>();
                         unzipEntry(id, zipfile, entry, destinationPath);}
                     }
                     i++;
-                    publishResults(id, archive.getName(), i * 100 / fileCount, false);
+                    publishResults(id, archive.getName(), true, false);
                 } else {
                     stopSelf(id);
                     publishResults(false);
@@ -238,7 +239,8 @@ ArrayList<String> entries=new ArrayList<String>();
             while(fh != null){
                 if (hash.get(id)) {
                     publishResults(true);
-                    unzipRAREntry(id,zipfile,fh,destinationPath);
+                    publishResults(id,archive.getName(),true,false);
+                    unzipRAREntry(id,zipfile,fh,destinationPath,archive.getName());
                 fh=zipfile.nextFileHeader();
                 } else {
                     stopSelf(id);
@@ -295,6 +297,15 @@ ArrayList<String> entries=new ArrayList<String>();
 
     }
 
+    private void publishResults(int id, String name,boolean indefinite, boolean b) {
+        Intent intent = new Intent(EXTRACT_CONDITION);
+        intent.putExtra("indefinite", indefinite);
+        intent.putExtra("id", id);
+        intent.putExtra("name", name);
+        intent.putExtra("extract_completed", b);
+        sendBroadcast(intent);
+
+    }
     private void publishResults(boolean b) {
         Intent intent = new Intent("run");
         intent.putExtra("run", b);

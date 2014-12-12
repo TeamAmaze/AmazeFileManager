@@ -195,19 +195,21 @@ public class ProcessViewer extends Fragment {
                     if (ExtractIds.contains(id)) {
 
                         boolean completed = b.getBoolean("extract_completed", false);
+                        boolean indefinite=b.getBoolean("indefinite",false);
                         View process = rootView.findViewWithTag("extract" + id);
                         if (completed) {
                             rootView.removeViewInLayout(process);
                             ExtractIds.remove(ExtractIds.indexOf(id));
                         } else {
                             String name = b.getString("name");
-                            int p1 = b.getInt("p1");
+                            int p1 = b.getInt("p1",0);
 
                             ProgressBar p = (ProgressBar) process.findViewById(R.id.progressBar1);
                             if (p1 <= 100) {
                                 ((TextView) process.findViewById(R.id.progressText)).setText(utils.getString(getActivity(), R.string.extracting) + "\n" + name + "\n" + p1 + "%");
 
                                 p.setProgress(p1);
+                                if(indefinite && !p.isIndeterminate())p.setIndeterminate(true);
                             }
                         }
                     } else {
@@ -231,13 +233,12 @@ public class ProcessViewer extends Fragment {
                         });
 
                         String name = b.getString("name");
-                        int p1 = b.getInt("p1");
+                        int p1 = b.getInt("p1",0);
 
 
                         ((TextView) root.findViewById(R.id.progressText)).setText(utils.getString(getActivity(), R.string.extracting) + "\n" + name);
                         ProgressBar p = (ProgressBar) root.findViewById(R.id.progressBar1);
                         p.setProgress(p1);
-
                         ExtractIds.add(id);
                         rootView.addView(root);
                     }
