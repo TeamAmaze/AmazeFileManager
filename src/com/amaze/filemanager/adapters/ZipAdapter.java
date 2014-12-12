@@ -156,7 +156,6 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
         }
         else {   holder.imageView.setImageDrawable( Icons.loadMimeIcon(zipViewer.getActivity(),rowItem.getName(),false));
             final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
-            if(zipViewer.showSize)   holder.txtDesc.setText(new Futils().readableFileSize(rowItem.getSize()));
             if(zipViewer.showLastModified)holder.date.setText(new Futils().getdate(rowItem.getTime(),"MMM dd, yyyy",zipViewer.year));
             if (rowItem.isDirectory()) {
             holder.imageView.setImageDrawable(folder);
@@ -167,7 +166,8 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
         }catch (Exception e)
         {
             holder.txtTitle.setText(rowItem.getName().substring(0, rowItem.getName().lastIndexOf("/")));
-        } }else{holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/") + 1));
+        } }else{if(zipViewer.showSize)   holder.txtDesc.setText(new Futils().readableFileSize(rowItem.getSize()));
+                holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/") + 1));
                 if (zipViewer.coloriseIcons) {
                     if (Icons.isVideo(rowItem.getName()))
                         gradientDrawable.setColor(Color.parseColor("#f06292"));

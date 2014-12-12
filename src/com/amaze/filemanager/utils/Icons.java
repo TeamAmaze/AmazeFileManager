@@ -96,6 +96,7 @@ static {
         add("application/mac-binhex40", icon);
         add("application/rar", icon);
         add("application/zip", icon);
+        add("application/java-archive",icon);
         add("application/x-apple-diskimage", icon);
         add("application/x-debian-package", icon);
         add("application/x-gtar", icon);

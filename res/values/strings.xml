@@ -258,5 +258,9 @@
     <string name="unsavedchanges">Unsaved Changes</string>
     <string name="unsavedchangesdesc">You have unsaved changes,do you want to save them before exiting?</string>
     <string name="saving">Saving</string>
+    <string name="packageinstaller">Package Installer</string>
+    <string name="view">View</string>
+    <string name="install">Install</string>
+    <string name="pitext">This is a package installer. What action would you like to perform?</string>
 </resources>
 

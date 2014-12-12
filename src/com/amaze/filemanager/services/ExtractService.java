@@ -34,6 +34,9 @@ import android.util.Log;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.utils.Futils;
+import com.github.junrar.Archive;
+import com.github.junrar.exception.RarException;
+import com.github.junrar.rarfile.FileHeader;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -126,6 +129,42 @@ ArrayList<String> entries=new ArrayList<String>();
             inputStream.close();
         }
     }
+    private void unzipRAREntry(int id, Archive zipfile, FileHeader entry, String outputDir)
+            throws IOException, RarException {
+        String name=entry.getFileNameString();
+        name=name.replaceAll("\\\\","/");
+        if (entry.isDirectory()) {
+            createDir(new File(outputDir, name));
+            return;
+        }
+        File outputFile = new File(outputDir, name);
+        if (!outputFile.getParentFile().exists()) {
+            createDir(outputFile.getParentFile());
+        }
+        //	Log.i("Amaze", "Extracting: " + entry);
+        BufferedInputStream inputStream = new BufferedInputStream(
+                zipfile.getInputStream(entry));
+        BufferedOutputStream outputStream = new BufferedOutputStream(
+                new FileOutputStream(outputFile));
+        try {
+            int len;
+            byte buf[] = new byte[1024];
+            while ((len = inputStream.read(buf)) > 0) {
+                //System.out.println(id + " " + hash.get(id));
+                if (hash.get(id)) {
+                    publishResults(true);
+                    outputStream.write(buf, 0, len);
+
+                } else {
+                    stopSelf(id);
+                    publishResults(false);
+                }
+            }
+        }finally {
+            outputStream.close();
+            inputStream.close();
+        }
+    }
 
     public boolean extract(int id, File archive, String destinationPath,ArrayList<String> x) {
         int i = 0;
@@ -190,7 +229,34 @@ ArrayList<String> entries=new ArrayList<String>();
         }
 
     }
+    public boolean extractRar(int id, File archive, String destinationPath) {
+        int i = 0;
+        try {
+            Archive zipfile = new Archive(archive);
+            FileHeader fh = zipfile.nextFileHeader();
 
+            while(fh != null){
+                if (hash.get(id)) {
+                    publishResults(true);
+                    unzipRAREntry(id,zipfile,fh,destinationPath);
+                fh=zipfile.nextFileHeader();
+                } else {
+                    stopSelf(id);
+                    publishResults(false);
+                }
+            }
+
+            Intent intent = new Intent("loadlist");
+            sendBroadcast(intent);
+            return true;
+        } catch (Exception e) {
+            Log.e("amaze", "Error while extracting file " + archive, e);
+            Intent intent = new Intent("loadlist");
+            sendBroadcast(intent);
+            return false;
+        }
+
+    }
     public class Doback extends AsyncTask<Bundle, Void, Integer> {
         protected Integer doInBackground(Bundle... p1) {
             String file = p1[0].getString("file");
@@ -198,8 +264,10 @@ ArrayList<String> entries=new ArrayList<String>();
             System.out.println(f.getName()+""+eentries);
             if(eentries) {
                 extract(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")), entries);
-            }else
+            }else if(f.getName().toLowerCase().endsWith(".zip"))
             extract(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")));
+            else if(f.getName().toLowerCase().endsWith(".rar"))
+                extractRar(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")));
 
 
             Log.i("Amaze", "Almost Completed");

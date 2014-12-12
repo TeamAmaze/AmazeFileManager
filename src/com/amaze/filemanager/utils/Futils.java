@@ -469,7 +469,7 @@ public class Futils {
             Intent i = new Intent(m, TextReader.class);
             i.putExtra("path", f.getPath());
             m.startActivity(i);
-        } else if (f.getName().toLowerCase().endsWith(".zip")) {
+        } else if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar")) {
             m.select=-2;
             FragmentTransaction fragmentTransaction = m.getSupportFragmentManager().beginTransaction();
             Fragment fragment = new ZipViewer();
@@ -480,7 +480,7 @@ public class Futils {
             //fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
 
-        } else {
+        }else if(f.getName().toLowerCase().endsWith(".apk")){showPackageDialog(f,m);}else {
             try {
                 openunknown(f, m);
             } catch (Exception e) {
@@ -489,7 +489,35 @@ public class Futils {
             }
         }
     }
+public void showPackageDialog(final File f,final MainActivity m){
+    MaterialDialog.Builder mat=new MaterialDialog.Builder(m);
+    mat.title(R.string.packageinstaller).content(R.string.pitext).positiveText(R.string.install).negativeText(R.string.view).neutralText(R.string.cancel).callback(new MaterialDialog.Callback() {
+        @Override
+        public void onPositive(MaterialDialog materialDialog) {
+            openunknown(f,m);
+        }
 
+        @Override
+        public void onNegative(MaterialDialog materialDialog) {
+            m.select=-2;
+            FragmentTransaction fragmentTransaction = m.getSupportFragmentManager().beginTransaction();
+            Fragment fragment = new ZipViewer();
+            Bundle bundle = new Bundle();
+            bundle.putString("path", f.getPath());
+            fragment.setArguments(bundle);
+            fragmentTransaction.replace(R.id.content_frame, fragment);
+            //fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+
+        }
+    });
+    mat.positiveColor(Color.parseColor(m.skin));
+    mat.neutralColor(Color.parseColor(m.skin));
+    mat.negativeColor(Color.parseColor(m.skin));
+    if(m.theme1==1)mat.theme(Theme.DARK);
+    mat.build().show();
+
+}
     public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size,String directorybool,boolean b) {
         Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size,directorybool,b);
         return item;
