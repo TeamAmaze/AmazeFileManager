@@ -142,6 +142,12 @@
                                       - Added bookmarks to navigation drawer&lt;br>
                                       - Added material dialogs&lt;br>
                                       - more...&lt;br>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Dec 13, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_3">- Added Spanish&lt;br>
+                                      - Various Zip Viewer fixes&lt;br>
+                                      - Can view apk and jar files&lt;br>
+                                      - Various text editor fixes&lt;br>
+                                      - more...&lt;br>&lt;br></string>
 
     <!-- New -->
     <!-- Array -->
@@ -262,5 +268,8 @@
     <string name="view">View</string>
     <string name="install">Install</string>
     <string name="pitext">This is a package installer. What action would you like to perform?</string>
+    <string name="xda_title">XDA</string>
+    <string name="xda_summary">Q&amp;A, Help &amp; Troubleshooting</string>
+    <string name="invalid_dir">Invalid Directory</string>
 </resources>
 

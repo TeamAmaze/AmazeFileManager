@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12+'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
 apply plugin: 'com.android.application'
@@ -23,7 +23,6 @@ dependencies {
     compile 'com.melnykov:floatingactionbutton:1.0.7'
     compile fileTree(dir: 'libs', include: '*.jar')
     compile files('libs/RootTools')
-    compile files('libs/libGoogleAnalyticsServices')
     compile files('libs/nineoldandroids-2.4.0')
     compile files('raroscope-1.0')
 }

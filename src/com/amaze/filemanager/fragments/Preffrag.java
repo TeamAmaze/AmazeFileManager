@@ -373,7 +373,9 @@ public class Preffrag extends PreferenceFragment {
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
                 if(theme==1)a.theme(Theme.DARK);
                 a.title(R.string.changelog);
-                a.content(Html.fromHtml(getActivity().getString(R.string.changelog_version_2) +
+                a.content(Html.fromHtml(getActivity().getString(R.string.changelog_version_3) +
+                        getActivity().getString(R.string.changelog_change_3) +
+                        getActivity().getString(R.string.changelog_version_2) +
                         getActivity().getString(R.string.changelog_change_2) +
                         getActivity().getString(R.string.changelog_version_1) +
                         getActivity().getString(R.string.changelog_change_1)));
@@ -586,6 +588,19 @@ public class Preffrag extends PreferenceFragment {
                 Intent intent1 = new Intent(Intent.ACTION_VIEW);
                 intent1.setData(Uri.parse("market://details?id=com.amaze.filemanager"));
                 startActivity(intent1);
+                return false;
+            }
+        });
+
+        //xda
+        Preference preference6 = findPreference("xda");
+        preference6.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Uri uri = Uri.parse("http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314");
+                Intent intent = new Intent();
+                intent.setData(uri);
+                startActivity(intent);
                 return false;
             }
         });

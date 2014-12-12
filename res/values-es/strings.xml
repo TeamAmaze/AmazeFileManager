@@ -240,4 +240,5 @@
     <string name="rootdirectory">Raíz</string>
     <string name="new_string">Nuevo</string>
     <string name="setringtone">Establecer como tono de llamada</string>
+    <string name="addshortcut">Añadir acceso directo</string>
 </resources>

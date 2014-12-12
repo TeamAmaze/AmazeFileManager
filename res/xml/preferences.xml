@@ -95,14 +95,18 @@
         <PreferenceScreen
             android:title="@string/aboutFileManager" >
             <Preference
+                android:title="@string/version"
+                android:summary="v1.3"/>
+            <Preference
                 android:key="authors"
                 android:title="@string/authors" />
             <Preference
-                android:title="@string/version"
-                android:summary="v1.1"/>
-            <Preference
                 android:key="changelog"
                 android:title="@string/changelog" />
+            <Preference
+                android:key="xda"
+                android:title="@string/xda_title"
+                android:summary="@string/xda_summary"/>
             <Preference
                 android:key="rate"
                 android:title="@string/rate" />

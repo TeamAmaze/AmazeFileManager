@@ -240,5 +240,6 @@
     <string name="type">Тип</string>
     <string name="typeDesc">Тип (по убыванию)</string>
     <string name="exit">Выйти</string>
+    <string name="addshortcut">Добавить ярлык</string>
 
 </resources>

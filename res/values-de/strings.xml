@@ -239,5 +239,6 @@
     <string name="license">Open Source Lizenzen</string>
     <string name="feedback">Feedback senden</string>
     <string name="hiddenfiles">Versteckte Dateien</string>
+    <string name="addshortcut">Schnellwahl</string>
 </resources>
 	

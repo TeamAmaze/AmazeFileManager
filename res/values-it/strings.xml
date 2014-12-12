@@ -228,5 +228,6 @@
     <string name="license">Licenza Open Source</string>
     <string name="feedback">Invia Feedback</string>
     <string name="hiddenfiles">File Nascosti</string>
+    <string name="addshortcut">Aggiungi Shortcut </string>
 
 </resources>

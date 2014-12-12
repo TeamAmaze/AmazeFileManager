@@ -76,7 +76,6 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.Shortcuts;
-import com.google.analytics.tracking.android.EasyTracker;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -129,7 +128,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     private static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     public ArrayList<String> list;
     public int theme1;
-    private EasyTracker easyTracker = null;
     boolean rootmode;
     public boolean mRingtonePickerIntent = false,restart=false;
     /**
@@ -143,10 +141,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         s=new Shortcuts(this);
         path=getIntent().getStringExtra("path");
         restart=getIntent().getBooleanExtra("restart",false);
-        // Google Analytics
-        // Get a Tracker (should auto-report)
-        //((Amaze) getApplication()).getTracker(Amaze.TrackerName.APP_TRACKER);
-        easyTracker = EasyTracker.getInstance(this);
         val = getStorageDirectories();
         rootmode = Sp.getBoolean("rootmode", false);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
@@ -196,14 +190,14 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             }
         });
 
-        /*intent = getIntent();
+        intent = getIntent();
         if (intent.getAction().equals(Intent.ACTION_GET_CONTENT) || intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
             mReturnIntent = true;
             if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
                 mRingtonePickerIntent = true;
             }
             Toast.makeText(this, utils.getString(con,R.string.pick_a_file), Toast.LENGTH_LONG).show();
-        }*/
+        }
 
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#5677fc");
         RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.action_bar);
@@ -890,21 +884,5 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             super.onPostExecute(strings);
             showDialog();
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        //Get an Analytics tracker to report app starts & uncaught exceptions etc.
-        EasyTracker.getInstance(this).activityStart(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        //Stop the analytics tracking
-        EasyTracker.getInstance(this).activityStop(this);
     }
 }

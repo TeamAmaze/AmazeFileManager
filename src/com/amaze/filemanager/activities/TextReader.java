@@ -93,7 +93,7 @@ public class TextReader extends Activity {
         path = this.getIntent().getStringExtra("path");
         if (path != null) {
             file=new File(path);
-            Toast.makeText(this, "" + path, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "" + path, Toast.LENGTH_SHORT).show();
             new LoadText().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
         } else {
             Toast.makeText(this,utils.getString(this,R.string.cant_read_file) , Toast.LENGTH_LONG).show();

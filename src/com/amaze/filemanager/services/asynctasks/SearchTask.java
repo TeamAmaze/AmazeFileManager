@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.Main;
@@ -58,6 +59,7 @@ Futils futils=new Futils();
         a.title(futils.getString(tab.getActivity(), R.string.searching));
         a.positiveText(futils.getString(tab.getActivity(), R.string.cancel));
         a.positiveColor(Color.parseColor(m.skin));
+        if(m.theme1==1)a.theme(Theme.DARK);
         a.callback(new MaterialDialog.Callback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {

@@ -254,4 +254,5 @@
     <string name="new_string">新建</string>
     <string name="setringtone">设置为铃声</string>
     <string name="copy_path">复制路径</string>
+    <string name="addshortcut">添加快捷方式</string>
 </resources>

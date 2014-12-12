@@ -122,13 +122,13 @@ ListView vl;int theme,theme1;
                     public void onPositive(MaterialDialog materialDialog) {
                         try {
                             File a = new File(edir.getText().toString());
-                            if (a.exists()) {
+                            if (a.isDirectory()) {
                                 s.addS(a);
                                 b.items.add(a);
                                 b.notifyDataSetChanged();
                                 Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.success), Toast.LENGTH_LONG).show();
                             } else {
-                                Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.filenotexists), Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.invalid_dir), Toast.LENGTH_LONG).show();
                             }
                         } catch (Exception e) {
                             // TODO Auto-generated catch block

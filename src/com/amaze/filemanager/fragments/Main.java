@@ -799,9 +799,13 @@ public class Main extends android.support.v4.app.Fragment {
                     showOption(R.id.ex, menu);
 
                     hideOption(R.id.sethome, menu);
+                    hideOption(R.id.book, menu);
                     showOption(R.id.openwith,menu);
                     showOption(R.id.share, menu);
 
+                } else if (x.isFile()) {
+
+                    hideOption(R.id.book, menu);
                 } else {
                     /*if (x.getName().endsWith(".mp3"))
 
@@ -827,7 +831,6 @@ public class Main extends android.support.v4.app.Fragment {
                         if (x.isDirectory()) {
                             hideOption(R.id.share, menu);
                         }
-
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
