@@ -61,36 +61,42 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
 
                 i++;
                 String s = entry.getName().toString();
-                //System.out.println(s);
+              //  System.out.println(s);
                 File file = new File(entry.getName());
                     if(dir==null || dir.trim().length()==0){
+                        String y=entry.getName();
+                        if(entry.getName().startsWith("/"))
+                            y=y.substring(1,y.length());
                         if (file.getParent() == null) {
                             elements.add(new ZipObj(entry, entry.isDirectory()));
                             zipViewer.results = false;
-                            strings.add(entry.getName());
+                            strings.add(y);
                         } else {
-                            String path=entry.getName().substring(0, entry.getName().indexOf("/")+1);
+                            String path=y.substring(0, y.indexOf("/")+1);
                             if(!strings.contains(path)){
-                                ZipObj zipObj = new ZipObj(new ZipEntry(entry.getName().substring(0, entry.getName().indexOf("/")+1)), true);
+                                ZipObj zipObj = new ZipObj(new ZipEntry(y.substring(0, y.indexOf("/")+1)), true);
                                 strings.add(path);
                                 elements.add(zipObj);}
 
                         }
                     }
                     else{
+                        String y=entry.getName();
+                        if(entry.getName().startsWith("/"))
+                            y=y.substring(1,y.length());
                     //Log.d("Test", dir);
-                    if (file.getParent()!=null && file.getParent().equals(dir)) {
+                    if (file.getParent()!=null && (file.getParent().equals(dir) || file.getParent().equals("/"+dir))) {
                         elements.add(new ZipObj(entry,entry.isDirectory()));
                         zipViewer.results = true;
                         strings.add(entry.getName());
                     }else {
-                        if(entry.getName().startsWith(dir+"/") && entry.getName().length()>dir.length()+1){
-                        String path1=entry.getName().substring(dir.length()+1,entry.getName().length());
+                        if(y.startsWith(dir+"/") && y.length()>dir.length()+1){
+                        String path1=y.substring(dir.length()+1,y.length());
 
                         int index=dir.length()+1+path1.indexOf("/");
-                        String path=entry.getName().substring(0, index+1);
+                        String path=y.substring(0, index+1);
                         if(!strings.contains(path)){
-                            ZipObj zipObj = new ZipObj(new ZipEntry(entry.getName().substring(0, index+1)), true);
+                            ZipObj zipObj = new ZipObj(new ZipEntry(y.substring(0, index+1)), true);
                             strings.add(path);
                             //System.out.println(path);
                             elements.add(zipObj);}}}

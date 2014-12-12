@@ -214,7 +214,11 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             new DeleteTask(getActivity().getContentResolver(), null, getActivity()).execute(files);
         }
     }
-
+public boolean cangoBack(){
+    if(current==null || current.trim().length()==0)
+    return false;
+    else return true;
+}
     public void goBack() {
 
         new ZipHelperTask(this, new File(current).getParent()).execute(f);

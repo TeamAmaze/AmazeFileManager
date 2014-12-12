@@ -447,7 +447,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             }}catch (ClassCastException e){goToMain();}
         }else if(select==-2){
             ZipViewer zipViewer  = ((ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame));
-            if (zipViewer.results) {
+            if (zipViewer.cangoBack()) {
 
                 zipViewer.goBack();
             } else goToMain();
