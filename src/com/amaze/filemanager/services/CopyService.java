@@ -238,7 +238,7 @@ public class CopyService extends Service {
                 OutputStream out;
                 try {
                 out= new FileOutputStream(targetFile);
-}catch (Exception e){out=new MediaFile(getContentResolver(),targetFile).write();}
+}catch (Exception e){out=new MediaFile(c,targetFile).write(size);}
 
                 byte[] buffer = new byte[8192];
 

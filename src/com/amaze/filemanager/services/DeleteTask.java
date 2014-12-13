@@ -62,7 +62,7 @@ public  DeleteTask(ContentResolver c,Main m,Context cd){this.contentResolver=c;t
                     }       }
                 if(!b){
                         for(File f:files){
-                            MediaFile mediaFile=new MediaFile(contentResolver,f);
+                            MediaFile mediaFile=new MediaFile(cd,f);
                             try {
                                 boolean delete=mediaFile.delete();
                                 if(!delete){b=false;}

@@ -91,6 +91,7 @@ import com.amaze.filemanager.utils.IconHolder;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
+import com.amaze.filemanager.utils.MediaFile;
 import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.melnykov.fab.FloatingActionButton;
@@ -453,6 +454,13 @@ public class Main extends android.support.v4.app.Fragment {
                             RootHelper.runAndWait("mkdir "+f.getPath(),true);
                             updateList();
                             }
+                        else if(!b && !rootMode){
+                            try {
+                                new MediaFile(getActivity(),f).mkdir();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
 
                     @Override
