@@ -39,6 +39,7 @@ import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
+import com.amaze.filemanager.utils.MimeTypes;
 import com.pkmmte.view.CircularImageView;
 
 import java.io.File;
@@ -127,6 +128,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         TextView date;
         TextView perm;
         View rl;
+        TextView ext;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -151,6 +153,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 vholder.date = (TextView) view.findViewById(R.id.date);
                 vholder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
                 vholder.apk=(ImageView)view.findViewById(R.id.bicon);
+                vholder.ext = (TextView) view.findViewById(R.id.generictext);
                 view.setTag(vholder);
 
             }
@@ -178,6 +181,13 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
             holder.txtTitle.setText(rowItem.getTitle());
             holder.imageView.setImageDrawable(rowItem.getImageId());
+            holder.ext.setText("");
+            if (!rowItem.getSize().equals(main.goback) && !new File(rowItem.getDesc()).isDirectory() && Icons.isgeneric(rowItem.getDesc()))
+            {String ext=MimeTypes.getExtension(rowItem.getDesc());
+                if(ext!=null && ext.trim().length()!=0){
+                    holder.ext.setText(ext);
+                    holder.imageView.setImageDrawable(null);
+                }}
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -231,7 +241,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
              }
             else{holder.viewmageV.setVisibility(View.GONE);
             holder.apk.setVisibility(View.GONE);}
-
             Boolean checked = myChecked.get(position);
             if (checked != null) {
 
@@ -245,7 +254,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
                     if(main.coloriseIcons) {
-                        if (new File(rowItem.getDesc()).isDirectory())
+                        if (rowItem.isDirectory(main.rootMode))
                             gradientDrawable.setColor(Color.parseColor(main.skin));
                         else if (Icons.isVideo(rowItem.getDesc()))
                             gradientDrawable.setColor(Color.parseColor("#f06292"));

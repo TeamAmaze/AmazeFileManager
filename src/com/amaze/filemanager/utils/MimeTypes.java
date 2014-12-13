@@ -162,7 +162,9 @@ public final class MimeTypes {
 
 
     public static String getExtension(String a) {
+        if(a.contains("."))
         return a.substring(a.lastIndexOf(".") + 1).toLowerCase();
+        else return "";
     }
 
 }

@@ -56,6 +56,13 @@
         app:border_width="5dp"
         app:shadow="false"
         android:contentDescription="@string/icon" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/generictext"
+        android:textColor="@android:color/white"
+        />
 </FrameLayout>
     <RelativeLayout
         android:layout_width="fill_parent"
