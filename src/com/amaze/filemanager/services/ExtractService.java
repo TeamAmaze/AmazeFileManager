@@ -37,15 +37,21 @@ import com.amaze.filemanager.utils.Futils;
 import com.github.junrar.Archive;
 import com.github.junrar.exception.RarException;
 import com.github.junrar.rarfile.FileHeader;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveSparseEntry;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -166,7 +172,41 @@ ArrayList<String> entries=new ArrayList<String>();
             inputStream.close();
         }
     }
+    private void unzipTAREntry(int id, TarArchiveInputStream zipfile, TarArchiveEntry entry, String outputDir,String string)
+            throws IOException, RarException {
+        String name=entry.getName();
+        if (entry.isDirectory()) {
+            createDir(new File(outputDir, name));
+            return;
+        }
+        File outputFile = new File(outputDir, name);
+        if (!outputFile.getParentFile().exists()) {
+            createDir(outputFile.getParentFile());
+        }
+        //	Log.i("Amaze", "Extracting: " + entry);
 
+        BufferedOutputStream outputStream = new BufferedOutputStream(
+                new FileOutputStream(outputFile));
+        try {
+            int len;
+            byte buf[] = new byte[1024];
+            while ((len = zipfile.read(buf)) > 0) {
+                //System.out.println(id + " " + hash.get(id));
+                if (hash.get(id)) {
+                    publishResults(true);
+                    publishResults(id,string,true,false);
+                    outputStream.write(buf, 0, len);
+
+                } else {
+                    stopSelf(id);
+                    publishResults(false);
+                }
+            }
+        }finally {
+            outputStream.close();
+
+        }
+    }
     public boolean extract(int id, File archive, String destinationPath,ArrayList<String> x) {
         int i = 0;
         try {
@@ -230,6 +270,38 @@ ArrayList<String> entries=new ArrayList<String>();
         }
 
     }
+    public boolean extractTar(int id, File archive, String destinationPath) {
+        int i = 0;
+        try {
+           TarArchiveInputStream inputStream;
+            if(archive.getName().endsWith(".tar"))
+            inputStream=new TarArchiveInputStream(new BufferedInputStream(new FileInputStream(archive)));
+            else inputStream=new TarArchiveInputStream(new GZIPInputStream(new FileInputStream(archive)));
+            TarArchiveEntry tarArchiveEntry=inputStream.getNextTarEntry();
+            while(tarArchiveEntry != null){
+                if (hash.get(id)) {
+                    publishResults(true);
+                    publishResults(id,archive.getName(),true,false);
+                    unzipTAREntry(id, inputStream, tarArchiveEntry, destinationPath, archive.getName());
+                    tarArchiveEntry=inputStream.getNextTarEntry();
+                } else {
+                    stopSelf(id);
+                    publishResults(false);
+                }
+            }
+            inputStream.close();
+
+            Intent intent = new Intent("loadlist");
+            sendBroadcast(intent);
+            return true;
+        } catch (Exception e) {
+            Log.e("amaze", "Error while extracting file " + archive, e);
+            Intent intent = new Intent("loadlist");
+            sendBroadcast(intent);
+            return false;
+        }
+
+    }
     public boolean extractRar(int id, File archive, String destinationPath) {
         int i = 0;
         try {
@@ -270,6 +342,8 @@ ArrayList<String> entries=new ArrayList<String>();
             extract(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")));
             else if(f.getName().toLowerCase().endsWith(".rar"))
                 extractRar(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")));
+            else if(f.getName().toLowerCase().endsWith(".tar"))
+                extractTar(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")));
 
 
             Log.i("Amaze", "Almost Completed");

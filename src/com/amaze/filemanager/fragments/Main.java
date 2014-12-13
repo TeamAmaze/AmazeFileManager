@@ -794,7 +794,7 @@ public class Main extends android.support.v4.app.Fragment {
 
                     showOption(R.id.sethome, menu);
 
-                } else if (x.getName().toLowerCase().endsWith(".zip") || x.getName().toLowerCase().endsWith(".jar") || x.getName().toLowerCase().endsWith(".apk") || x.getName().toLowerCase().endsWith(".rar")) {
+                } else if (x.getName().toLowerCase().endsWith(".zip") || x.getName().toLowerCase().endsWith(".jar") || x.getName().toLowerCase().endsWith(".apk") || x.getName().toLowerCase().endsWith(".rar")|| x.getName().toLowerCase().endsWith(".tar")|| x.getName().toLowerCase().endsWith(".tar.gz")) {
 
                     showOption(R.id.ex, menu);
 
