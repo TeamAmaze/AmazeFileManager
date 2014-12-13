@@ -56,6 +56,7 @@ import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.DeleteTask;
+import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
@@ -470,15 +471,7 @@ public class Futils {
             i.putExtra("path", f.getPath());
             m.startActivity(i);
         } else if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar")) {
-            m.select=-2;
-            FragmentTransaction fragmentTransaction = m.getSupportFragmentManager().beginTransaction();
-            Fragment fragment = new ZipViewer();
-            Bundle bundle = new Bundle();
-            bundle.putString("path", f.getPath());
-            fragment.setArguments(bundle);
-            fragmentTransaction.replace(R.id.content_frame, fragment);
-            //fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
+            showArchiveDialog(f, m);
 
         }else if(f.getName().toLowerCase().endsWith(".apk")){showPackageDialog(f,m);}else {
             try {
@@ -518,6 +511,39 @@ public void showPackageDialog(final File f,final MainActivity m){
     mat.build().show();
 
 }
+    public void showArchiveDialog(final File f,final MainActivity m){
+        MaterialDialog.Builder mat=new MaterialDialog.Builder(m);
+        mat.title(R.string.archive).content(R.string.archtext).positiveText(R.string.extract).negativeText(R.string.view).neutralText(R.string.cancel).callback(new MaterialDialog.Callback() {
+            @Override
+            public void onPositive(MaterialDialog materialDialog) {
+                Intent intent = new Intent(m, ExtractService.class);
+                intent.putExtra("zip",f.getPath());
+                m.startService(intent);
+
+
+            }
+
+            @Override
+            public void onNegative(MaterialDialog materialDialog) {
+                m.select=-2;
+                FragmentTransaction fragmentTransaction = m.getSupportFragmentManager().beginTransaction();
+                Fragment fragment = new ZipViewer();
+                Bundle bundle = new Bundle();
+                bundle.putString("path", f.getPath());
+                fragment.setArguments(bundle);
+                fragmentTransaction.replace(R.id.content_frame, fragment);
+                //fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+
+            }
+        });
+        mat.positiveColor(Color.parseColor(m.skin));
+        mat.neutralColor(Color.parseColor(m.skin));
+        mat.negativeColor(Color.parseColor(m.skin));
+        if(m.theme1==1)mat.theme(Theme.DARK);
+        mat.build().show();
+
+    }
     public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size,String directorybool,boolean b) {
         Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size,directorybool,b);
         return item;

@@ -267,6 +267,8 @@
     <string name="packageinstaller">Package Installer</string>
     <string name="view">View</string>
     <string name="install">Install</string>
+    <string name="archive">Archive</string>
+    <string name="archtext">This is an archive. What action would you like to perform?</string>
     <string name="pitext">This is a package installer. What action would you like to perform?</string>
     <string name="xda_title">XDA</string>
     <string name="xda_summary">Q&amp;A, Help &amp; Troubleshooting</string>
