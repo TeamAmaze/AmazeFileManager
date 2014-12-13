@@ -135,7 +135,11 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        try {
+            super.onCreate(savedInstanceState);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         utils = new Futils();
         s=new Shortcuts(this);
@@ -256,7 +260,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             selectItem(0);
             else goToMain();
         } else {
-            select = savedInstanceState.getInt("selectItem", 0);
+            select = savedInstanceState.getInt("selectitem", 0);
 
             adapter.toggleChecked(select);
 
@@ -649,7 +653,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("selectItem", select);
+        outState.putInt("selectitem", select);
     }
 
     @Override

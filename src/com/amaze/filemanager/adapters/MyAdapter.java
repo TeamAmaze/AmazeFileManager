@@ -182,12 +182,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.txtTitle.setText(rowItem.getTitle());
             holder.imageView.setImageDrawable(rowItem.getImageId());
             holder.ext.setText("");
-            if (!rowItem.getSize().equals(main.goback) && !new File(rowItem.getDesc()).isDirectory() && Icons.isgeneric(rowItem.getDesc()))
-            {String ext=MimeTypes.getExtension(rowItem.getDesc());
-                if(ext!=null && ext.trim().length()!=0){
-                    holder.ext.setText(ext);
-                    holder.imageView.setImageDrawable(null);
-                }}
+
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -248,7 +243,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
                     gradientDrawable.setColor(Color.parseColor("#757575"));
-
+                    holder.ext.setText("");
                     holder.rl.setBackgroundColor(main.skinselection);
                 } else {
 
@@ -272,8 +267,13 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                         {
                             if (rowItem.getSize().equals(main.goback))
                                 gradientDrawable.setColor(Color.parseColor("#757575"));
-                            else
+                            else{
                                 gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
+                                String ext=MimeTypes.getExtension(rowItem.getDesc());
+                                if(ext!=null && ext.trim().length()!=0){
+                                    holder.ext.setText(ext);
+                                    holder.imageView.setImageDrawable(null);
+                                }}
                     }else gradientDrawable.setColor(Color.parseColor(main.skin));
                     }else gradientDrawable.setColor(Color.parseColor(main.skin));
                     if (main.uimode == 0) {

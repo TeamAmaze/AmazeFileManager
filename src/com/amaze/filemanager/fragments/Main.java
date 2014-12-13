@@ -791,7 +791,7 @@ public class Main extends android.support.v4.app.Fragment {
                 showOption(R.id.permissions, menu);
 
                 showOption(R.id.about, menu);
-
+                showOption(R.id.share,menu);
                 showOption(R.id.rename, menu);
 
                 File x = new File(list.get(adapter.getCheckedItemPositions().get(0))
@@ -801,7 +801,7 @@ public class Main extends android.support.v4.app.Fragment {
                 if (x.isDirectory()) {
 
                     showOption(R.id.sethome, menu);
-
+                    hideOption(R.id.share,menu);
                 } else if (x.getName().toLowerCase().endsWith(".zip") || x.getName().toLowerCase().endsWith(".jar") || x.getName().toLowerCase().endsWith(".apk") || x.getName().toLowerCase().endsWith(".rar")|| x.getName().toLowerCase().endsWith(".tar")|| x.getName().toLowerCase().endsWith(".tar.gz")) {
 
                     showOption(R.id.ex, menu);
@@ -809,7 +809,6 @@ public class Main extends android.support.v4.app.Fragment {
                     hideOption(R.id.sethome, menu);
                     hideOption(R.id.book, menu);
                     showOption(R.id.openwith,menu);
-                    showOption(R.id.share, menu);
 
                 } else if (x.isFile()) {
 

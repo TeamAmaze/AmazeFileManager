@@ -57,8 +57,11 @@
         app:shadow="false"
         android:contentDescription="@string/icon" />
     <TextView
-        android:layout_width="40dip"
+        android:layout_width="44dip"
         android:layout_height="40dp"
+        android:textSize="12dp"
+        android:singleLine="true"
+        android:textStyle="bold"
         android:layout_gravity="center"
         android:gravity="center"
         android:id="@+id/generictext"
