@@ -15,19 +15,16 @@ repositories {
 }
 dependencies {
     //compile 'me.drakeet.materialdialog:library:1.0.9'
-    compile "com.android.support:appcompat-v7:21.0.+"
-    compile 'com.afollestad:material-dialogs:0.0.8'
+    compile 'com.android.support:appcompat-v7:21.0.+'
+    compile 'com.afollestad:material-dialogs:0.4.4'
     //compile 'com.getbase:floatingactionbutton:1.1.0'
     compile 'com.pkmmte.view:circularimageview:1.1'
     compile 'com.pnikosis:materialish-progress:1.0'
     compile 'com.melnykov:floatingactionbutton:1.0.7'
-    compile fileTree(dir: 'libs', include: '*.jar')
+    compile fileTree(include: '*.jar', dir: 'libs')
     compile files('libs/RootTools')
     compile files('libs/nineoldandroids-2.4.0')
     compile files('raroscope-1.0')
-}
-configurations {
-    all*.exclude group: 'com.android.support', module: 'support-v4'
 }
 
 android {

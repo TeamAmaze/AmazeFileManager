@@ -221,7 +221,7 @@ public class Main extends android.support.v4.app.Fragment {
                 });
                 builder.itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
-                    public void onSelection(MaterialDialog materialDialog, View view, int i, String s) {
+                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence s) {
                         add(i);
                     }
                 });

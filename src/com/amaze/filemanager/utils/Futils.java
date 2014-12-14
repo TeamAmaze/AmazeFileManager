@@ -48,7 +48,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.afollestad.materialdialogs.list.ItemProcessor;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.TextReader;
@@ -604,7 +603,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         if(m.theme1==1)a.theme(Theme.DARK);
         a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
             @Override
-            public void onSelection(MaterialDialog dialog, View view, int which, String text) {
+            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
 
                 m.Sp.edit().putString("sortby", "" + which).commit();
                 m.getSortModes();
@@ -618,60 +617,23 @@ public void showPackageDialog(final File f,final MainActivity m){
 
     public void showHistoryDialog(final Main m) {
         final ArrayList<String> paths = m.history.readTable();
-        String[] a=new String[paths.size()];
-        for(int i=0;i<paths.size();i++){a[i]=paths.get(i);}
-        final MaterialDialog.Builder ba = new MaterialDialog.Builder(m.getActivity());
-        ba.title(getString(m.getActivity(), R.string.history));
+        final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
+        a.positiveText(R.string.cancel);
+        a.positiveColor(Color.parseColor(m.skin));
+        a.title(R.string.history);
         if(m.theme1==1)
-            ba.theme(Theme.DARK);
-        ba.positiveText(R.string.cancel);
-        ba.positiveColor(Color.parseColor(m.skin));
-        ba.items(a);
-        ba.itemsCallback(new MaterialDialog.ListCallback() {
-            @Override
-            public void onSelection(MaterialDialog materialDialog, View view, int i, String s) {
-                final File f = new File(s);
-                if (f.isDirectory()) {
+            a.theme(Theme.DARK);
+        LayoutInflater layoutInflater = (LayoutInflater) m.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = layoutInflater.inflate(R.layout.list_dialog, null);
+        ListView listView = (ListView) view.findViewById(R.id.listView);
+        listView.setDivider(null);
+        a.customView(view);
+        a.autoDismiss(true);
+        MaterialDialog x=a.build();
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.hidden,x,true);
+        listView.setAdapter(adapter);
+        x.show();
 
-                    m.loadlist(f, false);
-                } else {
-                    m.utils.openFile(f, (MainActivity) m.getActivity());
-                }
-            }
-        });
-        ba.itemProcessor(new ButtonItemProcessor(m.getActivity(), m));
-        ba.build().show();
-
-    }
-    public class ButtonItemProcessor extends ItemProcessor implements View.OnClickListener {
-      Main main;
-        public ButtonItemProcessor(Context context,Main main) {
-            super(context);
-            this.main=main;
-        }
-
-        @Override
-        protected int getLayout(int forIndex) {
-            // Returning 0 would use the default list item layout
-            return R.layout.bookmarkrow;
-        }
-
-        @Override
-        protected void onViewInflated(final int i,final String s, View view) {
-             view.findViewById(R.id.delete_button).setVisibility(View.GONE);
-            TextView txtDesc = (TextView) view.findViewById(R.id.text2);
-            LinearLayout row=(LinearLayout)view.findViewById(R.id.bookmarkrow);
-            TextView txtTitle = (TextView) view.findViewById(R.id.text1);
-            txtTitle.setText(new File(s).getName());
-            txtDesc.setText(s);
-
-
-        }
-
-        @Override
-        public void onClick(View view) {
-
-        }
     }
 
     public void showHiddenDialog(final Main m) {
@@ -687,8 +649,9 @@ public void showPackageDialog(final File f,final MainActivity m){
         ListView listView = (ListView) view.findViewById(R.id.listView);
         a.customView(view);
         a.autoDismiss(true);
+        listView.setDivider(null);
         MaterialDialog x=a.build();
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.hidden,x);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.hidden,x,false);
         listView.setAdapter(adapter);
         x.show();
 

@@ -90,7 +90,7 @@ public class Preffrag extends PreferenceFragment {
                 if(current!=0)current=current-2;
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
                     @Override
-                    public void onSelection(MaterialDialog dialog, View view, int which, String text) {
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         sharedPref.edit().putString("columns", "" + sort[which]).commit();
                         dialog.dismiss();
                     }
@@ -109,7 +109,7 @@ public class Preffrag extends PreferenceFragment {
                 int current = Integer.parseInt(sharedPref.getString("uimode", "0"));
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
                     @Override
-                    public void onSelection(MaterialDialog dialog, View view, int which, String text) {
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         sharedPref.edit().putString("uimode", "" + which).commit();
                         dialog.dismiss();
                     }
@@ -128,7 +128,7 @@ public class Preffrag extends PreferenceFragment {
                 int current = Integer.parseInt(sharedPref.getString("dirontop", "0"));
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
                     @Override
-                    public void onSelection(MaterialDialog dialog, View view, int which, String text) {
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         sharedPref.edit().putString("dirontop", "" + which).commit();
                         dialog.dismiss();
                     }
@@ -147,7 +147,7 @@ public class Preffrag extends PreferenceFragment {
                 if(theme==1)a.theme(Theme.DARK);
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
                     @Override
-                    public void onSelection(MaterialDialog dialog, View view, int which, String text) {
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                        sharedPref.edit().putString("theme", "" + which).commit();
                         if(which!=0)
                             sharedPref.edit().putString("uimode","0").commit();
@@ -168,7 +168,7 @@ public class Preffrag extends PreferenceFragment {
                 if(theme==1)a.theme(Theme.DARK);
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
                     @Override
-                    public void onSelection(MaterialDialog dialog, View view, int which, String text) {
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
 
                         sharedPref.edit().putString("sortby", "" + which).commit();
                 dialog.dismiss();    }

@@ -119,7 +119,7 @@ public class AppsList extends ListFragment {
                 .itemsCallback(new MaterialDialog.ListCallback() {
 
                     @Override
-                    public void onSelection(MaterialDialog materialDialog, View view, int i, String s) {
+                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence s) {
                         switch (i) {
                             case 0:
                                 Intent i1 = app.getActivity().getPackageManager().getLaunchIntentForPackage(c.get(position).packageName);

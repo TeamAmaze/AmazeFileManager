@@ -32,14 +32,16 @@ public class HiddenAdapter extends ArrayAdapter<File> {
     public ArrayList<File> items;
     HistoryManager hidden;
     MaterialDialog materialDialog;
+    boolean hide;
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public HiddenAdapter(Context c,Main context, int resourceId, ArrayList<File> items,HistoryManager hidden,MaterialDialog materialDialog) {
+    public HiddenAdapter(Context c,Main context, int resourceId, ArrayList<File> items,HistoryManager hidden,MaterialDialog materialDialog,boolean hide) {
         super(c, resourceId, items);
         this.c=c;
         this.context = context;
         this.items = items;
         this.hidden=hidden;
+        this.hide=hide;
         this.materialDialog=materialDialog;
         s = new Shortcuts(c);
     }
@@ -76,6 +78,8 @@ public class HiddenAdapter extends ArrayAdapter<File> {
         final ViewHolder holder = (ViewHolder) view.getTag();
         holder.txtTitle.setText(f.getName());
         holder.txtDesc.setText(f.getPath());
+        if(hide)
+            holder.image.setVisibility(View.GONE);
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
