@@ -26,14 +26,14 @@ import java.util.List;
  * Created by Arpit on 15-12-2014.
  */
 public class TabFragment extends android.support.v4.app.Fragment {
-    List<Fragment> fragments = new ArrayList<Fragment>();
+   public  List<Fragment> fragments = new ArrayList<Fragment>();
     public PagerAdapter mSectionsPagerAdapter;
     android.support.v4.view.PagerTitleStrip STRIP;
     Futils utils = new Futils();
     ViewPager mViewPager;
     SharedPreferences Sp;
     TabFragment t = this;
-    String path = "";
+    String path = "",path1="",path0="";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,6 +41,9 @@ public class TabFragment extends android.support.v4.app.Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment,
                 container, false);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+       path0= Sp.getString("tab0","");
+        path1= Sp.getString("tab1","");
+       // Toast.makeText(getActivity(),path0,Toast.LENGTH_LONG).show();
         mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
         STRIP = ((android.support.v4.view.PagerTitleStrip) rootView
                 .findViewById(R.id.pager_title_strip));
@@ -68,8 +71,10 @@ public class TabFragment extends android.support.v4.app.Fragment {
         if (savedInstanceState == null) {
             mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
                     getActivity().getSupportFragmentManager());
-            addTab(path);
-            addTab("");
+            if(path!=null && path.trim().length()!=0)
+            {addTab(path);
+            addTab(path1);}
+            else{addTab(path0);addTab(path1);}
         } else {
             fragments.clear();
             fragments.add(0, getActivity().getSupportFragmentManager().getFragment(savedInstanceState, "tab0"));

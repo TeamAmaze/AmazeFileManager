@@ -109,8 +109,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public ListView mDrawerList;
     SharedPreferences Sp;
     private ActionBarDrawerToggle mDrawerToggle;
-    public Spinner tabsSpinner;
-    private TabHandler tabHandler;
     ImageButton paste;
     public List<String> val;
     ProgressWheel progress;
@@ -170,7 +168,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         setContentView(R.layout.main);
         getActionBar().hide();
         title = (TextView) findViewById(R.id.title);
-        tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
+        title.setText(R.string.app_name);
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         paste = (ImageButton) findViewById(R.id.paste);
         paste.setOnClickListener(new View.OnClickListener() {
@@ -226,8 +224,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         LinearLayout linearLayout3 = (LinearLayout) findViewById(R.id.settings_bg);
         linearLayout3.setBackgroundColor(Color.parseColor(skin));
 
-        //tabsSpinner.setPopupBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000")));
-        tabHandler = new TabHandler(this, "", null, 1);
         if (Sp.getBoolean("firstrun", true)) {
             try {
                 s.makeS();
@@ -235,7 +231,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             }
 
             File file = new File(val.get(0));
-            tabHandler.addTab(new Tab(0, file.getName(), file.getPath()));
             Sp.edit().putString("home", file.getPath()).apply();
             Sp.edit().putBoolean("firstrun", false).commit();
         }
@@ -265,18 +260,10 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
             adapter.toggleChecked(select);
 
-            if (select == 0) {
+        }                title.setVisibility(View.VISIBLE);
 
-                title.setVisibility(View.GONE);
-                tabsSpinner.setVisibility(View.VISIBLE);
-            } else {
-
-                title.setVisibility(View.VISIBLE);
-                tabsSpinner.setVisibility(View.GONE);
-            }
-        }
         if (select < 4 &&select!=-2) {
-            title.setText(list.get(select));
+//            title.setText(list.get(select));
         }
         if (Build.VERSION.SDK_INT >= 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
@@ -311,7 +298,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
                     title.setText(utils.getString(con, R.string.process_viewer));
                     title.setVisibility(View.VISIBLE);
-                    tabsSpinner.setVisibility(View.GONE);
                     //Commit the transaction
                     transaction.commit();
                 } else {
@@ -509,7 +495,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
 
         title.setVisibility(View.GONE);
-        tabsSpinner.setVisibility(View.VISIBLE);
 
     }
     public void selectItem(final int i) {
@@ -543,7 +528,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     Sp.edit().putBoolean("remember", false).commit();
 
                     title.setVisibility(View.GONE);
-                    tabsSpinner.setVisibility(View.VISIBLE);
                 }else{
                     try {
                         Main m=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
@@ -565,7 +549,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 transaction2.commit();
                 title.setText(utils.getString(this, R.string.apps));
                 title.setVisibility(View.VISIBLE);
-                tabsSpinner.setVisibility(View.GONE);
             } else if (i == list.size() - 1) {
 
                 android.support.v4.app.FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
@@ -576,8 +559,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 transaction3.commit();
                 title.setText(utils.getString(this, R.string.bookmanag));
                 title.setVisibility(View.VISIBLE);
-                tabsSpinner.setVisibility(View.GONE);
-            }
+                }
         }
         adapter.toggleChecked(i);
         mDrawerLayout.closeDrawer(mDrawerLinear);
@@ -889,4 +871,12 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             showDialog();
         }
     }
-}
+    public void updatepaths(){
+        TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        Sp.edit().putString("tab0",((Main)tabFragment.fragments.get(0)).current).apply();
+        Sp.edit().putString("tab1",((Main)tabFragment.fragments.get(1)).current).apply();
+    }public void updatepager() {
+        TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+    tabFragment.mSectionsPagerAdapter.notifyDataSetChanged();
+    }
+    }

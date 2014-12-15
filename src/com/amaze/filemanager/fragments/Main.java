@@ -139,7 +139,6 @@ public class Main extends android.support.v4.app.Fragment {
     public GridView gridView;
     public Boolean aBoolean,showThumbs,coloriseIcons;
     public IconHolder ic;
-    private TabHandler tabHandler;
     private List<Tab> content;
     private ArrayList<String> list1;
     private MainActivity mainActivity;
@@ -147,7 +146,6 @@ public class Main extends android.support.v4.app.Fragment {
     public int skinselection;
     public int theme;
     public int theme1;
-    private TabSpinnerAdapter tabSpinnerAdapter;
     public float[] color;
     public ColorMatrixColorFilter colorMatrixColorFilter;
     Animation animation,animation1;
@@ -174,7 +172,6 @@ public class Main extends android.support.v4.app.Fragment {
                 theme1 = 0;
         }
         mainActivity=(MainActivity)getActivity();
-        tabHandler = new TabHandler(getActivity(), null, null, 1);
         showPermissions=Sp.getBoolean("showPermissions",false);
         showSize=Sp.getBoolean("showFileSize",false);
         circularImages=Sp.getBoolean("circularimages",true);
@@ -217,8 +214,7 @@ public class Main extends android.support.v4.app.Fragment {
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
                 builder.items(new String[]{
                         getResources().getString(R.string.folder),
-                        getResources().getString(R.string.file),
-                        getResources().getString(R.string.tab)
+                        getResources().getString(R.string.file)
                 });
                 builder.itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
@@ -262,7 +258,6 @@ public class Main extends android.support.v4.app.Fragment {
         /*Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
         getActivity().findViewById(R.id.fab).setAnimation(animation1);*/
 
-        content = tabHandler.getAllTabs();
         list1 = new ArrayList<String>();
 
         ImageButton imageView = ((ImageButton)getActivity().findViewById(R.id.action_overflow));
@@ -273,11 +268,6 @@ public class Main extends android.support.v4.app.Fragment {
                 search();
             }
         });
-        for (Tab tab : content) {
-            //adapter1.add(tab.getLabel());
-            list1.add(tab.getLabel());
-        }
-        tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, getActivity().getSupportFragmentManager(), mainActivity.tabsSpinner);
 
 
         getActivity().findViewById(R.id.search).setVisibility(View.VISIBLE);
@@ -303,11 +293,7 @@ public class Main extends android.support.v4.app.Fragment {
         darkvideo=res.getDrawable(R.drawable.ic_doc_video_dark);
         home = Sp.getString("home", mainActivity.val.get(mainActivity.select));
         this.setRetainInstance(false);
-        int pos = Sp.getInt("spinner_selected", 0);
-        String path=content.get(pos).getPath();
-        File f;
-        if(path!=null)f=new File(path);
-        else
+        File
             f=new File(Sp.getString("current",home));
 
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
@@ -386,10 +372,6 @@ public class Main extends android.support.v4.app.Fragment {
                 }
             }
 
-            mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
-            mainActivity.tabsSpinner.setSelection(pos);
-
-            //listView.setVisibility(View.VISIBLE);
         }
 
     }
@@ -512,16 +494,12 @@ public class Main extends android.support.v4.app.Fragment {
                 ba2.build().show();
                 break;
             case 2:
-                int older = tabHandler.getTabsCount();
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
 
                 animation = AnimationUtils.loadAnimation(getActivity(), R.anim.tab_anim);
                 animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
 
                 File file1 = new File(ma.home);
-                tabHandler.addTab(new Tab(older, file1.getName(), file1.getPath()));
-                //restartPC(getActivity()); // breaks the copy feature
-                Sp.edit().putInt("spinner_selected", older).commit();
                 Sp.edit().putString("current", home).apply();
 
                 loadlist(new File(home),false);
@@ -702,20 +680,6 @@ public class Main extends android.support.v4.app.Fragment {
                     gridView.setAdapter(adapter);
                 }
 
-                final int spinner_current = Sp.getInt("spinner_selected", 0);
-                tabHandler.updateTab(new Tab(spinner_current, f.getName(), f.getPath()));
-                content = tabHandler.getAllTabs();
-                list1 = new ArrayList<String>();
-
-                for (Tab tab : content) {
-                    //adapter1.add(tab.getLabel());
-                    list1.add(tab.getPath());
-                }
-
-                tabSpinnerAdapter = new TabSpinnerAdapter(getActivity(), R.layout.spinner_layout, list1, getActivity().getSupportFragmentManager(), mainActivity.tabsSpinner);
-
-                mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
-                mainActivity.tabsSpinner.setSelection(spinner_current);
 
                 results = false;
                 current = f.getPath();
@@ -726,7 +690,7 @@ public class Main extends android.support.v4.app.Fragment {
                         listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
                     }
                 }
-                bbar(current);mainActivity.updateDrawer(current);} catch (Exception e) {
+                bbar(current);mainActivity.updateDrawer(current);mainActivity.updatepaths();mainActivity.updatepager();} catch (Exception e) {
             }
         }
         else{//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();

@@ -96,17 +96,6 @@
         wheel:spinSpeed="1.0"
         android:id="@+id/progressBar"
         />
-    <Spinner
-        android:layout_toRightOf="@id/drawer_buttton"
-        android:layout_toLeftOf="@id/paste"
-        android:id="@+id/tab_spinner"
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:background="@drawable/item_backgrund"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:visibility="gone"></Spinner>
     </RelativeLayout>
 <FrameLayout
     android:id="@+id/buttonbarframe"
