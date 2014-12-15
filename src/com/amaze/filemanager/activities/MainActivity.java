@@ -69,6 +69,7 @@ import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.BookmarksManager;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
+import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
@@ -176,7 +177,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             @Override
             public void onClick(View view) {
 
-                Main ma = ((Main) getSupportFragmentManager().findFragmentById(R.id.content_frame));
+                Main ma = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
                 String path = ma.current;
                 ArrayList<String> arrayList = new ArrayList<String>();
                 if (COPY_PATH != null) {
@@ -308,7 +309,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     //   transaction.addToBackStack(null);
                     select = 102;
 
-                    title.setText(utils.getString(con,R.string.process_viewer));
+                    title.setText(utils.getString(con, R.string.process_viewer));
                     title.setVisibility(View.VISIBLE);
                     tabsSpinner.setVisibility(View.GONE);
                     //Commit the transaction
@@ -429,8 +430,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public void onBackPressed() {
         if (select < list.size() - 2 && select!=-2) {
             try {
-                Main main = ((Main) getSupportFragmentManager().findFragmentById(R.id.content_frame));
-
+                Main main = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+//Toast.makeText(con,main.current,Toast.LENGTH_LONG).show();
             if (main.results == true) {
                 main.results = false;
                 main.loadlist(new File(main.current), true);
@@ -498,10 +499,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             adapter.toggleChecked(select);
         }}
     public void goToMain(){
-        Main m=new Main();
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.content_frame, m);
+        transaction.replace(R.id.content_frame, new TabFragment());
         // Commit the transaction
         select=0;
         transaction.addToBackStack("tab" + 1);
@@ -518,15 +518,15 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             if(new File(val.get(i)).isDirectory()) {
 
                 if (select == null || select >= list.size() - 2) {
-                    Main m = new Main();
+                    TabFragment tabFragment=new TabFragment();
                     if (path != null) {
                         Bundle a = new Bundle();
                         a.putString("path", path);
-                        m.setArguments(a);
+                        tabFragment.setArguments(a);
                     }
                     android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-                    transaction.replace(R.id.content_frame, m);
+                    transaction.replace(R.id.content_frame, tabFragment);
                     select = i;
                     // Commit the transaction
                     transaction.addToBackStack("tab" + 1);
@@ -546,7 +546,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     tabsSpinner.setVisibility(View.VISIBLE);
                 }else{
                     try {
-                        Main m=(Main)getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                        Main m=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
                         m.loadlist(new File(list.get(i)),false);
                     } catch (ClassCastException e) {
                         select=null;selectItem(0);
