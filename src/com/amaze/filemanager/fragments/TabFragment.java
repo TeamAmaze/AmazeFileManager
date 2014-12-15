@@ -45,7 +45,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 container, false);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
        path0= Sp.getString("tab0","");
-        path1= Sp.getString("tab1","");
+        path1= Sp.getString("tab1","/");
        // Toast.makeText(getActivity(),path0,Toast.LENGTH_LONG).show();
         mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
         STRIP = ((android.support.v4.view.PagerTitleStrip) rootView

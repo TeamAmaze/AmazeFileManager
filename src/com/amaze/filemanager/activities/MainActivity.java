@@ -408,7 +408,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
     @Override
     public void onBackPressed() {
-        if (select < list.size() - 2 && select!=-2) {
+if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
+   mDrawerLayout.closeDrawer(mDrawerLinear); else{
+    if (select < list.size() - 2 && select!=-2) {
             try {
                 Main main = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
 //Toast.makeText(con,main.current,Toast.LENGTH_LONG).show();
@@ -434,7 +436,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         else {
             goToMain();
         }
-    }
+    }}
 
     public void invalidatePasteButton() {
         if (MOVE_PATH != null || COPY_PATH != null) {
