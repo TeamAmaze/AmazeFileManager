@@ -19,7 +19,6 @@
 
 package com.amaze.filemanager.activities;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,7 +28,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.media.RingtoneManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -39,11 +37,8 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.IntegerRes;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -102,7 +97,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends android.support.v4.app.FragmentActivity {
     public Integer select;
     TextView title;
 
@@ -170,9 +165,9 @@ public class MainActivity extends FragmentActivity {
         if (theme1 == 1) {
             setTheme(R.style.DarkTheme);
         }
+
         setContentView(R.layout.main);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-  //      if(toolbar!=null)setSupportActionBar(toolbar);
+        getActionBar().hide();
         title = (TextView) findViewById(R.id.title);
         tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
@@ -209,7 +204,6 @@ public class MainActivity extends FragmentActivity {
         }
 
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#5677fc");
-//        toolbar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
         RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.action_bar);
         linearLayout.setBackgroundColor(Color.parseColor(skin));
         LinearLayout linearLayout1 = (LinearLayout) findViewById(R.id.pathbar);
@@ -330,7 +324,7 @@ public class MainActivity extends FragmentActivity {
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer_l,  /* nav drawer image to replace 'Up' caret */
+                util.getDrawerDrawable(),  /* nav drawer image to replace 'Up' caret */
                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                 R.string.drawer_close  /* "close drawer" description for accessibility */
         ) {
@@ -345,7 +339,14 @@ public class MainActivity extends FragmentActivity {
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-
+        ((ImageButton) findViewById(R.id.drawer_buttton)).setOnClickListener(new ImageView.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
+                    mDrawerLayout.closeDrawer(mDrawerLinear);
+                } else mDrawerLayout.openDrawer(mDrawerLinear);
+            }
+        });
 
     }
 
