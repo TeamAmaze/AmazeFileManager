@@ -19,6 +19,7 @@
 
 package com.amaze.filemanager.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -42,6 +43,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +55,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -127,7 +130,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     private static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     public ArrayList<String> list;
     public int theme1;
-    boolean rootmode;
+    boolean rootmode,aBoolean;
     public boolean mRingtonePickerIntent = false,restart=false;
     /**
      * Called when the activity is first created.
@@ -164,9 +167,11 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         if (theme1 == 1) {
             setTheme(R.style.DarkTheme);
         }
-
-        setContentView(R.layout.main);
         getActionBar().hide();
+        setContentView(R.layout.main);
+        aBoolean = Sp.getBoolean("view", true);
+        ImageView overflow = ((ImageView)findViewById(R.id.action_overflow));
+       showPopup(overflow);
         title = (TextView) findViewById(R.id.title);
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         paste = (ImageButton) findViewById(R.id.paste);
@@ -267,13 +272,19 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             DrawerLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mDrawerLayout.getLayoutParams();
             p.setMargins(0, config.getPixelInsetTop(false), 0, 0);
-        }
+        }final Activity activity=this;
         ((ImageButton) findViewById(R.id.settingsbutton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), Preferences.class);
-                finish();
-                startActivity(i);
+                Intent in = new Intent(MainActivity.this, Preferences.class);
+
+                final int enter_anim = android.R.anim.fade_in;
+                final int exit_anim = android.R.anim.fade_out;
+
+                activity.overridePendingTransition(enter_anim, exit_anim);
+                activity.finish();
+                activity.overridePendingTransition(enter_anim, exit_anim);
+                activity.startActivity(in);
             }
         });
         if (theme1 == 1) {
@@ -493,7 +504,6 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
     public void selectItem(final int i) {
 
         if (i < list.size() - 2) {
-            if(new File(val.get(i)).isDirectory()) {
 
                 if (select == null || select >= list.size() - 2) {
                     TabFragment tabFragment=new TabFragment();
@@ -510,26 +520,18 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
                     transaction.addToBackStack("tab" + 1);
                     transaction.commit();
 
-                    boolean remember = Sp.getBoolean("remember", false);
-                    if (!remember) {
-
-                        TabHandler tabHandler1 = new TabHandler(this, null, null, 1);
-                        int pos = Sp.getInt("spinner_selected", 0);
-                        File file = new File(list.get(i));
-                        tabHandler1.updateTab(new Tab(pos, file.getName(), file.getPath()));
-                    }
-                    Sp.edit().putBoolean("remember", false).commit();
 
                 }else{
                     try {
                         Main m=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
-                        m.loadlist(new File(list.get(i)),false);
+                    if(new File(list.get(i)).isDirectory())    m.loadlist(new File(list.get(i)),false);
+                        else utils.openFile(new File(list.get(i)),this);
+
                     } catch (ClassCastException e) {
                         select=null;selectItem(0);
                     }
-            }}else {utils.openFile(new File(val.get(i)),this);
             }
-            title.setText(R.string.app_name);} else {
+            title.setText(R.string.app_name);}else {
             if (i == list.size() - 2) {
 
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
@@ -552,10 +554,68 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
                 title.setVisibility(View.VISIBLE);
                 }
         }
-        adapter.toggleChecked(i);
+        adapter.toggleChecked(select);
         mDrawerLayout.closeDrawer(mDrawerLinear);
     }
 
+    public void showPopup(View v) {
+        final PopupMenu popup = new PopupMenu(this, v);
+        if(Build.VERSION.SDK_INT>=19)
+            v.setOnTouchListener(popup.getDragToOpenListener());
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popup.show();
+            }
+        });
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.activity_extra, popup.getMenu());
+
+        // Getting option for listView and gridView
+        MenuItem s = popup.getMenu().findItem(R.id.view);
+
+        if (aBoolean) {
+            s.setTitle(getResources().getString(R.string.gridview));
+        } else {
+            s.setTitle(getResources().getString(R.string.listview));
+        }
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+            Main ma=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+                switch (item.getItemId()) {
+                    case R.id.home:
+                        ma.home();
+                        break;
+                    case R.id.history:
+                        utils.showHistoryDialog(ma);
+                        break;
+                    case R.id.item3:
+                        finish();
+                        break;
+                    case R.id.item10:
+                        utils.showSortDialog(ma);
+                        break;
+                    case R.id.hiddenitems:
+                        utils.showHiddenDialog(ma);
+                        break;
+                    case R.id.item4:
+                        ma.ic.cleanup();
+                        ma.loadlist(new File(ma.current), false);
+                        break;
+                    case R.id.view:
+                        // Save the changes, but don't show a disruptive Toast:
+                        Sp.edit().putBoolean("view", !ma.aBoolean).commit();
+                        ma.restartPC(ma.getActivity());
+                        break;
+                }
+                return false;
+            }
+        });
+
+    }
     private void showToast(String message) {
         if (this.toast == null) {
             // Create toast if found null, it would he the case of first call only

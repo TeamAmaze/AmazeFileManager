@@ -260,8 +260,6 @@ public class Main extends android.support.v4.app.Fragment {
 
         list1 = new ArrayList<String>();
 
-        ImageButton imageView = ((ImageButton)getActivity().findViewById(R.id.action_overflow));
-        showPopup(imageView);
         (getActivity().findViewById(R.id.search)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -301,8 +299,6 @@ public class Main extends android.support.v4.app.Fragment {
         textView = (TextView) getActivity().findViewById(R.id.fullpath);
 
         pathbar.setBackgroundColor(Color.parseColor(skin));
-        ImageView overflow = ((ImageView)getActivity().findViewById(R.id.action_overflow));
-        showPopup(overflow);
 
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -493,21 +489,7 @@ public class Main extends android.support.v4.app.Fragment {
                 });
                 ba2.build().show();
                 break;
-            case 2:
-                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-
-                animation = AnimationUtils.loadAnimation(getActivity(), R.anim.tab_anim);
-                animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
-
-                File file1 = new File(ma.home);
-                Sp.edit().putString("current", home).apply();
-
-                loadlist(new File(home),false);
-
-                listView.setAnimation(animation);
-                gridView.setAnimation(animation);
-                floatingActionButton.setAnimation(animation1);
-        }
+            case 2:}
     }
 
     public void home() {
@@ -690,7 +672,8 @@ public class Main extends android.support.v4.app.Fragment {
                         listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
                     }
                 }
-                bbar(current);mainActivity.updateDrawer(current);mainActivity.updatepaths();mainActivity.updatepager();} catch (Exception e) {
+                bbar(current);mainActivity.updateDrawer(current);mainActivity.updatepaths();mainActivity.updatepager();
+            } catch (Exception e) {
             }
         }
         else{//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
@@ -777,7 +760,7 @@ public class Main extends android.support.v4.app.Fragment {
 
                 } else if (x.isFile()) {
 
-                    hideOption(R.id.book, menu);
+                  //  hideOption(R.id.book, menu);
                 } else {
                     /*if (x.getName().endsWith(".mp3"))
 
@@ -1350,63 +1333,6 @@ public class Main extends android.support.v4.app.Fragment {
         });*/
     }
 
-    public void showPopup(View v) {
-        final PopupMenu popup = new PopupMenu(getActivity(), v);
-        if(Build.VERSION.SDK_INT>=19)
-            v.setOnTouchListener(popup.getDragToOpenListener());
-        v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                popup.show();
-            }
-        });
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.activity_extra, popup.getMenu());
-
-        // Getting option for listView and gridView
-        MenuItem s = popup.getMenu().findItem(R.id.view);
-
-        if (aBoolean) {
-            s.setTitle(res.getString(R.string.gridview));
-        } else {
-            s.setTitle(res.getString(R.string.listview));
-        }
-
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.home:
-                        home();
-                        break;
-                    case R.id.history:
-                        utils.showHistoryDialog(ma);
-                        break;
-                    case R.id.item3:
-                        getActivity().finish();
-                        break;
-                    case R.id.item10:
-                        utils.showSortDialog(ma);
-                        break;
-                    case R.id.hiddenitems:
-                        utils.showHiddenDialog(ma);
-                        break;
-                    case R.id.item4:
-                        ic.cleanup();
-                        ma.loadlist(new File(ma.current), false);
-                        break;
-                    case R.id.view:
-                        // Save the changes, but don't show a disruptive Toast:
-                        Sp.edit().putBoolean("view", !aBoolean).commit();
-                        restartPC(getActivity());
-                        break;
-                }
-                return false;
-            }
-        });
-
-    }
     public void hide(String path){
         hidden.addPath(path);
         hiddenfiles=hidden.readTable();

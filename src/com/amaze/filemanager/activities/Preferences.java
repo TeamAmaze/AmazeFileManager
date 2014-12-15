@@ -69,8 +69,14 @@ public class Preferences extends Activity {
     public void onBackPressed() {
         Intent in = new Intent(Preferences.this, MainActivity.class);
         in.setAction(Intent.ACTION_MAIN);
-        finish();
-        startActivity(in);
+        final int enter_anim = android.R.anim.fade_in;
+        final int exit_anim = android.R.anim.fade_out;
+          Activity activity=this;
+        activity.overridePendingTransition(enter_anim, exit_anim);
+        activity.finish();
+        activity.overridePendingTransition(enter_anim, exit_anim);
+        activity.startActivity(in);
+
     }
 
     @Override
@@ -81,9 +87,13 @@ public class Preferences extends Activity {
                 // See http://developer.android.com/design/patterns/navigation.html for more.
                 Intent in = new Intent(Preferences.this, MainActivity.class);
                 in.setAction(Intent.ACTION_MAIN);
-                finish();
-                startActivity(in);
-                return true;
+                final int enter_anim = android.R.anim.fade_in;
+                final int exit_anim = android.R.anim.fade_out;
+                Activity activity=this;
+                activity.overridePendingTransition(enter_anim, exit_anim);
+                activity.finish();
+                activity.overridePendingTransition(enter_anim, exit_anim);
+                activity.startActivity(in);        return true;
 
         }
         return true;
