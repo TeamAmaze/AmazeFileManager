@@ -32,10 +32,14 @@
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
         <item name="android:textColor">?android:attr/textColorTertiary</item>
     </style>
-    <style name="LightTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="LightTheme" parent="Theme.AppCompat.Light">
+
         <item name="android:actionOverflowButtonStyle">@style/OverflowActionMode</item>
         <item name="android:actionModeBackground">@drawable/action_bar</item>
         <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_48dp</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+
         <!--<item name="android:dropDownListViewStyle">@style/spinner_style</item>-->
     </style>
 

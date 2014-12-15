@@ -30,10 +30,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
        >
-<RelativeLayout
+
+        <android.support.v7.widget.Toolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/toolbar"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"/>
+        <RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/actionBarSize"
     android:orientation="horizontal"
+            android:layout_below="@id/toolbar"
     android:id="@+id/action_bar">
     <ImageButton
         android:id="@+id/drawer_buttton"
