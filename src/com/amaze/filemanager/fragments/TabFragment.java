@@ -1,6 +1,8 @@
 package com.amaze.filemanager.fragments;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Shortcuts;
 
@@ -47,6 +50,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
         STRIP = ((android.support.v4.view.PagerTitleStrip) rootView
                 .findViewById(R.id.pager_title_strip));
+        STRIP.setBackgroundDrawable(new ColorDrawable(Color.parseColor(((MainActivity)getActivity()).skin)));
         if (getArguments() != null)
             path = getArguments().getString("path");
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {

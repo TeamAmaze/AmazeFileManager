@@ -168,7 +168,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         setContentView(R.layout.main);
         getActionBar().hide();
         title = (TextView) findViewById(R.id.title);
-        title.setText(R.string.app_name);
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         paste = (ImageButton) findViewById(R.id.paste);
         paste.setOnClickListener(new View.OnClickListener() {
@@ -260,10 +259,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
             adapter.toggleChecked(select);
 
-        }                title.setVisibility(View.VISIBLE);
-
-        if (select < 4 &&select!=-2) {
-//            title.setText(list.get(select));
         }
         if (Build.VERSION.SDK_INT >= 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
@@ -297,7 +292,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     select = 102;
 
                     title.setText(utils.getString(con, R.string.process_viewer));
-                    title.setVisibility(View.VISIBLE);
                     //Commit the transaction
                     transaction.commit();
                 } else {
@@ -317,7 +311,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         ) {
             public void onDrawerClosed(View view) {
                 if(select==102)title.setText(R.string.process_viewer);
-                // creates call to onPrepareOptionsMenu()
+              // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
@@ -486,15 +480,12 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         }}
     public void goToMain(){
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
+        title.setText(R.string.app_name);
         transaction.replace(R.id.content_frame, new TabFragment());
         // Commit the transaction
         select=0;
         transaction.addToBackStack("tab" + 1);
         transaction.commit();
-
-
-        title.setVisibility(View.GONE);
 
     }
     public void selectItem(final int i) {
@@ -527,7 +518,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     }
                     Sp.edit().putBoolean("remember", false).commit();
 
-                    title.setVisibility(View.GONE);
                 }else{
                     try {
                         Main m=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
@@ -537,8 +527,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     }
             }}else {utils.openFile(new File(val.get(i)),this);
             }
-
-        } else {
+            title.setText(R.string.app_name);} else {
             if (i == list.size() - 2) {
 
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
@@ -873,8 +862,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     }
     public void updatepaths(){
         TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
-        Sp.edit().putString("tab0",((Main)tabFragment.fragments.get(0)).current).apply();
-        Sp.edit().putString("tab1",((Main)tabFragment.fragments.get(1)).current).apply();
+        Sp.edit().putString("tab0",((Main)tabFragment.fragments.get(0)).current).commit();
+        Sp.edit().putString("tab1",((Main)tabFragment.fragments.get(1)).current).commit();
     }public void updatepager() {
         TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
     tabFragment.mSectionsPagerAdapter.notifyDataSetChanged();
