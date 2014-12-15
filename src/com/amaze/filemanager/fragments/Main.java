@@ -128,7 +128,7 @@ public class Main extends android.support.v4.app.Fragment {
     public HistoryManager history,hidden;
     IconUtils icons;
     HorizontalScrollView scroll,scroll1;
-    public boolean rootMode,showHidden,showPermissions,showSize,showLastModified;
+    public boolean rootMode,showHidden,circularImages,showPermissions,showSize,showLastModified;
     View footerView;
     public LinearLayout pathbar;
     private TextView textView;
@@ -177,6 +177,7 @@ public class Main extends android.support.v4.app.Fragment {
         tabHandler = new TabHandler(getActivity(), null, null, 1);
         showPermissions=Sp.getBoolean("showPermissions",false);
         showSize=Sp.getBoolean("showFileSize",false);
+        circularImages=Sp.getBoolean("circularimages",true);
         showLastModified=Sp.getBoolean("showLastModified",true);
         icons = new IconUtils(Sp, getActivity());
         timer=new CountDownTimer(5000,1000) {

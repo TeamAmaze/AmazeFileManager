@@ -273,5 +273,7 @@
     <string name="xda_title">XDA</string>
     <string name="xda_summary">Q&amp;A, Help &amp; Troubleshooting</string>
     <string name="invalid_dir">Invalid Directory</string>
+    <string name="circularimages">Use circular icons for images and videos</string>
+    <string name="circularicons">Use circular icons</string>
 </resources>
 

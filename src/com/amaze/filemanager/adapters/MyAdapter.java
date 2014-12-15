@@ -152,7 +152,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 vholder.perm = (TextView) view.findViewById(R.id.permis);
                 vholder.date = (TextView) view.findViewById(R.id.date);
                 vholder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
-                vholder.apk=(ImageView)view.findViewById(R.id.bicon);
+                vholder.apk = (ImageView) view.findViewById(R.id.bicon);
                 vholder.ext = (TextView) view.findViewById(R.id.generictext);
                 view.setTag(vholder);
 
@@ -176,7 +176,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     return true;
                 }
             });
-
 
 
             holder.txtTitle.setText(rowItem.getTitle());
@@ -213,28 +212,48 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.imageView.setVisibility(View.VISIBLE);
             holder.viewmageV.setVisibility(View.INVISIBLE);
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
-                if(main.showThumbs){holder.imageView.setVisibility(View.GONE);
-                holder.viewmageV.setVisibility(View.VISIBLE);
-                holder.viewmageV.setImageDrawable(main.darkimage);
-                main.ic.cancelLoad(holder.viewmageV);
-                main.ic.loadDrawable(holder.viewmageV, new File(rowItem.getDesc()), null);
-            }}else if (Icons.isApk((rowItem.getDesc()))) {
-                if(main.showThumbs){
-                holder.imageView.setVisibility(View.GONE);
-                holder.apk.setVisibility(View.VISIBLE);
-                holder.apk.setImageDrawable(main.apk);
-                main.ic.cancelLoad(holder.apk);
-                main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);}
-
-            }else if(Icons.isVideo(rowItem.getDesc())){
-                if(main.showThumbs){holder.imageView.setVisibility(View.GONE);
-                    holder.viewmageV.setVisibility(View.VISIBLE);
-                    holder.viewmageV.setImageDrawable(main.darkvideo);
-                    main.ic.cancelLoad(holder.viewmageV);
-                    main.ic.loadDrawable(holder.viewmageV, new File(rowItem.getDesc()), null);
+                if (main.showThumbs) {
+                    if (main.circularImages) {
+                        holder.imageView.setVisibility(View.GONE);
+                        holder.viewmageV.setVisibility(View.VISIBLE);
+                        holder.viewmageV.setImageDrawable(main.darkimage);
+                        main.ic.cancelLoad(holder.viewmageV);
+                        main.ic.loadDrawable(holder.viewmageV, new File(rowItem.getDesc()), null);
+                    } else {
+                        holder.imageView.setVisibility(View.GONE);
+                        holder.apk.setVisibility(View.VISIBLE);
+                        holder.apk.setImageDrawable(main.darkimage);
+                        main.ic.cancelLoad(holder.apk);
+                        main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);
+                    }
                 }
-             }
-            else{holder.viewmageV.setVisibility(View.GONE);
+            } else if (Icons.isApk((rowItem.getDesc()))) {
+                if (main.showThumbs) {
+                    holder.imageView.setVisibility(View.GONE);
+                    holder.apk.setVisibility(View.VISIBLE);
+                    holder.apk.setImageDrawable(main.apk);
+                    main.ic.cancelLoad(holder.apk);
+                    main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);
+                }
+
+            } else if (Icons.isVideo(rowItem.getDesc())) {
+                if (main.showThumbs) {
+                    if (main.circularImages) {
+                        holder.imageView.setVisibility(View.GONE);
+                        holder.viewmageV.setVisibility(View.VISIBLE);
+                        holder.viewmageV.setImageDrawable(main.darkvideo);
+                        main.ic.cancelLoad(holder.viewmageV);
+                        main.ic.loadDrawable(holder.viewmageV, new File(rowItem.getDesc()), null);
+                    } else {
+                        holder.imageView.setVisibility(View.GONE);
+                        holder.apk.setVisibility(View.VISIBLE);
+                        holder.apk.setImageDrawable(main.darkvideo);
+                        main.ic.cancelLoad(holder.apk);
+                        main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);
+                    }
+                }
+            }
+        else{holder.viewmageV.setVisibility(View.GONE);
             holder.apk.setVisibility(View.GONE);}
             Boolean checked = myChecked.get(position);
             if (checked != null) {

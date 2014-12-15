@@ -35,6 +35,12 @@
             android:key="random"
             android:title="@string/random"
             android:summary="@string/random_summary"/>
+        <CheckBoxPreference
+            android:key="circularimages"
+            android:defaultValue="true"
+            android:summary="@string/circularimages"
+            android:title="@string/circularicons"/>
+
         <Preference
             android:key="uimode"
             android:summary="@string/chooseUI"

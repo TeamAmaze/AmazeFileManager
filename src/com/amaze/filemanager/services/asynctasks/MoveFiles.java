@@ -55,8 +55,9 @@ public class MoveFiles extends AsyncTask<String,Void,Boolean> {
     }
     @Override
     public void onPostExecute(Boolean b){
-        if(b && ma!=null){if(ma.current.equals(path))ma.updateList();
-            try {
+        if(b ){if(ma!=null)if(ma.current.equals(path))ma.updateList();
+            try {    new Futils().scanFile(path,context);
+
                 new Futils().scanFile(files.get(0).getParent(),context);
             } catch (Exception e) {
                 e.printStackTrace();
