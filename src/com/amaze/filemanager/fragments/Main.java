@@ -200,35 +200,7 @@ public class Main extends android.support.v4.app.Fragment {
         animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
         animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
 
-        floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-        floatingActionButton.attachToListView(listView);
-        floatingActionButton.attachToListView(gridView);
-        floatingActionButton.setColorNormal(Color.parseColor(skin));
-        floatingActionButton.setColorPressed(Color.parseColor(skin));
-        floatingActionButton.setAnimation(animation1);
-        //floatingActionButton.setVisibility(View.VISIBLE);
-        floatingActionButton.show(true);
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-                builder.items(new String[]{
-                        getResources().getString(R.string.folder),
-                        getResources().getString(R.string.file)
-                });
-                builder.itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence s) {
-                        add(i);
-                    }
-                });
-                builder.title(getResources().getString(R.string.new_string));
-                if(theme1==1)
-                    builder.theme(Theme.DARK);
-                builder.build().show();
-            }
-        });
 
         showThumbs=Sp.getBoolean("showThumbs", true);
         ic=new IconHolder(getActivity(),showThumbs,!aBoolean);
@@ -260,13 +232,6 @@ public class Main extends android.support.v4.app.Fragment {
         getActivity().findViewById(R.id.fab).setAnimation(animation1);*/
 
         list1 = new ArrayList<String>();
-
-        (getActivity().findViewById(R.id.search)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                search();
-            }
-        });
 
 
         getActivity().findViewById(R.id.search).setVisibility(View.VISIBLE);
@@ -399,137 +364,10 @@ public class Main extends android.support.v4.app.Fragment {
             }
         }}
 
-    public void add(int pos) {
-        switch (pos) {
-
-            case 0:
-                final String path = ma.current;
-                final MaterialDialog.Builder ba1 = new MaterialDialog.Builder(getActivity());
-                ba1.title(R.string.newfolder);
-                View v = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
-                final EditText edir = (EditText) v.findViewById(R.id.newname);
-                edir.setHint(utils.getString(getActivity(), R.string.entername));
-                ba1.customView(v);
-                if(theme1==1)ba1.theme(Theme.DARK);
-                ba1.positiveText(R.string.create);
-                ba1.negativeText(R.string.cancel);
-                ba1.positiveColor(Color.parseColor(skin));
-                ba1.negativeColor(Color.parseColor(skin));
-                ba1.callback(new MaterialDialog.Callback() {
-                    @Override
-                    public void onPositive(MaterialDialog materialDialog) {
-                        String a = edir.getText().toString();
-                        File f = new File(path + "/" + a);
-                        boolean b=false;
-                        if (!f.exists()) {
-                             b=f.mkdirs();
-                            updateList();
-                            if(b)
-                            Toast.makeText(getActivity(), res.getString(R.string.foldercreated), Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Toast.LENGTH_LONG).show();
-                        }
-                        if(!b && rootMode){
-                            RootTools.remount(f.getParent(),"rw");
-                            RootHelper.runAndWait("mkdir "+f.getPath(),true);
-                            updateList();
-                            }
-                        else if(!b && !rootMode){
-                            try {
-                                new MediaFile(getActivity(),f).mkdir();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog materialDialog) {
-
-                    }
-                });
-                ba1.build().show();
-                break;
-            case 1:
-                final String path1 = ma.current;
-                final MaterialDialog.Builder ba2 = new MaterialDialog.Builder(getActivity());
-                ba2.title((R.string.newfile));
-                View v1 = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
-                final EditText edir1 = (EditText) v1.findViewById(R.id.newname);
-                edir1.setHint(utils.getString(getActivity(), R.string.entername));
-                ba2.customView(v1);
-                if(theme1==1)ba2.theme(Theme.DARK);
-                ba2.negativeText(R.string.cancel);
-                ba2.positiveText(R.string.create);
-                ba2.positiveColor(Color.parseColor(skin));
-                ba2.negativeColor(Color.parseColor(skin));
-                ba2.callback(new MaterialDialog.Callback() {
-                    @Override
-                    public void onPositive(MaterialDialog materialDialog) {
-                        String a = edir1.getText().toString();boolean b=false;
-                        File f1 = new File(path1 + "/" + a);
-                        if (!f1.exists()) {
-                            try {
-                                 b = f1.createNewFile();
-                                updateList();
-                                Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.filecreated), Toast.LENGTH_LONG).show();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.fileexist), Toast.LENGTH_LONG).show();
-                        }if(!b && rootMode)RootTools.remount(f1.getParent(),"rw");
-                        RootHelper.runAndWait("touch "+f1.getPath(),true);
-                        updateList();
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog materialDialog) {
-
-                    }
-                });
-                ba2.build().show();
-                break;
-            case 2:}
-    }
-
     public void home() {
         ma.loadlist(new File(ma.home), false);
     }
 
-    public void search() {
-        final String fpath = ma.current;
-
-        //Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.searchpath) + fpath, Toast.LENGTH_LONG).show();
-        final MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-        a.title(R.string.search);
-        View v = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
-        final EditText e = (EditText) v.findViewById(R.id.newname);
-        e.setHint(utils.getString(getActivity(), R.string.enterfile));
-        a.customView(v);
-        if(theme1==1)a.theme(Theme.DARK);
-        a.negativeText(R.string.cancel);
-        a.positiveText(R.string.search);
-        a.positiveColor(Color.parseColor(skin));
-        a.negativeColor(Color.parseColor(skin));
-        a.callback(new MaterialDialog.Callback() {
-            @Override
-            public void onPositive(MaterialDialog materialDialog) {
-                String a = e.getText().toString();
-                Bundle b = new Bundle();
-                b.putString("FILENAME", a);
-                b.putString("FILEPATH", fpath);
-                new SearchTask((MainActivity) getActivity(), ma).execute(b);
-
-            }
-
-            @Override
-            public void onNegative(MaterialDialog materialDialog) {
-
-            }
-        });
-        a.build().show();
-    }
 
 
     public void onListItemClicked(int position, View v) {
@@ -1255,6 +1093,16 @@ public class Main extends android.support.v4.app.Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        floatingActionButton.attachToListView(listView);
+        floatingActionButton.attachToListView(gridView);
+        floatingActionButton.setColorNormal(Color.parseColor(skin));
+        floatingActionButton.setColorPressed(Color.parseColor(skin));
+        floatingActionButton.setAnimation(animation1);
+        //floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.show(true);
+
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
     }
 

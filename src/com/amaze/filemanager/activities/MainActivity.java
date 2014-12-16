@@ -50,6 +50,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -77,12 +78,16 @@ import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
+import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
+import com.amaze.filemanager.utils.MediaFile;
 import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.Shortcuts;
+import com.melnykov.fab.FloatingActionButton;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.stericson.RootTools.RootTools;
 
 import org.xml.sax.SAXException;
 
@@ -230,6 +235,28 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         LinearLayout linearLayout3 = (LinearLayout) findViewById(R.id.settings_bg);
         linearLayout3.setBackgroundColor(Color.parseColor(skin));
 
+        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(con);
+                builder.items(new String[]{
+                        getResources().getString(R.string.folder),
+                        getResources().getString(R.string.file),
+                        getResources().getString(R.string.tab)
+                });
+                builder.itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence s) {
+                        add(i);
+                    }
+                });
+                builder.title(getResources().getString(R.string.new_string));
+                if(theme1==1)
+                    builder.theme(Theme.DARK);
+                builder.build().show();
+            }
+        });
         if (Sp.getBoolean("firstrun", true)) {
             try {
                 s.makeS();
@@ -243,7 +270,12 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
-
+        (findViewById(R.id.search)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                search();
+            }
+        });
         list = new ArrayList<String>();
         for (int i = 0; i < val.size(); i++) {
             File file = new File(val.get(i));
@@ -672,6 +704,140 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
     }
+    public void add(int pos) {
+        final MainActivity mainActivity=this;
+        final Main ma=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+        switch (pos) {
+
+            case 0:
+                final String path = ma.current;
+                final MaterialDialog.Builder ba1 = new MaterialDialog.Builder(this);
+                ba1.title(R.string.newfolder);
+                View v = getLayoutInflater().inflate(R.layout.dialog, null);
+                final EditText edir = (EditText) v.findViewById(R.id.newname);
+                edir.setHint(utils.getString(this, R.string.entername));
+                ba1.customView(v);
+                if(theme1==1)ba1.theme(Theme.DARK);
+                ba1.positiveText(R.string.create);
+                ba1.negativeText(R.string.cancel);
+                ba1.positiveColor(Color.parseColor(skin));
+                ba1.negativeColor(Color.parseColor(skin));
+                ba1.callback(new MaterialDialog.Callback() {
+                    @Override
+                    public void onPositive(MaterialDialog materialDialog) {
+                        String a = edir.getText().toString();
+                        File f = new File(path + "/" + a);
+                        boolean b=false;
+                        if (!f.exists()) {
+                            b=f.mkdirs();
+                            ma.updateList();
+                            if(b)
+                                Toast.makeText(mainActivity, (R.string.foldercreated), Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(mainActivity, ( R.string.fileexist), Toast.LENGTH_LONG).show();
+                        }
+                        if(!b && rootmode){
+                            RootTools.remount(f.getParent(), "rw");
+                            RootHelper.runAndWait("mkdir "+f.getPath(),true);
+                            ma.updateList();
+                        }
+                        else if(!b && !rootmode){
+                            try {
+                                new MediaFile(mainActivity,f).mkdir();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog materialDialog) {
+
+                    }
+                });
+                ba1.build().show();
+                break;
+            case 1:
+                final String path1 = ma.current;
+                final MaterialDialog.Builder ba2 = new MaterialDialog.Builder(this);
+                ba2.title((R.string.newfile));
+                View v1 = getLayoutInflater().inflate(R.layout.dialog, null);
+                final EditText edir1 = (EditText) v1.findViewById(R.id.newname);
+                edir1.setHint(utils.getString(this, R.string.entername));
+                ba2.customView(v1);
+                if(theme1==1)ba2.theme(Theme.DARK);
+                ba2.negativeText(R.string.cancel);
+                ba2.positiveText(R.string.create);
+                ba2.positiveColor(Color.parseColor(skin));
+                ba2.negativeColor(Color.parseColor(skin));
+                ba2.callback(new MaterialDialog.Callback() {
+                    @Override
+                    public void onPositive(MaterialDialog materialDialog) {
+                        String a = edir1.getText().toString();boolean b=false;
+                        File f1 = new File(path1 + "/" + a);
+                        if (!f1.exists()) {
+                            try {
+                                b = f1.createNewFile();
+                                ma.updateList();
+                                Toast.makeText(mainActivity, ( R.string.filecreated), Toast.LENGTH_LONG).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Toast.makeText(mainActivity,( R.string.fileexist), Toast.LENGTH_LONG).show();
+                        }if(!b && rootmode)RootTools.remount(f1.getParent(),"rw");
+                        RootHelper.runAndWait("touch "+f1.getPath(),true);
+                        ma.updateList();
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog materialDialog) {
+
+                    }
+                });
+                ba2.build().show();
+                break;
+            case 2:
+        addTab();
+                break;
+        }
+    }
+
+
+    public void search() {
+        final Main ma=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+        final String fpath = ma.current;
+        final MainActivity mainActivity=this;
+        //Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.searchpath) + fpath, Toast.LENGTH_LONG).show();
+        final MaterialDialog.Builder a = new MaterialDialog.Builder(this);
+        a.title(R.string.search);
+        View v =getLayoutInflater().inflate(R.layout.dialog, null);
+        final EditText e = (EditText) v.findViewById(R.id.newname);
+        e.setHint(utils.getString(this, R.string.enterfile));
+        a.customView(v);
+        if(theme1==1)a.theme(Theme.DARK);
+        a.negativeText(R.string.cancel);
+        a.positiveText(R.string.search);
+        a.positiveColor(Color.parseColor(skin));
+        a.negativeColor(Color.parseColor(skin));
+        a.callback(new MaterialDialog.Callback() {
+            @Override
+            public void onPositive(MaterialDialog materialDialog) {
+                String a = e.getText().toString();
+                Bundle b = new Bundle();
+                b.putString("FILENAME", a);
+                b.putString("FILEPATH", fpath);
+                new SearchTask(mainActivity, ma).execute(b);
+
+            }
+
+            @Override
+            public void onNegative(MaterialDialog materialDialog) {
+
+            }
+        });
+        a.build().show();
+    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -938,5 +1104,9 @@ if(tabFragment.getTab().current.equals(path))return true; return false;
     }
     public void addZipViewTab(String text){        TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
         tabFragment.addZipViewerTab(text);
+    }
+    public void addTab(){
+        TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        tabFragment.addTab1("");
     }
     }
