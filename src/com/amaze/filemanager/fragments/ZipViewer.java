@@ -38,6 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.ZipAdapter;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
@@ -71,7 +72,7 @@ SharedPreferences Sp;
     ZipViewer zipViewer=this;
     public ArrayList<ZipObj> wholelist=new ArrayList<ZipObj>();
 public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
-
+    public MainActivity mainActivity;
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -84,7 +85,6 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         showLastModified=Sp.getBoolean("showLastModified",true);
         year=(""+calendar.get(Calendar.YEAR)).substring(2,4);
         skin = Sp.getString("skin_color", "#5677fc");
-        ((TextView) getActivity().findViewById(R.id.title)).setText(f.getName());
         getListView().setDividerHeight(0);
         getListView().setDivider(null);
         FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
@@ -99,6 +99,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         ((TextView)getActivity().findViewById(R.id.pathname)).setText("");
         getActivity().findViewById(R.id.fullpath).setOnClickListener(null);
         files=new ArrayList<File>();
+        mainActivity=(MainActivity)getActivity();
         if(savedInstanceState==null)
         new ZipHelperTask(this,"").execute(f);
 else {

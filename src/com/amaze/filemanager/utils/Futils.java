@@ -46,6 +46,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
@@ -61,7 +62,10 @@ import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -287,7 +291,35 @@ public class Futils {
 
         return inSampleSize;
     }
+    public static byte[] createChecksum(String filename) throws Exception {
+        InputStream fis =  new FileInputStream(filename);
 
+        byte[] buffer = new byte[1024];
+        MessageDigest complete = MessageDigest.getInstance("MD5");
+        int numRead;
+
+        do {
+            numRead = fis.read(buffer);
+            if (numRead > 0) {
+                complete.update(buffer, 0, numRead);
+            }
+        } while (numRead != -1);
+
+        fis.close();
+        return complete.digest();
+    }
+
+    // see this How-to for a faster way to convert
+    // a byte array to a HEX string
+    public static String getMD5Checksum(String filename) throws Exception {
+        byte[] b = createChecksum(filename);
+        String result = "";
+
+        for (int i=0; i < b.length; i++) {
+            result += Integer.toString( ( b[i] & 0xff ) + 0x100, 16).substring( 1 );
+        }
+        return result;
+    }
     public void showProps(final File f, final Main c,boolean root) {
         String date = getString(c.getActivity(), R.string.date) + getdate(f);
         String items = "", size = "", name, parent;
@@ -304,14 +336,20 @@ public class Futils {
         String skin = sp.getString("skin_color", "#5677fc");
         MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
         a.title(getString(c.getActivity(), R.string.properties));
-
+        String md5="";
+        try {
+            md5="md5:"+getMD5Checksum(f.getPath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if(c.theme1==1)
             a.theme(Theme.DARK);
         a.content(name + "\n" + parent + "\n" + size + "\n" + items + "\n"
-                + date);
+                + date+"\n"+md5);
         a.positiveText(R.string.copy_path);
-        a.negativeText(R.string.close);
-        a.positiveColor(Color.parseColor(skin)).negativeColor(Color.parseColor(skin));
+        a.negativeText(getString(c.getActivity(), R.string.copy) + " md5");
+        a.neutralText(R.string.cancel);
+        a.positiveColor(Color.parseColor(skin)).negativeColor(Color.parseColor(skin)).neutralColor(Color.parseColor(skin));
         a.callback(new MaterialDialog.Callback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -322,11 +360,17 @@ public class Futils {
 
             @Override
             public void onNegative(MaterialDialog materialDialog) {
-
-                materialDialog.cancel();
+                try {
+                    c.copyToClipboard(c.getActivity(), getMD5Checksum(f.getPath()));
+                    Toast.makeText(c.getActivity(), c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
-        a.build().show();
+       MaterialDialog b= a.build();
+        if(f.isDirectory())b.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
+               b.show();
     }
 
     public static long folderSize(File directory) {

@@ -36,10 +36,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.annotation.IntegerRes;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -59,7 +57,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,8 +65,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
-import com.amaze.filemanager.database.Tab;
-import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.BookmarksManager;
 import com.amaze.filemanager.fragments.Main;
@@ -288,7 +283,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         list.add(utils.getString(this, R.string.bookmanag));
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
-
+        initiatebbar();
         if (savedInstanceState == null) {
             if(!restart)
             selectItem(0);
@@ -1108,5 +1103,49 @@ if(tabFragment.getTab().current.equals(path))return true; return false;
     public void addTab(){
         TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
         tabFragment.addTab1("");
+    }
+    public TabFragment getFragment(){    TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
+    return tabFragment;}
+    public void updateActionButtons(){
+        TabFragment tabFragment=getFragment();
+        String name=tabFragment.getTab().getClass().getName();
+        if(name.contains("Main"))
+        {invalidatePasteButton();
+            findViewById(R.id.search).setVisibility(View.VISIBLE);
+            findViewById(R.id.action_overflow).setVisibility(View.VISIBLE);
+        }else {findViewById(R.id.action_overflow).setVisibility(View.GONE);
+            findViewById(R.id.action_overflow).setVisibility(View.GONE);
+            paste.setVisibility(View.GONE);}
+    }public void initiatebbar(){
+        LinearLayout pathbar = (LinearLayout) findViewById(R.id.pathbar);
+        TextView textView = (TextView) findViewById(R.id.fullpath);
+
+        pathbar.setBackgroundColor(Color.parseColor(skin));
+
+        pathbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment=getFragment().getTab();
+                if(fragment.getClass().getName().contains("Main")){
+                Main main=(Main)fragment;
+                    main.bbar(main.current);
+                    main.crossfade();
+                main.timer.cancel();
+                main.timer.start();}
+            }
+        });
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment=getFragment().getTab();
+                if(fragment.getClass().getName().contains("Main")){
+                    Main main=(Main)fragment;
+                    main.bbar(main.current);
+                    main.crossfade();
+                    main.timer.cancel();
+                    main.timer.start();}
+             }
+        });
+
     }
     }

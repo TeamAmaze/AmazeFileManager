@@ -133,7 +133,7 @@ public class Main extends android.support.v4.app.Fragment {
     public LinearLayout pathbar;
     private TextView textView;
     private ImageButton ib;
-    CountDownTimer timer;
+    public CountDownTimer timer;
     private View rootView;
     public ListView listView;
     public GridView gridView;
@@ -266,24 +266,6 @@ public class Main extends android.support.v4.app.Fragment {
 
         pathbar.setBackgroundColor(Color.parseColor(skin));
 
-        pathbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                crossfade();
-                timer.cancel();
-                timer.start();
-            }
-        });
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                crossfade();
-                timer.cancel();
-                timer.start();
-            }
-        });
 
         scroll = (HorizontalScrollView) getActivity().findViewById(R.id.scroll);
         scroll1 = (HorizontalScrollView) getActivity().findViewById(R.id.scroll1);
@@ -479,47 +461,58 @@ public class Main extends android.support.v4.app.Fragment {
 
 
     public void createViews(ArrayList<Layoutelements> bitmap, boolean back, File f) {
-        try {if (bitmap != null) {
-            TextView footerText=(TextView) footerView.findViewById(R.id.footerText);
-            if(bitmap.size()==0){
-                footerText.setText(res.getString(R.string.nofiles));
-            }
-            else{
-                footerText.setText(res.getString(R.string.tapnhold));
-            }
-            if(!f.getPath().equals("/")){
-                if(bitmap.size()==0 || !bitmap.get(0).getSize().equals(goback))
-                    bitmap.add(0,utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha),"...", "","",goback,"",true));
-            }
-            adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
-                    bitmap, ma);
-            try {
-
-                if (aBoolean) {
-                    listView.setAdapter(adapter);
+        try {
+            if (bitmap != null) {
+                TextView footerText = (TextView) footerView.findViewById(R.id.footerText);
+                if (bitmap.size() == 0) {
+                    footerText.setText(res.getString(R.string.nofiles));
                 } else {
-                    gridView.setAdapter(adapter);
+                    footerText.setText(res.getString(R.string.tapnhold));
                 }
+                if (!f.getPath().equals("/")) {
+                    if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))
+                        bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "...", "", "", goback, "", true));
+                }
+                adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
+                        bitmap, ma);
+                try {
 
-
-                results = false;
-                current = f.getPath();
-                if (back) {
-                    if (scrolls.containsKey(current)) {
-                        Bundle b = scrolls.get(current);
-
-                        listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
+                    if (aBoolean) {
+                        listView.setAdapter(adapter);
+                    } else {
+                        gridView.setAdapter(adapter);
                     }
+
+
+                    results = false;
+                    current = f.getPath();
+                    if (back) {
+                        if (scrolls.containsKey(current)) {
+                            Bundle b = scrolls.get(current);
+
+                            listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
+                        }
+                    }
+                    floatingActionButton.show();
+                    if (!shouldbbar) {
+                        shouldbbar = true;
+                        if (mainActivity.shouldbbar(current)) {
+                            updatePath(current);
+                            if (buttons.getVisibility() == View.VISIBLE) bbar(current);
+                        }
+                    } else {
+                        if (buttons.getVisibility() == View.VISIBLE)
+                            bbar(current);
+                        updatePath(current);
+                    }
+                    mainActivity.updateDrawer(current);
+                    mainActivity.updatepager();
+                } catch (Exception e) {
                 }
-                if(!shouldbbar){
-                    shouldbbar=true;
-               if(mainActivity.shouldbbar(current)) bbar(current);}else bbar(current);mainActivity.updateDrawer(current);mainActivity.updatepager();
-            } catch (Exception e) {
+            } else {//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
+                loadlist(new File(current), true);
             }
-        }
-        else{//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
-            loadlist(new File(current),true);
-        }} catch (Exception e) {
+        } catch (Exception e) {
         }
 
     }
@@ -913,7 +906,24 @@ public class Main extends android.support.v4.app.Fragment {
 
         }
     };
+    public void updatePath(String text){
+        File f=new File(text);
+        TextView textView = (TextView)pathbar.findViewById(R.id.pathname);
+        String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
+        String free = utils.readableFileSize(f.getFreeSpace());
+        textView.setText(res.getString(R.string.used)+" " + used +" "+ res.getString(R.string.free)+" " + free);
 
+        TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
+        bapath.setText(f.getPath());
+        scroll.post(new Runnable() {
+            @Override
+            public void run() {
+                scroll.fullScroll(View.FOCUS_RIGHT);
+                scroll1.fullScroll(View.FOCUS_RIGHT);
+            }
+        });
+
+    }
     public void bbar(String text) {
         try {
             buttons.removeAllViews();
@@ -948,7 +958,7 @@ public class Main extends android.support.v4.app.Fragment {
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            loadlist(new File("/"), false);
+                            mainActivity.getFragment().getTab().loadlist(new File("/"), false);
                             timer.cancel();
                             timer.start();
                         }
@@ -964,7 +974,7 @@ public class Main extends android.support.v4.app.Fragment {
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            loadlist(new File(rpaths.get(index)), true);
+                            mainActivity.getFragment().getTab().loadlist(new File("/"), false);
                             timer.cancel();
                             timer.start();
                         }
@@ -981,7 +991,7 @@ public class Main extends android.support.v4.app.Fragment {
                     button.setOnClickListener(new Button.OnClickListener() {
 
                         public void onClick(View p1) {
-                            loadlist(new File(rpaths.get(index)), true);
+                            mainActivity.getFragment().getTab().loadlist(new File("/"), false);
                             timer.cancel();
                             timer.start();
                         }
@@ -1198,7 +1208,7 @@ public class Main extends android.support.v4.app.Fragment {
             utils.scanFile(path,getActivity());}
 
     }
-    private void crossfade() {
+    public void crossfade() {
 
         // Set the content view to 0% opacity but visible, so that it is visible
         // (but fully transparent) during the animation.

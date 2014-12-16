@@ -39,6 +39,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
     TabFragment t = this;
     String path = "",path1="",path0="";
     int currenttab;
+    MainActivity mainActivity;
   public    ArrayList<String> tabs=new ArrayList<String>();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +56,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         STRIP.setBackgroundDrawable(new ColorDrawable(Color.parseColor(((MainActivity)getActivity()).skin)));
         if (getArguments() != null)
             path = getArguments().getString("path");
+  mainActivity=((MainActivity)getActivity());
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             public void onPageScrolled(int p1, float p2, int p3) {
@@ -71,11 +73,13 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
             public void onPageSelected(int p1) { // TODO: Implement this								// method
                currenttab=p1;
+                mainActivity.updateActionButtons();
                 String name=fragments.get(p1).getClass().getName();
                 if(name.contains("Main")){Main ma = ((Main) fragments.get(p1));
                 if (ma.current != null) {
-                    ((MainActivity)getActivity()).updateDrawer(ma.current);
-                    ma.bbar(ma.current);
+                    mainActivity.updateDrawer(ma.current);
+                    ma.updatePath(ma.current);
+                    if(ma.buttons.getVisibility()==View.VISIBLE)ma.bbar(ma.current);
                     try {
                         ((TextView) STRIP.getChildAt(p1)).setText(ma.current);
                     } catch (Exception e) {
@@ -169,10 +173,11 @@ public void onDestroyView(){
             }}else if(name.contains("ZipViewer")) {
                 ZipViewer ma = ((ZipViewer) fragments.get(position));
 
-                if (ma.current == null || ma.current.equals("")) {
-                    return "Root";
-                } else {
-                    return new File(ma.current).getName();
+                try {
+                    return ma.f.getName();
+                } catch (Exception e) {
+                    return "ZipViewer";
+                  //  e.printStackTrace();
                 }
 
             }
