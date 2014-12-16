@@ -36,11 +36,6 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
         this.dir = dir;
     }
 
-    public ZipHelperTask(ZipViewer zipViewer, int counter) {
-        this.zipViewer = zipViewer;
-
-    }
-
     @Override
     protected ArrayList<ZipObj> doInBackground(File... params) {
         ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
@@ -51,12 +46,12 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
             if (zipViewer.wholelist.size() == 0) {
                 for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
                     ZipEntry entry = (ZipEntry) e.nextElement();
-                    zipViewer.wholelist.add(entry);
+                    zipViewer.wholelist.add(new ZipObj(entry,entry.isDirectory()));
                 }
             }ArrayList<String> strings=new ArrayList<String>();
             //  int fileCount = zipfile.size();
 
-            for (ZipEntry entry : zipViewer.wholelist) {
+            for (ZipObj entry : zipViewer.wholelist) {
 
                 i++;
                 String s = entry.getName().toString();
@@ -67,7 +62,7 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
                         if(entry.getName().startsWith("/"))
                             y=y.substring(1,y.length());
                         if (file.getParent() == null) {
-                            elements.add(new ZipObj(entry, entry.isDirectory()));
+                            elements.add(new ZipObj(entry.getEntry(), entry.isDirectory()));
                             strings.add(y);
                         } else {
                             String path=y.substring(0, y.indexOf("/") + 1);
@@ -84,7 +79,7 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
                             y=y.substring(1,y.length());
                     //Log.d("Test", dir);
                     if (file.getParent()!=null && (file.getParent().equals(dir) || file.getParent().equals("/"+dir))) {
-                        elements.add(new ZipObj(entry,entry.isDirectory()));
+                        elements.add(new ZipObj(entry.getEntry(),entry.isDirectory()));
                         strings.add(entry.getName());
                     }else {
                         if(y.startsWith(dir+"/") && y.length()>dir.length()+1){

@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.ZipObj;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -68,8 +69,8 @@ if(open){
             throws IOException {
         if (entry.isDirectory()) {
             createDir(new File(outputDir, entry.getName()));
-            for (ZipEntry entry1:zipViewer.wholelist ) {
-                if(entry1.getName().contains(entry.getName())){unzipEntry(zipfile,entry1,outputDir);}
+            for (ZipObj entry1:zipViewer.wholelist ) {
+                if(entry1.getName().contains(entry.getName())){unzipEntry(zipfile,entry1.getEntry(),outputDir);}
             }
                 return;
         }

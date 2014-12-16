@@ -69,7 +69,7 @@ public class ZipViewer extends ListFragment {
     public boolean coloriseIcons,showSize,showLastModified;
 SharedPreferences Sp;
     ZipViewer zipViewer=this;
-    public ArrayList<ZipEntry> wholelist=new ArrayList<ZipEntry>();
+    public ArrayList<ZipObj> wholelist=new ArrayList<ZipObj>();
 public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
 
     @Override
@@ -98,10 +98,18 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         getActivity().findViewById(R.id.pathbar).setOnClickListener(null);
         ((TextView)getActivity().findViewById(R.id.pathname)).setText("");
         getActivity().findViewById(R.id.fullpath).setOnClickListener(null);
-        new ZipHelperTask(this, 0).execute(f);
-        files = new ArrayList<File>();
-        results = false;
-    }
+        files=new ArrayList<File>();
+        if(savedInstanceState==null)
+        new ZipHelperTask(this,"").execute(f);
+else {
+            wholelist = savedInstanceState.getParcelableArrayList("wholelist");
+        elements=savedInstanceState.getParcelableArrayList("elements");
+        current=savedInstanceState.getString("path");
+            zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, elements, zipViewer);
+            zipViewer.setListAdapter(zipViewer.zipAdapter);
+
+            ((TextView) zipViewer.getActivity().findViewById(R.id.fullpath)).setText(zipViewer.current);
+        }   }
     public String getSelectionColor(){
 
         String[] colors = new String[]{
@@ -124,6 +132,14 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
                 "#607d8b","#4478909c",
         };
         return colors[ Arrays.asList(colors).indexOf(skin)+1];
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("wholelist",wholelist);
+        outState.putParcelableArrayList("elements",elements);
+        outState.putString("path",current);
     }
     public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
         private void hideOption(int id, Menu menu) {

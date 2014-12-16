@@ -153,6 +153,7 @@ public class Main extends android.support.v4.app.Fragment {
     ArrayList<String> hiddenfiles;
     private FloatingActionButton floatingActionButton;
     String Intentpath;
+    boolean shouldbbar=false;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -289,7 +290,7 @@ public class Main extends android.support.v4.app.Fragment {
         getSortModes();
         darkimage=res.getDrawable(R.drawable.ic_doc_image_dark);
         darkvideo=res.getDrawable(R.drawable.ic_doc_video_dark);
-        home = Sp.getString("home", mainActivity.val.get(mainActivity.select));
+        home = Sp.getString("home", mainActivity.val.get(0));
         this.setRetainInstance(false);
         File
             f=new File(Sp.getString("current",home));
@@ -672,7 +673,9 @@ public class Main extends android.support.v4.app.Fragment {
                         listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
                     }
                 }
-                bbar(current);mainActivity.updateDrawer(current);mainActivity.updatepaths();mainActivity.updatepager();
+                if(!shouldbbar){
+                    shouldbbar=true;
+               if(mainActivity.shouldbbar(current)) bbar(current);}else bbar(current);mainActivity.updateDrawer(current);mainActivity.updatepaths();mainActivity.updatepager();
             } catch (Exception e) {
             }
         }

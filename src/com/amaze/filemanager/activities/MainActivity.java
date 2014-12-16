@@ -142,6 +142,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        getActionBar().hide();
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         utils = new Futils();
         s=new Shortcuts(this);
@@ -167,10 +168,10 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         if (theme1 == 1) {
             setTheme(R.style.DarkTheme);
         }
-        getActionBar().hide();
         setContentView(R.layout.main);
         aBoolean = Sp.getBoolean("view", true);
         ImageView overflow = ((ImageView)findViewById(R.id.action_overflow));
+
        showPopup(overflow);
         title = (TextView) findViewById(R.id.title);
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
@@ -312,7 +313,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         });
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
-
+if(select!=null && select<list.size()-2){title.setText(R.string.app_name);}
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
@@ -929,5 +930,9 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
     }public void updatepager() {
         TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
     tabFragment.mSectionsPagerAdapter.notifyDataSetChanged();
+    }
+    public boolean shouldbbar(String path){
+        TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+if(tabFragment.getTab().current.equals(path))return true; return false;
     }
     }

@@ -124,45 +124,40 @@
             android:layout_height="wrap_content"
             android:paddingBottom="2dp"
             android:orientation="horizontal">
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="?android:attr/actionBarSize"
-                android:src="@drawable/ic_drawer_l"
-                android:layout_weight="1"
-                android:visibility="invisible"
-                android:clickable="false"
-                style="?android:borderlessButtonStyle"/>
-            <LinearLayout
+            <RelativeLayout
                 android:clickable="false"
                 android:layout_weight="20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal">
+                <TextView
+                    android:clickable="false"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:textSize="11dp"
+                    android:textColor="@android:color/white"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:id="@+id/pathname" />
                 <HorizontalScrollView
                     android:scrollbars="none"
                     android:id="@+id/scroll1"
                     android:layout_width="wrap_content"
-                    android:layout_marginBottom="5dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/pathname"
                     android:layout_height="wrap_content">
 
-                <TextView
-                    android:clickable="false"
-                    android:layout_width="wrap_content"
-                    style="@android:style/TextAppearance.Small"
-                    android:textColor="@android:color/white"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/fullpath" />
-            </HorizontalScrollView>
-                <TextView
-                    android:clickable="false"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="right"
-                    android:textSize="10dp"
-                    android:textColor="@android:color/white"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="7dp"
-                    android:id="@+id/pathname" />
-            </LinearLayout>
+                    <TextView
+                        android:clickable="false"
+                        android:layout_width="wrap_content"
+                        android:padding="5dp"
+                        style="@android:style/TextAppearance.Small"
+                        android:textColor="@android:color/white"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fullpath" />
+                </HorizontalScrollView>
+
+            </RelativeLayout>
             </LinearLayout>
 
 
