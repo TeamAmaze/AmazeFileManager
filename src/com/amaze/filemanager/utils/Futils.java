@@ -491,16 +491,7 @@ public void showPackageDialog(final File f,final MainActivity m){
 
         @Override
         public void onNegative(MaterialDialog materialDialog) {
-            m.select=-2;
-            FragmentTransaction fragmentTransaction = m.getSupportFragmentManager().beginTransaction();
-            Fragment fragment = new ZipViewer();
-            Bundle bundle = new Bundle();
-            bundle.putString("path", f.getPath());
-            fragment.setArguments(bundle);
-            fragmentTransaction.replace(R.id.content_frame, fragment);
-            //fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-
+            m.addZipViewTab(f.getPath());
         }
     });
     mat.positiveColor(Color.parseColor(m.skin));
@@ -524,16 +515,7 @@ public void showPackageDialog(final File f,final MainActivity m){
 
             @Override
             public void onNegative(MaterialDialog materialDialog) {
-                m.select=-2;
-                FragmentTransaction fragmentTransaction = m.getSupportFragmentManager().beginTransaction();
-                Fragment fragment = new ZipViewer();
-                Bundle bundle = new Bundle();
-                bundle.putString("path", f.getPath());
-                fragment.setArguments(bundle);
-                fragmentTransaction.replace(R.id.content_frame, fragment);
-                //fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-
+                m.addZipViewTab(f.getPath());
             }
         });
         mat.positiveColor(Color.parseColor(m.skin));

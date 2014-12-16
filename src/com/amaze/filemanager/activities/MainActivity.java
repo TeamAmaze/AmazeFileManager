@@ -38,6 +38,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.IntegerRes;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
@@ -422,11 +423,15 @@ if(select!=null && select<list.size()-2){title.setText(R.string.app_name);}
     public void onBackPressed() {
 if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
    mDrawerLayout.closeDrawer(mDrawerLinear); else{
-    if (select < list.size() - 2 && select!=-2) {
+    if (select < list.size() - 2) {
             try {
-                Main main = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
-//Toast.makeText(con,main.current,Toast.LENGTH_LONG).show();
-            if (main.results == true) {
+
+                TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
+                Fragment fragment=tabFragment.getTab();
+                String name=fragment.getClass().getName();
+                if(name.contains("Main")){
+                Main main=(Main)fragment;
+                if (main.results == true) {
                 main.results = false;
                 main.loadlist(new File(main.current), true);
             } else {
@@ -436,14 +441,14 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
                     } else {
                         exit();
                     }
+                }
+            }else if(name.contains("ZipViewer")){
+                    ZipViewer zipViewer=(ZipViewer)fragment;
+                    if (zipViewer.cangoBack()) {
 
-            }}catch (ClassCastException e){goToMain();}
-        }else if(select==-2){
-            ZipViewer zipViewer  = ((ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame));
-            if (zipViewer.cangoBack()) {
-
-                zipViewer.goBack();
-            } else goToMain();
+                        zipViewer.goBack();
+                    } else goToMain();
+                }}catch (ClassCastException e){goToMain();}
         }
         else {
             goToMain();
@@ -524,8 +529,8 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
 
                 }else{
                     try {
-                        Main m=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
-                    if(new File(list.get(i)).isDirectory())    m.loadlist(new File(list.get(i)),false);
+                        TabFragment m=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame));
+                    if(new File(list.get(i)).isDirectory())   m.addTab1(list.get(i));
                         else utils.openFile(new File(list.get(i)),this);
 
                     } catch (ClassCastException e) {
@@ -934,5 +939,8 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
     public boolean shouldbbar(String path){
         TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 if(tabFragment.getTab().current.equals(path))return true; return false;
+    }
+    public void addZipViewTab(String text){        TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        tabFragment.addZipViewerTab(text);
     }
     }

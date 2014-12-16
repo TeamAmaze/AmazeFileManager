@@ -239,4 +239,9 @@ public boolean cangoBack(){
 
         new ZipHelperTask(this, new File(current).getParent()).execute(f);
     }
+    public void bbar(){
+        ((TextView) zipViewer.getActivity().findViewById(R.id.fullpath)).setText(zipViewer.current);
+        ((TextView)getActivity().findViewById(R.id.pathname)).setText("");
+
+    }
 }

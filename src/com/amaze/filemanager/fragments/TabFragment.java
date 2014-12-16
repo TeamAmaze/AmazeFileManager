@@ -20,6 +20,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Shortcuts;
+import com.amaze.filemanager.utils.ZipObj;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
     SharedPreferences Sp;
     TabFragment t = this;
     String path = "",path1="",path0="";
-
+  public    ArrayList<String> tabs=new ArrayList<String>();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -60,11 +61,14 @@ public class TabFragment extends android.support.v4.app.Fragment {
             }
 
             public void onPageSelected(int p1) { // TODO: Implement this								// method
-                Main ma = ((Main) fragments.get(p1));
+                String name=fragments.get(p1).getClass().getName();
+                if(name.contains("Main")){Main ma = ((Main) fragments.get(p1));
                 if (ma.current != null) {
+                    ((MainActivity)getActivity()).updateDrawer(ma.current);
                     ma.bbar(ma.current);
                     ((TextView) STRIP.getChildAt(p1)).setText(ma.current);
-                }
+                }}
+                else if(name.contains("ZipViewer")){ZipViewer ma = ((ZipViewer) fragments.get(p1));ma.bbar();}
             }
 
             public void onPageScrollStateChanged(int p1) {
@@ -81,8 +85,10 @@ public class TabFragment extends android.support.v4.app.Fragment {
             else{addTab(path0);addTab(path1);}
         } else {
             fragments.clear();
-            fragments.add(0, getActivity().getSupportFragmentManager().getFragment(savedInstanceState, "tab0"));
-            fragments.add(1, getActivity().getSupportFragmentManager().getFragment(savedInstanceState, "tab1"));
+          tabs= savedInstanceState.getStringArrayList("tabs");
+            for(int i=0;i<tabs.size();i++){
+                fragments.add(i, getActivity().getSupportFragmentManager().getFragment(savedInstanceState, "tab"+i));
+            }
             mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
                     getActivity().getSupportFragmentManager());
         }
@@ -100,12 +106,15 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 getActivity().getSupportFragmentManager().putFragment(outState, "tab" + i, fragment);
                 i++;
             }
+            outState.putStringArrayList("tabs",tabs);
         }
     }
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
         @Override
         public CharSequence getPageTitle(int position) {
+            String name=fragments.get(position).getClass().getName();
+            if(name.contains("Main")){
             Main ma = ((Main) fragments.get(position));
             if (ma.results) {
                 return utils.getString(getActivity(), R.string.searchresults);
@@ -115,7 +124,17 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 } else {
                     return new File(ma.current).getName();
                 }
+            }}else if(name.contains("ZipViewer")) {
+                ZipViewer ma = ((ZipViewer) fragments.get(position));
+
+                if (ma.current == null || ma.current.equals("")) {
+                    return "Root";
+                } else {
+                    return new File(ma.current).getName();
+                }
+
             }
+            return fragments.get(position).getClass().getName();
         }
 
         public int getCount() {
@@ -146,10 +165,38 @@ public class TabFragment extends android.support.v4.app.Fragment {
             main.setArguments(b);
         }
         fragments.add(main);
-
+        tabs.add(main.getClass().getName());
         mSectionsPagerAdapter.notifyDataSetChanged();
     }
+    public void addTab1(String text) {
+        android.support.v4.app.Fragment main = new Main();
+        int p = fragments.size();
 
+        if (text != null && text.trim().length() != 0) {
+            Bundle b = new Bundle();
+            b.putString("path", text);
+            main.setArguments(b);
+        }
+        fragments.add(main);
+        tabs.add(main.getClass().getName());
+        mSectionsPagerAdapter.notifyDataSetChanged();
+        mViewPager.setCurrentItem(fragments.size()-1,true);
+
+    }
+    public void addZipViewerTab(String text) {
+        android.support.v4.app.Fragment main = new ZipViewer();
+        int p = fragments.size();
+
+        if (text != null && text.trim().length() != 0) {
+            Bundle b = new Bundle();
+            b.putString("path", text);
+            main.setArguments(b);
+        }
+        fragments.add(main);
+        tabs.add(main.getClass().getName());
+        mSectionsPagerAdapter.notifyDataSetChanged();
+        mViewPager.setCurrentItem(fragments.size()-1,true);
+    }
     public Main getTab() {
         Main man = ((Main) fragments.get(mViewPager.getCurrentItem()));
         return man;
