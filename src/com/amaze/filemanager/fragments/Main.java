@@ -675,7 +675,7 @@ public class Main extends android.support.v4.app.Fragment {
                 }
                 if(!shouldbbar){
                     shouldbbar=true;
-               if(mainActivity.shouldbbar(current)) bbar(current);}else bbar(current);mainActivity.updateDrawer(current);mainActivity.updatepaths();mainActivity.updatepager();
+               if(mainActivity.shouldbbar(current)) bbar(current);}else bbar(current);mainActivity.updateDrawer(current);mainActivity.updatepager();
             } catch (Exception e) {
             }
         }

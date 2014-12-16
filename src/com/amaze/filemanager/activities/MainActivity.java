@@ -503,7 +503,7 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
         transaction.replace(R.id.content_frame, new TabFragment());
         // Commit the transaction
         select=0;
-        transaction.addToBackStack("tab" + 1);
+        transaction.addToBackStack("tabt" + 1);
         transaction.commit();
 
     }
@@ -523,7 +523,7 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
                     transaction.replace(R.id.content_frame, tabFragment);
                     select = i;
                     // Commit the transaction
-                    transaction.addToBackStack("tab" + 1);
+                    transaction.addToBackStack("tab1" + 1);
                     transaction.commit();
 
 
@@ -928,11 +928,7 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
             showDialog();
         }
     }
-    public void updatepaths(){
-        TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
-        Sp.edit().putString("tab0",((Main)tabFragment.fragments.get(0)).current).commit();
-        Sp.edit().putString("tab1",((Main)tabFragment.fragments.get(1)).current).commit();
-    }public void updatepager() {
+    public void updatepager() {
         TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
     tabFragment.mSectionsPagerAdapter.notifyDataSetChanged();
     }
