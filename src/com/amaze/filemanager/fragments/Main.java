@@ -573,6 +573,7 @@ public class Main extends android.support.v4.app.Fragment {
                 showOption(R.id.addshortcut,menu);
                 showOption(R.id.permissions, menu);
 
+                showOption(R.id.openwith, menu);
                 showOption(R.id.about, menu);
                 showOption(R.id.share,menu);
                 showOption(R.id.rename, menu);
@@ -589,31 +590,7 @@ public class Main extends android.support.v4.app.Fragment {
 
                     showOption(R.id.ex, menu);
 
-                    hideOption(R.id.sethome, menu);
-                    hideOption(R.id.book, menu);
-                    showOption(R.id.openwith,menu);
-
-                } else if (x.isFile()) {
-
-                  //  hideOption(R.id.book, menu);
-                } else {
-                    /*if (x.getName().endsWith(".mp3"))
-
-                    {
-                        showOption(R.id.setringtone, menu);
-                    }*/
-
-
-                    hideOption(R.id.ex, menu);
-
-                    hideOption(R.id.sethome, menu);
-
-                    showOption(R.id.openwith, menu);
-
-                    showOption(R.id.share, menu);
-
                 }
-
             } else {
                 try {
                     for (int c : adapter.getCheckedItemPositions()) {

@@ -35,6 +35,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.Tab;
@@ -124,7 +125,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
             @Override
             public void onClick(View view) {
            if(position==tabFragment.mViewPager.getCurrentItem()) tabFragment.removeTab();
-                else tabFragment.removeTabFromBack(position);
+                else Toast.makeText(tabFragment.getActivity(),R.string.not_allowed,Toast.LENGTH_SHORT).show();
                 hideSpinnerDropDown(spinner);
             }
         });
