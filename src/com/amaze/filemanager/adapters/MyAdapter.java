@@ -88,7 +88,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
     }
 
     public void toggleChecked(boolean b,String path) {
-       int a; if(path.equals("/"))a=0;else a=1;
+       int a; if(path.equals("/") || !main.gobackitem)a=0;else a=1;
         for (int i = a; i < items.size(); i++) {
             myChecked.put(i, b);
         }
@@ -109,7 +109,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
     public boolean areAllChecked(String path) {
         boolean b = true;
-        int a; if(path.equals("/"))a=0;else a=1;
+        int a; if(path.equals("/") || !main.gobackitem)a=0;else a=1;
         for (int i = a; i < myChecked.size(); i++) {
             if (!myChecked.get(i)) {
                 b = false;

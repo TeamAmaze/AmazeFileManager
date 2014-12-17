@@ -19,32 +19,34 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/second"
+    android:id="@+id/drawerheader"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:minHeight="50dp"
     android:padding="5dp"
-    android:background="@color/theme_primary"
     android:clickable="false">
 
-<ImageView
-    android:id="@+id/icon"
-    android:layout_width="40dp"
-    android:layout_height="fill_parent"
-    android:clickable="false"
-    android:padding="5dp"
-    android:src="@drawable/ic_launcher1"
-    android:gravity="center_vertical"
-    android:contentDescription="@string/icon" />
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="40dp"
+        android:layout_height="fill_parent"
+        android:clickable="false"
+        android:padding="5dp"
+        android:src="@drawable/ic_launcher1"
+        android:gravity="center_vertical"
+        android:contentDescription="@string/icon" />
 
-<TextView
-android:id="@+id/firstline"
-android:layout_width="wrap_content"
-android:layout_toRightOf="@id/icon"
-android:layout_height="fill_parent"
-android:clickable="false"
-    style="@android:style/TextAppearance.Medium.Inverse"
-    android:text="Amaze File Manager"
-android:gravity="center_vertical" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/firstline"
+        android:layout_width="wrap_content"
+        android:layout_toRightOf="@id/icon"
+        android:layout_height="fill_parent"
+        android:clickable="false"
+        android:paddingLeft="20dp"
+        android:textSize="20dp"
+        style="@android:style/TextAppearance.Medium.Inverse"
+        android:text="Amaze File Manager"
+        android:gravity="center_vertical" />
+</LinearLayout>

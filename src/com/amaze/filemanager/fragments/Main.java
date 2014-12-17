@@ -137,7 +137,7 @@ public class Main extends android.support.v4.app.Fragment {
     private View rootView;
     public ListView listView;
     public GridView gridView;
-    public Boolean aBoolean,showThumbs,coloriseIcons;
+    public Boolean gobackitem,aBoolean,showThumbs,coloriseIcons;
     public IconHolder ic;
     private List<Tab> content;
     private ArrayList<String> list1;
@@ -175,6 +175,7 @@ public class Main extends android.support.v4.app.Fragment {
         mainActivity=(MainActivity)getActivity();
         showPermissions=Sp.getBoolean("showPermissions",false);
         showSize=Sp.getBoolean("showFileSize",false);
+        gobackitem=Sp.getBoolean("goBack_checkbox", true);
         circularImages=Sp.getBoolean("circularimages",true);
         showLastModified=Sp.getBoolean("showLastModified",true);
         icons = new IconUtils(Sp, getActivity());
@@ -468,7 +469,7 @@ public class Main extends android.support.v4.app.Fragment {
                     footerText.setText(res.getString(R.string.nofiles));
                 } else {
                     footerText.setText(res.getString(R.string.tapnhold));
-                }
+                }if(gobackitem)
                 if (!f.getPath().equals("/")) {
                     if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))
                         bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "...", "", "", goback, "", true));

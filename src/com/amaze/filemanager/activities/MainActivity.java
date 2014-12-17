@@ -228,8 +228,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         horizontalScrollView.setBackgroundColor(Color.parseColor(skin));
         HorizontalScrollView horizontalScrollView1 = (HorizontalScrollView) findViewById(R.id.scroll);
         horizontalScrollView1.setBackgroundColor(Color.parseColor(skin));
-        LinearLayout linearLayout2 = (LinearLayout) findViewById(R.id.drawerheader);
-        linearLayout2.setBackgroundColor(Color.parseColor(skin));
         LinearLayout linearLayout3 = (LinearLayout) findViewById(R.id.settings_bg);
         linearLayout3.setBackgroundColor(Color.parseColor(skin));
 
@@ -268,6 +266,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
+        View v=getLayoutInflater().inflate(R.layout.drawerheader,null);
+        v.setBackgroundColor(Color.parseColor(skin));
+        mDrawerList.addHeaderView(v);
         (findViewById(R.id.search)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
