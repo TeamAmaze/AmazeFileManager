@@ -605,6 +605,22 @@ public class Preffrag extends PreferenceFragment {
             }
         });
 
+        //go back
+        final CheckBoxPreference checkBoxPreference1 = (CheckBoxPreference) findPreference("showBack");
+        checkBoxPreference1.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (!checkBoxPreference1.isChecked()) {
+                    sharedPref.edit().putBoolean("goBack_checkbox", true).apply();
+                    checkBoxPreference1.setChecked(true);
+                } else {
+                    sharedPref.edit().putBoolean("goBack_checkbox", false).apply();
+                    checkBoxPreference1.setChecked(false);
+                }
+                return false;
+            }
+        });
+
     }
 
     public static void restartPC(final Activity activity) {

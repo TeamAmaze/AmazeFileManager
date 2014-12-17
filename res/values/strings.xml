@@ -275,5 +275,7 @@
     <string name="invalid_dir">Invalid Directory</string>
     <string name="circularimages">Use circular icons for images and videos</string>
     <string name="circularicons">Use circular icons</string>
+    <string name="back_title">Back navigation</string>
+    <string name="back_summary">Enables custom back navigation at top of the list</string>
 </resources>
 

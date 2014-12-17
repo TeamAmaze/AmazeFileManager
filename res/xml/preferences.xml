@@ -68,6 +68,11 @@
             android:key="showFileSize"
             android:summary="@string/sizePrefSummary"
             android:title="@string/sizePref" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="showBack"
+            android:title="@string/back_title"
+            android:summary="@string/back_summary" />
         <Preference
             android:key="columns"
             android:title="@string/gridcolumnno" />
