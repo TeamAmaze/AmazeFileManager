@@ -40,6 +40,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.fragments.TabFragment;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -51,16 +52,14 @@ import java.util.ArrayList;
 public class TabSpinnerAdapter extends ArrayAdapter<String> {
     ArrayList<String> items;
     Context context;
-    android.support.v4.app.FragmentManager fragmentTransaction;
     Spinner spinner;
-    Main ma;
-
-    public TabSpinnerAdapter(Context context, int resource, ArrayList<String> items, android.support.v4.app.FragmentManager fragmentTransaction, Spinner spin) {
+    TabFragment tabFragment;
+    public TabSpinnerAdapter(Context context, int resource, ArrayList<String> items, Spinner spin,TabFragment tabFragment) {
         super(context, resource, items);
         this.items = items;
         this.context = context;
         this.spinner=spin;
-        this.fragmentTransaction = fragmentTransaction;
+        this.tabFragment=tabFragment;
     }
 
     @Override
@@ -70,10 +69,14 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         View row = inflater.inflate(R.layout.spinner_layout, parent, false);
 
         TextView textView = (TextView) row.findViewById(R.id.spinnerText);
-        if(items.get(position).equals("/"))
-            textView.setText(R.string.rootdirectory);
-        else
-            textView.setText(new File(items.get(position)).getName());
+        try {
+            if(items.get(position).equals("/"))
+                textView.setText(R.string.rootdirectory);
+            else
+                textView.setText(new File(items.get(position)).getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return row;
     }
@@ -84,12 +87,10 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.spinner_dropdown_layout, parent, false);
 
-        ma = ((Main) fragmentTransaction.findFragmentById(R.id.content_frame));
         final TextView textView = (TextView) row.findViewById(R.id.spinnerText);
         LinearLayout linearLayout = (LinearLayout) row.findViewById(R.id.textParent);
         final SharedPreferences sharedPreferences1 = PreferenceManager.getDefaultSharedPreferences(context);
         String skin = sharedPreferences1.getString("skin_color", "#5677fc");
-        final int spinner_current = sharedPreferences1.getInt("spinner_selected", 0);
         ImageButton imageButton = (ImageButton) row.findViewById(R.id.spinnerButton);
         if(items.get(position).equals("/"))
             textView.setText(R.string.rootdirectory);
@@ -97,7 +98,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         textView.setText(new File(items.get(position)).getName());
         imageButton.setBackgroundColor(Color.parseColor(skin));
 
-        if (position == spinner_current) {
+        if (position == tabFragment.mViewPager.getCurrentItem()) {
 
             textView.setTextColor(Color.parseColor(skin));
             textView.setTypeface(null, Typeface.BOLD);
@@ -111,31 +112,10 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
 
                 hideSpinnerDropDown(spinner);
 
-                if (position == spinner_current) {
+                if (position == tabFragment.mViewPager.getCurrentItem()) {
                 }
                 else {
-
-                    TabHandler tabHandler1 = new TabHandler(context, null, null, 1);
-                    Tab tab = tabHandler1.findTab(position);
-                    String name  = tab.getPath();
-                    //Toast.makeText(getActivity(), name, Toast.LENGTH_SHORT).show();
-                    sharedPreferences1.edit().putString("current", name).apply();
-                    sharedPreferences1.edit().putInt("spinner_selected", position).apply();
-
-                    Main ma = ((Main) fragmentTransaction.findFragmentById(R.id.content_frame));
-                    ma.loadlist(new File(tab.getPath()),false);
-
-                    Animation animationLeft = AnimationUtils.loadAnimation(getContext(), R.anim.tab_selection_left);
-                    Animation animationRight = AnimationUtils.loadAnimation(getContext(), R.anim.tab_selection_right);
-
-                    if (position < spinner_current) {
-                        ma.listView.setAnimation(animationLeft);
-                        ma.gridView.setAnimation(animationLeft);
-                    } else {
-                        ma.listView.setAnimation(animationRight);
-                        ma.gridView.setAnimation(animationRight);
-                    }
-
+                tabFragment.mViewPager.setCurrentItem(position,true);
                 }
             }
         });
@@ -143,82 +123,8 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
-                TabHandler tabHandler = new TabHandler(context, null, null, 1);
-                Tab tab = tabHandler.findTab(position);
-                if (position > spinner_current) {
-
-                    //Toast.makeText(getContext(), "Closed", Toast.LENGTH_SHORT).show();
-                    items.remove(position);
-
-                    int old_tab = tab.getTab();
-                    int a;
-                    for (a = old_tab; a < tabHandler.getTabsCount()-1; a++) {
-
-                        int new_tab = a + 1;
-                        Tab tab1 = tabHandler.findTab(new_tab);
-                        String next_label = tab1.getLabel();
-                        String next_path = tab1.getPath();
-                        tabHandler.updateTab(new Tab(a, next_label, next_path));
-                    }
-                    tabHandler.deleteTab(tabHandler.getTabsCount()-1);
-                    hideSpinnerDropDown(spinner);
-
-                } else if (position < spinner_current) {
-
-                   // Toast.makeText(getContext(), "Closed", Toast.LENGTH_SHORT).show();
-                    items.remove(position);
-                    int old_tab = tab.getTab();
-                    int a;
-                    for (a = old_tab; a < tabHandler.getTabsCount()-1; a++) {
-
-                        int new_tab = a + 1;
-                        Tab tab1 = tabHandler.findTab(new_tab);
-                        String next_label = tab1.getLabel();
-                        String next_path = tab1.getPath();
-                        tabHandler.updateTab(new Tab(a, next_label, next_path));
-                    }
-                    tabHandler.deleteTab(tabHandler.getTabsCount()-1);
-                    int older_spinner_selected = sharedPreferences1.getInt("spinner_selected", 0);
-                    older_spinner_selected--;
-                    sharedPreferences1.edit().putInt("spinner_selected", older_spinner_selected).apply();
-                    hideSpinnerDropDown(spinner);
-
-                } else if (position == spinner_current) {
-
-                    if (tabHandler.getTabsCount() == 1) {
-                        // Toast.makeText(getContext(), "exits the app", Toast.LENGTH_SHORT).show();
-                        ma.home();
-
-                    } else if (tabHandler.getTabsCount()-1 > position) {
-                        items.remove(position);
-                        int old_tab = tab.getTab();
-                        int a;
-                        for (a = old_tab; a < tabHandler.getTabsCount()-1; a++) {
-
-                            int new_tab = a + 1;
-                            Tab tab1 = tabHandler.findTab(new_tab);
-                            String next_label = tab1.getLabel();
-                            String next_path = tab1.getPath();
-                            tabHandler.updateTab(new Tab(a, next_label, next_path));
-                        }
-                        tabHandler.deleteTab(tabHandler.getTabsCount()-1);
-                        Tab tab1 = tabHandler.findTab(spinner_current);
-                        ma.loadlist(new File(tab1.getPath()),false);
-
-                    } else if (tabHandler.getTabsCount()-1 == position) {
-                        items.remove(position);
-                        tabHandler.deleteTab(tabHandler.getTabsCount()-1);
-
-                        int older_spinner_selected = sharedPreferences1.getInt("spinner_selected", 0);
-                        older_spinner_selected--;
-                        sharedPreferences1.edit().putInt("spinner_selected", older_spinner_selected).apply();
-                        Tab tab1 = tabHandler.findTab(older_spinner_selected);
-                        Main ma = ((Main) fragmentTransaction.findFragmentById(R.id.content_frame));
-                        ma.loadlist(new File(tab1.getPath()),false);
-                    }
-                }
+            tabFragment.removeTab();
+                hideSpinnerDropDown(spinner);
             }
         });
         return row;

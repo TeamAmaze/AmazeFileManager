@@ -36,7 +36,8 @@
     </style>
 
     <style name="LightTheme" parent="android:Theme.Holo.Light">
-
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="android:actionOverflowButtonStyle">@style/OverflowActionMode</item>
         <item name="android:actionModeBackground">@drawable/action_bar</item>
         <item name="android:actionModeSplitBackground">@drawable/action_bar</item>
@@ -44,8 +45,12 @@
         <item name="android:windowTranslucentStatus">true</item>
         <!--<item name="android:dropDownListViewStyle">@style/spinner_style</item>-->
     </style>
-
-    <style name="secondary_text_appearance">
+    <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">#f3f3f3</item>
+        <item name="android:icon">@null</item>
+        <item name="android:iconPreview">@null</item>
+        <item name="android:title"> </item>
+    </style>    <style name="secondary_text_appearance">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">#99000000</item>
         <item name="android:textStyle">normal</item>

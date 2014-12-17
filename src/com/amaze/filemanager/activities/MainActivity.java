@@ -57,6 +57,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -132,6 +133,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     public ArrayList<String> list;
     public int theme1;
     boolean rootmode,aBoolean;
+    public Spinner tabsSpinner;
     public boolean mRingtonePickerIntent = false,restart=false;
     /**
      * Called when the activity is first created.
@@ -174,6 +176,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         ImageView overflow = ((ImageView)findViewById(R.id.action_overflow));
 
        showPopup(overflow);
+        tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
         title = (TextView) findViewById(R.id.title);
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         paste = (ImageButton) findViewById(R.id.paste);
@@ -339,9 +342,15 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 }
             }
         });
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the sliding drawer and the action bar app icon
-if(select!=null && select<list.size()-2){title.setText(R.string.app_name);}
+        if (select == 0) {
+
+            title.setVisibility(View.GONE);
+            tabsSpinner.setVisibility(View.VISIBLE);
+        } else {
+
+            title.setVisibility(View.VISIBLE);
+            tabsSpinner.setVisibility(View.GONE);
+        }
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
@@ -1108,12 +1117,12 @@ if(tabFragment.getTab().current.equals(path))return true; return false;
     return tabFragment;}
     public void updateActionButtons(){
         TabFragment tabFragment=getFragment();
-        String name=tabFragment.getTab().getClass().getName();
+        String name=tabFragment.getTab1().getClass().getName();
         if(name.contains("Main"))
         {invalidatePasteButton();
             findViewById(R.id.search).setVisibility(View.VISIBLE);
             findViewById(R.id.action_overflow).setVisibility(View.VISIBLE);
-        }else {findViewById(R.id.action_overflow).setVisibility(View.GONE);
+        }else {findViewById(R.id.search).setVisibility(View.GONE);
             findViewById(R.id.action_overflow).setVisibility(View.GONE);
             paste.setVisibility(View.GONE);}
     }public void initiatebbar(){
@@ -1125,7 +1134,7 @@ if(tabFragment.getTab().current.equals(path))return true; return false;
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment fragment=getFragment().getTab();
+                Fragment fragment=getFragment().getTab1();
                 if(fragment.getClass().getName().contains("Main")){
                 Main main=(Main)fragment;
                     main.bbar(main.current);
@@ -1137,7 +1146,7 @@ if(tabFragment.getTab().current.equals(path))return true; return false;
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment fragment=getFragment().getTab();
+                Fragment fragment=getFragment().getTab1();
                 if(fragment.getClass().getName().contains("Main")){
                     Main main=(Main)fragment;
                     main.bbar(main.current);
@@ -1147,5 +1156,8 @@ if(tabFragment.getTab().current.equals(path))return true; return false;
              }
         });
 
+    }
+    public void updatespinner(){
+        getFragment().updateSpinner();
     }
     }

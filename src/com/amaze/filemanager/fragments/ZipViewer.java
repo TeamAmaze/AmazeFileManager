@@ -94,7 +94,6 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
         getActivity().findViewById(R.id.search).setVisibility(View.INVISIBLE);
         getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
-        getActivity().findViewById(R.id.title).setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.pathbar).setOnClickListener(null);
         ((TextView)getActivity().findViewById(R.id.pathname)).setText("");
         getActivity().findViewById(R.id.fullpath).setOnClickListener(null);

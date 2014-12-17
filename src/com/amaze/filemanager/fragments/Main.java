@@ -494,6 +494,7 @@ public class Main extends android.support.v4.app.Fragment {
                         }
                     }
                     floatingActionButton.show();
+                    mainActivity.updatespinner();
                     if (!shouldbbar) {
                         shouldbbar = true;
                         if (mainActivity.shouldbbar(current)) {
@@ -908,9 +909,9 @@ public class Main extends android.support.v4.app.Fragment {
     };
     public void updatePath(String text){
         File f=new File(text);
-        TextView textView = (TextView)pathbar.findViewById(R.id.pathname);
         String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
         String free = utils.readableFileSize(f.getFreeSpace());
+        TextView textView = (TextView)pathbar.findViewById(R.id.pathname);
         textView.setText(res.getString(R.string.used)+" " + used +" "+ res.getString(R.string.free)+" " + free);
 
         TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
@@ -928,7 +929,6 @@ public class Main extends android.support.v4.app.Fragment {
     public void bbar(String text) {
         try {
             buttons.removeAllViews();
-            //Drawable bg=getResources().getDrawable(R.drawable.listitem1);
             Drawable arrow=getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
             Bundle b = utils.getPaths(text, getActivity());
             ArrayList<String> names = b.getStringArrayList("names");

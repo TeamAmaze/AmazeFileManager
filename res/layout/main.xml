@@ -53,7 +53,6 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:visibility="visible"/>
 
-
     <ImageButton
         android:background="@drawable/listitem1"
         android:layout_alignParentRight="true"
@@ -96,7 +95,19 @@
         wheel:spinSpeed="1.0"
         android:id="@+id/progressBar"
         />
-    </RelativeLayout>
+    <Spinner
+        android:layout_toRightOf="@id/drawer_buttton"
+        android:layout_toLeftOf="@id/paste"
+        android:id="@+id/tab_spinner"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:background="@drawable/item_backgrund"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:visibility="gone"></Spinner>
+
+</RelativeLayout>
 <FrameLayout
     android:id="@+id/buttonbarframe"
     android:layout_below="@id/action_bar"
