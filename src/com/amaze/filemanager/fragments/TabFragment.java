@@ -254,6 +254,13 @@ public void onDestroyView(){
 
         mViewPager.setOffscreenPageLimit(fragments.size()+1);
     }
+    public void removeTabFromBack(int i){
+        fragments.remove(i);
+            mSectionsPagerAdapter.notifyDataSetChanged();
+        updateSpinner();
+        mViewPager.setOffscreenPageLimit(fragments.size()+1);
+        updatepaths();
+    }
     public void removeTab(){
         int i=mViewPager.getCurrentItem();
         if(i>0) {
@@ -267,6 +274,7 @@ public void onDestroyView(){
             mSectionsPagerAdapter.notifyDataSetChanged();
         }updateSpinner();
         mViewPager.setOffscreenPageLimit(fragments.size()+1);
+        updatepaths();
     }
     public void addZipViewerTab(String text) {
         android.support.v4.app.Fragment main = new ZipViewer();

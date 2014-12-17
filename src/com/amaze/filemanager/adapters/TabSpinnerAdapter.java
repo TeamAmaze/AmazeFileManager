@@ -123,7 +123,8 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            tabFragment.removeTab();
+           if(position==tabFragment.mViewPager.getCurrentItem()) tabFragment.removeTab();
+                else tabFragment.removeTabFromBack(position);
                 hideSpinnerDropDown(spinner);
             }
         });
