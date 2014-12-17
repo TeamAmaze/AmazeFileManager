@@ -55,7 +55,47 @@ public class RootHelper
 
         return cc.toString();
     }
+    public static ArrayList<String> runAndWait1(String cmd,boolean root)
+    {
+        final ArrayList<String> output=new ArrayList<String>();
+Command cc=new Command(1,cmd) {
+    @Override
+    public void commandOutput(int i, String s) {
+        output.add(s);
+    }
 
+    @Override
+    public void commandTerminated(int i, String s) {
+    if(s!=null && s.trim().length()!=0){
+        System.out.println(s);
+    }
+    }
+
+    @Override
+    public void commandCompleted(int i, int i2) {
+
+    }
+};
+        try
+        {if(root)
+            Shell.runRootCommand(cc);
+        else
+            Shell.runCommand(cc);
+        }
+        catch (Exception e)
+        {
+            //       Logger.errorST("Exception when trying to run shell command", e);
+
+            return null;
+        }
+
+        if (!waitForCommand(cc))
+        {
+            return null;
+        }
+
+        return output;
+    }
     private static boolean waitForCommand(Command cmd)
     {
         while (!cmd.isFinished())
@@ -122,13 +162,13 @@ public class RootHelper
         if(showHidden)p="a";
         Futils futils=new Futils();
         ArrayList<String[]> a=new ArrayList<String[]>();
-        String ls="";
+        ArrayList<String> ls=new ArrayList<String>();;
 
         if(futils.canListFiles(new File(path))){
 
-            ls = runAndWait("ls -l"+p+" " + cpath,false);}
+            ls = runAndWait1("ls -l"+p+" " + cpath,false);}
 
-        else if(root){ls = runAndWait("ls -l"+p+" " + cpath,true);}
+        else if(root){ls = runAndWait1("ls -l"+p+" " + cpath,true);}
 
         else{return new ArrayList<String[]>();}
 
@@ -137,15 +177,13 @@ public class RootHelper
             // Logger.errorST("Error: Could not get list of files in directory: " + path);
             return getFilesList(path,showHidden);
         }
-        if (ls.equals("\n") || ls.equals(""))
+        if (ls ==null || ls.size()==0)
 
         {
             return getFilesList(path,showHidden);
         }
         else {
-            List<String> files = Arrays.asList(ls.split("\n"));
-
-            for (String file : files) {
+            for (String file : ls) {
                 if(!file.contains("Permissioon denied"))
                 {
                     try {

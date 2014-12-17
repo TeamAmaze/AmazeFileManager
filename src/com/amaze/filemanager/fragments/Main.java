@@ -915,6 +915,7 @@ public class Main extends android.support.v4.app.Fragment {
 
         TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
         bapath.setText(f.getPath());
+        bapath.setAllCaps(true);
         scroll.post(new Runnable() {
             @Override
             public void run() {
