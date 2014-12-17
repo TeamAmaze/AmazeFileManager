@@ -48,16 +48,18 @@ public class SearchTask extends AsyncTask<Bundle, String, ArrayList<String[]>> {
     Main tab;
     TextView textView;
 Futils futils=new Futils();
+    String searching="";
     public SearchTask(MainActivity m, Main tab) {
         this.m = m;
         this.tab = tab;
+        searching=futils.getString(m,R.string.searching);
     }
 
     @Override
     public void onPreExecute() {
         a = new MaterialDialog.Builder(m);
-        a.title(futils.getString(tab.getActivity(), R.string.searching));
-        a.positiveText(futils.getString(tab.getActivity(), R.string.cancel));
+        a.title( R.string.searching);
+        a.positiveText( R.string.cancel);
         a.positiveColor(Color.parseColor(m.skin));
         if(m.theme1==1)a.theme(Theme.DARK);
         a.callback(new MaterialDialog.Callback() {
@@ -76,6 +78,7 @@ Futils futils=new Futils();
         textView=(TextView)v.findViewById(R.id.title);
         ((ProgressWheel)v.findViewById(R.id.progressBar)).setBarColor(Color.parseColor(m.skin));
         a.customView(v);
+        a.cancelable(false);
         b=a.build();
         b.show();
 
@@ -84,7 +87,7 @@ Futils futils=new Futils();
     @Override
     public void onProgressUpdate(String... val) {
         if (a != null) {
-           textView.setText(futils.getString(tab.getActivity(), R.string.searching)+" " + val[0]);
+           textView.setText(searching+" " + val[0]);
         }
 
     }
