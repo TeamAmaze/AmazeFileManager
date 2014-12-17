@@ -239,5 +239,25 @@
     <string name="license">Licences Open Source</string>
     <string name="feedback">Envoyer votre avis</string>
     <string name="hiddenfiles">Masquer des fichiers</string>
+    <string name="type">Type</string>
+    <string name="typeDesc">Type (Desc)</string>
     <string name="addshortcut">Ajouter un raccourci </string>
+    <string name="rootdirectory">Racine</string>
+    <string name="new_string">Nouveau</string>
+    <string name="setringtone">Définir comme sonnerie</string>
+    <string name="copy_path">Copier emplacement</string>
+    <string name="unsavedchanges">Modifications annulées</string>
+    <string name="unsavedchangesdesc">Vous avez annulé les changements, voulez-vous les sauvegarder avant de quitter ?</string>
+    <string name="saving">Sauvegarde</string>
+    <string name="packageinstaller">Package d\'installation</string>
+    <string name="view">Affichage</string>
+    <string name="install">Installer</string>
+    <string name="archive">Archiver</string>
+    <string name="archtext">Ceci est une archive. Quelle action souhaitez-vous faire ?</string>
+    <string name="pitext">Ceci est un package d\'installation. Quelle action souhaitez-vous faire ?</string>
+    <string name="xda_title">XDA</string>
+    <string name="xda_summary">Questions/Réponses, Support</string>
+    <string name="invalid_dir">Emplacement invalide</string>
+    <string name="circularimages">Utiliser des icônes circulaires pour les images et vidéos</string>
+    <string name="circularicons">Utiliser des icônes circulaires</string>
 </resources>
