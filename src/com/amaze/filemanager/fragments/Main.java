@@ -154,9 +154,12 @@ public class Main extends android.support.v4.app.Fragment {
     private FloatingActionButton floatingActionButton;
     String Intentpath;
     boolean shouldbbar=false;
+    String tag;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+ //       tag=getArguments().getString("tag");
+        System.out.println(tag+"created");
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         skin = Sp.getString("skin_color", "#5677fc");
         sh = new Shortcuts(getActivity());
@@ -192,7 +195,7 @@ public class Main extends android.support.v4.app.Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        System.out.println(tag+"viewcreated");
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
@@ -227,6 +230,7 @@ public class Main extends android.support.v4.app.Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
+        System.out.println(tag+"activitycreated");
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
 
         /*Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
@@ -1082,7 +1086,7 @@ public class Main extends android.support.v4.app.Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
+        System.out.println(tag+"resumed");
         floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         floatingActionButton.attachToListView(listView);
         floatingActionButton.attachToListView(gridView);
@@ -1098,17 +1102,24 @@ public class Main extends android.support.v4.app.Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        System.out.println(tag+"paused");
         (getActivity()).unregisterReceiver(receiver2);
     }
     @Override
     public void onStop() {
         super.onStop();
-
+        System.out.println(tag+"stopped");
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        System.out.println(tag+"destroyview");
+    }
+    @Override
     public void onStart() {
         super.onStart();
+        System.out.println(tag+"start");
         history = new HistoryManager(getActivity(), "Table1");
     }
 
@@ -1142,7 +1153,8 @@ public class Main extends android.support.v4.app.Fragment {
     public void onDestroy() {
         super.onDestroy();
         if(history!=null)
-            history.end();
+            history.end();    System.out.println(tag+"destroy");
+
         //hidden.end();
 
     }

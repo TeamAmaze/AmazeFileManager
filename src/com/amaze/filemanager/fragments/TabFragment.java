@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -19,6 +20,8 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.TabSpinnerAdapter;
+import com.amaze.filemanager.database.Tab;
+import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.amaze.filemanager.utils.ZipObj;
@@ -79,7 +82,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 try {
                     updateSpinner();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                   // e.printStackTrace();
                 }
                 String name=fragments.get(p1).getClass().getName();
                 if(name.contains("Main")){
@@ -91,14 +94,14 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
                         ((TextView) STRIP.getChildAt(p1)).setText(ma.current);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                 //       e.printStackTrace();
                     }
                 }}
                 else if(name.contains("ZipViewer")){ZipViewer ma = ((ZipViewer) fragments.get(p1));
                     try {
                         ma.bbar();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                   //     e.printStackTrace();
                     }
                 }
             }
@@ -110,9 +113,11 @@ public class TabFragment extends android.support.v4.app.Fragment {
         if (savedInstanceState == null) {
             mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
                     getActivity().getSupportFragmentManager());
-            int i=Sp.getInt("tabcount",0);
+            TabHandler tabHandler=new TabHandler(getActivity(),null,null,1);
+            List<Tab> tabs1=tabHandler.getAllTabs();
+            int i=tabs1.size();
             if(i==0){addTab(path0);addTab(path1);}
-            else {for(int j=0;j<i;j++){addTab(Sp.getString("tab"+j,""));}}
+            else {for(Tab tab:tabs1){addTab(tab.getPath());}}
 
             if(path!=null && path.trim().length()!=0)
             {addTab1(path);
@@ -149,12 +154,14 @@ public void onDestroyView(){
         updatepaths();
     }
     public void updatepaths(){
-        int i=0;for(Fragment fragment:fragments){
+        TabHandler
+                tabHandler = new TabHandler(getActivity(), null, null, 1);
+        int i=0;
+        tabHandler.clear();for(Fragment fragment:fragments){
             if(fragment.getClass().getName().contains("Main")){
-                Sp.edit().putString("tab"+i,  ((Main)fragment).current).apply();
-                i++;
-            }
-        }Sp.edit().putInt("tabcount",i).apply();
+                Main m=(Main)fragment;
+                tabHandler.addTab(new Tab(i,m.current,m.current));i++;
+            }}
         Sp.edit().putInt("currenttab",currenttab).apply();
     }
     @Override
@@ -182,29 +189,34 @@ public void onDestroyView(){
 
         @Override
         public CharSequence getPageTitle(int position) {
-            String name=fragments.get(position).getClass().getName();
-            if(name.contains("Main")){
-            Main ma = ((Main) fragments.get(position));
-            if (ma.results) {
-                return utils.getString(getActivity(), R.string.searchresults);
-            } else {
-                if (ma.current.equals("/")) {
-                    return "Root";
+            try {
+                String name=fragments.get(position).getClass().getName();
+                if(name.contains("Main")){
+                Main ma = ((Main) fragments.get(position));
+                if (ma.results) {
+                    return utils.getString(getActivity(), R.string.searchresults);
                 } else {
-                    return new File(ma.current).getName();
-                }
-            }}else if(name.contains("ZipViewer")) {
-                ZipViewer ma = ((ZipViewer) fragments.get(position));
+                    if (ma.current.equals("/")) {
+                        return "Root";
+                    } else {
+                        return new File(ma.current).getName();
+                    }
+                }}else if(name.contains("ZipViewer")) {
+                    ZipViewer ma = ((ZipViewer) fragments.get(position));
 
-                try {
-                    return ma.f.getName();
-                } catch (Exception e) {
-                    return "ZipViewer";
-                  //  e.printStackTrace();
-                }
+                    try {
+                        return ma.f.getName();
+                    } catch (Exception e) {
+                        return "ZipViewer";
+                      //  e.printStackTrace();
+                    }
 
+                }
+                return fragments.get(position).getClass().getName();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "";
             }
-            return fragments.get(position).getClass().getName();
         }
 
         public int getCount() {
@@ -246,6 +258,10 @@ public void onDestroyView(){
             Bundle b = new Bundle();
             b.putString("path", text);
             main.setArguments(b);
+        }else {
+            Bundle b = new Bundle();
+            b.putString("tag", mViewPager.getCurrentItem()+1+"");
+            main.setArguments(b);
         }
         fragments.add(main);
         tabs.add(main.getClass().getName());
@@ -257,15 +273,17 @@ public void onDestroyView(){
 
     public void removeTab(){
         int i=mViewPager.getCurrentItem();
+        mSectionsPagerAdapter=null;
+        mViewPager.setAdapter(null);
+        fragments.remove(i);
+        mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
+                getActivity().getSupportFragmentManager());
+        mViewPager.setAdapter(mSectionsPagerAdapter);
         if(i>0) {
             mViewPager.setCurrentItem(i-1,true);
-            fragments.remove(i);
-        mSectionsPagerAdapter.notifyDataSetChanged();
-        }
-       else if(i==0 && fragments.size()>1){
+          }
+       else if(i==0 && fragments.size()>2){
             mViewPager.setCurrentItem(i+1,true);
-            fragments.remove(i);
-            mSectionsPagerAdapter.notifyDataSetChanged();
         }updateSpinner();
         mViewPager.setOffscreenPageLimit(fragments.size()+1);
         updatepaths();

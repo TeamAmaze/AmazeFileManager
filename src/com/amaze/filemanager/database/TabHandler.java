@@ -22,6 +22,7 @@ package com.amaze.filemanager.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -71,7 +72,28 @@ public class TabHandler extends SQLiteOpenHelper {
         sqLiteDatabase.insert(TABLE_TAB, null, contentValues);
         sqLiteDatabase.close();
     }
+ public void clear(){
+     try {
+         boolean result = false;
+         String query = "Select * FROM " + TABLE_TAB ;
+         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+         Tab tab = new Tab();
 
+         while (cursor.moveToNext()) {
+             tab.setID(Integer.parseInt(cursor.getString(0)));
+             sqLiteDatabase.delete(TABLE_TAB, COLUMN_ID + " = ?",
+                     new String[]{String.valueOf(tab.getID())});
+             result = true;
+         }
+         cursor.close();
+         sqLiteDatabase.close();
+     } catch (NumberFormatException e) {
+         e.printStackTrace();
+     }
+
+
+ }
     public Tab findTab(int tabNo) {
         String query = "Select * FROM " + TABLE_TAB + " WHERE " + COLUMN_TAB_NO + "= \"" + tabNo + "\"";
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
