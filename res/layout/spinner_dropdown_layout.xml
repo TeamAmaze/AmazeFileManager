@@ -48,7 +48,7 @@
         android:id="@+id/spinnerButton"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:padding="5dp"
+        android:padding="10dp"
         style="?android:borderlessButtonStyle"
         android:src="@drawable/ic_action_cancel"
         android:layout_alignParentRight="true"/>

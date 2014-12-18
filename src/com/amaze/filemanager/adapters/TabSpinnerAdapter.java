@@ -139,7 +139,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
             ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
             imageButton.setColorFilter(colorMatrixColorFilter);
             textView.setTextColor(Color.parseColor(skin));
-            textView.setTypeface(null, Typeface.BOLD);
+       //     textView.setTypeface(null, Typeface.BOLD);
 
         }else imageButton.setVisibility(View.GONE);
 
