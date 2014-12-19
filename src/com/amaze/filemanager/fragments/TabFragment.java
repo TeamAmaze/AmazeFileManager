@@ -313,9 +313,8 @@ public void onDestroyView(){
         mViewPager.setCurrentItem(fragments.size()-1,true);
 
     }
-    public Main getTab() {
-        Main man = ((Main) fragments.get(mViewPager.getCurrentItem()));
-        return man;
+    public Fragment getTab() {
+        return fragments.get(mViewPager.getCurrentItem());
     }
     public Fragment getTab1() {
         Fragment man = ( fragments.get(mViewPager.getCurrentItem()));

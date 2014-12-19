@@ -184,7 +184,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             @Override
             public void onClick(View view) {
 
-                Main ma = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+                Main ma = (Main)((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
                 String path = ma.current;
                 ArrayList<String> arrayList = new ArrayList<String>();
                 if (COPY_PATH != null) {
@@ -485,7 +485,8 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
 
                         zipViewer.goBack();
                     } else tabFragment.removeTab();
-                }}catch (ClassCastException e){goToMain();}
+                }}catch (ClassCastException e){goToMain();
+e.printStackTrace();}
         }
         else {
             goToMain();
@@ -627,7 +628,7 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
 
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-            Main ma=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+            Main ma=(Main)((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
                 switch (item.getItemId()) {
                     case R.id.home:
                         ma.home();
@@ -711,7 +712,7 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
     }
     public void add(int pos) {
         final MainActivity mainActivity=this;
-        final Main ma=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+        final Main ma=(Main)((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
         switch (pos) {
 
             case 0:
@@ -810,7 +811,7 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
 
 
     public void search() {
-        final Main ma=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+        final Main ma=(Main)((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
         final String fpath = ma.current;
         final MainActivity mainActivity=this;
         //Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.searchpath) + fpath, Toast.LENGTH_LONG).show();
@@ -1105,7 +1106,7 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
     }
     public boolean shouldbbar(String path){
         TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-        if(tabFragment.getTab().current.equals(path))
+        if(((Main)tabFragment.getTab()).current.equals(path))
             return true;
         return false;
     }

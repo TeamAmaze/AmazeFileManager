@@ -941,7 +941,7 @@ public class Main extends android.support.v4.app.Fragment {
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            mainActivity.getFragment().getTab().loadlist(new File("/"), false);
+                            ((Main) mainActivity.getFragment().getTab()).loadlist(new File("/"), false);
                             timer.cancel();
                             timer.start();
                         }
@@ -957,7 +957,7 @@ public class Main extends android.support.v4.app.Fragment {
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            mainActivity.getFragment().getTab().loadlist(new File("/"), false);
+                            ((Main)   mainActivity.getFragment().getTab()).loadlist(new File("/"), false);
                             timer.cancel();
                             timer.start();
                         }
@@ -974,7 +974,7 @@ public class Main extends android.support.v4.app.Fragment {
                     button.setOnClickListener(new Button.OnClickListener() {
 
                         public void onClick(View p1) {
-                            mainActivity.getFragment().getTab().loadlist(new File("/"), false);
+                            ((Main) mainActivity.getFragment().getTab()).loadlist(new File("/"), false);
                             timer.cancel();
                             timer.start();
                         }
