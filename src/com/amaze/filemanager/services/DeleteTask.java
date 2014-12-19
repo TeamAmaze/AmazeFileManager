@@ -21,7 +21,10 @@ package com.amaze.filemanager.services;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -39,59 +42,72 @@ public class DeleteTask extends AsyncTask<ArrayList<File>, String, Boolean> {
 
     ArrayList<File> files;
     ContentResolver contentResolver;
-    Main m;Context cd;
+    Context cd;
     Futils utils = new Futils();
-public  DeleteTask(ContentResolver c,Main m,Context cd){this.contentResolver=c;this.m=m;this.cd=cd;}
+    boolean rootMode;
+
+    public DeleteTask(ContentResolver c, Context cd) {
+        this.contentResolver = c;
+        this.cd = cd;
+        rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean("rootmode", false);
+    }
 
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
-        if(m!=null)
-        Toast.makeText(m.getActivity(),values[0],Toast.LENGTH_LONG).show();
+        Toast.makeText(cd, values[0], Toast.LENGTH_LONG).show();
     }
 
     protected Boolean doInBackground(ArrayList<File>... p1) {
-            files=p1[0];
+        files = p1[0];
         boolean b = true;
-            if(files.get(0).getParentFile().canWrite()) {
+        if (files.get(0).getParentFile().canWrite()) {
 
-                for (int i = 0; i < files.size(); i++) {
-                    boolean c = utils.deletefiles(files.get(i));
-                    if (!c) {
-                        b = false;
-                    }       }
-                if(!b){
-                        for(File f:files){
-                            MediaFile mediaFile=new MediaFile(cd,f);
-                            try {
-                                boolean delete=mediaFile.delete();
-                                if(!delete){b=false;}
-                            } catch (IOException e) {
-                                b=false;
-                                publishProgress(utils.getString(cd, R.string.error));
-                            }
-                        }}
+            for (int i = 0; i < files.size(); i++) {
+                boolean c = utils.deletefiles(files.get(i));
+                if (!c) {
+                    b = false;
                 }
-
-            else if(m.rootMode){for(File f:files){
-                RootTools.deleteFileOrDirectory(f.getPath(), true);}
-              return true;
-
-
             }
-        return b;
-        }
+            if (!b && Build.VERSION.SDK_INT >= 19) {
+                for (File f : files) {
+                    MediaFile mediaFile = new MediaFile(cd, f);
+                    try {
+                        boolean delete = mediaFile.delete();
+                        if (!delete) {
+                            b = false;
+                        }
+                    } catch (IOException e) {
+                        b = false;
+                        publishProgress(utils.getString(cd, R.string.error));
+                    }
+                }
+            } else if (!b && rootMode) for (File f : files) {
+                RootTools.deleteFileOrDirectory(f.getPath(), true);
+                return true;
+            }
+        } else if (rootMode) {
+            for (File f : files) {
+                RootTools.deleteFileOrDirectory(f.getPath(), true);
+            }
 
-        @Override
-        public void onPostExecute(Boolean b) {
-            if(m!=null) {
-                m.updateList();
-                utils.scanFile(files.get(0).getParent(), m.getActivity());
-                if (!b) {
-                    Toast.makeText(m.getActivity(), utils.getString(cd, R.string.error), Toast.LENGTH_LONG).show();
-                } else Toast.makeText(m.getActivity(), utils.getString(cd, R.string.done), Toast.LENGTH_LONG).show();
-            }  else utils.scanFile(files.get(0).getParent(), cd);
+            return true;
+
+
         }
+        return b;
     }
+
+    @Override
+    public void onPostExecute(Boolean b) {
+        Intent intent = new Intent("loadlist");
+        cd.sendBroadcast(intent);
+        utils.scanFile(files.get(0).getParent(), cd);
+        if (!b) {
+            Toast.makeText(cd, utils.getString(cd, R.string.error), Toast.LENGTH_LONG).show();
+        } else Toast.makeText(cd, utils.getString(cd, R.string.done), Toast.LENGTH_LONG).show();
+    }
+}
+
 
 

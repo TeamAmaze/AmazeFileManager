@@ -187,7 +187,7 @@ public class Futils {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_LONG).show();
-                new DeleteTask(b.getActivity().getContentResolver(), b, b.getActivity()).execute(todelete);
+                new DeleteTask(b.getActivity().getContentResolver(), b.getActivity()).execute(todelete);
             }
 
             @Override
@@ -408,46 +408,17 @@ public class Futils {
         b.putStringArrayList("paths", paths);
         return b;
     }
+    public boolean deletedirectory(File f){
+        boolean b=true;
+        for(File file:f.listFiles()){
+            boolean c;
+            if(file.isDirectory()){c=deletedirectory(file);}
+            else {c=file.delete();}
+            if(!c)b=false;
 
-    public static void delete(File file) throws IOException {
-
-        if (file.isDirectory()) {
-
-            // directory is empty, then delete it
-            if (file.list().length == 0) {
-
-                file.delete();
-                System.out.println("Directory is deleted : "
-                        + file.getAbsolutePath());
-
-            } else {
-
-                // list all the directory contents
-                String files[] = file.list();
-
-                for (String temp : files) {
-                    // construct the file structure
-                    File fileDelete = new File(file, temp);
-
-                    // recursive delete
-                    delete(fileDelete);
-                }
-
-                // check the directory again, if empty then delete it
-                if (file.list().length == 0) {
-                    file.delete();
-                    System.out.println("Directory is deleted : "
-                            + file.getAbsolutePath());
-                }
-            }
-
-        } else {
-            // if file, then delete it
-            file.delete();
-            System.out.println("File is deleted : " + file.getAbsolutePath());
-        }
+        }if(b)b=f.delete();
+        return b;
     }
-
     public boolean deletefiles(File f) {
 
         // make sure directory exists
@@ -459,10 +430,12 @@ public class Futils {
         } else {
 
             try {
+                if(f.isDirectory())
+                    return deletedirectory(f);
+                    else
+                return f.delete();
 
-                delete(f);
-                return true;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return false;
             }

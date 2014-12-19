@@ -228,7 +228,7 @@ else {
 
         if (files.size()==1) {
 
-            new DeleteTask(getActivity().getContentResolver(), null, getActivity()).execute(files);
+            new DeleteTask(getActivity().getContentResolver(),  getActivity()).execute(files);
         }
     }
 public boolean cangoBack(){

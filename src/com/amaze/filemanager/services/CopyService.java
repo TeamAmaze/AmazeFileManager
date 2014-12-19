@@ -174,7 +174,7 @@ public class CopyService extends Service {
                 }
                 if (move) {
                     boolean b = hash.get(id);
-                    if (b) new DeleteTask(getContentResolver(), null, c).execute(utils.toFileArray(files));
+                    if (b) new DeleteTask(getContentResolver(),  c).execute(utils.toFileArray(files));
                 }
                 Intent intent = new Intent("loadlist");
                 sendBroadcast(intent);
@@ -194,7 +194,7 @@ public class CopyService extends Service {
 
                     @Override
                     public void commandCompleted(int i, int i2) {
-                        if(move){new DeleteTask(getContentResolver(),null,c).execute(utils.toFileArray(files));}
+                        if(move){new DeleteTask(getContentResolver(),c).execute(utils.toFileArray(files));}
                         utils.scanFile(FILE2+"/"+new File(files.get(i)).getName(), c);
                         Intent intent = new Intent("loadlist");
                         sendBroadcast(intent);

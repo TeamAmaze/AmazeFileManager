@@ -84,7 +84,8 @@ public class HiddenAdapter extends ArrayAdapter<File> {
             @Override
             public void onClick(View view) {
             hidden.removePath(items.get(p).getPath());
-            if(items.get(p).isDirectory()){ArrayList<File> a=new ArrayList<File>();a.add(new File(items.get(p).getPath()+"/.nomedia"));new DeleteTask(context.getActivity().getContentResolver(),context,c).execute(a);}
+            if(items.get(p).isDirectory()){ArrayList<File> a=new ArrayList<File>();a.add(new File(items.get(p).getPath()+"/.nomedia"));
+                new DeleteTask(context.getActivity().getContentResolver(),c).execute(a);}
                 items.remove(items.get(p));
                 context.updatehiddenfiles();
                 notifyDataSetChanged();
