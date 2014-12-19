@@ -1123,18 +1123,12 @@ public class Main extends android.support.v4.app.Fragment {
         history = new HistoryManager(getActivity(), "Table1");
     }
 
-    public boolean isDirectory(boolean rootmode,String[] val){
-        if(rootmode)
-            return val[3]=="-1";
-        else
-            return new File(val[0]).isDirectory();
-    }
     public ArrayList<Layoutelements> addTo(ArrayList<String[]> mFile) {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         for (int i = 0; i < mFile.size(); i++) {
             File f=new File(mFile.get(i)[0]);
             if(!hiddenfiles.contains(mFile.get(i)[0])){
-                if (isDirectory(rootMode,mFile.get(i))) {
+                if (isDirectory(mFile.get(i))) {
                     a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f,res,showSize),mFile.get(i)[3],false));
 
                 } else {
@@ -1146,6 +1140,13 @@ public class Main extends android.support.v4.app.Fragment {
             }
         }
         return a;
+    }
+    public boolean isDirectory(String[] path){
+        if(rootMode)
+            if(path[1].length()!=0)return new File(path[0]).isDirectory();
+               else return path[3].equals("-1");
+        else
+            return new File(path[0]).isDirectory();
     }
 
 

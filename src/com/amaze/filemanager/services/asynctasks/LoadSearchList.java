@@ -60,7 +60,7 @@ public class LoadSearchList extends AsyncTask<ArrayList<String[]>, Void, ArrayLi
         try {
             ma.slist = ma.addTo(f);
             Collections.sort(ma.slist,
-                    new FileListSorter(ma.dsort, ma.sortby, ma.asc));
+                    new FileListSorter(ma.dsort, ma.sortby, ma.asc,ma.rootMode));
 
             return ma.slist;
 

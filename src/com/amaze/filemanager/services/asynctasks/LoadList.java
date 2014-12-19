@@ -67,7 +67,7 @@ if(ma.rootMode)
 else
     ma.list = ma.addTo(RootHelper.getFilesList(f.getPath(),ma.showHidden));
             Collections.sort(ma.list,
-                    new FileListSorter(ma.dsort, ma.sortby, ma.asc));
+                    new FileListSorter(ma.dsort, ma.sortby, ma.asc,ma.rootMode));
 
             return ma.list;
 

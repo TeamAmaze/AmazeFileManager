@@ -112,10 +112,12 @@ public class Layoutelements implements Parcelable {
     public String getTitle() {
         return title.toString();
     }
-
+public String getDirectorybool(){return directorybool;}
 public boolean isDirectory(boolean rootmode){
     if(rootmode)
-        return directorybool=="-1";
+    if(hasSymlink()){boolean b=new File(desc).isDirectory();
+     return b;}else
+        return directorybool.equals("-1");
         else
     return new File(getDesc()).isDirectory();
     }

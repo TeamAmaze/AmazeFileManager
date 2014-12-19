@@ -19,6 +19,7 @@
 
 package com.amaze.filemanager.utils;
 
+import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
 import com.stericson.RootTools.execution.CommandCapture;
 import com.stericson.RootTools.execution.Shell;
@@ -55,20 +56,21 @@ public class RootHelper
 
         return cc.toString();
     }
-    public static ArrayList<String> runAndWait1(String cmd,boolean root)
+    public static ArrayList<String> runAndWait1(String cmd, final boolean root)
     {
         final ArrayList<String> output=new ArrayList<String>();
 Command cc=new Command(1,cmd) {
     @Override
     public void commandOutput(int i, String s) {
         output.add(s);
+        System.out.println("output "+root+s);
     }
 
     @Override
     public void commandTerminated(int i, String s) {
-    if(s!=null && s.trim().length()!=0){
-        System.out.println(s);
-    }
+
+        System.out.println("error"+root+s);
+
     }
 
     @Override
@@ -76,16 +78,13 @@ Command cc=new Command(1,cmd) {
 
     }
 };
-        try
-        {if(root)
-            Shell.runRootCommand(cc);
-        else
-            Shell.runCommand(cc);
+        try {
+            RootTools.getShell(root).add(cc);
         }
         catch (Exception e)
         {
             //       Logger.errorST("Exception when trying to run shell command", e);
-
+e.printStackTrace();
             return null;
         }
 
@@ -159,24 +158,11 @@ Command cc=new Command(1,cmd) {
     {
         String cpath=getCommandLineString(path);
         String p="";
-        if(showHidden)p="a";
+        if(showHidden)p="a ";
         Futils futils=new Futils();
         ArrayList<String[]> a=new ArrayList<String[]>();
         ArrayList<String> ls=new ArrayList<String>();;
-
-        if(futils.canListFiles(new File(path))){
-
-            ls = runAndWait1("ls -l"+p+" " + cpath,false);}
-
-        else if(root){ls = runAndWait1("ls -l"+p+" " + cpath,true);}
-
-        else{return new ArrayList<String[]>();}
-
-        if (ls == null)
-        {
-            // Logger.errorST("Error: Could not get list of files in directory: " + path);
-            return getFilesList(path,showHidden);
-        }
+        if (root)ls=runAndWait1("ls -l "+p+cpath,root);
         if (ls ==null || ls.size()==0)
 
         {
@@ -184,8 +170,7 @@ Command cc=new Command(1,cmd) {
         }
         else {
             for (String file : ls) {
-                if(!file.contains("Permissioon denied"))
-                {
+
                     try {
                         String[] array=futils.parseName(file);
                         array[0]=path+"/"+array[0];
@@ -193,7 +178,7 @@ Command cc=new Command(1,cmd) {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
+
             }
             return a;
         }

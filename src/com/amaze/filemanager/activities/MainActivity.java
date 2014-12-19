@@ -484,7 +484,7 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
                     if (zipViewer.cangoBack()) {
 
                         zipViewer.goBack();
-                    } else goToMain();
+                    } else tabFragment.removeTab();
                 }}catch (ClassCastException e){goToMain();}
         }
         else {

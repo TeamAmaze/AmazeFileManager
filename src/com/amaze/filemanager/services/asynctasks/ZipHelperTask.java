@@ -59,15 +59,16 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
                 File file = new File(entry.getName());
                     if(dir==null || dir.trim().length()==0){
                         String y=entry.getName();
-                        if(entry.getName().startsWith("/"))
+                        if(y.startsWith("/"))
                             y=y.substring(1,y.length());
                         if (file.getParent() == null) {
-                            elements.add(new ZipObj(entry.getEntry(), entry.isDirectory()));
+                            if(!strings.contains(y)){
+                                elements.add(new ZipObj(new ZipEntry(y), entry.isDirectory()));
                             strings.add(y);
-                        } else {
+                        }} else {
                             String path=y.substring(0, y.indexOf("/") + 1);
                             if(!strings.contains(path)){
-                                ZipObj zipObj = new ZipObj(new ZipEntry(y.substring(0, y.indexOf("/") + 1)), true);
+                                ZipObj zipObj = new ZipObj(new ZipEntry(path), true);
                                 strings.add(path);
                                 elements.add(zipObj);}
 
@@ -77,11 +78,12 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
                         String y=entry.getName();
                         if(entry.getName().startsWith("/"))
                             y=y.substring(1,y.length());
-                    //Log.d("Test", dir);
+
                     if (file.getParent()!=null && (file.getParent().equals(dir) || file.getParent().equals("/"+dir))) {
-                        elements.add(new ZipObj(entry.getEntry(),entry.isDirectory()));
-                        strings.add(entry.getName());
-                    }else {
+                    if(!strings.contains(y)) {
+                        elements.add(new ZipObj(new ZipEntry(y), entry.isDirectory()));
+                        strings.add(y);
+                    }}else {
                         if(y.startsWith(dir+"/") && y.length()>dir.length()+1){
                         String path1=y.substring(dir.length()+1,y.length());
 
@@ -93,30 +95,10 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
                             //System.out.println(path);
                             elements.add(zipObj);}}}
 
-                    } }/*else if (counter==2) {
-                    if (file.getParent()!=null && file.getParent().equals(dir)) {
-
-                        elements.add(entry);
-                        zipViewer.results = true;
-                    } else if (file.getParent()==null) {
-                        if (dir==null) {
-
-                            elements.add(entry);
-                            zipViewer.results = false;
-                        }
-                    }
-                }
-            }
-        if(counter ==0 && elements.size()==0 && i!=0){
-            for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
-                ZipEntry entry = (ZipEntry) e.nextElement();
-                elements.add(entry);
-            }
-            }
-        */}catch (Exception e){e.printStackTrace();}
+                    } }}catch (Exception e){e.printStackTrace();}
 
                 Collections.sort(elements, new FileListSorter());
-        if(dir!=null && dir.trim().length()!=0)
+        if(zipViewer.gobackitem && dir!=null && dir.trim().length()!=0)
         elements.add(0,new ZipObj(null,true));
                 zipViewer.elements = elements;
                 return elements;

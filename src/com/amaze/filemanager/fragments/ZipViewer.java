@@ -67,7 +67,7 @@ public class ZipViewer extends ListFragment {
     public Futils utils=new Futils();
     public String skin,year;public ZipAdapter zipAdapter;
     public ActionMode mActionMode;public int skinselection;
-    public boolean coloriseIcons,showSize,showLastModified;
+    public boolean coloriseIcons,showSize,showLastModified,gobackitem;
 SharedPreferences Sp;
     ZipViewer zipViewer=this;
     public ArrayList<ZipObj> wholelist=new ArrayList<ZipObj>();
@@ -79,6 +79,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         s = getArguments().getString("path");
         f = new File(s);
  Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        gobackitem=Sp.getBoolean("goBack_checkbox", true);
         coloriseIcons=Sp.getBoolean("coloriseIcons",false);
         Calendar calendar = Calendar.getInstance();
         showSize=Sp.getBoolean("showFileSize",false);
