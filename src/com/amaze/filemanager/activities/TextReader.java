@@ -21,6 +21,7 @@ package com.amaze.filemanager.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -69,11 +70,21 @@ public class TextReader extends Activity {
     boolean mModified=false;
     String mOriginal="";
     private Timer mTimer;
+    private Intent intent;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.search);
+        intent = getIntent();
+        if (intent.getAction() != null) {
+
+            Uri uri = getIntent().getData();
+            path = uri.getPath();
+        } else {
+
+            path = this.getIntent().getStringExtra("path");
+        }
         ma = (EditText) findViewById(R.id.fname);
         p = (ProgressBar) findViewById(R.id.pbar);
         ma.setVisibility(View.VISIBLE);
@@ -90,7 +101,6 @@ public class TextReader extends Activity {
         }
         rootMode = PreferenceManager.getDefaultSharedPreferences(c)
         .getBoolean("rootmode", false);
-        path = this.getIntent().getStringExtra("path");
         if (path != null) {
             file=new File(path);
             //Toast.makeText(this, "" + path, Toast.LENGTH_SHORT).show();
