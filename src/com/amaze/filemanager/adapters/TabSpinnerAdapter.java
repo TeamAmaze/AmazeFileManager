@@ -150,10 +150,9 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
 
                 hideSpinnerDropDown(spinner);
 
-                if (position == tabFragment.mViewPager.getCurrentItem()) {
-                }
-                else {
-                tabFragment.mViewPager.setCurrentItem(position,true);
+                if (position != tabFragment.mViewPager.getCurrentItem()) {
+
+                    tabFragment.mViewPager.setCurrentItem(position,true);
                 }
             }
         });
@@ -161,8 +160,12 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-           if(position==tabFragment.mViewPager.getCurrentItem()) tabFragment.removeTab();
-                else Toast.makeText(tabFragment.getActivity(),R.string.not_allowed,Toast.LENGTH_SHORT).show();
+
+                if(position==tabFragment.mViewPager.getCurrentItem() && items.size()!=1) {
+                    tabFragment.removeTab();
+                } else {
+                    Toast.makeText(tabFragment.getActivity(), R.string.not_allowed, Toast.LENGTH_SHORT).show();
+                }
                 hideSpinnerDropDown(spinner);
             }
         });
@@ -177,16 +180,5 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void restartPC(final Activity activity) {
-        if (activity == null)
-            return;
-        final int enter_anim = android.R.anim.fade_in;
-        final int exit_anim = android.R.anim.fade_out;
-        activity.overridePendingTransition(enter_anim, exit_anim);
-        activity.finish();
-        activity.overridePendingTransition(enter_anim, exit_anim);
-        activity.startActivity(activity.getIntent());
     }
 }

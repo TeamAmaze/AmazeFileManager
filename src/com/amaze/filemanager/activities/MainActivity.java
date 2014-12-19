@@ -803,7 +803,7 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
                 ba2.build().show();
                 break;
             case 2:
-        addTab();
+                addTab();
                 break;
         }
     }
@@ -1101,32 +1101,40 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
     }
     public void updatepager() {
         TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-    tabFragment.mSectionsPagerAdapter.notifyDataSetChanged();
+        tabFragment.mSectionsPagerAdapter.notifyDataSetChanged();
     }
     public boolean shouldbbar(String path){
         TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-if(tabFragment.getTab().current.equals(path))return true; return false;
+        if(tabFragment.getTab().current.equals(path))
+            return true;
+        return false;
     }
-    public void addZipViewTab(String text){        TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+    public void addZipViewTab(String text){
+        TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
         tabFragment.addZipViewerTab(text);
     }
     public void addTab(){
         TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
         tabFragment.addTab1("");
     }
-    public TabFragment getFragment(){    TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
-    return tabFragment;}
+    public TabFragment getFragment(){
+        TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        return tabFragment;
+    }
     public void updateActionButtons(){
         TabFragment tabFragment=getFragment();
         String name=tabFragment.getTab1().getClass().getName();
-        if(name.contains("Main"))
-        {invalidatePasteButton();
+        if(name.contains("Main")) {
+            invalidatePasteButton();
             findViewById(R.id.search).setVisibility(View.VISIBLE);
             findViewById(R.id.action_overflow).setVisibility(View.VISIBLE);
-        }else {findViewById(R.id.search).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.search).setVisibility(View.GONE);
             findViewById(R.id.action_overflow).setVisibility(View.GONE);
-            paste.setVisibility(View.GONE);}
-    }public void initiatebbar(){
+            paste.setVisibility(View.GONE);
+        }
+    }
+    public void initiatebbar() {
         LinearLayout pathbar = (LinearLayout) findViewById(R.id.pathbar);
         TextView textView = (TextView) findViewById(R.id.fullpath);
 
@@ -1153,7 +1161,8 @@ if(tabFragment.getTab().current.equals(path))return true; return false;
                     main.bbar(main.current);
                     main.crossfade();
                     main.timer.cancel();
-                    main.timer.start();}
+                    main.timer.start();
+                }
              }
         });
 
@@ -1161,4 +1170,4 @@ if(tabFragment.getTab().current.equals(path))return true; return false;
     public void updatespinner(){
         getFragment().updateSpinner();
     }
-    }
+}

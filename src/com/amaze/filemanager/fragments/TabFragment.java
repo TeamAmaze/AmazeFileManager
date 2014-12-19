@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,25 +35,27 @@ import java.util.List;
  * Created by Arpit on 15-12-2014.
  */
 public class TabFragment extends android.support.v4.app.Fragment {
-   public  List<Fragment> fragments = new ArrayList<Fragment>();
-    public PagerAdapter mSectionsPagerAdapter;
+
+    public  List<Fragment> fragments = new ArrayList<Fragment>();
+    public ScreenSlidePagerAdapter mSectionsPagerAdapter;
     android.support.v4.view.PagerTitleStrip STRIP;
     Futils utils = new Futils();
-   public ViewPager mViewPager;
+    public ViewPager mViewPager;
     SharedPreferences Sp;
     TabFragment t = this;
     String path = "",path1="",path0="";
     int currenttab;
     MainActivity mainActivity;
     TabSpinnerAdapter tabSpinnerAdapter;
-  public    ArrayList<String> tabs=new ArrayList<String>();
+    public ArrayList<String> tabs=new ArrayList<String>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment,
                 container, false);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-       path0= Sp.getString("tab0","");
+        path0= Sp.getString("tab0","");
         path1= Sp.getString("tab1","/");
        // Toast.makeText(getActivity(),path0,Toast.LENGTH_LONG).show();
         mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
@@ -61,7 +64,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         STRIP.setBackgroundDrawable(new ColorDrawable(Color.parseColor(((MainActivity)getActivity()).skin)));
         if (getArguments() != null)
             path = getArguments().getString("path");
-  mainActivity=((MainActivity)getActivity());
+        mainActivity = ((MainActivity)getActivity());
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             public void onPageScrolled(int p1, float p2, int p3) {
@@ -116,12 +119,17 @@ public class TabFragment extends android.support.v4.app.Fragment {
             TabHandler tabHandler=new TabHandler(getActivity(),null,null,1);
             List<Tab> tabs1=tabHandler.getAllTabs();
             int i=tabs1.size();
-            if(i==0){addTab(path0);addTab(path1);}
-            else {for(Tab tab:tabs1){addTab(tab.getPath());}}
+            if(i==0){
+                addTab(path0);addTab(path1);
+            } else {
+                for(Tab tab:tabs1){addTab(tab.getPath());
+                }
+            }
 
             if(path!=null && path.trim().length()!=0)
-            {addTab1(path);
-           }
+            {
+                addTab1(path);
+            }
             mViewPager.setAdapter(mSectionsPagerAdapter);
             if(path!=null && path.trim().length()!=0){
                 mViewPager.setCurrentItem(fragments.size()-1);
@@ -176,7 +184,8 @@ public void onDestroyView(){
             outState.putStringArrayList("tabs",tabs);
         }
     }
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+    public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+
         @Override
         public int getItemPosition (Object object)
         {
@@ -272,6 +281,7 @@ public void onDestroyView(){
     }
 
     public void removeTab(){
+
         int i=mViewPager.getCurrentItem();
         mSectionsPagerAdapter=null;
         mViewPager.setAdapter(null);
@@ -281,10 +291,10 @@ public void onDestroyView(){
         mViewPager.setAdapter(mSectionsPagerAdapter);
         if(i>0) {
             mViewPager.setCurrentItem(i-1,true);
-          }
-       else if(i==0 && fragments.size()>2){
+        } else if(i==0 && fragments.size()>2) {
             mViewPager.setCurrentItem(i+1,true);
-        }updateSpinner();
+        }
+        updateSpinner();
         mViewPager.setOffscreenPageLimit(fragments.size()+1);
         updatepaths();
     }
