@@ -90,8 +90,20 @@ ArrayList<String> entries=new ArrayList<String>();
         // If we get killed, after returning from here, restart
         return START_REDELIVER_INTENT;
     }
+    private void publishResults(String a, int p1,  int id, long total, long done, boolean b) {
+        Intent intent = new Intent(EXTRACT_CONDITION);
+        intent.putExtra("name", a);
+        intent.putExtra("total", total);
+        intent.putExtra("done", done);
+        intent.putExtra("id", id);
+        intent.putExtra("p1", p1);
+        intent.putExtra("extract_completed", b);
+        sendBroadcast(intent);
 
-    private void createDir(File dir) {
+    }
+    public class Doback extends AsyncTask<Bundle, Void, Integer> {
+long copiedbytes=0,totalbytes=0;
+        private void createDir(File dir) {
         if (dir.exists()) {
             return;
         }
@@ -118,16 +130,18 @@ ArrayList<String> entries=new ArrayList<String>();
                 new FileOutputStream(outputFile));
         try {
             int len;
-            byte buf[] = new byte[1024];
+            byte buf[] = new byte[8192];
             while ((len = inputStream.read(buf)) > 0) {
                 //System.out.println(id + " " + hash.get(id));
                 if (hash.get(id)) {
                     publishResults(true);
                     outputStream.write(buf, 0, len);
-
+                    copiedbytes=copiedbytes+len;
+                    publishResults(zipfile.getName(),Math.round(100*copiedbytes/totalbytes),id,totalbytes,copiedbytes,false);
                 } else {
                     stopSelf(id);
                     publishResults(false);
+                    publishResults(zipfile.getName(),100,id,totalbytes,copiedbytes,true);
                 }
             }
         } finally {
@@ -135,7 +149,7 @@ ArrayList<String> entries=new ArrayList<String>();
             inputStream.close();
         }
     }
-    private void unzipRAREntry(int id, Archive zipfile, FileHeader entry, String outputDir,String string)
+    private void unzipRAREntry(int id,String a, Archive zipfile, FileHeader entry, String outputDir)
             throws IOException, RarException {
         String name=entry.getFileNameString();
         name=name.replaceAll("\\\\","/");
@@ -154,16 +168,18 @@ ArrayList<String> entries=new ArrayList<String>();
                 new FileOutputStream(outputFile));
         try {
             int len;
-            byte buf[] = new byte[1024];
+            byte buf[] = new byte[8192];
             while ((len = inputStream.read(buf)) > 0) {
                 //System.out.println(id + " " + hash.get(id));
                 if (hash.get(id)) {
                     publishResults(true);
-                    publishResults(id,string,true,false);
                     outputStream.write(buf, 0, len);
+                    copiedbytes=copiedbytes+len;
+                    publishResults(a,Math.round(100*copiedbytes/totalbytes),id,totalbytes,copiedbytes,false);
 
                 } else {
                     stopSelf(id);
+                    publishResults(a,100,id,totalbytes,copiedbytes,true);
                     publishResults(false);
                 }
             }
@@ -189,16 +205,18 @@ ArrayList<String> entries=new ArrayList<String>();
                 new FileOutputStream(outputFile));
         try {
             int len;
-            byte buf[] = new byte[1024];
+            byte buf[] = new byte[8192];
             while ((len = zipfile.read(buf)) > 0) {
                 //System.out.println(id + " " + hash.get(id));
                 if (hash.get(id)) {
                     publishResults(true);
-                    publishResults(id,string,true,false);
                     outputStream.write(buf, 0, len);
+                    copiedbytes=copiedbytes+len;
+                    publishResults(string,Math.round(100*copiedbytes/totalbytes),id,totalbytes,copiedbytes,false);
 
                 } else {
                     stopSelf(id);
+                    publishResults(string,100,id,totalbytes,copiedbytes,true);
                     publishResults(false);
                 }
             }
@@ -209,9 +227,10 @@ ArrayList<String> entries=new ArrayList<String>();
     }
     public boolean extract(int id, File archive, String destinationPath,ArrayList<String> x) {
         int i = 0;
+        ArrayList<ZipEntry> entry1=new ArrayList<ZipEntry>();
         try {
             ZipFile zipfile = new ZipFile(archive);
-            int fileCount = zipfile.size();
+            publishResults(archive.getName(),0,id,totalbytes,copiedbytes,false);
             for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
                 //Log.i("Amaze", id + " " + hash.get(id));
                 if (hash.get(id)) {
@@ -219,126 +238,157 @@ ArrayList<String> entries=new ArrayList<String>();
                     ZipEntry entry = (ZipEntry) e.nextElement();
                     for(String y:x){
                         if(y.endsWith("/")){
-                        if(entry.getName().contains(y))
-                        unzipEntry(id, zipfile, entry, destinationPath);}
+                        if(entry.getName().contains(y))entry1.add(entry);}
                     }
                     i++;
-                    publishResults(id, archive.getName(), true, false);
                 } else {
                     stopSelf(id);
                     publishResults(false);
                 }
             }for(String y:x){
-                if(!y.endsWith("/")){unzipEntry(id, zipfile, new ZipEntry(y), destinationPath);}}
+                if(!y.endsWith("/")){
+                    entry1.add(new ZipEntry(y));}}
+            for (ZipEntry entry:entry1){totalbytes=totalbytes+entry.getSize();}
+            for(ZipEntry entry:entry1){
+                    unzipEntry(id, zipfile, entry, destinationPath);}
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
+            publishResults(archive.getName(),100,id,totalbytes,copiedbytes,true);
             return true;
         } catch (Exception e) {
             Log.e("amaze", "Error while extracting file " + archive, e);
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
+            publishResults(archive.getName(),100,id,totalbytes,copiedbytes,true);
             return false;
         }
 
     }
     public boolean extract(int id, File archive, String destinationPath) {
         int i = 0;
-        try {
+        try {ArrayList<ZipEntry> arrayList=new ArrayList<ZipEntry>();
             ZipFile zipfile = new ZipFile(archive);
-            int fileCount = zipfile.size();
+            publishResults(archive.getName(),0,id,totalbytes,copiedbytes,false);
             for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
                 //Log.i("Amaze", id + " " + hash.get(id));
                 if (hash.get(id)) {
                     publishResults(true);
                     ZipEntry entry = (ZipEntry) e.nextElement();
-                    unzipEntry(id, zipfile, entry, destinationPath);
-                    i++;
-                    publishResults(id, archive.getName(), i * 100 / fileCount, false);
+                    arrayList.add(entry);
                 } else {
                     stopSelf(id);
                     publishResults(false);
                 }
-            }
-            Intent intent = new Intent("loadlist");
+            }for(ZipEntry entry:arrayList){totalbytes=totalbytes+entry.getSize();}
+            for (ZipEntry entry : arrayList) {
+                if (hash.get(id)) {
+                    unzipEntry(id, zipfile, entry, destinationPath);
+
+                } else {
+                    stopSelf(id);
+                    publishResults(false);
+                }
+            } Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
+            publishResults(archive.getName(),100,id,totalbytes,copiedbytes,true);
             return true;
         } catch (Exception e) {
             Log.e("amaze", "Error while extracting file " + archive, e);
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
+            publishResults(archive.getName(),100,id,totalbytes,copiedbytes,true);
             return false;
         }
 
     }
+
     public boolean extractTar(int id, File archive, String destinationPath) {
         int i = 0;
-        try {
+        try {ArrayList<TarArchiveEntry> archiveEntries=new ArrayList<TarArchiveEntry>();
            TarArchiveInputStream inputStream;
             if(archive.getName().endsWith(".tar"))
             inputStream=new TarArchiveInputStream(new BufferedInputStream(new FileInputStream(archive)));
             else inputStream=new TarArchiveInputStream(new GZIPInputStream(new FileInputStream(archive)));
+            publishResults(archive.getName(),0,id,totalbytes,copiedbytes,false);
             TarArchiveEntry tarArchiveEntry=inputStream.getNextTarEntry();
             while(tarArchiveEntry != null){
                 if (hash.get(id)) {
                     publishResults(true);
-                    publishResults(id,archive.getName(),true,false);
-                    unzipTAREntry(id, inputStream, tarArchiveEntry, destinationPath, archive.getName());
+                    archiveEntries.add(tarArchiveEntry);
                     tarArchiveEntry=inputStream.getNextTarEntry();
                 } else {
                     stopSelf(id);
                     publishResults(false);
                 }
-            }
+            }for(TarArchiveEntry entry:archiveEntries){totalbytes=totalbytes+entry.getSize();}
+            for(TarArchiveEntry entry:archiveEntries){
+                if (hash.get(id)) {
+                    unzipTAREntry(id, inputStream, entry, destinationPath, archive.getName());
+                } else {
+                    stopSelf(id);
+                    publishResults(false);
+                }}
+
             inputStream.close();
 
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
+            publishResults(archive.getName(),100,id,totalbytes,copiedbytes,true);
             return true;
         } catch (Exception e) {
             Log.e("amaze", "Error while extracting file " + archive, e);
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
+            publishResults(archive.getName(),100,id,totalbytes,copiedbytes,true);
             return false;
         }
 
     }
     public boolean extractRar(int id, File archive, String destinationPath) {
         int i = 0;
-        try {
+        try {ArrayList<FileHeader> arrayList=new ArrayList<FileHeader>();
             Archive zipfile = new Archive(archive);
             FileHeader fh = zipfile.nextFileHeader();
-
+            publishResults(archive.getName(),0,id,totalbytes,copiedbytes,false);
             while(fh != null){
                 if (hash.get(id)) {
                     publishResults(true);
-                    publishResults(id,archive.getName(),true,false);
-                    unzipRAREntry(id,zipfile,fh,destinationPath,archive.getName());
+                    arrayList.add(fh);
                 fh=zipfile.nextFileHeader();
                 } else {
                     stopSelf(id);
                     publishResults(false);
                 }
             }
-
+            for (FileHeader header:arrayList){totalbytes=totalbytes+header.getFullUnpackSize();}
+            for (FileHeader header:arrayList){
+                if (hash.get(id)) {
+                    unzipRAREntry(id,archive.getName(),zipfile,header,destinationPath);
+                } else {
+                    stopSelf(id);
+                    publishResults(false);
+                }
+            }
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
+            publishResults(archive.getName(),100,id,totalbytes,copiedbytes,true);
             return true;
         } catch (Exception e) {
             Log.e("amaze", "Error while extracting file " + archive, e);
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
+            publishResults(archive.getName(),100,id,totalbytes,copiedbytes,true);
             return false;
         }
 
     }
-    public class Doback extends AsyncTask<Bundle, Void, Integer> {
-        protected Integer doInBackground(Bundle... p1) {
+    protected Integer doInBackground(Bundle... p1) {
             String file = p1[0].getString("file");
             File f = new File(file);
             System.out.println(f.getName()+""+eentries);
             if(eentries) {
                 extract(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")), entries);
-            }else if(f.getName().toLowerCase().endsWith(".zip"))
+            }else if(f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".apk"))
             extract(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")));
             else if(f.getName().toLowerCase().endsWith(".rar"))
                 extractRar(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")));
@@ -354,32 +404,12 @@ ArrayList<String> entries=new ArrayList<String>();
         @Override
         public void onPostExecute(Integer b) {
             publishResults(false);
-            publishResults(b, "", 0, true);
             Log.i("Amaze", "Completed");
             stopSelf(b);
         }
 
     }
 
-    private void publishResults(int id, String name, int i, boolean b) {
-        Intent intent = new Intent(EXTRACT_CONDITION);
-        intent.putExtra("p1", i);
-        intent.putExtra("id", id);
-        intent.putExtra("name", name);
-        intent.putExtra("extract_completed", b);
-        sendBroadcast(intent);
-
-    }
-
-    private void publishResults(int id, String name,boolean indefinite, boolean b) {
-        Intent intent = new Intent(EXTRACT_CONDITION);
-        intent.putExtra("indefinite", indefinite);
-        intent.putExtra("id", id);
-        intent.putExtra("name", name);
-        intent.putExtra("extract_completed", b);
-        sendBroadcast(intent);
-
-    }
     private void publishResults(boolean b) {
         Intent intent = new Intent("run");
         intent.putExtra("run", b);

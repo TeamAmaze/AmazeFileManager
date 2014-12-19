@@ -203,10 +203,11 @@ public class ProcessViewer extends Fragment {
                         } else {
                             String name = b.getString("name");
                             int p1 = b.getInt("p1",0);
-
+                            long p3=b.getLong("total");
+                            long p2=b.getLong("done");
                             ProgressBar p = (ProgressBar) process.findViewById(R.id.progressBar1);
                             if (p1 <= 100) {
-                                ((TextView) process.findViewById(R.id.progressText)).setText(utils.getString(getActivity(), R.string.extracting) + "\n" + name + "\n" + p1 + "%");
+                                ((TextView) process.findViewById(R.id.progressText)).setText(utils.getString(getActivity(), R.string.extracting) + "\n" + name + "\n" + p1 + "%"+"\n"+utils.readableFileSize(p2)+"/"+utils.readableFileSize(p3));
 
                                 p.setProgress(p1);
                                 if(indefinite && !p.isIndeterminate())p.setIndeterminate(true);
