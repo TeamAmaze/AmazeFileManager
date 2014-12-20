@@ -13,13 +13,14 @@ public class ZipObj implements Parcelable {
     ZipEntry entry;
     String name;
     long date,size;
-    public ZipObj(ZipEntry entry,boolean directory){
+    public ZipObj(ZipEntry entry,long date,long size,boolean directory){
         this.directory=directory;
         this.entry=entry;
         if(entry!=null){
         name=entry.getName();
-        date=entry.getTime();
-        size=entry.getSize();
+        this.date=date;
+        this.size=size;
+
     }}
     public ZipEntry getEntry(){return entry;}
     public boolean isDirectory(){return directory;}

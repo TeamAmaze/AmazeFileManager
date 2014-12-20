@@ -239,15 +239,14 @@ long copiedbytes=0,totalbytes=0;
                     for(String y:x){
                         if(y.endsWith("/")){
                         if(entry.getName().contains(y))entry1.add(entry);}
+                        else {if(entry.getName().equals(y) || ("/"+entry.getName()).equals(y)){entry1.add(entry);}}
                     }
                     i++;
                 } else {
                     stopSelf(id);
                     publishResults(false);
                 }
-            }for(String y:x){
-                if(!y.endsWith("/")){
-                    entry1.add(new ZipEntry(y));}}
+            }
             for (ZipEntry entry:entry1){totalbytes=totalbytes+entry.getSize();}
             for(ZipEntry entry:entry1){
                     unzipEntry(id, zipfile, entry, destinationPath);}

@@ -96,6 +96,7 @@ public class ProcessViewer extends Fragment {
         super.onPause();
         (getActivity()).unregisterReceiver(Copy_Receiver);
         (getActivity()).unregisterReceiver(Extract_Receiver);
+        (getActivity()).unregisterReceiver(Zip_Receiver);
         rootView.removeAllViewsInLayout();
         CopyIds.clear();
         CancelledCopyIds.clear();
