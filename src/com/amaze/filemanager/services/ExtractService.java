@@ -68,6 +68,7 @@ public class ExtractService extends Service {
     public void onCreate() {
         Notification notification = new Notification(R.drawable.ic_doc_compressed, utils.getString(this,R.string.Extracting_fles), System.currentTimeMillis());
         Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setAction(Intent.ACTION_MAIN);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         notification.setLatestEventInfo(this, utils.getString(this,R.string.Extracting_fles), "", pendingIntent);
         startForeground(002, notification);

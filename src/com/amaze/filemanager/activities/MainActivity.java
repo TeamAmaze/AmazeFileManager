@@ -30,6 +30,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -203,12 +204,22 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         });
 
         intent = getIntent();
-        if (intent.getAction().equals(Intent.ACTION_GET_CONTENT) || intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
+        if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
+
+            // file picker intent
             mReturnIntent = true;
-            if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
-                mRingtonePickerIntent = true;
-            }
             Toast.makeText(this, utils.getString(con,R.string.pick_a_file), Toast.LENGTH_LONG).show();
+        } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)){
+
+            // ringtone picker intent
+            mReturnIntent = true;
+            mRingtonePickerIntent = true;
+            Toast.makeText(this, utils.getString(con,R.string.pick_a_file), Toast.LENGTH_LONG).show();
+        } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
+
+            // zip viewer intent
+            Uri uri = intent.getData();
+            Toast.makeText(MainActivity.this, uri.getPath(), Toast.LENGTH_SHORT).show();
         }
 
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#5677fc");
