@@ -29,6 +29,7 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -123,7 +124,7 @@ public class ZipTask extends Service {
         intent.putExtra("id", id);
         intent.putExtra("name", fileName);
         intent.putExtra(EXTRACT_COMPLETED, b);
-        sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(this).   sendBroadcast(intent);
 
     }
 
@@ -194,7 +195,7 @@ public class ZipTask extends Service {
         private void compressFile(int id, File file, String path) throws IOException {
 
             if (!file.isDirectory()) {
-                byte[] buf = new byte[1024];
+                byte[] buf = new byte[8192];
                 int len;
                 FileInputStream in = new FileInputStream(file);
                     zos.putNextEntry(new ZipEntry(path + "/" + file.getName()));

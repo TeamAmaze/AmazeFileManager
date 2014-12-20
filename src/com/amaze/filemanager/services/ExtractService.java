@@ -20,6 +20,7 @@
 package com.amaze.filemanager.services;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -29,6 +30,8 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
@@ -57,9 +60,6 @@ import java.util.zip.ZipFile;
 
 public class ExtractService extends Service {
     public final String EXTRACT_CONDITION = "EXTRACT_CONDITION";
-    public final String EXTRACT_PROGRESS = "EXTRACT_PROGRESS";
-    public final String EXTRACT_COMPLETED = "EXTRACT_COMPLETED";
-
     Futils utils = new Futils();
     // Binder given to clients
     HashMap<Integer, Boolean> hash = new HashMap<Integer, Boolean>();
@@ -73,7 +73,8 @@ public class ExtractService extends Service {
         notification.setLatestEventInfo(this, utils.getString(this,R.string.Extracting_fles), "", pendingIntent);
         startForeground(002, notification);
         registerReceiver(receiver1, new IntentFilter("excancel"));
-    }
+    }NotificationManager mNotifyManager;
+    NotificationCompat.Builder mBuilder;
 ArrayList<String> entries=new ArrayList<String>();
     boolean eentries;
     @Override
@@ -91,19 +92,28 @@ ArrayList<String> entries=new ArrayList<String>();
         // If we get killed, after returning from here, restart
         return START_REDELIVER_INTENT;
     }
-    private void publishResults(String a, int p1,  int id, long total, long done, boolean b) {
-        Intent intent = new Intent(EXTRACT_CONDITION);
-        intent.putExtra("name", a);
-        intent.putExtra("total", total);
-        intent.putExtra("done", done);
-        intent.putExtra("id", id);
-        intent.putExtra("p1", p1);
-        intent.putExtra("extract_completed", b);
-        sendBroadcast(intent);
-
-    }
     public class Doback extends AsyncTask<Bundle, Void, Integer> {
 long copiedbytes=0,totalbytes=0;
+
+        private void publishResults(String a, int p1,  int id, long total, long done, boolean b) {
+            Intent intent = new Intent(EXTRACT_CONDITION);
+            mBuilder.setProgress(100, p1, false);
+            mBuilder.setContentText(new File(a).getName()+" "+utils.readableFileSize(done)+"/"+utils.readableFileSize(total));
+            int id1=Integer.parseInt("123"+id);
+            mNotifyManager.notify(id1,mBuilder.build());
+            if(p1==100){mBuilder.setContentTitle("Extract completed");
+                mBuilder.setContentText(new File(a).getName()+" "+utils.readableFileSize(total));
+                mBuilder.setProgress(0,0,false);
+                mNotifyManager.notify(id1,mBuilder.build());}
+            intent.putExtra("name", a);
+            intent.putExtra("total", total);
+            intent.putExtra("done", done);
+            intent.putExtra("id", id);
+            intent.putExtra("p1", p1);
+            intent.putExtra("extract_completed", b);
+            LocalBroadcastManager.getInstance(c).sendBroadcast(intent);
+
+        }
         private void createDir(File dir) {
         if (dir.exists()) {
             return;
@@ -384,7 +394,14 @@ long copiedbytes=0,totalbytes=0;
     }
     protected Integer doInBackground(Bundle... p1) {
             String file = p1[0].getString("file");
-            File f = new File(file);
+        mNotifyManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mBuilder = new NotificationCompat.Builder(c);
+        mBuilder.setContentTitle(getResources().getString(R.string.extracting))
+                .setContentText(new File(file).getName())
+                .setSmallIcon(R.drawable.ic_doc_compressed);
+
+        File f = new File(file);
             System.out.println(f.getName()+""+eentries);
             if(eentries) {
                 extract(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")), entries);
@@ -408,14 +425,14 @@ long copiedbytes=0,totalbytes=0;
             stopSelf(b);
         }
 
+        private void publishResults(boolean b) {
+            Intent intent = new Intent("run");
+            intent.putExtra("run", b);
+            sendBroadcast(intent);
+
+        }
     }
 
-    private void publishResults(boolean b) {
-        Intent intent = new Intent("run");
-        intent.putExtra("run", b);
-        sendBroadcast(intent);
-
-    }
 
     @Override
     public void onDestroy() {
@@ -426,7 +443,7 @@ long copiedbytes=0,totalbytes=0;
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
-    Context c = this;
+    Context cd = this;
     private BroadcastReceiver receiver1 = new BroadcastReceiver() {
 
         @Override
@@ -440,6 +457,6 @@ long copiedbytes=0,totalbytes=0;
     public IBinder onBind(Intent arg0) {
         // TODO Auto-generated method stub
         return null;
-    }
+    }Context c=this;
 }
 

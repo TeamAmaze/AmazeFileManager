@@ -84,20 +84,17 @@
 
         </activity>
    <service
-   	android:process=":amaze"
 			android:name = "com.amaze.filemanager.services.ExtractService"
 			android:label = "Extracting"
 			>	
 		</service><service
 			android:name = "com.amaze.filemanager.services.ZipTask"
 			android:label = "Compressing"
-	android:process=":amaze"
 		>
 		</service>
 			<service
 			android:name = "com.amaze.filemanager.services.CopyService"
 			android:label = "Copying"
-                android:process=":amaze"
 
                 >
 		</service>
