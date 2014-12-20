@@ -43,7 +43,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
     public ViewPager mViewPager;
     SharedPreferences Sp;
     TabFragment t = this;
-    String path = "",path1="",path0="";
+    String path = "",path1="",path0="",zippath="";
     int currenttab;
     MainActivity mainActivity;
     TabSpinnerAdapter tabSpinnerAdapter;
@@ -62,8 +62,10 @@ public class TabFragment extends android.support.v4.app.Fragment {
         STRIP = ((android.support.v4.view.PagerTitleStrip) rootView
                 .findViewById(R.id.pager_title_strip));
         STRIP.setBackgroundDrawable(new ColorDrawable(Color.parseColor(((MainActivity)getActivity()).skin)));
-        if (getArguments() != null)
+        if (getArguments() != null){
             path = getArguments().getString("path");
+            zippath=getArguments().getString("zippath");
+        }
         mainActivity = ((MainActivity)getActivity());
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -126,7 +128,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 }
             }
 
-            if(path!=null && path.trim().length()!=0)
+            if(path!=null && path.trim().length()>0)
             {
                 addTab1(path);
             }
@@ -142,7 +144,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 e.printStackTrace();
             }}
 
-
+          if(zippath!=null && zippath.trim().length()>0)addZipViewerTab(zippath);
         } else {
             fragments.clear();
           tabs= savedInstanceState.getStringArrayList("tabs");

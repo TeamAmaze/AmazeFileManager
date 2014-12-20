@@ -305,7 +305,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             selectItem(0);
             else goToMain();
 
-            if(openzip){getFragment().addZipViewerTab(zippath);}
         } else {
             select = savedInstanceState.getInt("selectitem", 0);
 
@@ -392,7 +391,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                 } else mDrawerLayout.openDrawer(mDrawerLinear);
             }
         });
-
     }
 
     /**
@@ -565,8 +563,10 @@ e.printStackTrace();}
 
                 if (select == null || select >= list.size() - 2) {
                     TabFragment tabFragment=new TabFragment();
-                    if (path != null) {
+                    if (path != null || openzip) {
                         Bundle a = new Bundle();
+                        if(zippath!=null)a.putString("zippath",zippath);
+                        zippath=null;openzip=false;
                         a.putString("path", path);
                         tabFragment.setArguments(a);
                     }
@@ -589,7 +589,9 @@ e.printStackTrace();}
                         select=null;selectItem(0);
                     }
             }
-            title.setText(R.string.app_name);}else {
+            title.setText(R.string.app_name);
+
+        }else {
             if (i == list.size() - 2) {
 
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
