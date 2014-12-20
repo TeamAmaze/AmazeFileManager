@@ -133,7 +133,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     private static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     public ArrayList<String> list;
     public int theme1;
-    boolean rootmode,aBoolean;
+    boolean rootmode,aBoolean,openzip=false;
+    String zippath;
     public Spinner tabsSpinner;
     public boolean mRingtonePickerIntent = false,restart=false;
     /**
@@ -219,8 +220,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
 
             // zip viewer intent
             Uri uri = intent.getData();
-            Toast.makeText(MainActivity.this, uri.getPath(), Toast.LENGTH_SHORT).show();
-        }
+        openzip=true;
+        zippath=uri.getPath();}
 
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#5677fc");
         RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.action_bar);
@@ -303,6 +304,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             if(!restart)
             selectItem(0);
             else goToMain();
+
+            if(openzip){getFragment().addZipViewerTab(zippath);}
         } else {
             select = savedInstanceState.getInt("selectitem", 0);
 
