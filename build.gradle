@@ -21,23 +21,32 @@ dependencies {
     compile 'com.pkmmte.view:circularimageview:1.1'
     compile 'com.pnikosis:materialish-progress:1.0'
     compile 'com.melnykov:floatingactionbutton:1.0.7'
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.4'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.github.junrar:junrar:0.7'
+    compile 'org.apache.commons:commons-compress:1.8.1'
     compile fileTree(include: '*.jar', dir: 'libs')
-    compile files('libs/RootTools')
-    compile files('libs/nineoldandroids-2.4.0')
-    compile files('raroscope-1.0')
 }
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "19.1.0"
-    packagingOptions{exclude 'AndroidManifest.xml'}
-    packagingOptions{exclude 'bin/AndroidManifest.xml'}
+    buildToolsVersion "21.1.1"
+
     packagingOptions {
         exclude 'proguard-project.txt'
-    }
-    packagingOptions {
         exclude 'project.properties'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/DEPENDENCIES'
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
