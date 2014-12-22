@@ -34,6 +34,8 @@
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/actionBarSize"
     android:orientation="horizontal"
+
+    android:elevation="10dp"
     android:id="@+id/action_bar">
     <ImageButton
         android:id="@+id/drawer_buttton"

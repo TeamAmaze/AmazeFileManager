@@ -55,4 +55,9 @@
         <item name="android:textColor">#99000000</item>
         <item name="android:textStyle">normal</item>
     </style>
+
+    <!-- appCompat -->
+    <style name="appCompatLight" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowActionBar">false</item>
+    </style>
 </resources>

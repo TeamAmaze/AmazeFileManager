@@ -74,7 +74,7 @@
 			
             android:label="Text Reader"
             android:name="com.amaze.filemanager.activities.TextReader" 
-			android:theme="@style/LightTheme">
+			android:theme="@style/appCompatLight">
             <intent-filter
                 android:label="Amaze File Manager">
                 <action android:name="android.intent.action.VIEW"/>

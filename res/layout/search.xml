@@ -17,17 +17,25 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">
+    android:layout_height="fill_parent" >
+
+    <android.support.v7.widget.Toolbar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        android:elevation="10dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
         android:singleLine="false"
-
-        android:gravity="top|left"
         android:cursorVisible="true"
         android:background="@null"
         android:imeOptions="actionDone|flagNoFullscreen"
@@ -37,10 +45,10 @@
         android:id="@+id/fname" />
 
     <ProgressBar
-        android:layout_gravity="top"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true"
+        android:layout_below="@+id/toolbar"
         android:id="@+id/pbar" />
 
-</FrameLayout>
+</RelativeLayout>

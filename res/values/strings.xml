@@ -277,5 +277,6 @@
     <string name="circularicons">Use circular icons</string>
     <string name="back_title">Back navigation</string>
     <string name="back_summary">Enables custom back navigation at top of the list</string>
+    <string name="details">Details</string>
 </resources>
 

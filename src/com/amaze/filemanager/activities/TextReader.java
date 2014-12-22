@@ -29,6 +29,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -39,6 +40,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
@@ -59,7 +61,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TextReader extends Activity {
+public class TextReader extends ActionBarActivity {
     EditText ma;
     String path;
     ProgressBar p;
@@ -85,12 +87,15 @@ public class TextReader extends Activity {
 
             path = this.getIntent().getStringExtra("path");
         }
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         ma = (EditText) findViewById(R.id.fname);
         p = (ProgressBar) findViewById(R.id.pbar);
         ma.setVisibility(View.VISIBLE);
         String skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#5677fc");
-        getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
-        if(Build.VERSION.SDK_INT>=19){
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
+        /*if(Build.VERSION.SDK_INT>=19){
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintColor(Color.parseColor(skin));
@@ -98,7 +103,7 @@ public class TextReader extends Activity {
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) a.getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0,config.getPixelInsetTop(true),0,0);
-        }
+        }*/
         rootMode = PreferenceManager.getDefaultSharedPreferences(c)
         .getBoolean("rootmode", false);
         if (path != null) {
@@ -110,8 +115,8 @@ public class TextReader extends Activity {
             finish();
         }
         ma.addTextChangedListener(t);
-        getActionBar().setTitle(file.getName());
-        getActionBar().setSubtitle(path);
+        getSupportActionBar().setTitle(file.getName());
+        getSupportActionBar().setSubtitle(path);
     }
 
     @Override
@@ -190,9 +195,16 @@ TextWatcher t=new TextWatcher() {
             case R.id.save:
                 writeTextFile(path, ma.getText().toString());
                 return true;
+            case R.id.details:
+                details(path);
         }
         return super.onOptionsItemSelected(menu);
     }
+
+    private void details(String path) {
+        Toast.makeText(TextReader.this, path, Toast.LENGTH_LONG).show();
+    }
+
     File f;
     public void writeTextFile(String fileName, String s) {
        f = new File(fileName);
