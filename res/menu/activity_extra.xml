@@ -41,6 +41,11 @@
         android:title="@string/exit"
         android:icon="@drawable/ic_action_cancel_light" />
     <item
+        android:id="@+id/progressBar"
+        android:title="@null"
+        android:visible="false"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/paste"
         android:title="@string/paste"
         android:icon="@drawable/ic_content_paste_white_36dp"

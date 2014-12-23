@@ -144,6 +144,7 @@ public class MainActivity extends ActionBarActivity {
     String zippath;
     public Spinner tabsSpinner;
     public boolean mRingtonePickerIntent = false,restart=false;
+    private MenuItem progress_bar;
 
     /**
      * Called when the activity is first created.
@@ -639,10 +640,14 @@ e.printStackTrace();}
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        // Getting option for listView and gridView
         MenuItem s = menu.findItem(R.id.view);
         MenuItem search = menu.findItem(R.id.search);
         MenuItem paste = menu.findItem(R.id.paste);
+        progress_bar = menu.findItem(R.id.progressBar);
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View progress = layoutInflater.inflate(R.layout.toolbar_progress, null);
+        progress.setLayoutParams(new ViewGroup.LayoutParams(48, 48));
+
         TabFragment tabFragment=getFragment();
         String name=tabFragment.getTab1().getClass().getName();
 
@@ -660,6 +665,7 @@ e.printStackTrace();}
             //findViewById(R.id.action_overflow).setVisibility(View.GONE);
             paste.setVisible(false);
         }
+        progress_bar.setActionView(progress);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -745,6 +751,20 @@ e.printStackTrace();}
                 MOVE_PATH = null;
 
                 invalidatePasteButton(item);
+                break;
+            case R.id.progressBar:
+                if (select != 102) {
+                    android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_frame, new ProcessViewer());
+                    //   transaction.addToBackStack(null);
+                    select = 102;
+
+                    //title.setText(utils.getString(con, R.string.process_viewer));
+                    //Commit the transaction
+                    transaction.commit();
+                } else {
+                    selectItem(0);
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -920,6 +940,7 @@ e.printStackTrace();}
         unregisterReceiver(RECIEVER);
         //progress.setVisibility(View.INVISIBLE);
         //progressWheel.setVisible(false);
+        progress_bar.setVisible(false);
     }
 
     @Override
@@ -953,6 +974,7 @@ e.printStackTrace();}
             if (b != null) {
                 //progress.setVisibility(b.getBoolean("run", false) ? View.VISIBLE : View.INVISIBLE);
                 //supportInvalidateOptionsMenu();
+                progress_bar.setVisible(b.getBoolean("run", false) ? true : false);
             }
         }
     };
