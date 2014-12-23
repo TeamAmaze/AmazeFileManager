@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">Задивљујући менаџер фајлова</string>
+    <string name="drawer_open">Отвори фиоку навигације</string>
+    <string name="drawer_close">Затвори фиоку навигације</string>
+    <string name="books">Обележивачи</string>
+    <string name="icon">икона</string>
+    <string name="efn">Унесите име фајла</string>
+    <string name="storage">Складиште</string>
+    <string name="gallery">Галерија</string>
+    <string name="apps">Апликације</string>
+    <string name="bookmanag">Менаџер обележивача</string>
+    <string name="setting">Поставке</string>
+    <string name="select">Изаберите ставку</string>
+    <string name="pressagain">Притисните опет за излаз</string>
+    <string name="open">Отвори</string>
+    <string name="backup">Направи резерву</string>
+    <string name="uninstall">Уклони</string>
+    <string name="play">Плеј продавница</string>
+    <string name="properties">Својства</string>
+    <string name="copyingapk">Копирам апк у </string>
+    <string name="addbook">Додај обележивач</string>
+    <string name="addtobook">Додај у обележиваче</string>
+    <string name="enterpath">Унесите путању</string>
+    <string name="cancel">ОДУСТАНИ</string>
+    <string name="create">НАПРАВИ</string>
+    <string name="success">Успех</string>
+    <string name="filenotexists">Фајл не постоји</string>
+    <string name="error">Грешка</string>
+    <string name="cantlistfiles">Не могу да излистам фајлове без кореног приступа</string>
+    <string name="searchresults">Резултати претраге</string>
+    <string name="itemsselected">ставки изабрано</string>
+    <string name="newhomedirectory">Нова почетна фасцикла</string>
+    <string name="rename">Преименуј</string>
+    <string name="save">Сачувај</string>
+    <string name="renameerror">Преименовање није успело</string>
+    <string name="renamed">Преименовање је успело</string>
+    <string name="bookmarksadded">Обележивачи додати</string>
+    <string name="fileexist">Фајл истог имена већ постоји </string>
+    <string name="filecreated">Фајл направљен</string>
+    <string name="searchpath">Путања претраге</string>
+    <string name="search">ТРАЖИ</string>
+    <string name="enterfile">Унесите име фајла</string>
+    <string name="name">Име: </string>
+    <string name="date">Датум: </string>
+    <string name="location">Локација: </string>
+    <string name="size">Величина: </string>
+    <string name="totalitems">Укупно ставки: </string>
+    <string name="enterzipname">Унесите име архиве</string>
+    <string name="noappfound">Нема апликације за отварање овог фајла</string>
+    <string name="copying">Копирам</string>
+    <string name="moving">Померам</string>
+    <string name="add">Додај</string>
+    <string name="tab">Језичак</string>
+    <string name="file">Фајл</string>
+    <string name="folder">Фасцикла</string>
+    <string name="newfolder">Нова фасцикла</string>
+    <string name="entername">Унесите име</string>
+    <string name="extracting">Распакујем</string>
+    <string name="zipping">Компресујем</string>
+    <string name="stopping">Заустављам</string>
+    <string name="guide1">Добро дошли у Задивљујући менаџер фајлова</string>
+    <string name="guide2">Додирните плаву пругу да бисте приказали или сакрили траку путање</string>
+    <string name="guide3">Притисните и држите било који фајл за још могућности...</string>
+    <string name="guide4">Као што су копирање, померање, својства, итд.</string>
+    <string name="guide5">Користите дугме за назад на вашем уређају да изађете из апликације било кад...</string>
+    <string name="guide6">...и користите дугме стрелице улево за навигацију у менаџеру фајлова</string>
+    <string name="maintab">Главни језичак не можете да уклоните</string>
+    <string name="openparent">Отвори родитељски директоријум</string>
+    <string name="openwith">Отвори помоћу</string>
+    <string name="share">Дели</string>
+    <string name="about">О програму</string>
+    <string name="extract">Распакуј</string>
+    <string name="compress">Компресуј</string>
+    <string name="yes">Да</string>
+    <string name="no">Не</string>
+    <string name="confirm">Потврда</string>
+    <string name="deleting">Бришем</string>
+    <string name="questiondelete">Желите ли заиста да обришете следеће ставке?</string>
+    <string name="viewmode">Режим приказа</string>
+    <string name="uimode">Режим сучеља</string>
+    <string name="directorysort">Режим ређања директоријума</string>
+    <string name="sortby">Поређај по</string>
+    <string name="theme">Тема</string>
+    <string name="skin">Маска</string>
+    <string name="random">Насумично</string>
+    <string name="random_summary">Постави насумичну тему по покретању</string>
+    <string name="colorize">Обоји иконе</string>
+    <string name="colorize_summary">Постави статичку боју икона</string>
+    <string name="back">Назад</string>
+    <string name="home">Почетна</string>
+    <string name="paste">Налепи</string>
+    <string name="close">Затвори</string>
+    <string name="history">Историјат</string>
+    <string name="refresh">Освежи</string>
+    <string name="copy">Копирај</string>
+    <string name="rootmode">Корени приступ</string>
+    <string name="rootmodesummary">Само за рутоване уређаје. Користите само ако знате шта радите.</string>
+    <string name="mountsystemsummary">Омогућите ово ако желите да уредите системске фајлове</string>
+    <string name="mountsystem">Монтирај системске фасцикле за уписивање</string>
+    <string name="rootfailure">Корени приступ није дозвољен</string>
+    <string name="cut">Исеци</string>
+    <string name="selectall">Изабери све</string>
+    <string name="delete">Обриши</string>
+    <string name="setashome"> Постави за почетну фасциклу</string>
+    <string name="sethome">Постави почетну фасциклу</string>
+    <string name="foldercolor">Боја фасцикле</string>
+    <string name="imagegallery">Галерија слика</string>
+    <string name="fileexplorer">Прегледач фајлова</string>
+    <string name="changegallerypath">Промени путању Галерије</string>
+    <string name="usedefaultgallerypath">Користи подразумевану путању</string>
+
+    <!-- Changelog -->
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>в1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>11. нов, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_1">- Почетно издање&lt;br>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>в1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>04. дец, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_2">- Поправљено исеци/налепи&lt;br>
+                                      - Поправљен уређивач текста за корен&lt;br>
+                                      - Додати немачки, француски, италијански, руски и кинески језици&lt;br>
+                                      - Додати обележивачи у навигациону фиоку&lt;br>
+                                      - Додати материјал дијалози&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>в1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>13. дец, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_3">- Додат шпански&lt;br>
+                                      - Разне исправке зип прегледача&lt;br>
+                                      - Приказ аок и јар фајлова&lt;br>
+                                      - Разне исправке уређивача текста&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <string name="simple">Једноставно сучеље</string>
+    <string name="card">Сучеље са језичцима</string>
+    <!-- Theme -->
+    <string name="light">Светла</string>
+    <string name="dark">Тамна</string>
+    <string name="daytime">Дневна</string>
+    <!--Skin-->
+    <string name="red">Црвена</string>
+    <string name="pink">Ружичаста</string>
+    <string name="purple">Љубичаста</string>
+    <string name="deep_purple">Тамноружичаста</string>
+    <string name="indigo">Индигоплава</string>
+    <string name="blue">Плава</string>
+    <string name="light_blue">Светлоплава</string>
+    <string name="cyan">Цијан</string>
+    <string name="teal">Плавозелена</string>
+    <string name="green">Зелена</string>
+    <string name="light_green">Светлозелена</string>
+    <string name="amber">Тамножута</string>
+    <string name="orange">Наранџаста</string>
+    <string name="deep_orange">Тамнонаранџаста</string>
+    <string name="brown">Смеђа</string>
+    <string name="black">Црна</string>
+    <string name="blue_grey">Плавосива</string>
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">Фасцикле на врху</string>
+    <string name="filesOnTop">Фајлови на врху</string>
+    <string name="noneOnTop">Ништа на врху</string>
+    <!--SortBy-->
+    <string name="sortName">Имену</string>
+    <string name="lastModified">Датуму измене</string>
+    <string name="sortSize">Величини</string>
+    <string name="sortNameDesc">Имену (опадајуће)</string>
+    <string name="lastModifiedDesc">Датуму измене (опад.)</string>
+    <string name="sortSizeDesc">Величини (опадајуће)</string>
+    <!--ListMode-->
+    <string name="detailedView">Детаљан приказ</string>
+    <string name="simpleView">Једноставан приказ</string>
+    <!--Folder-->
+    <string name="Yellow">Жута</string>
+    <string name="pick_a_file">Изаберите фајл</string>
+    <string name="process_viewer">Прегледач процеса</string>
+    <string name="in_safe">Недовољно простора</string>
+    <string name="no_file_overwrite">Ниједан фајл није пребрисан</string>
+    <string name="skip">Прескочи</string>
+    <string name="overwrite">Пребриши</string>
+    <string name="cant_read_file">Не могу да очитам фајл</string>
+    <string name="not_allowed">Није дозвољено</string>
+    <string name="processes">Процеси</string>
+    <string name="searching">Претрага</string>
+    <string name="copying_fles">Копирам фајлове</string>
+    <string name="done">Завршено</string>
+    <string name="Extracting_fles">Распакујем фајлове</string>
+    <string name="Zipping_fles">Компресујем фајлове</string>
+    <string name="items">ставки</string>
+    <string name="set">Постави</string>
+    <string name="enablerootmde">Омогући корени режим</string>
+    <string name="goback">Иди назад</string>
+    <string name="foldercreated">Фасцикла направљена</string>
+    <string name="newfile">Нови фајл</string>
+    <string name="nofiles">Нема фајлова</string>
+    <string name="tapnhold">Тапните и држите фајл или фасциклу за више могућности</string>
+    <string name="pathcopied">Путања копирана на клипборд</string>
+    <string name="used">Искор:  </string>
+    <string name="free">Слобо:  </string>
+    <string name="atroot">У кореној сте фасцикли</string>
+    <string name="listview">Приказ списка</string>
+    <string name="gridview">Приказ мреже</string>
+    <string name="setlistview">Постављам приказ списка</string>
+    <string name="setgridview">Постављам приказ мреже</string>
+    <string name="permission">Дозволе</string>
+    <string name="hide">Сакриј</string>
+    <string name="exit">Изађи</string>
+    <string name="enternewname">Унесите ново име</string>
+    <string name="doforall">Уради за све ставке</string>
+    <string name="gridcolumnno">Број колона у приказу мреже</string>
+    <string name="randomDialog">Насумично</string>
+    <string name="setRandom">Измене ће ступити на снагу након поновног покретања</string>
+    <string name="authors">Аутори</string>
+    <string name="changelog">Измене</string>
+    <string name="fullChangelog">Дневник измена</string>
+    <string name="ok">У реду</string>
+    <string name="chooseUI">Изаберите сучеље ставки</string>
+    <string name="ui">Сучеље</string>
+    <string name="general">Опште</string>
+    <string name="thumbSummary">Прикажи сличице апликација и слика</string>
+    <string name="thumb">Сличице</string>
+    <string name="hidden">Скривени фајлови и фасцикле</string>
+    <string name="lastModifiedSummary">Прикажи датум и време последње измене фајлова</string>
+    <string name="lastModifiedPref">Датум измене</string>
+    <string name="sizePrefSummary">Прикажи величину фајлова и број ставки у фасциклама</string>
+    <string name="sizePref">Величине</string>
+    <string name="miscellaneous">Разно</string>
+    <string name="rootPrefSummary">Прикажи дозволе фајлова и фасцикли</string>
+    <string name="rootPref">Дозволе</string>
+    <string name="aboutFileManager">О Задивљујућем менаџеру фајлова</string>
+    <string name="version">Издање</string>
+    <string name="rate">Оцени апликацију</string>
+    <string name="license">Лиценце отвореног кода</string>
+    <string name="feedback">Повратне информације</string>
+    <string name="hiddenfiles">Скривени фајлови</string>
+    <string name="type">Типу</string>
+    <string name="typeDesc">Типу (опадајуће)</string>
+    <string name="rootdirectory">Корен</string>
+    <string name="new_string">Ново</string>
+    <string name="setringtone">Постави за звоно</string>
+    <string name="copy_path">Копирај путању</string>
+    <string name="addshortcut">Додај пречицу</string>
+    <string name="unsavedchanges">Несачуване измене</string>
+    <string name="unsavedchangesdesc">Желите ли да сачувате измене пре него изађете?</string>
+    <string name="saving">Уписујем</string>
+    <string name="packageinstaller">Инсталер пакета</string>
+    <string name="view">Прикажи</string>
+    <string name="install">Инсталирај</string>
+    <string name="archive">Архива</string>
+    <string name="archtext">Ово је архива. Шта желите да урадите?</string>
+    <string name="pitext">Ово је инсталер пакета. Шта желите да урадите?</string>
+    <string name="xda_title">XDA</string>
+    <string name="xda_summary">ПиО, помоћ и решавање проблема</string>
+    <string name="invalid_dir">Неисправан директоријум</string>
+    <string name="circularimages">Користи кружне иконе за слике и видео</string>
+    <string name="circularicons">Кружне иконе</string>
+    <string name="back_title">Навигација назад</string>
+    <string name="back_summary">Дугме за назад на врху списка</string>
+    <string name="details">Детаљи</string>
+</resources>
+
