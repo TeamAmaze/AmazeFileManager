@@ -8,11 +8,12 @@ buildscript {
     }
 }
 apply plugin: 'com.android.application'
-apply plugin: 'android'
+
 repositories {
     mavenCentral()
     jcenter()
 }
+
 dependencies {
     //compile 'me.drakeet.materialdialog:library:1.0.9'
     compile 'com.android.support:appcompat-v7:21.0.+'
