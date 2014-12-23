@@ -12,6 +12,8 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -83,7 +85,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
             public void onPageSelected(int p1) { // TODO: Implement this								// method
                currenttab=p1;
-                mainActivity.updateActionButtons();
+                mainActivity.supportInvalidateOptionsMenu();
                 try {
                     updateSpinner();
                 } catch (Exception e) {
@@ -158,8 +160,19 @@ public class TabFragment extends android.support.v4.app.Fragment {
         }
         return rootView;
     }
+
     @Override
-public void onDestroyView(){
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onDestroyView(){
         super.onDestroyView();
         updatepaths();
     }
@@ -248,6 +261,7 @@ public void onDestroyView(){
 
     }
 
+
     public void addTab(String text) {
         android.support.v4.app.Fragment main = new Main();
         int p = fragments.size();
@@ -328,7 +342,7 @@ public void onDestroyView(){
             String name=fragment.getClass().getName();
             if(name.contains("Main")){items.add(((Main)fragment).current);
         }else if(name.contains("ZipViewer")){String cu=((ZipViewer)fragment).f.getName();items.add(cu);}}
-        tabSpinnerAdapter=new TabSpinnerAdapter(getActivity(),R.layout.rowlayout,items,mainActivity.tabsSpinner,this);
+        tabSpinnerAdapter=new TabSpinnerAdapter(mainActivity.getSupportActionBar().getThemedContext(), R.layout.rowlayout,items,mainActivity.tabsSpinner,this);
         mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
         mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
     }

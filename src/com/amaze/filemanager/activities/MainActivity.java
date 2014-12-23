@@ -29,6 +29,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -40,13 +41,18 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -57,6 +63,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -104,9 +111,9 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 
 
-public class MainActivity extends android.support.v4.app.FragmentActivity {
+public class MainActivity extends ActionBarActivity {
     public Integer select;
-    TextView title;
+    //TextView title;
 
     Futils utils;
     private boolean backPressedToExitOnce = false;
@@ -114,10 +121,10 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     private DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
     SharedPreferences Sp;
-    private ActionBarDrawerToggle mDrawerToggle;
-    ImageButton paste;
+    private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
+    //ImageButton paste;
     public List<String> val;
-    ProgressWheel progress;
+    //ProgressWheel progress;
     DrawerAdapter adapter;
     IconUtils util;
     RelativeLayout mDrawerLinear;
@@ -137,6 +144,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     String zippath;
     public Spinner tabsSpinner;
     public boolean mRingtonePickerIntent = false,restart=false;
+
     /**
      * Called when the activity is first created.
      */
@@ -147,7 +155,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        getActionBar().hide();
+        //getActionBar().hide();
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         utils = new Futils();
         s=new Shortcuts(this);
@@ -171,38 +179,22 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         }
 
         if (theme1 == 1) {
-            setTheme(R.style.DarkTheme);
+            setTheme(R.style.appCompatDark);
         }
-        setContentView(R.layout.main);
+        setContentView(R.layout.main_toolbar);
+
+        // Toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         aBoolean = Sp.getBoolean("view", true);
-        ImageView overflow = ((ImageView)findViewById(R.id.action_overflow));
+        //ImageView overflow = ((ImageView)findViewById(R.id.action_overflow));
 
-       showPopup(overflow);
+        //showPopup(overflow);
         tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
-        title = (TextView) findViewById(R.id.title);
+        //title = (TextView) findViewById(R.id.title);
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
-        paste = (ImageButton) findViewById(R.id.paste);
-        paste.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Main ma = (Main)((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
-                String path = ma.current;
-                ArrayList<String> arrayList = new ArrayList<String>();
-                if (COPY_PATH != null) {
-                    arrayList = COPY_PATH;
-                    new CheckForFiles(ma, path, false).execute(arrayList);
-                } else if (MOVE_PATH != null) {
-                    arrayList = MOVE_PATH;
-                    new CheckForFiles(ma, path, true).execute(arrayList);
-                }
-                COPY_PATH = null;
-                MOVE_PATH = null;
-
-                invalidatePasteButton();
-
-            }
-        });
 
         intent = getIntent();
         if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
@@ -224,18 +216,26 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         zippath=uri.getPath();}
 
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#5677fc");
-        RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.action_bar);
-        linearLayout.setBackgroundColor(Color.parseColor(skin));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
+        // status bar
+        if (Build.VERSION.SDK_INT >= 21) {
+
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(Color.parseColor(skin));
+        }
+
         LinearLayout linearLayout1 = (LinearLayout) findViewById(R.id.pathbar);
         linearLayout1.setBackgroundColor(Color.parseColor(skin));
-        title.setOnClickListener(new View.OnClickListener() {
+        /*title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*if(tab==0){
+                *//*if(tab==0){
                     replaceFragment(1);
-                }else{replaceFragment(0);}*/
+                }else{replaceFragment(0);}*//*
             }
-        });
+        });*/
         HorizontalScrollView horizontalScrollView = (HorizontalScrollView) findViewById(R.id.scroll1);
         horizontalScrollView.setBackgroundColor(Color.parseColor(skin));
         HorizontalScrollView horizontalScrollView1 = (HorizontalScrollView) findViewById(R.id.scroll);
@@ -281,12 +281,13 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         View v=getLayoutInflater().inflate(R.layout.drawerheader,null);
         v.setBackgroundColor(Color.parseColor(skin));
         mDrawerList.addHeaderView(v);
-        (findViewById(R.id.search)).setOnClickListener(new View.OnClickListener() {
+        /*(findViewById(R.id.search)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 search();
             }
-        });
+        });*/
+
         list = new ArrayList<String>();
         for (int i = 0; i < val.size(); i++) {
             File file = new File(val.get(i));
@@ -311,14 +312,15 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
             adapter.toggleChecked(select);
 
         }
-        if (Build.VERSION.SDK_INT >= 19) {
+        /*if (Build.VERSION.SDK_INT >= 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintColor(Color.parseColor(skin));
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             DrawerLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mDrawerLayout.getLayoutParams();
             p.setMargins(0, config.getPixelInsetTop(false), 0, 0);
-        }final Activity activity=this;
+        }*/
+        final Activity activity=this;
         ((ImageButton) findViewById(R.id.settingsbutton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -338,7 +340,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         }
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerList.setDivider(null);
-        progress = (ProgressWheel) findViewById(R.id.progressBar);
+        /*progress = (ProgressWheel) findViewById(R.id.progressBar);
         progress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -348,49 +350,55 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
                     //   transaction.addToBackStack(null);
                     select = 102;
 
-                    title.setText(utils.getString(con, R.string.process_viewer));
+                    //title.setText(utils.getString(con, R.string.process_viewer));
                     //Commit the transaction
                     transaction.commit();
                 } else {
                     selectItem(0);
                 }
             }
-        });
+        });*/
         if (select == 0) {
 
-            title.setVisibility(View.GONE);
+            //title.setVisibility(View.GONE);
             tabsSpinner.setVisibility(View.VISIBLE);
         } else {
 
-            title.setVisibility(View.VISIBLE);
+            //title.setVisibility(View.VISIBLE);
             tabsSpinner.setVisibility(View.GONE);
         }
-        mDrawerToggle = new ActionBarDrawerToggle(
+        mDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
-                util.getDrawerDrawable(),  /* nav drawer image to replace 'Up' caret */
+                toolbar,  /* nav drawer image to replace 'Up' caret */
                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                 R.string.drawer_close  /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
-                if(select==102)title.setText(R.string.process_viewer);
+                /*if(select==102)
+                    title.setText(R.string.process_viewer);*/
               // creates call to onPrepareOptionsMenu()
+                supportInvalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
                 //title.setText("Amaze File Manager");
                 // creates call to onPrepareOptionsMenu()
+                supportInvalidateOptionsMenu();
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        ((ImageButton) findViewById(R.id.drawer_buttton)).setOnClickListener(new ImageView.OnClickListener() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        mDrawerToggle.syncState();
+        /*((ImageButton) findViewById(R.id.drawer_buttton)).setOnClickListener(new ImageView.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
                     mDrawerLayout.closeDrawer(mDrawerLinear);
                 } else mDrawerLayout.openDrawer(mDrawerLinear);
             }
-        });
+        });*/
     }
 
     /**
@@ -505,11 +513,12 @@ e.printStackTrace();}
         }
     }}
 
-    public void invalidatePasteButton() {
+    public void invalidatePasteButton(MenuItem paste) {
         if (MOVE_PATH != null || COPY_PATH != null) {
-            paste.setVisibility(View.VISIBLE);
-        } else
-            paste.setVisibility(View.INVISIBLE);
+            paste.setVisible(true);
+        } else {
+            paste.setVisible(false);
+        }
     }
 
     public void exit() {
@@ -549,7 +558,7 @@ e.printStackTrace();}
         }}
     public void goToMain(){
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        title.setText(R.string.app_name);
+        //title.setText(R.string.app_name);
         transaction.replace(R.id.content_frame, new TabFragment());
         // Commit the transaction
         select=0;
@@ -589,9 +598,9 @@ e.printStackTrace();}
                         select=null;selectItem(0);
                     }
             }
-            title.setText(R.string.app_name);
+            //title.setText(R.string.app_name);
 
-        }else {
+        } else {
             if (i == list.size() - 2) {
 
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
@@ -600,8 +609,9 @@ e.printStackTrace();}
                 select = i;
                 // Commit the transaction
                 transaction2.commit();
-                title.setText(utils.getString(this, R.string.apps));
-                title.setVisibility(View.VISIBLE);
+                //title.setText(utils.getString(this, R.string.apps));
+                //title.setVisibility(View.VISIBLE);
+                getSupportActionBar().setTitle(utils.getString(this, R.string.apps));
             } else if (i == list.size() - 1) {
 
                 android.support.v4.app.FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
@@ -610,72 +620,49 @@ e.printStackTrace();}
                 select = i;
                 // Commit the transaction
                 transaction3.commit();
-                title.setText(utils.getString(this, R.string.bookmanag));
-                title.setVisibility(View.VISIBLE);
+                //title.setText(utils.getString(this, R.string.bookmanag));
+                //title.setVisibility(View.VISIBLE);
+                getSupportActionBar().setTitle(utils.getString(this, R.string.bookmanag));
                 }
         }
         adapter.toggleChecked(select);
         mDrawerLayout.closeDrawer(mDrawerLinear);
     }
 
-    public void showPopup(View v) {
-        final PopupMenu popup = new PopupMenu(this, v);
-        if(Build.VERSION.SDK_INT>=19)
-            v.setOnTouchListener(popup.getDragToOpenListener());
-        v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                popup.show();
-            }
-        });
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.activity_extra, popup.getMenu());
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.activity_extra, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
 
         // Getting option for listView and gridView
-        MenuItem s = popup.getMenu().findItem(R.id.view);
+        MenuItem s = menu.findItem(R.id.view);
+        MenuItem search = menu.findItem(R.id.search);
+        MenuItem paste = menu.findItem(R.id.paste);
+        TabFragment tabFragment=getFragment();
+        String name=tabFragment.getTab1().getClass().getName();
 
         if (aBoolean) {
             s.setTitle(getResources().getString(R.string.gridview));
         } else {
             s.setTitle(getResources().getString(R.string.listview));
         }
-
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-            Main ma=(Main)((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
-                switch (item.getItemId()) {
-                    case R.id.home:
-                        ma.home();
-                        break;
-                    case R.id.history:
-                        utils.showHistoryDialog(ma);
-                        break;
-                    case R.id.item3:
-                        finish();
-                        break;
-                    case R.id.item10:
-                        utils.showSortDialog(ma);
-                        break;
-                    case R.id.hiddenitems:
-                        utils.showHiddenDialog(ma);
-                        break;
-                    case R.id.item4:
-                        ma.ic.cleanup();
-                        ma.loadlist(new File(ma.current), false);
-                        break;
-                    case R.id.view:
-                        // Save the changes, but don't show a disruptive Toast:
-                        Sp.edit().putBoolean("view", !ma.aBoolean).commit();
-                        ma.restartPC(ma.getActivity());
-                        break;
-                }
-                return false;
-            }
-        });
-
+        if(name.contains("Main")) {
+            invalidatePasteButton(paste);
+            search.setVisible(true);
+            //findViewById(R.id.action_overflow).setVisibility(View.VISIBLE);
+        } else {
+            search.setVisible(false);
+            //findViewById(R.id.action_overflow).setVisibility(View.GONE);
+            paste.setVisible(false);
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
+
     private void showToast(String message) {
         if (this.toast == null) {
             // Create toast if found null, it would he the case of first call only
@@ -715,9 +702,52 @@ e.printStackTrace();}
             return true;
         }
         // Handle action buttons
+        Main ma=(Main)((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+        switch (item.getItemId()) {
+            case R.id.home:
+                ma.home();
+                break;
+            case R.id.history:
+                utils.showHistoryDialog(ma);
+                break;
+            case R.id.item3:
+                finish();
+                break;
+            case R.id.item10:
+                utils.showSortDialog(ma);
+                break;
+            case R.id.hiddenitems:
+                utils.showHiddenDialog(ma);
+                break;
+            case R.id.item4:
+                ma.ic.cleanup();
+                ma.loadlist(new File(ma.current), false);
+                break;
+            case R.id.view:
+                // Save the changes, but don't show a disruptive Toast:
+                Sp.edit().putBoolean("view", !ma.aBoolean).commit();
+                ma.restartPC(ma.getActivity());
+                break;
+            case R.id.search:
+                search();
+                break;
+            case R.id.paste:
+                String path = ma.current;
+                ArrayList<String> arrayList = new ArrayList<String>();
+                if (COPY_PATH != null) {
+                    arrayList = COPY_PATH;
+                    new CheckForFiles(ma, path, false).execute(arrayList);
+                } else if (MOVE_PATH != null) {
+                    arrayList = MOVE_PATH;
+                    new CheckForFiles(ma, path, true).execute(arrayList);
+                }
+                COPY_PATH = null;
+                MOVE_PATH = null;
 
+                invalidatePasteButton(item);
+                break;
+        }
         return super.onOptionsItemSelected(item);
-
     }
 
     @Override
@@ -888,7 +918,8 @@ e.printStackTrace();}
         super.onPause();
         killToast();
         unregisterReceiver(RECIEVER);
-        progress.setVisibility(View.INVISIBLE);
+        //progress.setVisibility(View.INVISIBLE);
+        //progressWheel.setVisible(false);
     }
 
     @Override
@@ -900,10 +931,10 @@ e.printStackTrace();}
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
-            ImageView ib = (ImageView) findViewById(R.id.action_overflow);
+            /*ImageView ib = (ImageView) findViewById(R.id.action_overflow);
             if (ib.getVisibility() == View.VISIBLE) {
                 ib.performClick();
-            }
+            }*/
             // perform your desired action here
 
             // return 'true' to prevent further propagation of the key event
@@ -920,7 +951,8 @@ e.printStackTrace();}
         public void onReceive(Context context, Intent intent) {
             Bundle b = intent.getExtras();
             if (b != null) {
-                progress.setVisibility(b.getBoolean("run", false) ? View.VISIBLE : View.INVISIBLE);
+                //progress.setVisibility(b.getBoolean("run", false) ? View.VISIBLE : View.INVISIBLE);
+                //supportInvalidateOptionsMenu();
             }
         }
     };
@@ -1138,19 +1170,7 @@ e.printStackTrace();}
         TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
         return tabFragment;
     }
-    public void updateActionButtons(){
-        TabFragment tabFragment=getFragment();
-        String name=tabFragment.getTab1().getClass().getName();
-        if(name.contains("Main")) {
-            invalidatePasteButton();
-            findViewById(R.id.search).setVisibility(View.VISIBLE);
-            findViewById(R.id.action_overflow).setVisibility(View.VISIBLE);
-        } else {
-            findViewById(R.id.search).setVisibility(View.GONE);
-            findViewById(R.id.action_overflow).setVisibility(View.GONE);
-            paste.setVisibility(View.GONE);
-        }
-    }
+
     public void initiatebbar() {
         LinearLayout pathbar = (LinearLayout) findViewById(R.id.pathbar);
         TextView textView = (TextView) findViewById(R.id.fullpath);

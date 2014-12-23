@@ -43,6 +43,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.utils.AppsSorter;
@@ -73,19 +74,20 @@ public class AppsList extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(false);
         ic=new IconHolder(getActivity(),true,true);
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
+        /*getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
         getActivity().findViewById(R.id.search).setVisibility(View.INVISIBLE);
-        getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
+        getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);*/
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
 
         vl=getListView();
 
-        ((TextView) getActivity().findViewById(R.id.title)).setText(utils.getString(getActivity(), R.string.apps));
+        //((TextView) getActivity().findViewById(R.id.title)).setText(utils.getString(getActivity(), R.string.apps));
 
         FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         floatingActionButton.hide(true);

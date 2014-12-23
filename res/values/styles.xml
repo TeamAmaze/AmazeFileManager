@@ -57,7 +57,21 @@
     </style>
 
     <!-- appCompat -->
-    <style name="appCompatLight" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!-- light -->
+    <style name="appCompatLight" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionBar">false</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+
+    </style>
+    <!-- dark -->
+    <style name="appCompatDark" parent="Theme.AppCompat.NoActionBar">
+
+        <item name="windowActionBar">false</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+    </style>
+
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/white</item>
     </style>
 </resources>

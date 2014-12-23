@@ -239,8 +239,8 @@ public class Main extends android.support.v4.app.Fragment {
         list1 = new ArrayList<String>();
 
 
-        getActivity().findViewById(R.id.search).setVisibility(View.VISIBLE);
-        getActivity().findViewById(R.id.action_overflow).setVisibility(View.VISIBLE);
+        //getActivity().findViewById(R.id.search).setVisibility(View.VISIBLE);
+        //getActivity().findViewById(R.id.action_overflow).setVisibility(View.VISIBLE);
         utils = new Futils();
         String x=getSelectionColor();
         skinselection=Color.parseColor(x);
@@ -561,8 +561,9 @@ public class Main extends android.support.v4.app.Fragment {
             hideOption(R.id.ex, menu);
             //hideOption(R.id.setringtone,menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
-            if(Build.VERSION.SDK_INT<19)
-                getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
+            /*if(Build.VERSION.SDK_INT<19)
+                getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);*/
+
             return true;
         }
 
@@ -821,7 +822,7 @@ public class Main extends android.support.v4.app.Fragment {
                             copies.add(list.get(plist.get(i2)).getDesc());
                         }}
                     mainActivity.COPY_PATH = copies;
-                    mainActivity.invalidatePasteButton();
+                    mainActivity.supportInvalidateOptionsMenu();
                     mode.finish();
                     return true;
                 case R.id.cut:
@@ -837,7 +838,7 @@ public class Main extends android.support.v4.app.Fragment {
                             copie.add(list.get(plist.get(i3)).getDesc());
                         }}
                     mainActivity.MOVE_PATH = copie;
-                    mainActivity.invalidatePasteButton();
+                    mainActivity.supportInvalidateOptionsMenu();
                     mode.finish();
                     return true;
                 case R.id.compress:
@@ -884,7 +885,7 @@ public class Main extends android.support.v4.app.Fragment {
             mActionMode = null;
             selection = false;
             adapter.toggleChecked(false, current);
-            getActivity().findViewById(R.id.action_bar).setVisibility(View.VISIBLE);
+            //getActivity().findViewById(R.id.action_bar).setVisibility(View.VISIBLE);
             getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
 
         }

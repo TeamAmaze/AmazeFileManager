@@ -36,14 +36,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.Futils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -95,15 +99,16 @@ public class TextReader extends ActionBarActivity {
         ma.setVisibility(View.VISIBLE);
         String skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#5677fc");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
-        /*if(Build.VERSION.SDK_INT>=19){
-            SystemBarTintManager tintManager = new SystemBarTintManager(this);
-            tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintColor(Color.parseColor(skin));
-            FrameLayout a=(FrameLayout)ma.getParent();
-            FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) a.getLayoutParams();
-            SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
-            p.setMargins(0,config.getPixelInsetTop(true),0,0);
-        }*/
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // status bar
+        if (Build.VERSION.SDK_INT >= 21) {
+
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(Color.parseColor(skin));
+        }
         rootMode = PreferenceManager.getDefaultSharedPreferences(c)
         .getBoolean("rootmode", false);
         if (path != null) {
@@ -197,6 +202,7 @@ TextWatcher t=new TextWatcher() {
                 return true;
             case R.id.details:
                 details(path);
+                break;
         }
         return super.onOptionsItemSelected(menu);
     }

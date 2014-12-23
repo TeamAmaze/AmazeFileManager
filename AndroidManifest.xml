@@ -40,7 +40,7 @@
         <activity
             android:label="Amaze File Manager"
             android:name=".activities.MainActivity"
-            android:theme="@style/LightTheme">
+            android:theme="@style/appCompatLight">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
 
