@@ -59,15 +59,21 @@
     <!-- appCompat -->
     <!-- light -->
     <style name="appCompatLight" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="android:actionOverflowButtonStyle">@style/OverflowActionMode</item>
+        <item name="android:actionModeBackground">@drawable/action_bar</item>
+        <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_48dp</item>
 
     </style>
     <!-- dark -->
     <style name="appCompatDark" parent="Theme.AppCompat.NoActionBar">
 
-        <item name="windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="android:actionOverflowButtonStyle">@style/OverflowActionModeDark</item>
+        <item name="android:actionModeBackground">@drawable/action_bar_dark</item>
+        <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_36dp</item>
     </style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">

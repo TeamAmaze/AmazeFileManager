@@ -145,6 +145,7 @@ public class MainActivity extends ActionBarActivity {
     public Spinner tabsSpinner;
     public boolean mRingtonePickerIntent = false,restart=false;
     private MenuItem progress_bar;
+    public Toolbar toolbar;
 
     /**
      * Called when the activity is first created.
@@ -185,10 +186,9 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.main_toolbar);
 
         // Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
+        toolbar = (Toolbar) findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
         aBoolean = Sp.getBoolean("view", true);
         //ImageView overflow = ((ImageView)findViewById(R.id.action_overflow));
 

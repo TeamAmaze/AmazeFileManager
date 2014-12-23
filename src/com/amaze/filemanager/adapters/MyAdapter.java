@@ -76,8 +76,9 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         notifyDataSetChanged();
         if (main.selection == false || main.mActionMode == null) {
             main.selection = true;
-            main.mActionMode = main.getActivity().startActionMode(
-                    main.mActionModeCallback);
+            /*main.mActionMode = main.getActivity().startActionMode(
+                    main.mActionModeCallback);*/
+            main.mActionMode = main.mainActivity.toolbar.startActionMode(main.mActionModeCallback);
         }
         main.mActionMode.invalidate();
         if (getCheckedItemPositions().size() == 0) {

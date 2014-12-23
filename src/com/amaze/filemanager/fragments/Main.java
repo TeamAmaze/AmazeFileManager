@@ -141,7 +141,7 @@ public class Main extends android.support.v4.app.Fragment {
     public IconHolder ic;
     private List<Tab> content;
     private ArrayList<String> list1;
-    private MainActivity mainActivity;
+    public MainActivity mainActivity;
     public String skin;
     public int skinselection;
     public int theme;
