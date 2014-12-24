@@ -118,8 +118,11 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
 
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.spinner_dropdown_layout, parent, false);
-
         final TextView textView = (TextView) row.findViewById(R.id.spinnerText);
+        if(tabFragment.theme1==1) {
+            row.setBackgroundResource(R.drawable.spinner_row_dark);
+            textView.setTextColor(Color.parseColor("#ffffff"));
+        }
         LinearLayout linearLayout = (LinearLayout) row.findViewById(R.id.textParent);
         ImageButton imageButton = (ImageButton) row.findViewById(R.id.spinnerButton);
         if(items.get(position).equals("/"))
@@ -142,8 +145,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
        //     textView.setTypeface(null, Typeface.BOLD);
 
         }else imageButton.setVisibility(View.GONE);
-
-        linearLayout.setOnClickListener(new View.OnClickListener() {
+        row.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {

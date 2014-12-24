@@ -39,18 +39,18 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_width="match_parent"
             android:minHeight="?attr/actionBarSize"
-            app:theme="?attr/toolbar_theme"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="?attr/popup">
 
             <Spinner
                 android:id="@+id/tab_spinner"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
+                android:minWidth="80dp"
                 android:layout_height="match_parent"
                 android:paddingLeft="16dp"
                 android:gravity="center_vertical"
-                android:background="@drawable/item_backgrund"
                 android:minHeight="?android:attr/listPreferredItemHeightSmall"
-                android:visibility="gone" />
+                 />
         </android.support.v7.widget.Toolbar>
 
         <FrameLayout

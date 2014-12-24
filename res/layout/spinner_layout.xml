@@ -38,14 +38,5 @@
         android:maxWidth="150dp"
         android:gravity="center_vertical"/>
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="?android:borderlessButtonStyle"
-            android:src="@drawable/spinner_triangle"
-            android:clickable="false"
-            android:background="@null"
-            android:layout_toRightOf="@id/spinnerText"
-            android:layout_gravity="center_vertical"/>
 
     </RelativeLayout>

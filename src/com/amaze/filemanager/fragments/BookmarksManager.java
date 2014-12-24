@@ -87,7 +87,9 @@ ListView vl;int theme,theme1;
                 theme1 = 1;
             } else
                 theme1 = 0;
-        }m=(MainActivity)getActivity();
+        }
+        if(theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+        m=(MainActivity)getActivity();
         getListView().setDivider(null);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
   //      getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);

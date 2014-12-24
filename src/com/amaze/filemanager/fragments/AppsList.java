@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -55,6 +56,7 @@ import com.melnykov.fab.FloatingActionButton;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -96,6 +98,16 @@ public class AppsList extends ListFragment {
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         ListView vl = getListView();
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int theme=Integer.parseInt(Sp.getString("theme","0"));
+        int theme1 = theme;
+        if (theme == 2) {
+            if(hour<=6 || hour>=18) {
+                theme1 = 1;
+            } else
+                theme1 = 0;
+        }if(theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
         if (uimode == 1) {
             float scale = getResources().getDisplayMetrics().density;
             int dpAsPixels = (int) (5 * scale + 0.5f);

@@ -97,7 +97,7 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                 theme1 = 1;
             } else
                 theme1 = 0;
-        }if(theme1==1){setTheme(R.style.appCompatDark);}
+        }if(theme1==1){setTheme(R.style.appCompatDark);getWindow().getDecorView().setBackgroundColor(Color.BLACK);}
         setContentView(R.layout.search);
         android.support.v7.widget.Toolbar toolbar=(android.support.v7.widget.Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

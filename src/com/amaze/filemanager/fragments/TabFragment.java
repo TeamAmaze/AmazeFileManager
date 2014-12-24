@@ -31,6 +31,7 @@ import com.amaze.filemanager.utils.ZipObj;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -50,13 +51,23 @@ public class TabFragment extends android.support.v4.app.Fragment {
     MainActivity mainActivity;
     TabSpinnerAdapter tabSpinnerAdapter;
     public ArrayList<String> tabs=new ArrayList<String>();
-
+    public int theme1;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment,
                 container, false);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int theme=Integer.parseInt(Sp.getString("theme","0"));
+        theme1 = theme;
+        if (theme == 2) {
+            if(hour<=6 || hour>=18) {
+                theme1 = 1;
+            } else
+                theme1 = 0;
+        }
         path0= Sp.getString("tab0","");
         path1= Sp.getString("tab1","/");
        // Toast.makeText(getActivity(),path0,Toast.LENGTH_LONG).show();

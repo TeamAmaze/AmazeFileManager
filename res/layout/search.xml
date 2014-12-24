@@ -26,7 +26,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:paddingTop="16dp"
         android:layout_below="@id/toolbar"
         android:paddingBottom="16dp"
@@ -35,7 +35,7 @@
         <EditText
             android:id="@+id/fname"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:fontFamily="sans-serif-light"
             android:textSize="18sp"
             android:inputType="textCapSentences|textMultiLine"
