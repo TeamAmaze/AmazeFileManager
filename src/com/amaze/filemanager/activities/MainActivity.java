@@ -649,7 +649,7 @@ e.printStackTrace();}
         View progress = layoutInflater.inflate(R.layout.toolbar_progress, null);
         progress.setLayoutParams(new ViewGroup.LayoutParams(48, 48));
 
-        try {
+        try {tabsSpinner.setVisibility(View.VISIBLE);
             TabFragment tabFragment=getFragment();
             String name=tabFragment.getTab1().getClass().getName();
 
@@ -683,6 +683,8 @@ e.printStackTrace();}
             }
             progress_bar.setActionView(progress);
         } catch (ClassCastException e) {
+            tabsSpinner.setVisibility(View.GONE);
+            toolbar.setTitle(list.get(select));
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
