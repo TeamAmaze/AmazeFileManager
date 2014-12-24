@@ -195,7 +195,7 @@ public class ZipTask extends Service {
         private void compressFile(int id, File file, String path) throws IOException {
 
             if (!file.isDirectory()) {
-                byte[] buf = new byte[8192];
+                byte[] buf = new byte[20480];
                 int len;
                 FileInputStream in = new FileInputStream(file);
                     zos.putNextEntry(new ZipEntry(path + "/" + file.getName()));

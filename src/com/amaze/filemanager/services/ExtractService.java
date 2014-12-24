@@ -141,7 +141,7 @@ long copiedbytes=0,totalbytes=0;
                 new FileOutputStream(outputFile));
         try {
             int len;
-            byte buf[] = new byte[8192];
+            byte buf[] = new byte[20480];
             while ((len = inputStream.read(buf)) > 0) {
                 //System.out.println(id + " " + hash.get(id));
                 if (hash.get(id)) {
@@ -179,7 +179,7 @@ long copiedbytes=0,totalbytes=0;
                 new FileOutputStream(outputFile));
         try {
             int len;
-            byte buf[] = new byte[8192];
+            byte buf[] = new byte[20480];
             while ((len = inputStream.read(buf)) > 0) {
                 //System.out.println(id + " " + hash.get(id));
                 if (hash.get(id)) {
@@ -216,7 +216,7 @@ long copiedbytes=0,totalbytes=0;
                 new FileOutputStream(outputFile));
         try {
             int len;
-            byte buf[] = new byte[8192];
+            byte buf[] = new byte[20480];
             while ((len = zipfile.read(buf)) > 0) {
                 //System.out.println(id + " " + hash.get(id));
                 if (hash.get(id)) {

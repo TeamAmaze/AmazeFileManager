@@ -29,6 +29,6 @@
         android:layout_gravity="top"
         android:textColor="#ffffff"
         android:paddingBottom="4dp"
-        android:elevation="10dp"
+        android:elevation="7dp"
         android:paddingTop="4dp" />
 </android.support.v4.view.ViewPager>
