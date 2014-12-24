@@ -67,7 +67,7 @@
 			android:uiOptions="splitActionBarWhenNarrow"
             android:label="Settings"
             android:name=".activities.Preferences" 
-			android:theme="@style/DarkTheme">
+			android:theme="@style/appCompatLight">
            
         </activity>
 		<activity
@@ -76,7 +76,7 @@
             android:name="com.amaze.filemanager.activities.TextReader" 
 			android:theme="@style/appCompatLight">
             <intent-filter
-                android:label="Amaze File Manager">
+                android:label="Amaze Text Viewer">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/*" />

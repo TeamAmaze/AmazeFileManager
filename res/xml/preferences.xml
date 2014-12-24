@@ -19,8 +19,10 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/ui">
-
-        <Preference
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/theme"
+            android:entryValues="@array/ints1"
             android:key="theme"
             android:title="@string/theme" />
         <Preference
@@ -40,8 +42,10 @@
             android:defaultValue="true"
             android:summary="@string/circularimages"
             android:title="@string/circularicons"/>
-
-        <Preference
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/uimode"
+            android:entryValues="@array/ints"
             android:key="uimode"
             android:summary="@string/chooseUI"
             android:title="@string/uimode" />
@@ -73,16 +77,24 @@
             android:key="goBack_checkbox"
             android:title="@string/back_title"
             android:summary="@string/back_summary" />
-        <Preference
+        <ListPreference
+            android:entries="@array/columns"
+            android:entryValues="@array/columns"
             android:key="columns"
             android:title="@string/gridcolumnno" />
 
-        <Preference
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/directorysortmode"
+            android:entryValues="@array/ints1"
             android:key="dirontop"
             android:title="@string/directorysort" />
 
 
-        <Preference
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/sortby"
+            android:entryValues="@array/ints2"
             android:key="sortby"
             android:title="@string/sortby" />
     

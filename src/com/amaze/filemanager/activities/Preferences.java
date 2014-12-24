@@ -27,13 +27,15 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.amaze.filemanager.R;
 
 import java.util.Calendar;
 
-public class Preferences extends Activity {
+public class Preferences extends ActionBarActivity {
     int theme;
 
     @Override
@@ -52,17 +54,18 @@ public class Preferences extends Activity {
         }
 
         if (theme == 1) {
-            setTheme(android.R.style.Theme_Holo);
+            setTheme(R.style.appCompatDark);
         } else {
-            setTheme(android.R.style.Theme_Holo_Light_DarkActionBar);
+            setTheme(R.style.appCompatLight);
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prefsfrag);
-
+        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
         String skin = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("skin_color", "#5677fc");
-        getActionBar().setIcon(R.drawable.ic_launcher1);
-        getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
-        getActionBar().setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+
+        toolbar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
     }
 
     @Override
