@@ -90,10 +90,10 @@ ListView vl;int theme,theme1;
         }m=(MainActivity)getActivity();
         getListView().setDivider(null);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
-        getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
-        getActivity().findViewById(R.id.search).setVisibility(View.INVISIBLE);
-        getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
-        ((TextView) getActivity().findViewById(R.id.title)).setText(utils.getString(getActivity(), R.string.bookmanag));
+  //      getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
+    //    getActivity().findViewById(R.id.search).setVisibility(View.INVISIBLE);
+      //  getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
+       // ((TextView) getActivity().findViewById(R.id.title)).setText(utils.getString(getActivity(), R.string.bookmanag));
 
         Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
         FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);

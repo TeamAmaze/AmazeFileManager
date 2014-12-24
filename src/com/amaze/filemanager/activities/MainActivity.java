@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.RingtoneManager;
@@ -648,24 +649,50 @@ e.printStackTrace();}
         View progress = layoutInflater.inflate(R.layout.toolbar_progress, null);
         progress.setLayoutParams(new ViewGroup.LayoutParams(48, 48));
 
-        TabFragment tabFragment=getFragment();
-        String name=tabFragment.getTab1().getClass().getName();
+        try {
+            TabFragment tabFragment=getFragment();
+            String name=tabFragment.getTab1().getClass().getName();
 
-        if (aBoolean) {
-            s.setTitle(getResources().getString(R.string.gridview));
-        } else {
-            s.setTitle(getResources().getString(R.string.listview));
+            if (aBoolean) {
+                s.setTitle(getResources().getString(R.string.gridview));
+            } else {
+                s.setTitle(getResources().getString(R.string.listview));
+            }
+            if(name.contains("Main")) {
+                invalidatePasteButton(paste);
+                search.setVisible(true);
+                menu.findItem(R.id.search).setVisible(true);
+                menu.findItem(R.id.home).setVisible(true);
+                menu.findItem(R.id.history).setVisible(true);
+                menu.findItem(R.id.item4).setVisible(true);
+                menu.findItem(R.id.item10).setVisible(true);
+                menu.findItem(R.id.hiddenitems).setVisible(true);
+                menu.findItem(R.id.view).setVisible(true);
+               invalidatePasteButton(menu.findItem(R.id.paste));
+            } else {
+                search.setVisible(false);
+                menu.findItem(R.id.search).setVisible(false);
+                menu.findItem(R.id.home).setVisible(false);
+                menu.findItem(R.id.history).setVisible(false);
+                menu.findItem(R.id.item4).setVisible(false);
+                menu.findItem(R.id.item10).setVisible(false);
+                menu.findItem(R.id.hiddenitems).setVisible(false);
+                menu.findItem(R.id.view).setVisible(false);
+                menu.findItem(R.id.paste).setVisible(false);
+                paste.setVisible(false);
+            }
+            progress_bar.setActionView(progress);
+        } catch (ClassCastException e) {
+            menu.findItem(R.id.search).setVisible(false);
+            menu.findItem(R.id.home).setVisible(false);
+            menu.findItem(R.id.history).setVisible(false);
+            menu.findItem(R.id.item4).setVisible(false);
+            menu.findItem(R.id.item10).setVisible(false);
+            menu.findItem(R.id.hiddenitems).setVisible(false);
+            menu.findItem(R.id.view).setVisible(false);
+            menu.findItem(R.id.paste).setVisible(false);
+            e.printStackTrace();
         }
-        if(name.contains("Main")) {
-            invalidatePasteButton(paste);
-            search.setVisible(true);
-            //findViewById(R.id.action_overflow).setVisibility(View.VISIBLE);
-        } else {
-            search.setVisible(false);
-            //findViewById(R.id.action_overflow).setVisibility(View.GONE);
-            paste.setVisible(false);
-        }
-        progress_bar.setActionView(progress);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -708,7 +735,12 @@ e.printStackTrace();}
             return true;
         }
         // Handle action buttons
-        Main ma=(Main)((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+        Main ma=null;
+        try {
+            ma=(Main)((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
         switch (item.getItemId()) {
             case R.id.home:
                 ma.home();
