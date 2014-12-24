@@ -39,8 +39,8 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_width="match_parent"
             android:minHeight="?attr/actionBarSize"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            app:theme="?attr/toolbar_theme"
+            app:popupTheme="?attr/popup">
 
             <Spinner
                 android:id="@+id/tab_spinner"
