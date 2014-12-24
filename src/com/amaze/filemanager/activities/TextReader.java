@@ -166,17 +166,16 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                     BufferedWriter writer = new BufferedWriter(output);
                     writer.write(s1);
                     writer.close();
+                    output.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (output != null) {
-                        try {
-                            output.close();
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(c,"error",Toast.LENGTH_SHORT).show();
                         }
-                    }
+                    });
+                    e.printStackTrace();
+
 
             }if(!mFile.canWrite())
 
@@ -184,7 +183,13 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                 ArrayList<File> a = new ArrayList<File>();
                 a.add(f);
                 new MoveFiles(a, null, c).execute(mFile.getParent());
-            }}
+            }runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        Toast.makeText(c,"Done",Toast.LENGTH_SHORT).show();
+                    }
+                });}
             }).start();
     }
 
@@ -198,6 +203,7 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
 
         private void load(final File mFile) {
             setProgress(true);
+            this.mFile=mFile;
             Log.v("TextEditor", "Loading...");
             new Thread(new Runnable() {
                 @Override
@@ -213,18 +219,10 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                         public void run() {
                             setTitle(mFile.getName());
                         }
-                    });
+                    });try{
                     Log.v("TextEditor", "Reading file...");
-                    try {
-                        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(mFile), "UTF-8"));
-                        String line;
-                        final StringBuilder text = new StringBuilder();
-                        try {
-                            while ((line = br.readLine()) != null) {
-                                text.append(line);
-                                text.append('\n');
-                            }
-                        } catch (final OutOfMemoryError e) {
+                    try {mOriginal=FileUtils.fileRead(mFile);
+                        } catch (final Exception e) {
                             e.printStackTrace();
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -232,21 +230,18 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                                 }
                             });
                         }
-                        br.close();
                         Log.v("TextEditor", "Setting contents to input area...");
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    mOriginal = text.toString();
-                                    text.setLength(0); // clear string builder to reduce memory usage
                                     mInput.setText(mOriginal);
                                 } catch (OutOfMemoryError e) {
                                 }
                                 setProgress(false);
                             }
                         });
-                    } catch (final IOException e) {
+                    } catch (final Exception e) {
                         Log.v("TextEditor", "Error: " + e.getMessage());
                         runOnUiThread(new Runnable() {
                             @Override
@@ -276,7 +271,7 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                 checkUnsavedChanges();
                 return true;
             } else if (item.getItemId() == R.id.save) {
-                writeTextFile(mFile.getName(),mInput.getText().toString());
+                writeTextFile(mFile.getPath(),mInput.getText().toString());
                 return true;
             } else if (item.getItemId() == R.id.details) {
                utils.showProps(mFile,c,theme1);
@@ -291,7 +286,7 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            if (mTimer != null) {
+              if (mTimer != null) {
                 mTimer.cancel();
                 mTimer.purge();
                 mTimer = null;
