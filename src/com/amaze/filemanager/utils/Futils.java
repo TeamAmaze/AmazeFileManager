@@ -368,9 +368,74 @@ public class Futils {
                 }
             }
         });
+        MaterialDialog b= a.build();
+        if(f.isDirectory())b.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
+        b.show();
+    }
+
+    public void showProps(final File f, final Context c,int theme1) {
+        String date = getString(c, R.string.date) + getdate(f);
+        String items = "", size = "", name, parent;
+        name = getString(c, R.string.name) + f.getName();
+        parent = getString(c, R.string.location) + f.getParent();
+        if (f.isDirectory()) {
+            size = getString(c, R.string.size) + readableFileSize(folderSize(f));
+            items = getString(c, R.string.totalitems) + count(f,c.getResources(),true);
+        } else if (f.isFile()) {
+            items = "";
+            size = getString(c, R.string.size) + getSize(f);
+        }
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        String skin = sp.getString("skin_color", "#5677fc");
+        MaterialDialog.Builder a = new MaterialDialog.Builder(c);
+        a.title(getString(c, R.string.properties));
+        String md5="";
+        try {
+            md5="md5:"+getMD5Checksum(f.getPath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(theme1==1)
+            a.theme(Theme.DARK);
+        a.content(name + "\n" + parent + "\n" + size + "\n" + items + "\n"
+                + date+"\n"+md5);
+        a.positiveText(R.string.copy_path);
+        a.negativeText(getString(c, R.string.copy) + " md5");
+        a.neutralText(R.string.cancel);
+        a.positiveColor(Color.parseColor(skin)).negativeColor(Color.parseColor(skin)).neutralColor(Color.parseColor(skin));
+        a.callback(new MaterialDialog.Callback() {
+            @Override
+            public void onPositive(MaterialDialog materialDialog) {
+
+                copyToClipboard(c, f.getPath());
+                Toast.makeText(c, c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNegative(MaterialDialog materialDialog) {
+                try {
+                    copyToClipboard(c, getMD5Checksum(f.getPath()));
+                    Toast.makeText(c, c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
        MaterialDialog b= a.build();
         if(f.isDirectory())b.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
                b.show();
+    }
+    public boolean copyToClipboard(Context context, String text) {
+        try {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context
+                    .getSystemService(context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData
+                    .newPlainText("Path copied to clipboard", text);
+            clipboard.setPrimaryClip(clip);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public static long folderSize(File directory) {

@@ -87,17 +87,17 @@ public class ProcessViewer extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(Copy_Receiver, new IntentFilter("copy"));
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(Extract_Receiver, new IntentFilter("EXTRACT_CONDITION"));
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(Zip_Receiver, new IntentFilter("ZIPPING"));
+       (getActivity()).registerReceiver(Copy_Receiver, new IntentFilter("copy"));
+       (getActivity()).registerReceiver(Extract_Receiver, new IntentFilter("EXTRACT_CONDITION"));
+       (getActivity()).registerReceiver(Zip_Receiver, new IntentFilter("ZIPPING"));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(Copy_Receiver);
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(Extract_Receiver);
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(Zip_Receiver);
+       (getActivity()).unregisterReceiver(Copy_Receiver);
+       (getActivity()).unregisterReceiver(Extract_Receiver);
+       (getActivity()).unregisterReceiver(Zip_Receiver);
         rootView.removeAllViewsInLayout();
         CopyIds.clear();
         CancelledCopyIds.clear();

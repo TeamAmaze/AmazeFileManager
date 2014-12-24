@@ -23,24 +23,27 @@
 
     <include layout="@layout/toolbar" />
 
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:singleLine="false"
-        android:cursorVisible="true"
-        android:background="@null"
-        android:imeOptions="actionDone|flagNoFullscreen"
-        android:inputType="textMultiLine|textImeMultiLine"
-        android:text="@null"
-        android:textAppearance="@style/secondary_text_appearance"
-        android:id="@+id/fname" />
 
-    <ProgressBar
-        android:layout_width="fill_parent"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:layout_below="@+id/toolbar"
-        android:id="@+id/pbar" />
+        android:paddingTop="16dp"
+        android:layout_below="@id/toolbar"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false">
 
+        <EditText
+            android:id="@+id/fname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:textSize="18sp"
+            android:inputType="textCapSentences|textMultiLine"
+
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:minHeight="120dp"
+            android:gravity="top" />
+
+    </ScrollView>
 </RelativeLayout>

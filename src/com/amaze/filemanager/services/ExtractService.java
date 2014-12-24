@@ -96,7 +96,7 @@ ArrayList<String> entries=new ArrayList<String>();
 long copiedbytes=0,totalbytes=0;
 
         private void publishResults(String a, int p1,  int id, long total, long done, boolean b) {
-            Intent intent = new Intent(EXTRACT_CONDITION);
+            if(hash.get(id)){Intent intent = new Intent(EXTRACT_CONDITION);
             mBuilder.setProgress(100, p1, false);
             mBuilder.setContentText(new File(a).getName()+" "+utils.readableFileSize(done)+"/"+utils.readableFileSize(total));
             int id1=Integer.parseInt("123"+id);
@@ -111,9 +111,9 @@ long copiedbytes=0,totalbytes=0;
             intent.putExtra("id", id);
             intent.putExtra("p1", p1);
             intent.putExtra("extract_completed", b);
-            LocalBroadcastManager.getInstance(c).sendBroadcast(intent);
+            sendBroadcast(intent);
 
-        }
+        }}
         private void createDir(File dir) {
         if (dir.exists()) {
             return;

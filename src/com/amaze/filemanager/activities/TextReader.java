@@ -22,6 +22,7 @@ package com.amaze.filemanager.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -32,6 +33,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,6 +54,8 @@ import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.Futils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
+import org.codehaus.plexus.util.FileUtils;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -62,44 +66,46 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
+public class TextReader extends ActionBarActivity implements TextWatcher {
 
-public class TextReader extends ActionBarActivity {
-    EditText ma;
     String path;
-    ProgressBar p;
     Futils utils=new Futils();
     Context c=this;
-    File file;
     boolean rootMode;
-    boolean mModified=false;
-    String mOriginal="";
+    int theme,theme1;
+    SharedPreferences Sp;
+
+    private EditText mInput;
+    private java.io.File mFile;
+    private String mOriginal;
     private Timer mTimer;
-    private Intent intent;
+    private boolean mModified;
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Sp=PreferenceManager.getDefaultSharedPreferences(this);
+        theme=Integer.parseInt(Sp.getString("theme","0"));
+        theme1 = theme;
+        if (theme == 2) {
+            Calendar calendar = Calendar.getInstance();
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            if(hour<=6 || hour>=18) {
+                theme1 = 1;
+            } else
+                theme1 = 0;
+        }if(theme1==1){setTheme(R.style.appCompatDark);}
         setContentView(R.layout.search);
-        intent = getIntent();
-        if (intent.getAction() != null) {
-
-            Uri uri = getIntent().getData();
-            path = uri.getPath();
-        } else {
-
-            path = this.getIntent().getStringExtra("path");
-        }
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        android.support.v7.widget.Toolbar toolbar=(android.support.v7.widget.Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        ma = (EditText) findViewById(R.id.fname);
-        p = (ProgressBar) findViewById(R.id.pbar);
-        ma.setVisibility(View.VISIBLE);
-        String skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#5677fc");
+        String skin = Sp.getString("skin_color", "#5677fc");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        rootMode = PreferenceManager.getDefaultSharedPreferences(c)
+                .getBoolean("rootmode", false);
 
         // status bar
         if (Build.VERSION.SDK_INT >= 21) {
@@ -109,66 +115,17 @@ public class TextReader extends ActionBarActivity {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(Color.parseColor(skin));
         }
-        rootMode = PreferenceManager.getDefaultSharedPreferences(c)
-        .getBoolean("rootmode", false);
-        if (path != null) {
-            file=new File(path);
-            //Toast.makeText(this, "" + path, Toast.LENGTH_SHORT).show();
-            new LoadText().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
-        } else {
-            Toast.makeText(this,utils.getString(this,R.string.cant_read_file) , Toast.LENGTH_LONG).show();
-            finish();
-        }
-        ma.addTextChangedListener(t);
-        getSupportActionBar().setTitle(file.getName());
-        getSupportActionBar().setSubtitle(path);
+        mInput = (EditText) findViewById(R.id.fname);
+        mInput.addTextChangedListener(this);
+        if(theme1==1)mInput.setBackgroundColor(Color.parseColor("#000000"));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (getIntent().getData() != null)load(new File(getIntent().getData().getPath()));
+        else load(new File(getIntent().getStringExtra("path")));
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.text, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu m) {
-        if(file!=null)if(!file.canWrite() && !rootMode){
-
-            m.findItem(R.id.save).setVisible(false);
-        }else if(mModified)
-            m.findItem(R.id.save).setVisible(true);
-        else m.findItem(R.id.save).setVisible(false);
-        return super.onPrepareOptionsMenu(m);
-    }
-TextWatcher t=new TextWatcher() {
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        if (mTimer != null) {
-            mTimer.cancel();
-            mTimer.purge();
-            mTimer = null;
-        }
-        mTimer = new Timer();
-        mTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                mModified = !ma.getText().toString().equals(mOriginal);
-                invalidateOptionsMenu();
-            }
-        }, 250);
-    }
-
-    @Override
-    public void afterTextChanged(Editable editable) {
-
-    }
-};   private void checkUnsavedChanges() {
-        if (mOriginal != null && !mOriginal.equals(ma.getText().toString())) {
+    private void checkUnsavedChanges() {
+        if (mOriginal != null && !mOriginal.equals(mInput.getText().toString())) {
             new MaterialDialog.Builder(this)
                     .title(R.string.unsavedchanges)
                     .content(R.string.unsavedchangesdesc)
@@ -177,7 +134,7 @@ TextWatcher t=new TextWatcher() {
                     .callback(new MaterialDialog.Callback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
-                            writeTextFile(file.getPath(),ma.getText().toString());
+                            writeTextFile(mFile.getPath(), mInput.getText().toString());
                             finish();
                         }
 
@@ -187,36 +144,18 @@ TextWatcher t=new TextWatcher() {
                         }
                     })
                     .build().show();
+        } else {
+            finish();
         }
-        else { finish(); }
-
-    }
-    @Override
-    public void onBackPressed(){   if(file!=null)if(file.canWrite() || rootMode){
-        checkUnsavedChanges();}else finish();}
-    @Override
-    public boolean onOptionsItemSelected(MenuItem menu) {
-        switch (menu.getItemId()) {
-            case R.id.save:
-                writeTextFile(path, ma.getText().toString());
-                return true;
-            case R.id.details:
-                details(path);
-                break;
-        }
-        return super.onOptionsItemSelected(menu);
     }
 
-    private void details(String path) {
-        Toast.makeText(TextReader.this, path, Toast.LENGTH_LONG).show();
-    }
 
     File f;
     public void writeTextFile(String fileName, String s) {
        f = new File(fileName);
         mOriginal=s;
        final String s1=s;
-        if(!file.canWrite()){f=new File(this.getFilesDir()+"/"+f.getName());}
+        if(!mFile.canWrite()){f=new File(this.getFilesDir()+"/"+f.getName());}
         Toast.makeText(c,R.string.saving,Toast.LENGTH_SHORT).show();
         new Thread(new Runnable() {
             @Override
@@ -239,63 +178,135 @@ TextWatcher t=new TextWatcher() {
                         }
                     }
 
-            }if(!file.canWrite())
+            }if(!mFile.canWrite())
 
             {
                 ArrayList<File> a = new ArrayList<File>();
                 a.add(f);
-                new MoveFiles(a, null, c).execute(file.getParent());
+                new MoveFiles(a, null, c).execute(mFile.getParent());
             }}
             }).start();
     }
 
-    class LoadText extends AsyncTask<String, String, String> {
-        @Override
-        public void onPreExecute() {
-            ma.setVisibility(View.GONE);
-            p.setVisibility(View.VISIBLE);
+
+
+
+        private void setProgress(boolean show) {
+            //mInput.setVisibility(show ? View.GONE : View.VISIBLE);
+         //   findViewById(R.id.progress).setVisibility(show ? View.VISIBLE : View.GONE);
         }
 
-        @Override
-        public void onProgressUpdate(String... x){
-Toast.makeText(c,R.string.cant_read_file,Toast.LENGTH_SHORT).show();    }
-        public String doInBackground(String... p) {
-            String returnValue = "";
-            FileReader file = null;
-            String line = "";
-            try {
-                file = new FileReader(p[0]);
-                BufferedReader reader = new BufferedReader(file);
+        private void load(final File mFile) {
+            setProgress(true);
+            Log.v("TextEditor", "Loading...");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if (!mFile.exists()) {
+                        Log.v("TextEditor", "File doesn't exist...");
+                        finish();
+                        return;
+                    }
 
-                while ((line = reader.readLine()) != null) {
-                    returnValue += line+"\n" ;
-              }
-                reader.close();
-            } catch (FileNotFoundException e) {
-              publishProgress("");
-            } catch (IOException e) {
-              publishProgress("");
-            } finally {
-                if (file != null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setTitle(mFile.getName());
+                        }
+                    });
+                    Log.v("TextEditor", "Reading file...");
                     try {
-                        file.close();
-
-                    } catch (IOException e) {
-
-                      publishProgress("");
-                        e.printStackTrace();
+                        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(mFile), "UTF-8"));
+                        String line;
+                        final StringBuilder text = new StringBuilder();
+                        try {
+                            while ((line = br.readLine()) != null) {
+                                text.append(line);
+                                text.append('\n');
+                            }
+                        } catch (final OutOfMemoryError e) {
+                            e.printStackTrace();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                }
+                            });
+                        }
+                        br.close();
+                        Log.v("TextEditor", "Setting contents to input area...");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    mOriginal = text.toString();
+                                    text.setLength(0); // clear string builder to reduce memory usage
+                                    mInput.setText(mOriginal);
+                                } catch (OutOfMemoryError e) {
+                                }
+                                setProgress(false);
+                            }
+                        });
+                    } catch (final IOException e) {
+                        Log.v("TextEditor", "Error: " + e.getMessage());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                            }
+                        });
                     }
                 }
-            }
-            return returnValue;
+            }).start();
         }
 
         @Override
-        public void onPostExecute(String s) {
-            p.setVisibility(View.GONE);
-            mOriginal=s;
-            TextReader.this.invalidateOptionsMenu();
-            ma.setVisibility(View.VISIBLE);
-           ma.setText(s);
+        public void onBackPressed() {
+            checkUnsavedChanges();
         }
-    }}
+
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+            getMenuInflater().inflate(R.menu.text, menu);
+            menu.findItem(R.id.save).setVisible(mModified);
+            return super.onCreateOptionsMenu(menu);
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            if (item.getItemId() == android.R.id.home) {
+                checkUnsavedChanges();
+                return true;
+            } else if (item.getItemId() == R.id.save) {
+                writeTextFile(mFile.getName(),mInput.getText().toString());
+                return true;
+            } else if (item.getItemId() == R.id.details) {
+               utils.showProps(mFile,c,theme1);
+                return true;
+            }
+            return super.onOptionsItemSelected(item);
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            if (mTimer != null) {
+                mTimer.cancel();
+                mTimer.purge();
+                mTimer = null;
+            }
+            mTimer = new Timer();
+            mTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    mModified = !mInput.getText().toString().equals(mOriginal);
+                    invalidateOptionsMenu();
+                }
+            }, 250);
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+        }
+    }

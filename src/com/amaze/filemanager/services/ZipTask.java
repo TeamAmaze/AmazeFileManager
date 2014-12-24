@@ -124,7 +124,7 @@ public class ZipTask extends Service {
         intent.putExtra("id", id);
         intent.putExtra("name", fileName);
         intent.putExtra(EXTRACT_COMPLETED, b);
-        LocalBroadcastManager.getInstance(this).   sendBroadcast(intent);
+        sendBroadcast(intent);
 
     }
 

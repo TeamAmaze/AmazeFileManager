@@ -132,7 +132,7 @@ public class CopyService extends Service {
         intent.putExtra("p2", p2);
         intent.putExtra("move", move);
         intent.putExtra("COPY_COMPLETED", b);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        sendBroadcast(intent);
 
     }
 

@@ -83,19 +83,22 @@
             </intent-filter>
 
         </activity>
-   <service
+         <service
 			android:name = "com.amaze.filemanager.services.ExtractService"
 			android:label = "Extracting"
+            android:process=":amaze"
 			>	
-		</service><service
+		</service>
+        <service
 			android:name = "com.amaze.filemanager.services.ZipTask"
 			android:label = "Compressing"
-		>
+            android:process=":amaze"
+            >
 		</service>
 			<service
 			android:name = "com.amaze.filemanager.services.CopyService"
 			android:label = "Copying"
-
+            android:process=":amaze"
                 >
 		</service>
     </application>
