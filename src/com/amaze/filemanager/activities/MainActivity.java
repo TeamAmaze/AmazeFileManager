@@ -648,6 +648,23 @@ e.printStackTrace();}
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View progress = layoutInflater.inflate(R.layout.toolbar_progress, null);
         progress.setLayoutParams(new ViewGroup.LayoutParams(48, 48));
+        progress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (select != 102) {
+                    android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_frame, new ProcessViewer());
+                    //   transaction.addToBackStack(null);
+                    select = 102;
+
+                    //title.setText(utils.getString(con, R.string.process_viewer));
+                    //Commit the transaction
+                    transaction.commit();
+                } else {
+                    selectItem(0);
+                }invalidateOptionsMenu();
+            }
+        });
 
         try {tabsSpinner.setVisibility(View.VISIBLE);
             TabFragment tabFragment=getFragment();
@@ -1006,8 +1023,7 @@ e.printStackTrace();}
         public void onReceive(Context context, Intent intent) {
             Bundle b = intent.getExtras();
             if (b != null) {
-                //progress.setVisibility(b.getBoolean("run", false) ? View.VISIBLE : View.INVISIBLE);
-                //supportInvalidateOptionsMenu();
+                if(progress_bar!=null)
                 progress_bar.setVisible(b.getBoolean("run", false) ? true : false);
             }
         }

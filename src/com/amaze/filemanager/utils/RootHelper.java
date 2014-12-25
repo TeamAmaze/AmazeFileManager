@@ -34,14 +34,24 @@ public class RootHelper
     public static String runAndWait(String cmd,boolean root)
     {
 
-        CommandCapture cc = new CommandCapture(0, false, cmd);
+Command c=new Command(0,cmd) {
+    @Override
+    public void commandOutput(int i, String s) {
 
+    }
+
+    @Override
+    public void commandTerminated(int i, String s) {
+
+    }
+
+    @Override
+    public void commandCompleted(int i, int i2) {
+
+    }
+};
         try
-        {if(root)
-            Shell.runRootCommand(cc);
-        else
-            Shell.runCommand(cc);
-        }
+        {RootTools.getShell(root).add(c);}
         catch (Exception e)
         {
             //       Logger.errorST("Exception when trying to run shell command", e);
@@ -49,12 +59,12 @@ public class RootHelper
             return null;
         }
 
-        if (!waitForCommand(cc))
+        if (!waitForCommand(c))
         {
             return null;
         }
 
-        return cc.toString();
+        return c.toString();
     }
     public static ArrayList<String> runAndWait1(String cmd, final boolean root)
     {
@@ -157,12 +167,12 @@ e.printStackTrace();
     public static ArrayList<String[]> getFilesList(String path,boolean root,boolean showHidden)
     {
         String cpath=getCommandLineString(path);
-        String p="";
+        String p=" ";
         if(showHidden)p="a ";
         Futils futils=new Futils();
         ArrayList<String[]> a=new ArrayList<String[]>();
         ArrayList<String> ls=new ArrayList<String>();;
-        if (root)ls=runAndWait1("ls -l "+p+cpath,root);
+        if (root)ls=runAndWait1("ls -l"+p+cpath,root);
         if (ls ==null || ls.size()==0)
 
         {
@@ -176,6 +186,7 @@ e.printStackTrace();
                         array[0]=path+"/"+array[0];
                         a.add(array);
                     } catch (Exception e) {
+                   System.out.println(file);
                         e.printStackTrace();
                     }
 

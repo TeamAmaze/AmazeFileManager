@@ -42,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.melnykov.fab.FloatingActionButton;
@@ -71,12 +72,9 @@ public class ProcessViewer extends Fragment {
         FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         floatingActionButton.hide(true);
 
-        getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
-        getActivity().findViewById(R.id.search).setVisibility(View.INVISIBLE);
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
-        getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
         rootView = (LinearLayout) root.findViewById(R.id.secondbut);
-        getActivity().getActionBar().setSubtitle(utils.getString(getActivity(),R.string.processes));
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle(utils.getString(getActivity(),R.string.processes));
         ((LinearLayout) getActivity().findViewById(R.id.buttons))
                 .setVisibility(View.GONE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());

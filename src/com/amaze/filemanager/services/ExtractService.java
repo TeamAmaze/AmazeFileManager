@@ -63,6 +63,10 @@ public class ExtractService extends Service {
     Futils utils = new Futils();
     // Binder given to clients
     HashMap<Integer, Boolean> hash = new HashMap<Integer, Boolean>();
+    NotificationManager mNotifyManager;
+    NotificationCompat.Builder mBuilder;
+    ArrayList<String> entries=new ArrayList<String>();
+    boolean eentries;
 
     @Override
     public void onCreate() {
@@ -73,14 +77,13 @@ public class ExtractService extends Service {
         notification.setLatestEventInfo(this, utils.getString(this,R.string.Extracting_fles), "", pendingIntent);
         startForeground(002, notification);
         registerReceiver(receiver1, new IntentFilter("excancel"));
-    }NotificationManager mNotifyManager;
-    NotificationCompat.Builder mBuilder;
-ArrayList<String> entries=new ArrayList<String>();
-    boolean eentries;
+    }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle b = new Bundle();
         b.putInt("id", startId);
+        mNotifyManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String file = intent.getStringExtra("zip");
         eentries=intent.getBooleanExtra("entries1",false);
         if(eentries){
@@ -93,17 +96,19 @@ ArrayList<String> entries=new ArrayList<String>();
         return START_REDELIVER_INTENT;
     }
     public class Doback extends AsyncTask<Bundle, Void, Integer> {
-long copiedbytes=0,totalbytes=0;
+    long copiedbytes=0,totalbytes=0;
 
         private void publishResults(String a, int p1,  int id, long total, long done, boolean b) {
             if(hash.get(id)){Intent intent = new Intent(EXTRACT_CONDITION);
             mBuilder.setProgress(100, p1, false);
+                mBuilder.setOngoing(true);
             mBuilder.setContentText(new File(a).getName()+" "+utils.readableFileSize(done)+"/"+utils.readableFileSize(total));
             int id1=Integer.parseInt("123"+id);
             mNotifyManager.notify(id1,mBuilder.build());
             if(p1==100){mBuilder.setContentTitle("Extract completed");
                 mBuilder.setContentText(new File(a).getName()+" "+utils.readableFileSize(total));
                 mBuilder.setProgress(0,0,false);
+                mBuilder.setOngoing(false);
                 mNotifyManager.notify(id1,mBuilder.build());}
             intent.putExtra("name", a);
             intent.putExtra("total", total);
@@ -113,7 +118,9 @@ long copiedbytes=0,totalbytes=0;
             intent.putExtra("extract_completed", b);
             sendBroadcast(intent);
 
-        }}
+        }else publishCompletedResult(a,Integer.parseInt("123"+id));}
+       public void publishCompletedResult(String a,int id1){
+           mNotifyManager.cancel(id1);}
         private void createDir(File dir) {
         if (dir.exists()) {
             return;
@@ -150,9 +157,9 @@ long copiedbytes=0,totalbytes=0;
                     copiedbytes=copiedbytes+len;
                     publishResults(zipfile.getName(),Math.round(100*copiedbytes/totalbytes),id,totalbytes,copiedbytes,false);
                 } else {
-                    stopSelf(id);
                     publishResults(false);
                     publishResults(zipfile.getName(),100,id,totalbytes,copiedbytes,true);
+                    stopSelf(id);
                 }
             }
         } finally {
@@ -189,9 +196,9 @@ long copiedbytes=0,totalbytes=0;
                     publishResults(a,Math.round(100*copiedbytes/totalbytes),id,totalbytes,copiedbytes,false);
 
                 } else {
-                    stopSelf(id);
                     publishResults(a,100,id,totalbytes,copiedbytes,true);
                     publishResults(false);
+                    stopSelf(id);
                 }
             }
         }finally {
@@ -226,9 +233,9 @@ long copiedbytes=0,totalbytes=0;
                     publishResults(string,Math.round(100*copiedbytes/totalbytes),id,totalbytes,copiedbytes,false);
 
                 } else {
-                    stopSelf(id);
                     publishResults(string,100,id,totalbytes,copiedbytes,true);
                     publishResults(false);
+                    stopSelf(id);
                 }
             }
         }finally {
@@ -394,9 +401,8 @@ long copiedbytes=0,totalbytes=0;
     }
     protected Integer doInBackground(Bundle... p1) {
             String file = p1[0].getString("file");
-        mNotifyManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mBuilder = new NotificationCompat.Builder(c);
+
+        mBuilder = new NotificationCompat.Builder(cd);
         mBuilder.setContentTitle(getResources().getString(R.string.extracting))
                 .setContentText(new File(file).getName())
                 .setSmallIcon(R.drawable.ic_doc_compressed);
@@ -457,6 +463,5 @@ long copiedbytes=0,totalbytes=0;
     public IBinder onBind(Intent arg0) {
         // TODO Auto-generated method stub
         return null;
-    }Context c=this;
-}
+    }}
 
