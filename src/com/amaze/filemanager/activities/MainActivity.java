@@ -974,7 +974,7 @@ e.printStackTrace();}
         unregisterReceiver(RECIEVER);
         //progress.setVisibility(View.INVISIBLE);
         //progressWheel.setVisible(false);
-        progress_bar.setVisible(false);
+        //progress_bar.setVisible(false);
     }
 
     @Override

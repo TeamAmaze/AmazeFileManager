@@ -61,15 +61,16 @@
     <style name="appCompatLight" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionModeOverlay">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-        <item name="android:actionModeBackground">@drawable/action_bar</item>
-        <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_48dp</item>
         <item name="popup">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="toolbar_theme">@style/overflow_white1</item>
 
     </style>
-    <style name="overflow_white1" parent="ThemeOverlay.AppCompat.ActionBar">
+    <style name="overflow_white1" parent="Theme.AppCompat.Light.DarkActionBar">
 
-        <item name="android:textColorSecondary">#ffffff</item>
+        <item name="android:textColorSecondary">#000</item>
+        <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="android:actionOverflowButtonStyle">@style/OverflowActionModeDark</item>
     </style>
 
     <!-- dark -->
