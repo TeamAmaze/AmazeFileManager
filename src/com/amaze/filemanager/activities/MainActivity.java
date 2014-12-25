@@ -652,7 +652,7 @@ e.printStackTrace();}
         try {tabsSpinner.setVisibility(View.VISIBLE);
             TabFragment tabFragment=getFragment();
             String name=tabFragment.getTab1().getClass().getName();
-
+            toolbar.setTitle("");
             if (aBoolean) {
                 s.setTitle(getResources().getString(R.string.gridview));
             } else {
