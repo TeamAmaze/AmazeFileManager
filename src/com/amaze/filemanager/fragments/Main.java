@@ -589,7 +589,7 @@ public class Main extends android.support.v4.app.Fragment {
                         .getDesc());
 
                 if (x.isDirectory()) {
-
+                    hideOption(R.id.openwith,menu);
                     showOption(R.id.sethome, menu);
                     hideOption(R.id.share,menu);
                 } else if (x.getName().toLowerCase().endsWith(".zip") || x.getName().toLowerCase().endsWith(".jar") || x.getName().toLowerCase().endsWith(".apk") || x.getName().toLowerCase().endsWith(".rar")|| x.getName().toLowerCase().endsWith(".tar")|| x.getName().toLowerCase().endsWith(".tar.gz")) {
@@ -856,10 +856,10 @@ public class Main extends android.support.v4.app.Fragment {
                     mode.finish();
                     return true;
                 case R.id.openwith:
-                    if (results)utils.openWith(new File(slist.get(
+                    if (results)utils.openunknown(new File(slist.get(
                             (plist.get(0))).getDesc()), getActivity());
                     else
-                        utils.openWith(new File(list.get(
+                        utils.openunknown(new File(list.get(
                                 (plist.get(0))).getDesc()), getActivity());
 
                     return true;

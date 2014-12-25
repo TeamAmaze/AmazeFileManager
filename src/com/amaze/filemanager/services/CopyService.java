@@ -132,10 +132,16 @@ public class CopyService extends Service {
         if(hash.get(id)) {
             mBuilder.setProgress(100, p1, false);
             mBuilder.setOngoing(true);
+            int title=R.string.copying;
+            if(move)title=R.string.moving;
+            mBuilder.setContentTitle(utils.getString(c,title));
             mBuilder.setContentText(new File(a).getName()+" "+utils.readableFileSize(done)+"/"+utils.readableFileSize(total));
             int id1=Integer.parseInt("456"+id);
             mNotifyManager.notify(id1,mBuilder.build());
-            if(p1==100 || total==0){mBuilder.setContentTitle("Copy completed");
+            if(p1==100 || total==0){
+                mBuilder.setContentTitle("Copy completed");
+                if(move)
+                mBuilder.setContentTitle("Move Completed");
                 mBuilder.setContentText("");
                 mBuilder.setProgress(0,0,false);
                 mBuilder.setOngoing(false);
