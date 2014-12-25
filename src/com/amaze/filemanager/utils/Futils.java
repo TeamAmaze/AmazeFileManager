@@ -127,22 +127,53 @@ public class Futils {
         intent.setAction(android.content.Intent.ACTION_VIEW);
 
         String type = MimeTypes.getMimeType(f);
-        intent.setDataAndType(Uri.fromFile(f), type);
+        if(type!=null && type.trim().length()!=0 && !type.equals("*/*"))
+        {intent.setDataAndType(Uri.fromFile(f), type);
         try {
             c.startActivity(intent);
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
-            openWith(f,c);
-        }
+        Toast.makeText(c,R.string.noappfound,Toast.LENGTH_SHORT).show();
+        openWith(f,c);
+        }}else{openWith(f, c);}
 
     }
 
-    public void openWith(File f, Context c) {
-        Intent intent = new Intent();
-        intent.setAction(android.content.Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(f), "*/*");
-        c.startActivity(intent);
-
+    public void openWith(final File f,final Context c) {
+        MaterialDialog.Builder a=new MaterialDialog.Builder(c);
+        a.title("Open As");
+        String[] items=new String[]{"Text","Image","Video","Audio","Other"};
+        a.items(items).itemsCallback(new MaterialDialog.ListCallback() {
+            @Override
+            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                Intent intent = new Intent();
+                intent.setAction(android.content.Intent.ACTION_VIEW);
+                switch (i) {
+                    case 0:
+                        intent.setDataAndType(Uri.fromFile(f), "text/*");
+                        break;
+                    case 1:
+                        intent.setDataAndType(Uri.fromFile(f), "image/*");
+                        break;
+                    case 2:
+                        intent.setDataAndType(Uri.fromFile(f), "video/*");
+                        break;
+                    case 3:
+                        intent.setDataAndType(Uri.fromFile(f), "audio/*");
+                        break;
+                    case 4:
+                        intent.setDataAndType(Uri.fromFile(f), "*/*");
+                        break;
+                }
+                try {
+                    c.startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(c,R.string.noappfound,Toast.LENGTH_SHORT).show();
+                    openWith(f,c);
+                }
+            }
+        });
+        a.build().show();
     }public String getSize(File f) {
         long i =f.length();
 

@@ -204,6 +204,7 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
         private void load(final File mFile) {
             setProgress(true);
             this.mFile=mFile;
+            mInput.setHint("Loading...");
             Log.v("TextEditor", "Loading...");
             new Thread(new Runnable() {
                 @Override
@@ -227,6 +228,7 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    mInput.setHint(R.string.error);
                                 }
                             });
                         }
@@ -237,6 +239,7 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                                 try {
                                     mInput.setText(mOriginal);
                                 } catch (OutOfMemoryError e) {
+                                    mInput.setHint(R.string.error);
                                 }
                                 setProgress(false);
                             }
@@ -246,7 +249,8 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                            }
+
+                                mInput.setHint(R.string.error);}
                         });
                     }
                 }
@@ -276,6 +280,8 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
             } else if (item.getItemId() == R.id.details) {
                utils.showProps(mFile,c,theme1);
                 return true;
+            }else if(item.getItemId()==R.id.openwith){
+                utils.openunknown(mFile,c);
             }
             return super.onOptionsItemSelected(item);
         }

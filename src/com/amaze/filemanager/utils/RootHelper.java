@@ -180,7 +180,7 @@ e.printStackTrace();
         }
         else {
             for (String file : ls) {
-
+                    if(!file.contains("Permission denied"))
                     try {
                         String[] array=futils.parseName(file);
                         array[0]=path+"/"+array[0];
