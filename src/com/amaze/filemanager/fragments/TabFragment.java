@@ -162,7 +162,11 @@ public class TabFragment extends android.support.v4.app.Fragment {
             fragments.clear();
           tabs= savedInstanceState.getStringArrayList("tabs");
             for(int i=0;i<tabs.size();i++){
-                fragments.add(i, getActivity().getSupportFragmentManager().getFragment(savedInstanceState, "tab"+i));
+                try {
+                    fragments.add(i, getActivity().getSupportFragmentManager().getFragment(savedInstanceState, "tab"+i));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
                     getActivity().getSupportFragmentManager());
@@ -214,8 +218,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
         @Override
         public int getItemPosition (Object object)
-        {
-            int index = fragments.indexOf ((Fragment)object);
+        {int index = fragments.indexOf ((Fragment)object);
             if (index == -1)
                 return POSITION_NONE;
             else
@@ -308,21 +311,18 @@ public class TabFragment extends android.support.v4.app.Fragment {
     }
 
     public void removeTab(){
-
         int i=mViewPager.getCurrentItem();
-        mSectionsPagerAdapter=null;
-        mViewPager.setAdapter(null);
+        if(i!=0)
+            mViewPager.setCurrentItem(i-1);
+        else
+            mViewPager.setCurrentItem(i+1);
+
+        mSectionsPagerAdapter.destroyItem(mViewPager, i, fragments.get(i));
         fragments.remove(i);
-        mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
-                getActivity().getSupportFragmentManager());
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        if(i>0) {
-            mViewPager.setCurrentItem(i-1,true);
-        } else if(i==0 && fragments.size()>2) {
-            mViewPager.setCurrentItem(i+1,true);
-        }
+        tabs.remove(i);
+        mSectionsPagerAdapter.notifyDataSetChanged();
         updateSpinner();
-        mViewPager.setOffscreenPageLimit(fragments.size()+1);
+        mViewPager.setOffscreenPageLimit(fragments.size());
         updatepaths();
     }
     public void addZipViewerTab(String text) {
