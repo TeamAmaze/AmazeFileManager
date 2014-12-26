@@ -593,15 +593,16 @@ e.printStackTrace();}
                 }else{
                     try {
                         TabFragment m=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame));
-                    if(new File(list.get(i)).isDirectory())   m.addTab1(list.get(i));
+                    if(new File(list.get(i)).isDirectory())
+                        if(m.getTab().getClass().getName().contains("Main"))
+                            ((Main)m.getTab()).loadlist(new File(list.get(i)),false);
+                        else m.addTab1(list.get(i));
                         else utils.openFile(new File(list.get(i)),this);
 
                     } catch (ClassCastException e) {
                         select=null;selectItem(0);
                     }
             }
-            //title.setText(R.string.app_name);
-
         } else {
             if (i == list.size() - 2) {
 
@@ -711,7 +712,7 @@ e.printStackTrace();}
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
             e.printStackTrace();
-        }
+        }catch (Exception e){e.printStackTrace();}
         return super.onPrepareOptionsMenu(menu);
     }
 

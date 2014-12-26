@@ -172,6 +172,10 @@ public class TabFragment extends android.support.v4.app.Fragment {
                     getActivity().getSupportFragmentManager());
 
             mViewPager.setAdapter(mSectionsPagerAdapter);
+            int pos1=savedInstanceState.getInt("pos",0);
+            mViewPager.setCurrentItem(pos1);
+            mSectionsPagerAdapter.notifyDataSetChanged();
+            updatebbar(pos1);
         }
         return rootView;
     }
@@ -212,6 +216,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 i++;
             }
             outState.putStringArrayList("tabs",tabs);
+            outState.putInt("pos",mViewPager.getCurrentItem());
         }
     }
     public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
@@ -317,7 +322,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
         else
             mViewPager.setCurrentItem(i+1);
 
-        mSectionsPagerAdapter.destroyItem(mViewPager, i, fragments.get(i));
         fragments.remove(i);
         tabs.remove(i);
         mSectionsPagerAdapter.notifyDataSetChanged();
@@ -356,5 +360,25 @@ public class TabFragment extends android.support.v4.app.Fragment {
         tabSpinnerAdapter=new TabSpinnerAdapter(mainActivity.getSupportActionBar().getThemedContext(), R.layout.rowlayout,items,mainActivity.tabsSpinner,this);
         mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
         mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
+    }
+    public void updatebbar(int p1){
+        //everything is null here :(
+        /*try {
+            updateSpinner();
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        String name=fragments.get(p1).getClass().getName();
+        if(name.contains("Main")){
+            Main ma = ((Main) fragments.get(p1));
+            if(ma.current!=null)ma.updatePath(ma.current);
+        }
+        else if(name.contains("ZipViewer")){ZipViewer ma = ((ZipViewer) fragments.get(p1));
+            try {
+                ma.bbar();
+            } catch (Exception e) {
+                //     e.printStackTrace();
+            }
+        }*/
     }
 }
