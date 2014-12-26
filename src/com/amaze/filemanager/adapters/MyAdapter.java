@@ -333,8 +333,11 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             vholder.date= (TextView) view.findViewById(R.id.date);
             vholder.txtDesc= (TextView) view.findViewById(R.id.size);
                 vholder.perm= (TextView) view.findViewById(R.id.perm);
-                if(main.theme1==1)view.findViewById(R.id.icon_frame).setBackgroundColor(Color.parseColor("#00000000"));
-
+                if(main.theme1==1) {
+                    view.findViewById(R.id.icon_frame).setBackgroundColor(Color.parseColor("#00000000"));
+                    vholder.txtTitle.setTextColor(Color.parseColor("#ffffff"));
+                    vholder.perm.setTextColor(Color.parseColor("#ffffff"));
+                }
             view.setTag(vholder);
             }else{ view = convertView;}
             final ViewHolder holder = (ViewHolder) view.getTag();
