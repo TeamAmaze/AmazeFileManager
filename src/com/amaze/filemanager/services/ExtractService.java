@@ -122,7 +122,12 @@ public class ExtractService extends Service {
 
         }else publishCompletedResult(a,Integer.parseInt("123"+id));}
        public void publishCompletedResult(String a,int id1){
-           mNotifyManager.cancel(id1);}
+           try {
+               mNotifyManager.cancel(id1);
+           } catch (Exception e) {
+               e.printStackTrace();
+           }
+       }
         private void createDir(File dir) {
         if (dir.exists()) {
             return;

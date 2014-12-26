@@ -382,7 +382,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             }
             if(main.coloriseIcons){
 
-                if(new File(rowItem.getDesc()).isDirectory())holder.imageView.setColorFilter(Color.parseColor(main.skin));
+                if(rowItem.isDirectory(main.rootMode))holder.imageView.setColorFilter(Color.parseColor(main.skin));
 
                 else if(Icons.isVideo(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#f06292"));
 
@@ -425,8 +425,10 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             }
             if(main.showLastModified)
                 holder.date.setText(rowItem.getDate("MMM dd, yyyy",main.year));
-            if(rowItem.getSize().equals(main.goback))
-                holder.date.setText(rowItem.getSize());else
+            if(rowItem.getSize().equals(main.goback)){
+                holder.date.setText(rowItem.getSize());
+                holder.txtDesc.setText("");
+            }else
                 holder.txtDesc.setText(rowItem.getSize());
             if(main.showPermissions)
                 holder.perm.setText(rowItem.getPermissions());

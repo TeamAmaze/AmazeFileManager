@@ -61,11 +61,12 @@
                 android:id="@+id/perm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right|top"
+                android:layout_gravity="right|top|end"
                 android:layout_marginRight="5dp"
                 android:singleLine="true"
                 android:textColor="#80000000"
                 android:ellipsize="end"
+                android:textSize="12dp"
                 android:textAlignment="viewEnd"
                 style="@style/TextAppearance.Small" />
 
@@ -77,9 +78,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:baselineAligned="false"
-            android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-            android:paddingEnd="?android:attr/listPreferredItemPaddingEnd">
+            android:baselineAligned="false">
 
             <TextView
                 android:id="@+id/title"
@@ -88,42 +87,49 @@
                 android:layout_weight="1"
                 android:singleLine="true"
                 android:ellipsize="middle"
+                android:paddingLeft="5dp"
+                android:textSize="18dp"
+                android:layout_gravity="start"
                 android:textAlignment="viewStart"
                 style="@style/TextAppearance.Medium" />
 
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/line2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:baselineAligned="false"
-            android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-            android:paddingEnd="?android:attr/listPreferredItemPaddingEnd">
+            android:baselineAligned="false">
 
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:textAlignment="viewStart"
-                style="@style/TextAppearance.Small" />
 
             <TextView
                 android:id="@+id/size"
-                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:layout_marginStart="8dp"
+                 android:layout_width="wrap_content"
+                android:layout_alignParentRight="true"
                 android:singleLine="true"
                 android:ellipsize="end"
+                android:textSize="12dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                style="@style/TextAppearance.Small" />
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/size"
+                android:layout_gravity="start"
+                android:textSize="12dp"
+                android:paddingLeft="5dp"
                 android:textAlignment="viewStart"
                 style="@style/TextAppearance.Small" />
-        </LinearLayout>
+
+        </RelativeLayout>
 
     </LinearLayout>
 

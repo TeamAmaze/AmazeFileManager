@@ -78,16 +78,108 @@ public class Preffrag extends PreferenceFragment {
             } else
                 theme = 0;
         }if(th1==1){ui.setEnabled(false);}
+        findPreference("columns").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                final String[] sort = getResources().getStringArray(R.array.columns);
+                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                if(theme==1)a.theme(Theme.DARK);
+                a.title(R.string.gridcolumnno);
+                int current = Integer.parseInt(sharedPref.getString("columns", "0"));
+                if(current!=0)current=current-2;
+                else current=1;
+                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        sharedPref.edit().putString("columns", "" + sort[which]).commit();
+                        dialog.dismiss();
+                    }
+                });
+                a.build().show();
+                return true;
+            }
+        });
+        findPreference("uimode").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String[] sort = getResources().getStringArray(R.array.uimode);
+                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                if(theme==1)a.theme(Theme.DARK);
+                a.title(R.string.directorysort);
+                int current = Integer.parseInt(sharedPref.getString("uimode", "0"));
+                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        sharedPref.edit().putString("uimode", "" + which).commit();
+                        dialog.dismiss();
+                    }
+                });
+                a.build().show();
+                return true;
+            }
+        });
+        findPreference("dirontop").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String[] sort = getResources().getStringArray(R.array.directorysortmode);
+                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                if(theme==1)a.theme(Theme.DARK);
+                a.title(R.string.directorysort);
+                int current = Integer.parseInt(sharedPref.getString("dirontop", "0"));
+                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        sharedPref.edit().putString("dirontop", "" + which).commit();
+                        dialog.dismiss();
+                    }
+                });
+                a.build().show();
+                return true;
+            }
+        });
 
+        findPreference("theme").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String[] sort = getResources().getStringArray(R.array.theme);
+                int current = Integer.parseInt(sharedPref.getString("theme", "0"));
+                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                if(theme==1)a.theme(Theme.DARK);
+                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        sharedPref.edit().putString("theme", "" + which).commit();
+                        if(which!=0)
+                            sharedPref.edit().putString("uimode","0").commit();
+                        dialog.dismiss();
+                        restartPC(getActivity());}
+                });
+                a.title(R.string.theme);
+                a.build().show();
+                return true;
+            }
+        });
+        findPreference("sortby").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String[] sort = getResources().getStringArray(R.array.sortby);
+                int current = Integer.parseInt(sharedPref.getString("sortby", "0"));
+                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                if(theme==1)a.theme(Theme.DARK);
+                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+
+                        sharedPref.edit().putString("sortby", "" + which).commit();
+                        dialog.dismiss();    }
+                });
+                a.title(R.string.sortby);
+                a.build().show();
+                return true;
+            }
+        });
         final Preference preference = (Preference) findPreference("skin");
         final int current = Integer.parseInt(sharedPref.getString("skin", ""+6));
-        ListPreference th = (ListPreference) findPreference("theme");
-        th.setOnPreferenceChangeListener(new ListPreference.OnPreferenceChangeListener() {
-
-            public boolean onPreferenceChange(Preference p1, Object p2) {
-                if(!sharedPref.getString("theme","0").equals("0"))
-                    sharedPref.edit().putString("uimode","0").commit();
-                restartPC(getActivity());return true;}});
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
