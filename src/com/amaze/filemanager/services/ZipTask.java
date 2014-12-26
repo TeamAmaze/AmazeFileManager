@@ -20,6 +20,7 @@
 package com.amaze.filemanager.services;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -29,6 +30,7 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.amaze.filemanager.R;
@@ -53,6 +55,8 @@ public class ZipTask extends Service {
     Futils utils = new Futils();
     // Binder given to clients
     HashMap<Integer, Boolean> hash = new HashMap<Integer, Boolean>();
+    NotificationManager mNotifyManager;
+    NotificationCompat.Builder mBuilder;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -68,6 +72,8 @@ public class ZipTask extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle b = new Bundle();
+        mNotifyManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String name = intent.getStringExtra("name");
         File c = new File(name);
         if (!c.exists()) {
@@ -87,7 +93,7 @@ public class ZipTask extends Service {
         // If we get killed, after returning from here, restart
         return START_REDELIVER_INTENT;
     }
-
+Context c=this;
     public class Doback extends AsyncTask<Bundle, Void, Integer> {
         ArrayList<String> files;
 
@@ -98,7 +104,10 @@ public class ZipTask extends Service {
         String name;
 
         protected Integer doInBackground(Bundle... p1) {
+            mBuilder = new NotificationCompat.Builder(c);
+            mBuilder.setContentTitle(getResources().getString(R.string.zipping))
 
+                    .setSmallIcon(R.drawable.ic_doc_compressed);
             int id = p1[0].getInt("id");
             ArrayList<String> a = p1[0].getStringArrayList("files");
             name = p1[0].getString("name");
@@ -109,7 +118,7 @@ public class ZipTask extends Service {
 
         @Override
         public void onPostExecute(Integer b) {
-            publishResults(b, name, 100, true);
+            publishResults(b, name, 100, true,0,totalBytes);
             publishResult(false);
             stopSelf(b);
             Intent intent = new Intent("loadlist");
@@ -118,16 +127,40 @@ public class ZipTask extends Service {
 
     }
 
-    private void publishResults(int id, String fileName, int i, boolean b) {
-        Intent intent = new Intent(EXTRACT_CONDITION);
-        intent.putExtra(EXTRACT_PROGRESS, i);
-        intent.putExtra("id", id);
-        intent.putExtra("name", fileName);
-        intent.putExtra(EXTRACT_COMPLETED, b);
-        sendBroadcast(intent);
+    private void publishResults(int id, String fileName, int i, boolean b,long done,long total) {
+        if (hash.get(id)) {
+            mBuilder.setProgress(100, i, false);
+            mBuilder.setOngoing(true);
+            int title = R.string.zipping;
+            mBuilder.setContentTitle(utils.getString(c, title));
+            mBuilder.setContentText(new File(fileName).getName() + " " + utils.readableFileSize(done) + "/" + utils.readableFileSize(total));
+            int id1 = Integer.parseInt("456" + id);
+            mNotifyManager.notify(id1, mBuilder.build());
+            if (i == 100 || total == 0) {
+                mBuilder.setContentTitle("Zip completed");
+                mBuilder.setContentText("");
+                mBuilder.setProgress(0, 0, false);
+                mBuilder.setOngoing(false);
+                mNotifyManager.notify(id1, mBuilder.build());
+                publishCompletedResult(id1);
+            }
+            Intent intent = new Intent(EXTRACT_CONDITION);
+            intent.putExtra(EXTRACT_PROGRESS, i);
+            intent.putExtra("id", id);
+            intent.putExtra("name", fileName);
+            intent.putExtra(EXTRACT_COMPLETED, b);
+            sendBroadcast(intent);
 
+        } else {
+            publishCompletedResult(Integer.parseInt("456" + id));
+        }
+    }public void publishCompletedResult(int id1){
+        try {
+            mNotifyManager.cancel(id1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
     private void publishResult(boolean b) {
         Intent intent = new Intent("run");
         intent.putExtra("run", b);
@@ -206,7 +239,7 @@ public class ZipTask extends Service {
                         publishResult(true);
                         int p = Math.round(size * 100 / totalBytes);
                         System.out.println(id + " " + p + " " + hash.get(id));
-                        publishResults(id, fileName, p, false);
+                        publishResults(id, fileName, p, false,size,totalBytes);
                     }
                 }
                 in.close();

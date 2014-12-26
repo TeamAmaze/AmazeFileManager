@@ -109,7 +109,9 @@ public class ExtractService extends Service {
                 mBuilder.setContentText(new File(a).getName()+" "+utils.readableFileSize(total));
                 mBuilder.setProgress(0,0,false);
                 mBuilder.setOngoing(false);
-                mNotifyManager.notify(id1,mBuilder.build());}
+                mNotifyManager.notify(id1,mBuilder.build());
+            publishCompletedResult("",id1);
+            }
             intent.putExtra("name", a);
             intent.putExtra("total", total);
             intent.putExtra("done", done);
