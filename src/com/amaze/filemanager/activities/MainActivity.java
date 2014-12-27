@@ -252,8 +252,8 @@ public class MainActivity extends ActionBarActivity {
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(con);
                 builder.items(new String[]{
                         getResources().getString(R.string.folder),
-                        getResources().getString(R.string.file),
-                        getResources().getString(R.string.tab)
+                        getResources().getString(R.string.file)
+
                 });
                 builder.itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
@@ -506,7 +506,7 @@ if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
                     if (zipViewer.cangoBack()) {
 
                         zipViewer.goBack();
-                    } else tabFragment.removeTab();
+                    } else exit();
                 }}catch (ClassCastException e){goToMain();
 e.printStackTrace();}
         }
@@ -579,6 +579,9 @@ e.printStackTrace();}
                         if(zippath!=null)a.putString("zippath",zippath);
                         zippath=null;openzip=false;
                         a.putString("path", path);
+                        tabFragment.setArguments(a);
+                    }else {    Bundle a = new Bundle();
+                                a.putString("path", list.get(i));
                         tabFragment.setArguments(a);
                     }
                     android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -1222,22 +1225,25 @@ e.printStackTrace();}
         }
     }
     public void updatepager() {
-        TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-        tabFragment.mSectionsPagerAdapter.notifyDataSetChanged();
+        getFragment().mSectionsPagerAdapter.notifyDataSetChanged();
+    }
+    public void updatepaths(){
+        try {
+            getFragment().updatepaths();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public boolean shouldbbar(String path){
-        TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-        if(((Main)tabFragment.getTab()).current.equals(path))
+        if(((Main)getFragment().getTab()).current.equals(path))
             return true;
         return false;
     }
     public void addZipViewTab(String text){
-        TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-        tabFragment.addZipViewerTab(text);
+       getFragment().addZipViewerTab(text);
     }
     public void addTab(){
-        TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
-        tabFragment.addTab1("");
+        getFragment().addTab1("");
     }
     public TabFragment getFragment(){
         TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);

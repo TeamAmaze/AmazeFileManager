@@ -501,6 +501,7 @@ public class Main extends android.support.v4.app.Fragment {
                         }
                     }
                     floatingActionButton.show();
+                    mainActivity.updatepaths();
                     mainActivity.updatespinner();
                     if (!shouldbbar) {
                         shouldbbar = true;
