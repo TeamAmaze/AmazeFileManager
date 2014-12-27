@@ -130,7 +130,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         else
         textView.setText(new File(items.get(position)).getName());
         imageButton.setVisibility(View.VISIBLE);
-        /*if (position == tabFragment.mViewPager.getCurrentItem()) {
+        if (position == tabFragment.mViewPager.getCurrentItem()) {
             float[] src = {
 
                     color[0], 0, 0, 0, 0,
@@ -144,7 +144,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
             textView.setTextColor(Color.parseColor(skin));
        //     textView.setTypeface(null, Typeface.BOLD);
 
-        }else*/ imageButton.setVisibility(View.GONE);
+        } imageButton.setVisibility(View.GONE);
         row.setOnClickListener(new View.OnClickListener() {
 
             @Override

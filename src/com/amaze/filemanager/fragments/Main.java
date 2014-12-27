@@ -99,6 +99,7 @@ import com.stericson.RootTools.RootTools;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -309,20 +310,17 @@ public class Main extends android.support.v4.app.Fragment {
         else {
             Bundle b = new Bundle();
             String cur = savedInstanceState.getString("current");
-            b.putInt("index", savedInstanceState.getInt("index"));
+           if(cur!=null){ b.putInt("index", savedInstanceState.getInt("index"));
             b.putInt("top", savedInstanceState.getInt("top"));
             scrolls.put(cur, b);
             list = savedInstanceState.getParcelableArrayList("list");
-            createViews(list, true, new File(cur));
+            createViews(list, true, new File(cur), false);
             if (savedInstanceState.getBoolean("selection")) {
 
                 for (int i : savedInstanceState.getIntegerArrayList("position")) {
                     adapter.toggleChecked(i);
                 }
-            }
-
-            if(current!=null)
-                ma.updatePath(ma.current);
+            }}
         }
 
     }
@@ -467,7 +465,7 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
 
-    public void createViews(ArrayList<Layoutelements> bitmap, boolean back, File f) {
+    public void createViews(ArrayList<Layoutelements> bitmap, boolean back, File f,boolean save) {
         try {
             if (bitmap != null) {
                 TextView footerText = (TextView) footerView.findViewById(R.id.footerText);
@@ -501,6 +499,7 @@ public class Main extends android.support.v4.app.Fragment {
                         }
                     }
                     floatingActionButton.show();
+                    if(save){
                     mainActivity.updatepaths();
                     mainActivity.updatespinner();
                     if (!shouldbbar) {
@@ -516,7 +515,7 @@ public class Main extends android.support.v4.app.Fragment {
                     }
                     mainActivity.updateDrawer(current);
                     mainActivity.updatepager();
-                } catch (Exception e) {
+                }} catch (Exception e) {
                 }
             } else {//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
                 loadlist(new File(current), true);

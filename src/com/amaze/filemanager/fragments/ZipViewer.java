@@ -108,9 +108,8 @@ else {
         current=savedInstanceState.getString("path");
             zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, elements, zipViewer);
             zipViewer.setListAdapter(zipViewer.zipAdapter);
-
-            ((TextView) zipViewer.getActivity().findViewById(R.id.fullpath)).setText(zipViewer.current);
-        }   }
+            f=new File(savedInstanceState.getString("file"));
+       bbar(); }   }
     public String getSelectionColor(){
 
         String[] colors = new String[]{
@@ -141,6 +140,7 @@ else {
         outState.putParcelableArrayList("wholelist",wholelist);
         outState.putParcelableArrayList("elements",elements);
         outState.putString("path",current);
+        outState.putString("file",f.getPath());
     }
     public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
         private void hideOption(int id, Menu menu) {

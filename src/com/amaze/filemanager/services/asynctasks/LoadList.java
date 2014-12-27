@@ -84,7 +84,7 @@ else
             bitmap = null;
 
         }
-        ma.createViews(bitmap, back, f);
+        ma.createViews(bitmap, back, f,true);
 
         //ListView lv = (ListView) ma.listView.findViewById(R.id.listView);
         ma.listView.setVisibility(View.VISIBLE);

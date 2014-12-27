@@ -103,6 +103,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
             public void onPageSelected(int p1) { // TODO: Implement this								// method
                 currenttab=p1;
+                Sp.edit().putInt("currenttab",currenttab).commit();
                 mainActivity.supportInvalidateOptionsMenu();
                 try {
                     updateSpinner();
@@ -118,16 +119,15 @@ public class TabFragment extends android.support.v4.app.Fragment {
                             ma.updatePath(ma.current);
                             if (ma.buttons.getVisibility() == View.VISIBLE) ma.bbar(ma.current);
 
-                            ((TextView) STRIP.getChildAt(p1)).setText(ma.current);
                         } catch (Exception e) {
-                            //       e.printStackTrace();
+                            //       e.printStackTrace();5
                         }
                     }
                 }
                 else if(name.contains("ZipViewer")){
                     ZipViewer ma = ((ZipViewer) fragments.get(p1));
                     try {
-                        ma.bbar();
+                 //       ma.bbar();
                     } catch (Exception e) {
                    //     e.printStackTrace();
                     }
@@ -169,6 +169,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
           if(zippath!=null && zippath.trim().length()>0)addZipViewerTab(zippath);
         } else {
             fragments.clear();
+            zippath=savedInstanceState.getString("zippath","");
           tabs= savedInstanceState.getStringArrayList("tabs");
             for(int i=0;i<tabs.size();i++){
                 try {
@@ -219,16 +220,17 @@ public class TabFragment extends android.support.v4.app.Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         int i = 0;
-        if (fragments != null && fragments.size() !=0){
+        if (fragments != null && fragments.size() !=0) {
             for (Fragment fragment : fragments) {
                 getActivity().getSupportFragmentManager().putFragment(outState, "tab" + i, fragment);
                 i++;
             }
-            outState.putStringArrayList("tabs",tabs);
+            outState.putStringArrayList("tabs", tabs);
             outState.putInt("pos", mViewPager.getCurrentItem());
-        }
+        }outState.putString("zippath",zippath);
+        Sp.edit().putInt("currenttab",currenttab).commit();
     }
-    public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+    public class ScreenSlidePagerAdapter extends FragmentPagerAdapter {
 
         @Override
         public int getItemPosition (Object object)
@@ -302,7 +304,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         fragments.add(main);
         tabs.add(main.getClass().getName());
         mSectionsPagerAdapter.notifyDataSetChanged();
-        mViewPager.setOffscreenPageLimit(fragments.size()+1);
+        mViewPager.setOffscreenPageLimit(4);
     }
     public void addTab1(String text) {
         android.support.v4.app.Fragment main = new Main();
@@ -351,7 +353,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         tabs.add(main.getClass().getName());
         mSectionsPagerAdapter.notifyDataSetChanged();
         mViewPager.setCurrentItem(fragments.size() - 1, true);
-
+        zippath=text;
     }
     public Fragment getTab() {
         return fragments.get(mViewPager.getCurrentItem());
@@ -391,22 +393,21 @@ public class TabFragment extends android.support.v4.app.Fragment {
             if(name.contains("Main")){
                 items.add(j, tab.getLabel());
 
-                if(p1==j)path=tab.getLabel();
-
             }else if(name.contains("ZipViewer")) {
-                String cu=((ZipViewer)fragment).f.getName();
+                String cu=new File(zippath).getName();
                 items.add(cu);
-                if(p1==j)path=((ZipViewer)fragment).current;
             }
             j++;
         }
         tabSpinnerAdapter=new TabSpinnerAdapter(mainActivity.getSupportActionBar().getThemedContext(), R.layout.rowlayout,items,mainActivity.tabsSpinner,this);
         mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
         mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
-        updatePath(path);
+        int i=Sp.getInt("currenttab",0);
+        updatePath(items.get(i), i);
     }
-    public void updatePath(String text){
-        try {
+    public void updatePath(String text,int i){
+        if(i!=3)
+        {try {
             File f=new File(text);
             String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
             String free = utils.readableFileSize(f.getFreeSpace());
@@ -418,7 +419,9 @@ public class TabFragment extends android.support.v4.app.Fragment {
             bapath.setAllCaps(true);
         } catch (Exception e) {
 
+        }}else
+        {TextView textView = (TextView)getActivity().findViewById(R.id.pathname);
+        textView.setText(text);
         }
-
     }
 }
