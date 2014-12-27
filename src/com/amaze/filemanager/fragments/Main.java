@@ -321,6 +321,8 @@ public class Main extends android.support.v4.app.Fragment {
                 }
             }
 
+            if(current!=null)
+                ma.updatePath(ma.current);
         }
 
     }
