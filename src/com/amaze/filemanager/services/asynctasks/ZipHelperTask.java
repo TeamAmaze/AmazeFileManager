@@ -110,8 +110,7 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
                 zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, zipEntries, zipViewer);
                 zipViewer.setListAdapter(zipViewer.zipAdapter);
                 zipViewer.current = dir;
-                ((TextView) zipViewer.getActivity().findViewById(R.id.fullpath)).setText(zipViewer.current);
-            }
+zipViewer.bbar();            }
             class FileListSorter implements Comparator<ZipObj> {
 
 
