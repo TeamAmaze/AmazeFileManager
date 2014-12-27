@@ -1,6 +1,7 @@
 package com.amaze.filemanager.fragments;
 
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -144,29 +145,26 @@ public class TabFragment extends android.support.v4.app.Fragment {
             List<Tab> tabs1=tabHandler.getAllTabs();
             int i=tabs1.size();
             if(i==0){
-                addTab(path0);addTab(path1);
+                if(path!=null && path.trim().length()>0)
+                {
+                    addTab(path);
+                }addTab(path1);
             } else {
                 for(Tab tab:tabs1){
                     addTab(tab.getPath());
                 }
             }
 
-            if(path!=null && path.trim().length()>0)
-            {
-                addTab1(path);
-            }
+
             mViewPager.setAdapter(mSectionsPagerAdapter);
-            if(path!=null && path.trim().length()!=0){
-                mViewPager.setCurrentItem(fragments.size()-1);
-            }
-            else {
+
                 int k=Sp.getInt("currenttab",0);
                 try {
                     mViewPager.setCurrentItem(k,true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
+
 
           if(zippath!=null && zippath.trim().length()>0)addZipViewerTab(zippath);
         } else {
@@ -372,37 +370,55 @@ public class TabFragment extends android.support.v4.app.Fragment {
             if(name.contains("Main")){
                 //items.add(((Main)fragment).current);
                 items.add(j, tab.getLabel());
-                j++;
 
             }else if(name.contains("ZipViewer")) {
                 String cu=((ZipViewer)fragment).f.getName();
                 items.add(cu);
-            }
+            }j++;
         }
         tabSpinnerAdapter=new TabSpinnerAdapter(mainActivity.getSupportActionBar().getThemedContext(), R.layout.rowlayout,items,mainActivity.tabsSpinner,this);
         mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
         mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
     }
     public void updatebbar(int p1){
-        //everything is null here :(
-        try {
-            updateSpinner();
-        } catch (Exception e) {
-            // e.printStackTrace();
+        ArrayList<String> items=new ArrayList<String>();
+        TabHandler tabHandler = new TabHandler(getActivity(), null, null, 1);
+        int j = 0;
+        String path="";
+        for(Fragment fragment:fragments){
+            String name=fragment.getClass().getName();
+            Tab tab = tabHandler.findTab(j);
+            if(name.contains("Main")){
+                items.add(j, tab.getLabel());
+
+                if(p1==j)path=tab.getLabel();
+
+            }else if(name.contains("ZipViewer")) {
+                String cu=((ZipViewer)fragment).f.getName();
+                items.add(cu);
+                if(p1==j)path=((ZipViewer)fragment).current;
+            }
+            j++;
         }
-        String name=fragments.get(p1).getClass().getName();
-        if(name.contains("Main")){
-            Main ma = ((Main) fragments.get(p1));
-            if(ma.current!=null){}
-                //ma.updatePath(ma.current);
+        tabSpinnerAdapter=new TabSpinnerAdapter(mainActivity.getSupportActionBar().getThemedContext(), R.layout.rowlayout,items,mainActivity.tabsSpinner,this);
+        mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
+        mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
+        updatePath(path);
+    }
+    public void updatePath(String text){
+        try {
+            File f=new File(text);
+            String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
+            String free = utils.readableFileSize(f.getFreeSpace());
+            TextView textView = (TextView)getActivity().findViewById(R.id.pathname);
+            textView.setText(getResources().getString(R.string.used)+" " + used +" "+ getResources().getString(R.string.free)+" " + free);
+
+            TextView bapath=(TextView)getActivity().findViewById(R.id.fullpath);
+            bapath.setText(f.getPath());
+            bapath.setAllCaps(true);
+        } catch (Exception e) {
 
         }
-        else if(name.contains("ZipViewer")){ZipViewer ma = ((ZipViewer) fragments.get(p1));
-            try {
-                ma.bbar();
-            } catch (Exception e) {
-                //     e.printStackTrace();
-            }
-        }
+
     }
 }
