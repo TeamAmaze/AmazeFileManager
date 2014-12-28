@@ -1300,6 +1300,7 @@ public class Main extends android.support.v4.app.Fragment {
                 "#795548","#448d6e63",
                 "#212121","#99bdbdbd",
                 "#607d8b","#4478909c",
+                "#004d40","#440E5D50"
         };
         return colors[ Arrays.asList(colors).indexOf(skin)+1];
     }public float[] calculatefilter(float[] values){

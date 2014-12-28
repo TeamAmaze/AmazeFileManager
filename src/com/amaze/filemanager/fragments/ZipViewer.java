@@ -80,7 +80,10 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         f = new File(s);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mainActivity=(MainActivity)getActivity();
-        if(mainActivity.theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+        if(mainActivity.theme1==1)
+            getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+        else
+            getListView().setBackgroundColor(Color.parseColor("#ffffff"));
         gobackitem=Sp.getBoolean("goBack_checkbox", true);
         coloriseIcons=Sp.getBoolean("coloriseIcons",false);
         Calendar calendar = Calendar.getInstance();
@@ -131,6 +134,7 @@ else {
                 "#795548","#448d6e63",
                 "#212121","#99bdbdbd",
                 "#607d8b","#4478909c",
+                "#004d40","#440E5D50"
         };
         return colors[ Arrays.asList(colors).indexOf(skin)+1];
     }

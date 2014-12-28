@@ -202,7 +202,8 @@ public class Preffrag extends PreferenceFragment {
                         "#e64a19",
                         "#795548",
                         "#212121",
-                        "#607d8b"
+                        "#607d8b",
+                        "#004d40"
                 };
 
                 new AlertDialog.Builder(getActivity())

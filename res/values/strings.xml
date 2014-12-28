@@ -177,6 +177,7 @@
     <string name="brown">Brown</string>
     <string name="black">Black</string>
     <string name="blue_grey">Blue Grey</string>
+    <string name="supersu">SuperSU</string>
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Folders On Top</string>
     <string name="filesOnTop">Files On Top</string>

@@ -59,6 +59,7 @@
         <item>@string/brown</item>
         <item>@string/black</item>
         <item>@string/blue_grey</item>
+        <item>@string/supersu</item>
 
     </string-array>
     <string-array name="directorysortmode">

@@ -1052,7 +1052,8 @@ e.printStackTrace();}
                 "#e64a19",
                 "#795548",
                 "#212121",
-                "#607d8b"
+                "#607d8b",
+                "#004d40"
         };
 
         Random random = new Random();

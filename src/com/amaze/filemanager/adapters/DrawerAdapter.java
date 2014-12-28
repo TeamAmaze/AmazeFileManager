@@ -78,7 +78,7 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
         putColor("#5677fc",0.3372549f,0.4666666f,0.98823529f);
         putColor("#0288d1",0.007843137f,0.533333f,0.81960784f);
         putColor("#0097a7",0.0f,0.59215686f,0.65490196f);
-        putColor("#009688",0.0f,0.58823529f,0.34509804f);
+        putColor("#009688",0.0f,0.58823529f,0.53333f);
         putColor("#259b24",0.14509804f,0.60784314f,0.14117647f);
         putColor("#8bc34a",0.54509804f,0.76470588f,0.29019608f);
         putColor("#ffa000",1.0f,0.62745098f,0.0f);
@@ -87,6 +87,7 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
         putColor("#795548",0.4745098f,0.3333f,0.28235294f);
         putColor("#212121",0.12941176f,0.12941176f,0.12941176f);
         putColor("#607d8b",0.37647059f,0.49019608f,0.54509804f);
+        putColor("#004d40",0.0f, 0.301960f, 0.250980f);
 
     }
     public DrawerAdapter(Context context, ArrayList<String> values, MainActivity m, SharedPreferences Sp) {
