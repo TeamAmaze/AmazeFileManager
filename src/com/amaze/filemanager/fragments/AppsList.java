@@ -107,7 +107,8 @@ public class AppsList extends ListFragment {
                 theme1 = 1;
             } else
                 theme1 = 0;
-        }if(theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+        }
+        if(theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
         if (uimode == 1) {
             float scale = getResources().getDisplayMetrics().density;
             int dpAsPixels = (int) (5 * scale + 0.5f);

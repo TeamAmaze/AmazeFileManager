@@ -21,9 +21,11 @@ package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.GradientDrawable;
+import android.preference.PreferenceManager;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -147,6 +149,8 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 final ViewHolder vholder = new ViewHolder();
 
                 vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
+                if (main.theme1==1)
+                    vholder.txtTitle.setTextColor(getContext().getResources().getColor(android.R.color.white));
                 vholder.viewmageV = (CircularImageView) view.findViewById(R.id.cicon);
                 vholder.imageView = (ImageView) view.findViewById(R.id.icon);
                 vholder.rl = view.findViewById(R.id.second);
@@ -332,12 +336,13 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             vholder.imageView1 = (ImageView) view.findViewById(R.id.icon_thumb);
             vholder.date= (TextView) view.findViewById(R.id.date);
             vholder.txtDesc= (TextView) view.findViewById(R.id.size);
-                vholder.perm= (TextView) view.findViewById(R.id.perm);
-                if(main.theme1==1) {
-                    view.findViewById(R.id.icon_frame).setBackgroundColor(Color.parseColor("#00000000"));
-                    vholder.txtTitle.setTextColor(Color.parseColor("#ffffff"));
-                    vholder.perm.setTextColor(Color.parseColor("#ffffff"));
-                }
+            vholder.perm= (TextView) view.findViewById(R.id.perm);
+            if(main.theme1==1) {
+                view.findViewById(R.id.icon_frame).setBackgroundColor(Color.parseColor("#00000000"));
+                vholder.txtTitle.setTextColor(Color.parseColor("#ffffff"));
+                vholder.perm.setTextColor(Color.parseColor("#ffffff"));
+            }
+
             view.setTag(vholder);
             }else{ view = convertView;}
             final ViewHolder holder = (ViewHolder) view.getTag();

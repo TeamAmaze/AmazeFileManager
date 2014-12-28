@@ -77,8 +77,9 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
         notifyDataSetChanged();
         if (zipViewer.selection == false || zipViewer.mActionMode == null) {
             zipViewer.selection = true;
-            zipViewer.mActionMode = zipViewer.getActivity().startActionMode(
-                   zipViewer.mActionModeCallback);
+            /*zipViewer.mActionMode = zipViewer.getActivity().startActionMode(
+                   zipViewer.mActionModeCallback);*/
+            zipViewer.mActionMode = zipViewer.mainActivity.toolbar.startActionMode(zipViewer.mActionModeCallback);
         }
         zipViewer.mActionMode.invalidate();
         if (getCheckedItemPositions().size() == 0) {
@@ -133,6 +134,8 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
             final ViewHolder vholder = new ViewHolder();
 
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
+            if (zipViewer.mainActivity.theme1==1)
+                vholder.txtTitle.setTextColor(getContext().getResources().getColor(android.R.color.white));
             vholder.viewmageV = (CircularImageView) view.findViewById(R.id.cicon);
             vholder.imageView = (ImageView) view.findViewById(R.id.icon);
             vholder.rl = view.findViewById(R.id.second);

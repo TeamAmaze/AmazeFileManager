@@ -80,9 +80,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-
             android:clickable="false"
-
+            android:textColor="@android:color/black"
             android:textSize="17sp" />
 
         <RelativeLayout

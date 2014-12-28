@@ -39,7 +39,7 @@
         android:label="Amaze File Manager">
 
         <activity
-            android:label="Amaze File Manager"
+            android:label="Amaze"
             android:name=".activities.MainActivity"
             android:theme="@style/appCompatLight">
             <intent-filter >

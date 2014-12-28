@@ -212,9 +212,17 @@ public class Main extends android.support.v4.app.Fragment {
         res = getResources();
         goback=res.getString(R.string.goback);
         apk=res.getDrawable(R.drawable.ic_doc_apk_grid);
+        uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         if(theme1==1) {
             rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-        }if (aBoolean) {
+        } else {
+            //listView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+            if (uimode==0 && aBoolean) {
+
+                rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_light));
+            }
+        }
+        if (aBoolean) {
             listView.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.GONE);
         } else {

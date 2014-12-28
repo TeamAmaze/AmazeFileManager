@@ -78,7 +78,9 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         super.onActivityCreated(savedInstanceState);
         s = getArguments().getString("path");
         f = new File(s);
- Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mainActivity=(MainActivity)getActivity();
+        if(mainActivity.theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
         gobackitem=Sp.getBoolean("goBack_checkbox", true);
         coloriseIcons=Sp.getBoolean("coloriseIcons",false);
         Calendar calendar = Calendar.getInstance();
@@ -99,7 +101,6 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         ((TextView)getActivity().findViewById(R.id.pathname)).setText("");
         getActivity().findViewById(R.id.fullpath).setOnClickListener(null);
         files=new ArrayList<File>();
-        mainActivity=(MainActivity)getActivity();
         if(savedInstanceState==null)
         new ZipHelperTask(this,"").execute(f);
 else {
