@@ -42,7 +42,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
     public  List<Fragment> fragments = new ArrayList<Fragment>();
     public ScreenSlidePagerAdapter mSectionsPagerAdapter;
-    android.support.v4.view.PagerTitleStrip STRIP;
     Futils utils = new Futils();
     public ViewPager mViewPager;
     SharedPreferences Sp;
@@ -73,9 +72,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
         path1= Sp.getString("tab1","/");
        // Toast.makeText(getActivity(),path0,Toast.LENGTH_LONG).show();
         mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
-        STRIP = ((android.support.v4.view.PagerTitleStrip) rootView
-                .findViewById(R.id.pager_title_strip));
-        STRIP.setBackgroundDrawable(new ColorDrawable(Color.parseColor(((MainActivity)getActivity()).skin)));
         if (getArguments() != null){
             path = getArguments().getString("path");
             zippath=getArguments().getString("zippath");

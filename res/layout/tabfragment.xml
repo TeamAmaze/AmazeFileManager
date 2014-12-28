@@ -22,7 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.view.PagerTitleStrip
+    <!--<android.support.v4.view.PagerTitleStrip
         android:id="@+id/pager_title_strip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,5 +30,5 @@
         android:textColor="#ffffff"
         android:paddingBottom="4dp"
         android:elevation="7dp"
-        android:paddingTop="4dp" />
+        android:paddingTop="4dp" />-->
 </android.support.v4.view.ViewPager>
