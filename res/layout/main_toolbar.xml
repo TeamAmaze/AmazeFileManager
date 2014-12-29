@@ -45,7 +45,7 @@
                 android:id="@+id/tab_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingLeft="16dp"
+                android:paddingLeft="12dp"
                 android:gravity="center_vertical"
                 android:background="@null"
                 android:minHeight="?android:attr/listPreferredItemHeightSmall"
@@ -56,14 +56,14 @@
             android:id="@+id/buttonbarframe"
             android:layout_below="@id/action_bar"
             android:layout_height="wrap_content"
-            android:layout_width="fill_parent">
+            android:layout_width="match_parent">
 
             <HorizontalScrollView
                 android:scrollbars="none"
                 android:id="@+id/scroll"
                 android:paddingBottom="5dp"
-                android:paddingLeft="58dp"
-                android:paddingRight="10dp"
+                android:paddingLeft="72dp"
+                android:paddingRight="16dp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
@@ -92,8 +92,8 @@
                         android:id="@+id/scroll1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="58dp"
-                        android:paddingRight="10dp"
+                        android:paddingLeft="72dp"
+                        android:paddingRight="16dp"
                         android:paddingTop="5dp">
 
                         <TextView
@@ -107,8 +107,8 @@
                     <TextView
                         android:clickable="false"
                         android:layout_width="wrap_content"
-                        android:textSize="11sp"
-                        android:paddingRight="10dp"
+                        android:textSize="12sp"
+                        android:paddingRight="16dp"
                         android:paddingBottom="10dp"
                         android:paddingTop="5dp"
                         android:textColor="@android:color/white"
@@ -118,10 +118,6 @@
 
                 </LinearLayout>
             </LinearLayout>
-
-
-
-
         </FrameLayout>
 
         <!--

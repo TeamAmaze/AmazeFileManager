@@ -592,7 +592,9 @@ e.printStackTrace();}
                     transaction.commit();
 
 
-                }else{
+                }else if (select == i) {
+                    mDrawerLayout.closeDrawer(mDrawerLinear);
+                } else{
                     try {
                         TabFragment m=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame));
                     if(new File(list.get(i)).isDirectory())

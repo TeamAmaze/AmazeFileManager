@@ -21,59 +21,56 @@
     android:id="@+id/second"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:minHeight="72dp"
     android:clickable="true"
-    android:minHeight="60dip"
-    android:padding="6dip">
-<FrameLayout
-    android:id="@+id/iconframe"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-    <ImageView
-        android:layout_width="44dip"
-        android:layout_height="44dip"
-        android:background="@drawable/circle_shape"
-        android:padding="10dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_gravity="center_vertical"
-        android:id="@+id/icon"/>
-    <ImageView
-        android:layout_width="44dip"
-        android:layout_height="44dip"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        android:id="@+id/bicon"/>
-    <com.pkmmte.view.CircularImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cicon"
-        android:scaleType="centerCrop"
-        android:layout_width="50dip"
-        android:layout_height="50dip"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        app:border="false"
-        app:border_color="#cccccc"
-        app:border_width="5dp"
-        app:shadow="false"
-        android:contentDescription="@string/icon" />
-    <TextView
-        android:layout_width="44dip"
-        android:layout_height="40dp"
-        android:textSize="12dp"
-        android:singleLine="true"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:id="@+id/generictext"
-        android:textColor="@android:color/white"
-        />
-</FrameLayout>
+    android:gravity="center_vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
+    <FrameLayout
+        android:id="@+id/iconframe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="12dp">
+        <ImageView
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:padding="10dp"
+            android:background="@drawable/circle_shape"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/icon"/>
+        <ImageView
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:id="@+id/bicon"/>
+        <com.pkmmte.view.CircularImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cicon"
+            android:scaleType="centerCrop"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            app:border="false"
+            app:border_color="#cccccc"
+            app:shadow="false"
+            android:contentDescription="@string/icon" />
+        <TextView
+            android:layout_width="44dp"
+            android:layout_height="40dp"
+            android:textSize="12dp"
+            android:singleLine="true"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/generictext"
+            android:textColor="@android:color/white"
+            />
+    </FrameLayout>
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_toRightOf="@id/iconframe"
-        android:layout_marginTop="5dip">
+        android:layout_toRightOf="@id/iconframe">
 
         <TextView
             android:id="@+id/firstline"
@@ -88,7 +85,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/firstline"
-            android:layout_marginTop="5dip">
+            android:paddingTop="5dp">
 
 
             <TextView

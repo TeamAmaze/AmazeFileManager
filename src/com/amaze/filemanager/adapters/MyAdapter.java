@@ -25,6 +25,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -268,7 +269,9 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
                     gradientDrawable.setColor(Color.parseColor("#757575"));
                     holder.ext.setText("");
-                    holder.rl.setBackgroundColor(main.skinselection);
+                    holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
+                    if (Build.VERSION.SDK_INT >= 21)
+                        holder.rl.setElevation(10f);
                 } else {
 
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();

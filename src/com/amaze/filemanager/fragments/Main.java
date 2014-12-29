@@ -1283,24 +1283,24 @@ public class Main extends android.support.v4.app.Fragment {
     public String getSelectionColor(){
 
         String[] colors = new String[]{
-                "#e51c23","#44e84e40",
-                "#e91e63","#44ec407a",
-                "#9c27b0","#44ab47bc",
-                "#673ab7","#447e57c2",
-                "#3f51b5","#445c6bc0",
-                "#5677fc","#44738ffe",
-                "#0288d1","#4429b6f6",
-                "#0097a7","#4426c6da",
-                "#009688","#4426a69a",
-                "#259b24","#442baf2b",
-                "#8bc34a","#449ccc65",
-                "#ffa000","#44ffca28",
-                "#f57c00","#44ffa726",
-                "#e64a19","#44ff7043",
-                "#795548","#448d6e63",
-                "#212121","#99bdbdbd",
-                "#607d8b","#4478909c",
-                "#004d40","#440E5D50"
+                "#e51c23","#74e84e40",
+                "#e91e63","#74ec407a",
+                "#9c27b0","#74ab47bc",
+                "#673ab7","#747e57c2",
+                "#3f51b5","#745c6bc0",
+                "#5677fc","#74738ffe",
+                "#0288d1","#7429b6f6",
+                "#0097a7","#7426c6da",
+                "#009688","#7426a69a",
+                "#259b24","#742baf2b",
+                "#8bc34a","#749ccc65",
+                "#ffa000","#74ffca28",
+                "#f57c00","#74ffa726",
+                "#e64a19","#74ff7043",
+                "#795548","#748d6e63",
+                "#212121","#79bdbdbd",
+                "#607d8b","#7478909c",
+                "#004d40","#740E5D50"
         };
         return colors[ Arrays.asList(colors).indexOf(skin)+1];
     }public float[] calculatefilter(float[] values){
