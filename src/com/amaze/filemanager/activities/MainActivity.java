@@ -479,9 +479,10 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
-   mDrawerLayout.closeDrawer(mDrawerLinear); else{
-    if (select < list.size() - 2) {
+    if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
+        mDrawerLayout.closeDrawer(mDrawerLinear);
+    else {
+        if (select < list.size() - 2) {
             try {
 
                 TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));

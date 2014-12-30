@@ -1059,10 +1059,12 @@ public class Main extends android.support.v4.app.Fragment {
     public void goBack() {
         File f = new File(current);
         if (!results) {
-            if (utils.canGoBack(f)) {
+            if (utils.canGoBack(f) && adapter.getCheckedItemPositions().size()==0) {
                 loadlist(f.getParentFile(), true);
             } else {
-                Toast.makeText(getActivity(), res.getString(R.string.atroot), Toast.LENGTH_SHORT).show();
+                for (int i : adapter.getCheckedItemPositions()) {
+                    adapter.toggleChecked(i);
+                }
             }
         } else {
             loadlist(f, true);

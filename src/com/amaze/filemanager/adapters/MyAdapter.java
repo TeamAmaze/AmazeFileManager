@@ -269,9 +269,16 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
                     gradientDrawable.setColor(Color.parseColor("#757575"));
                     holder.ext.setText("");
-                    holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
-                    if (Build.VERSION.SDK_INT >= 21)
+                    if (Build.VERSION.SDK_INT >= 21) {
+
+                        if (main.theme1==1)
+                            holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.black));
+                        else
+                            holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
                         holder.rl.setElevation(10f);
+                    }
+                    else
+                        holder.rl.setBackgroundColor(main.skinselection);
                 } else {
 
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
