@@ -19,19 +19,87 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:id="@+id/main_frag"
     android:layout_height="match_parent"
-    android:background="#e6e6e6">
+    android:background="#e6e6e6"
+    android:orientation="vertical">
 
-    <ListView
+    <FrameLayout
+        android:id="@+id/buttonbarframe"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <HorizontalScrollView
+            android:scrollbars="none"
+            android:id="@+id/scroll"
+            android:paddingBottom="5dp"
+            android:paddingLeft="72dp"
+            android:paddingRight="16dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/buttons"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
+        <LinearLayout
+            android:id="@+id/pathbar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:clickable="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <HorizontalScrollView
+                    android:scrollbars="none"
+                    android:id="@+id/scroll1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="72dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="5dp">
+
+                    <TextView
+                        android:clickable="false"
+                        android:layout_width="wrap_content"
+                        style="@android:style/TextAppearance.Medium"
+                        android:textColor="@android:color/white"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fullpath" />
+                </HorizontalScrollView>
+                <TextView
+                    android:clickable="false"
+                    android:layout_width="wrap_content"
+                    android:textSize="12sp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="5dp"
+                    android:textColor="@android:color/white"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:id="@+id/pathname" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <com.amaze.filemanager.utils.QuickReturnListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@null"/>
 
-    <GridView
+    <com.amaze.filemanager.utils.GridViewWithHeaderAndFooter
         android:id="@+id/gridView"
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
@@ -41,4 +109,4 @@
         android:paddingRight="10dp"
         android:numColumns="auto_fit"/>
 
-</RelativeLayout>
+</LinearLayout>
