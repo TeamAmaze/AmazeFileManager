@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">Amaze Fitxategi Kudeatzailea</string>
+    <string name="drawer_open">Nabigazio tiradera ireki</string>
+    <string name="drawer_close">Nabigazio tiradera itxi</string>
+    <string name="books">Laster-markak</string>
+    <string name="icon">ikonoa</string>
+    <string name="efn">Fitxategi izena sartu</string>
+    <string name="storage">Biltegiratzea</string>
+    <string name="gallery">Galeria</string>
+    <string name="apps">Aplikazio kudeatzailea</string>
+    <string name="bookmanag">Laster-marka kudeatzailea</string>
+    <string name="setting">Ezarpenak</string>
+    <string name="select">Elementua hautatu</string>
+    <string name="pressagain">Sakatu beste behin irteteko</string>
+    <string name="open">Ireki</string>
+    <string name="backup">Babes kopia</string>
+    <string name="uninstall">Desinstalatu</string>
+    <string name="play">Play store</string>
+    <string name="properties">Xehetasunak</string>
+    <string name="copyingapk">apk hona kopiatzen </string>
+    <string name="addbook">Laster-marka gehitu</string>
+    <string name="addtobook">Laster-markara gehitu</string>
+    <string name="enterpath">Bidea sartu</string>
+    <string name="cancel">UTZI</string>
+    <string name="create">SORTU</string>
+    <string name="success">Ondo burutu da</string>
+    <string name="filenotexists">Fitxategia ez da existitzen</string>
+    <string name="error">Akatsa</string>
+    <string name="cantlistfiles">root izan gabe ezin dira fitxategiak zerrendatu</string>
+    <string name="searchresults">Bilaketaren emaitzak</string>
+    <string name="itemsselected">Hautatutako elementuak</string>
+    <string name="newhomedirectory">Etxeko direktorio berria</string>
+    <string name="rename">Berrizendatu</string>
+    <string name="save">Gorde</string>
+    <string name="renameerror">Ezin izan da berrizendatu</string>
+    <string name="renamed">Ondo berrizendatu da</string>
+    <string name="bookmarksadded">Laster-markak gehitu dira</string>
+    <string name="fileexist">Izen bereko fitxategia existitzen da </string>
+    <string name="filecreated">Fitxategia sortu da</string>
+    <string name="searchpath">Bilaketaren bidea</string>
+    <string name="search">BILATU</string>
+    <string name="enterfile">Fitxategiaren izena sartu</string>
+    <string name="name">Izena: </string>
+    <string name="date">Data: </string>
+    <string name="location">Hemen dago: </string>
+    <string name="size">Neurria: </string>
+    <string name="totalitems">Elementuak guztira: </string>
+    <string name="enterzipname">Ziparen izena sartu</string>
+    <string name="noappfound">Fitxategi hau irekitzeko aplikaziorik ez da aurkitu</string>
+    <string name="copying">Kopiatzen</string>
+    <string name="moving">Mugitzen</string>
+    <string name="add">Gehitu</string>
+    <string name="tab">Fitxa</string>
+    <string name="file">Fitxategia</string>
+    <string name="folder">Karpeta</string>
+    <string name="newfolder">Karpeta berria</string>
+    <string name="entername">Izena sartu</string>
+    <string name="extracting">Erauzten</string>
+    <string name="zipping">Zip batean biltzen</string>
+    <string name="stopping">Gelditzen</string>
+    <string name="guide1">Ongi etorri Amaze File Managerera</string>
+    <string name="guide2">Banda urdina uki ezazu Bide-barra ikusi edo ezkutatzeko</string>
+    <string name="guide3">Ukitu eta mantendu edozein fitxategi aukera gehiago ikusteko...</string>
+    <string name="guide4">Kopiatu, mugitu, xehetasunak etab. bezalakoak</string>
+    <string name="guide5">Atzera botoia erabil ezazu aplikaziotik edonoiz irteteko...</string>
+    <string name="guide6">...eta ezker geziaren botoia fitxategi kudeatzailean nabigatzeko</string>
+    <string name="maintab">Fitxa nagusia ezin da kendu</string>
+    <string name="openparent">Aita direktorioa ireki</string>
+    <string name="openwith">Ireki honekin</string>
+    <string name="share">Partekatu</string>
+    <string name="about">Honi buruz</string>
+    <string name="extract">Erauzi</string>
+    <string name="compress">Konprimitu</string>
+    <string name="yes">Bai</string>
+    <string name="no">Ez</string>
+    <string name="confirm">Berretsi</string>
+    <string name="deleting">Ezabatzen</string>
+    <string name="questiondelete">Hurrengo fitxategiak benetan ezabatu nahi dituzu?</string>
+    <string name="viewmode">Ikuspegi modua</string>
+    <string name="uimode">UI modua</string>
+    <string name="directorysort">Direktorioa sailkatzeko modua</string>
+    <string name="sortby">Sailkatu honen arabera</string>
+    <string name="theme">Gaia</string>
+    <string name="skin">Azala</string>
+    <string name="random">Ausazko azala</string>
+    <string name="random_summary">Ausazko gaia ezartzen du abioan</string>
+    <string name="colorize">Ikonoak koloreztatu</string>
+    <string name="colorize_summary">Ikonoentzako kolore estatikoa ezartzen du</string>
+    <string name="back">Atzera</string>
+    <string name="home">Etxea</string>
+    <string name="paste">Itsatsi</string>
+    <string name="close">Itxi</string>
+    <string name="history">Historia</string>
+    <string name="refresh">Freskatu</string>
+    <string name="copy">Kopiatu</string>
+    <string name="rootmode">Root esploratzailea</string>
+    <string name="rootmodesummary">Root duten gailuentzat soilik. Ziur bazaude egiaztatu bakarrik.</string>
+    <string name="mountsystemsummary">Gaitu hau sistemaren fitxategiak editatu nahi badituzu</string>
+    <string name="mountsystem">Sistemaren karpetak idazgarri bezala muntatu</string>
+    <string name="rootfailure">Root baimenik ez</string>
+    <string name="cut">Moztu</string>
+    <string name="selectall">Dena hautatu</string>
+    <string name="delete">Ezabatu</string>
+    <string name="setashome"> Etxeko karpeta bezala ezarri</string>
+    <string name="sethome">Etxeko direktorioa ezarri</string>
+    <string name="foldercolor">Karpetaren kolorea</string>
+    <string name="imagegallery">Irudi galeria</string>
+    <string name="fileexplorer">Fitxategi esploratzailea</string>
+    <string name="changegallerypath">Galeriaren bidea aldatu</string>
+    <string name="usedefaultgallerypath">Irudi galeriaren bide lehenetsia erabili</string>
+
+    <!-- Changelog -->
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_1">- Initial release&lt;br>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Dec 04, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_2">- Fixed cut/paste&lt;br>
+                                      - Fixed text editor for root&lt;br>
+                                      - Added German, French, Italian, Russian and Chinese languages&lt;br>
+                                      - Added bookmarks to navigation drawer&lt;br>
+                                      - Added material dialogs&lt;br>
+                                      - more...&lt;br>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Dec 13, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_3">- Added Spanish&lt;br>
+                                      - Various Zip Viewer fixes&lt;br>
+                                      - Can view apk and jar files&lt;br>
+                                      - Various text editor fixes&lt;br>
+                                      - more...&lt;br>&lt;br></string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <string name="simple">UI sinplea</string>
+    <string name="card">Txartel UIa</string>
+    <!-- Theme -->
+    <string name="light">Argia</string>
+    <string name="dark">Iluna</string>
+    <string name="daytime">Egunekoa</string>
+    <!--Skin-->
+    <string name="red">Gorria</string>
+    <string name="pink">Arrosa</string>
+    <string name="purple">Morea</string>
+    <string name="deep_purple">More sakona</string>
+    <string name="indigo">Indigo</string>
+    <string name="blue">Urdina</string>
+    <string name="light_blue">Urdin argia</string>
+    <string name="cyan">Cyan</string>
+    <string name="teal">Teal</string>
+    <string name="green">Berdea</string>
+    <string name="light_green">Berde argia</string>
+    <string name="amber">Anbar</string>
+    <string name="orange">Laranja</string>
+    <string name="deep_orange">Laranja sakona</string>
+    <string name="brown">Marroia</string>
+    <string name="black">Beltza</string>
+    <string name="blue_grey">Urdin grisa</string>
+    <string name="supersu">SuperSU</string>
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">Karpetak gainean</string>
+    <string name="filesOnTop">Fitxategiak gainean</string>
+    <string name="noneOnTop">Bat ere ez gainean</string>
+    <!--SortBy-->
+    <string name="sortName">Izena</string>
+    <string name="lastModified">Azkenengoz aldatua</string>
+    <string name="sortSize">Neurria</string>
+    <string name="sortNameDesc">Izena (beheruntz)</string>
+    <string name="lastModifiedDesc">Azkenengoz aldatua (beheruntz)</string>
+    <string name="sortSizeDesc">Neurria (beheruntz)</string>
+    <!--ListMode-->
+    <string name="detailedView">Ikuspegi zehatza</string>
+    <string name="simpleView">Ikuspegi sinplea</string>
+    <!--Folder-->
+    <string name="Yellow">Horia</string>
+    <string name="pick_a_file">Fitxategia hartu</string>
+    <string name="process_viewer">Prozesu ikuspegia</string>
+    <string name="in_safe">Ez dago leku nahikorik</string>
+    <string name="no_file_overwrite">Ez da fitxategirik gainidatzi</string>
+    <string name="skip">Salto egin</string>
+    <string name="overwrite">Gainidatzi</string>
+    <string name="cant_read_file">Ezin da fitxategia irakurri</string>
+    <string name="not_allowed">Ez baimenduta</string>
+    <string name="processes">Prozesuak</string>
+    <string name="searching">Bilatzen</string>
+    <string name="copying_fles">Fitxategiak kopiatzen</string>
+    <string name="done">Eginda</string>
+    <string name="Extracting_fles">Fitxategiak erauzten</string>
+    <string name="Zipping_fles">Fitxategiak Zip batean biltzen</string>
+    <string name="items">elementu</string>
+    <string name="set">Ezarri</string>
+    <string name="enablerootmde">Root modua gaitu</string>
+    <string name="goback">Atzera joan</string>
+    <string name="foldercreated">Karpeta sortu da</string>
+    <string name="newfile">Fitxategi berria</string>
+    <string name="nofiles">Fitxategirik ez</string>
+    <string name="tapnhold">Ukitu eta mantendu edozein fitxategi edo karpeta aukera gehiago ikusteko</string>
+    <string name="pathcopied">Bidea arbelera kopiatu da</string>
+    <string name="used">Erabilita :  </string>
+    <string name="free">Libre :  </string>
+    <string name="atroot">Erroan zaude</string>
+    <string name="listview">Zerrenda ikuspegia</string>
+    <string name="gridview">Sareta ikuspegia</string>
+    <string name="setlistview">ListView ezartzen</string>
+    <string name="setgridview">GridView ezartzen</string>
+    <string name="permission">Baimenak</string>
+    <string name="hide">Ezkutatu</string>
+    <string name="exit">Irten</string>
+    <string name="enternewname">Izen berria sartu</string>
+    <string name="doforall">Elementu guztietarako egin</string>
+    <string name="gridcolumnno">Zutabe kopurua sareta ikuspegian</string>
+    <string name="randomDialog">Ausazkoa</string>
+    <string name="setRandom">Aldaketak aplikazioa berrabiarazterakoan gertatuko dira</string>
+    <string name="authors">Egileak</string>
+    <string name="changelog">Aldaketak</string>
+    <string name="fullChangelog">Aldaketa guztiak</string>
+    <string name="ok">ADOS</string>
+    <string name="chooseUI">Elementuen UIa hautatu</string>
+    <string name="ui">Interfazea</string>
+    <string name="general">Orokorra</string>
+    <string name="thumbSummary">Aplikazioen eta irudien aurre-ikuspegia erakutsi</string>
+    <string name="thumb">Aurre-ikuspegiak erakutsi</string>
+    <string name="hidden">Fitxategi eta karpeta ezkutuak erakutsi</string>
+    <string name="lastModifiedSummary">Fitxategia azkenego aldiz aldatu zen data eta denbora erakutsi</string>
+    <string name="lastModifiedPref">Azkenengo aldaketa erakutsi</string>
+    <string name="sizePrefSummary">Fitxategien neurria eta kerpeten elementu kopurua erakutsi</string>
+    <string name="sizePref">Neurriak erakutsi</string>
+    <string name="miscellaneous">Beste batzuk</string>
+    <string name="rootPrefSummary">Fitxategi eta karpeten baimenak erakutsi</string>
+    <string name="rootPref">Baimenak erkautsi</string>
+    <string name="aboutFileManager">Amaze File Manageri buruz</string>
+    <string name="version">Bertsioa</string>
+    <string name="rate">aplikazioa puntuatu</string>
+    <string name="license">Iturburu Irekiko lizentziak</string>
+    <string name="feedback">Iritzia bidali</string>
+    <string name="hiddenfiles">Fitxategi ezkutuak</string>
+    <string name="type">Mota</string>
+    <string name="typeDesc">Mota (beheruntz)</string>
+    <string name="rootdirectory">Root</string>
+    <string name="new_string">Berria</string>
+    <string name="setringtone">Dei-tonu gisa ezarri</string>
+    <string name="copy_path">Bidea kopiatu</string>
+    <string name="addshortcut">Lasterbidea sortu</string>
+    <string name="unsavedchanges">Gorde gabeko aldaketak</string>
+    <string name="unsavedchangesdesc">Gorde ez diren aldaketak dituzu, irten baino lehen gorde nahi al dituzu?</string>
+    <string name="saving">Gordetzen</string>
+    <string name="packageinstaller">Pakete instalatzailea</string>
+    <string name="view">Ikusi</string>
+    <string name="install">Instalatu</string>
+    <string name="archive">Artxiboa</string>
+    <string name="archtext">Hau artxibo bat da. Zer egin nahi duzu?</string>
+    <string name="pitext">Hau pakete instalatzaile bat da. Zer egin nahi duzu?</string>
+    <string name="xda_title">XDA</string>
+    <string name="xda_summary">G&amp;E, Laguntza &amp; Arazoen konponketa</string>
+    <string name="invalid_dir">Direktorio ez balioduna</string>
+    <string name="circularimages">Ikono biribilak erabili irudi eta bideoetarako</string>
+    <string name="circularicons">Ikono biribilak erabili</string>
+    <string name="back_title">Atzerako nabigazioa</string>
+    <string name="back_summary">Atzerako nabigazio pertsonalizatua gaitzen du zerrendairen goikaldera</string>
+    <string name="details">Xehetasunak</string>
+</resources>
