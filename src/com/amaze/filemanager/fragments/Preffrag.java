@@ -64,7 +64,7 @@ public class Preffrag extends PreferenceFragment {
         addPreferencesFromResource(R.xml.preferences);
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        skin = sharedPref.getString("skin_color", "#5677fc");
+        skin = sharedPref.getString("skin_color", "#03A9F4");
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
@@ -186,20 +186,20 @@ public class Preffrag extends PreferenceFragment {
 
                 final int current = Integer.parseInt(sharedPref.getString("skin", ""+6));
                 final String[] colors = new String[]{
-                        "#e51c23",
+                        "#F44336",
                         "#e91e63",
                         "#9c27b0",
                         "#673ab7",
                         "#3f51b5",
-                        "#5677fc",
-                        "#0288d1",
-                        "#0097a7",
+                        "#2196F3",
+                        "#03A9F4",
+                        "#00BCD4",
                         "#009688",
-                        "#259b24",
+                        "#4CAF50",
                         "#8bc34a",
-                        "#ffa000",
-                        "#f57c00",
-                        "#e64a19",
+                        "#FFC107",
+                        "#FF9800",
+                        "#FF5722",
                         "#795548",
                         "#212121",
                         "#607d8b",
@@ -290,7 +290,7 @@ public class Preffrag extends PreferenceFragment {
             public boolean onPreferenceClick(Preference preference) {
 
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                skin = sharedPref.getString("skin_color", "#5677fc");
+                skin = sharedPref.getString("skin_color", "#03A9F4");
                 if(theme==1)
                     a.theme(Theme.DARK);
 

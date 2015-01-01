@@ -66,42 +66,50 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 public class TextReader extends ActionBarActivity implements TextWatcher {
 
     String path;
-    Futils utils=new Futils();
-    Context c=this;
+    Futils utils = new Futils();
+    Context c = this;
     boolean rootMode;
-    int theme,theme1;
+    int theme, theme1;
     SharedPreferences Sp;
 
     private EditText mInput;
     private java.io.File mFile;
-    private String mOriginal;
+    private String mOriginal, skin;
     private Timer mTimer;
     private boolean mModified;
+    private int skinStatusBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Sp=PreferenceManager.getDefaultSharedPreferences(this);
-        theme=Integer.parseInt(Sp.getString("theme","0"));
+        Sp = PreferenceManager.getDefaultSharedPreferences(this);
+        theme = Integer.parseInt(Sp.getString("theme", "0"));
         theme1 = theme;
         if (theme == 2) {
             Calendar calendar = Calendar.getInstance();
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            if(hour<=6 || hour>=18) {
+            if (hour <= 6 || hour >= 18) {
                 theme1 = 1;
             } else
                 theme1 = 0;
-        }if(theme1==1){setTheme(R.style.appCompatDark);getWindow().getDecorView().setBackgroundColor(Color.BLACK);}
+        }
+        if (theme1 == 1) {
+            setTheme(R.style.appCompatDark);
+            getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+        }
         setContentView(R.layout.search);
-        android.support.v7.widget.Toolbar toolbar=(android.support.v7.widget.Toolbar)findViewById(R.id.toolbar);
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        String skin = Sp.getString("skin_color", "#5677fc");
+        skin = Sp.getString("skin_color", "#03A9F4");
+        String x = getStatusColor();
+        skinStatusBar = Color.parseColor(x);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         rootMode = PreferenceManager.getDefaultSharedPreferences(c)
@@ -113,14 +121,14 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
             Window window = this.getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(Color.parseColor(skin));
+            window.setStatusBarColor(skinStatusBar);
         }
         mInput = (EditText) findViewById(R.id.fname);
         mInput.addTextChangedListener(this);
-        if(theme1==1)mInput.setBackgroundColor(Color.parseColor("#000000"));
+        if (theme1 == 1) mInput.setBackgroundColor(Color.parseColor("#000000"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (getIntent().getData() != null)load(new File(getIntent().getData().getPath()));
+        if (getIntent().getData() != null) load(new File(getIntent().getData().getPath()));
         else load(new File(getIntent().getStringExtra("path")));
     }
 
@@ -151,12 +159,15 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
 
 
     File f;
+
     public void writeTextFile(String fileName, String s) {
-       f = new File(fileName);
-        mOriginal=s;
-       final String s1=s;
-        if(!mFile.canWrite()){f=new File(this.getFilesDir()+"/"+f.getName());}
-        Toast.makeText(c,R.string.saving,Toast.LENGTH_SHORT).show();
+        f = new File(fileName);
+        mOriginal = s;
+        final String s1 = s;
+        if (!mFile.canWrite()) {
+            f = new File(this.getFilesDir() + "/" + f.getName());
+        }
+        Toast.makeText(c, R.string.saving, Toast.LENGTH_SHORT).show();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -171,143 +182,172 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(c,"error",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(c, "error", Toast.LENGTH_SHORT).show();
                         }
                     });
                     e.printStackTrace();
 
 
-            }if(!mFile.canWrite())
+                }
+                if (!mFile.canWrite())
 
-            {
-                ArrayList<File> a = new ArrayList<File>();
-                a.add(f);
-                new MoveFiles(a, null, c).execute(mFile.getParent());
-            }runOnUiThread(new Runnable() {
+                {
+                    ArrayList<File> a = new ArrayList<File>();
+                    a.add(f);
+                    new MoveFiles(a, null, c).execute(mFile.getParent());
+                }
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 
-                        Toast.makeText(c,"Done",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(c, "Done", Toast.LENGTH_SHORT).show();
                     }
-                });}
-            }).start();
+                });
+            }
+        }).start();
     }
 
 
+    private void setProgress(boolean show) {
+        //mInput.setVisibility(show ? View.GONE : View.VISIBLE);
+        //   findViewById(R.id.progress).setVisibility(show ? View.VISIBLE : View.GONE);
+    }
 
+    private void load(final File mFile) {
+        setProgress(true);
+        this.mFile = mFile;
+        mInput.setHint("Loading...");
+        Log.v("TextEditor", "Loading...");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (!mFile.exists()) {
+                    Log.v("TextEditor", "File doesn't exist...");
+                    finish();
+                    return;
+                }
 
-        private void setProgress(boolean show) {
-            //mInput.setVisibility(show ? View.GONE : View.VISIBLE);
-         //   findViewById(R.id.progress).setVisibility(show ? View.VISIBLE : View.GONE);
-        }
-
-        private void load(final File mFile) {
-            setProgress(true);
-            this.mFile=mFile;
-            mInput.setHint("Loading...");
-            Log.v("TextEditor", "Loading...");
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (!mFile.exists()) {
-                        Log.v("TextEditor", "File doesn't exist...");
-                        finish();
-                        return;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setTitle(mFile.getName());
                     }
-
+                });
+                try {
+                    Log.v("TextEditor", "Reading file...");
+                    try {
+                        mOriginal = FileUtils.fileRead(mFile);
+                    } catch (final Exception e) {
+                        e.printStackTrace();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mInput.setHint(R.string.error);
+                            }
+                        });
+                    }
+                    Log.v("TextEditor", "Setting contents to input area...");
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            setTitle(mFile.getName());
-                        }
-                    });try{
-                    Log.v("TextEditor", "Reading file...");
-                    try {mOriginal=FileUtils.fileRead(mFile);
-                        } catch (final Exception e) {
-                            e.printStackTrace();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mInput.setHint(R.string.error);
-                                }
-                            });
-                        }
-                        Log.v("TextEditor", "Setting contents to input area...");
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    mInput.setText(mOriginal);
-                                } catch (OutOfMemoryError e) {
-                                    mInput.setHint(R.string.error);
-                                }
-                                setProgress(false);
+                            try {
+                                mInput.setText(mOriginal);
+                            } catch (OutOfMemoryError e) {
+                                mInput.setHint(R.string.error);
                             }
-                        });
-                    } catch (final Exception e) {
-                        Log.v("TextEditor", "Error: " + e.getMessage());
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
+                            setProgress(false);
+                        }
+                    });
+                } catch (final Exception e) {
+                    Log.v("TextEditor", "Error: " + e.getMessage());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
 
-                                mInput.setHint(R.string.error);}
-                        });
-                    }
+                            mInput.setHint(R.string.error);
+                        }
+                    });
                 }
-            }).start();
-        }
-
-        @Override
-        public void onBackPressed() {
-            checkUnsavedChanges();
-        }
-
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            getMenuInflater().inflate(R.menu.text, menu);
-            menu.findItem(R.id.save).setVisible(mModified);
-            return super.onCreateOptionsMenu(menu);
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            if (item.getItemId() == android.R.id.home) {
-                checkUnsavedChanges();
-                return true;
-            } else if (item.getItemId() == R.id.save) {
-                writeTextFile(mFile.getPath(),mInput.getText().toString());
-                return true;
-            } else if (item.getItemId() == R.id.details) {
-               utils.showProps(mFile,c,theme1);
-                return true;
-            }else if(item.getItemId()==R.id.openwith){
-                utils.openunknown(mFile,c);
             }
-            return super.onOptionsItemSelected(item);
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-              if (mTimer != null) {
-                mTimer.cancel();
-                mTimer.purge();
-                mTimer = null;
-            }
-            mTimer = new Timer();
-            mTimer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    mModified = !mInput.getText().toString().equals(mOriginal);
-                    invalidateOptionsMenu();
-                }
-            }, 250);
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-        }
+        }).start();
     }
+
+    @Override
+    public void onBackPressed() {
+        checkUnsavedChanges();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.text, menu);
+        menu.findItem(R.id.save).setVisible(mModified);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            checkUnsavedChanges();
+            return true;
+        } else if (item.getItemId() == R.id.save) {
+            writeTextFile(mFile.getPath(), mInput.getText().toString());
+            return true;
+        } else if (item.getItemId() == R.id.details) {
+            utils.showProps(mFile, c, theme1);
+            return true;
+        } else if (item.getItemId() == R.id.openwith) {
+            utils.openunknown(mFile, c);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer.purge();
+            mTimer = null;
+        }
+        mTimer = new Timer();
+        mTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mModified = !mInput.getText().toString().equals(mOriginal);
+                invalidateOptionsMenu();
+            }
+        }, 250);
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+    }
+
+    private String getStatusColor() {
+
+        String[] colors = new String[]{
+                "#F44336","#D32F2F",
+                "#e91e63","#C2185B",
+                "#9c27b0","#7B1FA2",
+                "#673ab7","#512DA8",
+                "#3f51b5","#303F9F",
+                "#2196F3","#1976D2",
+                "#03A9F4","#0288D1",
+                "#00BCD4","#0097A7",
+                "#009688","#00796B",
+                "#4CAF50","#388E3C",
+                "#8bc34a","#689F38",
+                "#FFC107","#FFA000",
+                "#FF9800","#F57C00",
+                "#FF5722","#E64A19",
+                "#795548","#5D4037",
+                "#212121","#000000",
+                "#607d8b","#455A64",
+                "#004d40","#002620"
+        };
+        return colors[ Arrays.asList(colors).indexOf(skin)+1];
+    }
+}

@@ -90,7 +90,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         showSize=Sp.getBoolean("showFileSize",false);
         showLastModified=Sp.getBoolean("showLastModified",true);
         year=(""+calendar.get(Calendar.YEAR)).substring(2,4);
-        skin = Sp.getString("skin_color", "#5677fc");
+        skin = Sp.getString("skin_color", "#03A9F4");
         getListView().setDividerHeight(0);
         getListView().setDivider(null);
         FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);

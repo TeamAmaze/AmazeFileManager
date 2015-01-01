@@ -116,7 +116,7 @@ ListView vl;int theme,theme1;
                 if(theme1==1)ba1.theme(Theme.DARK);
                 ba1.negativeText(R.string.cancel);
                 ba1.positiveText(R.string.create);
-                String skin=Sp.getString("skin_color", "#5677fc");
+                String skin=Sp.getString("skin_color", "#03A9F4");
                 ba1.positiveColor(Color.parseColor(skin));
                 ba1.negativeColor(Color.parseColor(skin));
                 ba1.callback(new MaterialDialog.Callback() {
