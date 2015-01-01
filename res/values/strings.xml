@@ -279,5 +279,24 @@
     <string name="back_title">Back navigation</string>
     <string name="back_summary">Enables custom back navigation at top of the list</string>
     <string name="details">Details</string>
+    <string name="translators">Translators</string>
+    <string name="german_translation_title">German</string>
+    <string name="italian_translation_title">Italian</string>
+    <string name="french_translation_title">French</string>
+    <string name="russian_translation_title">Russian</string>
+    <string name="spanish_translation_title">Spanish</string>
+    <string name="basque_translation_title">Basque</string>
+    <string name="chinese_translation_title">Chinese</string>
+    <string name="serbian_translation_title">Serbian</string>
+    <string name="turkish_translation_title">Turkish</string>
+    <string name="german_translation_summary">Patrick Mertens</string>
+    <string name="italian_translation_summary">Francesco Credidio</string>
+    <string name="french_translation_summary">Nicolas PIMENTEL, Primokorn, Renaud</string>
+    <string name="russian_translation_summary">Pablo Luchiano, Kim BeeJay</string>
+    <string name="spanish_translation_summary">Jose Miguel Sarasola</string>
+    <string name="basque_translation_summary">Aitor Beriain</string>
+    <string name="chinese_translation_summary">amtlib-dot-dll, Felix2yu</string>
+    <string name="serbian_translation_summary">Mladen Pejaković</string>
+    <string name="turkish_translation_summary">Hakan Güven</string>
 </resources>
 

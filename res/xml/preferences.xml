@@ -108,6 +108,36 @@
             <Preference
                 android:key="authors"
                 android:title="@string/authors" />
+            <PreferenceScreen
+                android:title="@string/translators">
+                <Preference
+                    android:title="@string/german_translation_title"
+                    android:summary="@string/german_translation_summary"/>
+                <Preference
+                    android:title="@string/italian_translation_title"
+                    android:summary="@string/italian_translation_summary"/>
+                <Preference
+                    android:title="@string/french_translation_title"
+                    android:summary="@string/french_translation_summary"/>
+                <Preference
+                    android:title="@string/russian_translation_title"
+                    android:summary="@string/russian_translation_summary"/>
+                <Preference
+                    android:title="@string/spanish_translation_title"
+                    android:summary="@string/spanish_translation_summary"/>
+                <Preference
+                    android:title="@string/basque_translation_title"
+                    android:summary="@string/basque_translation_summary"/>
+                <Preference
+                    android:title="@string/chinese_translation_title"
+                    android:summary="@string/chinese_translation_summary"/>
+                <Preference
+                    android:title="@string/serbian_translation_title"
+                    android:summary="@string/serbian_translation_summary"/>
+                <Preference
+                    android:title="@string/turkish_translation_title"
+                    android:summary="@string/turkish_translation_summary"/>
+                </PreferenceScreen>
             <Preference
                 android:key="changelog"
                 android:title="@string/changelog" />

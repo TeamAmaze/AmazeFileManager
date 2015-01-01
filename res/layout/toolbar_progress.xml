@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wheel:com.pnikosis.materialishprogress.ProgressWheel xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:wheel="http://schemas.android.com/apk/res-auto"
+<ProgressBar
+    xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    wheel:progressIndeterminate="true"
-    wheel:spinSpeed="1.0"
     android:id="@+id/progressBar" />

@@ -90,8 +90,6 @@ import com.amaze.filemanager.utils.MediaFile;
 import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.melnykov.fab.FloatingActionButton;
-import com.pnikosis.materialishprogress.ProgressWheel;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
 import org.xml.sax.SAXException;

@@ -153,7 +153,7 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
         if(rowItem.getEntry()==null){
             holder.imageView.setImageResource(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
             gradientDrawable.setColor(Color.parseColor("#757575"));
-            holder.txtTitle.setText("...");
+            holder.txtTitle.setText("..");
             holder.txtDesc.setText("");
             holder.date.setText(R.string.goback);
         }

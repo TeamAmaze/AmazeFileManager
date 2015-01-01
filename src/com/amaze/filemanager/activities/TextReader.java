@@ -52,7 +52,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.Futils;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import org.codehaus.plexus.util.FileUtils;
 

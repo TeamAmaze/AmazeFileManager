@@ -15,14 +15,10 @@ repositories {
 }
 
 dependencies {
-    //compile 'me.drakeet.materialdialog:library:1.0.9'
     compile 'com.android.support:appcompat-v7:21.0.+'
     compile 'com.afollestad:material-dialogs:0.4.4'
-    //compile 'com.getbase:floatingactionbutton:1.1.0'
     compile 'com.pkmmte.view:circularimageview:1.1'
-    compile 'com.pnikosis:materialish-progress:1.0'
     compile 'com.melnykov:floatingactionbutton:1.0.7'
-    compile 'com.readystatesoftware.systembartint:systembartint:1.0.4'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.junrar:junrar:0.7'
     compile 'org.apache.commons:commons-compress:1.8.1'

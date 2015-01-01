@@ -484,7 +484,7 @@ public class Main extends android.support.v4.app.Fragment {
                 }if(gobackitem)
                 if (!f.getPath().equals("/")) {
                     if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))
-                        bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "...", "", "", goback, "", true));
+                        bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "..", "", "", goback, "", true));
                 }
                 adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
                         bitmap, ma);
