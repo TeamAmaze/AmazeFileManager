@@ -145,7 +145,7 @@
     <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>в1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>13. дец, 2014&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_3">- Додат шпански&lt;br>
                                       - Разне исправке зип прегледача&lt;br>
-                                      - Приказ аок и јар фајлова&lt;br>
+                                      - Приказ апк и јар фајлова&lt;br>
                                       - Разне исправке уређивача текста&lt;br>
                                       - још тога...&lt;br>&lt;br></string>
 
@@ -177,6 +177,7 @@
     <string name="brown">Смеђа</string>
     <string name="black">Црна</string>
     <string name="blue_grey">Плавосива</string>
+    <string name="supersu">Суперкорисник</string>
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Фасцикле на врху</string>
     <string name="filesOnTop">Фајлови на врху</string>
@@ -278,5 +279,24 @@
     <string name="back_title">Навигација назад</string>
     <string name="back_summary">Дугме за назад на врху списка</string>
     <string name="details">Детаљи</string>
+    <string name="translators">Преводиоци</string>
+    <string name="german_translation_title">Немачки</string>
+    <string name="italian_translation_title">Италијански</string>
+    <string name="french_translation_title">Француски</string>
+    <string name="russian_translation_title">Руски</string>
+    <string name="spanish_translation_title">Шпански</string>
+    <string name="basque_translation_title">Баскијски</string>
+    <string name="chinese_translation_title">Кинески</string>
+    <string name="serbian_translation_title">Српски</string>
+    <string name="turkish_translation_title">Турски</string>
+    <string name="german_translation_summary">Patrick Mertens</string>
+    <string name="italian_translation_summary">Francesco Credidio</string>
+    <string name="french_translation_summary">Nicolas PIMENTEL, Primokorn, Renaud</string>
+    <string name="russian_translation_summary">Pablo Luchiano, Kim BeeJay</string>
+    <string name="spanish_translation_summary">Jose Miguel Sarasola</string>
+    <string name="basque_translation_summary">Aitor Beriain</string>
+    <string name="chinese_translation_summary">amtlib-dot-dll, Felix2yu</string>
+    <string name="serbian_translation_summary">Младен Пејаковић</string>
+    <string name="turkish_translation_summary">Hakan Güven</string>
 </resources>
 
