@@ -1220,11 +1220,7 @@ e.printStackTrace();}
             e.printStackTrace();
         }
     }
-    public boolean shouldbbar(String path){
-        if(((Main)getFragment().getTab()).current.equals(path))
-            return true;
-        return false;
-    }
+
     public void addZipViewTab(String text){
        getFragment().addZipViewerTab(text);
     }

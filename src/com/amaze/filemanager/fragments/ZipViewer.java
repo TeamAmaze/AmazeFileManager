@@ -110,21 +110,18 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
             listView.setDivider(null);
-        FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-        floatingActionButton.hide(true);
         String x=getSelectionColor();
         skinselection= Color.parseColor(x);
         files=new ArrayList<File>();
         if(savedInstanceState==null)
-        new ZipHelperTask(this,"").execute(f);
-else {
+            loadlist(f.getPath());
+        else {
             wholelist = savedInstanceState.getParcelableArrayList("wholelist");
-        elements=savedInstanceState.getParcelableArrayList("elements");
-        current=savedInstanceState.getString("path");
-            zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, elements, zipViewer);
-            listView.setAdapter(zipViewer.zipAdapter);
+            elements=savedInstanceState.getParcelableArrayList("elements");
+            current=savedInstanceState.getString("path");
             f=new File(savedInstanceState.getString("file"));
-       bbar(); }   }
+            createviews(elements,current);
+       }   }
     public String getSelectionColor(){
 
         String[] colors = new String[]{
@@ -241,7 +238,8 @@ else {
     @Override
     public void onResume() {
         super.onResume();
-
+        FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        floatingActionButton.hide(true);
         if (files.size()==1) {
 
             new DeleteTask(getActivity().getContentResolver(),  getActivity()).execute(files);
@@ -260,6 +258,12 @@ public boolean cangoBack(){
         ((TextView) zipViewer.rootView.findViewById(R.id.fullpath)).setText(zipViewer.current);
         ((TextView)rootView.findViewById(R.id.pathname)).setText("");
 
+    }
+    public void createviews(ArrayList<ZipObj> zipEntries,String dir){
+        zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, zipEntries, zipViewer);
+        zipViewer.listView.setAdapter(zipViewer.zipAdapter);
+        zipViewer.current = dir;
+        zipViewer.bbar();
     }
     public void loadlist(String path){
         File f=new File(path);

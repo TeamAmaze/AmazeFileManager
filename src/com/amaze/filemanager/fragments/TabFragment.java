@@ -26,6 +26,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.TabSpinnerAdapter;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
+import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.amaze.filemanager.utils.ZipObj;
@@ -331,7 +332,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         int p = fragments.size();
         if(p==3){
             try {
-                ((ZipViewer)fragments.get(2)).loadlist(text);
+                ((ZipViewer)fragments.get(p-1)).loadlist(text);
             } catch (Exception e) {
                 android.support.v4.app.Fragment main = new ZipViewer();
                 if (text != null && text.trim().length() != 0) {
