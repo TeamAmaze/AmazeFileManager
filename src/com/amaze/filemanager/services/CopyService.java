@@ -44,6 +44,7 @@ import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.exceptions.RootDeniedException;
 import com.stericson.RootTools.execution.Command;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -254,7 +255,7 @@ public class CopyService extends Service {
             } else {
                 long size = sourceFile.length(), fileBytes = 0l;
                 // txtDetails.append("Copying " + sourceFile.getAbsolutePath() + " ... ");
-                InputStream in = new FileInputStream(sourceFile);
+                BufferedInputStream in = new BufferedInputStream(new FileInputStream(sourceFile));
                 OutputStream out;
                 try {
                 out= new FileOutputStream(targetFile);

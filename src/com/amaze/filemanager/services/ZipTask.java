@@ -37,6 +37,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.utils.Futils;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -230,7 +231,7 @@ Context c=this;
             if (!file.isDirectory()) {
                 byte[] buf = new byte[20480];
                 int len;
-                FileInputStream in = new FileInputStream(file);
+                BufferedInputStream in=new BufferedInputStream( new FileInputStream(file));
                     zos.putNextEntry(new ZipEntry(path + "/" + file.getName()));
                 while ((len = in.read(buf)) > 0) {
                     if (hash.get(id)) {
