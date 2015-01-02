@@ -1240,7 +1240,7 @@ e.printStackTrace();}
         getFragment().updateSpinner();
     }
 
-    private String getStatusColor() {
+    public String getStatusColor() {
 
         String[] colors = new String[]{
                 "#F44336","#D32F2F",

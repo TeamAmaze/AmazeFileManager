@@ -22,6 +22,9 @@ package com.amaze.filemanager.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -51,6 +54,7 @@ import android.support.annotation.StringDef;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.Property;
 import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -563,7 +567,11 @@ public class Main extends android.support.v4.app.Fragment {
             mode.setTitle(utils.getString(getActivity(), R.string.select));
             /*if(Build.VERSION.SDK_INT<19)
                 getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);*/
-            rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(res.getColor(R.color.toolbar_cab));
+           // rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(res.getColor(R.color.toolbar_cab));
+            ObjectAnimator anim = ObjectAnimator.ofInt(rootView.findViewById(R.id.buttonbarframe), "backgroundColor", Color.parseColor(skin), res.getColor(R.color.toolbar_cab));
+            anim.setDuration(500);
+            anim.setEvaluator(new ArgbEvaluator());
+            anim.start();
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
@@ -892,13 +900,16 @@ public class Main extends android.support.v4.app.Fragment {
             mActionMode = null;
             selection = false;
             adapter.toggleChecked(false, current);
-            rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
+            ObjectAnimator anim = ObjectAnimator.ofInt(rootView.findViewById(R.id.buttonbarframe), "backgroundColor", res.getColor(R.color.toolbar_cab), Color.parseColor(skin));
+            anim.setDuration(500);
+            anim.setEvaluator(new ArgbEvaluator());
+            anim.start();
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                window.setStatusBarColor(Color.parseColor(skin));
+                window.setStatusBarColor(Color.parseColor(mainActivity.getStatusColor()));
             }
         }
     };
