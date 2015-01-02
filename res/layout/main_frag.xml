@@ -34,7 +34,6 @@
         android:id="@+id/buttonbarframe"
         android:layout_below="@id/action_bar"
         android:layout_height="wrap_content"
-        android:layout_marginTop="?actionBarSize"
         android:layout_width="match_parent">
 
         <HorizontalScrollView

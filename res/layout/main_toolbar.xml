@@ -52,7 +52,7 @@
                  />
         </android.support.v7.widget.Toolbar>
         <FrameLayout
-            android:layout_below="@id/buttonbarframe"
+            android:layout_below="@id/action_bar"
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
