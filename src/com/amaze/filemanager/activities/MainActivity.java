@@ -492,17 +492,14 @@ public class MainActivity extends ActionBarActivity {
                 String name=fragment.getClass().getName();
                 if(name.contains("Main")){
                 Main main=(Main)fragment;
-                if (main.results == true) {
-                main.results = false;
-                main.loadlist(new File(main.current), true);
-            } else {
-                    if (!main.current.equals(main.home) && !main.current.equals("/")) {
+                if ((!main.current.equals(main.home) && !main.current.equals("/")) || main.selection) {
                         main.goBack();
 
                     } else {
+
                         exit();
                     }
-                }
+
             }else if(name.contains("ZipViewer")){
                     ZipViewer zipViewer=(ZipViewer)fragment;
                     if (zipViewer.cangoBack()) {
