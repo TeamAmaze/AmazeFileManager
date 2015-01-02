@@ -60,6 +60,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
@@ -276,11 +278,7 @@ public class Main extends android.support.v4.app.Fragment {
         File
             f=new File(Sp.getString("current",home));
 
-        pathbar.setBackgroundColor(Color.parseColor(skin));
-        HorizontalScrollView horizontalScrollView = (HorizontalScrollView) rootView.findViewById(R.id.scroll1);
-        horizontalScrollView.setBackgroundColor(Color.parseColor(skin));
-        HorizontalScrollView horizontalScrollView1 = (HorizontalScrollView) rootView.findViewById(R.id.scroll);
-        horizontalScrollView1.setBackgroundColor(Color.parseColor(skin));
+        rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
         initiatebbar();
 
         scroll = (HorizontalScrollView) getActivity().findViewById(R.id.scroll);
@@ -565,7 +563,14 @@ public class Main extends android.support.v4.app.Fragment {
             mode.setTitle(utils.getString(getActivity(), R.string.select));
             /*if(Build.VERSION.SDK_INT<19)
                 getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);*/
+            rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(res.getColor(R.color.toolbar_cab));
+            if (Build.VERSION.SDK_INT >= 21) {
 
+                Window window = getActivity().getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                window.setStatusBarColor(res.getColor(android.R.color.black));
+            }
             return true;
         }
 
@@ -887,9 +892,14 @@ public class Main extends android.support.v4.app.Fragment {
             mActionMode = null;
             selection = false;
             adapter.toggleChecked(false, current);
-            //getActivity().findViewById(R.id.action_bar).setVisibility(View.VISIBLE);
-            getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
+            rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
+            if (Build.VERSION.SDK_INT >= 21) {
 
+                Window window = getActivity().getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                window.setStatusBarColor(Color.parseColor(skin));
+            }
         }
     };
     public void updatePath(String text){

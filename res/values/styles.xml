@@ -86,7 +86,7 @@
 
         <item name="android:textColorSecondary">#ffffff</item>
         <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
-        <item name="android:actionModeBackground">@android:color/black</item>
+        <item name="android:actionModeBackground">@color/toolbar_cab</item>
     </style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
