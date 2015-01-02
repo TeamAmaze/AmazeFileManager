@@ -229,20 +229,6 @@ public class MainActivity extends ActionBarActivity {
             window.setStatusBarColor(skinStatusBar);
         }
 
-        LinearLayout linearLayout1 = (LinearLayout) findViewById(R.id.pathbar);
-        linearLayout1.setBackgroundColor(Color.parseColor(skin));
-        /*title.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                *//*if(tab==0){
-                    replaceFragment(1);
-                }else{replaceFragment(0);}*//*
-            }
-        });*/
-        HorizontalScrollView horizontalScrollView = (HorizontalScrollView) findViewById(R.id.scroll1);
-        horizontalScrollView.setBackgroundColor(Color.parseColor(skin));
-        HorizontalScrollView horizontalScrollView1 = (HorizontalScrollView) findViewById(R.id.scroll);
-        horizontalScrollView1.setBackgroundColor(Color.parseColor(skin));
         LinearLayout linearLayout3 = (LinearLayout) findViewById(R.id.settings_bg);
         linearLayout3.setBackgroundColor(Color.parseColor(skin));
 
@@ -303,7 +289,6 @@ public class MainActivity extends ActionBarActivity {
         list.add(utils.getString(this, R.string.bookmanag));
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
-        initiatebbar();
         if (savedInstanceState == null) {
             if(!restart)
             selectItem(0);
@@ -1251,39 +1236,6 @@ e.printStackTrace();}
         return tabFragment;
     }
 
-    public void initiatebbar() {
-        LinearLayout pathbar = (LinearLayout) findViewById(R.id.pathbar);
-        TextView textView = (TextView) findViewById(R.id.fullpath);
-
-        pathbar.setBackgroundColor(Color.parseColor(skin));
-
-        pathbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Fragment fragment=getFragment().getTab1();
-                if(fragment.getClass().getName().contains("Main")){
-                Main main=(Main)fragment;
-                    main.bbar(main.current);
-                    main.crossfade();
-                main.timer.cancel();
-                main.timer.start();}
-            }
-        });
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Fragment fragment=getFragment().getTab1();
-                if(fragment.getClass().getName().contains("Main")){
-                    Main main=(Main)fragment;
-                    main.bbar(main.current);
-                    main.crossfade();
-                    main.timer.cancel();
-                    main.timer.start();
-                }
-             }
-        });
-
-    }
     public void updatespinner(){
         getFragment().updateSpinner();
     }

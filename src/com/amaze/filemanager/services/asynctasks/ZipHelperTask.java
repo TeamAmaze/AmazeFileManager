@@ -108,7 +108,7 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
             protected void onPostExecute (ArrayList < ZipObj > zipEntries) {
                 super.onPostExecute(zipEntries);
                 zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, zipEntries, zipViewer);
-                zipViewer.setListAdapter(zipViewer.zipAdapter);
+                zipViewer.listView.setAdapter(zipViewer.zipAdapter);
                 zipViewer.current = dir;
 zipViewer.bbar();            }
             class FileListSorter implements Comparator<ZipObj> {

@@ -26,14 +26,19 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.ActionMode;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.HorizontalScrollView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,7 +62,7 @@ import java.util.Calendar;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class ZipViewer extends ListFragment {
+public class ZipViewer extends Fragment {
 
     String s;
     public File f;
@@ -73,17 +78,28 @@ SharedPreferences Sp;
     public ArrayList<ZipObj> wholelist=new ArrayList<ZipObj>();
 public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     public MainActivity mainActivity;
+    public ListView listView;
+    View rootView;
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+         rootView = inflater.inflate(R.layout.main_frag, container, false);
+        listView = (ListView) rootView.findViewById(R.id.listView);
+
+        return rootView;
+    }
+        @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         s = getArguments().getString("path");
         f = new File(s);
+            rootView.findViewById(R.id.gridView).setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mainActivity=(MainActivity)getActivity();
         if(mainActivity.theme1==1)
             getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
         else
-            getListView().setBackgroundColor(Color.parseColor("#ffffff"));
+            listView.setBackgroundColor(Color.parseColor("#ffffff"));
         gobackitem=Sp.getBoolean("goBack_checkbox", true);
         coloriseIcons=Sp.getBoolean("coloriseIcons",false);
         Calendar calendar = Calendar.getInstance();
@@ -91,18 +107,13 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         showLastModified=Sp.getBoolean("showLastModified",true);
         year=(""+calendar.get(Calendar.YEAR)).substring(2,4);
         skin = Sp.getString("skin_color", "#03A9F4");
-        getListView().setDividerHeight(0);
-        getListView().setDivider(null);
+            rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
+
+            listView.setDivider(null);
         FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         floatingActionButton.hide(true);
         String x=getSelectionColor();
         skinselection= Color.parseColor(x);
-        //getActivity().findViewById(R.id.action_overflow).setVisibility(View.GONE);
-        //getActivity().findViewById(R.id.search).setVisibility(View.INVISIBLE);
-        //getActivity().findViewById(R.id.paste).setVisibility(View.INVISIBLE);
-        getActivity().findViewById(R.id.pathbar).setOnClickListener(null);
-        ((TextView)getActivity().findViewById(R.id.pathname)).setText("");
-        getActivity().findViewById(R.id.fullpath).setOnClickListener(null);
         files=new ArrayList<File>();
         if(savedInstanceState==null)
         new ZipHelperTask(this,"").execute(f);
@@ -111,7 +122,7 @@ else {
         elements=savedInstanceState.getParcelableArrayList("elements");
         current=savedInstanceState.getString("path");
             zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, elements, zipViewer);
-            zipViewer.setListAdapter(zipViewer.zipAdapter);
+            listView.setAdapter(zipViewer.zipAdapter);
             f=new File(savedInstanceState.getString("file"));
        bbar(); }   }
     public String getSelectionColor(){
@@ -246,8 +257,13 @@ public boolean cangoBack(){
         new ZipHelperTask(this, new File(current).getParent()).execute(f);
     }
     public void bbar(){
-        ((TextView) zipViewer.getActivity().findViewById(R.id.fullpath)).setText(zipViewer.current);
-        ((TextView)getActivity().findViewById(R.id.pathname)).setText("");
+        ((TextView) zipViewer.rootView.findViewById(R.id.fullpath)).setText(zipViewer.current);
+        ((TextView)rootView.findViewById(R.id.pathname)).setText("");
+
+    }
+    public void loadlist(String path){
+        File f=new File(path);
+        new ZipHelperTask(this,"").execute(f);
 
     }
 }

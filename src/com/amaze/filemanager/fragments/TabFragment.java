@@ -112,22 +112,13 @@ public class TabFragment extends android.support.v4.app.Fragment {
                     if (ma.current != null) {
                         try {
                             mainActivity.updateDrawer(ma.current);
-                            ma.updatePath(ma.current);
-                            if (ma.buttons.getVisibility() == View.VISIBLE) ma.bbar(ma.current);
 
                         } catch (Exception e) {
                             //       e.printStackTrace();5
                         }
                     }
                 }
-                else if(name.contains("ZipViewer")){
-                    ZipViewer ma = ((ZipViewer) fragments.get(p1));
-                    try {
-                 //       ma.bbar();
-                    } catch (Exception e) {
-                   //     e.printStackTrace();
-                    }
-                }
+
             }
 
             public void onPageScrollStateChanged(int p1) {
@@ -226,7 +217,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         }outState.putString("zippath",zippath);
         Sp.edit().putInt("currenttab",currenttab).commit();
     }
-    public class ScreenSlidePagerAdapter extends FragmentPagerAdapter {
+    public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
         @Override
         public int getItemPosition (Object object)
@@ -337,9 +328,24 @@ public class TabFragment extends android.support.v4.app.Fragment {
         updatepaths();
     }
     public void addZipViewerTab(String text) {
-        android.support.v4.app.Fragment main = new ZipViewer();
         int p = fragments.size();
-
+        if(p==3){
+            try {
+                ((ZipViewer)fragments.get(2)).loadlist(text);
+            } catch (Exception e) {
+                android.support.v4.app.Fragment main = new ZipViewer();
+                if (text != null && text.trim().length() != 0) {
+                    Bundle b = new Bundle();
+                    b.putString("path", text);
+                    main.setArguments(b);
+                }
+                fragments.add(main);
+                tabs.add(main.getClass().getName());
+                mSectionsPagerAdapter.notifyDataSetChanged();
+                mViewPager.setCurrentItem(fragments.size() - 1, true);
+            }
+        }else{
+        android.support.v4.app.Fragment main = new ZipViewer();
         if (text != null && text.trim().length() != 0) {
             Bundle b = new Bundle();
             b.putString("path", text);
@@ -349,8 +355,8 @@ public class TabFragment extends android.support.v4.app.Fragment {
         tabs.add(main.getClass().getName());
         mSectionsPagerAdapter.notifyDataSetChanged();
         mViewPager.setCurrentItem(fragments.size() - 1, true);
-        zippath=text;
-    }
+
+    }zippath=text;}
     public Fragment getTab() {
         return fragments.get(mViewPager.getCurrentItem());
     }
@@ -382,7 +388,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
         ArrayList<String> items=new ArrayList<String>();
         TabHandler tabHandler = new TabHandler(getActivity(), null, null, 1);
         int j = 0;
-        String path="";
         for(Fragment fragment:fragments){
             String name=fragment.getClass().getName();
             Tab tab = tabHandler.findTab(j);
@@ -393,31 +398,11 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 String cu=new File(zippath).getName();
                 items.add(cu);
             }
-            j++;
         }
         tabSpinnerAdapter=new TabSpinnerAdapter(mainActivity.getSupportActionBar().getThemedContext(), R.layout.rowlayout,items,mainActivity.tabsSpinner,this);
         mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
         mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
-        int i=Sp.getInt("currenttab",0);
-        updatePath(items.get(i), i);
-    }
-    public void updatePath(String text,int i){
-        if(i!=3)
-        {try {
-            File f=new File(text);
-            String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
-            String free = utils.readableFileSize(f.getFreeSpace());
-            TextView textView = (TextView)getActivity().findViewById(R.id.pathname);
-            textView.setText(getResources().getString(R.string.used)+" " + used +" "+ getResources().getString(R.string.free)+" " + free);
 
-            TextView bapath=(TextView)getActivity().findViewById(R.id.fullpath);
-            bapath.setText(f.getPath());
-            bapath.setAllCaps(true);
-        } catch (Exception e) {
-
-        }}else
-        {TextView textView = (TextView)getActivity().findViewById(R.id.pathname);
-        textView.setText(text);
-        }
     }
+
 }

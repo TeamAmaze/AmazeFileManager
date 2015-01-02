@@ -59,8 +59,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -91,16 +94,11 @@ import com.amaze.filemanager.utils.IconHolder;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
-import com.amaze.filemanager.utils.MediaFile;
-import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.melnykov.fab.FloatingActionButton;
-import com.stericson.RootTools.RootTools;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -154,8 +152,8 @@ public class Main extends android.support.v4.app.Fragment {
     ArrayList<String> hiddenfiles;
     private FloatingActionButton floatingActionButton;
     String Intentpath;
-    boolean shouldbbar=false;
     String tag;
+    private TranslateAnimation anim;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -204,6 +202,10 @@ public class Main extends android.support.v4.app.Fragment {
         Intentpath=getArguments().getString("path");
         animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
         animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
+
+        buttons = (LinearLayout) rootView.findViewById(R.id.buttons);
+        pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
+        textView = (TextView) rootView.findViewById(R.id.fullpath);
 
 
 
@@ -274,12 +276,12 @@ public class Main extends android.support.v4.app.Fragment {
         File
             f=new File(Sp.getString("current",home));
 
-        buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
-        pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
-        textView = (TextView) getActivity().findViewById(R.id.fullpath);
-
         pathbar.setBackgroundColor(Color.parseColor(skin));
-
+        HorizontalScrollView horizontalScrollView = (HorizontalScrollView) rootView.findViewById(R.id.scroll1);
+        horizontalScrollView.setBackgroundColor(Color.parseColor(skin));
+        HorizontalScrollView horizontalScrollView1 = (HorizontalScrollView) rootView.findViewById(R.id.scroll);
+        horizontalScrollView1.setBackgroundColor(Color.parseColor(skin));
+        initiatebbar();
 
         scroll = (HorizontalScrollView) getActivity().findViewById(R.id.scroll);
         scroll1 = (HorizontalScrollView) getActivity().findViewById(R.id.scroll1);
@@ -299,9 +301,7 @@ public class Main extends android.support.v4.app.Fragment {
             }
         }
         footerView=getActivity().getLayoutInflater().inflate(R.layout.divider, null);
-
         if (aBoolean) {
-
             listView.addFooterView(footerView);
             listView.setFastScrollEnabled(true);
         } else {
@@ -322,7 +322,8 @@ public class Main extends android.support.v4.app.Fragment {
             b.putInt("top", savedInstanceState.getInt("top"));
             scrolls.put(cur, b);
             list = savedInstanceState.getParcelableArrayList("list");
-            createViews(list, true, new File(cur), false);
+            createViews(list, true, new File(cur));
+            updatePath(cur);
             if (savedInstanceState.getBoolean("selection")) {
 
                 for (int i : savedInstanceState.getIntegerArrayList("position")) {
@@ -473,7 +474,7 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
 
-    public void createViews(ArrayList<Layoutelements> bitmap, boolean back, File f,boolean save) {
+    public void createViews(ArrayList<Layoutelements> bitmap, boolean back, File f) {
         try {
             if (bitmap != null) {
                 TextView footerText = (TextView) footerView.findViewById(R.id.footerText);
@@ -503,27 +504,20 @@ public class Main extends android.support.v4.app.Fragment {
                         if (scrolls.containsKey(current)) {
                             Bundle b = scrolls.get(current);
 
-                            listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
+                            //listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
                         }
                     }
                     floatingActionButton.show();
-                    if(save){
+
                     mainActivity.updatepaths();
                     mainActivity.updatespinner();
-                    if (!shouldbbar) {
-                        shouldbbar = true;
-                        if (mainActivity.shouldbbar(current)) {
-                            updatePath(current);
+                       updatePath(current);
                             if (buttons.getVisibility() == View.VISIBLE) bbar(current);
-                        }
-                    } else {
-                        if (buttons.getVisibility() == View.VISIBLE)
-                            bbar(current);
-                        updatePath(current);
-                    }
+
                     mainActivity.updateDrawer(current);
                     mainActivity.updatepager();
-                }} catch (Exception e) {
+
+                    } catch (Exception e) {
                 }
             } else {//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
                 loadlist(new File(current), true);
@@ -1340,5 +1334,30 @@ public class Main extends android.support.v4.app.Fragment {
         addIntent
                 .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         getActivity().sendBroadcast(addIntent);
+    }
+
+    public void initiatebbar() {
+        LinearLayout pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
+        TextView textView = (TextView) rootView.findViewById(R.id.fullpath);
+
+        pathbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bbar(current);
+                crossfade();
+                timer.cancel();
+                timer.start();
+            }
+        });
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bbar(current);
+                crossfade();
+                timer.cancel();
+                timer.start();
+            }
+        });
+
     }
 }
