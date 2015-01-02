@@ -185,7 +185,7 @@ Context c=this;
         public zip() {
         }
 
-        int count;
+        int count,lastpercent=0;
         long size, totalBytes;
         String fileName;
 
@@ -237,9 +237,10 @@ Context c=this;
                         zos.write(buf, 0, len);
                         size += len;
                         publishResult(true);
-                        int p = Math.round(size * 100 / totalBytes);
-                        System.out.println(id + " " + p + " " + hash.get(id));
+                        int p=(int) ((size / (float) totalBytes) * 100);
+                        if(p!=lastpercent || lastpercent==0)
                         publishResults(id, fileName, p, false,size,totalBytes);
+                        lastpercent=p;
                     }
                 }
                 in.close();

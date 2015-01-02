@@ -130,6 +130,7 @@ public class CopyService extends Service {
 
     private void publishResults(String a, int p1, int p2, int id, long total, long done, boolean b,boolean move) {
         if(hash.get(id)) {
+
             mBuilder.setProgress(100, p1, false);
             mBuilder.setOngoing(true);
             int title=R.string.copying;
@@ -183,7 +184,7 @@ public class CopyService extends Service {
         }
 
         long totalBytes = 0L, copiedBytes = 0L;
-
+        int lastpercent=0;
         public void execute(int id, final ArrayList<String> files,final String FILE2,final boolean move) {
             mBuilder = new NotificationCompat.Builder(c);
             mBuilder.setContentTitle(getResources().getString(R.string.copying))
@@ -203,7 +204,8 @@ public class CopyService extends Service {
                     File f1 = new File(files.get(i));
                     try {
 
-                        copyFiles((f1), new File(FILE2, f1.getName()), id, move);
+                       if(hash.get(id)) copyFiles((f1), new File(FILE2, f1.getName()), id, move);
+                        else {stopSelf(id);}
                     } catch (IOException e) {
                         System.out.println("amaze " + e);
                         publishResults("" + e, 0, 0, id, 0, 0, false, move);
@@ -268,8 +270,15 @@ public class CopyService extends Service {
                         out.write(buffer, 0, length);
                         copiedBytes += length;
                         fileBytes += length;
-                        publishResults(sourceFile.getName(), Math.round(copiedBytes * 100 / totalBytes), Math.round(fileBytes * 100 / size), id, totalBytes, copiedBytes, false,move);
+                        int p=(int) ((copiedBytes / (float) totalBytes) * 100);
+                        if(lastpercent!=p || lastpercent==0)
+                        publishResults(sourceFile.getName(),p,  (int) ((fileBytes / (float) size) * 100), id, totalBytes, copiedBytes, false,move);
+                        lastpercent=p;
                         publishResults(true);
+                    }else {publishCompletedResult(sourceFile.getName(),Integer.parseInt("456"+id));
+                        in.close();
+                        out.close();
+                        stopSelf(id);
                     }
                     //	System.out.println(sourceFile.getName()+" "+id+" " +Math.round(copiedBytes*100/totalBytes)+"  "+Math.round(fileBytes*100/size));
                 }

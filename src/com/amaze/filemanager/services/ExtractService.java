@@ -97,7 +97,7 @@ public class ExtractService extends Service {
     }
     public class Doback extends AsyncTask<Bundle, Void, Integer> {
     long copiedbytes=0,totalbytes=0;
-
+    int lastpercent=0;
         private void publishResults(String a, int p1,  int id, long total, long done, boolean b) {
             if(hash.get(id)){Intent intent = new Intent(EXTRACT_CONDITION);
             mBuilder.setProgress(100, p1, false);
@@ -162,7 +162,10 @@ public class ExtractService extends Service {
                     publishResults(true);
                     outputStream.write(buf, 0, len);
                     copiedbytes=copiedbytes+len;
-                    publishResults(zipfile.getName(),Math.round(100*copiedbytes/totalbytes),id,totalbytes,copiedbytes,false);
+                    int p=(int) ((copiedbytes / (float) totalbytes) * 100);
+                    if(p!=lastpercent || lastpercent==0)
+                    publishResults(zipfile.getName(),p,id,totalbytes,copiedbytes,false);
+                    lastpercent=p;
                 } else {
                     publishResults(false);
                     publishResults(zipfile.getName(),100,id,totalbytes,copiedbytes,true);
@@ -200,8 +203,10 @@ public class ExtractService extends Service {
                     publishResults(true);
                     outputStream.write(buf, 0, len);
                     copiedbytes=copiedbytes+len;
-                    publishResults(a,Math.round(100*copiedbytes/totalbytes),id,totalbytes,copiedbytes,false);
-
+                    int p=(int) ((copiedbytes / (float) totalbytes) * 100);
+                    if(p!=lastpercent || lastpercent==0)
+                        publishResults(a,p,id,totalbytes,copiedbytes,false);
+                    lastpercent=p;
                 } else {
                     publishResults(a,100,id,totalbytes,copiedbytes,true);
                     publishResults(false);
@@ -237,8 +242,10 @@ public class ExtractService extends Service {
                     publishResults(true);
                     outputStream.write(buf, 0, len);
                     copiedbytes=copiedbytes+len;
-                    publishResults(string,Math.round(100*copiedbytes/totalbytes),id,totalbytes,copiedbytes,false);
-
+                    int p=(int) ((copiedbytes / (float) totalbytes) * 100);
+                    if(p!=lastpercent || lastpercent==0)
+                        publishResults(string,p,id,totalbytes,copiedbytes,false);
+                    lastpercent=p;
                 } else {
                     publishResults(string,100,id,totalbytes,copiedbytes,true);
                     publishResults(false);
