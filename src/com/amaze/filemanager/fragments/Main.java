@@ -545,12 +545,10 @@ public class Main extends android.support.v4.app.Fragment {
             item.setVisible(true);
         }
         public void initMenu(Menu menu) {
-            menu.findItem(R.id.cpy).setIcon(icons.getCopyDrawable());
+            /*menu.findItem(R.id.cpy).setIcon(icons.getCopyDrawable());
             menu.findItem(R.id.cut).setIcon(icons.getCutDrawable());
             menu.findItem(R.id.delete).setIcon(icons.getDeleteDrawable());
-            menu.findItem(R.id.all).setIcon(icons.getAllDrawable());
-
-
+            menu.findItem(R.id.all).setIcon(icons.getAllDrawable());*/
         }
         View v;
         // called when the action mode is created; startActionMode() was called
