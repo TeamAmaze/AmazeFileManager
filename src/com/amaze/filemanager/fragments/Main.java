@@ -569,7 +569,7 @@ public class Main extends android.support.v4.app.Fragment {
                 getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);*/
            // rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(res.getColor(R.color.toolbar_cab));
             ObjectAnimator anim = ObjectAnimator.ofInt(rootView.findViewById(R.id.buttonbarframe), "backgroundColor", Color.parseColor(skin), res.getColor(R.color.toolbar_cab));
-            anim.setDuration(500);
+            anim.setDuration(200);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
             if (Build.VERSION.SDK_INT >= 21) {
@@ -901,7 +901,7 @@ public class Main extends android.support.v4.app.Fragment {
             selection = false;
             adapter.toggleChecked(false, current);
             ObjectAnimator anim = ObjectAnimator.ofInt(rootView.findViewById(R.id.buttonbarframe), "backgroundColor", res.getColor(R.color.toolbar_cab), Color.parseColor(skin));
-            anim.setDuration(500);
+            anim.setDuration(50);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
             if (Build.VERSION.SDK_INT >= 21) {
