@@ -84,6 +84,11 @@
             </intent-filter>
 
         </activity>
+        <service
+            android:name = "com.amaze.filemanager.services.SearchService"
+            android:label = "Searching"
+            >
+        </service>
          <service
 			android:name = "com.amaze.filemanager.services.ExtractService"
 			android:label = "Extracting"

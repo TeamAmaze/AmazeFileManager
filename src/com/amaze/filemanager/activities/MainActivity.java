@@ -21,6 +21,7 @@ package com.amaze.filemanager.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -41,6 +42,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -82,6 +84,7 @@ import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
+import com.amaze.filemanager.services.SearchService;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.utils.Futils;
@@ -114,6 +117,8 @@ public class MainActivity extends ActionBarActivity {
     public Integer select;
     //TextView title;
 
+    MaterialDialog.Builder a;
+    MaterialDialog materialDialog;
     Futils utils;
     private boolean backPressedToExitOnce = false;
     private Toast toast = null;
@@ -938,11 +943,10 @@ e.printStackTrace();}
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 String a = e.getText().toString();
-                Bundle b = new Bundle();
-                b.putString("FILENAME", a);
-                b.putString("FILEPATH", fpath);
-                new SearchTask(mainActivity, ma).execute(b);
-
+                Intent i=new Intent(con, SearchService.class);
+                i.putExtra("path",fpath);
+                i.putExtra("text",a);
+                startService(i);
             }
 
             @Override
@@ -980,6 +984,8 @@ e.printStackTrace();}
         super.onPause();
         killToast();
         unregisterReceiver(RECIEVER);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(SEARCHRECIEVER);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(LOADSEARCHRECIEVER);
         //progress.setVisibility(View.INVISIBLE);
         //progressWheel.setVisible(false);
         //progress_bar.setVisible(false);
@@ -989,6 +995,9 @@ e.printStackTrace();}
     public void onResume() {
         super.onResume();
         registerReceiver(RECIEVER, new IntentFilter("run"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(SEARCHRECIEVER, new IntentFilter("searchresults"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(LOADSEARCHRECIEVER, new IntentFilter("loadsearchresults"));
+
     }
 
     @Override
@@ -1007,7 +1016,34 @@ e.printStackTrace();}
         // let the system handle all other key events
         return super.onKeyDown(keyCode, event);
     }
+    ProgressDialog p;
+    private BroadcastReceiver SEARCHRECIEVER = new BroadcastReceiver() {
 
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+            Bundle b = intent.getExtras();
+            if (b != null) {
+          int  paths=intent.getIntExtra("paths", 0);
+                if(p==null ) {
+                    p = new ProgressDialog(con);
+                    p.setMessage("Found " +paths);
+                    p.setIndeterminate(true);
+                    p.setTitle(R.string.searching);
+                    p.setCancelable(false);
+                    p.setButton(DialogInterface.BUTTON_POSITIVE,utils.getString(con,R.string.cancel),new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            LocalBroadcastManager.getInstance(con).sendBroadcast(new Intent("searchcancel"));
+                            dialog.cancel();
+                        }
+                    });
+                  }else{
+                    p.setMessage("Found " +paths);
+                }p.show();
+
+            }
+        }
+    };
     private BroadcastReceiver RECIEVER = new BroadcastReceiver() {
 
         @Override
@@ -1019,7 +1055,29 @@ e.printStackTrace();}
             }
         }
     };
+    private BroadcastReceiver LOADSEARCHRECIEVER = new BroadcastReceiver() {
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle e = intent.getExtras();
+            System.out.println("GOT IT");
+            if(p!=null && p.isShowing())p.cancel();
+            if (e != null) {
+            ArrayList<String[]> arrayList=new ArrayList<String[]>();
+                ArrayList<String> b=e.getStringArrayList("b");
+                ArrayList<String> c=e.getStringArrayList("c");
+                ArrayList<String> d=e.getStringArrayList("d");
+                ArrayList<String> f=e.getStringArrayList("f");
+                for(int i=0;i<b.size();i++){
+                    arrayList.add(new String[]{b.get(i),c.get(i),d.get(i),f.get(i)});
+                }
+                Fragment fragment=getFragment().getTab();
+                if(fragment.getClass().getName().contains("Main")){
+                    ((Main)fragment).loadsearchlist(arrayList);
+                }
+            }
+        }
+    };
     private void random() {
 
         String[] colors = new String[]{
