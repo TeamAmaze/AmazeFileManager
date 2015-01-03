@@ -222,9 +222,8 @@ public class CopyService extends Service {
                 Intent intent = new Intent("loadlist");
                 sendBroadcast(intent);
             } else if (rootmode) {
-                RootTools.remount(FILE2, "rw");
                 for (int i = 0; i < files.size(); i++) {
-                    RootHelper.runAndWait("cp -R \""+getCommandLineString(files.get(i)) +"\" \""+getCommandLineString(FILE2) + "\"",true);
+                    RootTools.copyFile(getCommandLineString(files.get(i)),getCommandLineString(FILE2),true,true);
                     utils.scanFile(FILE2+"/"+new File(files.get(i)).getName(), c);
                 }
                 if(move){new DeleteTask(getContentResolver(),c).execute(utils.toFileArray(files));}
