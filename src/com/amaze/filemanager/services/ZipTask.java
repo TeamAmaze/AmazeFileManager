@@ -30,6 +30,7 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -58,7 +59,7 @@ public class ZipTask extends Service {
     HashMap<Integer, Boolean> hash = new HashMap<Integer, Boolean>();
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
-
+    String zpath;
     @SuppressWarnings("deprecation")
     @Override
     public void onCreate() {
@@ -68,9 +69,14 @@ boolean foreground=true;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle b = new Bundle();
+        zpath= PreferenceManager.getDefaultSharedPreferences(this).getString("zippath","");
         mNotifyManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String name = intent.getStringExtra("name");
+        if((zpath!=null && zpath.length()!=0)){
+        if(zpath.endsWith("/"))name=zpath+new File(name).getName();
+            else name=zpath+"/"+new File(name).getName();
+        }
         File c = new File(name);
         if (!c.exists()) {
             try {

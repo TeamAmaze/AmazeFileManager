@@ -30,6 +30,8 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -67,7 +69,7 @@ public class ExtractService extends Service {
     NotificationCompat.Builder mBuilder;
     ArrayList<String> entries=new ArrayList<String>();
     boolean eentries;
-
+    String epath;
     @Override
     public void onCreate() {
         registerReceiver(receiver1, new IntentFilter("excancel"));
@@ -77,6 +79,7 @@ public class ExtractService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle b = new Bundle();
         b.putInt("id", startId);
+        epath= PreferenceManager.getDefaultSharedPreferences(this).getString("extractpath","");
         mNotifyManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String file = intent.getStringExtra("zip");
@@ -425,15 +428,21 @@ public class ExtractService extends Service {
 
 
         File f = new File(file);
-            System.out.println(f.getName()+""+eentries);
+        String path;
+        if(epath.length()==0){
+            path=f.getParent()+"/"+f.getName().substring(0,f.getName().lastIndexOf("."));
+        }else{
+            if(epath.endsWith("/")){path=epath+f.getName().substring(0,f.getName().lastIndexOf("."));}
+            else {path=epath+"/"+f.getName().substring(0,f.getName().lastIndexOf("."));}
+        }
             if(eentries) {
-                extract(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")), entries);
+                extract(p1[0].getInt("id"), f,path, entries);
             }else if(f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".apk"))
-            extract(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")));
+            extract(p1[0].getInt("id"), f,path);
             else if(f.getName().toLowerCase().endsWith(".rar"))
-                extractRar(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")));
+                extractRar(p1[0].getInt("id"), f, path);
             else if(f.getName().toLowerCase().endsWith(".tar"))
-                extractTar(p1[0].getInt("id"), f, f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf(".")));
+                extractTar(p1[0].getInt("id"), f, path);
 
 
             Log.i("Amaze", "Almost Completed");
