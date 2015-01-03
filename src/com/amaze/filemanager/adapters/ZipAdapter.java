@@ -24,6 +24,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -216,7 +217,16 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
                 holder.imageView.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                 gradientDrawable.setColor(Color.parseColor("#757575"));
 
-                holder.rl.setBackgroundColor(zipViewer.skinselection);
+                if (Build.VERSION.SDK_INT >= 21) {
+
+                    if (zipViewer.mainActivity.theme1==1)
+                        holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.black));
+                    else
+                        holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
+                    holder.rl.setElevation(10f);
+                }
+                else
+                    holder.rl.setBackgroundColor(zipViewer.skinselection);
             } else {
 
                     holder.rl.setBackgroundResource(R.drawable.listitem1);
