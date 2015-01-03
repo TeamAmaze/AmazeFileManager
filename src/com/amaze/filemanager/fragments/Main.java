@@ -137,7 +137,6 @@ public class Main extends android.support.v4.app.Fragment {
     View footerView;
     public LinearLayout pathbar;
     private TextView textView;
-    private ImageButton ib;
     public CountDownTimer timer;
     private View rootView;
     public ListView listView;
@@ -937,6 +936,7 @@ public class Main extends android.support.v4.app.Fragment {
     public void bbar(String text) {
         try {
             buttons.removeAllViews();
+            buttons.setMinimumHeight(pathbar.getHeight());
             Drawable arrow=getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
             Bundle b = utils.getPaths(text, getActivity());
             ArrayList<String> names = b.getStringArrayList("names");
@@ -953,6 +953,7 @@ public class Main extends android.support.v4.app.Fragment {
                 rpaths.add(paths.get(i));
             }
             for (int i = 0; i < names.size(); i++) {
+                final int k=i;
                 ImageView v=new ImageView(getActivity());
                 v.setImageDrawable(arrow);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -961,9 +962,9 @@ public class Main extends android.support.v4.app.Fragment {
                 v.setLayoutParams(params);
                 final int index = i;
                 if (rpaths.get(i).equals("/")) {
-                    ib = new ImageButton(getActivity());
+                    ImageButton ib = new ImageButton(getActivity());
                     ib.setImageDrawable(icons.getRootDrawable());
-                    ib.setBackgroundColor(Color.parseColor(skin));
+                    ib.setBackgroundColor(Color.parseColor("#00ffffff"));
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
@@ -977,13 +978,13 @@ public class Main extends android.support.v4.app.Fragment {
                     if(names.size()-i!=1)
                         buttons.addView(v);
                 } else if (rpaths.get(i).equals(Environment.getExternalStorageDirectory().getPath())) {
-                    ib = new ImageButton(getActivity());
+                    ImageButton ib = new ImageButton(getActivity());
                     ib.setImageDrawable(icons.getSdDrawable());
-                    ib.setBackgroundColor(Color.parseColor(skin));
+                    ib.setBackgroundColor(Color.parseColor("#00ffffff"));
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            ((Main)   mainActivity.getFragment().getTab()).loadlist(new File("/"), false);
+                            ((Main)   mainActivity.getFragment().getTab()).loadlist(new File(rpaths.get(k)), false);
                             timer.cancel();
                             timer.start();
                         }
@@ -996,11 +997,12 @@ public class Main extends android.support.v4.app.Fragment {
                     button.setText(rnames.get(index));
                     button.setTextColor(getResources().getColor(android.R.color.white));
                     button.setTextSize(13);
+                    button.setLayoutParams(params);
                     button.setBackgroundResource(0);
                     button.setOnClickListener(new Button.OnClickListener() {
 
                         public void onClick(View p1) {
-                            ((Main) mainActivity.getFragment().getTab()).loadlist(new File("/"), false);
+                            ((Main) mainActivity.getFragment().getTab()).loadlist(new File(rpaths.get(k)), false);
                             timer.cancel();
                             timer.start();
                         }
