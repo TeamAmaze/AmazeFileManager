@@ -125,7 +125,6 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         final ZipObj rowItem = enter.get(position);
-
         View view = convertView;
         final int p = position;
         if (convertView == null) {
@@ -158,38 +157,44 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
             holder.txtDesc.setText("");
             holder.date.setText(R.string.goback);
         }
-        else {   holder.imageView.setImageDrawable( Icons.loadMimeIcon(zipViewer.getActivity(),rowItem.getName(),false));
+        else {
+            holder.imageView.setImageDrawable(Icons.loadMimeIcon(zipViewer.getActivity(), rowItem.getName(), false));
             final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
-            if(zipViewer.showLastModified)holder.date.setText(new Futils().getdate(rowItem.getTime(),"MMM dd, yyyy",zipViewer.year));
+            if (zipViewer.showLastModified)
+                holder.date.setText(new Futils().getdate(rowItem.getTime(), "MMM dd, yyyy", zipViewer.year));
             if (rowItem.isDirectory()) {
-            holder.imageView.setImageDrawable(folder);
-            gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
-            stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
-        try {
-            holder.txtTitle.setText(stringBuilder.toString().substring(stringBuilder.toString().lastIndexOf("/") + 1));
-        }catch (Exception e)
-        {
-            holder.txtTitle.setText(rowItem.getName().substring(0, rowItem.getName().lastIndexOf("/")));
-        } }else{if(zipViewer.showSize)   holder.txtDesc.setText(new Futils().readableFileSize(rowItem.getSize()));
-                holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/") + 1));
-                if (zipViewer.coloriseIcons) {
-                    if (Icons.isVideo(rowItem.getName()))
-                        gradientDrawable.setColor(Color.parseColor("#f06292"));
-                    else if (Icons.isAudio(rowItem.getName()))
-                        gradientDrawable.setColor(Color.parseColor("#9575cd"));
-                    else if (Icons.isPdf(rowItem.getName()))
-                        gradientDrawable.setColor(Color.parseColor("#da4336"));
-                    else if (Icons.isCode(rowItem.getName()))
-                        gradientDrawable.setColor(Color.parseColor("#00bfa5"));
-                    else if (Icons.isText(rowItem.getName()))
-                        gradientDrawable.setColor(Color.parseColor("#e06055"));
-                    else if (Icons.isArchive(rowItem.getName()))
-                        gradientDrawable.setColor(Color.parseColor("#f9a825"));
-                    else if (Icons.isgeneric(rowItem.getName()))
-                        gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
-                    else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
-                } else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
-            }}
+                holder.imageView.setImageDrawable(folder);
+                gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+                if (stringBuilder.toString().length() > 0) {
+                    stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
+                    try {
+                        holder.txtTitle.setText(stringBuilder.toString().substring(stringBuilder.toString().lastIndexOf("/") + 1));
+                    } catch (Exception e) {
+                        holder.txtTitle.setText(rowItem.getName().substring(0, rowItem.getName().lastIndexOf("/")));
+                    }
+                } } else {
+                    if (zipViewer.showSize)
+                        holder.txtDesc.setText(new Futils().readableFileSize(rowItem.getSize()));
+                    holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/") + 1));
+                    if (zipViewer.coloriseIcons) {
+                        if (Icons.isVideo(rowItem.getName()))
+                            gradientDrawable.setColor(Color.parseColor("#f06292"));
+                        else if (Icons.isAudio(rowItem.getName()))
+                            gradientDrawable.setColor(Color.parseColor("#9575cd"));
+                        else if (Icons.isPdf(rowItem.getName()))
+                            gradientDrawable.setColor(Color.parseColor("#da4336"));
+                        else if (Icons.isCode(rowItem.getName()))
+                            gradientDrawable.setColor(Color.parseColor("#00bfa5"));
+                        else if (Icons.isText(rowItem.getName()))
+                            gradientDrawable.setColor(Color.parseColor("#e06055"));
+                        else if (Icons.isArchive(rowItem.getName()))
+                            gradientDrawable.setColor(Color.parseColor("#f9a825"));
+                        else if (Icons.isgeneric(rowItem.getName()))
+                            gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
+                        else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+                    } else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+                }
+            }
 
 
         holder.rl.setOnLongClickListener(new View.OnLongClickListener() {

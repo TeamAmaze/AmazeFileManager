@@ -670,7 +670,7 @@ e.printStackTrace();}
                 s.setTitle(getResources().getString(R.string.gridview));
             } else {
                 s.setTitle(getResources().getString(R.string.listview));
-            }
+            } if(Build.VERSION.SDK_INT>=21)toolbar.setElevation(0);
             if(name.contains("Main")) {
                 invalidatePasteButton(paste);
                 search.setVisible(true);
@@ -696,6 +696,7 @@ e.printStackTrace();}
             }
             progress_bar.setActionView(progress);
         } catch (ClassCastException e) {
+           if(Build.VERSION.SDK_INT>=21) toolbar.setElevation(10);
             tabsSpinner.setVisibility(View.GONE);
             toolbar.setTitle(list.get(select));
             menu.findItem(R.id.search).setVisible(false);

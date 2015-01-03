@@ -973,7 +973,7 @@ public class Main extends android.support.v4.app.Fragment {
                             timer.start();
                         }
                     });
-
+                    ib.setLayoutParams(params);
                     buttons.addView(ib);
                     if(names.size()-i!=1)
                         buttons.addView(v);
@@ -989,6 +989,7 @@ public class Main extends android.support.v4.app.Fragment {
                             timer.start();
                         }
                     });
+                    ib.setLayoutParams(params);
                     buttons.addView(ib);
                     if(names.size()-i!=1)
                         buttons.addView(v);
