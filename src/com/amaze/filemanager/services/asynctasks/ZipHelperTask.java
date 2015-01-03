@@ -61,7 +61,7 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
                         String y=entry.getName();
                         if(y.startsWith("/"))
                             y=y.substring(1,y.length());
-                        if (file.getParent() == null) {
+                        if (file.getParent() == null || file.getParent().length()==0 || file.getParent().equals("/")) {
                             if(!strings.contains(y)){
                                 elements.add(new ZipObj(new ZipEntry(y),entry.getTime(),entry.getSize(), entry.isDirectory()));
                             strings.add(y);
