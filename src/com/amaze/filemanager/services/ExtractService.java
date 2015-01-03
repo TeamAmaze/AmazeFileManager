@@ -70,14 +70,9 @@ public class ExtractService extends Service {
 
     @Override
     public void onCreate() {
-        Notification notification = new Notification(R.drawable.ic_doc_compressed, utils.getString(this,R.string.Extracting_fles), System.currentTimeMillis());
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.setAction(Intent.ACTION_MAIN);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notification.setLatestEventInfo(this, utils.getString(this,R.string.Extracting_fles), "", pendingIntent);
-        startForeground(002, notification);
         registerReceiver(receiver1, new IntentFilter("excancel"));
     }
+    boolean foreground=true;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle b = new Bundle();
@@ -90,6 +85,16 @@ public class ExtractService extends Service {
             entries=intent.getStringArrayListExtra("entries");
         }
         b.putString("file", file);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setAction(Intent.ACTION_MAIN);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        mBuilder = new NotificationCompat.Builder(cd);
+        mBuilder.setContentIntent(pendingIntent);
+        mBuilder.setContentTitle(getResources().getString(R.string.extracting))
+                .setContentText(new File(file).getName())
+                .setSmallIcon(R.drawable.ic_doc_compressed);
+        if(foreground){startForeground(Integer.parseInt("123"+startId),mBuilder.build());
+        foreground=false;}
         new Doback().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, b);
         hash.put(startId, true);
         // If we get killed, after returning from here, restart
@@ -159,16 +164,17 @@ public class ExtractService extends Service {
             while ((len = inputStream.read(buf)) > 0) {
                 //System.out.println(id + " " + hash.get(id));
                 if (hash.get(id)) {
-                    publishResults(true);
                     outputStream.write(buf, 0, len);
                     copiedbytes=copiedbytes+len;
                     int p=(int) ((copiedbytes / (float) totalbytes) * 100);
-                    if(p!=lastpercent || lastpercent==0)
-                    publishResults(zipfile.getName(),p,id,totalbytes,copiedbytes,false);
+                    if(p!=lastpercent || lastpercent==0) {
+                        publishResults(zipfile.getName(), p, id, totalbytes, copiedbytes, false);
+                        publishResults(true);
+                    }
                     lastpercent=p;
                 } else {
                     publishResults(false);
-                    publishResults(zipfile.getName(),100,id,totalbytes,copiedbytes,true);
+                    publishResults(zipfile.getName(), 100, id, totalbytes, copiedbytes, true);
                     stopSelf(id);
                 }
             }
@@ -200,12 +206,13 @@ public class ExtractService extends Service {
             while ((len = inputStream.read(buf)) > 0) {
                 //System.out.println(id + " " + hash.get(id));
                 if (hash.get(id)) {
-                    publishResults(true);
                     outputStream.write(buf, 0, len);
                     copiedbytes=copiedbytes+len;
                     int p=(int) ((copiedbytes / (float) totalbytes) * 100);
-                    if(p!=lastpercent || lastpercent==0)
+                    if(p!=lastpercent || lastpercent==0){
                         publishResults(a,p,id,totalbytes,copiedbytes,false);
+                        publishResults(true);
+                    }
                     lastpercent=p;
                 } else {
                     publishResults(a,100,id,totalbytes,copiedbytes,true);
@@ -239,15 +246,15 @@ public class ExtractService extends Service {
             while ((len = zipfile.read(buf)) > 0) {
                 //System.out.println(id + " " + hash.get(id));
                 if (hash.get(id)) {
-                    publishResults(true);
                     outputStream.write(buf, 0, len);
                     copiedbytes=copiedbytes+len;
                     int p=(int) ((copiedbytes / (float) totalbytes) * 100);
-                    if(p!=lastpercent || lastpercent==0)
+                    if(p!=lastpercent || lastpercent==0){
                         publishResults(string,p,id,totalbytes,copiedbytes,false);
+                        publishResults(true);}
                     lastpercent=p;
                 } else {
-                    publishResults(string,100,id,totalbytes,copiedbytes,true);
+                    publishResults(string, 100, id, totalbytes, copiedbytes, true);
                     publishResults(false);
                     stopSelf(id);
                 }
@@ -416,10 +423,6 @@ public class ExtractService extends Service {
     protected Integer doInBackground(Bundle... p1) {
             String file = p1[0].getString("file");
 
-        mBuilder = new NotificationCompat.Builder(cd);
-        mBuilder.setContentTitle(getResources().getString(R.string.extracting))
-                .setContentText(new File(file).getName())
-                .setSmallIcon(R.drawable.ic_doc_compressed);
 
         File f = new File(file);
             System.out.println(f.getName()+""+eentries);

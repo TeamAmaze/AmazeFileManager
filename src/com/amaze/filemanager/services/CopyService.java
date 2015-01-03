@@ -63,17 +63,11 @@ public class CopyService extends Service {
     NotificationCompat.Builder mBuilder;
     @Override
     public void onCreate() {
-        notification = new Notification(R.drawable.ic_content_copy_white_36dp, getResources().getString(R.string.copying_fles), System.currentTimeMillis());
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.setAction(Intent.ACTION_MAIN);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notification.setLatestEventInfo(this, getResources().getString(R.string.copying_fles), "", pendingIntent);
-        startForeground(001, notification);
         SharedPreferences Sp=PreferenceManager.getDefaultSharedPreferences(this);
         rootmode=Sp.getBoolean("rootmode",false);
         registerReceiver(receiver3, new IntentFilter("copycancel"));
     }
-
+    boolean foreground=true;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle b = new Bundle();
@@ -82,6 +76,18 @@ public class CopyService extends Service {
         mNotifyManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         b.putInt("id", startId);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setAction(Intent.ACTION_MAIN);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        mBuilder = new NotificationCompat.Builder(c);
+        mBuilder.setContentIntent(pendingIntent);
+        mBuilder.setContentTitle(getResources().getString(R.string.copying))
+
+                .setSmallIcon(R.drawable.ic_content_copy_white_36dp);
+        if(foreground){
+            startForeground(Integer.parseInt("456"+startId),mBuilder.build());
+        foreground=false;
+        }
         b.putBoolean("move",intent.getBooleanExtra("move",false));
         b.putString("FILE2", FILE2);
         b.putStringArrayList("files", files);
@@ -187,10 +193,6 @@ public class CopyService extends Service {
         long totalBytes = 0L, copiedBytes = 0L;
         int lastpercent=0;
         public void execute(int id, final ArrayList<String> files,final String FILE2,final boolean move) {
-            mBuilder = new NotificationCompat.Builder(c);
-            mBuilder.setContentTitle(getResources().getString(R.string.copying))
-
-                    .setSmallIcon(R.drawable.ic_content_copy_white_36dp);
             if (new File(FILE2).canWrite() && new File(files.get(0)).canRead()) {
                 try{
                     for (int i = 0; i < files.size(); i++) {
@@ -272,10 +274,10 @@ public class CopyService extends Service {
                         copiedBytes += length;
                         fileBytes += length;
                         int p=(int) ((copiedBytes / (float) totalBytes) * 100);
-                        if(lastpercent!=p || lastpercent==0)
-                        publishResults(sourceFile.getName(),p,  (int) ((fileBytes / (float) size) * 100), id, totalBytes, copiedBytes, false,move);
-                        lastpercent=p;
-                        publishResults(true);
+                        if(lastpercent!=p || lastpercent==0) {
+                            publishResults(sourceFile.getName(), p, (int) ((fileBytes / (float) size) * 100), id, totalBytes, copiedBytes, false, move);
+                            publishResults(true);
+                        }lastpercent=p;
                     }else {publishCompletedResult(sourceFile.getName(),Integer.parseInt("456"+id));
                         in.close();
                         out.close();

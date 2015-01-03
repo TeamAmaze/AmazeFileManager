@@ -19,6 +19,8 @@
 
 package com.amaze.filemanager.fragments;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -35,6 +37,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.HorizontalScrollView;
@@ -175,7 +179,6 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             // assumes that you have "contexual.xml" menu resources
             inflater.inflate(R.menu.contextual, menu);
             hideOption(R.id.cpy, menu);
-            menu.findItem(R.id.all).setIcon(new IconUtils(Sp,getActivity()).getAllDrawable());
             hideOption(R.id.cut,menu);
             hideOption(R.id.delete,menu);
             hideOption(R.id.addshortcut,menu);
@@ -189,8 +192,18 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             hideOption(R.id.compress, menu);
             hideOption(R.id.permissions, menu);
             hideOption(R.id.hide, menu);
-            //hideOption(R.id.setringtone,menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
+            ObjectAnimator anim = ObjectAnimator.ofInt(rootView.findViewById(R.id.buttonbarframe), "backgroundColor", Color.parseColor(skin), getResources().getColor(R.color.toolbar_cab));
+            anim.setDuration(200);
+            anim.setEvaluator(new ArgbEvaluator());
+            anim.start();
+            if (Build.VERSION.SDK_INT >= 21) {
+
+                Window window = getActivity().getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                window.setStatusBarColor(getResources().getColor(android.R.color.black));
+            }
             if(Build.VERSION.SDK_INT<19)
                 getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
             return true;
@@ -233,7 +246,17 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         public void onDestroyActionMode(ActionMode actionMode) {
         if(zipAdapter!=null)zipAdapter.toggleChecked(false,"");
             selection=false;
-        }
+        ObjectAnimator anim = ObjectAnimator.ofInt(rootView.findViewById(R.id.buttonbarframe), "backgroundColor", getResources().getColor(R.color.toolbar_cab), Color.parseColor(skin));
+        anim.setDuration(50);
+        anim.setEvaluator(new ArgbEvaluator());
+        anim.start();
+        if (Build.VERSION.SDK_INT >= 21) {
+
+            Window window = getActivity().getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(Color.parseColor(mainActivity.getStatusColor()));
+        }}
     };
     @Override
     public void onResume() {

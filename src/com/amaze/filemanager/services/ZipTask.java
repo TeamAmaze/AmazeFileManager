@@ -62,14 +62,9 @@ public class ZipTask extends Service {
     @SuppressWarnings("deprecation")
     @Override
     public void onCreate() {
-        Notification notification = new Notification(R.drawable.ic_doc_compressed,getResources().getString(R.string.Zipping_fles), System.currentTimeMillis());
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notification.setLatestEventInfo(this,getResources().getString(R.string.Zipping_fles), "", pendingIntent);
-        startForeground(004, notification);
         registerReceiver(receiver1, new IntentFilter("zipcancel"));
     }
-
+boolean foreground=true;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle b = new Bundle();
@@ -84,6 +79,16 @@ public class ZipTask extends Service {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+        }
+        mBuilder = new NotificationCompat.Builder(this);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        mBuilder.setContentIntent(pendingIntent);
+        mBuilder.setContentTitle(getResources().getString(R.string.zipping))
+
+                .setSmallIcon(R.drawable.ic_doc_compressed);
+        if(foreground){
+            startForeground(Integer.parseInt("789"+startId),mBuilder.build());
         }
         ArrayList<String> a = intent.getStringArrayListExtra("files");
         b.putInt("id", startId);
@@ -105,10 +110,6 @@ Context c=this;
         String name;
 
         protected Integer doInBackground(Bundle... p1) {
-            mBuilder = new NotificationCompat.Builder(c);
-            mBuilder.setContentTitle(getResources().getString(R.string.zipping))
-
-                    .setSmallIcon(R.drawable.ic_doc_compressed);
             int id = p1[0].getInt("id");
             ArrayList<String> a = p1[0].getStringArrayList("files");
             name = p1[0].getString("name");
@@ -135,7 +136,7 @@ Context c=this;
             int title = R.string.zipping;
             mBuilder.setContentTitle(utils.getString(c, title));
             mBuilder.setContentText(new File(fileName).getName() + " " + utils.readableFileSize(done) + "/" + utils.readableFileSize(total));
-            int id1 = Integer.parseInt("456" + id);
+            int id1 = Integer.parseInt("789" + id);
             mNotifyManager.notify(id1, mBuilder.build());
             if (i == 100 || total == 0) {
                 mBuilder.setContentTitle("Zip completed");
@@ -153,7 +154,7 @@ Context c=this;
             sendBroadcast(intent);
 
         } else {
-            publishCompletedResult(Integer.parseInt("456" + id));
+            publishCompletedResult(Integer.parseInt("789" + id));
         }
     }public void publishCompletedResult(int id1){
         try {
@@ -237,11 +238,11 @@ Context c=this;
                     if (hash.get(id)) {
                         zos.write(buf, 0, len);
                         size += len;
-                        publishResult(true);
                         int p=(int) ((size / (float) totalBytes) * 100);
-                        if(p!=lastpercent || lastpercent==0)
-                        publishResults(id, fileName, p, false,size,totalBytes);
-                        lastpercent=p;
+                        if(p!=lastpercent || lastpercent==0) {
+                            publishResults(id, fileName, p, false, size, totalBytes);
+                            publishResult(true);
+                        }lastpercent=p;
                     }
                 }
                 in.close();
