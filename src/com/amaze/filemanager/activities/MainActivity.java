@@ -658,7 +658,7 @@ e.printStackTrace();}
                     transaction.commit();
                 } else {
                     selectItem(0);
-                }invalidateOptionsMenu();
+                }supportInvalidateOptionsMenu();
             }
         });
 
@@ -708,7 +708,7 @@ e.printStackTrace();}
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
             e.printStackTrace();
-        }catch (Exception e){e.printStackTrace();}
+        }catch (Exception e){}
         return super.onPrepareOptionsMenu(menu);
     }
 

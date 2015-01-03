@@ -507,7 +507,7 @@ public class Main extends android.support.v4.app.Fragment {
                         if (scrolls.containsKey(current)) {
                             Bundle b = scrolls.get(current);
 
-                            //listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
+                            listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
                         }
                     }
                     floatingActionButton.show();
