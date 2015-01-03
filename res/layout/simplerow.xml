@@ -44,6 +44,7 @@
         android:clickable="false"
         android:layout_gravity="center"
         android:singleLine="true"
+        android:ellipsize="end"
         android:textSize="17sp"
         android:gravity="center_vertical"
 

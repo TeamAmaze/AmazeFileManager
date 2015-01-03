@@ -304,7 +304,7 @@ public class Main extends android.support.v4.app.Fragment {
         }
         footerView=getActivity().getLayoutInflater().inflate(R.layout.divider, null);
         if (aBoolean) {
-            listView.addFooterView(footerView);
+            //listView.addFooterView(footerView);
             listView.setFastScrollEnabled(true);
         } else {
 
@@ -482,8 +482,10 @@ public class Main extends android.support.v4.app.Fragment {
                 TextView footerText = (TextView) footerView.findViewById(R.id.footerText);
                 if (bitmap.size() == 0) {
                     footerText.setText(res.getString(R.string.nofiles));
+                    listView.addFooterView(footerView);
                 } else {
                     footerText.setText(res.getString(R.string.tapnhold));
+                    listView.removeFooterView(footerView);
                 }if(gobackitem)
                 if (!f.getPath().equals("/")) {
                     if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))

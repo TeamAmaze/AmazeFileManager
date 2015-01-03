@@ -266,6 +266,7 @@ public class MainActivity extends ActionBarActivity {
         }
         mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         View v=getLayoutInflater().inflate(R.layout.drawerheader,null);
         v.setBackgroundColor(Color.parseColor(skin));

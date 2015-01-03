@@ -82,7 +82,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     View rootView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-         rootView = inflater.inflate(R.layout.main_frag, container, false);
+        rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
 
         return rootView;
@@ -97,7 +97,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mainActivity=(MainActivity)getActivity();
         if(mainActivity.theme1==1)
-            getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+            listView.setBackgroundColor(Color.parseColor("#000000"));
         else
             listView.setBackgroundColor(Color.parseColor("#ffffff"));
         gobackitem=Sp.getBoolean("goBack_checkbox", true);

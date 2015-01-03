@@ -23,9 +23,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawerheader"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="50dp"
-    android:padding="5dp"
+    android:layout_height="?attr/actionBarSize"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
     android:elevation="5dp"
     android:clickable="false">
 
@@ -34,7 +34,6 @@
         android:layout_width="40dp"
         android:layout_height="fill_parent"
         android:clickable="false"
-        android:padding="5dp"
         android:src="@drawable/ic_launcher1"
         android:gravity="center_vertical"
         android:contentDescription="@string/icon" />
@@ -45,8 +44,8 @@
         android:layout_toRightOf="@id/icon"
         android:layout_height="fill_parent"
         android:clickable="false"
-        android:paddingLeft="20dp"
-        android:textSize="20dp"
+        android:paddingLeft="16dp"
+        android:textSize="20sp"
         style="@android:style/TextAppearance.Medium.Inverse"
         android:text="Amaze File Manager"
         android:gravity="center_vertical" />

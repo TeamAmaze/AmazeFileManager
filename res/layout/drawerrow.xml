@@ -37,8 +37,10 @@
         android:id="@+id/firstline"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:layout_marginLeft="75dp"
-        android:textSize="15dp"
+        android:layout_marginLeft="72dp"
+        android:textSize="15sp"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:clickable="false"
         android:gravity="center_vertical" />
 </RelativeLayout>
