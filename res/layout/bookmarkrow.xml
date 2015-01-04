@@ -27,7 +27,7 @@
         android:layout_width="fill_parent"
         android:id="@+id/bookmarkrow"
         android:orientation="vertical"
-        android:paddingLeft="10dip">  <!-- Dummy text view that will display the name of a random country. -->
+        android:paddingLeft="10dip">
         <TextView
             android:id="@+id/text1"
             style="?android:textAppearanceMedium"

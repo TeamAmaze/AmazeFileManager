@@ -556,6 +556,8 @@ e.printStackTrace();}
         select=0;
         transaction.addToBackStack("tabt" + 1);
         transaction.commit();
+        toolbar.setTitle(null);
+        tabsSpinner.setVisibility(View.VISIBLE);
 
     }
     public void selectItem(final int i) {
@@ -577,7 +579,6 @@ e.printStackTrace();}
                     android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
                     transaction.replace(R.id.content_frame, tabFragment);
-                    select = i;
                     // Commit the transaction
                     transaction.addToBackStack("tab1" + 1);
                     transaction.commit();
@@ -604,7 +605,6 @@ e.printStackTrace();}
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                 transaction2.replace(R.id.content_frame, new AppsList());
                 // transaction2.addToBackStack(null);
-                select = i;
                 // Commit the transaction
                 transaction2.commit();
                 //title.setText(utils.getString(this, R.string.apps));
@@ -615,7 +615,6 @@ e.printStackTrace();}
                 android.support.v4.app.FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
                 transaction3.replace(R.id.content_frame, new BookmarksManager());
                 // transaction3.addToBackStack(null);
-                select = i;
                 // Commit the transaction
                 transaction3.commit();
                 //title.setText(utils.getString(this, R.string.bookmanag));
@@ -623,6 +622,7 @@ e.printStackTrace();}
                 getSupportActionBar().setTitle(utils.getString(this, R.string.bookmanag));
                 }
         }
+        select = i;
         adapter.toggleChecked(select);
         mDrawerLayout.closeDrawer(mDrawerLinear);
     }
@@ -662,7 +662,8 @@ e.printStackTrace();}
             }
         });
 
-        try {tabsSpinner.setVisibility(View.VISIBLE);
+        try {
+            tabsSpinner.setVisibility(View.VISIBLE);
             TabFragment tabFragment=getFragment();
             String name=tabFragment.getTab1().getClass().getName();
             toolbar.setTitle("");
@@ -696,7 +697,6 @@ e.printStackTrace();}
             }
             progress_bar.setActionView(progress);
         } catch (ClassCastException e) {
-           if(Build.VERSION.SDK_INT>=21) toolbar.setElevation(10);
             tabsSpinner.setVisibility(View.GONE);
             toolbar.setTitle(list.get(select));
             menu.findItem(R.id.search).setVisible(false);
