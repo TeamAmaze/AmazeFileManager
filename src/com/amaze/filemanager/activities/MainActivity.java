@@ -609,7 +609,7 @@ e.printStackTrace();}
                 transaction2.commit();
                 //title.setText(utils.getString(this, R.string.apps));
                 //title.setVisibility(View.VISIBLE);
-                getSupportActionBar().setTitle(utils.getString(this, R.string.apps));
+                toolbar.setTitle(utils.getString(this, R.string.apps));
             } else if (i == list.size() - 1) {
 
                 android.support.v4.app.FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
@@ -619,7 +619,7 @@ e.printStackTrace();}
                 transaction3.commit();
                 //title.setText(utils.getString(this, R.string.bookmanag));
                 //title.setVisibility(View.VISIBLE);
-                getSupportActionBar().setTitle(utils.getString(this, R.string.bookmanag));
+                toolbar.setTitle(utils.getString(this, R.string.bookmanag));
                 }
         }
         select = i;
@@ -698,7 +698,7 @@ e.printStackTrace();}
             progress_bar.setActionView(progress);
         } catch (ClassCastException e) {
             tabsSpinner.setVisibility(View.GONE);
-            toolbar.setTitle(list.get(select));
+            //toolbar.setTitle(list.get(select));
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
