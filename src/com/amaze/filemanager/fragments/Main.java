@@ -203,6 +203,29 @@ public class Main extends android.support.v4.app.Fragment {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
+        floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+                builder.items(new String[]{
+                        getResources().getString(R.string.folder),
+                        getResources().getString(R.string.file)
+
+                });
+                builder.itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence s) {
+                        mainActivity.add(i);
+                    }
+                });
+                builder.title(getResources().getString(R.string.new_string));
+                if(theme1==1)
+                    builder.theme(Theme.DARK);
+                builder.build().show();
+            }
+        });
+
         if(getArguments()!=null)
         Intentpath=getArguments().getString("path");
         animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
@@ -211,8 +234,6 @@ public class Main extends android.support.v4.app.Fragment {
         buttons = (LinearLayout) rootView.findViewById(R.id.buttons);
         pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
         textView = (TextView) rootView.findViewById(R.id.fullpath);
-
-
 
         showThumbs=Sp.getBoolean("showThumbs", true);
         ic=new IconHolder(getActivity(),showThumbs,!aBoolean);

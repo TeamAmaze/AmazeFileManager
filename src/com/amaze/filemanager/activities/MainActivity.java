@@ -237,28 +237,6 @@ public class MainActivity extends ActionBarActivity {
         LinearLayout linearLayout3 = (LinearLayout) findViewById(R.id.settings_bg);
         linearLayout3.setBackgroundColor(Color.parseColor(skin));
 
-        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(con);
-                builder.items(new String[]{
-                        getResources().getString(R.string.folder),
-                        getResources().getString(R.string.file)
-
-                });
-                builder.itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence s) {
-                        add(i);
-                    }
-                });
-                builder.title(getResources().getString(R.string.new_string));
-                if(theme1==1)
-                    builder.theme(Theme.DARK);
-                builder.build().show();
-            }
-        });
         if (Sp.getBoolean("firstrun", true)) {
             try {
                 s.makeS();
