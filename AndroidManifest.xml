@@ -72,7 +72,6 @@
            
         </activity>
 		<activity
-			
             android:label="Text Reader"
             android:name="com.amaze.filemanager.activities.TextReader" 
 			android:theme="@style/appCompatLight">

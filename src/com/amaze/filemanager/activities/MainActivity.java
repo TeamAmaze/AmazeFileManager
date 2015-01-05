@@ -558,7 +558,6 @@ e.printStackTrace();}
         transaction.commit();
         toolbar.setTitle(null);
         tabsSpinner.setVisibility(View.VISIBLE);
-
     }
     public void selectItem(final int i) {
 
