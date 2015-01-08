@@ -61,6 +61,7 @@ public class ProcessViewer extends Fragment {
     ArrayList<Integer> CancelledZipIds = new ArrayList<Integer>();
     SharedPreferences Sp;
     IconUtils icons;
+    MainActivity mainActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,10 +73,15 @@ public class ProcessViewer extends Fragment {
         FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         floatingActionButton.hide(true);
 
+        mainActivity = (MainActivity) getActivity();
+
         rootView = (LinearLayout) root.findViewById(R.id.secondbut);
-        ((MainActivity)getActivity()).getSupportActionBar().setTitle(utils.getString(getActivity(),R.string.processes));
+        //((MainActivity)getActivity()).getSupportActionBar().setTitle(utils.getString(getActivity(),R.string.processes));
+        mainActivity.toolbar.setTitle(utils.getString(getActivity(),R.string.processes));
+        mainActivity.tabsSpinner.setVisibility(View.GONE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         icons = new IconUtils(Sp, getActivity());
+        mainActivity.supportInvalidateOptionsMenu();
         return root;
     }
 

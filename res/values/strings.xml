@@ -298,5 +298,6 @@
     <string name="chinese_translation_summary">amtlib-dot-dll, Felix2yu</string>
     <string name="serbian_translation_summary">Mladen Pejaković</string>
     <string name="turkish_translation_summary">Hakan Güven</string>
+    <string name="zip_viewer">Zip Viewer</string>
 </resources>
 

@@ -22,12 +22,15 @@ package com.amaze.filemanager.services.asynctasks;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
@@ -65,6 +68,7 @@ Futils futils=new Futils();
         a.callback(new MaterialDialog.Callback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
+
                 run = false;
             }
 
@@ -88,7 +92,6 @@ Futils futils=new Futils();
         if (a != null) {
            textView.setText(searching+" " + val[0]);
         }
-
     }
 
     protected ArrayList<String[]> doInBackground(Bundle[] p1) {

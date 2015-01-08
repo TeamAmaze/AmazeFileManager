@@ -56,7 +56,7 @@ boolean rootMode,showHidden;
         showHidden=Sp.getBoolean("showHidden",false);
         LocalBroadcastManager.getInstance(this).registerReceiver(RECIEVER,new IntentFilter("searchcancel"));
         publishProgress(0);
-    ArrayList<String[]> arrayList=getSearchResult(new File(intent.getStringExtra("path")), intent.getStringExtra("text"));
+        ArrayList<String[]> arrayList=getSearchResult(new File(intent.getStringExtra("path")), intent.getStringExtra("text"));
         publishProgress(arrayList);
         stopSelf();
     }

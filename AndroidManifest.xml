@@ -76,7 +76,7 @@
             android:name="com.amaze.filemanager.activities.TextReader" 
 			android:theme="@style/appCompatLight">
             <intent-filter
-                android:label="Amaze Text Viewer">
+                android:label="Amaze Text Editor">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/*" />

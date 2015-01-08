@@ -42,11 +42,13 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -450,38 +452,39 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-    if(mDrawerLayout.isDrawerOpen(mDrawerLinear))
-        mDrawerLayout.closeDrawer(mDrawerLinear);
-    else {
-        if (select < list.size() - 2) {
-            try {
-
-                TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
-                Fragment fragment=tabFragment.getTab();
-                String name=fragment.getClass().getName();
-                if(name.contains("Main")){
-                Main main=(Main)fragment;
-                if ((!main.current.equals(main.home) && !main.current.equals("/")) || main.selection) {
-                        main.goBack();
-
-                    } else {
-
-                        exit();
-                    }
-
-            }else if(name.contains("ZipViewer")){
-                    ZipViewer zipViewer=(ZipViewer)fragment;
-                    if (zipViewer.cangoBack()) {
-
-                        zipViewer.goBack();
-                    } else exit();
-                }}catch (ClassCastException e){goToMain();
-e.printStackTrace();}
-        }
+        if (mDrawerLayout.isDrawerOpen(mDrawerLinear))
+            mDrawerLayout.closeDrawer(mDrawerLinear);
         else {
-            goToMain();
+            if (select < list.size() - 2) {
+                try {
+
+                    TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
+                    Fragment fragment = tabFragment.getTab();
+                    String name = fragment.getClass().getName();
+                    if (name.contains("Main")) {
+                        Main main = (Main) fragment;
+                        if ((!main.current.equals(main.home) && !main.current.equals("/")) || main.selection) {
+                            main.goBack();
+                        } else {
+                            exit();
+                        }
+                    } else {
+                        ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                        if (zipViewer.cangoBack()) {
+
+                            zipViewer.goBack();
+                        } else
+                            exit();
+                    }
+                } catch (ClassCastException e) {
+                    goToMain();
+                    e.printStackTrace();
+                }
+            } else {
+                goToMain();
+            }
         }
-    }}
+    }
 
     public void invalidatePasteButton(MenuItem paste) {
         if (MOVE_PATH != null || COPY_PATH != null) {
@@ -1260,6 +1263,15 @@ e.printStackTrace();}
 
     public void addZipViewTab(String text){
        getFragment().addZipViewerTab(text);
+    }
+    public void openZip(String path) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        Fragment zipFragment = new ZipViewer();
+        Bundle bundle = new Bundle();
+        bundle.putString("path", path);
+        zipFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.content_frame, zipFragment);
+        fragmentTransaction.commit();
     }
     public void addTab(){
         getFragment().addTab1("");

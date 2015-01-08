@@ -93,60 +93,65 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     }
         @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        s = getArguments().getString("path");
-        f = new File(s);
+
+            super.onActivityCreated(savedInstanceState);
+            s = getArguments().getString("path");
+            f = new File(s);
             rootView.findViewById(R.id.gridView).setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
-        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mainActivity=(MainActivity)getActivity();
-        if(mainActivity.theme1==1)
-            listView.setBackgroundColor(Color.parseColor("#000000"));
-        else
-            listView.setBackgroundColor(Color.parseColor("#ffffff"));
-        gobackitem=Sp.getBoolean("goBack_checkbox", true);
-        coloriseIcons=Sp.getBoolean("coloriseIcons",false);
-        Calendar calendar = Calendar.getInstance();
-        showSize=Sp.getBoolean("showFileSize",false);
-        showLastModified=Sp.getBoolean("showLastModified",true);
-        year=(""+calendar.get(Calendar.YEAR)).substring(2,4);
-        skin = Sp.getString("skin_color", "#03A9F4");
+            Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            mainActivity = (MainActivity) getActivity();
+            if (mainActivity.theme1 == 1)
+                listView.setBackgroundColor(Color.parseColor("#000000"));
+            else
+                listView.setBackgroundColor(Color.parseColor("#ffffff"));
+            gobackitem = Sp.getBoolean("goBack_checkbox", true);
+            coloriseIcons = Sp.getBoolean("coloriseIcons", false);
+            Calendar calendar = Calendar.getInstance();
+            showSize = Sp.getBoolean("showFileSize", false);
+            showLastModified = Sp.getBoolean("showLastModified", true);
+            year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
+            skin = Sp.getString("skin_color", "#03A9F4");
             rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
             listView.setDivider(null);
-        String x=getSelectionColor();
-        skinselection= Color.parseColor(x);
-        files=new ArrayList<File>();
-        if(savedInstanceState==null)
-            loadlist(f.getPath());
-        else {
-            wholelist = savedInstanceState.getParcelableArrayList("wholelist");
-            elements=savedInstanceState.getParcelableArrayList("elements");
-            current=savedInstanceState.getString("path");
-            f=new File(savedInstanceState.getString("file"));
-            createviews(elements,current);
-       }   }
+            String x = getSelectionColor();
+            skinselection = Color.parseColor(x);
+            files = new ArrayList<File>();
+            if (savedInstanceState == null)
+                loadlist(f.getPath());
+            else {
+                wholelist = savedInstanceState.getParcelableArrayList("wholelist");
+                elements = savedInstanceState.getParcelableArrayList("elements");
+                current = savedInstanceState.getString("path");
+                f = new File(savedInstanceState.getString("file"));
+                createviews(elements, current);
+            }
+            mainActivity.tabsSpinner.setVisibility(View.GONE);
+            mainActivity.toolbar.setTitle(getResources().getString(R.string.zip_viewer));
+            mainActivity.supportInvalidateOptionsMenu();
+        }
     public String getSelectionColor(){
 
         String[] colors = new String[]{
-                "#e51c23","#44e84e40",
-                "#e91e63","#44ec407a",
-                "#9c27b0","#44ab47bc",
-                "#673ab7","#447e57c2",
-                "#3f51b5","#445c6bc0",
-                "#5677fc","#44738ffe",
-                "#0288d1","#4429b6f6",
-                "#0097a7","#4426c6da",
-                "#009688","#4426a69a",
-                "#259b24","#442baf2b",
-                "#8bc34a","#449ccc65",
-                "#ffa000","#44ffca28",
-                "#f57c00","#44ffa726",
-                "#e64a19","#44ff7043",
-                "#795548","#448d6e63",
-                "#212121","#99bdbdbd",
-                "#607d8b","#4478909c",
-                "#004d40","#440E5D50"
+                "#F44336","#74e84e40",
+                "#e91e63","#74ec407a",
+                "#9c27b0","#74ab47bc",
+                "#673ab7","#747e57c2",
+                "#3f51b5","#745c6bc0",
+                "#2196F3","#74738ffe",
+                "#03A9F4","#7429b6f6",
+                "#00BCD4","#7426c6da",
+                "#009688","#7426a69a",
+                "#4CAF50","#742baf2b",
+                "#8bc34a","#749ccc65",
+                "#FFC107","#74ffca28",
+                "#FF9800","#74ffa726",
+                "#FF5722","#74ff7043",
+                "#795548","#748d6e63",
+                "#212121","#79bdbdbd",
+                "#607d8b","#7478909c",
+                "#004d40","#740E5D50"
         };
         return colors[ Arrays.asList(colors).indexOf(skin)+1];
     }

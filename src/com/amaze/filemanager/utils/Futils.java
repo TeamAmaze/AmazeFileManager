@@ -36,6 +36,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -622,13 +623,12 @@ public void showPackageDialog(final File f,final MainActivity m){
                 Intent intent = new Intent(m, ExtractService.class);
                 intent.putExtra("zip",f.getPath());
                 m.startService(intent);
-
-
             }
 
             @Override
             public void onNegative(MaterialDialog materialDialog) {
-                m.addZipViewTab(f.getPath());
+                //m.addZipViewTab(f.getPath());
+                m.openZip(f.getPath());
             }
         });
         mat.positiveColor(Color.parseColor(m.skin));

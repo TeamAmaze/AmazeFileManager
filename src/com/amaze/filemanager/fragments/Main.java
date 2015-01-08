@@ -610,7 +610,9 @@ public class Main extends android.support.v4.app.Fragment {
         // may be called multiple times if the mode is invalidated.
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             ArrayList<Integer> positions = adapter.getCheckedItemPositions();
-            ((TextView) v.findViewById(R.id.item_count)).setText(positions.size() + "");
+            TextView textView1 = (TextView) v.findViewById(R.id.item_count);
+            textView1.setText(positions.size() + "");
+            textView1.setOnClickListener(null);
             //tv.setText(positions.size());
             if (positions.size() == 1) {
                 showOption(R.id.addshortcut,menu);
