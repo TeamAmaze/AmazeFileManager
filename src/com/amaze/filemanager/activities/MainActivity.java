@@ -458,23 +458,29 @@ public class MainActivity extends ActionBarActivity {
             if (select < list.size() - 2) {
                 try {
 
-                    TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
-                    Fragment fragment = tabFragment.getTab();
+                    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     String name = fragment.getClass().getName();
-                    if (name.contains("Main")) {
-                        Main main = (Main) fragment;
+                    if (name.contains("TabFragment")) {
+                        TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
+                        Fragment fragment1 = tabFragment.getTab();
+                        Main main = (Main) fragment1;
                         if ((!main.current.equals(main.home) && !main.current.equals("/")) || main.selection) {
                             main.goBack();
                         } else {
                             exit();
                         }
-                    } else {
+                    } else if (name.contains("ZipViewer")){
                         ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
                         if (zipViewer.cangoBack()) {
 
                             zipViewer.goBack();
-                        } else
-                            exit();
+                        } else {
+
+                            fragmentTransaction.remove(zipViewer);
+                            fragmentTransaction.commit();
+                            supportInvalidateOptionsMenu();
+                        }
                     }
                 } catch (ClassCastException e) {
                     goToMain();
@@ -1270,7 +1276,7 @@ public class MainActivity extends ActionBarActivity {
         Bundle bundle = new Bundle();
         bundle.putString("path", path);
         zipFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.content_frame, zipFragment);
+        fragmentTransaction.add(R.id.content_frame, zipFragment);
         fragmentTransaction.commit();
     }
     public void addTab(){

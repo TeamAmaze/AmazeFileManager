@@ -70,9 +70,9 @@ public class Preferences extends ActionBarActivity {
 
         String x = getStatusColor();
         skinStatusBar = Color.parseColor(x);
-        toolbar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
         if (Build.VERSION.SDK_INT >= 21) {
 
             Window window = this.getWindow();
