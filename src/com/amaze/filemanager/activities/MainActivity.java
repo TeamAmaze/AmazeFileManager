@@ -219,8 +219,9 @@ public class MainActivity extends ActionBarActivity {
 
             // zip viewer intent
             Uri uri = intent.getData();
-        openzip=true;
-        zippath=uri.getPath();}
+            openzip=true;
+            zippath=uri.getPath();
+        }
 
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#03A9F4");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
@@ -554,7 +555,10 @@ public class MainActivity extends ActionBarActivity {
                     TabFragment tabFragment=new TabFragment();
                     if (path != null || openzip) {
                         Bundle a = new Bundle();
-                        if(zippath!=null)a.putString("zippath",zippath);
+                        if(zippath!=null){
+                            utils.openFile(new File(zippath), this);
+                        }
+                            //a.putString("zippath",zippath);
                         zippath=null;openzip=false;
                         a.putString("path", path);
                         tabFragment.setArguments(a);
