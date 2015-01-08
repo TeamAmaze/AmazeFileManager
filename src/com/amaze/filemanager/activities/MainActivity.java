@@ -461,6 +461,7 @@ public class MainActivity extends ActionBarActivity {
 
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.animator.slide_out_bottom,R.animator.slide_out_bottom);
                     String name = fragment.getClass().getName();
                     if (name.contains("TabFragment")) {
                         TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
@@ -1276,6 +1277,7 @@ public class MainActivity extends ActionBarActivity {
     }
     public void openZip(String path) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.animator.slide_in_top,R.animator.slide_in_bottom);
         Fragment zipFragment = new ZipViewer();
         Bundle bundle = new Bundle();
         bundle.putString("path", path);
