@@ -87,13 +87,13 @@
     <PreferenceCategory android:title="Archive Preferences">
         <EditTextPreference
             android:key="extractpath"
-            android:title="Archive extract Folder"
-            android:summary="Archive files will be extracted to this folder.Default value is the directory in which archive is present">
+            android:title="@string/archive_extract_folder"
+            android:summary="@string/archive_summary">
         </EditTextPreference>
         <EditTextPreference
             android:key="zippath"
-            android:title="Zip create Folder"
-            android:summary="New zip files will be created in this folder.Default value is the directory in which files are present">
+            android:title="@string/zip_summary"
+            android:summary="@string/zip_create_folder">
         </EditTextPreference>
 </PreferenceCategory>
     <PreferenceCategory android:title="@string/miscellaneous">
@@ -166,6 +166,10 @@
         <Preference
             android:key="feedback"
             android:title="@string/feedback" />
+        <Preference
+            android:key="donate"
+            android:title="@string/donate" />
+
     </PreferenceCategory>
 
     </PreferenceScreen>

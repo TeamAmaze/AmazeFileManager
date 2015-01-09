@@ -143,7 +143,7 @@ public class Futils {
     public void openWith(final File f,final Context c) {
         MaterialDialog.Builder a=new MaterialDialog.Builder(c);
         a.title("Open As");
-        String[] items=new String[]{"Text","Image","Video","Audio","Other"};
+        String[] items=new String[]{getString(c,R.string.text),getString(c,R.string.image),getString(c,R.string.video),getString(c,R.string.audio),getString(c,R.string.other)};
         a.items(items).itemsCallback(new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {

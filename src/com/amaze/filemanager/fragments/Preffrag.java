@@ -22,6 +22,7 @@ package com.amaze.filemanager.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -97,6 +98,18 @@ public class Preffrag extends PreferenceFragment {
                 });
                 a.build().show();
                 return true;
+            }
+        });
+        findPreference("donate").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                try {
+                    Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://forum.xda-developers.com/donatetome.php?u=4500270"));
+                    startActivity(myIntent);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(getActivity(), "No application can handle this request."+" Please install a webbrowser",  Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }return true;
             }
         });
         findPreference("uimode").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
