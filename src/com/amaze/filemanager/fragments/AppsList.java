@@ -43,6 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
@@ -73,6 +74,7 @@ public class AppsList extends ListFragment {
     ListView vl;
     public IconHolder ic;
     ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
+    int theme1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,7 +100,7 @@ public class AppsList extends ListFragment {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int theme=Integer.parseInt(Sp.getString("theme","0"));
-        int theme1 = theme;
+        theme1 = theme;
         if (theme == 2) {
             if(hour<=6 || hour>=18) {
                 theme1 = 1;
@@ -125,9 +127,11 @@ public class AppsList extends ListFragment {
     }
 
     public void onLongItemClick(final int position) {
-        new MaterialDialog.Builder(getActivity())
-                .items(new String[]{utils.getString(getActivity(), R.string.open),utils.getString(getActivity(), R.string.backup), utils.getString(getActivity(), R.string.uninstall),
-                        utils.getString(getActivity(), R.string.properties),utils.getString(getActivity(), R.string.play)})
+        final MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+        if(theme1==1)
+            builder.theme(Theme.DARK);
+        builder.items(new String[]{utils.getString(getActivity(), R.string.open),utils.getString(getActivity(), R.string.backup), utils.getString(getActivity(), R.string.uninstall),
+                utils.getString(getActivity(), R.string.properties),utils.getString(getActivity(), R.string.play)})
                 .itemsCallback(new MaterialDialog.ListCallback() {
 
                     @Override
@@ -166,23 +170,45 @@ public class AppsList extends ListFragment {
                                 ApplicationInfo info1 = c.get(position);
                                 ArrayList<Integer> arrayList1 = new ArrayList<Integer>();
                                 arrayList1.add(position);
-                                File f1 = new File(info1.publicSourceDir);
+                                final File f1 = new File(info1.publicSourceDir);
                                 //arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1),"", false));
                                 //utils.deleteFiles(arrayList, null, arrayList1);
                                 if ((info1.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
                                     // system package
-                                   if(Sp.getBoolean("rootmode",false)) {
-                                       ArrayList<File> files = new ArrayList<File>();
-                                       if (Build.VERSION.SDK_INT >= 21) {
-                                           String parent = f1.getParent();
-                                           if (!parent.equals("app") && !parent.equals("priv_app"))
-                                               files.add(new File(f1.getParent()));
-                                           else files.add(f1);
-                                       } else {
-                                           files.add(f1);
-                                       }new DeleteTask(getActivity().getContentResolver(), getActivity()).execute(files);
-                                   }else {Toast.makeText(getActivity(),"Enable root mode",Toast.LENGTH_SHORT).show();
-                                   }} else {
+                                    if(Sp.getBoolean("rootmode",false)) {
+                                        MaterialDialog.Builder builder1 = new MaterialDialog.Builder(getActivity());
+                                        if(theme1==1)
+                                            builder1.theme(Theme.DARK);
+                                        builder1.content(utils.getString(getActivity(), R.string.unin_system_apk))
+                                                .title(utils.getString(getActivity(), R.string.warning))
+                                                .negativeText(utils.getString(getActivity(), R.string.no))
+                                                .positiveText(utils.getString(getActivity(), R.string.yes))
+                                                .callback(new MaterialDialog.Callback() {
+                                                    @Override
+                                                    public void onNegative(MaterialDialog materialDialog) {
+
+                                                        materialDialog.cancel();
+                                                    }
+
+                                                    @Override
+                                                    public void onPositive(MaterialDialog materialDialog) {
+
+                                                        ArrayList<File> files = new ArrayList<File>();
+                                                        if (Build.VERSION.SDK_INT >= 21) {
+                                                            String parent = f1.getParent();
+                                                            if (!parent.equals("app") && !parent.equals("priv_app"))
+                                                                files.add(new File(f1.getParent()));
+                                                            else files.add(f1);
+                                                        } else {
+                                                            files.add(f1);
+                                                        }
+                                                        new DeleteTask(getActivity().getContentResolver(), getActivity()).execute(files);
+                                                    }
+                                                }).build().show();
+                                    } else {
+                                        Toast.makeText(getActivity(),utils.getString(getActivity(), R.string.enablerootmde),Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
                                     unin(c.get(position).packageName);
                                 }
                                 break;

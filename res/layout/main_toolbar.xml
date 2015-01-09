@@ -38,8 +38,7 @@
             android:layout_width="match_parent"
             android:minHeight="?attr/actionBarSize"
             app:theme="?attr/toolbar_theme"
-            app:popupTheme="?attr/popup"
-            android:elevation="10dp">
+            app:popupTheme="?attr/popup">
 
             <Spinner
                 android:id="@+id/tab_spinner"
