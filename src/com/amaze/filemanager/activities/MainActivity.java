@@ -301,12 +301,12 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View view) {
                 Intent in = new Intent(MainActivity.this, Preferences.class);
 
-                final int enter_anim = android.R.anim.fade_in;
-                final int exit_anim = android.R.anim.fade_out;
+                final int enter_anim =R.animator.slide_out_bottom;
+                final int exit_anim =R.animator.slide_in_top;
 
-                activity.overridePendingTransition(enter_anim, exit_anim);
+                activity.overridePendingTransition(exit_anim, enter_anim);
                 activity.finish();
-                activity.overridePendingTransition(enter_anim, exit_anim);
+                activity.overridePendingTransition(exit_anim, enter_anim);
                 activity.startActivity(in);
             }
         });
