@@ -171,14 +171,18 @@ public class AppsList extends ListFragment {
                                 //utils.deleteFiles(arrayList, null, arrayList1);
                                 if ((info1.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
                                     // system package
-                                    ArrayList<File> files = new ArrayList<File>();
-                                    if (Build.VERSION.SDK_INT >= 21) {
-                                        files.add(new File(f1.getParent()));
-                                    } else {
-                                        files.add(f1);
-                                    }
-                                    new DeleteTask(getActivity().getContentResolver(), getActivity()).execute(files);
-                                } else {
+                                   if(Sp.getBoolean("rootmode",false)) {
+                                       ArrayList<File> files = new ArrayList<File>();
+                                       if (Build.VERSION.SDK_INT >= 21) {
+                                           String parent = f1.getParent();
+                                           if (!parent.equals("app") && !parent.equals("priv_app"))
+                                               files.add(new File(f1.getParent()));
+                                           else files.add(f1);
+                                       } else {
+                                           files.add(f1);
+                                       }new DeleteTask(getActivity().getContentResolver(), getActivity()).execute(files);
+                                   }else {Toast.makeText(getActivity(),"Enable root mode",Toast.LENGTH_SHORT).show();
+                                   }} else {
                                     unin(c.get(position).packageName);
                                 }
                                 break;
