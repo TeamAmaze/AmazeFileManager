@@ -259,6 +259,7 @@ public class Main extends android.support.v4.app.Fragment {
             listView.setVisibility(View.GONE);
             gridView.setVisibility(View.VISIBLE);
         }
+
         return rootView;
     }
 
@@ -323,7 +324,6 @@ public class Main extends android.support.v4.app.Fragment {
         }
         footerView=getActivity().getLayoutInflater().inflate(R.layout.divider, null);
         if (aBoolean) {
-            listView.addHeaderView(getActivity().getLayoutInflater().inflate(R.layout.empty,null));
             //listView.addFooterView(footerView);
             listView.setFastScrollEnabled(true);
         } else {
@@ -520,20 +520,7 @@ public class Main extends android.support.v4.app.Fragment {
                     } else {
                         gridView.setAdapter(adapter);
                     }
-                    listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-                        @Override
-                        public void onScrollStateChanged(AbsListView view, int scrollState) {
-                        System.out.println("Scroll state "+scrollState);
-                        }
 
-                        @Override
-                        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                           if(firstVisibleItem==0){
-                               if(pathbar.getVisibility()==View.GONE){pathbar.setVisibility(View.VISIBLE);}
-                           }else {
-                               if(pathbar.getVisibility()==View.VISIBLE){pathbar.setVisibility(View.GONE);}}
-                        }
-                    });
 
                     results = false;
                     current = f.getPath();
