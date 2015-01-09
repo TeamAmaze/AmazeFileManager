@@ -158,7 +158,8 @@ public class Main extends android.support.v4.app.Fragment {
     private FloatingActionButton floatingActionButton;
     String Intentpath;
     String tag;
-    private TranslateAnimation anim;
+    View header;
+    int lastitem;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -322,8 +323,9 @@ public class Main extends android.support.v4.app.Fragment {
             }
         }
         footerView=getActivity().getLayoutInflater().inflate(R.layout.divider, null);
+        header=getActivity().getLayoutInflater().inflate(R.layout.empty,null);
         if (aBoolean) {
-            listView.addHeaderView(getActivity().getLayoutInflater().inflate(R.layout.empty,null));
+            listView.addHeaderView(header);
             //listView.addFooterView(footerView);
             listView.setFastScrollEnabled(true);
         } else {
@@ -528,12 +530,18 @@ public class Main extends android.support.v4.app.Fragment {
 
                         @Override
                         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                           if(firstVisibleItem==0){
-                               if(pathbar.getVisibility()==View.GONE){pathbar.setVisibility(View.VISIBLE);}
-                           }else {
-                               if(pathbar.getVisibility()==View.VISIBLE){pathbar.setVisibility(View.GONE);}}
-                        }
-                    });
+                                if (lastitem < firstVisibleItem) {
+                                    if (firstVisibleItem != 0)
+                                        if (pathbar.getVisibility() == View.VISIBLE) {
+                                            pathbar.setVisibility(View.GONE);
+                                        }
+                                } else if (lastitem > firstVisibleItem) {
+                                    if (pathbar.getVisibility() == View.GONE) {
+                                        pathbar.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                                lastitem = firstVisibleItem;
+                            }});
 
                     results = false;
                     current = f.getPath();
@@ -550,7 +558,7 @@ public class Main extends android.support.v4.app.Fragment {
                     mainActivity.updatespinner();
                        updatePath(current);
                             if (buttons.getVisibility() == View.VISIBLE) bbar(current);
-
+                    header.setMinimumHeight(pathbar.getHeight());
                     mainActivity.updateDrawer(current);
                     mainActivity.updatepager();
 
@@ -563,7 +571,6 @@ public class Main extends android.support.v4.app.Fragment {
         }
 
     }
-
 
     public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
         private void hideOption(int id, Menu menu) {
