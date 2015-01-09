@@ -92,14 +92,12 @@
     </FrameLayout>
 
     <ListView
-        android:layout_below="@id/buttonbarframe"
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@null"/>
 
     <GridView
-        android:layout_below="@id/buttonbarframe"
         android:id="@+id/gridView"
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
