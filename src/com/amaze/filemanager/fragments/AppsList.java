@@ -47,6 +47,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.services.CopyService;
+import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.utils.AppsSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconHolder;
@@ -161,15 +162,25 @@ public class AppsList extends ListFragment {
                                 getActivity().startService(intent);
                                 break;
                             case 2:
-                                if (!unin(c.get(position).packageName)) {
-                                    ArrayList<Layoutelements> arrayList = new ArrayList<Layoutelements>();
-                                    ApplicationInfo info1 = c.get(position);
-                                    ArrayList<Integer> arrayList1 = new ArrayList<Integer>();
-                                    arrayList1.add(position);
-                                    File f1 = new File(info1.publicSourceDir);
-                                    arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1),"", false));
-                                    utils.deleteFiles(arrayList, null, arrayList1);
-                                } 
+                                ArrayList<Layoutelements> arrayList = new ArrayList<Layoutelements>();
+                                ApplicationInfo info1 = c.get(position);
+                                ArrayList<Integer> arrayList1 = new ArrayList<Integer>();
+                                arrayList1.add(position);
+                                File f1 = new File(info1.publicSourceDir);
+                                //arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1),"", false));
+                                //utils.deleteFiles(arrayList, null, arrayList1);
+                                if ((info1.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                                    // system package
+                                    ArrayList<File> files = new ArrayList<File>();
+                                    if (Build.VERSION.SDK_INT >= 21) {
+                                        files.add(new File(f1.getParent()));
+                                    } else {
+                                        files.add(f1);
+                                    }
+                                    new DeleteTask(getActivity().getContentResolver(), getActivity()).execute(files);
+                                } else {
+                                    unin(c.get(position).packageName);
+                                }
                                 break;
                             case 3:
                                 startActivity(new Intent(

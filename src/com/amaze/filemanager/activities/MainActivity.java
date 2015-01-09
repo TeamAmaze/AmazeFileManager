@@ -1196,7 +1196,7 @@ public class MainActivity extends ActionBarActivity {
                 x.customView(view);
                 // textView
                 TextView textView = (TextView) view.findViewById(R.id.textView);
-                textView.setText(utils.getString(con,R.string.fileexist) + new File(a.get(counter)).getName());
+                textView.setText(utils.getString(con,R.string.fileexist) + "\n" + new File(a.get(counter)).getName());
                 // checkBox
                 final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
                 if(theme1==1)x.theme(Theme.DARK);

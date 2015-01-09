@@ -17,31 +17,32 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/cpy"
         android:title="@string/copy"
         android:icon="@drawable/ic_content_copy_white_36dp"
-        android:showAsAction="always" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/cut"
         android:title="@string/cut"
         android:icon="@drawable/ic_content_cut_white_36dp"
-        android:showAsAction="always" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/delete"
         android:title="@string/delete"
         android:icon="@drawable/ic_delete_white_36dp"
-        android:showAsAction="always" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/all"
         android:title="@string/selectall"
         android:icon="@drawable/ic_select_all_white_36dp"
-        android:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/about"
         android:title="@string/properties"
-        android:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/rename"
         android:title="@string/rename" />
