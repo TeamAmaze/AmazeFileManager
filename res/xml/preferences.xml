@@ -48,6 +48,11 @@
     <PreferenceCategory android:title="@string/general">
         <CheckBoxPreference
             android:defaultValue="true"
+            android:key="savepaths"
+            android:summary="@string/savepathsummary"
+            android:title="@string/savepaths" />
+        <CheckBoxPreference
+            android:defaultValue="true"
             android:key="showThumbs"
             android:summary="@string/thumbSummary"
             android:title="@string/thumb" />
@@ -92,8 +97,8 @@
         </EditTextPreference>
         <EditTextPreference
             android:key="zippath"
-            android:title="@string/zip_summary"
-            android:summary="@string/zip_create_folder">
+            android:summary="@string/zip_summary"
+            android:title="@string/zip_create_folder">
         </EditTextPreference>
 </PreferenceCategory>
     <PreferenceCategory android:title="@string/miscellaneous">
@@ -166,10 +171,6 @@
         <Preference
             android:key="feedback"
             android:title="@string/feedback" />
-        <Preference
-            android:key="donate"
-            android:title="@string/donate" />
-
     </PreferenceCategory>
 
     </PreferenceScreen>

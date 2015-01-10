@@ -306,10 +306,12 @@
     <string name="zip_create_folder">Zip Create Folder</string>
     <string name="archive_summary">Archive files will be extracted to this folder.Default value is the directory in which archive is present</string>
     <string name="zip_summary">New zip files will be created in this folder.Default value is the directory in which files are present</string>
-    <string name="text">Donate</string>
-    <string name="audio">Donate</string>
-    <string name="video">Donate</string>
-    <string name="other">Donate</string>
-    <string name="image">Donate</string>
+    <string name="text">Text</string>
+    <string name="audio">Audio</string>
+    <string name="video">Video</string>
+    <string name="other">Other</string>
+    <string name="image">Image</string>
+    <string name="savepaths">Remember paths</string>
+    <string name="savepathsummary">When starting up,the most recently viewed folder for each tab will be displayed</string>
 </resources>
 
