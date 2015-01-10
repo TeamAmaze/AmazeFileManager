@@ -42,7 +42,7 @@ public class TabHandler extends SQLiteOpenHelper {
     public static final String COLUMN_TAB_NO = "tab_no";
     public static final String COLUMN_LABEL = "label";
     public static final String COLUMN_PATH = "path";
-
+    public static final String COLUMN_HOME = "home";
     public TabHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
     }
@@ -50,9 +50,9 @@ public class TabHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String CREATE_TAB_TABLE = "CREATE TABLE " + TABLE_TAB + "("
-                + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_TAB_NO
-                + " INTEGER," + COLUMN_LABEL + " TEXT,"
-                + COLUMN_PATH + " TEXT" + ")";
+                +  COLUMN_TAB_NO
+                + " INTEGER PRIMARY KEY," + COLUMN_LABEL + " TEXT,"
+                + COLUMN_PATH + " TEXT,"+COLUMN_HOME+" TEXT" + ")";
         sqLiteDatabase.execSQL(CREATE_TAB_TABLE);
     }
 
@@ -65,29 +65,18 @@ public class TabHandler extends SQLiteOpenHelper {
     public void addTab(Tab tab) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_TAB_NO, tab.getTab());
-        contentValues.put(COLUMN_LABEL, tab.getLabel());
         contentValues.put(COLUMN_PATH, tab.getPath());
-
+        contentValues.put(COLUMN_HOME, tab.getHome());
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.insert(TABLE_TAB, null, contentValues);
         sqLiteDatabase.close();
     }
  public void clear(){
      try {
-         boolean result = false;
-         String query = "Select * FROM " + TABLE_TAB ;
          SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
-         Tab tab = new Tab();
-
-         while (cursor.moveToNext()) {
-             tab.setID(Integer.parseInt(cursor.getString(0)));
-             sqLiteDatabase.delete(TABLE_TAB, COLUMN_ID + " = ?",
-                     new String[]{String.valueOf(tab.getID())});
-             result = true;
-         }
-         cursor.close();
-         sqLiteDatabase.close();
+         sqLiteDatabase.delete(TABLE_TAB,COLUMN_TAB_NO+" = ?",new String[]{""+1});
+         sqLiteDatabase.delete(TABLE_TAB, COLUMN_TAB_NO + " = ?", new String[]{"" + 2});
+     sqLiteDatabase.close();
      } catch (NumberFormatException e) {
          e.printStackTrace();
      }
@@ -101,46 +90,15 @@ public class TabHandler extends SQLiteOpenHelper {
         Tab tab = new Tab();
         if (cursor.moveToFirst()) {
             cursor.moveToFirst();
-            tab.setID(Integer.parseInt(cursor.getString(0)));
-            tab.setTab(Integer.parseInt(cursor.getString(1)));
-            tab.setLabel(cursor.getString(2));
-            tab.setPath(cursor.getString(3));
+            tab.setTab(Integer.parseInt(cursor.getString(0)));
+            tab.setPath(cursor.getString(1));
+            tab.setHome(cursor.getString(2));
             cursor.close();
         } else {
             tab = null;
         }
         sqLiteDatabase.close();
-
         return tab;
-    }
-
-    public void updateTab(Tab tab) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_LABEL, tab.getLabel());
-        contentValues.put(COLUMN_PATH, tab.getPath());
-
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        sqLiteDatabase.update(TABLE_TAB, contentValues, tab.getTab() + "=" + COLUMN_TAB_NO, null);
-        sqLiteDatabase.close();
-    }
-
-    public boolean deleteTab(int tabNo) {
-        boolean result = false;
-        String query = "Select * FROM " + TABLE_TAB + " WHERE " + COLUMN_TAB_NO + " = \"" + tabNo + "\"";
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
-        Tab tab = new Tab();
-
-        if (cursor.moveToFirst()) {
-            tab.setID(Integer.parseInt(cursor.getString(0)));
-            sqLiteDatabase.delete(TABLE_TAB, COLUMN_ID + " = ?",
-                    new String[]{String.valueOf(tab.getID())});
-            cursor.close();
-            result = true;
-        }
-        sqLiteDatabase.close();
-
-        return result;
     }
 
     public List<Tab> getAllTabs() {
@@ -155,26 +113,20 @@ public class TabHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 Tab tab = new Tab();
-                tab.setID(Integer.parseInt(cursor.getString(0)));
-                tab.setTab(Integer.parseInt(cursor.getString(1)));
-                tab.setLabel(cursor.getString(2));
-                tab.setPath(cursor.getString(3));
-
+                tab.setTab(Integer.parseInt(cursor.getString(0)));
+                tab.setPath(cursor.getString(1));
+                tab.setHome(cursor.getString(2));
                 //Adding them to list
                 tabList.add(tab);
             } while (cursor.moveToNext());
-        }
-
+        }sqLiteDatabase.close();
         return tabList;
     }
-
-    public int getTabsCount() {
-        String countQuery = "Select * FROM " + TABLE_TAB;
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery(countQuery, null);
-        int count = cursor.getCount();
-        cursor.close();
-
-        return count;
+    public void close(){
+        try {
+            getWritableDatabase().close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

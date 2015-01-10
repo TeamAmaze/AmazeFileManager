@@ -28,40 +28,18 @@ public class Tab {
     private int _tab_no;
     private String _label;
     private String _path;
-
+    private String _home;
     public Tab() {
         // Empty constructor
     }
 
-    public Tab(int id, int tab_no, String label, String path) {
-        this._id = id;
+    public Tab( int tab_no, String label, String path,String home) {
         this._tab_no = tab_no;
         this._label = label;
         this._path = path;
+        this._home=home;
 
     }
-
-    public Tab(int tab_no, String label, String path) {
-        this._tab_no = tab_no;
-        this._label = label;
-        this._path = path;
-    }
-
-    public Tab(int id, int tab_no, String label) {
-        this._id = id;
-        this._tab_no = tab_no;
-        this._label = label;
-    }
-
-    public Tab(int id, int tab_no) {
-        this._id = id;
-        this._tab_no = tab_no;
-    }
-
-    public Tab(int id) {
-        this._id = id;
-    }
-
     public void setID(int id) {
         this._id = id;
     }
@@ -76,6 +54,13 @@ public class Tab {
 
     public int getTab() {
         return this._tab_no;
+    }
+    public void setHome(String tab_no) {
+        this._home=tab_no;
+    }
+
+    public String getHome() {
+        return this._home;
     }
 
     public void setLabel(String label) {

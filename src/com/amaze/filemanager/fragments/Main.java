@@ -157,13 +157,13 @@ public class Main extends android.support.v4.app.Fragment {
     ArrayList<String> hiddenfiles;
     private FloatingActionButton floatingActionButton;
     String Intentpath;
-    String tag;
-    private TranslateAnimation anim;
+    int no;
+    TabHandler tabHandler;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
- //       tag=getArguments().getString("tag");
-        System.out.println(tag+"created");
+        no=getArguments().getInt("no",1);
+       tabHandler=new TabHandler(getActivity(),null,null,1);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         skin = Sp.getString("skin_color", "#03A9F4");
         sh = new Shortcuts(getActivity());
@@ -199,7 +199,6 @@ public class Main extends android.support.v4.app.Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        System.out.println(tag+"viewcreated");
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
@@ -267,7 +266,6 @@ public class Main extends android.support.v4.app.Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
-        System.out.println(tag+"activitycreated");
         getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
 
         /*Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
@@ -297,7 +295,12 @@ public class Main extends android.support.v4.app.Fragment {
         getSortModes();
         darkimage=res.getDrawable(R.drawable.ic_doc_image_dark);
         darkvideo=res.getDrawable(R.drawable.ic_doc_video_dark);
-        home = Sp.getString("home", mainActivity.val.get(0));
+        try {
+            home = tabHandler.findTab(no).getHome();
+        } catch (Exception e) {
+            if(Intentpath!=null & Intentpath.length()!=0)
+                home=Intentpath;
+        }
         this.setRetainInstance(false);
         File
             f=new File(Sp.getString("current",home));
@@ -954,7 +957,6 @@ public class Main extends android.support.v4.app.Fragment {
                 scroll1.fullScroll(View.FOCUS_RIGHT);
             }
         });
-
     }
     public void bbar(String text) {
         try {
@@ -1140,7 +1142,6 @@ public class Main extends android.support.v4.app.Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        System.out.println(tag+"resumed");
         floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         floatingActionButton.attachToListView(listView);
         floatingActionButton.attachToListView(gridView);
@@ -1156,24 +1157,21 @@ public class Main extends android.support.v4.app.Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        System.out.println(tag+"paused");
         (getActivity()).unregisterReceiver(receiver2);
     }
     @Override
     public void onStop() {
         super.onStop();
-        System.out.println(tag+"stopped");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        System.out.println(tag+"destroyview");
+        tabHandler.close();
     }
     @Override
     public void onStart() {
         super.onStart();
-        System.out.println(tag+"start");
         history = new HistoryManager(getActivity(), "Table1");
     }
 
@@ -1208,9 +1206,9 @@ public class Main extends android.support.v4.app.Fragment {
     public void onDestroy() {
         super.onDestroy();
         if(history!=null)
-            history.end();    System.out.println(tag+"destroy");
-
-        //hidden.end();
+            history.end();
+        if(hidden!=null)
+        hidden.end();
 
     }
 

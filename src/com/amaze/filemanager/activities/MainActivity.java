@@ -575,16 +575,13 @@ public class MainActivity extends ActionBarActivity {
                     transaction.commit();
 
 
-                }else if (select == i) {
-                    mDrawerLayout.closeDrawer(mDrawerLinear);
-                } else{
+                }else{
                     try {
                         TabFragment m=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame));
-                    if(new File(list.get(i)).isDirectory())
-                        if(m.getTab().getClass().getName().contains("Main"))
-                            ((Main)m.getTab()).loadlist(new File(list.get(i)),false);
-                        else m.addTab1(list.get(i));
-                        else utils.openFile(new File(list.get(i)),this);
+                    if(new File(list.get(i)).isDirectory()) {
+                        if (m.getTab().getClass().getName().contains("Main"))
+                            ((Main) m.getTab()).loadlist(new File(list.get(i)), false);
+                    }   else utils.openFile(new File(list.get(i)),this);
 
                     } catch (ClassCastException e) {
                         select=null;selectItem(0);
@@ -907,9 +904,6 @@ public class MainActivity extends ActionBarActivity {
                     }
                 });
                 ba2.build().show();
-                break;
-            case 2:
-                addTab();
                 break;
         }
     }
@@ -1284,9 +1278,6 @@ public class MainActivity extends ActionBarActivity {
         zipFragment.setArguments(bundle);
         fragmentTransaction.add(R.id.content_frame, zipFragment);
         fragmentTransaction.commit();
-    }
-    public void addTab(){
-        getFragment().addTab1("");
     }
     public TabFragment getFragment(){
         TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
