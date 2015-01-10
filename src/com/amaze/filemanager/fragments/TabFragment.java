@@ -210,6 +210,8 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 i++;
             }}
         Sp.edit().putInt("currenttab",currenttab).apply();
+
+        System.out.println("updatepaths");
     }
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -318,7 +320,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         mViewPager.setOffscreenPageLimit(fragments.size()+1);
     }
     public void addZipViewerTab(String text) {
-    mainActivity.addZipViewTab(text);
+    mainActivity.openZip(text);
     }
     public Fragment getTab() {
         return fragments.get(mViewPager.getCurrentItem());
@@ -328,6 +330,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         return man;
     }
     public void updateSpinner(){
+        System.out.println("updatespinner");
         ArrayList<String> items=new ArrayList<String>();
         TabHandler tabHandler = new TabHandler(getActivity(), null, null, 1);
         int j = 0;

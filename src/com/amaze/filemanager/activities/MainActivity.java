@@ -1266,9 +1266,6 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void addZipViewTab(String text){
-       getFragment().addZipViewerTab(text);
-    }
     public void openZip(String path) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.animator.slide_in_top,R.animator.slide_in_bottom);

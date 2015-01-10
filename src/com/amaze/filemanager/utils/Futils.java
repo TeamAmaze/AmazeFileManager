@@ -605,7 +605,7 @@ public void showPackageDialog(final File f,final MainActivity m){
 
         @Override
         public void onNegative(MaterialDialog materialDialog) {
-            m.addZipViewTab(f.getPath());
+            m.openZip(f.getPath());
         }
     });
     mat.positiveColor(Color.parseColor(m.skin));

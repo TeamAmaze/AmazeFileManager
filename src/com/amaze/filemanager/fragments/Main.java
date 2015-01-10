@@ -527,6 +527,8 @@ public class Main extends android.support.v4.app.Fragment {
 
                     results = false;
                     current = f.getPath();
+                    updatePath(f.getPath());
+                    mainActivity.updatespinner();
                     if (back) {
                         if (scrolls.containsKey(current)) {
                             Bundle b = scrolls.get(current);
@@ -535,10 +537,8 @@ public class Main extends android.support.v4.app.Fragment {
                         }
                     }
                     floatingActionButton.show();
-
                     mainActivity.updatepaths();
-                    mainActivity.updatespinner();
-                       updatePath(current);
+
                             if (buttons.getVisibility() == View.VISIBLE) bbar(current);
 
                     mainActivity.updateDrawer(current);
@@ -617,7 +617,8 @@ public class Main extends android.support.v4.app.Fragment {
             textView1.setText(positions.size() + "");
             textView1.setOnClickListener(null);
             //tv.setText(positions.size());
-            if (positions.size() == 1) {
+            if(!results)
+            {if (positions.size() == 1) {
                 showOption(R.id.addshortcut,menu);
                 showOption(R.id.permissions, menu);
 
@@ -662,6 +663,53 @@ public class Main extends android.support.v4.app.Fragment {
 
                 hideOption(R.id.about, menu);
 
+            }}else {
+                if (positions.size() == 1) {
+                    showOption(R.id.addshortcut,menu);
+                    showOption(R.id.permissions, menu);
+
+                    showOption(R.id.openwith, menu);
+                    showOption(R.id.about, menu);
+                    showOption(R.id.share,menu);
+                    showOption(R.id.rename, menu);
+
+                    File x = new File(slist.get(adapter.getCheckedItemPositions().get(0))
+
+                            .getDesc());
+
+                    if (x.isDirectory()) {
+                        hideOption(R.id.openwith,menu);
+                        showOption(R.id.sethome, menu);
+                        hideOption(R.id.share,menu);
+                    } else if (x.getName().toLowerCase().endsWith(".zip") || x.getName().toLowerCase().endsWith(".jar") || x.getName().toLowerCase().endsWith(".apk") || x.getName().toLowerCase().endsWith(".rar")|| x.getName().toLowerCase().endsWith(".tar")|| x.getName().toLowerCase().endsWith(".tar.gz")) {
+
+                        showOption(R.id.ex, menu);
+
+                    }
+                } else {
+                    try {
+                        for (int c : adapter.getCheckedItemPositions()) {
+                            File x = new File(slist.get(c).getDesc());
+                            if (x.isDirectory()) {
+                                hideOption(R.id.share, menu);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    hideOption(R.id.ex, menu);
+
+                    hideOption(R.id.sethome, menu);
+
+                    hideOption(R.id.openwith, menu);
+
+                    //hideOption(R.id.setringtone, menu);
+
+                    hideOption(R.id.permissions, menu);
+
+                    hideOption(R.id.about, menu);
+
+                }
             }
 
             return false; // Return false if nothing is done
@@ -941,6 +989,7 @@ public class Main extends android.support.v4.app.Fragment {
         }
     };
     public void updatePath(String text){
+        System.out.println("updatedpath");
         File f=new File(text);
         String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
         String free = utils.readableFileSize(f.getFreeSpace());
