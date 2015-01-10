@@ -196,7 +196,7 @@ public class AppsList extends ListFragment {
                                                         ArrayList<File> files = new ArrayList<File>();
                                                         if (Build.VERSION.SDK_INT >= 21) {
                                                             String parent = f1.getParent();
-                                                            if (!parent.equals("app") && !parent.equals("priv_app"))
+                                                            if (!parent.equals("app") && !parent.equals("priv-app"))
                                                                 files.add(new File(f1.getParent()));
                                                             else files.add(f1);
                                                         } else {

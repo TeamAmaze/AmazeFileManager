@@ -55,15 +55,17 @@ public class MoveFiles extends AsyncTask<String,Void,Boolean> {
     }
     @Override
     public void onPostExecute(Boolean b){
+        Futils futils=new Futils();
         if(b ){if(ma!=null)if(ma.current.equals(path))ma.updateList();
-            try {    new Futils().scanFile(path,context);
-
-                new Futils().scanFile(files.get(0).getParent(),context);
+            try {    for(File f:files){
+               futils.scanFile(f.getPath(),context);
+                futils.scanFile(path+"/"+f.getName(),context);
+            }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        if(!b){
+        else if(!b){
             Intent intent = new Intent(context, CopyService.class);
             intent.putExtra("FILE_PATHS", new Futils().toStringArray(files));
             intent.putExtra("COPY_DIRECTORY", path);
