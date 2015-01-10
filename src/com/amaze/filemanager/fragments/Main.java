@@ -159,12 +159,16 @@ public class Main extends android.support.v4.app.Fragment {
     String Intentpath;
     int no;
     TabHandler tabHandler;
+    boolean savepaths;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         no=getArguments().getInt("no",1);
-       tabHandler=new TabHandler(getActivity(),null,null,1);
+        home=getArguments().getString("home");
+        current=getArguments().getString("lastpath");
+        tabHandler=new TabHandler(getActivity(),null,null,1);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        savepaths=Sp.getBoolean("savepaths",true);
         skin = Sp.getString("skin_color", "#03A9F4");
         sh = new Shortcuts(getActivity());
         aBoolean = Sp.getBoolean("view", true);
@@ -295,16 +299,11 @@ public class Main extends android.support.v4.app.Fragment {
         getSortModes();
         darkimage=res.getDrawable(R.drawable.ic_doc_image_dark);
         darkvideo=res.getDrawable(R.drawable.ic_doc_video_dark);
-        try {
-            home = tabHandler.findTab(no).getHome();
-        } catch (Exception e) {
-            if(Intentpath!=null & Intentpath.length()!=0)
-                home=Intentpath;
-        }
         this.setRetainInstance(false);
-        File
-            f=new File(Sp.getString("current",home));
-
+        File f;
+        if(savepaths)
+            f=new File(current);
+        else f=new File(home);
         rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
         initiatebbar();
 
@@ -729,8 +728,7 @@ public class Main extends android.support.v4.app.Fragment {
                     Toast.makeText(getActivity(),
                             utils.getString(getActivity(), R.string.newhomedirectory) + " " + list.get(pos).getTitle(),
                             Toast.LENGTH_LONG).show();
-                    Sp.edit().putString("home", list.get(pos).getDesc()).apply();
-
+                    mainActivity.updatepaths();
                     mode.finish();
                     return true;
                 case R.id.about:
