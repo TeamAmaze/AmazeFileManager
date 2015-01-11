@@ -89,7 +89,7 @@
             android:title="@string/sortby" />
     
     </PreferenceCategory>
-    <PreferenceCategory android:title="Archive Preferences">
+    <PreferenceCategory android:title="@string/archive_preferences">
         <EditTextPreference
             android:key="extractpath"
             android:title="@string/archive_extract_folder"
