@@ -38,7 +38,6 @@ public class TabHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "explorer.db";
     private static final String TABLE_TAB = "tab";
 
-    public static final String COLUMN_ID = "id";
     public static final String COLUMN_TAB_NO = "tab_no";
     public static final String COLUMN_LABEL = "label";
     public static final String COLUMN_PATH = "path";
@@ -51,7 +50,7 @@ public class TabHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String CREATE_TAB_TABLE = "CREATE TABLE " + TABLE_TAB + "("
                 +  COLUMN_TAB_NO
-                + " INTEGER PRIMARY KEY," + COLUMN_LABEL + " TEXT,"
+                + " INTEGER PRIMARY KEY,"
                 + COLUMN_PATH + " TEXT,"+COLUMN_HOME+" TEXT" + ")";
         sqLiteDatabase.execSQL(CREATE_TAB_TABLE);
     }

@@ -296,25 +296,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
         mSectionsPagerAdapter.notifyDataSetChanged();
         mViewPager.setOffscreenPageLimit(4);
     }
-    public void addTab1(String text,int k) {
-        android.support.v4.app.Fragment main = new Main();
-        Bundle b = new Bundle();
-        if (text != null && text.trim().length() != 0) {
-            b.putString("path", text);
-
-        }
-        b.putInt("no",k);
-        main.setArguments(b);
-        fragments.add(main);
-        tabs.add(main.getClass().getName());
-        mSectionsPagerAdapter.notifyDataSetChanged();
-        mViewPager.setCurrentItem(fragments.size()-1,true);
-
-        mViewPager.setOffscreenPageLimit(fragments.size()+1);
-    }
-    public void addZipViewerTab(String text) {
-    mainActivity.openZip(text);
-    }
     public Fragment getTab() {
         return fragments.get(mViewPager.getCurrentItem());
     }
