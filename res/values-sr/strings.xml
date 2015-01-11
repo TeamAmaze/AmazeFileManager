@@ -298,5 +298,20 @@
     <string name="chinese_translation_summary">amtlib-dot-dll, Felix2yu</string>
     <string name="serbian_translation_summary">Младен Пејаковић</string>
     <string name="turkish_translation_summary">Hakan Güven</string>
+    <string name="zip_viewer">Зип прегледач</string>
+    <string name="unin_system_apk">Ово је системска апликација, уклањање може да доведе до нестабилности система.\nДа наставим?</string>
+    <string name="warning">Упозорење</string>
+    <string name="donate">Донирај</string>
+    <string name="archive_extract_folder">Фасцикла распакивања архиве</string>
+    <string name="zip_create_folder">Фасцикла архиве</string>
+    <string name="archive_summary">Фајлови архиве ће бити распаковани у ову фасциклу. Подразумевана вредност је фасцикла у којој је фајл архиве</string>
+    <string name="zip_summary">Нови зип фајлови ће бити направљени у овој фасцикли. Подразумевана вредност је фасцикла у којој су фајлови</string>
+    <string name="text">Текст</string>
+    <string name="audio">Звук</string>
+    <string name="video">Видео</string>
+    <string name="other">Остало</string>
+    <string name="image">Слика</string>
+    <string name="savepaths">Запамти путање</string>
+    <string name="savepathsummary">Прикажи најскорије приказану фасциклу за сваки језичак по покретању</string>
 </resources>
 
