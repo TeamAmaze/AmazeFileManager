@@ -171,6 +171,9 @@
         <Preference
             android:key="feedback"
             android:title="@string/feedback" />
+        <Preference
+            android:key="donate"
+            android:title="@string/donate" />
     </PreferenceCategory>
 
     </PreferenceScreen>
