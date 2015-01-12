@@ -46,14 +46,12 @@ public class TabFragment extends android.support.v4.app.Fragment {
     Futils utils = new Futils();
     public ViewPager mViewPager;
     SharedPreferences Sp;
-    TabFragment t = this;
-    String path = "",path1="",path0="",zippath="";
+    String path;
     int currenttab;
     MainActivity mainActivity;
     TabSpinnerAdapter tabSpinnerAdapter;
     public ArrayList<String> tabs=new ArrayList<String>();
     public int theme1;
-    boolean savepaths=false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -73,7 +71,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
         mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
         if (getArguments() != null){
             path = getArguments().getString("path");
-            zippath=getArguments().getString("zippath");
         }
         mainActivity = ((MainActivity)getActivity());
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -128,17 +125,17 @@ public class TabFragment extends android.support.v4.app.Fragment {
             List<Tab> tabs1=tabHandler.getAllTabs();
             int i=tabs1.size();
             if(i==0) {
-                addTab(new Tab(1,"",path,path),1,"");
+                addTab(new Tab(1,"",mainActivity.list.get(0),mainActivity.list.get(0)),1,"");
                 addTab(new Tab(2,"","/","/"),2,"");
             }
             else{
-            int k=1;
-                for(Tab tab:tabs1){
-                     if(path!=null && path.trim().length()>0)
-                       {if(k==1)addTab(tab,k,path);}
-                       else addTab(tab,k,"");
-                    k++;
-                }}
+                if(path!=null && path.length()!=0){
+                    addTab(new Tab(1,"",path,path),1,"");
+                }
+                else
+                addTab(tabHandler.findTab(1),1,"");
+                addTab(tabHandler.findTab(2),2,"");
+            }
 
 
 
@@ -187,7 +184,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
     @Override
     public void onDestroyView(){
         super.onDestroyView();
-        updatepaths();
         tabHandler.close();
     }
     TabHandler tabHandler;
@@ -195,12 +191,21 @@ public class TabFragment extends android.support.v4.app.Fragment {
     public void updatepaths(){
                 tabHandler = new TabHandler(getActivity(), null, null, 1);
         int i=1;
+        ArrayList<String> items=new ArrayList<String>();
         tabHandler.clear();for(Fragment fragment:fragments){
             if(fragment.getClass().getName().contains("Main")){
                 Main m=(Main)fragment;
+                items.add(m.current);
                 tabHandler.addTab(new Tab(i,m.current,m.current,m.home));
                 i++;
             }}
+        try {
+            tabSpinnerAdapter=new TabSpinnerAdapter(mainActivity.getSupportActionBar().getThemedContext(), R.layout.rowlayout,items,mainActivity.tabsSpinner,this);
+            mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
+            mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Sp.edit().putInt("currenttab",currenttab).apply();
 
         System.out.println("updatepaths");
@@ -306,24 +311,11 @@ public class TabFragment extends android.support.v4.app.Fragment {
     public void updateSpinner(){
         System.out.println("updatespinner");
         ArrayList<String> items=new ArrayList<String>();
-        TabHandler tabHandler = new TabHandler(getActivity(), null, null, 1);
-        int j = 0;
-        for(Fragment fragment:fragments){
-            String name=fragment.getClass().getName();
-            Tab tab = tabHandler.findTab(j);
-            if(name.contains("Main")){
-                //items.add(((Main)fragment).current);
-                items.add(j, tab.getLabel());
-
-            }else if(name.contains("ZipViewer")) {
-                String cu=((ZipViewer)fragment).f.getName();
-                items.add(cu);
-            }j++;
-        }
+        items.add(((Main)fragments.get(0)).current);
+        items.add(((Main)fragments.get(1)).current);
         tabSpinnerAdapter=new TabSpinnerAdapter(mainActivity.getSupportActionBar().getThemedContext(), R.layout.rowlayout,items,mainActivity.tabsSpinner,this);
         mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
         mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
     }
-
 
 }

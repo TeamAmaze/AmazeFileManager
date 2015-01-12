@@ -136,7 +136,7 @@ public class MainActivity extends ActionBarActivity {
     RelativeLayout mDrawerLinear;
     Shortcuts s;
     int tab = 0;
-    public String skin,path;
+    public String skin,path="";
     public int theme;
     public ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
     Context con = this;
@@ -277,9 +277,7 @@ public class MainActivity extends ActionBarActivity {
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
         if (savedInstanceState == null) {
-            if(!restart)
-            selectItem(0);
-            else goToMain();
+            goToMain(path);
 
         } else {
             select = savedInstanceState.getInt("selectitem", 0);
@@ -485,11 +483,11 @@ public class MainActivity extends ActionBarActivity {
                         }
                     }
                 } catch (ClassCastException e) {
-                    goToMain();
+                    goToMain("");
                     e.printStackTrace();
                 }
             } else {
-                goToMain();
+                goToMain("");
             }
         }
     }
@@ -537,9 +535,15 @@ public class MainActivity extends ActionBarActivity {
         {select= list.indexOf(path);
             adapter.toggleChecked(select);
         }}
-    public void goToMain(){
+    public void goToMain(String path){
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         //title.setText(R.string.app_name);
+        TabFragment tabFragment=new TabFragment();
+        if(path!=null && path.length()>0){
+            Bundle b=new Bundle();
+            b.putString("path",path);
+            tabFragment.setArguments(b);
+        }
         transaction.replace(R.id.content_frame, new TabFragment());
         // Commit the transaction
         select=0;
@@ -547,6 +551,9 @@ public class MainActivity extends ActionBarActivity {
         transaction.commit();
         toolbar.setTitle(null);
         tabsSpinner.setVisibility(View.VISIBLE);
+        if(openzip && zippath!=null)
+        {openZip(zippath);openzip=false;zippath=null;}
+
     }
     public void selectItem(final int i) {
 
@@ -554,24 +561,15 @@ public class MainActivity extends ActionBarActivity {
 
                 if (select == null || select >= list.size() - 2) {
                     TabFragment tabFragment=new TabFragment();
-                    if (path != null || openzip) {
-                        Bundle a = new Bundle();
-                        if(zippath!=null){
-                            utils.openFile(new File(zippath), this);
-                        }
-                            //a.putString("zippath",zippath);
-                        zippath=null;openzip=false;
-                        a.putString("path", path);
+                       Bundle a = new Bundle();
+                        a.putString("path", list.get(i));
                         tabFragment.setArguments(a);
-                    }else {    Bundle a = new Bundle();
-                                a.putString("path", list.get(i));
-                        tabFragment.setArguments(a);
-                    }
+
                     android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
                     transaction.replace(R.id.content_frame, tabFragment);
                     // Commit the transaction
-                    transaction.addToBackStack("tab1" + 1);
+                    transaction.addToBackStack("tabt1" + 1);
                     transaction.commit();
 
 
@@ -1279,10 +1277,6 @@ public class MainActivity extends ActionBarActivity {
     public TabFragment getFragment(){
         TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
         return tabFragment;
-    }
-
-    public void updatespinner(){
-        getFragment().updateSpinner();
     }
 
     public String getStatusColor() {

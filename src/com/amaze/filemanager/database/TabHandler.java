@@ -107,14 +107,13 @@ public class TabHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
-
         // Looping through all rows and adding them to list
         if (cursor.moveToFirst()) {
             do {
                 Tab tab = new Tab();
-                tab.setTab(Integer.parseInt(cursor.getString(0)));
-                tab.setPath(cursor.getString(1));
-                tab.setHome(cursor.getString(2));
+                tab.setTab((cursor.getInt(cursor.getColumnIndex(COLUMN_TAB_NO))));
+                tab.setPath(cursor.getString(cursor.getColumnIndex(COLUMN_HOME)));
+                tab.setHome(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
                 //Adding them to list
                 tabList.add(tab);
             } while (cursor.moveToNext());

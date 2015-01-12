@@ -100,18 +100,6 @@ public class Preffrag extends PreferenceFragment {
                 return true;
             }
         });
-        findPreference("donate").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                try {
-                    Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://forum.xda-developers.com/donatetome.php?u=4500270"));
-                    startActivity(myIntent);
-                } catch (ActivityNotFoundException e) {
-                    Toast.makeText(getActivity(), "No application can handle this request."+" Please install a webbrowser",  Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
-                }return true;
-            }
-        });
         findPreference("uimode").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {

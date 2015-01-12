@@ -527,7 +527,6 @@ public class Main extends android.support.v4.app.Fragment {
                     results = false;
                     current = f.getPath();
                     updatePath(f.getPath());
-                    mainActivity.updatespinner();
                     if (back) {
                         if (scrolls.containsKey(current)) {
                             Bundle b = scrolls.get(current);
@@ -538,7 +537,7 @@ public class Main extends android.support.v4.app.Fragment {
                     floatingActionButton.show();
                     mainActivity.updatepaths();
 
-                            if (buttons.getVisibility() == View.VISIBLE) bbar(current);
+                    if (buttons.getVisibility() == View.VISIBLE) bbar(current);
 
                     mainActivity.updateDrawer(current);
                     mainActivity.updatepager();
