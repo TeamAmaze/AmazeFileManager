@@ -299,8 +299,8 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View view) {
                 Intent in = new Intent(MainActivity.this, Preferences.class);
 
-                final int enter_anim =R.animator.slide_out_bottom;
-                final int exit_anim =R.animator.slide_in_top;
+                final int enter_anim =R.anim.slide_out_bottom;
+                final int exit_anim =R.anim.slide_in_top;
 
                 activity.overridePendingTransition(exit_anim, enter_anim);
                 activity.finish();
@@ -459,7 +459,7 @@ public class MainActivity extends ActionBarActivity {
 
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.animator.slide_out_bottom,R.animator.slide_out_bottom);
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom,R.anim.slide_out_bottom);
                     String name = fragment.getClass().getName();
                     if (name.contains("TabFragment")) {
                         TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
@@ -1266,7 +1266,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void openZip(String path) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.animator.slide_in_top,R.animator.slide_in_bottom);
+        fragmentTransaction.setCustomAnimations(R.anim.slide_in_top,R.anim.slide_in_bottom);
         Fragment zipFragment = new ZipViewer();
         Bundle bundle = new Bundle();
         bundle.putString("path", path);

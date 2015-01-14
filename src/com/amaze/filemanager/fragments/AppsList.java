@@ -75,6 +75,7 @@ public class AppsList extends ListFragment {
     public IconHolder ic;
     ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
     int theme1;
+    private FloatingActionButton floatingActionButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,7 +91,7 @@ public class AppsList extends ListFragment {
 
         //((TextView) getActivity().findViewById(R.id.title)).setText(utils.getString(getActivity(), R.string.apps));
 
-        FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         floatingActionButton.hide(true);
 
         //getActivity().findViewById(R.id.fab).setVisibility(View.INVISIBLE);
@@ -124,6 +125,12 @@ public class AppsList extends ListFragment {
             vl.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
 
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        floatingActionButton.hide(true);
     }
 
     public void onLongItemClick(final int position) {

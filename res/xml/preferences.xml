@@ -153,6 +153,9 @@
                 <Preference
                     android:title="@string/turkish_translation_title"
                     android:summary="@string/turkish_translation_summary"/>
+                <Preference
+                    android:title="@string/ukrainian_translation_title"
+                    android:summary="@string/ukrainian_translation_summary"/>
                 </PreferenceScreen>
             <Preference
                 android:key="changelog"
