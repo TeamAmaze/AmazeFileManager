@@ -254,13 +254,13 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
                     new ZipHelperTask(zipViewer,  stringBuilder.toString()).execute(zipViewer.f);
 
                 } else {String x=rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1);
-                    File file = new File(zipViewer.f.getParent() + "/" + x);
+                    File file = new File(getContext().getCacheDir().getAbsolutePath() + "/" + x);
                     zipViewer.files.clear();
                     zipViewer.files.add(0, file);
 
                     try {
                         ZipFile zipFile = new ZipFile(zipViewer.f);
-                     new ZipExtractTask(zipFile, zipViewer.f.getParent(), zipViewer, x,true).execute(rowItem.getEntry());
+                     new ZipExtractTask(zipFile, getContext().getCacheDir().getAbsolutePath(), zipViewer, x,true).execute(rowItem.getEntry());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

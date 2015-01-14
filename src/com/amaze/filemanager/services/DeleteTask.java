@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MediaFile;
 import com.stericson.RootTools.RootTools;
@@ -45,11 +46,19 @@ public class DeleteTask extends AsyncTask<ArrayList<File>, String, Boolean> {
     Context cd;
     Futils utils = new Futils();
     boolean rootMode;
+    ZipViewer zipViewer;
 
     public DeleteTask(ContentResolver c, Context cd) {
         this.contentResolver = c;
         this.cd = cd;
         rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean("rootmode", false);
+    }
+
+    public DeleteTask(ContentResolver c, Context cd, ZipViewer zipViewer) {
+        this.contentResolver = c;
+        this.cd = cd;
+        rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean("rootmode", false);
+        this.zipViewer = zipViewer;
     }
 
     @Override
@@ -105,7 +114,12 @@ public class DeleteTask extends AsyncTask<ArrayList<File>, String, Boolean> {
         utils.scanFile(files.get(0).getParent(), cd);
         if (!b) {
             Toast.makeText(cd, utils.getString(cd, R.string.error), Toast.LENGTH_LONG).show();
-        } else Toast.makeText(cd, utils.getString(cd, R.string.done), Toast.LENGTH_LONG).show();
+        } else if (zipViewer==null) {
+            Toast.makeText(cd, utils.getString(cd, R.string.done), Toast.LENGTH_LONG).show();
+        }
+        if (zipViewer!=null) {
+            zipViewer.files.clear();
+        }
     }
 }
 
