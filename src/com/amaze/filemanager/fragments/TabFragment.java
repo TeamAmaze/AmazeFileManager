@@ -109,15 +109,15 @@ public class TabFragment extends android.support.v4.app.Fragment {
             }
         });
         if (savedInstanceState == null) {
-            int l=Sp.getInt("currenttab",0);
+            int l=Sp.getInt("currenttab",1);
             mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
                     getActivity().getSupportFragmentManager());
             TabHandler tabHandler=new TabHandler(getActivity(),null,null,1);
             List<Tab> tabs1=tabHandler.getAllTabs();
             int i=tabs1.size();
             if(i==0) {
-                addTab(new Tab(1,"",mainActivity.list.get(0),mainActivity.list.get(0)),1,"");
-                addTab(new Tab(2,"","/","/"),2,"");
+                addTab(new Tab(1,"","/","/"),1,"");
+                addTab(new Tab(2,"",mainActivity.list.get(0),mainActivity.list.get(0)),2,"");
             }
             else{
                 if(path!=null && path.length()!=0){
