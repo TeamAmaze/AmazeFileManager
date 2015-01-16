@@ -111,7 +111,8 @@ public class DeleteTask extends AsyncTask<ArrayList<File>, String, Boolean> {
     public void onPostExecute(Boolean b) {
         Intent intent = new Intent("loadlist");
         cd.sendBroadcast(intent);
-        utils.scanFile(files.get(0).getParent(), cd);
+        for(File file:files)
+        utils.scanFile(file.getPath(), cd);
         if (!b) {
             Toast.makeText(cd, utils.getString(cd, R.string.error), Toast.LENGTH_LONG).show();
         } else if (zipViewer==null) {

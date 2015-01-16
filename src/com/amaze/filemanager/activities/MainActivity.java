@@ -173,7 +173,6 @@ public class MainActivity extends ActionBarActivity {
         rootmode = Sp.getBoolean("rootmode", false);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         util = new IconUtils(Sp, this);
-
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int th = Integer.parseInt(Sp.getString("theme", "0"));
@@ -1300,4 +1299,4 @@ public class MainActivity extends ActionBarActivity {
         };
         return colors[ Arrays.asList(colors).indexOf(skin)+1];
     }
-}
+   }

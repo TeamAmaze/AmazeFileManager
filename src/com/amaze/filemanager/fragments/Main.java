@@ -414,7 +414,8 @@ public class Main extends android.support.v4.app.Fragment {
     public void onListItemClicked(int position, View v) {
         if (results) {
             String path = slist.get(position).getDesc();
-
+            if(selection)adapter.toggleChecked(position);
+            else{
 
             final File f = new File(path);
             if (slist.get(position).isDirectory(rootMode)) {
@@ -426,10 +427,10 @@ public class Main extends android.support.v4.app.Fragment {
                     returnIntentResults(f);
                 } else
                 utils.openFile(f, (MainActivity) getActivity());
-            }
+            }}
         } else if (selection == true) {
             if(!list.get(position).getSize().equals(goback)){
-                adapter.toggleChecked(position);;
+                adapter.toggleChecked(position);
             }else{selection = false;
                 if(mActionMode!=null)
                     mActionMode.finish();
@@ -638,7 +639,8 @@ public class Main extends android.support.v4.app.Fragment {
             textView1.setOnClickListener(null);
             //tv.setText(positions.size());
             if(!results)
-            {if (positions.size() == 1) {
+            {hideOption(R.id.openparent,menu);
+                if (positions.size() == 1) {
                 showOption(R.id.addshortcut,menu);
                 showOption(R.id.permissions, menu);
 
@@ -687,7 +689,7 @@ public class Main extends android.support.v4.app.Fragment {
                 if (positions.size() == 1) {
                     showOption(R.id.addshortcut,menu);
                     showOption(R.id.permissions, menu);
-
+                    showOption(R.id.openparent,menu);
                     showOption(R.id.openwith, menu);
                     showOption(R.id.about, menu);
                     showOption(R.id.share,menu);
@@ -707,6 +709,7 @@ public class Main extends android.support.v4.app.Fragment {
 
                     }
                 } else {
+                    hideOption(R.id.openparent,menu);
                     try {
                         for (int c : adapter.getCheckedItemPositions()) {
                             File x = new File(slist.get(c).getDesc());
@@ -814,6 +817,9 @@ public class Main extends android.support.v4.app.Fragment {
                     sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
                     sendIntent.setType("*/*");
                     startActivity(sendIntent);
+                    return true;
+                case R.id.openparent:
+                    loadlist(new File(slist.get(plist.get(0)).getDesc()).getParentFile(),false);
                     return true;
                 case R.id.all:
                     if (adapter.areAllChecked(current)) {
