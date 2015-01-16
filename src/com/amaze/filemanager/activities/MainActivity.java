@@ -1010,6 +1010,7 @@ public class MainActivity extends ActionBarActivity {
                     p.setButton(DialogInterface.BUTTON_POSITIVE,utils.getString(con,R.string.cancel),new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                      System.out.println("Broadcast sent");
                             LocalBroadcastManager.getInstance(con).sendBroadcast(new Intent("searchcancel"));
                             dialog.cancel();
                         }

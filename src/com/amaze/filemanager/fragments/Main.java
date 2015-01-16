@@ -186,7 +186,7 @@ public class Main extends android.support.v4.app.Fragment {
         mainActivity=(MainActivity)getActivity();
         showPermissions=Sp.getBoolean("showPermissions",false);
         showSize=Sp.getBoolean("showFileSize",false);
-        gobackitem=Sp.getBoolean("goBack_checkbox", true);
+        gobackitem=Sp.getBoolean("goBack_checkbox", false);
         circularImages=Sp.getBoolean("circularimages",true);
         showLastModified=Sp.getBoolean("showLastModified",true);
         icons = new IconUtils(Sp, getActivity());

@@ -69,10 +69,7 @@ boolean rootMode,showHidden;
     boolean run=true;
     public ArrayList<String[]> getSearchResult(File f, String text) {
         lis.clear();
-
-
         search(f, text);
-
         return lis;
     }
 
@@ -80,11 +77,8 @@ boolean rootMode,showHidden;
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Bundle b = intent.getExtras();
-            if (b != null) {
-                System.out.println("Cancelled");
-                run=false;
-            }
+            System.out.println("Cancelled");
+            run=false;
         }
     };
 
