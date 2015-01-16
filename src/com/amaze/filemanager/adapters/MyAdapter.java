@@ -97,8 +97,29 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             myChecked.put(i, b);
         }
         notifyDataSetChanged();
+        if(main.mActionMode!=null)
+        main.mActionMode.invalidate();
+        if (getCheckedItemPositions().size() == 0) {
+            main.selection = false;
+            if(main.mActionMode!=null)
+            main.mActionMode.finish();
+            main.mActionMode = null;
+        }
     }
-
+    public void toggleChecked(boolean b) {
+        int a=0;
+        for (int i = a; i < items.size(); i++) {
+            myChecked.put(i, b);
+        }
+        notifyDataSetChanged();
+        if(main.mActionMode!=null)main.mActionMode.invalidate();
+        if (getCheckedItemPositions().size() == 0) {
+            main.selection = false;
+            if(main.mActionMode!=null)
+            main.mActionMode.finish();
+            main.mActionMode = null;
+        }
+    }
     public ArrayList<Integer> getCheckedItemPositions() {
         ArrayList<Integer> checkedItemPositions = new ArrayList<Integer>();
 

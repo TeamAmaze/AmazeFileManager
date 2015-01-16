@@ -458,25 +458,21 @@ public class MainActivity extends ActionBarActivity {
                 try {
 
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom,R.anim.slide_out_bottom);
                     String name = fragment.getClass().getName();
                     if (name.contains("TabFragment")) {
                         TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
                         Fragment fragment1 = tabFragment.getTab();
                         Main main = (Main) fragment1;
-                        if ((!main.current.equals(main.home) && !main.current.equals("/")) || main.selection) {
-                            main.goBack();
-                        } else {
-                            exit();
-                        }
+                        main.goBack();
+
                     } else if (name.contains("ZipViewer")){
                         ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
                         if (zipViewer.cangoBack()) {
 
                             zipViewer.goBack();
                         } else {
-
+                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                            fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom,R.anim.slide_out_bottom);
                             fragmentTransaction.remove(zipViewer);
                             fragmentTransaction.commit();
                             supportInvalidateOptionsMenu();
@@ -1275,6 +1271,9 @@ public class MainActivity extends ActionBarActivity {
     public TabFragment getFragment(){
         TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
         return tabFragment;
+    }
+    public void setPagingEnabled(boolean b){
+        getFragment().mViewPager.setPagingEnabled(b);
     }
 
     public String getStatusColor() {

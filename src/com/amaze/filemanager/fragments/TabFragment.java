@@ -27,6 +27,7 @@ import com.amaze.filemanager.adapters.TabSpinnerAdapter;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
+import com.amaze.filemanager.utils.CustomViewPager;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.amaze.filemanager.utils.ZipObj;
@@ -44,7 +45,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
     public  List<Fragment> fragments = new ArrayList<Fragment>();
     public ScreenSlidePagerAdapter mSectionsPagerAdapter;
     Futils utils = new Futils();
-    public ViewPager mViewPager;
+    public CustomViewPager mViewPager;
     SharedPreferences Sp;
     String path;
     int currenttab;
@@ -68,7 +69,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
             } else
                 theme1 = 0;
         }
-        mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
+        mViewPager = (CustomViewPager) rootView.findViewById(R.id.pager);
         if (getArguments() != null){
             path = getArguments().getString("path");
         }
@@ -76,18 +77,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             public void onPageScrolled(int p1, float p2, int p3) {
-                try {
-                    String name=fragments.get(mViewPager.getCurrentItem()).getClass().getName();
-                    if(name.contains("Main")) {
-                        Main ma = ((Main) fragments.get(mViewPager.getCurrentItem()));
-                        if(ma.mActionMode!=null) {
-                            ma.mActionMode.finish();
-                            ma.mActionMode=null;
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
             }
 
             public void onPageSelected(int p1) { // TODO: Implement this								// method

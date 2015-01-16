@@ -342,18 +342,36 @@ public class Main extends android.support.v4.app.Fragment {
         else {
             Bundle b = new Bundle();
             String cur = savedInstanceState.getString("current");
-           if(cur!=null){ b.putInt("index", savedInstanceState.getInt("index"));
-            b.putInt("top", savedInstanceState.getInt("top"));
-            scrolls.put(cur, b);
-            list = savedInstanceState.getParcelableArrayList("list");
-            createViews(list, true, new File(cur));
-            updatePath(cur);
-            if (savedInstanceState.getBoolean("selection")) {
+            if (cur != null) {
+                b.putInt("index", savedInstanceState.getInt("index"));
+                b.putInt("top", savedInstanceState.getInt("top"));
+                scrolls.put(cur, b);
+                updatePath(cur);
+                list = savedInstanceState.getParcelableArrayList("list");
+                if (savedInstanceState.getBoolean("results")) {
+                    try {
+                        results = true;
+                        slist = savedInstanceState.getParcelableArrayList("slist");
+                        ((TextView) ma.pathbar.findViewById(R.id.pathname)).setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
+                        ma.adapter = new MyAdapter(ma.getActivity(), R.layout.rowlayout, slist
+                                , ma);
 
-                for (int i : savedInstanceState.getIntegerArrayList("position")) {
-                    adapter.toggleChecked(i);
+                        //ListView lv = (ListView) ma.listView.findViewById(R.id.listView);
+                        if (ma.aBoolean) ma.listView.setAdapter(ma.adapter);
+                        else ma.gridView.setAdapter(ma.adapter);
+                        ma.results = true;
+                    } catch (Exception e) {
+                    }
+                }else{
+                createViews(list, true, new File(cur));
                 }
-            }}
+                if (savedInstanceState.getBoolean("selection")) {
+
+                    for (int i : savedInstanceState.getIntegerArrayList("position")) {
+                        adapter.toggleChecked(i);
+                    }
+                }
+            }
         }
 
     }
@@ -381,6 +399,9 @@ public class Main extends android.support.v4.app.Fragment {
             outState.putBoolean("selection", selection);
             if (selection) {
                 outState.putIntegerArrayList("position", adapter.getCheckedItemPositions());
+            }
+            if(results){ outState.putParcelableArrayList("slist", slist);
+                outState.putBoolean("results", results);
             }
         }}
 
@@ -576,6 +597,7 @@ public class Main extends android.support.v4.app.Fragment {
             MenuInflater inflater = mode.getMenuInflater();
             v=getActivity().getLayoutInflater().inflate(R.layout.actionmode,null);
             mode.setCustomView(v);
+            mainActivity.setPagingEnabled(false);
             // assumes that you have "contexual.xml" menu resources
             inflater.inflate(R.menu.contextual, menu);
             initMenu(menu);
@@ -971,7 +993,9 @@ public class Main extends android.support.v4.app.Fragment {
         public void onDestroyActionMode(ActionMode mode) {
             mActionMode = null;
             selection = false;
-            adapter.toggleChecked(false, current);
+            if(!results)adapter.toggleChecked(false, current);
+            else adapter.toggleChecked(false);
+            mainActivity.setPagingEnabled(true);
             ObjectAnimator anim = ObjectAnimator.ofInt(rootView.findViewById(R.id.buttonbarframe), "backgroundColor", res.getColor(R.color.toolbar_cab), Color.parseColor(skin));
             anim.setDuration(50);
             anim.setEvaluator(new ArgbEvaluator());
@@ -1148,13 +1172,15 @@ public class Main extends android.support.v4.app.Fragment {
     public void goBack() {
         File f = new File(current);
         if (!results) {
-            if (utils.canGoBack(f) && adapter.getCheckedItemPositions().size()==0) {
+            if(selection){
+            System.out.println("adapter checked false");
+                adapter.toggleChecked(false);}
+            else{
+            if(current.equals("/") || current.equals(home))
+                mainActivity.exit();
+                else if (utils.canGoBack(f) ) {
                 loadlist(f.getParentFile(), true);
-            } else {
-                for (int i : adapter.getCheckedItemPositions()) {
-                    adapter.toggleChecked(i);
-                }
-            }
+            }else mainActivity.exit();}
         } else {
             loadlist(f, true);
         }
