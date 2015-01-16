@@ -120,7 +120,7 @@
             android:title="@string/aboutFileManager" >
             <Preference
                 android:title="@string/version"
-                android:summary="v1.3"/>
+                android:summary="v1.4"/>
             <Preference
                 android:key="authors"
                 android:title="@string/authors" />
@@ -157,6 +157,15 @@
                     android:title="@string/ukrainian_translation_title"
                     android:summary="@string/ukrainian_translation_summary"/>
                 </PreferenceScreen>
+        <PreferenceScreen
+            android:title="@string/contributors">
+            <Preference
+                android:title="Bobby Girdher"
+                />
+            <Preference
+                android:title="Ashish Singhal"
+                />
+</PreferenceScreen>
             <Preference
                 android:key="changelog"
                 android:title="@string/changelog" />
@@ -167,6 +176,7 @@
             <Preference
                 android:key="rate"
                 android:title="@string/rate" />
+
             <Preference
                 android:key="os"
                 android:title="@string/license" />

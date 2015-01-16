@@ -766,14 +766,10 @@ public void showPackageDialog(final File f,final MainActivity m){
             final CheckBox exegroup=(CheckBox) v.findViewById(R.id.cexegroup);
             final CheckBox exeother=(CheckBox) v.findViewById(R.id.cexeother);
             String perm=f.getPermissions();
-            StringBuilder finalPermissions = new StringBuilder();
-            finalPermissions.append(parseSpecialPermissions(perm));
-            finalPermissions.append(parsePermissions(perm.substring(1, 4)));
-            finalPermissions.append(parsePermissions(perm.substring(4, 7)));
-            finalPermissions.append(parsePermissions(perm.substring(7, 10)));
-            Boolean[] read=unparsePermissions(Integer.parseInt(""+(finalPermissions.charAt(1))));
-            Boolean[] write=unparsePermissions(Integer.parseInt(""+(finalPermissions.charAt(2))));
-            Boolean[] exe=unparsePermissions(Integer.parseInt(""+(finalPermissions.charAt(3))));
+            ArrayList<Boolean[]> arrayList=parse(perm);
+            Boolean[] read=arrayList.get(0);
+            Boolean[] write=arrayList.get(1);
+            Boolean[] exe=arrayList.get(2);
             readown.setChecked(read[0]);
             readgroup.setChecked(read[1]);
             readother.setChecked(read[2]);
@@ -803,8 +799,7 @@ public void showPackageDialog(final File f,final MainActivity m){
                     if(writeother.isChecked())h=2;
                     if(exeother.isChecked())i=1;
                     int other=g+h+i;
-                    String  finalValue="0"+owner+group+other;
-                    String recursive="";
+                    String  finalValue=owner+""+group+""+other;
 
                     String command="chmod "+finalValue+" "+file.getPath();
                     if(file.isDirectory())command="chmod -R "+finalValue+" "+file.getPath();
@@ -844,24 +839,6 @@ public void showPackageDialog(final File f,final MainActivity m){
             a.customView(v);
             if(main.theme1==1)a.theme(Theme.DARK);
             a.build().show();}else{Toast.makeText(main.getActivity(),main.getResources().getString(R.string.enablerootmde),Toast.LENGTH_LONG).show();}
-    }String per=null;
-    public String getFilePermissionsSymlinks(String file,final Context c,boolean root)
-    {per=null;
-        File f=new File(file);
-        if(f.isDirectory()){
-            String ls = RootHelper.runAndWait("ls -l " + f.getParent(),root);
-            String[] array=ls.split("\n");
-            for(String x:array){String[] a=x.split(" ");
-                if(a[a.length-1].equals(f.getName())){
-
-                    return  getPermissions(x);}
-            }
-            return  null;}else{
-
-            String ls = RootHelper.runAndWait("ls -l " + file,root);
-            if(ls!=null){
-                per=getPermissions(ls);}
-            return per;}
     }
     public String[] parseName(String line){
         boolean linked=false;String name="",link="",size="-1";
@@ -899,23 +876,57 @@ public void showPackageDialog(final File f,final MainActivity m){
             if(array[i].contains(":"))return i;
         }
         return  0;
-    }
-    public String getPermissions(String line) {
-        try {if(line.length()>=40) {
-            String[] lineArray = line.split(" ");
-            String rawPermissions = lineArray[0];
-
-
-            StringBuilder finalPermissions = new StringBuilder();
-            finalPermissions.append(parseSpecialPermissions(rawPermissions));
-            finalPermissions.append(parsePermissions(rawPermissions.substring(1, 4)));
-            finalPermissions.append(parsePermissions(rawPermissions.substring(4, 7)));
-            finalPermissions.append(parsePermissions(rawPermissions.substring(7, 10)));
-            return (finalPermissions.toString());
-        }}catch (Exception e)
-        {e.printStackTrace();
-            return null;}
-        return null;
+    }  public  final int READ = 4;
+    public  final int WRITE = 2;
+    public  final int EXECUTE = 1;
+    public ArrayList<Boolean[]> parse(String permLine) {
+        ArrayList<Boolean[]> arrayList=new ArrayList<Boolean[]>();
+        Boolean[] read=new Boolean[]{false,false,false};
+        Boolean[] write=new Boolean[]{false,false,false};
+        Boolean[] execute=new Boolean[]{false,false,false};
+        int owner = 0;
+        if (permLine.charAt(1) == 'r') {
+            owner += READ;
+            read[0]=true;
+        }
+        if (permLine.charAt(2) == 'w') {
+            owner += WRITE;
+            write[0]=true;
+        }
+        if (permLine.charAt(3) == 'x') {
+            owner += EXECUTE;
+            execute[0]=true;
+        }
+        int group = 0;
+        if (permLine.charAt(4) == 'r') {
+            group += READ;
+            read[1]=true;
+        }
+        if (permLine.charAt(5) == 'w') {
+            group += WRITE;
+            write[1]=true;
+        }
+        if (permLine.charAt(6) == 'x') {
+            group += EXECUTE;
+        execute[1]=true;
+        }
+        int world = 0;
+        if (permLine.charAt(7) == 'r') {
+            world += READ;
+        read[2]=true;
+        }
+        if (permLine.charAt(8) == 'w') {
+            world += WRITE;
+        write[2]=true;
+        }
+        if (permLine.charAt(9) == 'x') {
+            world += EXECUTE;
+        execute[2]=true;
+        }
+        arrayList.add(read);
+        arrayList.add(write);
+        arrayList.add(execute);
+        return arrayList;
     }
     public Boolean[] unparsePermissions(int i){
 
