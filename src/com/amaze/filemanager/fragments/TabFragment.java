@@ -119,6 +119,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
             }
         });
         if (savedInstanceState == null) {
+            int l=Sp.getInt("currenttab",0);
             mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
                     getActivity().getSupportFragmentManager());
             TabHandler tabHandler=new TabHandler(getActivity(),null,null,1);
@@ -130,20 +131,23 @@ public class TabFragment extends android.support.v4.app.Fragment {
             }
             else{
                 if(path!=null && path.length()!=0){
-                    Tab tab=tabHandler.findTab(1);
+                    Tab tab=tabHandler.findTab(l+1);
                     tab.setPath(path);
-                    addTab(tab,1,"");
+                    addTab(tab,l+1,"");
+                    int k;
+                    if(l==0)k=2;
+                    else k=1;
+                    addTab(tabHandler.findTab(k),k,"");
                 }
                 else
-                addTab(tabHandler.findTab(1),1,"");
-                addTab(tabHandler.findTab(2),2,"");
-            }
+                {   addTab(tabHandler.findTab(1),1,"");
+                 addTab(tabHandler.findTab(2),2,"");
+            }}
 
 
 
             mViewPager.setAdapter(mSectionsPagerAdapter);
 
-                int l=Sp.getInt("currenttab",0);
                 try {
                     mViewPager.setCurrentItem(l,true);
                 } catch (Exception e) {

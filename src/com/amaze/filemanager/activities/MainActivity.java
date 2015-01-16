@@ -544,10 +544,9 @@ public class MainActivity extends ActionBarActivity {
             b.putString("path",path);
             tabFragment.setArguments(b);
         }
-        transaction.replace(R.id.content_frame, new TabFragment());
+        transaction.replace(R.id.content_frame, tabFragment);
         // Commit the transaction
         select=0;
-        transaction.addToBackStack("tabt" + 1);
         transaction.commit();
         toolbar.setTitle(null);
         tabsSpinner.setVisibility(View.VISIBLE);
@@ -568,8 +567,7 @@ public class MainActivity extends ActionBarActivity {
                     android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
                     transaction.replace(R.id.content_frame, tabFragment);
-                    // Commit the transaction
-                    transaction.addToBackStack("tabt1" + 1);
+
                     transaction.commit();
 
 
