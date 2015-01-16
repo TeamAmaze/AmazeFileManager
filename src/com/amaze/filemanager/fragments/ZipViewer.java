@@ -92,7 +92,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
 
         LinearLayout pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
         TextView textView = (TextView) rootView.findViewById(R.id.fullpath);
-
+        rootView.findViewById(R.id.fab).setVisibility(View.GONE);
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

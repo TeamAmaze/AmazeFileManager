@@ -206,7 +206,7 @@ public class Main extends android.support.v4.app.Fragment {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
-        floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1220,7 +1220,7 @@ public class Main extends android.support.v4.app.Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
         floatingActionButton.attachToListView(listView);
         floatingActionButton.attachToListView(gridView);
         floatingActionButton.setColorNormal(Color.parseColor(skin));
