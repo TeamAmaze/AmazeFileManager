@@ -43,10 +43,6 @@
             android:key="uimode"
             android:summary="@string/chooseUI"
             android:title="@string/uimode" />
-        <CheckBoxPreference
-            android:key="animatepager"
-            android:summary="Flip animation while changing tabs"
-            android:title="Animate Tabs" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/general">
@@ -169,7 +165,7 @@
             <Preference
                 android:title="Ashish Singhal"
                 />
-</PreferenceScreen>
+        </PreferenceScreen>
             <Preference
                 android:key="changelog"
                 android:title="@string/changelog" />
@@ -189,5 +185,4 @@
             android:key="feedback"
             android:title="@string/feedback" />
     </PreferenceCategory>
-
-    </PreferenceScreen>
+</PreferenceScreen>

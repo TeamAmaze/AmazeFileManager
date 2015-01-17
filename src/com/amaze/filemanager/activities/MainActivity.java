@@ -178,7 +178,11 @@ public class MainActivity extends ActionBarActivity {
         int th = Integer.parseInt(Sp.getString("theme", "0"));
         boolean first=Sp.getBoolean("v1.4",false);
         if(!first){
-            utils.deletedirectory(new File("/data/data/com.amaze.filemanager"+"/databases"));
+            try {
+                utils.deletedirectory(new File("/data/data/com.amaze.filemanager"+"/databases"));
+            } catch (Exception e) {
+
+            }
             Sp.edit().putBoolean("v1.4",true).apply();
         }
         theme1 = th;

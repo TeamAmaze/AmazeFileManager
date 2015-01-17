@@ -319,18 +319,17 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                         else if (Icons.isArchive(rowItem.getDesc()))
                             gradientDrawable.setColor(Color.parseColor("#f9a825"));
                         else if (Icons.isgeneric(rowItem.getDesc()))
-                        {
-                            if (rowItem.getSize().equals(main.goback))
-                                gradientDrawable.setColor(Color.parseColor("#757575"));
-                            else{
-                                gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
-                                String ext=MimeTypes.getExtension(rowItem.getDesc());
-                                if(ext!=null && ext.trim().length()!=0){
+                        {  gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
+                           String ext=MimeTypes.getExtension(rowItem.getDesc());
+                                if(ext!=null && ext.trim().length()!=0) {
                                     holder.ext.setText(ext);
                                     holder.imageView.setImageDrawable(null);
-                                }}
-                    }else gradientDrawable.setColor(Color.parseColor(main.skin));
-                    }else gradientDrawable.setColor(Color.parseColor(main.skin));
+                                }      }
+                    else{
+                        gradientDrawable.setColor(Color.parseColor(main.skin));
+                    }}else gradientDrawable.setColor(Color.parseColor(main.skin));
+                    if (rowItem.getSize().equals(main.goback))
+                        gradientDrawable.setColor(Color.parseColor("#757575"));
                     if (main.uimode == 0) {
                         holder.rl.setBackgroundResource(R.drawable.listitem1);
                     } else if (main.uimode == 1) {
@@ -391,7 +390,8 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     if (!rowItem.getSize().equals(main.goback)) {
 
                         toggleChecked(p);
-                    } return true;
+                    }
+                    return true;
                 }
             });
             holder.txtTitle.setText(rowItem.getTitle());
@@ -446,7 +446,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 holder.imageView.setColorFilter(Color.parseColor(main.skin));
             else
                 holder.imageView.setColorFilter(null);
-
+            if(rowItem.getSize().equals(main.goback))holder.imageView.setColorFilter(Color.parseColor("#757575"));
             if (checked != null) {
 
                 if (checked) {
