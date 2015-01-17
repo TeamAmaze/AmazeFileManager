@@ -52,6 +52,9 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.RootHelper;
+import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.execution.Command;
 
 import org.codehaus.plexus.util.FileUtils;
 
@@ -216,15 +219,20 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
         setProgress(true);
         this.mFile = mFile;
         mInput.setHint("Loading...");
-        Log.v("TextEditor", "Loading...");
         new Thread(new Runnable() {
             @Override
             public void run() {
                 if (!mFile.exists()) {
-                    Log.v("TextEditor", "File doesn't exist...");
                     finish();
                     return;
-                }
+                }if(!mFile.canRead() && rootMode){
+                    System.out.println("setting");
+                    try {//
+                        RootTools.remount(mFile.getPath(), "RW");
+                        RootHelper.runAndWait("chmod "+777+" "+mFile.getPath(),true);
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }}
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -233,7 +241,6 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                     }
                 });
                 try {
-                    Log.v("TextEditor", "Reading file...");
                     try {
                         mOriginal = FileUtils.fileRead(mFile);
                     } catch (final Exception e) {
@@ -245,7 +252,6 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                             }
                         });
                     }
-                    Log.v("TextEditor", "Setting contents to input area...");
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -258,7 +264,6 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                         }
                     });
                 } catch (final Exception e) {
-                    Log.v("TextEditor", "Error: " + e.getMessage());
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
