@@ -59,6 +59,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment,
                 container, false);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        boolean animatepager=Sp.getBoolean("animatepager",false);
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int theme=Integer.parseInt(Sp.getString("theme","0"));
@@ -70,6 +71,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 theme1 = 0;
         }
         mViewPager = (CustomViewPager) rootView.findViewById(R.id.pager);
+        if(animatepager)mViewPager.setPageTransformer(true,new AccordianTransformer(){});
         if (getArguments() != null){
             path = getArguments().getString("path");
         }
@@ -82,7 +84,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
             public void onPageSelected(int p1) { // TODO: Implement this								// method
                 currenttab=p1;
-                Sp.edit().putInt("currenttab",currenttab).commit();
                 mainActivity.supportInvalidateOptionsMenu();
                 try {
                     updateSpinner();
@@ -179,8 +180,13 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
     @Override
     public void onDestroyView(){
+        Sp.edit().putInt("currenttab",currenttab).apply();
         super.onDestroyView();
-        tabHandler.close();
+        try {
+            tabHandler.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     TabHandler tabHandler;
 
@@ -314,4 +320,26 @@ public class TabFragment extends android.support.v4.app.Fragment {
         mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
     }
 
-}
+    public abstract class AccordianTransformer implements ViewPager.PageTransformer {
+        public AccordianTransformer(){}
+        @Override
+        public void transformPage(View page, float position) {
+            int width=page.getWidth();
+            page.setRotationX(0);
+            page.setRotationY(0);
+            page.setRotation(0);
+            page.setScaleX(1);
+            page.setScaleY(1);
+            page.setPivotX(0);
+            page.setPivotY(0);
+            page.setTranslationY(0);
+            page.setTranslationX(false ? 0f : -width * position);
+            page.setAlpha(position <= -1f || position >= 1f ? 0f : 1f);
+
+            final float rotation = 180f * position;
+
+            page.setAlpha(rotation > 90f || rotation < -90f ? 0 : 1);
+            page.setPivotX(width * 0.5f);
+            page.setPivotY(page.getHeight() * 0.5f);
+            page.setRotationY(rotation);}
+}}

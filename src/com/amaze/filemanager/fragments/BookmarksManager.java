@@ -26,6 +26,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -62,7 +63,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 
-public class BookmarksManager extends ListFragment {
+public class BookmarksManager extends Fragment {
     Futils utils = new Futils();
     Shortcuts s;
     BooksAdapter b;
@@ -71,6 +72,13 @@ public class BookmarksManager extends ListFragment {
     ArrayList<File> bx;
   public   MainActivity m;
 ListView vl;int theme,theme1;
+View rootView;ListView listview;
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            rootView = inflater.inflate(R.layout.main_frag, container, false);
+        listview=(ListView)rootView.findViewById(R.id.listView);
+            rootView.findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
+        return rootView;}
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -90,11 +98,15 @@ ListView vl;int theme,theme1;
         }
         if(theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
         m=(MainActivity)getActivity();
-        getListView().setDivider(null);
+        listview.setDivider(null);
 
         Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
-        FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        FloatingActionButton floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
         floatingActionButton.show(true);
+        floatingActionButton.attachToListView(listview);
+        floatingActionButton.setColorNormal(Color.parseColor(((MainActivity)getActivity()).skin));
+        floatingActionButton.setColorPressed(Color.parseColor(((MainActivity)getActivity()).skin));
+
         floatingActionButton.setAnimation(animation1);
         //getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
 
@@ -144,7 +156,7 @@ ListView vl;int theme,theme1;
         });
 
         icons = new IconUtils(Sp, getActivity());
-         vl = getListView();
+         vl = listview;
         vl.setFastScrollEnabled(true);
         if (savedInstanceState == null)
             refresh();
@@ -215,6 +227,6 @@ ListView vl;int theme,theme1;
 
     public void refresh(ArrayList<File> f) {
         b = new BooksAdapter(getActivity(), R.layout.bookmarkrow, f, this);
-        setListAdapter(b);
+        listview.setAdapter(b);
     }
 }

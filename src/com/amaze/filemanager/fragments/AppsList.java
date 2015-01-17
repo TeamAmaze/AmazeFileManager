@@ -75,7 +75,6 @@ public class AppsList extends ListFragment {
     public IconHolder ic;
     ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
     int theme1;
-    private FloatingActionButton floatingActionButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,14 +87,7 @@ public class AppsList extends ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         vl=getListView();
-
-        //((TextView) getActivity().findViewById(R.id.title)).setText(utils.getString(getActivity(), R.string.apps));
-
-        floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-        floatingActionButton.hide(true);
-
-        //getActivity().findViewById(R.id.fab).setVisibility(View.INVISIBLE);
-        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         ListView vl = getListView();
         Calendar calendar = Calendar.getInstance();
@@ -130,7 +122,6 @@ public class AppsList extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        floatingActionButton.hide(true);
     }
 
     public void onLongItemClick(final int position) {

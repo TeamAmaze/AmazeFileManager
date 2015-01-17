@@ -33,6 +33,7 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/action_bar"
+            android:animateLayoutChanges="true"
             android:layout_alignParentTop="true"
             android:layout_height="?attr/actionBarSize"
             android:layout_width="match_parent"

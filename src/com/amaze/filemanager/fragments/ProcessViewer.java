@@ -45,7 +45,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
-import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -70,8 +69,6 @@ public class ProcessViewer extends Fragment {
                 container, false);
         setRetainInstance(false);
 
-        FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-        floatingActionButton.hide(true);
 
         mainActivity = (MainActivity) getActivity();
 
