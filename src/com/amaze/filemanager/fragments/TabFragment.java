@@ -199,15 +199,20 @@ public class TabFragment extends android.support.v4.app.Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        int i = 0;
-        if (fragments != null && fragments.size() !=0) {
-            for (Fragment fragment : fragments) {
-                getActivity().getSupportFragmentManager().putFragment(outState, "tab" + i, fragment);
-                i++;
+        try {
+            int i = 0;
+            if (fragments != null && fragments.size() !=0) {
+                for (Fragment fragment : fragments) {
+                    getActivity().getSupportFragmentManager().putFragment(outState, "tab" + i, fragment);
+                    i++;
+                }
+                outState.putStringArrayList("tabs", tabs);
+                outState.putInt("pos", mViewPager.getCurrentItem());
             }
-            outState.putStringArrayList("tabs", tabs);
-            outState.putInt("pos", mViewPager.getCurrentItem());
-        }Sp.edit().putInt("currenttab",currenttab).commit();
+            Sp.edit().putInt("currenttab",currenttab).commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
