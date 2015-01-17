@@ -148,7 +148,20 @@
                                       - Can view apk and jar files&lt;br>
                                       - Various text editor fixes&lt;br>
                                       - more...&lt;br>&lt;br></string>
-
+    <string name="changelog_version_4">&lt;font color="#524ef8">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Jan 17, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_4">    - Swipable tabs&lt;br>
+                                      - Fully revamped UI&lt;br>
+                                      - Speedy copy/paste/extract/compress operations&lt;br>
+                                      - Progress of operations in notifications&lt;br>
+                                      - Fixes for zip viewer and text editor&lt;br>
+                                      - Ability to uninstall system apps&lt;br>
+                                      - Improved searching of files&lt;br>
+                                      - Serbian,basque translations&lt;br>
+                                      - Added preference to disable go back list header&lt;br>
+                                      - Added preference to disable circular thumbnails&lt;br>
+                                      - Added preference to choose archive extract and compress directory&lt;br>
+                                      - Added preference to remember paths&lt;br>
+                                      - more...&lt;br>&lt;br></string>
     <!-- New -->
     <!-- Array -->
 
