@@ -176,15 +176,20 @@ public class MainActivity extends ActionBarActivity {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int th = Integer.parseInt(Sp.getString("theme", "0"));
-        boolean first=Sp.getBoolean("v1.4",false);
-        if(!first){
+        boolean v14=Sp.getBoolean("v1.4",false);
+        if(!v14){
             try {
                 utils.deletedirectory(new File("/data/data/com.amaze.filemanager"+"/databases"));
             } catch (Exception e) {
 
             }
             Sp.edit().putBoolean("v1.4",true).apply();
-        }
+        }boolean v15=Sp.getBoolean("v1.5",false);
+         if(!v15){
+             Sp.edit().putString("skin","6").apply();
+             Sp.edit().putString("skin_color","#03A9F4").apply();
+             Sp.edit().putBoolean("v1.4",true).apply();
+         }
         theme1 = th;
         if (th == 2) {
             Sp.edit().putString("uimode", "0").commit();

@@ -103,6 +103,7 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
         this.m = m;
         putColors();
         color=colors.get(m.skin);
+        if(color==null){color=colors.get("#03A9F4");}
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
