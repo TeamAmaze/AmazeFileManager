@@ -22,11 +22,9 @@ package com.amaze.filemanager.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.SparseBooleanArray;
@@ -45,10 +43,6 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.MimeTypes;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.pkmmte.view.CircularImageView;
 
 import java.io.File;
@@ -161,17 +155,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         View rl;
         TextView ext;
     }
-    public  void loadThumbnail(File file, ImageView icon) {
-        String mime = MimeTypes.getMimeType(file);
-        if (mime != null) {
-            if (mime.startsWith("image/")) {
-                Uri uri = Uri.fromFile(file);
-                DisplayImageOptions options = main.mainActivity.getDisplayOptions(R.drawable.ic_doc_image_dark);
-                ImageLoader.getInstance().displayImage(Uri.decode(uri.toString()), icon, options);
-            } else if (mime.equals("application/vnd.android.package-archive")) {
-                DisplayImageOptions options =main.mainActivity.getDisplayOptions(R.drawable.ic_doc_apk);
-                ImageLoader.getInstance().displayImage(file.getPath(), icon, options);
-            }}}
+
     public View getView(int position, View convertView, ViewGroup parent) {
 
         final Layoutelements rowItem = getItem(position);
@@ -220,64 +204,9 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 }
             });
 
-            holder.imageView.setImageDrawable(rowItem.getImageId());
-            if (main.showThumbs) {
-                File file=new File(rowItem.getDesc());
-            String mime = MimeTypes.getMimeType(file);
-            if (mime != null) {
-                if (mime.startsWith("image/") || mime.startsWith("video/")) {
-                    if(main.circularImages) {
-                        holder.viewmageV.setVisibility(View.VISIBLE);
-                        holder.imageView.setVisibility(View.GONE);
-                        holder.apk.setVisibility(View.GONE);
-                    }else{ holder.viewmageV.setVisibility(View.GONE);
-                        holder.imageView.setVisibility(View.GONE);
-                        holder.apk.setVisibility(View.VISIBLE);
-                    }
-                          Uri uri = Uri.fromFile(file);
-                            DisplayImageOptions options = main.mainActivity.getDisplayOptions(R.drawable.ic_doc_image_dark);
-                            ImageLoader.getInstance().displayImage(Uri.decode(uri.toString()), holder.viewmageV, options,new ImageLoadingListener() {
-                                @Override
-                                public void onLoadingStarted(String s, View view) {
-                                    holder.imageView.setVisibility(View.VISIBLE);
-                                    holder.viewmageV.setVisibility(View.GONE);
-                                    holder.apk.setVisibility(View.GONE);
-                                }
 
-                                @Override
-                                public void onLoadingFailed(String s, View view, FailReason failReason) {
-                                    holder.imageView.setVisibility(View.VISIBLE);
-                                    holder.viewmageV.setVisibility(View.GONE);
-                                    holder.apk.setVisibility(View.GONE);
-                                }
-
-                                @Override
-                                public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                                 if(main.circularImages) {
-                                     holder.viewmageV.setImageBitmap(bitmap);
-                                     holder.viewmageV.setVisibility(View.VISIBLE);
-                                     holder.imageView.setVisibility(View.GONE);
-                                     holder.apk.setVisibility(View.GONE);
-                                 }else{      holder.apk.setImageBitmap(bitmap);
-                                     holder.viewmageV.setVisibility(View.GONE);
-                                     holder.imageView.setVisibility(View.GONE);
-                                     holder.apk.setVisibility(View.VISIBLE);
-                                 }}
-
-                                @Override
-                                public void onLoadingCancelled(String s, View view) {
-                                    holder.imageView.setVisibility(View.VISIBLE);
-                                    holder.viewmageV.setVisibility(View.GONE);
-                                    holder.apk.setVisibility(View.GONE);
-                                }
-                            });
-
-                 }else if (mime.equals("application/vnd.android.package-archive")) {
-
-                }
-                }
-            }
             holder.txtTitle.setText(rowItem.getTitle());
+            holder.imageView.setImageDrawable(rowItem.getImageId());
             holder.ext.setText("");
 
             holder.imageView.setOnClickListener(new View.OnClickListener() {
@@ -307,6 +236,52 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     else main.goBack();
                 }
             });
+            holder.imageView.setVisibility(View.VISIBLE);
+            holder.viewmageV.setVisibility(View.INVISIBLE);
+            if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
+                if (main.showThumbs) {
+                    if (main.circularImages) {
+                        holder.imageView.setVisibility(View.GONE);
+                        holder.viewmageV.setVisibility(View.VISIBLE);
+                        holder.viewmageV.setImageDrawable(main.darkimage);
+                        main.ic.cancelLoad(holder.viewmageV);
+                        main.ic.loadDrawable(holder.viewmageV, new File(rowItem.getDesc()), null);
+                    } else {
+                        holder.imageView.setVisibility(View.GONE);
+                        holder.apk.setVisibility(View.VISIBLE);
+                        holder.apk.setImageDrawable(main.darkimage);
+                        main.ic.cancelLoad(holder.apk);
+                        main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);
+                    }
+                }
+            } else if (Icons.isApk((rowItem.getDesc()))) {
+                if (main.showThumbs) {
+                    holder.imageView.setVisibility(View.GONE);
+                    holder.apk.setVisibility(View.VISIBLE);
+                    holder.apk.setImageDrawable(main.apk);
+                    main.ic.cancelLoad(holder.apk);
+                    main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);
+                }
+
+            } else if (Icons.isVideo(rowItem.getDesc())) {
+                if (main.showThumbs) {
+                    if (main.circularImages) {
+                        holder.imageView.setVisibility(View.GONE);
+                        holder.viewmageV.setVisibility(View.VISIBLE);
+                        holder.viewmageV.setImageDrawable(main.darkvideo);
+                        main.ic.cancelLoad(holder.viewmageV);
+                        main.ic.loadDrawable(holder.viewmageV, new File(rowItem.getDesc()), null);
+                    } else {
+                        holder.imageView.setVisibility(View.GONE);
+                        holder.apk.setVisibility(View.VISIBLE);
+                        holder.apk.setImageDrawable(main.darkvideo);
+                        main.ic.cancelLoad(holder.apk);
+                        main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);
+                    }
+                }
+            }
+        else{holder.viewmageV.setVisibility(View.GONE);
+            holder.apk.setVisibility(View.GONE);}
             Boolean checked = myChecked.get(position);
             if (checked != null) {
 

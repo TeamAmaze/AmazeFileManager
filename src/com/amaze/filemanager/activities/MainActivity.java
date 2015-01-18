@@ -28,15 +28,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -100,19 +95,12 @@ import com.amaze.filemanager.utils.MediaFile;
 import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.melnykov.fab.FloatingActionButton;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.stericson.RootTools.RootTools;
 
 import org.xml.sax.SAXException;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -175,11 +163,7 @@ public class MainActivity extends ActionBarActivity {
             super.onCreate(savedInstanceState);
         } catch (Exception e) {
             e.printStackTrace();
-        }ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-                .defaultDisplayImageOptions(getDisplayOptions(0))
-                .imageDownloader(new APKIconDownloader(this))
-        .build();
-        ImageLoader.getInstance().init(config);
+        }
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         utils = new Futils();
         s=new Shortcuts(this);
@@ -571,6 +555,7 @@ public class MainActivity extends ActionBarActivity {
         transaction.replace(R.id.content_frame, tabFragment);
         // Commit the transaction
         select=0;
+        transaction.addToBackStack("tabt" + 1);
         transaction.commit();
         toolbar.setTitle(null);
         tabsSpinner.setVisibility(View.VISIBLE);
@@ -592,6 +577,7 @@ public class MainActivity extends ActionBarActivity {
 
                     transaction.replace(R.id.content_frame, tabFragment);
 
+                    transaction.addToBackStack("tabt1" + 1);
                     transaction.commit();
 
 
@@ -1287,16 +1273,6 @@ public class MainActivity extends ActionBarActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }  public static DisplayImageOptions getDisplayOptions(int fallback) {
-        if (fallback == 0) fallback = R.drawable.ic_doc_generic_am;
-        return new DisplayImageOptions.Builder()
-                .resetViewBeforeLoading(true)
-                .showImageOnLoading(fallback)                                   // set the default image while loading the thumb
-                .showImageForEmptyUri(fallback)
-                .showImageOnFail(fallback)
-                .cacheInMemory(true)
-                .cacheOnDisk(false)
-                .build();
     }
 
     public void openZip(String path) {
@@ -1341,26 +1317,4 @@ public class MainActivity extends ActionBarActivity {
         };
         return colors[ Arrays.asList(colors).indexOf(skin)+1];
     }
-    public class APKIconDownloader extends BaseImageDownloader {
-
-        private Context mContext;
-
-        public APKIconDownloader(Context context) {
-            super(context);
-            mContext = context;
-        }
-
-        @Override
-        protected InputStream getStreamFromOtherSource(String path, Object extra) throws IOException {
-            PackageManager pm = mContext.getPackageManager();
-            PackageInfo pi = pm.getPackageArchiveInfo(path, 0);
-            pi.applicationInfo.sourceDir = path;
-            pi.applicationInfo.publicSourceDir = path;
-            Drawable apkIcon = pi.applicationInfo.loadIcon(pm);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            ((BitmapDrawable) apkIcon).getBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] imageInByte = stream.toByteArray();
-            stream.close();
-            return new ByteArrayInputStream(imageInByte);
-        }
-    }   }
+   }

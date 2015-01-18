@@ -102,8 +102,6 @@ import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.melnykov.fab.FloatingActionButton;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 import java.io.File;
 import java.io.IOException;
@@ -162,7 +160,6 @@ public class Main extends android.support.v4.app.Fragment {
     int no;
     TabHandler tabHandler;
     boolean savepaths;
-    DisplayImageOptions options;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1478,5 +1475,4 @@ public class Main extends android.support.v4.app.Fragment {
         });
 
     }
-
 }
