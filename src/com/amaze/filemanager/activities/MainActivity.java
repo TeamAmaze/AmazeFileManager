@@ -551,6 +551,7 @@ public class MainActivity extends ActionBarActivity {
         transaction.replace(R.id.content_frame, tabFragment);
         // Commit the transaction
         select=0;
+        transaction.addToBackStack("tabt" + 1);
         transaction.commit();
         toolbar.setTitle(null);
         tabsSpinner.setVisibility(View.VISIBLE);
@@ -572,6 +573,7 @@ public class MainActivity extends ActionBarActivity {
 
                     transaction.replace(R.id.content_frame, tabFragment);
 
+                    transaction.addToBackStack("tabt1" + 1);
                     transaction.commit();
 
 
@@ -611,6 +613,8 @@ public class MainActivity extends ActionBarActivity {
                 }
         }
         select = i;
+        adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
+        mDrawerList.setAdapter(adapter);
         adapter.toggleChecked(select);
         mDrawerLayout.closeDrawer(mDrawerLinear);
     }

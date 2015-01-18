@@ -76,7 +76,11 @@ View rootView;ListView listview;
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             rootView = inflater.inflate(R.layout.main_frag, container, false);
-             listview=(ListView)rootView.findViewById(R.id.listView);
+            MainActivity mainActivity=(MainActivity)getActivity();
+            mainActivity.toolbar.setTitle(utils.getString(getActivity(),R.string.bookmanag));
+            mainActivity.tabsSpinner.setVisibility(View.GONE);
+
+            listview=(ListView)rootView.findViewById(R.id.listView);
             rootView.findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
             rootView.findViewById(R.id.gridView).setVisibility(View.GONE);
         return rootView;}

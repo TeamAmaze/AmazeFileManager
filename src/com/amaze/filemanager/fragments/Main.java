@@ -270,16 +270,7 @@ public class Main extends android.support.v4.app.Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
-        getActivity().findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
-
-        /*Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
-        getActivity().findViewById(R.id.fab).setAnimation(animation1);*/
-
         list1 = new ArrayList<String>();
-
-
-        //getActivity().findViewById(R.id.search).setVisibility(View.VISIBLE);
-        //getActivity().findViewById(R.id.action_overflow).setVisibility(View.VISIBLE);
         utils = new Futils();
         String x=getSelectionColor();
         skinselection=Color.parseColor(x);
@@ -307,8 +298,8 @@ public class Main extends android.support.v4.app.Fragment {
         rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
         initiatebbar();
 
-        scroll = (HorizontalScrollView) getActivity().findViewById(R.id.scroll);
-        scroll1 = (HorizontalScrollView) getActivity().findViewById(R.id.scroll1);
+        scroll = (HorizontalScrollView) rootView.findViewById(R.id.scroll);
+        scroll1 = (HorizontalScrollView) rootView.findViewById(R.id.scroll1);
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         if (uimode == 1) {
             float scale = getResources().getDisplayMetrics().density;
@@ -1016,7 +1007,6 @@ public class Main extends android.support.v4.app.Fragment {
         }
     };
     public void updatePath(String text){
-        System.out.println("updatedpath");
         File f=new File(text);
         String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
         String free = utils.readableFileSize(f.getFreeSpace());
