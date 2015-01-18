@@ -148,7 +148,20 @@
                                       - Приказ апк и јар фајлова&lt;br>
                                       - Разне исправке уређивача текста&lt;br>
                                       - још тога...&lt;br>&lt;br></string>
-
+    <string name="changelog_version_4">&lt;font color="#524ef8">&lt;b>в1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>17. јан, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_4">    - Превлачење језичака&lt;br>
+                                      - Преуређено сучеље&lt;br>
+                                      - Убрзане радње копирања/лепљења/распакивања/компресовања&lt;br>
+                                      - Напредак радњи у обавештењима&lt;br>
+                                      - Исправке зип прегледача и уређивача текста&lt;br>
+                                      - Могућност уклањања системских апликација&lt;br>
+                                      - Побољшана претрага фајлова&lt;br>
+                                      - Преводи на српски и баскијски&lt;br>
+                                      - Могућност да се искључи заглавље списка за назад&lt;br>
+                                      - Могућност да се искључе кружне сличице&lt;br>
+                                      - Могућност да се одреди фасцикла за распакивање и компресовање&lt;br>
+                                      - Могућност да се запамте путање&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
     <!-- New -->
     <!-- Array -->
 
@@ -289,6 +302,7 @@
     <string name="chinese_translation_title">Кинески</string>
     <string name="serbian_translation_title">Српски</string>
     <string name="turkish_translation_title">Турски</string>
+    <string name="ukrainian_translation_title">Украјински</string>
     <string name="german_translation_summary">Patrick Mertens</string>
     <string name="italian_translation_summary">Francesco Credidio</string>
     <string name="french_translation_summary">Nicolas PIMENTEL, Primokorn, Renaud</string>
@@ -298,19 +312,23 @@
     <string name="chinese_translation_summary">amtlib-dot-dll, Felix2yu</string>
     <string name="serbian_translation_summary">Младен Пејаковић</string>
     <string name="turkish_translation_summary">Hakan Güven</string>
+    <string name="ukrainian_translation_summary">Pablo Luchiano</string>
     <string name="zip_viewer">Зип прегледач</string>
     <string name="unin_system_apk">Ово је системска апликација, уклањање може да доведе до нестабилности система.\nДа наставим?</string>
     <string name="warning">Упозорење</string>
     <string name="donate">Донирај</string>
+    <string name="archive_preferences">Поставке архивисања</string>
     <string name="archive_extract_folder">Фасцикла распакивања архиве</string>
     <string name="zip_create_folder">Фасцикла архиве</string>
     <string name="archive_summary">Фајлови архиве ће бити распаковани у ову фасциклу. Подразумевана вредност је фасцикла у којој је фајл архиве</string>
     <string name="zip_summary">Нови зип фајлови ће бити направљени у овој фасцикли. Подразумевана вредност је фасцикла у којој су фајлови</string>
+    <string name="openas">Отвори као</string>
     <string name="text">Текст</string>
     <string name="audio">Звук</string>
     <string name="video">Видео</string>
     <string name="other">Остало</string>
     <string name="image">Слика</string>
+    <string name="contributors">Доприносиоци</string>
     <string name="savepaths">Запамти путање</string>
     <string name="savepathsummary">Прикажи најскорије приказану фасциклу за сваки језичак по покретању</string>
 </resources>
