@@ -53,6 +53,7 @@ import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.RootHelper;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
 
@@ -116,14 +117,22 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         rootMode = PreferenceManager.getDefaultSharedPreferences(c)
                 .getBoolean("rootmode", false);
+        int sdk=Build.VERSION.SDK_INT;
 
-        // status bar
-        if (Build.VERSION.SDK_INT >= 21) {
+        if(sdk==20 || sdk==19) {
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintColor(Color.parseColor(skin));
+            FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.texteditor).getLayoutParams();
+            SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
+            p.setMargins(0, config.getStatusBarHeight(), 0, 0);
+        }else if(Build.VERSION.SDK_INT>=21){
 
-            Window window = this.getWindow();
+            Window window =getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(skinStatusBar);
+            window.setStatusBarColor(Color.parseColor(getStatusColor()));
+
         }
         mInput = (EditText) findViewById(R.id.fname);
         mInput.addTextChangedListener(this);

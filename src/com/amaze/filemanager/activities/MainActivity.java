@@ -95,6 +95,7 @@ import com.amaze.filemanager.utils.MediaFile;
 import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.melnykov.fab.FloatingActionButton;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
 import org.xml.sax.SAXException;
@@ -242,13 +243,23 @@ public class MainActivity extends ActionBarActivity {
         String x = getStatusColor();
         skinStatusBar = Color.parseColor(x);
         // status bar
-        if (Build.VERSION.SDK_INT >= 21) {
+        int sdk=Build.VERSION.SDK_INT;
 
-            Window window = this.getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(skinStatusBar);
-        }
+            if(sdk==20 || sdk==19) {
+                SystemBarTintManager tintManager = new SystemBarTintManager(this);
+                tintManager.setStatusBarTintEnabled(true);
+                tintManager.setStatusBarTintColor(Color.parseColor(skin));
+                FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
+                SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
+                p.setMargins(0, config.getStatusBarHeight(), 0, 0);
+            }else if(Build.VERSION.SDK_INT>=21){
+
+                Window window =getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                window.setStatusBarColor(Color.parseColor(getStatusColor()));
+
+            }
 
         LinearLayout linearLayout3 = (LinearLayout) findViewById(R.id.settings_bg);
         linearLayout3.setBackgroundColor(Color.parseColor(skin));
@@ -540,7 +551,7 @@ public class MainActivity extends ActionBarActivity {
 
         if(list.contains(path))
         {
-            //select= list.indexOf(path);
+            select= list.indexOf(path);
             adapter.toggleChecked(select);
         }}
     public void goToMain(String path){

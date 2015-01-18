@@ -15,6 +15,7 @@ repositories {
 }
 
 dependencies {
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'com.android.support:appcompat-v7:21.0.+'
     compile 'com.afollestad:material-dialogs:0.4.4'
     compile 'com.pkmmte.view:circularimageview:1.1'

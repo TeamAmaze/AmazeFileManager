@@ -72,6 +72,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -102,6 +103,7 @@ import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.melnykov.fab.FloatingActionButton;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -609,13 +611,19 @@ public class Main extends android.support.v4.app.Fragment {
             anim.setDuration(200);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
+            int sdk=Build.VERSION.SDK_INT;
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 window.setStatusBarColor(res.getColor(android.R.color.black));
+            }else if(sdk==20 || sdk==19){
+                SystemBarTintManager tintManager = new SystemBarTintManager(getActivity());
+                tintManager.setStatusBarTintEnabled(true);
+                tintManager.setStatusBarTintColor(Color.BLACK);
             }
+
             return true;
         }
 
@@ -997,12 +1005,17 @@ public class Main extends android.support.v4.app.Fragment {
             anim.setDuration(50);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
+            int sdk=Build.VERSION.SDK_INT;
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 window.setStatusBarColor(Color.parseColor(mainActivity.getStatusColor()));
+            }else if(sdk==20 || sdk==19){
+                SystemBarTintManager tintManager = new SystemBarTintManager(getActivity());
+                tintManager.setStatusBarTintEnabled(true);
+                tintManager.setStatusBarTintColor(Color.parseColor(mainActivity.getStatusColor()));
             }
         }
     };
