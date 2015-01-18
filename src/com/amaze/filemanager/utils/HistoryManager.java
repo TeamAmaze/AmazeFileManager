@@ -64,10 +64,9 @@ public class HistoryManager {
             open();
             try {
                 db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "'");
+                db.execSQL("INSERT INTO " + table + " VALUES" + "('" + path + "');");
             } catch (Exception f) {
-            }
-            db.execSQL("INSERT INTO " + table + " VALUES" + "('" + path + "');");
-            e.printStackTrace();
+            }e.printStackTrace();
         }
     }
     public void removePath(String path){
