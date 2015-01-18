@@ -62,7 +62,11 @@ public class HistoryManager {
             db.execSQL("INSERT INTO " + table + " VALUES" + "('" + path + "');");
         } catch (Exception e) {
             open();
-            addPath(path);
+            try {
+                db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "'");
+            } catch (Exception f) {
+            }
+            db.execSQL("INSERT INTO " + table + " VALUES" + "('" + path + "');");
             e.printStackTrace();
         }
     }
