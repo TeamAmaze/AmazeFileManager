@@ -310,9 +310,7 @@ public class MainActivity extends ActionBarActivity {
 
         } else {
             select = savedInstanceState.getInt("selectitem", 0);
-
             adapter.toggleChecked(select);
-
         }
         /*if (Build.VERSION.SDK_INT >= 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
@@ -557,7 +555,8 @@ public class MainActivity extends ActionBarActivity {
     public void updateDrawer(String path){
 
         if(list.contains(path))
-        {select= list.indexOf(path);
+        {
+            //select= list.indexOf(path);
             adapter.toggleChecked(select);
         }}
     public void goToMain(String path){

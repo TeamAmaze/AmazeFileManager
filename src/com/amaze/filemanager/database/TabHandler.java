@@ -112,8 +112,8 @@ public class TabHandler extends SQLiteOpenHelper {
             do {
                 Tab tab = new Tab();
                 tab.setTab((cursor.getInt(cursor.getColumnIndex(COLUMN_TAB_NO))));
-                tab.setPath(cursor.getString(cursor.getColumnIndex(COLUMN_HOME)));
-                tab.setHome(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
+                tab.setPath(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
+                tab.setHome(cursor.getString(cursor.getColumnIndex(COLUMN_HOME)));
                 //Adding them to list
                 tabList.add(tab);
             } while (cursor.moveToNext());
