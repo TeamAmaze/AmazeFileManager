@@ -219,9 +219,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     return true;
                 }
             });
-            holder.viewmageV.setVisibility(View.GONE);
-            holder.imageView.setVisibility(View.VISIBLE);
-            holder.apk.setVisibility(View.GONE);
+
             holder.imageView.setImageDrawable(rowItem.getImageId());
             if (main.showThumbs) {
                 File file=new File(rowItem.getDesc());
@@ -238,7 +236,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     }
                           Uri uri = Uri.fromFile(file);
                             DisplayImageOptions options = main.mainActivity.getDisplayOptions(R.drawable.ic_doc_image_dark);
-                            ImageLoader.getInstance().displayImage("file://"+file.getPath(), holder.viewmageV, options,new ImageLoadingListener() {
+                            ImageLoader.getInstance().displayImage(Uri.decode(uri.toString()), holder.viewmageV, options,new ImageLoadingListener() {
                                 @Override
                                 public void onLoadingStarted(String s, View view) {
                                     holder.imageView.setVisibility(View.VISIBLE);
@@ -248,7 +246,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
                                 @Override
                                 public void onLoadingFailed(String s, View view, FailReason failReason) {
-                                    System.out.println(failReason.getType().toString());
                                     holder.imageView.setVisibility(View.VISIBLE);
                                     holder.viewmageV.setVisibility(View.GONE);
                                     holder.apk.setVisibility(View.GONE);
@@ -276,36 +273,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                             });
 
                  }else if (mime.equals("application/vnd.android.package-archive")) {
-                    DisplayImageOptions options = main.mainActivity.getDisplayOptions(R.drawable.ic_doc_apk_grid);
-                    ImageLoader.getInstance().displayImage(file.getPath(), holder.apk, options,new ImageLoadingListener() {
-                        @Override
-                        public void onLoadingStarted(String s, View view) {
-                            holder.imageView.setVisibility(View.GONE);
-                            holder.viewmageV.setVisibility(View.GONE);
-                            holder.apk.setVisibility(View.VISIBLE);
-                        }
-
-                        @Override
-                        public void onLoadingFailed(String s, View view, FailReason failReason) {
-                            holder.imageView.setVisibility(View.VISIBLE);
-                            holder.viewmageV.setVisibility(View.GONE);
-                            holder.apk.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                                holder.apk.setImageBitmap(bitmap);
-                                holder.viewmageV.setVisibility(View.GONE);
-                                holder.imageView.setVisibility(View.GONE);
-                                holder.apk.setVisibility(View.VISIBLE);
-
-                        }
-
-                        @Override
-                        public void onLoadingCancelled(String s, View view) {
-
-                        }
-                    });
 
                 }
                 }
@@ -456,76 +423,26 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.imageView1.setVisibility(View.INVISIBLE);
             holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setImageDrawable(rowItem.getImageId());
-            if (main.showThumbs) {
-                File file=new File(rowItem.getDesc());
-                String mime = MimeTypes.getMimeType(file);
-                if (mime != null) {
-                    if (mime.startsWith("image/") || mime.startsWith("video/")) {
-                        holder.imageView1.setVisibility(View.VISIBLE);
-                        holder.imageView.setVisibility(View.GONE);
-                        Uri uri = Uri.fromFile(file);
-                        DisplayImageOptions options = main.mainActivity.getDisplayOptions(R.drawable.ic_doc_image_dark);
-                        ImageLoader.getInstance().displayImage("file://"+file.getPath(), holder.imageView1, options,new ImageLoadingListener() {
-                            @Override
-                            public void onLoadingStarted(String s, View view) {
-                                holder.imageView.setVisibility(View.VISIBLE);
-                                holder.imageView1.setVisibility(View.GONE);
-                            }
+            if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
+                    holder.imageView.setColorFilter(null);
+                holder.imageView1.setVisibility(View.VISIBLE);
+                holder.imageView1.setImageDrawable(null);
+                if(main.theme==1)holder.imageView1.setBackgroundColor(Color.parseColor("#000000"));
+                main.ic.cancelLoad(holder.imageView1);
+                main.ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
+            }
+            else if (Icons.isApk((rowItem.getDesc()))) {
+                holder.imageView.setColorFilter(null);
+                main.ic.cancelLoad(holder.imageView);
+                main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),null);
+            } if(Icons.isVideo(rowItem.getDesc())){
+                holder.imageView.setColorFilter(null);
+                holder.imageView1.setVisibility(View.VISIBLE);
+                holder.imageView1.setImageDrawable(null);
+                if(main.theme==1)holder.imageView1.setBackgroundColor(Color.parseColor("#000000"));
+                main.ic.cancelLoad(holder.imageView1);
+                main.ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
 
-                            @Override
-                            public void onLoadingFailed(String s, View view, FailReason failReason) {
-                                System.out.println(failReason.getType().toString());
-                                holder.imageView.setVisibility(View.VISIBLE);
-                                holder.imageView1.setVisibility(View.GONE);
-                            }
-
-                            @Override
-                            public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                                   holder.imageView1.setImageBitmap(bitmap);
-                                    holder.imageView1.setVisibility(View.VISIBLE);
-                                    holder.imageView.setVisibility(View.GONE);
-                                }
-
-                            @Override
-                            public void onLoadingCancelled(String s, View view) {
-                                holder.imageView.setVisibility(View.VISIBLE);
-                                holder.imageView1.setVisibility(View.GONE);
-                            }
-                        });
-
-                    }else if (mime.equals("application/vnd.android.package-archive")) {
-                        holder.imageView1.setVisibility(View.VISIBLE);
-                        holder.imageView.setVisibility(View.GONE);
-                        DisplayImageOptions options = main.mainActivity.getDisplayOptions(R.drawable.ic_doc_apk_grid);
-                        ImageLoader.getInstance().displayImage(file.getPath(), holder.imageView, options,new ImageLoadingListener() {
-                            @Override
-                            public void onLoadingStarted(String s, View view) {
-                                holder.imageView.setVisibility(View.VISIBLE);
-                                holder.imageView1.setVisibility(View.GONE);
-                            }
-
-                            @Override
-                            public void onLoadingFailed(String s, View view, FailReason failReason) {
-                                holder.imageView.setVisibility(View.VISIBLE);
-                                holder.imageView1.setVisibility(View.GONE);
-                            }
-
-                            @Override
-                            public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                                holder.imageView.setImageBitmap(bitmap);
-                                holder.imageView1.setVisibility(View.GONE);
-                                holder.imageView.setVisibility(View.VISIBLE);
-
-                            }
-
-                            @Override
-                            public void onLoadingCancelled(String s, View view) {
-
-                            }
-                        });
-
-                    }
-                }
             }
             if(main.coloriseIcons){
 
