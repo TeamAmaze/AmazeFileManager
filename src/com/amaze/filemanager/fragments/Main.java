@@ -1249,6 +1249,10 @@ public class Main extends android.support.v4.app.Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         tabHandler.close();
+        if(history!=null)
+            history.end();
+        if(hidden!=null)
+            hidden.end();
     }
     @Override
     public void onStart() {
@@ -1286,10 +1290,7 @@ public class Main extends android.support.v4.app.Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(history!=null)
-            history.end();
-        if(hidden!=null)
-        hidden.end();
+
 
     }
 

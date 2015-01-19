@@ -71,11 +71,11 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         final SharedPreferences sharedPreferences1 = PreferenceManager.getDefaultSharedPreferences(context);
         skin = sharedPreferences1.getString("skin_color", "#03A9F4");
         color=colors.get(skin);
+        if(color==null){color=colors.get("#03A9F4");}
     }
 
     void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c});}
-    void putColors(){
-        putColor("#F44336",0.956862f,0.2627450f,0.21176470f);
+    void putColors(){putColor("#F44336",0.956862f,0.2627450f,0.21176470f);
         putColor("#e91e63",0.91372549f,0.11764706f,0.38823529f);
         putColor("#9c27b0",0.61176471f,0.15294118f,0.69019608f);
         putColor("#673ab7",0.40392157f,0.22745098f,0.71764706f);

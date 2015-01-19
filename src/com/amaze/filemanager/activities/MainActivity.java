@@ -178,18 +178,19 @@ public class MainActivity extends ActionBarActivity {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int th = Integer.parseInt(Sp.getString("theme", "0"));
         boolean v14=Sp.getBoolean("v1.4",false);
-        if(!v14){
-            try {
-                utils.deletedirectory(new File("/data/data/com.amaze.filemanager"+"/databases"));
-            } catch (Exception e) {
+        boolean v142=Sp.getBoolean("v1.4.2",false);
+         if(!v142){
+             try {
+                 utils.deletedirectory(new File("/data/data/com.amaze.filemanager"));
+             } catch (Exception e) {
+                 try {
+                     utils.deletedirectory(getCacheDir());
+                 } catch (Exception e1) {
 
-            }
-            Sp.edit().putBoolean("v1.4",true).apply();
-        }boolean v15=Sp.getBoolean("v1.5",false);
-         if(!v15){
-             Sp.edit().putString("skin","6").apply();
-             Sp.edit().putString("skin_color","#03A9F4").apply();
-             Sp.edit().putBoolean("v1.4",true).apply();
+                 }
+
+             }
+         Sp.edit().putBoolean("v1.4.2", true).apply();
          }
         theme1 = th;
         if (th == 2) {

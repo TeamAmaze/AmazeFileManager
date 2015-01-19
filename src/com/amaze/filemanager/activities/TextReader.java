@@ -136,11 +136,19 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
         }
         mInput = (EditText) findViewById(R.id.fname);
         mInput.addTextChangedListener(this);
-        if (theme1 == 1) mInput.setBackgroundColor(Color.parseColor("#000000"));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        try {
+            if (theme1 == 1) mInput.setBackgroundColor(Color.parseColor("#000000"));
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (Exception e) {
 
-        if (getIntent().getData() != null) load(new File(getIntent().getData().getPath()));
-        else load(new File(getIntent().getStringExtra("path")));
+        }
+
+        try {
+            if (getIntent().getData() != null) load(new File(getIntent().getData().getPath()));
+            else load(new File(getIntent().getStringExtra("path")));
+        } catch (Exception e) {
+
+        }
     }
 
     private void checkUnsavedChanges() {
