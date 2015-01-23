@@ -101,8 +101,8 @@
     <GridView
         android:layout_below="@id/buttonbarframe"
         android:id="@+id/gridView"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
+        android:verticalSpacing="5dp"
+        android:horizontalSpacing="5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="10dp"

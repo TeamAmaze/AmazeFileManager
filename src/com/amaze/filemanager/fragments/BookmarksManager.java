@@ -23,6 +23,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -79,7 +80,6 @@ View rootView;ListView listview;
             MainActivity mainActivity=(MainActivity)getActivity();
             mainActivity.toolbar.setTitle(utils.getString(getActivity(),R.string.bookmanag));
             mainActivity.tabsSpinner.setVisibility(View.GONE);
-
             listview=(ListView)rootView.findViewById(R.id.listView);
             rootView.findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
             rootView.findViewById(R.id.gridView).setVisibility(View.GONE);
@@ -101,7 +101,8 @@ View rootView;ListView listview;
             } else
                 theme1 = 0;
         }
-        if(theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+        if(theme1==1){getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+        listview.setBackgroundColor(Color.BLACK);}
         m=(MainActivity)getActivity();
         listview.setDivider(null);
 

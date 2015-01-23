@@ -43,7 +43,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.MimeTypes;
-import com.pkmmte.view.CircularImageView;
+import com.amaze.filemanager.utils.RoundedImageView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -145,7 +145,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
     /* private view holder class */
     private class ViewHolder {
-        CircularImageView viewmageV;
+        RoundedImageView viewmageV;
         ImageView imageView,apk;
         ImageView imageView1;
         TextView txtTitle;
@@ -173,7 +173,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
                 if (main.theme1==1)
                     vholder.txtTitle.setTextColor(getContext().getResources().getColor(android.R.color.white));
-                vholder.viewmageV = (CircularImageView) view.findViewById(R.id.cicon);
+                vholder.viewmageV = (RoundedImageView) view.findViewById(R.id.cicon);
                 vholder.imageView = (ImageView) view.findViewById(R.id.icon);
                 vholder.rl = view.findViewById(R.id.second);
                 vholder.perm = (TextView) view.findViewById(R.id.permis);
@@ -242,6 +242,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 if (main.showThumbs) {
                     if (main.circularImages) {
                         holder.imageView.setVisibility(View.GONE);
+                        holder.apk.setVisibility(View.GONE);
                         holder.viewmageV.setVisibility(View.VISIBLE);
                         holder.viewmageV.setImageDrawable(main.darkimage);
                         main.ic.cancelLoad(holder.viewmageV);
@@ -256,6 +257,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 }
             } else if (Icons.isApk((rowItem.getDesc()))) {
                 if (main.showThumbs) {
+                    holder.viewmageV.setVisibility(View.GONE);
                     holder.imageView.setVisibility(View.GONE);
                     holder.apk.setVisibility(View.VISIBLE);
                     holder.apk.setImageDrawable(main.apk);
@@ -364,6 +366,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             vholder.txtTitle = (TextView) view.findViewById(R.id.title);
             vholder.imageView = (ImageView) view.findViewById(R.id.icon_mime);
             vholder.imageView1 = (ImageView) view.findViewById(R.id.icon_thumb);
+            vholder.apk=(ImageView)view.findViewById(R.id.icon_directory);
             vholder.date= (TextView) view.findViewById(R.id.date);
             vholder.txtDesc= (TextView) view.findViewById(R.id.size);
             vholder.perm= (TextView) view.findViewById(R.id.perm);
@@ -399,6 +402,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setImageDrawable(rowItem.getImageId());
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
+              holder.apk.setVisibility(View.GONE);
                     holder.imageView.setColorFilter(null);
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
@@ -407,10 +411,12 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 main.ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
             }
             else if (Icons.isApk((rowItem.getDesc()))) {
+                holder.apk.setVisibility(View.GONE);
                 holder.imageView.setColorFilter(null);
                 main.ic.cancelLoad(holder.imageView);
                 main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),null);
             } if(Icons.isVideo(rowItem.getDesc())){
+                holder.apk.setVisibility(View.GONE);
                 holder.imageView.setColorFilter(null);
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
@@ -418,6 +424,13 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 main.ic.cancelLoad(holder.imageView1);
                 main.ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
 
+            }if(rowItem.isDirectory(main.rootMode)) {
+                holder.apk.setImageDrawable(rowItem.getImageId());
+                holder.apk.setVisibility(View.VISIBLE);
+                holder.imageView1.setVisibility(View.GONE);
+                holder.imageView.setVisibility(View.GONE);
+            }else{
+                holder.apk.setVisibility(View.GONE);
             }
             if(main.coloriseIcons){
 

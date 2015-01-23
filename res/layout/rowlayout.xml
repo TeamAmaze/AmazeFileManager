@@ -44,15 +44,10 @@
             android:visibility="gone"
             android:layout_gravity="center"
             android:id="@+id/bicon"/>
-        <com.pkmmte.view.CircularImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.amaze.filemanager.utils.RoundedImageView
             android:id="@+id/cicon"
-            android:scaleType="centerCrop"
             android:layout_width="44dp"
             android:layout_height="44dp"
-            app:border="false"
-            app:border_color="#cccccc"
-            app:shadow="false"
             android:contentDescription="@string/icon" />
         <TextView
             android:layout_width="44dp"

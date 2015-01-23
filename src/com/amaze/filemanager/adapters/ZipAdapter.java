@@ -43,8 +43,8 @@ import com.amaze.filemanager.services.asynctasks.ZipExtractTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Icons;
+import com.amaze.filemanager.utils.RoundedImageView;
 import com.amaze.filemanager.utils.ZipObj;
-import com.pkmmte.view.CircularImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -113,7 +113,7 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
 
 
     private class ViewHolder {
-        CircularImageView viewmageV;
+        RoundedImageView viewmageV;
         ImageView imageView,apk;
         TextView txtTitle;
         TextView txtDesc;
@@ -136,7 +136,7 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
             if (zipViewer.mainActivity.theme1==1)
                 vholder.txtTitle.setTextColor(getContext().getResources().getColor(android.R.color.white));
-            vholder.viewmageV = (CircularImageView) view.findViewById(R.id.cicon);
+            vholder.viewmageV = (RoundedImageView) view.findViewById(R.id.cicon);
             vholder.imageView = (ImageView) view.findViewById(R.id.icon);
             vholder.rl = view.findViewById(R.id.second);
             vholder.perm = (TextView) view.findViewById(R.id.permis);

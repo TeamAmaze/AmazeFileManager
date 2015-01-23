@@ -281,14 +281,8 @@ public class MainActivity extends ActionBarActivity {
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         View v=getLayoutInflater().inflate(R.layout.drawerheader,null);
         v.setBackgroundColor(Color.parseColor(skin));
+        ((TextView)v.findViewById(R.id.firstline)).setTextColor(Color.WHITE);
         mDrawerList.addHeaderView(v);
-        /*(findViewById(R.id.search)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                search();
-            }
-        });*/
-
         list = new ArrayList<String>();
         for (int i = 0; i < val.size(); i++) {
             File file = new File(val.get(i));
