@@ -197,7 +197,7 @@ public class IconHolder {
                 }else if(Icons.isVideo(filePath))
                     return getVideoDrawable(fso);
             } catch (OutOfMemoryError outOfMemoryError) {
-                outOfMemoryError.printStackTrace();
+               cleanup();
                 shutdownWorker();
             }
 
