@@ -333,5 +333,5 @@
     <string name="contributors">Colaboradores</string>
     <string name="savepaths">Memorizar caminho</string>
     <string name="savepathsummary">Ao iniciar a aplicação, será mostrada a última pasta vista (por cada separador)</string>
+    <string name="select_intent">Selecionar</string>
 </resources>
-
