@@ -28,6 +28,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -590,6 +591,17 @@ public class Main extends android.support.v4.app.Fragment {
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
             v=getActivity().getLayoutInflater().inflate(R.layout.actionmode,null);
+            try {
+                v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                v.setMinimumWidth(getActivity().findViewById(R.id.tab_spinner).getWidth());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             mode.setCustomView(v);
             mainActivity.setPagingEnabled(false);
             // assumes that you have "contexual.xml" menu resources
@@ -602,6 +614,8 @@ public class Main extends android.support.v4.app.Fragment {
             hideOption(R.id.about, menu);
             hideOption(R.id.openwith, menu);
             hideOption(R.id.ex, menu);
+            if(mainActivity.mReturnIntent)
+            showOption(R.id.openmulti,menu);
             //hideOption(R.id.setringtone,menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
             /*if(Build.VERSION.SDK_INT<19)
@@ -636,6 +650,10 @@ public class Main extends android.support.v4.app.Fragment {
             TextView textView1 = (TextView) v.findViewById(R.id.item_count);
             textView1.setText(positions.size() + "");
             textView1.setOnClickListener(null);
+            hideOption(R.id.openmulti,menu);
+            if(mainActivity.mReturnIntent)
+                if(Build.VERSION.SDK_INT>=16)
+            showOption(R.id.openmulti, menu);
             //tv.setText(positions.size());
             if(!results)
             {hideOption(R.id.openparent,menu);
@@ -656,17 +674,24 @@ public class Main extends android.support.v4.app.Fragment {
                     hideOption(R.id.openwith,menu);
                     showOption(R.id.sethome, menu);
                     hideOption(R.id.share,menu);
+                    hideOption(R.id.openmulti, menu);
                 } else if (x.getName().toLowerCase().endsWith(".zip") || x.getName().toLowerCase().endsWith(".jar") || x.getName().toLowerCase().endsWith(".apk") || x.getName().toLowerCase().endsWith(".rar")|| x.getName().toLowerCase().endsWith(".tar")|| x.getName().toLowerCase().endsWith(".tar.gz")) {
 
                     showOption(R.id.ex, menu);
 
+                    if(mainActivity.mReturnIntent)
+                        if(Build.VERSION.SDK_INT>=16)
+                    showOption(R.id.openmulti,menu);
                 }
             } else {
                 try {
+                    if(mainActivity.mReturnIntent)
+                        if(Build.VERSION.SDK_INT>=16)showOption(R.id.openmulti,menu);
                     for (int c : adapter.getCheckedItemPositions()) {
                         File x = new File(list.get(c).getDesc());
                         if (x.isDirectory()) {
                             hideOption(R.id.share, menu);
+                            hideOption(R.id.openmulti,menu);
                         }
                     }
                 } catch (Exception e) {
@@ -702,18 +727,27 @@ public class Main extends android.support.v4.app.Fragment {
                         hideOption(R.id.openwith,menu);
                         showOption(R.id.sethome, menu);
                         hideOption(R.id.share,menu);
+                        hideOption(R.id.openmulti,menu);
                     } else if (x.getName().toLowerCase().endsWith(".zip") || x.getName().toLowerCase().endsWith(".jar") || x.getName().toLowerCase().endsWith(".apk") || x.getName().toLowerCase().endsWith(".rar")|| x.getName().toLowerCase().endsWith(".tar")|| x.getName().toLowerCase().endsWith(".tar.gz")) {
 
                         showOption(R.id.ex, menu);
 
+                        if(mainActivity.mReturnIntent)
+                            if(Build.VERSION.SDK_INT>=16)
+                                showOption(R.id.openmulti,menu);
                     }
                 } else {
                     hideOption(R.id.openparent,menu);
+
+                    if(mainActivity.mReturnIntent)
+                        if(Build.VERSION.SDK_INT>=16)
+                            showOption(R.id.openmulti,menu);
                     try {
                         for (int c : adapter.getCheckedItemPositions()) {
                             File x = new File(slist.get(c).getDesc());
                             if (x.isDirectory()) {
                                 hideOption(R.id.share, menu);
+                                hideOption(R.id.openmulti,menu);
                             }
                         }
                     } catch (Exception e) {
@@ -742,6 +776,27 @@ public class Main extends android.support.v4.app.Fragment {
             computeScroll();
             ArrayList<Integer> plist = adapter.getCheckedItemPositions();
             switch (item.getItemId()) {
+                case R.id.openmulti:
+                    if(Build.VERSION.SDK_INT>=16){
+                    Intent intentresult=new Intent();
+                    ArrayList<Uri> resulturis=new ArrayList<Uri>();
+                        for(int k:plist){
+                            try {
+                                resulturis.add(Uri.fromFile(new File(list.get(k).getDesc())));
+                            } catch (Exception e) {
+
+                            }
+                        }
+                    final ClipData clipData = new ClipData(
+                            null, new String[]{"*/*"}, new ClipData.Item(resulturis.get(0)));
+                    for (int i = 1; i < resulturis.size(); i++) {
+                        clipData.addItem(new ClipData.Item(resulturis.get(i)));
+                    }
+                    intentresult.setClipData(clipData);
+                    mode.finish();
+                    getActivity().setResult(getActivity().RESULT_OK, intentresult);
+                    getActivity().finish();}
+                    return true;
                 case R.id.sethome:
                     int pos = plist.get(0);
                     if(results)
