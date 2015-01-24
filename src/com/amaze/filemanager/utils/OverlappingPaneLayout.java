@@ -1,8 +1,5 @@
 package com.amaze.filemanager.utils;
 
-/**
- * Created by Arpit on 24-01-2015.
- */
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -24,6 +21,12 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
+
+/**
+ * A custom layout that aligns its child views vertically as two panes, and allows for the bottom
+ * pane to be dragged upwards to overlap and hide the top pane. This layout is adapted from
+ * {@link android.support.v4.widget.SlidingPaneLayout}.
+ */
 public class OverlappingPaneLayout extends ViewGroup {
     private static final String TAG = "SlidingPaneLayout";
     private static final boolean DEBUG = false;
@@ -1320,5 +1323,4 @@ public class OverlappingPaneLayout extends ViewGroup {
 
             dest.setMovementGranularities(src.getMovementGranularities());
         }
-    }
-}
+    }}

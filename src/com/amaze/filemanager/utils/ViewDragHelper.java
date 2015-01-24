@@ -1,8 +1,4 @@
 package com.amaze.filemanager.utils;
-
-/**
- * Created by Arpit on 24-01-2015.
- */
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.VelocityTrackerCompat;

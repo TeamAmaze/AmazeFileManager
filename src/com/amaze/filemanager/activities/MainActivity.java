@@ -116,7 +116,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements TabFragment.HostInterface{
     public Integer select;
     //TextView title;
 
@@ -966,6 +966,17 @@ public class MainActivity extends ActionBarActivity {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+
+    @Override
+    public int getActionBarHeight() {
+        return getSupportActionBar().getHeight();
+    }
+
+    @Override
+    public void setActionBarHideOffset(int offset) {
+    getSupportActionBar().setHideOffset(offset);
     }
 //
 
