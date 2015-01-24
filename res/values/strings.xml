@@ -303,6 +303,7 @@
     <string name="serbian_translation_title">Serbian</string>
     <string name="turkish_translation_title">Turkish</string>
     <string name="ukrainian_translation_title">Ukrainian</string>
+    <string name="portuguese_translation_title">Portuguese</string>
     <string name="german_translation_summary">Patrick Mertens</string>
     <string name="italian_translation_summary">Francesco Credidio</string>
     <string name="french_translation_summary">Nicolas PIMENTEL, Primokorn, Renaud</string>
@@ -313,6 +314,7 @@
     <string name="serbian_translation_summary">Mladen Pejaković</string>
     <string name="turkish_translation_summary">Hakan Güven</string>
     <string name="ukrainian_translation_summary">Pablo Luchiano</string>
+    <string name="portuguese_translation_summary">Sérgio Marques</string>
     <string name="zip_viewer">Zip Viewer</string>
     <string name="unin_system_apk">This is a system app, deleting it might lead to system un-stability.\nProceed?</string>
     <string name="warning">Warning</string>
