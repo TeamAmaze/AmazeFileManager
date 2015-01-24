@@ -218,24 +218,28 @@ public class MainActivity extends ActionBarActivity {
         //title = (TextView) findViewById(R.id.title);
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
 
-        intent = getIntent();
-        if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
+        try {
+            intent = getIntent();
+            if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
 
-            // file picker intent
-            mReturnIntent = true;
-            Toast.makeText(this, utils.getString(con,R.string.pick_a_file), Toast.LENGTH_LONG).show();
-        } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)){
+                // file picker intent
+                mReturnIntent = true;
+                Toast.makeText(this, utils.getString(con,R.string.pick_a_file), Toast.LENGTH_LONG).show();
+            } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)){
 
-            // ringtone picker intent
-            mReturnIntent = true;
-            mRingtonePickerIntent = true;
-            Toast.makeText(this, utils.getString(con,R.string.pick_a_file), Toast.LENGTH_LONG).show();
-        } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
+                // ringtone picker intent
+                mReturnIntent = true;
+                mRingtonePickerIntent = true;
+                Toast.makeText(this, utils.getString(con,R.string.pick_a_file), Toast.LENGTH_LONG).show();
+            } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
 
-            // zip viewer intent
-            Uri uri = intent.getData();
-            openzip=true;
-            zippath=uri.getPath();
+                // zip viewer intent
+                Uri uri = intent.getData();
+                openzip=true;
+                zippath=uri.getPath();
+            }
+        } catch (Exception e) {
+
         }
 
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#03A9F4");

@@ -219,7 +219,7 @@ Context c=this;
                 try {
                     publishResult(true);
                     compressFile(id, file, "");
-                } catch (IOException e) {
+                } catch (Exception e) {
                 }
             }
             try {
@@ -233,7 +233,7 @@ Context c=this;
         ZipOutputStream zos;
         private int isCompressed = 0;
 
-        private void compressFile(int id, File file, String path) throws IOException {
+        private void compressFile(int id, File file, String path) throws IOException,NullPointerException {
 
             if (!file.isDirectory()) {
                 byte[] buf = new byte[20480];

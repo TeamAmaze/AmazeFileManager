@@ -856,21 +856,17 @@ public class Main extends android.support.v4.app.Fragment {
 
                     return true;
                 case R.id.share:
-                    Intent sendIntent = new Intent();
-                    sendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
-                    ArrayList<Uri> uris=new ArrayList<Uri>();
+                    ArrayList<File> arrayList=new ArrayList<File>();
                     if(results){
                         for(int i:plist){
-                            uris.add(Uri.fromFile(new File(slist.get(i).getDesc())));
+                            arrayList.add(new File(slist.get(i).getDesc()));
                         }
                     }
                     else{
                         for(int i:plist){
-                            uris.add(Uri.fromFile(new File(list.get(i).getDesc())));
+                            arrayList.add(new File(list.get(i).getDesc()));
                         }}
-                    sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-                    sendIntent.setType("*/*");
-                    startActivity(sendIntent);
+                    utils.shareFiles(arrayList,getActivity());
                     return true;
                 case R.id.openparent:
                     loadlist(new File(slist.get(plist.get(0)).getDesc()).getParentFile(),false);

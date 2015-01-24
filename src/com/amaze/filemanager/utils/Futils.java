@@ -100,7 +100,28 @@ public class Futils {
     public String getString(Context c, int a) {
         return c.getResources().getString(a);
     }
+    public void shareFiles(ArrayList<File> a,Context c){
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+        ArrayList<Uri> uris=new ArrayList<Uri>();
+        if(a.size()==1){
+            String mime=MimeTypes.getMimeType(a.get(0));
+            if(mime.equals("application/vnd.android.package-archive"))mime="*/*";
+            uris.add(Uri.fromFile(a.get(0)));
+            sendIntent.setType(mime);
+        }else{boolean b=true;
+            for(File f:a){
+                uris.add(Uri.fromFile(f));
+            }String mime=MimeTypes.getMimeType(a.get(0));
+            for(File f:a){
+                if(!mime.equals(MimeTypes.getMimeType(f))){b=false;}
+            }if(b)sendIntent.setType(mime);
+            else sendIntent.setType("*/*");
+        }
 
+        sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        c.startActivity(sendIntent);
+    }
     public String readableFileSize(long size) {
         if (size <= 0)
             return "0 B";
