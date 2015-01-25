@@ -140,5 +140,15 @@ public class RarAdapter extends ArrayAdapter<ZipObj> {
         holder.txtTitle.setText(rowItem.getFileNameString());
         return view;
     }
+
+    @Override
+    public int getCount() {
+        return enter.size();
+    }
+
+    @Override
+    public long getItemId(int arg0) {
+        return enter.size();
+    }
 }
 
