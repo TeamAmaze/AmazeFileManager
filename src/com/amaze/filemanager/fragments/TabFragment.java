@@ -7,7 +7,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +22,7 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.utils.CustomViewPager;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OverlappingPaneLayout;
-import com.amaze.filemanager.utils.OverlappingPaneLayout.PanelSlideCallbacks;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,7 +45,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
     public ArrayList<String> tabs=new ArrayList<String>();
     public int theme1;
     View mViewPagerTabs;
-    ActionBar mActionBar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,7 +67,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
             path = getArguments().getString("path");
         }
         mainActivity = ((MainActivity)getActivity());
-        mActionBar=mainActivity.getSupportActionBar();
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             public void onPageScrolled(int p1, float p2, int p3) {
@@ -159,7 +156,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
             mSectionsPagerAdapter.notifyDataSetChanged();
 
         }
-        setupPaneLayout((OverlappingPaneLayout) rootView.findViewById(R.id.overlappingpane));
+        setupPaneLayout((OverlappingPaneLayout) rootView);
 
         return rootView;
     }
@@ -302,7 +299,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         fragments.add(main);
         tabs.add(main.getClass().getName());
         mSectionsPagerAdapter.notifyDataSetChanged();
-        mViewPager.setOffscreenPageLimit(1);
+        mViewPager.setOffscreenPageLimit(4);
     }
     public Fragment getTab() {
         return fragments.get(mViewPager.getCurrentItem());
@@ -320,8 +317,8 @@ public class TabFragment extends android.support.v4.app.Fragment {
         mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
         mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
     }
-
-    private PanelSlideCallbacks mPanelSlideCallbacks = new PanelSlideCallbacks() {
+    private boolean mIsPanelOpen = true;
+    private OverlappingPaneLayout.PanelSlideCallbacks mPanelSlideCallbacks = new OverlappingPaneLayout.PanelSlideCallbacks() {
         @Override
         public void onPanelSlide(View panel, float slideOffset) {
             // For every 1 percent that the panel is slid upwards, clip 1 percent off the top
@@ -329,27 +326,31 @@ public class TabFragment extends android.support.v4.app.Fragment {
             // being pushed out of view when the panel is slid upwards. slideOffset is 1 when
             // the shortcut card is fully exposed, and 0 when completely hidden.
 
-            if (mActionBar != null) {
+System.out.println("Exec");
+            if (mainActivity.toolbar != null) {
                 // Amount of available space that is not being hidden by the bottom pane
-                final int topPaneHeight = 0;
+                final int topPaneHeight = 10;
 
                 final int availableActionBarHeight =
-                        Math.min(mActionBar.getHeight(), topPaneHeight);
-                ((HostInterface) getActivity()).setActionBarHideOffset(
-                        mActionBar.getHeight() - availableActionBarHeight);
+                        Math.min(mainActivity.toolbar.getHeight(), topPaneHeight);
+              mainActivity.getSupportActionBar().setHideOffset  (
+                        mainActivity.toolbar.getHeight() - availableActionBarHeight);
 
-                if (!mActionBar.isShowing()) {
-                    mActionBar.show();
+                if (!mainActivity.getSupportActionBar().isShowing()) {
+                    mainActivity.getSupportActionBar().show();
                 }
             }
         }
 
         @Override
         public void onPanelOpened(View panel) {
+            mIsPanelOpen = true;
         }
 
         @Override
         public void onPanelClosed(View panel) {
+
+            mIsPanelOpen = false;
         }
 
         @Override
@@ -362,39 +363,25 @@ public class TabFragment extends android.support.v4.app.Fragment {
         @Override
         public boolean isScrollableChildUnscrolled() {
             final AbsListView listView = getCurrentListView();
+            if(listView==null)System.out.println("null list");
+            else System.out.println("list fine");
             return listView != null && (listView.getChildCount() == 0
                     || listView.getChildAt(0).getTop() == listView.getPaddingTop());
         }
-    };
-
-
-    private void setupPaneLayout(OverlappingPaneLayout paneLayout) {
+    };   private void setupPaneLayout(OverlappingPaneLayout paneLayout) {
         // TODO: Remove the notion of a capturable view. The entire view be slideable, once
         // the framework better supports nested scrolling.
         paneLayout.setCapturableView(mViewPagerTabs);
         paneLayout.openPane();
         paneLayout.setPanelSlideCallbacks(mPanelSlideCallbacks);
         paneLayout.setIntermediatePinnedOffset(
-                ((HostInterface) getActivity()).getActionBarHeight());
-
-        LayoutTransition transition = paneLayout.getLayoutTransition();
+                mainActivity.getSupportActionBar().getHeight());
+System.out.println("setup done");
+      //  LayoutTransition transition = paneLayout.getLayoutTransition();
         // Turns on animations for all types of layout changes so that they occur for
         // height changes.
-        transition.enableTransitionType(LayoutTransition.CHANGING);
+    //    transition.enableTransitionType(LayoutTransition.CHANGING);
     }
-
     private AbsListView getCurrentListView() {
        return  ((Main) getTab()).listView;
-    }
-
-    public interface HostInterface {
-        public int getActionBarHeight();
-        public void setActionBarHideOffset(int offset);
-    }
-
-    @Override
-    public void onResume(){
-    super.onResume();
-    mActionBar=((MainActivity)getActivity()).getSupportActionBar();
-    }
-}
+    }}
