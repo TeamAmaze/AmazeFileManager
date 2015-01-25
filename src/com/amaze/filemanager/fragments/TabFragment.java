@@ -1,6 +1,5 @@
 package com.amaze.filemanager.fragments;
 
-import android.animation.LayoutTransition;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -12,8 +11,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.TabSpinnerAdapter;
@@ -21,8 +18,6 @@ import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.utils.CustomViewPager;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.OverlappingPaneLayout;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,7 +39,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
     TabSpinnerAdapter tabSpinnerAdapter;
     public ArrayList<String> tabs=new ArrayList<String>();
     public int theme1;
-    View mViewPagerTabs;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,7 +49,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int theme=Integer.parseInt(Sp.getString("theme","0"));
         theme1 = theme;
-        mViewPagerTabs=rootView.findViewById(R.id.lists_pager_header);
         if (theme == 2) {
             if(hour<=6 || hour>=18) {
                 theme1 = 1;
@@ -156,8 +149,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
             mSectionsPagerAdapter.notifyDataSetChanged();
 
         }
-        setupPaneLayout((OverlappingPaneLayout) rootView);
-
         return rootView;
     }
 
@@ -317,71 +308,4 @@ public class TabFragment extends android.support.v4.app.Fragment {
         mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
         mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
     }
-    private boolean mIsPanelOpen = true;
-    private OverlappingPaneLayout.PanelSlideCallbacks mPanelSlideCallbacks = new OverlappingPaneLayout.PanelSlideCallbacks() {
-        @Override
-        public void onPanelSlide(View panel, float slideOffset) {
-            // For every 1 percent that the panel is slid upwards, clip 1 percent off the top
-            // edge of the shortcut card, to achieve the animated effect of the shortcut card
-            // being pushed out of view when the panel is slid upwards. slideOffset is 1 when
-            // the shortcut card is fully exposed, and 0 when completely hidden.
-
-System.out.println("Exec");
-            if (mainActivity.toolbar != null) {
-                // Amount of available space that is not being hidden by the bottom pane
-                final int topPaneHeight = 10;
-
-                final int availableActionBarHeight =
-                        Math.min(mainActivity.toolbar.getHeight(), topPaneHeight);
-              mainActivity.getSupportActionBar().setHideOffset  (
-                        mainActivity.toolbar.getHeight() - availableActionBarHeight);
-
-                if (!mainActivity.getSupportActionBar().isShowing()) {
-                    mainActivity.getSupportActionBar().show();
-                }
-            }
-        }
-
-        @Override
-        public void onPanelOpened(View panel) {
-            mIsPanelOpen = true;
-        }
-
-        @Override
-        public void onPanelClosed(View panel) {
-
-            mIsPanelOpen = false;
-        }
-
-        @Override
-        public void onPanelFlingReachesEdge(int velocityY) {
-            if (getCurrentListView() != null) {
-                getCurrentListView().fling(velocityY);
-            }
-        }
-
-        @Override
-        public boolean isScrollableChildUnscrolled() {
-            final AbsListView listView = getCurrentListView();
-            if(listView==null)System.out.println("null list");
-            else System.out.println("list fine");
-            return listView != null && (listView.getChildCount() == 0
-                    || listView.getChildAt(0).getTop() == listView.getPaddingTop());
-        }
-    };   private void setupPaneLayout(OverlappingPaneLayout paneLayout) {
-        // TODO: Remove the notion of a capturable view. The entire view be slideable, once
-        // the framework better supports nested scrolling.
-        paneLayout.setCapturableView(mViewPagerTabs);
-        paneLayout.openPane();
-        paneLayout.setPanelSlideCallbacks(mPanelSlideCallbacks);
-        paneLayout.setIntermediatePinnedOffset(
-                mainActivity.getSupportActionBar().getHeight());
-System.out.println("setup done");
-      //  LayoutTransition transition = paneLayout.getLayoutTransition();
-        // Turns on animations for all types of layout changes so that they occur for
-        // height changes.
-    //    transition.enableTransitionType(LayoutTransition.CHANGING);
-    }
-    private AbsListView getCurrentListView() {
-       return  ((Main) getTab()).listView;
-    }}
+}
