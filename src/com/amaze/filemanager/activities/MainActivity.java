@@ -83,6 +83,7 @@ import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.BookmarksManager;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
+import com.amaze.filemanager.fragments.RarViewer;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
@@ -497,11 +498,21 @@ public class MainActivity extends ActionBarActivity implements TabFragment.HostI
                             fragmentTransaction.remove(zipViewer);
                             fragmentTransaction.commit();
                             supportInvalidateOptionsMenu();
-                        }
-                    }
+                        }}else if (name.contains("RarViewer")){
+                            RarViewer zipViewer = (RarViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                            if (zipViewer.cangoBack()) {
+
+                                zipViewer.goBack();
+                            } else {
+                                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                                fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
+                                fragmentTransaction.remove(zipViewer);
+                                fragmentTransaction.commit();
+                                supportInvalidateOptionsMenu();
+
+                            }}
                 } catch (ClassCastException e) {
                     goToMain("");
-                    e.printStackTrace();
                 }
             } else {
                 goToMain("");
@@ -1300,6 +1311,16 @@ public class MainActivity extends ActionBarActivity implements TabFragment.HostI
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_top,R.anim.slide_in_bottom);
         Fragment zipFragment = new ZipViewer();
+        Bundle bundle = new Bundle();
+        bundle.putString("path", path);
+        zipFragment.setArguments(bundle);
+        fragmentTransaction.add(R.id.content_frame, zipFragment);
+        fragmentTransaction.commit();
+    }
+    public void openRar(String path) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_in_top,R.anim.slide_in_bottom);
+        Fragment zipFragment = new RarViewer();
         Bundle bundle = new Bundle();
         bundle.putString("path", path);
         zipFragment.setArguments(bundle);

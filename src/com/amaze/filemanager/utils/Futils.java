@@ -604,7 +604,7 @@ public class Futils {
             Intent i = new Intent(m, TextReader.class);
             i.putExtra("path", f.getPath());
             m.startActivity(i);
-        } else if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar")) {
+        } else if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".rar")) {
             showArchiveDialog(f, m);
 
         }else if(f.getName().toLowerCase().endsWith(".apk")){showPackageDialog(f,m);}else {
@@ -649,6 +649,9 @@ public void showPackageDialog(final File f,final MainActivity m){
             @Override
             public void onNegative(MaterialDialog materialDialog) {
                 //m.addZipViewTab(f.getPath());
+                if(f.getName().endsWith(".rar"))
+                m.openRar(f.getPath());
+                else
                 m.openZip(f.getPath());
             }
         });
