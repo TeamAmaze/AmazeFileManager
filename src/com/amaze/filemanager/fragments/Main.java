@@ -632,12 +632,7 @@ public class Main extends android.support.v4.app.Fragment {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 window.setStatusBarColor(res.getColor(android.R.color.black));
-            }else if(sdk==20 || sdk==19){
-                SystemBarTintManager tintManager = new SystemBarTintManager(getActivity());
-                tintManager.setStatusBarTintEnabled(true);
-                tintManager.setStatusBarTintColor(Color.BLACK);
             }
-
             return true;
         }
 
@@ -1063,10 +1058,6 @@ public class Main extends android.support.v4.app.Fragment {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 window.setStatusBarColor(Color.parseColor(mainActivity.getStatusColor()));
-            }else if(sdk==20 || sdk==19){
-                SystemBarTintManager tintManager = new SystemBarTintManager(getActivity());
-                tintManager.setStatusBarTintEnabled(true);
-                tintManager.setStatusBarTintColor(Color.parseColor(mainActivity.getStatusColor()));
             }
         }
     };
