@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.RarViewer;
 import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.services.asynctasks.RarHelperTask;
 import com.amaze.filemanager.services.asynctasks.ZipExtractTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.utils.Futils;
@@ -134,10 +135,89 @@ public class RarAdapter extends ArrayAdapter<ZipObj> {
             view.setTag(vholder);
 
         }
-        ViewHolder holder=(ViewHolder) view.getTag();
-        System.out.println(rowItem.getFileNameString());
-        holder.imageView.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.folder));
-        holder.txtTitle.setText(rowItem.getFileNameString());
+        final ViewHolder holder = (ViewHolder) view.getTag();
+
+
+        GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
+        
+            holder.imageView.setImageDrawable(Icons.loadMimeIcon(zipViewer.getActivity(), rowItem.getFileNameString(), false));
+        holder.txtTitle.setText(rowItem.getFileNameString().substring(rowItem.getFileNameString().lastIndexOf("\\") + 1));
+            if (rowItem.isDirectory()) {
+                holder.imageView.setImageDrawable(folder);
+                gradientDrawable.setColor(Color.parseColor(zipViewer.skin));} else {
+                if (zipViewer.coloriseIcons) {
+                    if (Icons.isVideo(rowItem.getFileNameString()))
+                        gradientDrawable.setColor(Color.parseColor("#f06292"));
+                    else if (Icons.isAudio(rowItem.getFileNameString()))
+                        gradientDrawable.setColor(Color.parseColor("#9575cd"));
+                    else if (Icons.isPdf(rowItem.getFileNameString()))
+                        gradientDrawable.setColor(Color.parseColor("#da4336"));
+                    else if (Icons.isCode(rowItem.getFileNameString()))
+                        gradientDrawable.setColor(Color.parseColor("#00bfa5"));
+                    else if (Icons.isText(rowItem.getFileNameString()))
+                        gradientDrawable.setColor(Color.parseColor("#e06055"));
+                    else if (Icons.isArchive(rowItem.getFileNameString()))
+                        gradientDrawable.setColor(Color.parseColor("#f9a825"));
+                    else if (Icons.isgeneric(rowItem.getFileNameString()))
+                        gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
+                    else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+                } else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+            }
+        
+
+        holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                toggleChecked(p);
+                return false;
+            }
+        });holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                   final Animation animation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.holder_anim);
+
+                    holder.imageView.setAnimation(animation);
+                    toggleChecked(p);}
+
+            }
+        );
+        Boolean checked = myChecked.get(position);
+        if (checked != null) {
+
+            if (checked) {
+                holder.imageView.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                gradientDrawable.setColor(Color.parseColor("#757575"));
+
+                if (Build.VERSION.SDK_INT >= 21) {
+
+                    if (zipViewer.mainActivity.theme1==1)
+                        holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.black));
+                    else
+                        holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
+                    holder.rl.setElevation(10f);
+                }
+                else
+                    holder.rl.setBackgroundColor(zipViewer.skinselection);
+            } else {
+
+                holder.rl.setBackgroundResource(R.drawable.listitem1);
+
+            }
+        }
+        holder.rl.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View p1) {
+                    if(zipViewer.selection)toggleChecked(p);else {
+
+                        if (rowItem.isDirectory()) {
+
+                            new RarHelperTask(zipViewer,  rowItem.getFileNameString()).execute(zipViewer.f);
+
+                        }
+                }}
+        });
+
+
         return view;
     }
 

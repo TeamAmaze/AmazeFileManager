@@ -19,6 +19,7 @@
 
 package com.amaze.filemanager.activities;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -117,12 +118,8 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity{
     public Integer select;
-    //TextView title;
-
-    MaterialDialog.Builder a;
-    MaterialDialog materialDialog;
     Futils utils;
     private boolean backPressedToExitOnce = false;
     private Toast toast = null;
@@ -133,6 +130,7 @@ public class MainActivity extends ActionBarActivity {
     //ImageButton paste;
     public List<String> val;
     //ProgressWheel progress;
+    MainActivity mainActivity=this;
     DrawerAdapter adapter;
     IconUtils util;
     RelativeLayout mDrawerLinear;
@@ -155,7 +153,8 @@ public class MainActivity extends ActionBarActivity {
     private MenuItem progress_bar;
     public Toolbar toolbar;
     private int skinStatusBar;
-
+    FragmentTransaction pending_fragmentTransaction;
+    String pending_path;
     /**
      * Called when the activity is first created.
      */
@@ -370,9 +369,19 @@ public class MainActivity extends ActionBarActivity {
                 R.string.drawer_close  /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
-                /*if(select==102)
-                    title.setText(R.string.process_viewer);*/
-              // creates call to onPrepareOptionsMenu()
+                if(pending_fragmentTransaction!=null){
+                pending_fragmentTransaction.commit();
+                pending_fragmentTransaction=null;}
+                if(pending_path!=null){
+                    try {
+                    TabFragment m=getFragment();
+                    if(new File(pending_path).isDirectory()) {
+                       ((Main) m.getTab()).loadlist(new File(pending_path), false);
+                    }   else utils.openFile(new File(pending_path),mainActivity);
+
+                } catch (ClassCastException e) {
+                    select=null;selectItem(0);
+                }pending_path=null;}
                 supportInvalidateOptionsMenu();
             }
 
@@ -489,7 +498,8 @@ public class MainActivity extends ActionBarActivity {
 
                     } else if (name.contains("ZipViewer")){
                         ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                        if (zipViewer.cangoBack()) {
+                        if(zipViewer.mActionMode==null)
+                        {if (zipViewer.cangoBack()) {
 
                             zipViewer.goBack();
                         } else {
@@ -498,9 +508,10 @@ public class MainActivity extends ActionBarActivity {
                             fragmentTransaction.remove(zipViewer);
                             fragmentTransaction.commit();
                             supportInvalidateOptionsMenu();
-                        }}else if (name.contains("RarViewer")){
+                        }}else {zipViewer.mActionMode.finish();}}else if (name.contains("RarViewer")){
                             RarViewer zipViewer = (RarViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                            if (zipViewer.cangoBack()) {
+                        if(zipViewer.mActionMode==null)
+                        {if (zipViewer.cangoBack()) {
 
                                 zipViewer.goBack();
                             } else {
@@ -510,7 +521,7 @@ public class MainActivity extends ActionBarActivity {
                                 fragmentTransaction.commit();
                                 supportInvalidateOptionsMenu();
 
-                            }}
+                            }}else {zipViewer.mActionMode.finish();}}
                 } catch (ClassCastException e) {
                     goToMain("");
                 }
@@ -595,24 +606,15 @@ public class MainActivity extends ActionBarActivity {
                         tabFragment.setArguments(a);
 
                     android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
                     transaction.replace(R.id.content_frame, tabFragment);
 
                     transaction.addToBackStack("tabt1" + 1);
-                    transaction.commit();
+                    pending_fragmentTransaction=transaction;
 
 
                 }else{
-                    try {
-                        TabFragment m=((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame));
-                    if(new File(list.get(i)).isDirectory()) {
-                        if (m.getTab().getClass().getName().contains("Main"))
-                            ((Main) m.getTab()).loadlist(new File(list.get(i)), false);
-                    }   else utils.openFile(new File(list.get(i)),this);
+                    pending_path=list.get(i);
 
-                    } catch (ClassCastException e) {
-                        select=null;selectItem(0);
-                    }
             }
         } else {
             if (i == list.size() - 2) {
@@ -621,7 +623,7 @@ public class MainActivity extends ActionBarActivity {
                 transaction2.replace(R.id.content_frame, new AppsList());
                 // transaction2.addToBackStack(null);
                 // Commit the transaction
-                transaction2.commit();
+                pending_fragmentTransaction=transaction2;
                 //title.setText(utils.getString(this, R.string.apps));
                 //title.setVisibility(View.VISIBLE);
                 toolbar.setTitle(utils.getString(this, R.string.apps));
@@ -631,7 +633,7 @@ public class MainActivity extends ActionBarActivity {
                 transaction3.replace(R.id.content_frame, new BookmarksManager());
                 // transaction3.addToBackStack(null);
                 // Commit the transaction
-                transaction3.commit();
+                pending_fragmentTransaction=transaction3;
                 //title.setText(utils.getString(this, R.string.bookmanag));
                 //title.setVisibility(View.VISIBLE);
                 toolbar.setTitle(utils.getString(this, R.string.bookmanag));
@@ -978,7 +980,9 @@ public class MainActivity extends ActionBarActivity {
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
-//
+
+
+    //
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
@@ -1131,6 +1135,30 @@ public class MainActivity extends ActionBarActivity {
             random();
         }
         Sp.edit().putBoolean("remember", true).apply();
+    }
+    public String getStatusColor() {
+
+        String[] colors = new String[]{
+                "#F44336","#D32F2F",
+                "#e91e63","#C2185B",
+                "#9c27b0","#7B1FA2",
+                "#673ab7","#512DA8",
+                "#3f51b5","#303F9F",
+                "#2196F3","#1976D2",
+                "#03A9F4","#0288D1",
+                "#00BCD4","#0097A7",
+                "#009688","#00796B",
+                "#4CAF50","#388E3C",
+                "#8bc34a","#689F38",
+                "#FFC107","#FFA000",
+                "#FF9800","#F57C00",
+                "#FF5722","#E64A19",
+                "#795548","#5D4037",
+                "#212121","#000000",
+                "#607d8b","#455A64",
+                "#004d40","#002620"
+        };
+        return colors[ Arrays.asList(colors).indexOf(skin)+1];
     }
 
     class CheckForFiles extends AsyncTask<ArrayList<String>, String, ArrayList<String>> {
@@ -1324,28 +1352,4 @@ public class MainActivity extends ActionBarActivity {
         getFragment().mViewPager.setPagingEnabled(b);
     }
 
-    public String getStatusColor() {
-
-        String[] colors = new String[]{
-                "#F44336","#D32F2F",
-                "#e91e63","#C2185B",
-                "#9c27b0","#7B1FA2",
-                "#673ab7","#512DA8",
-                "#3f51b5","#303F9F",
-                "#2196F3","#1976D2",
-                "#03A9F4","#0288D1",
-                "#00BCD4","#0097A7",
-                "#009688","#00796B",
-                "#4CAF50","#388E3C",
-                "#8bc34a","#689F38",
-                "#FFC107","#FFA000",
-                "#FF9800","#F57C00",
-                "#FF5722","#E64A19",
-                "#795548","#5D4037",
-                "#212121","#000000",
-                "#607d8b","#455A64",
-                "#004d40","#002620"
-        };
-        return colors[ Arrays.asList(colors).indexOf(skin)+1];
-    }
-   }
+}

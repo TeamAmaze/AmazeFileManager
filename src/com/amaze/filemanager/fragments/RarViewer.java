@@ -85,7 +85,7 @@ public class RarViewer extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
-
+        mainActivity=(MainActivity)getActivity();
         LinearLayout pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
         TextView textView = (TextView) rootView.findViewById(R.id.fullpath);
         rootView.findViewById(R.id.fab).setVisibility(View.GONE);
@@ -111,8 +111,8 @@ public class RarViewer extends Fragment {
         rootView.findViewById(R.id.gridView).setVisibility(View.GONE);
         listView.setVisibility(View.VISIBLE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mainActivity = (MainActivity) getActivity();
-        if (mainActivity.theme1 == 1)
+
+        if (mainActivity.theme1== 1)
             listView.setBackgroundColor(Color.parseColor("#000000"));
         else
             listView.setBackgroundColor(Color.parseColor("#ffffff"));
@@ -129,12 +129,10 @@ public class RarViewer extends Fragment {
         String x = getSelectionColor();
         skinselection = Color.parseColor(x);
         files = new ArrayList<File>();
-        if (savedInstanceState == null)
-            loadlist(f.getPath());
-        else {
-        }
+        loadlist(f.getPath());
+        try{mainActivity.toolbar.setTitle(f.getName());}catch (Exception e){
+        mainActivity.toolbar.setTitle(getResources().getString(R.string.zip_viewer));}
         mainActivity.tabsSpinner.setVisibility(View.GONE);
-        mainActivity.toolbar.setTitle(getResources().getString(R.string.zip_viewer));
         mainActivity.supportInvalidateOptionsMenu();
     }
     public String getSelectionColor(){
@@ -281,12 +279,16 @@ public class RarViewer extends Fragment {
     public boolean cangoBack(){
         if(current==null || current.trim().length()==0)
             return false;
-        else if(mActionMode!=null){mActionMode.finish();mActionMode=null;return false;}
         else return true;
     }
     public void goBack() {
-
-        new RarHelperTask(this, new File(current).getParent()).execute(f);
+String path;
+        try {
+            path= current.substring(0,current.lastIndexOf("\\"));
+        } catch (Exception e) {
+            path="";
+        }
+        new RarHelperTask(this,path).execute(f);
     }
 
     public void bbar(){
