@@ -143,7 +143,8 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
                 createviews(elements, current);
             }
             mainActivity.tabsSpinner.setVisibility(View.GONE);
-            mainActivity.toolbar.setTitle(getResources().getString(R.string.zip_viewer));
+            try{mainActivity.toolbar.setTitle(f.getName());}catch (Exception e){
+            mainActivity.toolbar.setTitle(getResources().getString(R.string.zip_viewer));}
             mainActivity.supportInvalidateOptionsMenu();
         }
     public String getSelectionColor(){
@@ -276,7 +277,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(Color.parseColor(mainActivity.getStatusColor()));
-        }}
+        }mActionMode=null;}
     };
     @Override
     public void onResume() {
