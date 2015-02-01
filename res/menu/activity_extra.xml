@@ -19,27 +19,6 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/home"
-        android:title="@string/home"
-        />
-    <item android:id="@+id/history"
-        android:title="@string/history"
-/>  <item
-        android:id="@+id/item4"
-        android:title="@string/refresh"
-   />
-    <item
-        android:id="@+id/item10"
-        android:title="@string/sortby"/>
-    <item
-        android:id="@+id/view" />
-    <item
-        android:id="@+id/hiddenitems"
-        android:title="@string/hiddenfiles" />
-    <item
-        android:id="@+id/item3"
-        android:title="@string/exit"
-        android:icon="@drawable/ic_action_cancel_light" />
     <item
         android:id="@+id/progressBar"
         android:title="@null"
@@ -56,5 +35,31 @@
         android:title="@string/search"
         android:icon="@drawable/ic_action_search"
         app:showAsAction="always" />
+    <item android:id="@+id/home"
+        android:title="@string/home"
+        />
+    <item android:id="@+id/history"
+        android:title="@string/history"
+/>
+    <item
+        app:showAsAction="ifRoom"
+        android:id="@+id/item10"
+        android:title="@string/sortby"
+        android:icon="@drawable/ic_sort_white_48dp"/>
+    <item
+        android:icon="@drawable/ic_refresh_white_48dp"
+    app:showAsAction="ifRoom"
+        android:id="@+id/item4"
+        android:title="@string/refresh"
+   />
+    <item
+        android:id="@+id/view" />
+    <item
+        android:id="@+id/hiddenitems"
+        android:title="@string/hiddenfiles" />
+    <item
+        android:id="@+id/item3"
+        android:title="@string/exit"
+        android:icon="@drawable/ic_action_cancel_light" />
 
 </menu>
