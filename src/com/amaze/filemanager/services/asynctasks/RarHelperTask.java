@@ -37,12 +37,11 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
             int i = 0;
 
             if (zipViewer.wholelist.size() == 0) {
-            zipfile.nextFileHeader().getFullUnpackSize();
 
                 FileHeader fh = zipfile.nextFileHeader();
                 while (fh != null) {
-                    fh = zipfile.nextFileHeader();
                     zipViewer.wholelist.add(fh);
+                    fh = zipfile.nextFileHeader();
                 }
             }
             if(dir==null || dir.trim().length()==0 || dir.equals("")){
