@@ -37,10 +37,10 @@
         app:showAsAction="always" />
     <item android:id="@+id/home"
         android:title="@string/home"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_home_white_48dp"
         />
-    <item android:id="@+id/history"
-        android:title="@string/history"
-/>
+
     <item
         app:showAsAction="ifRoom"
         android:id="@+id/item10"
@@ -48,10 +48,15 @@
         android:icon="@drawable/ic_sort_white_48dp"/>
     <item
         android:icon="@drawable/ic_refresh_white_48dp"
-    app:showAsAction="ifRoom"
+        app:showAsAction="ifRoom"
         android:id="@+id/item4"
         android:title="@string/refresh"
-   />
+        />
+    <item android:id="@+id/history"
+        android:icon="@drawable/ic_history_white_48dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/history"
+/>
     <item
         android:id="@+id/view" />
     <item
