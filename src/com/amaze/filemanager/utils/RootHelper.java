@@ -166,19 +166,14 @@ e.printStackTrace();
         return  per;}
     public static ArrayList<String[]> getFilesList(String path,boolean root,boolean showHidden)
     {
-        String cpath=getCommandLineString(path);
         String p=" ";
         if(showHidden)p="a ";
         Futils futils=new Futils();
         ArrayList<String[]> a=new ArrayList<String[]>();
-        ArrayList<String> ls=new ArrayList<String>();;
-        if (root)ls=runAndWait1("ls -l"+p+cpath,root);
-        if (ls ==null || ls.size()==0)
-
-        {
-            return getFilesList(path,showHidden);
-        }
-        else {
+        ArrayList<String> ls=new ArrayList<String>();
+        if (root){
+            String cpath=getCommandLineString(path);
+            ls=runAndWait1("ls -l"+p+cpath,root);
             for (String file : ls) {
                     if(!file.contains("Permission denied"))
                     try {
@@ -190,9 +185,15 @@ e.printStackTrace();
                         e.printStackTrace();
                     }
 
-            }
-            return a;
+            }}
+            else if(futils.canListFiles(new File(path))){
+            a=getFilesList(path,showHidden);
+        }else {a=new ArrayList<String[]>();}
+        if(a.size()==0 && futils.canListFiles(new File(path))){
+            a=getFilesList(path,showHidden);
         }
+            return a;
+
     }
 
     public static Integer getCount(File f){
