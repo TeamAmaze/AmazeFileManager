@@ -1,5 +1,6 @@
 package com.amaze.filemanager.services.asynctasks;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -8,6 +9,9 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.ZipObj;
+import com.github.junrar.Archive;
+import com.github.junrar.exception.RarException;
+import com.github.junrar.rarfile.FileHeader;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -21,28 +25,38 @@ import java.util.zip.ZipFile;
 /**
  * Created by Vishal on 11/27/2014.
  */
-public class ZipExtractTask extends AsyncTask<ZipEntry, Void, Void> {
+public class ZipExtractTask extends AsyncTask<Void, Void, Void> {
     private String outputDir;
     private ZipFile zipFile;
-    private ZipViewer zipViewer;
+    private Activity zipViewer;
     private String fileName;
-    boolean open;ZipEntry entry;
-    public ZipExtractTask(ZipFile zipFile, String outputDir, ZipViewer zipViewer, String fileName,boolean open) {
-        this.open=open;
+    boolean zip;ZipEntry entry;
+    Archive rar;
+    FileHeader header;
+    File output;    
+    public ZipExtractTask(ZipFile zipFile, String outputDir, Activity zipViewer, String fileName,boolean zip,ZipEntry zipEntry) {
+        this.zip=zip;
         this.outputDir = outputDir;
         this.zipFile = zipFile;
         this.zipViewer = zipViewer;
         this.fileName = fileName;
+        this.entry=zipEntry;
     }
-
+    public ZipExtractTask(Archive rar, String outputDir, Activity zipViewer, String fileName,boolean zip,FileHeader fileHeader) {
+        this.zip=zip;
+        this.outputDir = outputDir;
+        this.rar = rar;
+        this.zipViewer = zipViewer;
+        this.fileName = fileName;
+        this.header=fileHeader;
+    }
     @Override
-    protected Void doInBackground(ZipEntry... zipEntries) {
-        entry=zipEntries[0];
-        ZipEntry zipEntry = zipEntries[0];
-        try {if(open)unzipEntry1(zipFile, zipEntry, outputDir);
-            else
-            unzipEntry(zipFile, zipEntry, outputDir);
-        } catch (IOException e) {
+    protected Void doInBackground(Void... zipEntries) {
+        
+        try {
+            if (zip) unzipEntry1(zipFile, entry, outputDir);
+            else unzipRAREntry(rar,header,outputDir);
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -51,56 +65,18 @@ public class ZipExtractTask extends AsyncTask<ZipEntry, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-if(open){
-        Futils futils = new Futils();
-        futils.openFile(new File(outputDir,fileName), (MainActivity) zipViewer.getActivity());
-    }else Toast.makeText(zipViewer.getActivity(),"Extracted to "+outputDir,Toast.LENGTH_LONG).show();}
-
-    private void createDir(File dir) {
-        if (dir.exists()) {
-            return;
-        }
-        Log.i("Amaze", "Creating dir " + dir.getName());
-        if (!dir.mkdirs()) {
-            throw new RuntimeException("Can not create dir " + dir);
-        }
-    }
-    private void unzipEntry(ZipFile zipfile, ZipEntry entry, String outputDir)
+    Futils futils = new Futils();
+    futils.openFile(output, (MainActivity) zipViewer);
+}
+    
+private void unzipEntry1(ZipFile zipfile, ZipEntry entry, String outputDir)
             throws IOException {
-        if (entry.isDirectory()) {
-            createDir(new File(outputDir, entry.getName()));
-            for (ZipObj entry1:zipViewer.wholelist ) {
-                if(entry1.getName().contains(entry.getName())){unzipEntry(zipfile,entry1.getEntry(),outputDir);}
-            }
-                return;
-        }
-        File outputFile = new File(outputDir, entry.getName());
-        if (!outputFile.getParentFile().exists()) {
-            createDir(outputFile.getParentFile());
-        }
+
+        output = new File(outputDir, fileName);
         BufferedInputStream inputStream = new BufferedInputStream(
                 zipfile.getInputStream(entry));
         BufferedOutputStream outputStream = new BufferedOutputStream(
-                new FileOutputStream(outputFile));
-        try {
-            int len;
-            byte buf[] = new byte[1024];
-            while ((len = inputStream.read(buf)) > 0) {
-
-                outputStream.write(buf, 0, len);
-            }
-        } finally {
-            outputStream.close();
-            inputStream.close();
-        }
-    }private void unzipEntry1(ZipFile zipfile, ZipEntry entry, String outputDir)
-            throws IOException {
-
-        File outputFile = new File(outputDir, fileName);
-        BufferedInputStream inputStream = new BufferedInputStream(
-                zipfile.getInputStream(entry));
-        BufferedOutputStream outputStream = new BufferedOutputStream(
-                new FileOutputStream(outputFile));
+                new FileOutputStream(output));
         try {
             int len;
             byte buf[] = new byte[1024];
@@ -113,4 +89,27 @@ if(open){
             inputStream.close();
         }
     }
+    
+ private void unzipRAREntry(Archive zipfile, FileHeader entry, String outputDir)
+            throws IOException, RarException {
+        String name=entry.getFileNameString();
+        name=name.replaceAll("\\\\","/");
+         output = new File(outputDir, name);
+        if(!output.getParentFile().exists())output.mkdirs();
+        BufferedInputStream inputStream = new BufferedInputStream(
+                zipfile.getInputStream(entry));
+        BufferedOutputStream outputStream = new BufferedOutputStream(
+                new FileOutputStream(output));
+        try {
+            int len;
+            byte buf[] = new byte[20480];
+            while ((len = inputStream.read(buf)) > 0) {
+                    outputStream.write(buf, 0, len);
+            }
+        }finally {
+            outputStream.close();
+            inputStream.close();
+        }
+    }
+
 }

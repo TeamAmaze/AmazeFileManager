@@ -55,6 +55,7 @@ import com.amaze.filemanager.services.asynctasks.RarHelperTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.ZipObj;
+import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
 import com.melnykov.fab.FloatingActionButton;
 
@@ -80,6 +81,7 @@ public class RarViewer extends Fragment {
     public     ArrayList<FileHeader> elements = new ArrayList<FileHeader>();
     public MainActivity mainActivity;
     public ListView listView;
+    public Archive archive;
     View rootView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -273,7 +275,7 @@ public class RarViewer extends Fragment {
         floatingActionButton.hide(true);
         if (files.size()==1) {
 
-            //new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(files);
+            new DeleteTask(getActivity().getContentResolver(),  getActivity()).execute(files);
         }
     }
     public boolean cangoBack(){

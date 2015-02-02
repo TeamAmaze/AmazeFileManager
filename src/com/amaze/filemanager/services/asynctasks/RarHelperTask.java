@@ -34,8 +34,7 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
 
         try {
             Archive zipfile = new Archive(params[0]);
-            int i = 0;
-
+            zipViewer.archive=zipfile;
             if (zipViewer.wholelist.size() == 0) {
 
                 FileHeader fh = zipfile.nextFileHeader();

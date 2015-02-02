@@ -260,7 +260,7 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
 
                     try {
                         ZipFile zipFile = new ZipFile(zipViewer.f);
-                     new ZipExtractTask(zipFile, getContext().getCacheDir().getAbsolutePath(), zipViewer, x,true).execute(rowItem.getEntry());
+                     new ZipExtractTask(zipFile, getContext().getCacheDir().getAbsolutePath(), zipViewer.getActivity(), x,true,rowItem.getEntry()).execute();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

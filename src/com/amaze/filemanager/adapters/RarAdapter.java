@@ -18,18 +18,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.RarViewer;
-import com.amaze.filemanager.fragments.ZipViewer;
-import com.amaze.filemanager.services.asynctasks.RarExtractTask;
 import com.amaze.filemanager.services.asynctasks.RarHelperTask;
 import com.amaze.filemanager.services.asynctasks.ZipExtractTask;
-import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.RoundedImageView;
 import com.amaze.filemanager.utils.ZipObj;
@@ -40,8 +33,6 @@ import com.github.junrar.rarfile.FileHeader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class RarAdapter extends ArrayAdapter<ZipObj> {
     Context c;
@@ -217,17 +208,13 @@ public class RarAdapter extends ArrayAdapter<ZipObj> {
                             new RarHelperTask(zipViewer,  rowItem.getFileNameString()).execute(zipViewer.f);
 
                         }else {
-                            String x=rowItem.getFileNameString().substring(rowItem.getFileNameString().lastIndexOf("/")+1);
-                            File file = new File(getContext().getCacheDir().getAbsolutePath() + "/" + x);
+                            String name=rowItem.getFileNameString();
+                            String x=name.replaceAll("\\\\","/");
+                            File file = new File(getContext().getCacheDir().getAbsolutePath(),x);
                             zipViewer.files.clear();
                             zipViewer.files.add(0, file);
-                            try {
-                                new RarExtractTask(new Archive(zipViewer.f), getContext().getCacheDir().getAbsolutePath(), zipViewer, x, true).execute(rowItem);
-                            } catch (RarException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                                new ZipExtractTask(zipViewer.archive, getContext().getCacheDir().getAbsolutePath(),zipViewer.mainActivity, x, false,rowItem).execute();
+
                         }
                     }}
         });
