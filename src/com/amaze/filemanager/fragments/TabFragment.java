@@ -60,6 +60,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
             path = getArguments().getString("path");
         }
         mainActivity = ((MainActivity)getActivity());
+        mainActivity.supportInvalidateOptionsMenu();
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             public void onPageScrolled(int p1, float p2, int p3) {

@@ -88,6 +88,7 @@ public class RarViewer extends Fragment {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
         mainActivity=(MainActivity)getActivity();
+        mainActivity.supportInvalidateOptionsMenu();
         LinearLayout pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
         TextView textView = (TextView) rootView.findViewById(R.id.fullpath);
         rootView.findViewById(R.id.fab).setVisibility(View.GONE);

@@ -88,7 +88,7 @@ public class AppsList extends ListFragment {
         MainActivity mainActivity=(MainActivity)getActivity();
         mainActivity.toolbar.setTitle(utils.getString(getActivity(),R.string.apps));
         mainActivity.tabsSpinner.setVisibility(View.GONE);
-
+        mainActivity.supportInvalidateOptionsMenu();
         vl=getListView();
             Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));

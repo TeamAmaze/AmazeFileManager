@@ -104,6 +104,7 @@ View rootView;ListView listview;
         if(theme1==1){getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
         listview.setBackgroundColor(Color.BLACK);}
         m=(MainActivity)getActivity();
+        m.supportInvalidateOptionsMenu();
         listview.setDivider(null);
 
         Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);

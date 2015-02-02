@@ -116,6 +116,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             listView.setVisibility(View.VISIBLE);
             Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
             mainActivity = (MainActivity) getActivity();
+            mainActivity.supportInvalidateOptionsMenu();
             if (mainActivity.theme1 == 1)
                 listView.setBackgroundColor(Color.parseColor("#000000"));
             else
