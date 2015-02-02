@@ -83,6 +83,18 @@
             </intent-filter>
 
         </activity>
+        <activity
+            android:label="Database Reader"
+            android:name="com.amaze.filemanager.activities.DbViewer"
+            android:theme="@style/appCompatLight">
+            <intent-filter
+                android:label="Amaze Database Reader">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="db/*" />
+            </intent-filter>
+
+        </activity>
         <service
             android:name = "com.amaze.filemanager.services.SearchService"
             android:label = "Searching"

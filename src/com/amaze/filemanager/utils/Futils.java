@@ -38,6 +38,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -51,6 +52,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.TextReader;
 import com.amaze.filemanager.adapters.HiddenAdapter;
@@ -607,7 +609,15 @@ public class Futils {
         } else if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".rar")) {
             showArchiveDialog(f, m);
 
-        }else if(f.getName().toLowerCase().endsWith(".apk")){showPackageDialog(f,m);}else {
+        }else if(f.getName().toLowerCase().endsWith(".apk")){
+            showPackageDialog(f,m);
+        } else if (f.getName().toLowerCase().endsWith(".db")) {
+            Toast.makeText(m.getApplicationContext(), "opening database", Toast.LENGTH_LONG).show();
+            Log.d("db path", f.getPath());
+            Intent intent = new Intent(m, DbViewer.class);
+            intent.putExtra("path", f.getPath());
+            m.startActivity(intent);
+        } else {
             try {
                 openunknown(f, m);
             } catch (Exception e) {
