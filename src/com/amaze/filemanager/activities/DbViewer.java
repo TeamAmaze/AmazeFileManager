@@ -99,9 +99,9 @@ public class DbViewer extends ActionBarActivity {
                 Log.d("table details", strings[i]);
                 Cursor c1 = sqLiteDatabase.rawQuery("Select * FROM " + strings[i], null);
                 getDbTableDetails(c1);
-                Cursor c2 = sqLiteDatabase.rawQuery("SELECT sql " +
-                        "FROM sqlite_master" +
-                        " WHERE tbl_name = " + strings[i] + "  AND type = 'table'", null);
+
+                Cursor c2 = sqLiteDatabase.rawQuery("PRAGMA table_info(" + strings[i] + ");", null);
+                getDbTableDetailsTEST(c2);
             }
         }
 
@@ -112,6 +112,19 @@ public class DbViewer extends ActionBarActivity {
         int i = 0;
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             String[] temp = new String[c.getColumnCount()];
+            for (i = 0; i < temp.length; i++) {
+                temp[i] = c.getString(i);
+                Log.d("table content extra", c.getString(i));
+            }
+            result.add(temp);
+        }
+        return result;
+    }
+    public ArrayList<String[]> getDbTableDetailsTEST(Cursor c) {
+        ArrayList<String[]> result = new ArrayList<String[]>();
+        int i = 0;
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            String[] temp = new String[c.getCount()];
             for (i = 0; i < temp.length; i++) {
                 temp[i] = c.getString(i);
                 Log.d("table content extra", c.getString(i));
