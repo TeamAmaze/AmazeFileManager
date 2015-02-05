@@ -303,6 +303,7 @@
     <string name="serbian_translation_title">Serbe</string>
     <string name="turkish_translation_title">Turc</string>
     <string name="ukrainian_translation_title">Ukrainien</string>
+    <string name="portuguese_translation_title">Portugais</string>
     <string name="german_translation_summary">Patrick Mertens</string>
     <string name="italian_translation_summary">Francesco Credidio</string>
     <string name="french_translation_summary">Nicolas PIMENTEL, Primokorn, Rolland Renaud</string>
@@ -313,6 +314,7 @@
     <string name="serbian_translation_summary">Mladen Pejaković</string>
     <string name="turkish_translation_summary">Hakan Güven</string>
     <string name="ukrainian_translation_summary">Pablo Luchiano</string>
+    <string name="portuguese_translation_summary">Sérgio Marques</string>
     <string name="zip_viewer">Visionneur ZIP</string>
     <string name="unin_system_apk">Ceci est une application système, sa suppression pourrait conduire à une instabilité du système.\nPoursuivre ?</string>
     <string name="warning">Attention</string>
@@ -331,4 +333,5 @@
     <string name="contributors">Contributeurs</string>
     <string name="savepaths">Se souvenir des chemins</string>
     <string name="savepathsummary">Lors du démarrage, le dossier récemment affiché pour chaque onglet sera affiché</string>
+    <string name="select_intent">Sélectionner</string>
 </resources>
