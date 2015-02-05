@@ -61,6 +61,7 @@ import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
+import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
 
@@ -346,35 +347,7 @@ public class Futils {
 
         return inSampleSize;
     }
-    public static byte[] createChecksum(String filename) throws Exception {
-        InputStream fis =  new FileInputStream(filename);
 
-        byte[] buffer = new byte[1024];
-        MessageDigest complete = MessageDigest.getInstance("MD5");
-        int numRead;
-
-        do {
-            numRead = fis.read(buffer);
-            if (numRead > 0) {
-                complete.update(buffer, 0, numRead);
-            }
-        } while (numRead != -1);
-
-        fis.close();
-        return complete.digest();
-    }
-
-    // see this How-to for a faster way to convert
-    // a byte array to a HEX string
-    public static String getMD5Checksum(String filename) throws Exception {
-        byte[] b = createChecksum(filename);
-        String result = "";
-
-        for (int i=0; i < b.length; i++) {
-            result += Integer.toString( ( b[i] & 0xff ) + 0x100, 16).substring( 1 );
-        }
-        return result;
-    }
     public void showProps(final File f, final Main c,boolean root) {
         String date = getString(c.getActivity(), R.string.date) + getdate(f);
         String items = "", size = "", name, parent;
@@ -391,16 +364,8 @@ public class Futils {
         String skin = sp.getString("skin_color", "#5677fc");
         MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
         a.title(getString(c.getActivity(), R.string.properties));
-        String md5="";
-        try {
-            md5="md5:"+getMD5Checksum(f.getPath());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         if(c.theme1==1)
             a.theme(Theme.DARK);
-        a.content(name + "\n" + parent + "\n" + size + "\n" + items + "\n"
-                + date+"\n"+md5);
         a.positiveText(R.string.copy_path);
         a.negativeText(getString(c.getActivity(), R.string.copy) + " md5");
         a.neutralText(R.string.cancel);
@@ -416,16 +381,14 @@ public class Futils {
             @Override
             public void onNegative(MaterialDialog materialDialog) {
                 try {
-                    c.copyToClipboard(c.getActivity(), getMD5Checksum(f.getPath()));
-                    Toast.makeText(c.getActivity(), c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
+                    //c.copyToClipboard(c.getActivity(), getMD5Checksum(f.getPath()));
+                    Toast.makeText(c.getActivity(), c.getResources().getString(R.string.md5copied), Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-        MaterialDialog b= a.build();
-        if(f.isDirectory())b.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
-        b.show();
+        new GenerateMD5Task(a, f, name, parent, size, items, date).execute(f.getPath());
     }
 
     public void showProps(final File f, final Context c,int theme1) {
@@ -444,16 +407,8 @@ public class Futils {
         String skin = sp.getString("skin_color", "#5677fc");
         MaterialDialog.Builder a = new MaterialDialog.Builder(c);
         a.title(getString(c, R.string.properties));
-        String md5="";
-        try {
-            md5="md5:"+getMD5Checksum(f.getPath());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         if(theme1==1)
             a.theme(Theme.DARK);
-        a.content(name + "\n" + parent + "\n" + size + "\n" + items + "\n"
-                + date+"\n"+md5);
         a.positiveText(R.string.copy_path);
         a.negativeText(getString(c, R.string.copy) + " md5");
         a.neutralText(R.string.cancel);
@@ -469,16 +424,14 @@ public class Futils {
             @Override
             public void onNegative(MaterialDialog materialDialog) {
                 try {
-                    copyToClipboard(c, getMD5Checksum(f.getPath()));
+                    //copyToClipboard(c, getMD5Checksum(f.getPath()));
                     Toast.makeText(c, c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-       MaterialDialog b= a.build();
-        if(f.isDirectory())b.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
-               b.show();
+        new GenerateMD5Task(a, f, name, parent, size, items, date).execute(f.getPath());
     }
     public boolean copyToClipboard(Context context, String text) {
         try {

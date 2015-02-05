@@ -334,5 +334,7 @@
     <string name="savepaths">Remember paths</string>
     <string name="savepathsummary">When starting up,the most recently viewed folder for each tab will be displayed</string>
     <string name="select_intent">Select</string>
+    <string name="md5copied">MD5 copied to clipboard</string>
+    <string name="generating">Generating..</string>
 </resources>
 
