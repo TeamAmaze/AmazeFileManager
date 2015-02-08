@@ -336,5 +336,6 @@
     <string name="select_intent">Select</string>
     <string name="md5copied">MD5 copied to clipboard</string>
     <string name="generating">Generating..</string>
+    <string name="tables">Table(s)</string>
 </resources>
 

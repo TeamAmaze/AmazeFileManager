@@ -1,5 +1,6 @@
 package com.amaze.filemanager.activities;
 
+import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -7,24 +8,33 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.Pair;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.fragments.DbViewerFragment;
+import com.amaze.filemanager.utils.RootHelper;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.stericson.RootTools.RootTools;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * Created by Vishal on 02-02-2015.
@@ -35,8 +45,15 @@ public class DbViewer extends ActionBarActivity {
     private int theme, theme1, skinStatusBar;
     private String skin, path;
     private boolean rootMode;
+    private ListView listView;
+    private ArrayList<String> arrayList;
+    private ArrayAdapter arrayAdapter;
     private TextView textView;
-    private SQLiteDatabase sqLiteDatabase;
+    private Cursor c;
+    private File pathFile;
+
+    public Toolbar toolbar;
+    public SQLiteDatabase sqLiteDatabase;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,8 +74,8 @@ public class DbViewer extends ActionBarActivity {
             setTheme(R.style.appCompatDark);
             getWindow().getDecorView().setBackgroundColor(Color.BLACK);
         }
-        setContentView(R.layout.db_viewer);
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        setContentView(R.layout.activity_db_viewer);
+         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         skin = Sp.getString("skin_color", "#03A9F4");
         String x = getStatusColor();
@@ -86,14 +103,29 @@ public class DbViewer extends ActionBarActivity {
         }
 
         path = getIntent().getStringExtra("path");
-        textView = (TextView) findViewById(R.id.textView);
-        textView.setText(path + "test");
-        sqLiteDatabase = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
+        pathFile = new File(path);
 
-        Cursor c = sqLiteDatabase.rawQuery(
-                "SELECT name FROM sqlite_master WHERE type='table'", null);
-        ArrayList<String[]> arrayList = getDbTableDetails(c);
-        for (String[] strings : arrayList) {
+        listView = (ListView) findViewById(R.id.listView);
+
+        load(pathFile);
+
+        textView = new TextView(this);
+        textView.setText(R.string.tables);
+        //listView.addHeaderView(textView);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("table name is ", arrayList.get(position) + " at " + position);
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                DbViewerFragment fragment = new DbViewerFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("table", arrayList.get(position));
+                fragment.setArguments(bundle);
+                fragmentTransaction.replace(R.id.content_frame, fragment);
+                fragmentTransaction.commit();
+            }
+        });
+        /*for (String[] strings : arrayList) {
             for (int i = 0; i<strings.length; i++) {
 
                 Log.d("table details", strings[i]);
@@ -103,20 +135,17 @@ public class DbViewer extends ActionBarActivity {
                 Cursor c2 = sqLiteDatabase.rawQuery("PRAGMA table_info(" + strings[i] + ");", null);
                 getDbTableDetailsTEST(c2);
             }
-        }
+        }*/
 
     }
 
-    public ArrayList<String[]> getDbTableDetails(Cursor c) {
-        ArrayList<String[]> result = new ArrayList<String[]>();
-        int i = 0;
+    public ArrayList<String> getDbTableNames(Cursor c) {
+        ArrayList<String> result = new ArrayList<String>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            String[] temp = new String[c.getColumnCount()];
-            for (i = 0; i < temp.length; i++) {
-                temp[i] = c.getString(i);
-                Log.d("table content extra", c.getString(i));
+            for (int i = 0; i < c.getColumnCount(); i++) {
+                result.add(c.getString(i));
+                //Log.d("table content extra", c.getString(i));
             }
-            result.add(temp);
         }
         return result;
     }
@@ -132,6 +161,33 @@ public class DbViewer extends ActionBarActivity {
             result.add(temp);
         }
         return result;
+    }
+
+    private void load(final File file) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (!file.canRead() && rootMode) {
+                    RootTools.remount(file.getPath(), "RO");
+                    RootHelper.runAndWait("chmod " + 0555 + " " + file.getPath(), true);
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        toolbar.setTitle(pathFile.getName());
+                        sqLiteDatabase = SQLiteDatabase.openDatabase(file.getPath(), null, SQLiteDatabase.OPEN_READONLY);
+
+                        c = sqLiteDatabase.rawQuery(
+                                "SELECT name FROM sqlite_master WHERE type='table'", null);
+                        arrayList = getDbTableNames(c);
+                        arrayAdapter = new ArrayAdapter(DbViewer.this, android.R.layout.simple_list_item_1, arrayList);
+                        listView.setAdapter(arrayAdapter);
+                    }
+                });
+            }
+        }).start();
     }
 
     private String getStatusColor() {
@@ -158,5 +214,12 @@ public class DbViewer extends ActionBarActivity {
                 "#004d40","#002620"
         };
         return colors[ Arrays.asList(colors).indexOf(skin)+1];
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sqLiteDatabase.close();
+        c.close();
     }
 }
