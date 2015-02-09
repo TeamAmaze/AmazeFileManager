@@ -31,12 +31,6 @@
     <string name="card">Kart</string>
     <string name="changegallerypath">Galeri yolunu değiştir</string>
     <string name="changelog">Değişiklik</string>
-    <string name="changelog_change_1">- ilk sürüm&lt;br>&lt;br></string>
-    <string name="changelog_change_2">- Sabit kesme/paste&lt;br> - Root için sabit bir metin editörü&lt;br> - Almanca, Fransızca, İtalyanca, Rusça ve Çince dilleri eklendi&lt;br> - Navigasyon çekmece imleri eklendi&lt;br> - Meteryal diyalogları eklendi&lt;br> - more...&lt;br>&lt;br></string>
-    <string name="changelog_change_3">- İspanyolca eklendi&lt;br> - Çeşitli sıkıştırma görüntüleyici düzeltmeleri&lt;br> - Apk ve jar dosyalarını görüntüleyebilme&lt;br> - Çeşitli metin editörü düzeltmeleri&lt;br> - Dahası...&lt;br>&lt;br></string>
-    <string name="changelog_version_1">&lt;font color=#524ef8>&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color=#5299f2>&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_version_2">&lt;font color=#524ef8>&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color=#5299f2>&lt;br>Dec 04, 2014&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_version_3">&lt;font color=#524ef8>&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color=#5299f2>&lt;br>Dec 13, 2014&lt;/i>&lt;/font>&lt;br></string>
     <string name="chooseUI">Ürün seç</string>
     <string name="close">Kapat</string>
     <string name="colorize">Simgeleri renklendirme</string>

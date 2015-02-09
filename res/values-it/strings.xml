@@ -127,9 +127,6 @@
     <string name="fileexplorer">Gestore di files</string>
     <string name="changegallerypath">Cambia scorciatoia galleria</string>
     <string name="usedefaultgallerypath"> Utilizzare il percorso Immagini Galleria predefinito </string>
-    <!-- Changelog -->
-    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br>&lt;br></string>
-    <string name="changelog_change_1">- Initial release&lt;br>&lt;br></string>
     <!-- New -->
     <!-- Array -->
     <!-- UI -->
