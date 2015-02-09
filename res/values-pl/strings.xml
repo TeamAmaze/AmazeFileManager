@@ -117,7 +117,7 @@
     <string name="refresh">Odśwież</string>
     <string name="copy">Kopiuj</string>
     <string name="rootmode">Przeglądanie z prawami root\'a</string>
-    <string name="rootmodesummary">Jedynie dla urządzeń z prawami root\'a. Zaznacz jeżeli jesteś tego pewien.</string> <!--XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-->
+    <string name="rootmodesummary">Jedynie dla urządzeń z prawami root\'a. Zaznacz jeżeli jesteś tego pewien.</string>
     <string name="mountsystemsummary">Włącz jeżeli chcesz edytować pliki systemowe</string>
     <string name="mountsystem">Zapisz w folderach systemowych</string>
     <string name="rootfailure">Nie przyznano praw root\'a</string>
@@ -275,18 +275,6 @@
     <string name="ukrainian_translation_title">Ukraiński</string>
     <string name="portuguese_translation_title">Portugalski</string>
     <string name="polish_translation_title">Polski</string>
-    <string name="german_translation_summary">Patrick Mertens</string>
-    <string name="italian_translation_summary">Francesco Credidio</string>
-    <string name="french_translation_summary">Nicolas PIMENTEL, Primokorn, Renaud</string>
-    <string name="russian_translation_summary">Pablo Luchiano, Kim BeeJay</string>
-    <string name="spanish_translation_summary">Jose Miguel Sarasola</string>
-    <string name="basque_translation_summary">Aitor Beriain</string>
-    <string name="chinese_translation_summary">amtlib-dot-dll, Felix2yu</string>
-    <string name="serbian_translation_summary">Mladen Pejaković</string>
-    <string name="turkish_translation_summary">Hakan Güven</string>
-    <string name="ukrainian_translation_summary">Pablo Luchiano</string>
-    <string name="portuguese_translation_summary">Sérgio Marques</string>
-    <string name="polish_translation_summary">M. Kucharskov, P. Kowalczyk</string>
     <string name="zip_viewer">Przeglądarka archiwum</string>
     <string name="unin_system_apk">To jest aplikacja systemowa, usunięcie jej może prowadzić do niestabliności systemu.\nKontynuować?</string>
     <string name="warning">Ostrzeżenie</string>
@@ -308,5 +296,6 @@
     <string name="select_intent">Wybierz</string>
     <string name="md5copied">MD5 skopiowano do schowka</string>
     <string name="generating">Generowanie..</string>
+    <string name="tables">Tablice</string>
 </resources>
 

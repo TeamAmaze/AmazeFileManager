@@ -132,36 +132,6 @@
     <string name="changegallerypath">Mudar caminho da galeria</string>
     <string name="usedefaultgallerypath">Utilizar caminho pré-definido</string>
 
-    <!-- Changelog -->
-    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>11 de nov. de 2014&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_1">- Vesão inicial&lt;br>&lt;br></string>
-    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>4 de dez. de 2014&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_2">- Corrigida opção cortar/colar&lt;br>
-                                      - Corrigido editor de texto para root&lt;br>
-                                      - Adicionadas traduções em alemão, francês, italiano, russo e chinês&lt;br>
-                                      - Adição de mracadores à gaveta de navegação&lt;br>
-                                      - Adição de diálogos material design&lt;br>
-                                      - mais...&lt;br>&lt;br></string>
-    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>13 de dez. de 2014&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_3">- Adição de tradução em espanhol&lt;br>
-                                      - Correções ao visualizador zip&lt;br>
-                                      - Possibilidade de ver ficheiros apk e jar&lt;br>
-                                      - Correções ao editor de texto&lt;br>
-                                      - mais...&lt;br>&lt;br></string>
-    <string name="changelog_version_4">&lt;font color="#524ef8">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>17 de jan. de 2015&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_4">- Separadores deslizáveis&lt;br>
-                                      - Melhorias na interface&lt;br>
-                                      - Melhoras nas operações copiar/colar/extrair/comprimir&lt;br>
-                                      - Progreso das operações nas notificações&lt;br>
-                                      - Correções ao visualizador zip e ao editor de texto&lt;br>
-                                      - Possibilidade de desinstalar aplicações do sistema&lt;br>
-                                      - Melhorias na procura de ficheiros&lt;br>
-                                      - Adicionada tradução em sérvio&lt;br>
-                                      - Adicionada preferência para desativar a opção Recuar na lista&lt;br>
-                                      - Adicionada preferência para desativar as miniaturas circulares&lt;br>
-                                      - Adicionada preferência para escolher o local de extração/compressão dos ficheiros&lt;br>
-                                      - Aicionada preferência para memorizar os caminhos&lt;br>
-                                      - mais...&lt;br>&lt;br></string>
     <!-- New -->
     <!-- Array -->
 
@@ -304,17 +274,6 @@
     <string name="turkish_translation_title">Turco</string>
     <string name="ukrainian_translation_title">Ucraniano</string>
     <string name="portuguese_translation_title">Português</string>
-    <string name="german_translation_summary">Patrick Mertens</string>
-    <string name="italian_translation_summary">Francesco Credidio</string>
-    <string name="french_translation_summary">Nicolas PIMENTEL, Primokorn, Renaud</string>
-    <string name="russian_translation_summary">Pablo Luchiano, Kim BeeJay</string>
-    <string name="spanish_translation_summary">Jose Miguel Sarasola</string>
-    <string name="basque_translation_summary">Aitor Beriain</string>
-    <string name="chinese_translation_summary">amtlib-dot-dll, Felix2yu</string>
-    <string name="serbian_translation_summary">Mladen Pejaković</string>
-    <string name="turkish_translation_summary">Hakan Güven</string>
-    <string name="ukrainian_translation_summary">Pablo Luchiano</string>
-    <string name="portuguese_translation_summary">Sérgio Marques</string>
     <string name="zip_viewer">Visualizador zip</string>
     <string name="unin_system_apk">Esta aplicação é do sistema. Se a eliminar pode afetar a estabilidade do sistema.\nContinuar?</string>
     <string name="warning">Aviso</string>

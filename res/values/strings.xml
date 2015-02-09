@@ -132,36 +132,6 @@
     <string name="changegallerypath">Change Gallery Path</string>
     <string name="usedefaultgallerypath">Use Default Image Gallery Path</string>
 
-    <!-- Changelog -->
-    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_1">- Initial release&lt;br>&lt;br></string>
-    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Dec 04, 2014&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_2">- Fixed cut/paste&lt;br>
-                                      - Fixed text editor for root&lt;br>
-                                      - Added German, French, Italian, Russian and Chinese languages&lt;br>
-                                      - Added bookmarks to navigation drawer&lt;br>
-                                      - Added material dialogs&lt;br>
-                                      - more...&lt;br>&lt;br></string>
-    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Dec 13, 2014&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_3">- Added Spanish&lt;br>
-                                      - Various Zip Viewer fixes&lt;br>
-                                      - Can view apk and jar files&lt;br>
-                                      - Various text editor fixes&lt;br>
-                                      - more...&lt;br>&lt;br></string>
-    <string name="changelog_version_4">&lt;font color="#524ef8">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Jan 17, 2015&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_4">    - Swipable tabs&lt;br>
-                                      - Fully revamped UI&lt;br>
-                                      - Speedy copy/paste/extract/compress operations&lt;br>
-                                      - Progress of operations in notifications&lt;br>
-                                      - Fixes for zip viewer and text editor&lt;br>
-                                      - Ability to uninstall system apps&lt;br>
-                                      - Improved searching of files&lt;br>
-                                      - Serbian,basque translations&lt;br>
-                                      - Added preference to disable go back list header&lt;br>
-                                      - Added preference to disable circular thumbnails&lt;br>
-                                      - Added preference to choose archive extract and compress directory&lt;br>
-                                      - Added preference to remember paths&lt;br>
-                                      - more...&lt;br>&lt;br></string>
     <!-- New -->
     <!-- Array -->
 
@@ -304,17 +274,6 @@
     <string name="turkish_translation_title">Turkish</string>
     <string name="ukrainian_translation_title">Ukrainian</string>
     <string name="portuguese_translation_title">Portuguese</string>
-    <string name="german_translation_summary">Patrick Mertens</string>
-    <string name="italian_translation_summary">Francesco Credidio</string>
-    <string name="french_translation_summary">Nicolas PIMENTEL, Primokorn, Renaud</string>
-    <string name="russian_translation_summary">Pablo Luchiano, Kim BeeJay</string>
-    <string name="spanish_translation_summary">Jose Miguel Sarasola</string>
-    <string name="basque_translation_summary">Aitor Beriain</string>
-    <string name="chinese_translation_summary">amtlib-dot-dll, Felix2yu</string>
-    <string name="serbian_translation_summary">Mladen Pejaković</string>
-    <string name="turkish_translation_summary">Hakan Güven</string>
-    <string name="ukrainian_translation_summary">Pablo Luchiano</string>
-    <string name="portuguese_translation_summary">Sérgio Marques</string>
     <string name="zip_viewer">Zip Viewer</string>
     <string name="unin_system_apk">This is a system app, deleting it might lead to system un-stability.\nProceed?</string>
     <string name="warning">Warning</string>

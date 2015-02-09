@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>в1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>11. нов, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_1">- Почетно издање&lt;br>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>в1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>04. дец, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_2">- Поправљено исеци/налепи&lt;br>
+                                      - Поправљен уређивач текста за корен&lt;br>
+                                      - Додати немачки, француски, италијански, руски и кинески језици&lt;br>
+                                      - Додати обележивачи у навигациону фиоку&lt;br>
+                                      - Додати материјал дијалози&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>в1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>13. дец, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_3">- Додат шпански&lt;br>
+                                      - Разне исправке зип прегледача&lt;br>
+                                      - Приказ апк и јар фајлова&lt;br>
+                                      - Разне исправке уређивача текста&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color="#524ef8">&lt;b>в1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>17. јан, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_4">    - Превлачење језичака&lt;br>
+                                      - Преуређено сучеље&lt;br>
+                                      - Убрзане радње копирања/лепљења/распакивања/компресовања&lt;br>
+                                      - Напредак радњи у обавештењима&lt;br>
+                                      - Исправке зип прегледача и уређивача текста&lt;br>
+                                      - Могућност уклањања системских апликација&lt;br>
+                                      - Побољшана претрага фајлова&lt;br>
+                                      - Преводи на српски и баскијски&lt;br>
+                                      - Могућност да се искључи заглавље списка за назад&lt;br>
+                                      - Могућност да се искључе кружне сличице&lt;br>
+                                      - Могућност да се одреди фасцикла за распакивање и компресовање&lt;br>
+                                      - Могућност да се запамте путање&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
+</resources>

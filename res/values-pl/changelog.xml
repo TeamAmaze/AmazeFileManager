@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager. (translated by M. Kucharskov <M.Kucharskov@gmail.com>, P. Kowalczyk <p.d.kowalczyk@wp.pl>)
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Lis 11, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_1">- Pierwsze wydanie&lt;br>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Gru 04, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_2">- Naprawiono kopiuj/wklej&lt;br>
+                                      - Naprawiono edytor tekstu dla root\'a&lt;br>
+                                      - Dodano języki niemiecki, francuski, włoski, rosyjski i chiński&lt;br>
+                                      - Dodano zakładki do panelu nawigacji&lt;br>
+                                      - Dodano okna dialogowe w stylu Material&lt;br>
+                                      - więcej...&lt;br>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Gru 13, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_3">- Dodano hiszpański&lt;br>
+                                      - Różne poprawki przeglądarki archiwów&lt;br>
+                                      - Możliwość przeglądu plików apk i jar&lt;br>
+                                      - Różne poprawki edytora tekstu&lt;br>
+                                      - więcej...&lt;br>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color="#524ef8">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Sty 17, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_4">    - Przesuwalne karty&lt;br>
+                                      - W pełni przebudowany interfejs&lt;br>
+                                      - Szybsze operacje kopiowania/wklejania/wypakowywania/kompresji&lt;br>
+                                      - Postęp operacji w powiadomieniach&lt;br>
+                                      - Poprawki dla przeglądarki archiwów i edytora tekstu&lt;br>
+                                      - Możliwość odinstalowania aplikacji systemowej&lt;br>
+                                      - Usprawniono wyszukiwanie plików&lt;br>
+                                      - Tłumaczenia serbski, baskijski&lt;br>
+                                      - Dodano opcję włączenia nagłówka listy powrotu&lt;br>
+                                      - Dodano opcję wyłączenia okrągłych miniaturek&lt;br>
+                                      - Dodano opcję do wybrania folderu wypakowywania i pakowania&lt;br>
+                                      - Dodano opcję pamiętania ścieżek&lt;br>
+                                      - więcej...&lt;br>&lt;br></string>
+</resources>

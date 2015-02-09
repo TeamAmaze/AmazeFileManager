@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_1">- Initial release&lt;br>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Dec 04, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_2">- Fixed cut/paste&lt;br>
+                                      - Fixed text editor for root&lt;br>
+                                      - Added German, French, Italian, Russian and Chinese languages&lt;br>
+                                      - Added bookmarks to navigation drawer&lt;br>
+                                      - Added material dialogs&lt;br>
+                                      - more...&lt;br>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Dec 13, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_3">- Added Spanish&lt;br>
+                                      - Various Zip Viewer fixes&lt;br>
+                                      - Can view apk and jar files&lt;br>
+                                      - Various text editor fixes&lt;br>
+                                      - more...&lt;br>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color="#524ef8">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Jan 17, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_4">    - Swipable tabs&lt;br>
+                                      - Fully revamped UI&lt;br>
+                                      - Speedy copy/paste/extract/compress operations&lt;br>
+                                      - Progress of operations in notifications&lt;br>
+                                      - Fixes for zip viewer and text editor&lt;br>
+                                      - Ability to uninstall system apps&lt;br>
+                                      - Improved searching of files&lt;br>
+                                      - Serbian,basque translations&lt;br>
+                                      - Added preference to disable go back list header&lt;br>
+                                      - Added preference to disable circular thumbnails&lt;br>
+                                      - Added preference to choose archive extract and compress directory&lt;br>
+                                      - Added preference to remember paths&lt;br>
+                                      - more...&lt;br>&lt;br></string>
+</resources>

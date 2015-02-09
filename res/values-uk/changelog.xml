@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="changelog_version_1">&lt;font color="#524ef8"&gt;&lt;b&gt;v1.0&lt;/font&gt;&lt;/b&gt;&lt;i&gt;&lt;font color="#5299f2"&gt;&lt;br&gt;Nov 11, 2014&lt;/i&gt;&lt;/font&gt;&lt;br&gt;</string>
+    <string name="changelog_change_1">- Вихідна версія&lt;br&gt;&lt;br&gt;</string>
+    <string name="changelog_version_2">&lt;font color=#524ef8&gt;&lt;b&gt;v1.1&lt;/font&gt;&lt;/b&gt;&lt;i&gt;&lt;font color=#5299f2&gt;&lt;br&gt;Dec 04, 2014&lt;/i&gt;&lt;/font&gt;&lt;br&gt;</string>
+    <string name="changelog_change_2">- Виправлено вирізати/вставити&lt;br&gt;
+                                      - Виправлений текстовий редактор для рут доступу&lt;br&gt;
+                                      - Додано Німецька, Французька, Італійська, Російська, Китайська мови&lt;br&gt;
+                                      - Додані закладки для навігації по секції&lt;br&gt;
+                                      - Доданий матеріал діалогів&lt;br&gt;
+                                      - інші виправлення.&lt;br&gt;&lt;br&gt;</string>
+    <string name="changelog_version_3">&lt;font color="#524ef8"&gt;&lt;b&gt;v1.3&lt;/font&gt;&lt;/b&gt;&lt;i&gt;&lt;font color="#5299f2"&gt;&lt;br&gt;Dec 13, 2014&lt;/i&gt;&lt;/font&gt;&lt;br&gt;</string>
+    <string name="changelog_change_3">- Додано Іспанська мова&lt;br&gt;&#13;
+                                      - Різні Zip Редактора виправлення&lt;br&gt;&#13;
+                                      - Тепер ви можете переглядати apk і jar файли&lt;br&gt;&#13;
+                                      - Різні виправлення в текстовому редакторі&lt;br&gt;&#13;
+                                      - інші виправлення...&lt;br&gt;&lt;br&gt;</string>
+</resources>
