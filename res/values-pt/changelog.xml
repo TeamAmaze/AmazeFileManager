@@ -20,22 +20,22 @@
 <resources
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
-    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>11 de nov. de 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2014-11-11&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_1">- Vesão inicial&lt;br>&lt;br></string>
-    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>4 de dez. de 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2014-12-04&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_2">- Corrigida opção cortar/colar&lt;br>
                                       - Corrigido editor de texto para root&lt;br>
                                       - Adicionadas traduções em alemão, francês, italiano, russo e chinês&lt;br>
                                       - Adição de mracadores à gaveta de navegação&lt;br>
                                       - Adição de diálogos material design&lt;br>
                                       - mais...&lt;br>&lt;br></string>
-    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>13 de dez. de 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2014-12-13&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_3">- Adição de tradução em espanhol&lt;br>
                                       - Correções ao visualizador zip&lt;br>
                                       - Possibilidade de ver ficheiros apk e jar&lt;br>
                                       - Correções ao editor de texto&lt;br>
                                       - mais...&lt;br>&lt;br></string>
-    <string name="changelog_version_4">&lt;font color="#524ef8">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>17 de jan. de 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color="#524ef8">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2015-01-17&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_4">- Separadores deslizáveis&lt;br>
                                       - Melhorias na interface&lt;br>
                                       - Melhoras nas operações copiar/colar/extrair/comprimir&lt;br>

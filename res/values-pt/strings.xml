@@ -293,4 +293,8 @@
     <string name="savepaths">Memorizar caminho</string>
     <string name="savepathsummary">Ao iniciar a aplicação, será mostrada a última pasta vista (por cada separador)</string>
     <string name="select_intent">Selecionar</string>
+    <string name="md5copied">MD5 copiada para a área de transferência</string>
+    <string name="generating">A gerar..</string>
+    <string name="tables">Tabela(s)</string>
 </resources>
+
