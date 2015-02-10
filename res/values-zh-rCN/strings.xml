@@ -132,17 +132,6 @@
     <string name="changegallerypath">选择图库目录</string>
     <string name="usedefaultgallerypath">使用默认图库目录</string>
 
-    <!-- Changelog -->
-    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2014-11-11&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_1">- 初始版本&lt;br>&lt;br></string>
-    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2014-12-04&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_2">- 修复剪切/粘贴&lt;br>
-                                      - 修复超级管理员的文字编辑器&lt;br>
-                                      - 添加简体中文、德语、法语、意大利语、俄语翻译&lt;br>
-                                      - 添加书签至导航抽屉&lt;br>
-                                      - 添加材质对话框&lt;br>
-                                      - 等...&lt;br>&lt;br></string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -283,16 +272,6 @@
     <string name="serbian_translation_title">Serbian</string>
     <string name="turkish_translation_title">Turkish</string>
     <string name="ukrainian_translation_title">Ukrainian</string>
-    <string name="german_translation_summary">Patrick Mertens</string>
-    <string name="italian_translation_summary">Francesco Credidio</string>
-    <string name="french_translation_summary">Nicolas PIMENTEL, Primokorn, Renaud</string>
-    <string name="russian_translation_summary">Pablo Luchiano, Kim BeeJay</string>
-    <string name="spanish_translation_summary">Jose Miguel Sarasola</string>
-    <string name="basque_translation_summary">Aitor Beriain</string>
-    <string name="chinese_translation_summary">amtlib-dot-dll, Felix2yu</string>
-    <string name="serbian_translation_summary">Mladen Pejaković</string>
-    <string name="turkish_translation_summary">Hakan Güven</string>
-    <string name="ukrainian_translation_summary">Pablo Luchiano</string>
     <string name="zip_viewer">压缩包查看</string>
     <string name="unin_system_apk">这是一个系统应用, 删除它可能导致系统不稳定.\n继续吗?</string>
     <string name="warning">警告</string>
