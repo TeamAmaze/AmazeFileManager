@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +43,6 @@ import java.util.Calendar;
 public class DbViewer extends ActionBarActivity {
 
     private SharedPreferences Sp;
-    private int theme, theme1, skinStatusBar;
     private String skin, path;
     private boolean rootMode;
     private ListView listView;
@@ -51,9 +51,11 @@ public class DbViewer extends ActionBarActivity {
     private TextView textView;
     private Cursor c;
     private File pathFile;
+    private RelativeLayout relativeLayout;
 
     public Toolbar toolbar;
     public SQLiteDatabase sqLiteDatabase;
+    public int theme, theme1, skinStatusBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,7 +77,7 @@ public class DbViewer extends ActionBarActivity {
             getWindow().getDecorView().setBackgroundColor(Color.BLACK);
         }
         setContentView(R.layout.activity_db_viewer);
-         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         skin = Sp.getString("skin_color", "#03A9F4");
         String x = getStatusColor();
@@ -121,7 +123,8 @@ public class DbViewer extends ActionBarActivity {
                 Bundle bundle = new Bundle();
                 bundle.putString("table", arrayList.get(position));
                 fragment.setArguments(bundle);
-                fragmentTransaction.replace(R.id.content_frame, fragment);
+                fragmentTransaction.add(R.id.content_frame, fragment);
+                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }
         });

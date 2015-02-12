@@ -157,15 +157,6 @@
                     android:title="@string/ukrainian_translation_title"
                     android:summary="@string/ukrainian_translation_summary"/>
                 </PreferenceScreen>
-        <PreferenceScreen
-            android:title="@string/contributors">
-            <Preference
-                android:title="Bobby Girdher"
-                />
-            <Preference
-                android:title="Ashish Singhal"
-                />
-        </PreferenceScreen>
             <Preference
                 android:key="changelog"
                 android:title="@string/changelog" />
