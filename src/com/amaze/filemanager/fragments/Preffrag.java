@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -117,6 +118,14 @@ public class Preffrag extends PreferenceFragment {
                 });
                 a.build().show();
                 return true;
+            }
+        });
+        if(Build.VERSION.SDK_INT>=21)
+        findPreference("colorednavigation").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                restartPC(getActivity());
+                return false;
             }
         });
         findPreference("dirontop").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

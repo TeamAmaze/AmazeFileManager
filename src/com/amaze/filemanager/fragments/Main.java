@@ -625,13 +625,14 @@ public class Main extends android.support.v4.app.Fragment {
             anim.setDuration(200);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
-            int sdk=Build.VERSION.SDK_INT;
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 window.setStatusBarColor(res.getColor(android.R.color.black));
+                if(mainActivity.colourednavigation)
+                    window.setNavigationBarColor(res.getColor(android.R.color.black));
             }
             return true;
         }
@@ -1051,13 +1052,13 @@ public class Main extends android.support.v4.app.Fragment {
             anim.setDuration(50);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
-            int sdk=Build.VERSION.SDK_INT;
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 window.setStatusBarColor(Color.parseColor(mainActivity.getStatusColor()));
+                if(mainActivity.colourednavigation)window.setNavigationBarColor(Color.parseColor(mainActivity.getStatusColor()));
             }
         }
     };

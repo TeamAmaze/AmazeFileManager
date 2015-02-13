@@ -1,0 +1,183 @@
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/ui">
+        <Preference
+            android:key="theme"
+            android:title="@string/theme" />
+        <Preference
+            android:key="skin"
+            android:title="@string/skin" />
+        <CheckBoxPreference
+            android:key="colorednavigation"
+            android:defaultValue="true"
+            android:title="@string/colourednavigation"
+            android:summary="@string/colourednavigationsum" />
+        <CheckBoxPreference
+            android:key="coloriseIcons"
+            android:title="@string/colorize"
+            android:summary="@string/colorize_summary" />
+        <CheckBoxPreference
+            android:key="random"
+            android:title="@string/random"
+            android:summary="@string/random_summary"/>
+        <CheckBoxPreference
+            android:key="circularimages"
+            android:defaultValue="true"
+            android:summary="@string/circularimages"
+            android:title="@string/circularicons"/>
+        <Preference
+            android:key="uimode"
+            android:summary="@string/chooseUI"
+            android:title="@string/uimode" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/general">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="savepaths"
+            android:summary="@string/savepathsummary"
+            android:title="@string/savepaths" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="showThumbs"
+            android:summary="@string/thumbSummary"
+            android:title="@string/thumb" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="showHidden"
+
+            android:title="@string/hidden" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="showLastModified"
+            android:enabled="false"
+            android:summary="@string/lastModifiedSummary"
+            android:title="@string/lastModifiedPref" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="showFileSize"
+            android:summary="@string/sizePrefSummary"
+            android:title="@string/sizePref" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="goBack_checkbox"
+            android:title="@string/back_title"
+            android:summary="@string/back_summary" />
+        <Preference
+            android:key="columns"
+            android:title="@string/gridcolumnno" />
+        <Preference
+            android:key="dirontop"
+            android:title="@string/directorysort" />
+
+        <Preference
+            android:key="sortby"
+            android:title="@string/sortby" />
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/archive_preferences">
+        <EditTextPreference
+            android:key="extractpath"
+            android:title="@string/archive_extract_folder"
+            android:summary="@string/archive_summary">
+        </EditTextPreference>
+        <EditTextPreference
+            android:key="zippath"
+            android:summary="@string/zip_summary"
+            android:title="@string/zip_create_folder">
+        </EditTextPreference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/miscellaneous">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="showPermissions"
+            android:summary="@string/rootPrefSummary"
+            android:title="@string/rootPref" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="rootmode"
+            android:summary="@string/rootmodesummary"
+            android:title="@string/rootmode" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/about">
+        <PreferenceScreen
+            android:title="@string/aboutFileManager" >
+            <Preference
+                android:title="@string/version"
+                android:summary="v1.4"/>
+            <Preference
+                android:key="authors"
+                android:title="@string/authors" />
+            <PreferenceScreen
+                android:title="@string/translators">
+                <Preference
+                    android:title="@string/german_translation_title"
+                    android:summary="@string/german_translation_summary"/>
+                <Preference
+                    android:title="@string/italian_translation_title"
+                    android:summary="@string/italian_translation_summary"/>
+                <Preference
+                    android:title="@string/french_translation_title"
+                    android:summary="@string/french_translation_summary"/>
+                <Preference
+                    android:title="@string/russian_translation_title"
+                    android:summary="@string/russian_translation_summary"/>
+                <Preference
+                    android:title="@string/spanish_translation_title"
+                    android:summary="@string/spanish_translation_summary"/>
+                <Preference
+                    android:title="@string/basque_translation_title"
+                    android:summary="@string/basque_translation_summary"/>
+                <Preference
+                    android:title="@string/chinese_translation_title"
+                    android:summary="@string/chinese_translation_summary"/>
+                <Preference
+                    android:title="@string/serbian_translation_title"
+                    android:summary="@string/serbian_translation_summary"/>
+                <Preference
+                    android:title="@string/turkish_translation_title"
+                    android:summary="@string/turkish_translation_summary"/>
+                <Preference
+                    android:title="@string/ukrainian_translation_title"
+                    android:summary="@string/ukrainian_translation_summary"/>
+            </PreferenceScreen>
+            <Preference
+                android:key="changelog"
+                android:title="@string/changelog" />
+            <Preference
+                android:key="xda"
+                android:title="@string/xda_title"
+                android:summary="@string/xda_summary"/>
+            <Preference
+                android:key="rate"
+                android:title="@string/rate" />
+
+            <Preference
+                android:key="os"
+                android:title="@string/license" />
+        </PreferenceScreen>
+        <Preference
+            android:key="feedback"
+            android:title="@string/feedback" />
+    </PreferenceCategory>
+</PreferenceScreen>

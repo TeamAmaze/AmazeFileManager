@@ -149,10 +149,10 @@ public class MainActivity extends ActionBarActivity{
     boolean rootmode,aBoolean,openzip=false;
     String zippath;
     public Spinner tabsSpinner;
-    public boolean mRingtonePickerIntent = false,restart=false;
+    public boolean mRingtonePickerIntent = false,restart=false,colourednavigation=false;
     private MenuItem progress_bar;
     public Toolbar toolbar;
-    private int skinStatusBar;
+    public int skinStatusBar;
     FragmentTransaction pending_fragmentTransaction;
     String pending_path;
     /**
@@ -177,7 +177,6 @@ public class MainActivity extends ActionBarActivity{
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int th = Integer.parseInt(Sp.getString("theme", "0"));
-        boolean v14=Sp.getBoolean("v1.4",false);
         boolean v142=Sp.getBoolean("v1.4.2",false);
          if(!v142){
              try {
@@ -246,7 +245,7 @@ public class MainActivity extends ActionBarActivity{
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
 
         String x = getStatusColor();
-        skinStatusBar = Color.parseColor(x);
+        skinStatusBar = Color.parseColor(getStatusColor());
         // status bar
         int sdk=Build.VERSION.SDK_INT;
 
@@ -258,17 +257,17 @@ public class MainActivity extends ActionBarActivity{
                 SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
                 p.setMargins(0, config.getStatusBarHeight(), 0, 0);
             }else if(Build.VERSION.SDK_INT>=21){
-
+                colourednavigation=Sp.getBoolean("colorednavigation",true);
                 Window window =getWindow();
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 window.setStatusBarColor(Color.parseColor(getStatusColor()));
+                if(colourednavigation)
+                window.setNavigationBarColor(skinStatusBar);
 
             }
 
         LinearLayout linearLayout3 = (LinearLayout) findViewById(R.id.settings_bg);
-        linearLayout3.setBackgroundColor(Color.parseColor(skin));
-
         if (Sp.getBoolean("firstrun", true)) {
             try {
                 s.makeS();
@@ -284,7 +283,11 @@ public class MainActivity extends ActionBarActivity{
         mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         View v=getLayoutInflater().inflate(R.layout.drawerheader,null);
-        v.setBackgroundColor(Color.parseColor(skin));
+        if(Build.VERSION.SDK_INT>=21){
+        linearLayout3.setBackgroundColor(skinStatusBar);
+        v.setBackgroundColor(skinStatusBar);}
+        else{linearLayout3.setBackgroundColor(Color.parseColor(skin));
+            v.setBackgroundColor(Color.parseColor(skin));}
         ((TextView)v.findViewById(R.id.firstline)).setTextColor(Color.WHITE);
         mDrawerList.addHeaderView(v);
         list = new ArrayList<String>();
