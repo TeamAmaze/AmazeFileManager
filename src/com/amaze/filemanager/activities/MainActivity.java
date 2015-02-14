@@ -116,6 +116,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 
 public class MainActivity extends ActionBarActivity{
@@ -189,7 +190,7 @@ public class MainActivity extends ActionBarActivity{
                  }
 
              }
-         Sp.edit().putBoolean("v1.4.2", true).apply();
+             Sp.edit().putBoolean("v1.4.2", true).apply();
          }
         theme1 = th;
         if (th == 2) {
@@ -268,16 +269,6 @@ public class MainActivity extends ActionBarActivity{
             }
 
         LinearLayout linearLayout3 = (LinearLayout) findViewById(R.id.settings_bg);
-        if (Sp.getBoolean("firstrun", true)) {
-            try {
-                s.makeS();
-            } catch (Exception e) {
-            }
-
-            File file = new File(val.get(0));
-            Sp.edit().putString("home", file.getPath()).apply();
-            Sp.edit().putBoolean("firstrun", false).commit();
-        }
         mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
@@ -471,14 +462,15 @@ public class MainActivity extends ActionBarActivity{
             for(File file: s.readS()){
                 rv.add(file.getPath());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            try {
+                s.makeS();
+                for(File file: s.readS()){
+                    rv.add(file.getPath());
+                }} catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
-
         return rv;
     }
 
