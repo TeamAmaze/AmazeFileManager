@@ -1057,8 +1057,8 @@ public class Main extends android.support.v4.app.Fragment {
                 Window window = getActivity().getWindow();
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                window.setStatusBarColor(Color.parseColor(mainActivity.getStatusColor()));
-                if(mainActivity.colourednavigation)window.setNavigationBarColor(Color.parseColor(mainActivity.getStatusColor()));
+                window.setStatusBarColor(mainActivity.skinStatusBar);
+                if(mainActivity.colourednavigation)window.setNavigationBarColor(mainActivity.skinStatusBar);
             }
         }
     };

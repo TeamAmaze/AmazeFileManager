@@ -350,16 +350,9 @@ public class Futils {
 
     public void showProps(final File f, final Main c,boolean root) {
         String date = getString(c.getActivity(), R.string.date) + getdate(f);
-        String items = "", size = "", name, parent;
+        String items = getString(c.getActivity(), R.string.totalitems)+" calculating", size = getString(c.getActivity(), R.string.size)+" calculating", name, parent;
         name = getString(c.getActivity(), R.string.name) + f.getName();
         parent = getString(c.getActivity(), R.string.location) + f.getParent();
-        if (f.isDirectory()) {
-            size = getString(c.getActivity(), R.string.size) + readableFileSize(folderSize(f));
-            items = getString(c.getActivity(), R.string.totalitems) + count(f,c.getResources(),true);
-        } else if (f.isFile()) {
-            items = "";
-            size = getString(c.getActivity(), R.string.size) + getSize(f);
-        }
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c.getActivity());
         String skin = sp.getString("skin_color", "#5677fc");
         MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
@@ -380,29 +373,18 @@ public class Futils {
 
             @Override
             public void onNegative(MaterialDialog materialDialog) {
-                try {
-                    //c.copyToClipboard(c.getActivity(), getMD5Checksum(f.getPath()));
-                    Toast.makeText(c.getActivity(), c.getResources().getString(R.string.md5copied), Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
         });
-        new GenerateMD5Task(a, f, name, parent, size, items, date).execute(f.getPath());
+        MaterialDialog materialDialog=a.build();
+        materialDialog.show();
+        new GenerateMD5Task(materialDialog, f, name, parent, size, items, date,c.getActivity()).execute(f.getPath());
     }
 
     public void showProps(final File f, final Context c,int theme1) {
         String date = getString(c, R.string.date) + getdate(f);
-        String items = "", size = "", name, parent;
+        String items = getString(c, R.string.totalitems)+" calculating", size = getString(c, R.string.size)+" calculating", name, parent;
         name = getString(c, R.string.name) + f.getName();
         parent = getString(c, R.string.location) + f.getParent();
-        if (f.isDirectory()) {
-            size = getString(c, R.string.size) + readableFileSize(folderSize(f));
-            items = getString(c, R.string.totalitems) + count(f,c.getResources(),true);
-        } else if (f.isFile()) {
-            items = "";
-            size = getString(c, R.string.size) + getSize(f);
-        }
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         String skin = sp.getString("skin_color", "#5677fc");
         MaterialDialog.Builder a = new MaterialDialog.Builder(c);
@@ -423,15 +405,12 @@ public class Futils {
 
             @Override
             public void onNegative(MaterialDialog materialDialog) {
-                try {
-                    //copyToClipboard(c, getMD5Checksum(f.getPath()));
-                    Toast.makeText(c, c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
         });
-        new GenerateMD5Task(a, f, name, parent, size, items, date).execute(f.getPath());
+
+        MaterialDialog materialDialog=a.build();
+        materialDialog.show();
+        new GenerateMD5Task(materialDialog, f, name, parent, size, items, date,c).execute(f.getPath());
     }
     public boolean copyToClipboard(Context context, String text) {
         try {

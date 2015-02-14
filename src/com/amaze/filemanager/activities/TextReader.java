@@ -19,60 +19,46 @@
 
 package com.amaze.filemanager.activities;
 
-import android.app.Activity;
+
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.RootHelper;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
-import com.stericson.RootTools.execution.Command;
 
 import org.codehaus.plexus.util.FileUtils;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
+
 public class TextReader extends ActionBarActivity implements TextWatcher {
 
     String path;
@@ -117,7 +103,7 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         rootMode = PreferenceManager.getDefaultSharedPreferences(c)
                 .getBoolean("rootmode", false);
-        int sdk=Build.VERSION.SDK_INT;
+        int sdk= Build.VERSION.SDK_INT;
 
         if(sdk==20 || sdk==19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
@@ -246,7 +232,7 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                     System.out.println("setting");
                     try {//
                         RootTools.remount(mFile.getPath(), "RW");
-                        RootHelper.runAndWait("chmod "+777+" "+mFile.getPath(),true);
+                        RootHelper.runAndWait("chmod " + 777 + " " + mFile.getPath(), true);
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }}
