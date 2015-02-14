@@ -268,17 +268,14 @@ public class MainActivity extends ActionBarActivity{
 
             }
 
-        LinearLayout linearLayout3 = (LinearLayout) findViewById(R.id.settings_bg);
         mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         View v=getLayoutInflater().inflate(R.layout.drawerheader,null);
         if(Build.VERSION.SDK_INT>=21){
-        linearLayout3.setBackgroundColor(skinStatusBar);
         v.setBackgroundColor(skinStatusBar);}
-        else{linearLayout3.setBackgroundColor(Color.parseColor(skin));
-            v.setBackgroundColor(Color.parseColor(skin));}
+        else{v.setBackgroundColor(Color.parseColor(skin));}
         ((TextView)v.findViewById(R.id.firstline)).setTextColor(Color.WHITE);
         mDrawerList.addHeaderView(v);
         list = new ArrayList<String>();
@@ -291,6 +288,7 @@ public class MainActivity extends ActionBarActivity{
         }
         list.add(utils.getString(this, R.string.apps));
         list.add(utils.getString(this, R.string.bookmanag));
+        list.add(utils.getString(this,R.string.setting));
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
         if (savedInstanceState == null) {
@@ -308,21 +306,7 @@ public class MainActivity extends ActionBarActivity{
             DrawerLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mDrawerLayout.getLayoutParams();
             p.setMargins(0, config.getPixelInsetTop(false), 0, 0);
         }*/
-        final Activity activity=this;
-        ((ImageButton) findViewById(R.id.settingsbutton)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent in = new Intent(MainActivity.this, Preferences.class);
 
-                final int enter_anim =R.anim.slide_out_bottom;
-                final int exit_anim =R.anim.slide_in_top;
-
-                activity.overridePendingTransition(exit_anim, enter_anim);
-                activity.finish();
-                activity.overridePendingTransition(exit_anim, enter_anim);
-                activity.startActivity(in);
-            }
-        });
         if (theme1 == 1) {
             mDrawerList.setBackgroundResource(android.R.drawable.screen_background_dark);
         }
@@ -480,7 +464,7 @@ public class MainActivity extends ActionBarActivity{
         if (mDrawerLayout.isDrawerOpen(mDrawerLinear))
             mDrawerLayout.closeDrawer(mDrawerLinear);
         else {
-            if (select < list.size() - 2) {
+            if (select < list.size() - 3) {
                 try {
 
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
@@ -592,9 +576,9 @@ public class MainActivity extends ActionBarActivity{
     }
     public void selectItem(final int i) {
 
-        if (i < list.size() - 2) {
+        if (i < list.size() - 3) {
 
-                if (select == null || select >= list.size() - 2) {
+                if (select == null || select >= list.size() - 3) {
                     TabFragment tabFragment=new TabFragment();
                        Bundle a = new Bundle();
                         a.putString("path", list.get(i));
@@ -612,7 +596,7 @@ public class MainActivity extends ActionBarActivity{
 
             }
         } else {
-            if (i == list.size() - 2) {
+            if (i == list.size() - 3) {
 
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                 transaction2.replace(R.id.content_frame, new AppsList());
@@ -622,7 +606,7 @@ public class MainActivity extends ActionBarActivity{
                 //title.setText(utils.getString(this, R.string.apps));
                 //title.setVisibility(View.VISIBLE);
                 toolbar.setTitle(utils.getString(this, R.string.apps));
-            } else if (i == list.size() - 1) {
+            } else if (i == list.size() - 2) {
 
                 android.support.v4.app.FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
                 transaction3.replace(R.id.content_frame, new BookmarksManager());
@@ -632,7 +616,19 @@ public class MainActivity extends ActionBarActivity{
                 //title.setText(utils.getString(this, R.string.bookmanag));
                 //title.setVisibility(View.VISIBLE);
                 toolbar.setTitle(utils.getString(this, R.string.bookmanag));
-                }
+                }else if (i == list.size() -1) {
+
+                Intent in = new Intent(MainActivity.this, Preferences.class);
+
+                final int enter_anim =R.anim.slide_out_bottom;
+                final int exit_anim =R.anim.slide_in_top;
+
+                overridePendingTransition(exit_anim, enter_anim);
+                finish();
+                overridePendingTransition(exit_anim, enter_anim);
+                startActivity(in);
+
+            }
         }
         select = i;
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);

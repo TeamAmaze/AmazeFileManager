@@ -141,17 +141,21 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
                 textView.setText(new File(values.get(position)).getName());
             }else textView.setText(values.get(position));
         }
-        if (position == values.size() - 1) {
+        if (position == values.size() - 2) {
             if (myChecked.get(position)) {
                 imageView.setImageResource(R.drawable.ic_action_not_important);
             } else
                 imageView.setImageDrawable(icons.getBookDrawable1());
-        }else if(position == values.size() - 2){
+        }else if(position == values.size() - 3){
             if(myChecked.get(position)) {
                 imageView.setImageResource(R.drawable.ic_action_view_as_grid);
             } else
                 imageView.setImageDrawable(icons.getGridDrawable());
-        }else{
+        }else if(position == values.size() - 1){
+                imageView.setImageResource(R.drawable.ic_action_settings);
+
+        }
+        else{
             if(myChecked.get(position)){
                 imageView.setImageResource(R.drawable.folder_drawer_white);
                 imageView.setColorFilter(colorMatrixColorFilter);}
