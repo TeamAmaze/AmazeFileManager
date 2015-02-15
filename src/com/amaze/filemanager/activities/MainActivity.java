@@ -168,9 +168,9 @@ public class MainActivity extends ActionBarActivity{
         }
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         utils = new Futils();
-        s=new Shortcuts(this);
-        path=getIntent().getStringExtra("path");
-        restart=getIntent().getBooleanExtra("restart",false);
+        s = new Shortcuts(this);
+        path = getIntent().getStringExtra("path");
+        restart = getIntent().getBooleanExtra("restart", false);
         val = getStorageDirectories();
         rootmode = Sp.getBoolean("rootmode", false);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
@@ -178,24 +178,24 @@ public class MainActivity extends ActionBarActivity{
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int th = Integer.parseInt(Sp.getString("theme", "0"));
-        boolean v142=Sp.getBoolean("v1.4.2",false);
-         if(!v142){
-             try {
-                 utils.deletedirectory(new File("/data/data/com.amaze.filemanager"));
-             } catch (Exception e) {
-                 try {
-                     utils.deletedirectory(getCacheDir());
-                 } catch (Exception e1) {
+        boolean v142 = Sp.getBoolean("v1.4.2", false);
+        if (!v142) {
+            try {
+                utils.deletedirectory(new File("/data/data/com.amaze.filemanager"));
+            } catch (Exception e) {
+                try {
+                    utils.deletedirectory(getCacheDir());
+                } catch (Exception e1) {
 
-                 }
+                }
 
-             }
-             Sp.edit().putBoolean("v1.4.2", true).apply();
-         }
+            }
+            Sp.edit().putBoolean("v1.4.2", true).apply();
+        }
         theme1 = th;
         if (th == 2) {
             Sp.edit().putString("uimode", "0").commit();
-            if(hour<=6 || hour>=18) {
+            if (hour <= 6 || hour >= 18) {
                 theme1 = 1;
             } else
                 theme1 = 0;
@@ -224,19 +224,19 @@ public class MainActivity extends ActionBarActivity{
 
                 // file picker intent
                 mReturnIntent = true;
-                Toast.makeText(this, utils.getString(con,R.string.pick_a_file), Toast.LENGTH_LONG).show();
-            } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)){
+                Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
+            } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
 
                 // ringtone picker intent
                 mReturnIntent = true;
                 mRingtonePickerIntent = true;
-                Toast.makeText(this, utils.getString(con,R.string.pick_a_file), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
             } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
 
                 // zip viewer intent
                 Uri uri = intent.getData();
-                openzip=true;
-                zippath=uri.getPath();
+                openzip = true;
+                zippath = uri.getPath();
             }
         } catch (Exception e) {
 
@@ -248,33 +248,84 @@ public class MainActivity extends ActionBarActivity{
         String x = getStatusColor();
         skinStatusBar = Color.parseColor(getStatusColor());
         // status bar
-        int sdk=Build.VERSION.SDK_INT;
+        int sdk = Build.VERSION.SDK_INT;
 
-            if(sdk==20 || sdk==19) {
-                SystemBarTintManager tintManager = new SystemBarTintManager(this);
-                tintManager.setStatusBarTintEnabled(true);
-                tintManager.setStatusBarTintColor(Color.parseColor(skin));
-                FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
-                SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
-                p.setMargins(0, config.getStatusBarHeight(), 0, 0);
-            }else if(Build.VERSION.SDK_INT>=21){
-                colourednavigation=Sp.getBoolean("colorednavigation",true);
-                Window window =getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                window.setStatusBarColor(Color.parseColor(getStatusColor()));
-                if(colourednavigation)
+        if (sdk == 20 || sdk == 19) {
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintColor(Color.parseColor(skin));
+            FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
+            SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
+            p.setMargins(0, config.getStatusBarHeight(), 0, 0);
+        } else if (Build.VERSION.SDK_INT >= 21) {
+            colourednavigation = Sp.getBoolean("colorednavigation", true);
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(Color.parseColor(getStatusColor()));
+            if (colourednavigation)
                 window.setNavigationBarColor(skinStatusBar);
 
-            }
+        }
 
         mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
+        View settingsbutton = findViewById(R.id.settingsbutton);
+        if (theme1 == 1) {
+            settingsbutton.setBackgroundResource(android.R.color.black);
+            ((ImageView) settingsbutton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
+        }settingsbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(MainActivity.this, Preferences.class);
+
+                final int enter_anim = R.anim.slide_out_bottom;
+                final int exit_anim = R.anim.slide_in_top;
+
+                overridePendingTransition(exit_anim, enter_anim);
+                finish();
+                overridePendingTransition(exit_anim, enter_anim);
+                startActivity(in);
+            }
+        });
+        View appbutton = findViewById(R.id.appbutton);
+        if (theme1 == 1)
+        {appbutton.setBackgroundResource(android.R.color.black);
+            ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_action_view_as_grid);
+    }appbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                transaction2.replace(R.id.content_frame, new AppsList());
+
+                pending_fragmentTransaction=transaction2;
+                mDrawerLayout.closeDrawer(mDrawerLinear);
+                select=list.size()+1;
+                adapter.toggleChecked(false);
+            }
+        });
+        View bookbutton=findViewById(R.id.bookbutton);
+        if(theme1==1) {
+            ((ImageView) bookbutton.findViewById(R.id.bookicon)).setImageResource(R.drawable.ic_action_not_important);
+            bookbutton.setBackgroundResource(android.R.color.black);
+        }
+            bookbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                transaction2.replace(R.id.content_frame, new BookmarksManager());
+
+                pending_fragmentTransaction=transaction2;
+                mDrawerLayout.closeDrawer(mDrawerLinear);
+                select=list.size()+2;
+                adapter.toggleChecked(false);
+            }
+        });
         View v=getLayoutInflater().inflate(R.layout.drawerheader,null);
         if(Build.VERSION.SDK_INT>=21){
-        v.setBackgroundColor(skinStatusBar);}
+            v.setBackgroundColor(skinStatusBar);}
         else{v.setBackgroundColor(Color.parseColor(skin));}
         ((TextView)v.findViewById(R.id.firstline)).setTextColor(Color.WHITE);
         mDrawerList.addHeaderView(v);
@@ -286,9 +337,6 @@ public class MainActivity extends ActionBarActivity{
             else if(file.canExecute())
                 list.add(val.get(i));
         }
-        list.add(utils.getString(this, R.string.apps));
-        list.add(utils.getString(this, R.string.bookmanag));
-        list.add(utils.getString(this,R.string.setting));
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
         if (savedInstanceState == null) {
@@ -298,38 +346,11 @@ public class MainActivity extends ActionBarActivity{
             select = savedInstanceState.getInt("selectitem", 0);
             adapter.toggleChecked(select);
         }
-        /*if (Build.VERSION.SDK_INT >= 19) {
-            SystemBarTintManager tintManager = new SystemBarTintManager(this);
-            tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintColor(Color.parseColor(skin));
-            SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
-            DrawerLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mDrawerLayout.getLayoutParams();
-            p.setMargins(0, config.getPixelInsetTop(false), 0, 0);
-        }*/
-
         if (theme1 == 1) {
             mDrawerList.setBackgroundResource(android.R.drawable.screen_background_dark);
         }
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerList.setDivider(null);
-        /*progress = (ProgressWheel) findViewById(R.id.progressBar);
-        progress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (select != 102) {
-                    android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.content_frame, new ProcessViewer());
-                    //   transaction.addToBackStack(null);
-                    select = 102;
-
-                    //title.setText(utils.getString(con, R.string.process_viewer));
-                    //Commit the transaction
-                    transaction.commit();
-                } else {
-                    selectItem(0);
-                }
-            }
-        });*/
         if (select == 0) {
 
             //title.setVisibility(View.GONE);
@@ -575,10 +596,7 @@ public class MainActivity extends ActionBarActivity{
 
     }
     public void selectItem(final int i) {
-
-        if (i < list.size() - 3) {
-
-                if (select == null || select >= list.size() - 3) {
+        if (select == null || select >= list.size() -2) {
                     TabFragment tabFragment=new TabFragment();
                        Bundle a = new Bundle();
                         a.putString("path", list.get(i));
@@ -595,41 +613,6 @@ public class MainActivity extends ActionBarActivity{
                     pending_path=list.get(i);
 
             }
-        } else {
-            if (i == list.size() - 3) {
-
-                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-                transaction2.replace(R.id.content_frame, new AppsList());
-                // transaction2.addToBackStack(null);
-                // Commit the transaction
-                pending_fragmentTransaction=transaction2;
-                //title.setText(utils.getString(this, R.string.apps));
-                //title.setVisibility(View.VISIBLE);
-                toolbar.setTitle(utils.getString(this, R.string.apps));
-            } else if (i == list.size() - 2) {
-
-                android.support.v4.app.FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
-                transaction3.replace(R.id.content_frame, new BookmarksManager());
-                // transaction3.addToBackStack(null);
-                // Commit the transaction
-                pending_fragmentTransaction=transaction3;
-                //title.setText(utils.getString(this, R.string.bookmanag));
-                //title.setVisibility(View.VISIBLE);
-                toolbar.setTitle(utils.getString(this, R.string.bookmanag));
-                }else if (i == list.size() -1) {
-
-                Intent in = new Intent(MainActivity.this, Preferences.class);
-
-                final int enter_anim =R.anim.slide_out_bottom;
-                final int exit_anim =R.anim.slide_in_top;
-
-                overridePendingTransition(exit_anim, enter_anim);
-                finish();
-                overridePendingTransition(exit_anim, enter_anim);
-                startActivity(in);
-
-            }
-        }
         select = i;
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);

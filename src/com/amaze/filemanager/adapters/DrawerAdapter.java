@@ -101,9 +101,6 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
         }
         icons = new IconUtils(Sp, m);
         this.m = m;
-        putColors();
-        color=colors.get(m.skin);
-        if(color==null){color=colors.get("#03A9F4");}
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -124,9 +121,9 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
 
         float[] src = {
 
-                color[0], 0, 0, 0, 0,
-                0, color[1], 0, 0, 0,
-                0, 0,  color[2],0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0,  0,0, 0,
                 0, 0, 0, 1, 0
         };
         ColorMatrix colorMatrix = new ColorMatrix(src);
@@ -137,40 +134,27 @@ void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c})
             textView.setText(R.string.rootdirectory);
         }
         else {
-            if (position != values.size() - 1 && position != values.size() - 2){
                 textView.setText(new File(values.get(position)).getName());
-            }else textView.setText(values.get(position));
         }
-        if (position == values.size() - 2) {
-            if (myChecked.get(position)) {
-                imageView.setImageResource(R.drawable.ic_action_not_important);
-            } else
-                imageView.setImageDrawable(icons.getBookDrawable1());
-        }else if(position == values.size() - 3){
-            if(myChecked.get(position)) {
-                imageView.setImageResource(R.drawable.ic_action_view_as_grid);
-            } else
-                imageView.setImageDrawable(icons.getGridDrawable());
-        }else if(position == values.size() - 1){
-                imageView.setImageResource(R.drawable.ic_action_settings);
-
-        }
-        else{
             if(myChecked.get(position)){
                 imageView.setImageResource(R.drawable.folder_drawer_white);
-                imageView.setColorFilter(colorMatrixColorFilter);}
+                if(m.theme1==0)
+                    imageView.setColorFilter(colorMatrixColorFilter);}
             else
                 imageView.setImageResource(R.drawable.folder_drawer);
-        }
+
         if(myChecked.get(position)){
-            imageView.setColorFilter(colorMatrixColorFilter);
-           textView.setTypeface(Typeface.DEFAULT_BOLD);
-            textView.setTextColor(Color.parseColor(m.skin));}
+            if(m.theme1==0){imageView.setColorFilter(colorMatrixColorFilter);
+            textView.setTextColor(m.getResources().getColor(android.R.color.black));}
+          else textView.setTextColor(m.getResources().getColor(android.R.color.white));
+                textView.setTypeface(Typeface.DEFAULT_BOLD);
+
+        }
         else
         if(m.theme1==0)
             textView.setTextColor(m.getResources().getColor(android.R.color.black));
         else
-            textView.setTextColor(m.getResources().getColor(android.R.color.white));
+            textView.setTextColor(m.getResources().getColor(android.R.color.darker_gray));
 
         return rowView;
     }

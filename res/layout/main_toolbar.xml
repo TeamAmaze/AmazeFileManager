@@ -71,15 +71,123 @@
         android:layout_width="290dp"
         android:layout_height="match_parent"
         android:id="@+id/left_drawer"
+        android:background="@android:color/white"
         android:layout_gravity="start"
         >
+        <RelativeLayout
+            android:elevation="10dp"
+            android:id="@+id/settingsbutton"
+            android:layout_width="fill_parent"
+            android:layout_height="58dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/listitem1"
+            android:clickable="true">
 
+            <ImageView
+                android:id="@+id/settingicon"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="16dp"
+                android:clickable="false"
+                android:gravity="center_vertical"
+                android:src="@drawable/ic_action_settings"
+                android:contentDescription="@string/icon" />
+
+            <TextView
+                android:id="@+id/settingtext"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="72dp"
+                android:textSize="16sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text="@string/setting"
+                android:clickable="false"
+                android:gravity="center_vertical" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#7f696969"
+            android:layout_above="@id/settingsbutton"
+            android:id="@+id/divider1"></View>
+        <RelativeLayout
+            android:elevation="10dp"
+            android:id="@+id/bookbutton"
+            android:layout_width="fill_parent"
+            android:layout_height="58dp"
+            android:layout_above="@id/divider1"
+            android:background="@drawable/listitem1"
+            android:clickable="true">
+
+            <ImageView
+                android:id="@+id/bookicon"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="16dp"
+                android:clickable="false"
+                android:gravity="center_vertical"
+                android:src="@drawable/ic_action_not_important_light"
+                android:contentDescription="@string/icon" />
+
+            <TextView
+                android:id="@+id/booktext"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="72dp"
+                android:textSize="16sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text="@string/bookmanag"
+                android:clickable="false"
+                android:gravity="center_vertical" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:elevation="10dp"
+            android:id="@+id/appbutton"
+            android:layout_width="fill_parent"
+            android:layout_height="58dp"
+            android:layout_above="@id/bookbutton"
+            android:background="@drawable/listitem1"
+            android:clickable="true">
+
+            <ImageView
+                android:id="@+id/appicon"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="16dp"
+                android:clickable="false"
+                android:gravity="center_vertical"
+                android:src="@drawable/ic_action_view_as_grid_light"
+                android:contentDescription="@string/icon" />
+
+            <TextView
+                android:id="@+id/apptext"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="72dp"
+                android:textSize="16sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text="@string/apps"
+                android:clickable="false"
+                android:gravity="center_vertical" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#7f696969"
+            android:layout_above="@id/appbutton"
+            android:id="@+id/divider2"></View>
         <ListView
             android:id="@+id/menu_drawer"
             style="@android:style/Theme.Holo.Light"
             android:layout_width="290dp"
             android:layout_alignParentTop="true"
-            android:layout_height="match_parent"
+            android:layout_above="@id/divider2"
+            android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:background="#ffffff"
             android:choiceMode="singleChoice"

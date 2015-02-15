@@ -20,7 +20,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/second"
     android:layout_width="fill_parent"
-    android:layout_height="48dp"
+    android:layout_height="58dp"
     android:background="@drawable/listitem1"
     android:clickable="true">
 
@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_marginLeft="72dp"
-        android:textSize="15sp"
+        android:textSize="16sp"
         android:singleLine="true"
         android:ellipsize="end"
         android:clickable="false"
