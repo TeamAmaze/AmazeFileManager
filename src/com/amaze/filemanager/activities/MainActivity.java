@@ -563,8 +563,8 @@ public class MainActivity extends ActionBarActivity{
             else if(f.canExecute())
                 list.add(file);
         }
-        list.add(utils.getString(this, R.string.apps));
-        list.add(utils.getString(this, R.string.bookmanag));
+        /*list.add(utils.getString(this, R.string.apps));
+        list.add(utils.getString(this, R.string.bookmanag));*/
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
     }

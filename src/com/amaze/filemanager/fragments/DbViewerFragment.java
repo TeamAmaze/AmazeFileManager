@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -36,6 +37,7 @@ public class DbViewerFragment extends Fragment {
     private TextView textView;
     private ArrayList<String> schemaList;
     private RelativeLayout.LayoutParams matchParent;
+    private RelativeLayout relativeLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -44,7 +46,7 @@ public class DbViewerFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.fragment_db_viewer, null);
         tableLayout = (TableLayout) rootView.findViewById(R.id.table);
-        //relativeLayout = (RelativeLayout) rootView.findViewById(R.id.tableLayout);
+        relativeLayout = (RelativeLayout) rootView.findViewById(R.id.tableLayout);
         tableName = getArguments().getString("table");
         dbViewer.setTitle(tableName);
         matchParent = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -56,7 +58,7 @@ public class DbViewerFragment extends Fragment {
 
         tableRow = new TableRow(getActivity());
         tableRow.setLayoutParams(matchParent);
-        tableRow.setBackgroundColor(Color.parseColor("#00ffff"));
+        tableRow.setBackgroundColor(Color.parseColor("#989898"));
         for (String s : schemaList) {
             Log.d("table schema is - ", s);
             textView = new TextView(getActivity());
@@ -87,10 +89,17 @@ public class DbViewerFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (dbViewer.theme1 == 1)
-            tableLayout.setBackgroundColor(Color.parseColor("#000000"));
+            relativeLayout.setBackgroundColor(Color.parseColor("#000000"));
         else
-            tableLayout.setBackgroundColor(Color.parseColor("#ffffff"));
+            relativeLayout.setBackgroundColor(Color.parseColor("#ffffff"));
 
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        schemaCursor.close();
+        contentCursor.close();
     }
 
     private ArrayList<String[]> getDbTableDetails(Cursor c) {
@@ -98,14 +107,13 @@ public class DbViewerFragment extends Fragment {
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             String[] temp = new String[c.getColumnCount()];
             for (int i = 0; i < temp.length; i++) {
-                //Log.d("table content extra", c.getString(i));
                 temp[i] = c.getString(i);
             }
             result.add(temp);
         }
         return result;
     }
-    public ArrayList<String> getDbTableSchema(Cursor c) {
+    private ArrayList<String> getDbTableSchema(Cursor c) {
         ArrayList<String> result = new ArrayList<String>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             result.add(c.getString(1));

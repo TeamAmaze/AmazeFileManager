@@ -14,6 +14,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -104,7 +106,6 @@ public class DbViewer extends ActionBarActivity {
 
         path = getIntent().getStringExtra("path");
         pathFile = new File(path);
-
         listView = (ListView) findViewById(R.id.listView);
 
         load(pathFile);
@@ -148,7 +149,6 @@ public class DbViewer extends ActionBarActivity {
                     @Override
                     public void run() {
 
-                        toolbar.setTitle(pathFile.getName());
                         sqLiteDatabase = SQLiteDatabase.openDatabase(file.getPath(), null, SQLiteDatabase.OPEN_READONLY);
 
                         c = sqLiteDatabase.rawQuery(
@@ -193,5 +193,26 @@ public class DbViewer extends ActionBarActivity {
         super.onDestroy();
         sqLiteDatabase.close();
         c.close();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        toolbar.setTitle(pathFile.getName());
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            toolbar.setTitle(pathFile.getName());
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }
