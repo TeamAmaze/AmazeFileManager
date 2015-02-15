@@ -33,10 +33,9 @@ public class DbViewerFragment extends Fragment {
     private ArrayList<String[]> contentList;
     private TableLayout tableLayout;
     private TableRow tableRow, tableRow1;
-    private ArrayList<TableRow> tableRows;
     private TextView textView;
-    private RelativeLayout relativeLayout;
     private ArrayList<String> schemaList;
+    private RelativeLayout.LayoutParams matchParent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,8 +46,8 @@ public class DbViewerFragment extends Fragment {
         tableLayout = (TableLayout) rootView.findViewById(R.id.table);
         //relativeLayout = (RelativeLayout) rootView.findViewById(R.id.tableLayout);
         tableName = getArguments().getString("table");
-        Toast.makeText(dbViewer, tableName, Toast.LENGTH_LONG).show();
         dbViewer.setTitle(tableName);
+        matchParent = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         schemaCursor = dbViewer.sqLiteDatabase.rawQuery("PRAGMA table_info(" + tableName + ");", null);
         contentCursor = dbViewer.sqLiteDatabase.rawQuery("SELECT * FROM " + tableName, null);
@@ -56,7 +55,7 @@ public class DbViewerFragment extends Fragment {
         contentList = getDbTableDetails(contentCursor);
 
         tableRow = new TableRow(getActivity());
-        tableRow.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        tableRow.setLayoutParams(matchParent);
         tableRow.setBackgroundColor(Color.parseColor("#00ffff"));
         for (String s : schemaList) {
             Log.d("table schema is - ", s);
@@ -64,13 +63,13 @@ public class DbViewerFragment extends Fragment {
             textView.setText(s);
             tableRow.addView(textView);
         }
-        tableLayout.addView(tableRow, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        tableLayout.addView(tableRow, matchParent);
 
         int j = 0;
         for (String[] strings : contentList) {
             Log.d("column number", "  " + j++);
             tableRow1 = new TableRow(getActivity());
-            tableRow1.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            tableRow1.setLayoutParams(matchParent);
             for (int i=0; i<strings.length; i++) {
                 Log.d("column data", strings[i]);
                 textView = new TextView(getActivity());
@@ -78,7 +77,7 @@ public class DbViewerFragment extends Fragment {
 
                 tableRow1.addView(textView);
             }
-            tableLayout.addView(tableRow1, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            tableLayout.addView(tableRow1, matchParent);
         }
 
         return rootView;

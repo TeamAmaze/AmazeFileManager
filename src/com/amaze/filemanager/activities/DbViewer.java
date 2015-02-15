@@ -48,10 +48,8 @@ public class DbViewer extends ActionBarActivity {
     private ListView listView;
     private ArrayList<String> arrayList;
     private ArrayAdapter arrayAdapter;
-    private TextView textView;
     private Cursor c;
     private File pathFile;
-    private RelativeLayout relativeLayout;
 
     public Toolbar toolbar;
     public SQLiteDatabase sqLiteDatabase;
@@ -110,14 +108,10 @@ public class DbViewer extends ActionBarActivity {
         listView = (ListView) findViewById(R.id.listView);
 
         load(pathFile);
-
-        textView = new TextView(this);
-        textView.setText(R.string.tables);
-        //listView.addHeaderView(textView);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("table name is ", arrayList.get(position) + " at " + position);
+
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 DbViewerFragment fragment = new DbViewerFragment();
                 Bundle bundle = new Bundle();
@@ -128,40 +122,15 @@ public class DbViewer extends ActionBarActivity {
                 fragmentTransaction.commit();
             }
         });
-        /*for (String[] strings : arrayList) {
-            for (int i = 0; i<strings.length; i++) {
-
-                Log.d("table details", strings[i]);
-                Cursor c1 = sqLiteDatabase.rawQuery("Select * FROM " + strings[i], null);
-                getDbTableDetails(c1);
-
-                Cursor c2 = sqLiteDatabase.rawQuery("PRAGMA table_info(" + strings[i] + ");", null);
-                getDbTableDetailsTEST(c2);
-            }
-        }*/
 
     }
 
-    public ArrayList<String> getDbTableNames(Cursor c) {
+    private ArrayList<String> getDbTableNames(Cursor c) {
         ArrayList<String> result = new ArrayList<String>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             for (int i = 0; i < c.getColumnCount(); i++) {
                 result.add(c.getString(i));
-                //Log.d("table content extra", c.getString(i));
             }
-        }
-        return result;
-    }
-    public ArrayList<String[]> getDbTableDetailsTEST(Cursor c) {
-        ArrayList<String[]> result = new ArrayList<String[]>();
-        int i = 0;
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            String[] temp = new String[c.getCount()];
-            for (i = 0; i < temp.length; i++) {
-                temp[i] = c.getString(i);
-                Log.d("table content extra", c.getString(i));
-            }
-            result.add(temp);
         }
         return result;
     }

@@ -544,8 +544,6 @@ public class Futils {
         }else if(f.getName().toLowerCase().endsWith(".apk")){
             showPackageDialog(f,m);
         } else if (f.getName().toLowerCase().endsWith(".db")) {
-            Toast.makeText(m.getApplicationContext(), "opening database", Toast.LENGTH_LONG).show();
-            Log.d("db path", f.getPath());
             Intent intent = new Intent(m, DbViewer.class);
             intent.putExtra("path", f.getPath());
             m.startActivity(intent);

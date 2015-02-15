@@ -40,13 +40,13 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
         this.items = items;
         this.date = date;
     }
-@Override
-public  void onProgressUpdate(String... ab){
-    if(a!=null && a.isShowing()){
-        a.setContent(name + "\n" + parent + "\n" + size + "\n" + items + "\n"
-                + date + "\n" + "md5: generating..");
+    @Override
+    public  void onProgressUpdate(String... ab){
+        if(a!=null && a.isShowing()){
+            a.setContent(name + "\n" + parent + "\n" + size + "\n" + items + "\n"
+                    + date + "\n" + "md5: generating..");
+        }
     }
-}
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -122,7 +122,7 @@ public  void onProgressUpdate(String... ab){
     public static byte[] createChecksum(String filename) throws Exception {
         InputStream fis =  new FileInputStream(filename);
 
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[8192];
         MessageDigest complete = MessageDigest.getInstance("MD5");
         int numRead;
 

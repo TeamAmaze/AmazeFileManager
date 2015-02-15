@@ -7,11 +7,15 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <TableLayout
-            android:id="@+id/table"
+        <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></TableLayout>
+            android:layout_height="match_parent">
+
+            <TableLayout
+                android:id="@+id/table"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></TableLayout>
+            </HorizontalScrollView>
     </ScrollView>
 
 </RelativeLayout>
