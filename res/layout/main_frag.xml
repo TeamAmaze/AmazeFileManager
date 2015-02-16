@@ -31,7 +31,7 @@
     -->
 
     <FrameLayout
-        android:elevation="10dp"
+        android:elevation="4dp"
         android:paddingRight="16dp"
         android:id="@+id/buttonbarframe"
         android:layout_below="@id/action_bar"

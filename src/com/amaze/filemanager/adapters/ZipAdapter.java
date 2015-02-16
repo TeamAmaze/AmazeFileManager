@@ -228,7 +228,7 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
                         holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.black));
                     else
                         holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
-                    holder.rl.setElevation(10f);
+                    holder.rl.setElevation(6f);
                 }
                 else
                     holder.rl.setBackgroundColor(zipViewer.skinselection);

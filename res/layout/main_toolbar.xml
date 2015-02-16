@@ -154,7 +154,6 @@
                 android:gravity="center_vertical" />
         </RelativeLayout>
         <RelativeLayout
-            android:elevation="10dp"
             android:id="@+id/settingsbutton"
             android:layout_width="fill_parent"
             android:layout_height="48dp"
