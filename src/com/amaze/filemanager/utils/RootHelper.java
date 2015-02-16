@@ -166,35 +166,41 @@ e.printStackTrace();
         return  per;}
     public static ArrayList<String[]> getFilesList(String path,boolean root,boolean showHidden)
     {
-        String p=" ";
-        if(showHidden)p="a ";
-        Futils futils=new Futils();
-        ArrayList<String[]> a=new ArrayList<String[]>();
-        ArrayList<String> ls=new ArrayList<String>();
-        if (root){
-            if(path.startsWith("/storage")){String cpath=getCommandLineString(path);
-            ls=runAndWait1("ls -l"+p+cpath,root);
-            for (String file : ls) {
-                    if(!file.contains("Permission denied"))
-                    try {
-                        String[] array=futils.parseName(file);
-                        array[0]=path+"/"+array[0];
-                        a.add(array);
-                    } catch (Exception e) {
-                   System.out.println(file);
-                        e.printStackTrace();
-                    }
+        String p = " ";
+        if (showHidden) p = "a ";
+        Futils futils = new Futils();
+        ArrayList<String[]> a = new ArrayList<String[]>();
+        ArrayList<String> ls = new ArrayList<String>();
+        if (root) {
+            if (path.startsWith("/storage")) {
+                String cpath = getCommandLineString(path);
+                ls = runAndWait1("ls -l" + p + cpath, root);
+                for (String file : ls) {
+                    if (!file.contains("Permission denied"))
+                        try {
+                            String[] array = futils.parseName(file);
+                            array[0] = path + "/" + array[0];
+                            a.add(array);
+                        } catch (Exception e) {
+                            System.out.println(file);
+                            e.printStackTrace();
+                        }
 
-            }}else if(futils.canListFiles(new File(path))){
-                a=getFilesList(path,showHidden);
-            }}
-            else if(futils.canListFiles(new File(path))){
-            a=getFilesList(path,showHidden);
-        }else {a=new ArrayList<String[]>();}
-        if(a.size()==0 && futils.canListFiles(new File(path))){
-            a=getFilesList(path,showHidden);
+                }
+            } else if (futils.canListFiles(new File(path))) {
+                a = getFilesList(path, showHidden);
+            } else {
+                a = new ArrayList<String[]>();
+            }
+        } else if (futils.canListFiles(new File(path))) {
+            a = getFilesList(path, showHidden);
+        } else {
+            a = new ArrayList<String[]>();
         }
-            return a;
+        if (a.size() == 0 && futils.canListFiles(new File(path))) {
+            a = getFilesList(path, showHidden);
+        }
+        return a;
 
     }
 

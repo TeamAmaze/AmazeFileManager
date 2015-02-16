@@ -110,6 +110,7 @@ public class ProcessViewer extends Fragment {
         @Override
         public void onReceive(Context arg0, Intent arg1) {
             // TODO Auto-generated method stub
+          PendingResult pendingResult=  goAsync();
             Bundle b = arg1.getExtras();
             if (b != null) {
                 int id = b.getInt("id");
@@ -179,7 +180,7 @@ public class ProcessViewer extends Fragment {
                         rootView.addView(root);
                     }
                 }
-            }
+            pendingResult.finish();}
         }
     };
     private BroadcastReceiver Extract_Receiver = new BroadcastReceiver() {
@@ -187,6 +188,7 @@ public class ProcessViewer extends Fragment {
         @Override
         public void onReceive(Context arg0, Intent arg1) {
             // TODO Auto-generated method stub
+            PendingResult pendingResult=goAsync();
             Bundle b = arg1.getExtras();
             if (b != null) {
                 final int id = b.getInt("id");
@@ -244,7 +246,7 @@ public class ProcessViewer extends Fragment {
                         rootView.addView(root);
                     }
                 }
-            }
+            pendingResult.finish();}
         }
     };
     private BroadcastReceiver Zip_Receiver = new BroadcastReceiver() {
@@ -252,6 +254,7 @@ public class ProcessViewer extends Fragment {
         @Override
         public void onReceive(Context arg0, Intent arg1) {
             // TODO Auto-generated method stub
+            PendingResult pendingResult=goAsync();
             Bundle b = arg1.getExtras();
 
             if (b != null) {
@@ -308,7 +311,7 @@ public class ProcessViewer extends Fragment {
                         rootView.addView(root);
                     }
                 }
-            }
+          pendingResult.finish();  }
         }
     };
 }

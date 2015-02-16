@@ -88,6 +88,7 @@ boolean foreground=true;
         }
         mBuilder = new NotificationCompat.Builder(this);
         Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.putExtra("openprocesses",true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setContentTitle(getResources().getString(R.string.zipping))

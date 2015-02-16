@@ -78,6 +78,7 @@ public class CopyService extends Service {
         b.putInt("id", startId);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
+        notificationIntent.putExtra("openprocesses",true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         mBuilder = new NotificationCompat.Builder(c);
         mBuilder.setContentIntent(pendingIntent);

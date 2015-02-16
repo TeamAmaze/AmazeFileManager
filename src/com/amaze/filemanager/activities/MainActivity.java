@@ -19,9 +19,6 @@
 
 package com.amaze.filemanager.activities;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -30,7 +27,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.RingtoneManager;
@@ -41,7 +37,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
@@ -49,7 +44,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -63,13 +57,8 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -90,33 +79,23 @@ import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.SearchService;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
-import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.MediaFile;
 import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.Shortcuts;
-import com.melnykov.fab.FloatingActionButton;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
-import org.xml.sax.SAXException;
-
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.regex.Pattern;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 
 public class MainActivity extends ActionBarActivity{
@@ -128,15 +107,12 @@ public class MainActivity extends ActionBarActivity{
     public ListView mDrawerList;
     SharedPreferences Sp;
     private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
-    //ImageButton paste;
     public List<String> val;
-    //ProgressWheel progress;
     MainActivity mainActivity=this;
     DrawerAdapter adapter;
     IconUtils util;
     RelativeLayout mDrawerLinear;
     Shortcuts s;
-    int tab = 0;
     public String skin,path="";
     public int theme;
     public ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
@@ -151,11 +127,11 @@ public class MainActivity extends ActionBarActivity{
     String zippath;
     public Spinner tabsSpinner;
     public boolean mRingtonePickerIntent = false,restart=false,colourednavigation=false;
-    private MenuItem progress_bar;
     public Toolbar toolbar;
     public int skinStatusBar;
     FragmentTransaction pending_fragmentTransaction;
     String pending_path;
+    boolean openprocesses=false;
     /**
      * Called when the activity is first created.
      */
@@ -170,6 +146,7 @@ public class MainActivity extends ActionBarActivity{
         utils = new Futils();
         s = new Shortcuts(this);
         path = getIntent().getStringExtra("path");
+        openprocesses=getIntent().getBooleanExtra("openprocesses",false);
         restart = getIntent().getBooleanExtra("restart", false);
         val = getStorageDirectories();
         rootmode = Sp.getBoolean("rootmode", false);
@@ -340,8 +317,18 @@ public class MainActivity extends ActionBarActivity{
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
         if (savedInstanceState == null) {
-            goToMain(path);
 
+            if (openprocesses) {
+                android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.content_frame, new ProcessViewer());
+                //   transaction.addToBackStack(null);
+                select = 102;
+                openprocesses=false;
+                //title.setText(utils.getString(con, R.string.process_viewer));
+                //Commit the transaction
+                transaction.commit();
+                supportInvalidateOptionsMenu();
+            }else goToMain(path);
         } else {
             select = savedInstanceState.getInt("selectitem", 0);
             adapter.toggleChecked(select);
@@ -379,7 +366,7 @@ public class MainActivity extends ActionBarActivity{
                     }   else utils.openFile(new File(pending_path),mainActivity);
 
                 } catch (ClassCastException e) {
-                    select=null;selectItem(0);
+                    select=null;goToMain("");
                 }pending_path=null;}
                 supportInvalidateOptionsMenu();
             }
@@ -485,8 +472,7 @@ public class MainActivity extends ActionBarActivity{
         if (mDrawerLayout.isDrawerOpen(mDrawerLinear))
             mDrawerLayout.closeDrawer(mDrawerLinear);
         else {
-            if (select < list.size() ) {
-                try {
+            try {
 
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
                     String name = fragment.getClass().getName();
@@ -520,13 +506,10 @@ public class MainActivity extends ActionBarActivity{
                                 fragmentTransaction.commit();
                                 supportInvalidateOptionsMenu();
 
-                            }}else {zipViewer.mActionMode.finish();}}
+                            }}else {zipViewer.mActionMode.finish();}}else if(name.contains("Process")){exit();}else goToMain("");
                 } catch (ClassCastException e) {
                     goToMain("");
                 }
-            } else {
-                goToMain("");
-            }
         }
     }
 
@@ -632,27 +615,7 @@ public class MainActivity extends ActionBarActivity{
         MenuItem s = menu.findItem(R.id.view);
         MenuItem search = menu.findItem(R.id.search);
         MenuItem paste = menu.findItem(R.id.paste);
-        progress_bar = menu.findItem(R.id.progressBar);
-        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View progress = layoutInflater.inflate(R.layout.toolbar_progress, null);
-        progress.setLayoutParams(new ViewGroup.LayoutParams(48, 48));
-        progress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (select != 102) {
-                    android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.content_frame, new ProcessViewer());
-                    //   transaction.addToBackStack(null);
-                    select = 102;
 
-                    //title.setText(utils.getString(con, R.string.process_viewer));
-                    //Commit the transaction
-                    transaction.commit();
-                } else {
-                    selectItem(0);
-                }supportInvalidateOptionsMenu();
-            }
-        });
 
         try {
             tabsSpinner.setVisibility(View.VISIBLE);
@@ -687,7 +650,6 @@ public class MainActivity extends ActionBarActivity{
                 menu.findItem(R.id.paste).setVisible(false);
                 paste.setVisible(false);
             }
-            progress_bar.setActionView(progress);
         } catch (ClassCastException e) {
             tabsSpinner.setVisibility(View.GONE);
             //toolbar.setTitle(list.get(select));
@@ -791,20 +753,6 @@ public class MainActivity extends ActionBarActivity{
                 MOVE_PATH = null;
 
                 invalidatePasteButton(item);
-                break;
-            case R.id.progressBar:
-                if (select != 102) {
-                    android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.content_frame, new ProcessViewer());
-                    //   transaction.addToBackStack(null);
-                    select = 102;
-
-                    //title.setText(utils.getString(con, R.string.process_viewer));
-                    //Commit the transaction
-                    transaction.commit();
-                } else {
-                    selectItem(0);
-                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -975,18 +923,13 @@ public class MainActivity extends ActionBarActivity{
     protected void onPause() {
         super.onPause();
         killToast();
-        unregisterReceiver(RECIEVER);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(SEARCHRECIEVER);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(LOADSEARCHRECIEVER);
-        //progress.setVisibility(View.INVISIBLE);
-        //progressWheel.setVisible(false);
-        //progress_bar.setVisible(false);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        registerReceiver(RECIEVER, new IntentFilter("run"));
         LocalBroadcastManager.getInstance(this).registerReceiver(SEARCHRECIEVER, new IntentFilter("searchresults"));
         LocalBroadcastManager.getInstance(this).registerReceiver(LOADSEARCHRECIEVER, new IntentFilter("loadsearchresults"));
 
@@ -1034,17 +977,6 @@ public class MainActivity extends ActionBarActivity{
                     p.setMessage("Found " +paths);
                 }p.show();
 
-            }
-        }
-    };
-    private BroadcastReceiver RECIEVER = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle b = intent.getExtras();
-            if (b != null) {
-                if(progress_bar!=null)
-                progress_bar.setVisible(b.getBoolean("run", false) ? true : false);
             }
         }
     };
