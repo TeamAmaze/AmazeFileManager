@@ -172,7 +172,7 @@ e.printStackTrace();
         ArrayList<String[]> a=new ArrayList<String[]>();
         ArrayList<String> ls=new ArrayList<String>();
         if (root){
-            String cpath=getCommandLineString(path);
+            if(path.startsWith("/storage")){String cpath=getCommandLineString(path);
             ls=runAndWait1("ls -l"+p+cpath,root);
             for (String file : ls) {
                     if(!file.contains("Permission denied"))
@@ -185,6 +185,8 @@ e.printStackTrace();
                         e.printStackTrace();
                     }
 
+            }}else if(futils.canListFiles(new File(path))){
+                a=getFilesList(path,showHidden);
             }}
             else if(futils.canListFiles(new File(path))){
             a=getFilesList(path,showHidden);

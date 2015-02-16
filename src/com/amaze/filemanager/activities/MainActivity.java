@@ -485,7 +485,7 @@ public class MainActivity extends ActionBarActivity{
         if (mDrawerLayout.isDrawerOpen(mDrawerLinear))
             mDrawerLayout.closeDrawer(mDrawerLinear);
         else {
-            if (select < list.size() - 3) {
+            if (select < list.size() ) {
                 try {
 
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
@@ -495,7 +495,6 @@ public class MainActivity extends ActionBarActivity{
                         Fragment fragment1 = tabFragment.getTab();
                         Main main = (Main) fragment1;
                         main.goBack();
-
                     } else if (name.contains("ZipViewer")){
                         ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
                         if(zipViewer.mActionMode==null)
