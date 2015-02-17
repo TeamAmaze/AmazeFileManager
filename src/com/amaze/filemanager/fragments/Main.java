@@ -901,7 +901,7 @@ public class Main extends android.support.v4.app.Fragment {
                         public void onPositive(MaterialDialog materialDialog) {
 
                             boolean b = utils.rename(f, edit.getText()
-                                    .toString());
+                                    .toString(),rootMode);
                             m.finish();
                             updateList();
                             if (b) {

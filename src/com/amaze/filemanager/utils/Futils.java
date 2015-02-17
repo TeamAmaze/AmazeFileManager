@@ -495,27 +495,15 @@ public class Futils {
 
     }
 
-    public boolean rename(File f, String name) {
+    public boolean rename(File f, String name,boolean root) {
         String newname = f.getParent() + "/" + name;
         if(f.getParentFile().canWrite()){
-            boolean b = f.renameTo(new File(newname));}
-        else{try{RootTools.getShell(true).add(new Command(0,"mv "+f.getPath()+" "+newname) {
-            @Override
-            public void commandOutput(int i, String s) {
-                System.out.println(s);
-            }
-
-            @Override
-            public void commandTerminated(int i, String s) {
-
-            }
-
-            @Override
-            public void commandCompleted(int i, int i2) {
-
-            }
-        });}catch (Exception e){return false;}}
-        return true;
+            return f.renameTo(new File(newname));}
+        else if(root) {
+            RootTools.remount(f.getPath(),"rw");
+            RootHelper.runAndWait("mv " + f.getPath() + " " + newname, true);
+            RootTools.remount(f.getPath(),"ro");
+        }return true;
     }
 
     public boolean canListFiles(File f) {
