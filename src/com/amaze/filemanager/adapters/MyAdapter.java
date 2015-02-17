@@ -366,7 +366,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             vholder.txtTitle = (TextView) view.findViewById(R.id.title);
             vholder.imageView = (ImageView) view.findViewById(R.id.icon_mime);
             vholder.imageView1 = (ImageView) view.findViewById(R.id.icon_thumb);
-            vholder.apk=(ImageView)view.findViewById(R.id.icon_directory);
             vholder.date= (TextView) view.findViewById(R.id.date);
             vholder.txtDesc= (TextView) view.findViewById(R.id.size);
             vholder.perm= (TextView) view.findViewById(R.id.perm);
@@ -402,7 +401,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setImageDrawable(rowItem.getImageId());
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
-              holder.apk.setVisibility(View.GONE);
                     holder.imageView.setColorFilter(null);
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
@@ -411,12 +409,10 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 main.ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
             }
             else if (Icons.isApk((rowItem.getDesc()))) {
-                holder.apk.setVisibility(View.GONE);
                 holder.imageView.setColorFilter(null);
                 main.ic.cancelLoad(holder.imageView);
                 main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),null);
             } if(Icons.isVideo(rowItem.getDesc())){
-                holder.apk.setVisibility(View.GONE);
                 holder.imageView.setColorFilter(null);
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
@@ -424,13 +420,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 main.ic.cancelLoad(holder.imageView1);
                 main.ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
 
-            }if(rowItem.isDirectory(main.rootMode)) {
-                holder.apk.setImageDrawable(rowItem.getImageId());
-                holder.apk.setVisibility(View.VISIBLE);
-                holder.imageView1.setVisibility(View.GONE);
-                holder.imageView.setVisibility(View.GONE);
-            }else{
-                holder.apk.setVisibility(View.GONE);
             }
             if(main.coloriseIcons){
 
