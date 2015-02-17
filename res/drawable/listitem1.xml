@@ -24,6 +24,6 @@
     <item android:state_activated="true" android:drawable="@color/safr" />
     <item android:state_checked="true" android:drawable="@color/safr" />-->
 
-    <item android:state_pressed="true" android:drawable="@drawable/safr_ripple" />
+    <item android:state_pressed="true" android:drawable="@drawable/safr_ripple_white" />
     <item android:drawable="@android:color/transparent" />
 </selector>

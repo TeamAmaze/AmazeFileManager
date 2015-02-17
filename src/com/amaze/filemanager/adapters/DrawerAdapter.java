@@ -47,6 +47,7 @@ import java.util.HashMap;
 public class DrawerAdapter extends ArrayAdapter<String> {
     private final Context context;
     private final ArrayList<String> values;
+    private RelativeLayout l;
     MainActivity m;
     Futils futils=new Futils();
     IconUtils icons;
@@ -112,7 +113,12 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         View rowView = inflater.inflate(R.layout.drawerrow, parent, false);
         TextView textView = (TextView) rowView.findViewById(R.id.firstline);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-        RelativeLayout l = (RelativeLayout) rowView.findViewById(R.id.second);
+        l = (RelativeLayout) rowView.findViewById(R.id.second);
+        if(m.theme1 == 0) {
+            l.setBackgroundResource(R.drawable.safr_ripple_white);
+        } else {
+            l.setBackgroundResource(R.drawable.safr_ripple_black);
+        }
         l.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View p1) {
@@ -139,24 +145,27 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         else {
             textView.setText(new File(values.get(position)).getName());
         }
-        if(myChecked.get(position)){
-            imageView.setImageResource(R.drawable.folder_drawer_white);
-            //if(m.theme1==0)
-                imageView.setColorFilter(colorMatrixColorFilter);}
-        else
-            imageView.setImageResource(R.drawable.folder_drawer);
 
         if(myChecked.get(position)){
             imageView.setColorFilter(colorMatrixColorFilter);
             //textView.setTypeface(Typeface.DEFAULT_BOLD);
             textView.setTextColor(Color.parseColor(m.skin));
 
+            imageView.setImageResource(R.drawable.folder_drawer_white);
+            //if(m.theme1==0)
+            imageView.setColorFilter(colorMatrixColorFilter);
         }
         else
-        if(m.theme1==0)
-            textView.setTextColor(m.getResources().getColor(android.R.color.black));
-        else
-            textView.setTextColor(m.getResources().getColor(android.R.color.darker_gray));
+        {
+            if(m.theme1==0) {
+                textView.setTextColor(m.getResources().getColor(android.R.color.black));
+            }
+            else
+            {
+                textView.setTextColor(m.getResources().getColor(android.R.color.darker_gray));
+            }
+            imageView.setImageResource(R.drawable.folder_drawer);
+        }
 
         return rowView;
     }

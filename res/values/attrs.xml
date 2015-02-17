@@ -22,4 +22,5 @@
 <resources>
     <attr name="popup" format="reference" />
     <attr name="toolbar_theme" format="reference" />
+    <attr name="ripple_color" format="color" />
 </resources>

@@ -63,6 +63,7 @@
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="popup">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="toolbar_theme">@style/overflow_white1</item>
+        <item name="ripple_color">@android:color/white</item>
 
     </style>
     <style name="overflow_white1" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -78,6 +79,7 @@
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="popup">@style/Theme.AppCompat</item>
         <item name="toolbar_theme">@style/overflow_white2</item>
+        <item name="ripple_color">@android:color/black</item>
     </style>
     <style name="overflow_white2" parent="Theme.AppCompat">
 

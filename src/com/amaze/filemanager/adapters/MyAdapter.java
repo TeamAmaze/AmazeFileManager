@@ -294,13 +294,12 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     holder.ext.setText("");
                     if (Build.VERSION.SDK_INT >= 21) {
 
-                        if (main.theme1==1)
-                            holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.black));
-                        else
-                            holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
-                        holder.rl.setElevation(6f);
-                    }
+                    /*if (zipViewer.mainActivity.theme1==1)
+                        holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.black));
                     else
+                        holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.white));*/
+                        holder.rl.setElevation(6f);
+                    } else
                         holder.rl.setBackgroundColor(main.skinselection);
                 } else {
 
@@ -332,11 +331,21 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     }}else gradientDrawable.setColor(Color.parseColor(main.skin));
                     if (rowItem.getSize().equals(main.goback))
                         gradientDrawable.setColor(Color.parseColor("#757575"));
-                    if (main.uimode == 0) {
-                        holder.rl.setBackgroundResource(R.drawable.listitem1);
-                    } else if (main.uimode == 1) {
-                        holder.rl.setBackgroundResource(R.drawable.bg_card);
+
+                    if (Build.VERSION.SDK_INT >= 21) {
+                        holder.rl.setElevation(0f);
                     }
+                }
+                if (main.uimode == 0) {
+                    if (main.theme1 == 0) {
+
+                        holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
+                    } else {
+
+                        holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
+                    }
+                } else if (main.uimode == 1) {
+                    holder.rl.setBackgroundResource(R.drawable.bg_card);
                 }
             }
             if (main.showPermissions)

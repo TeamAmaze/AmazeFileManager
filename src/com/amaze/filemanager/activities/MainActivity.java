@@ -251,7 +251,7 @@ public class MainActivity extends ActionBarActivity{
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         View settingsbutton = findViewById(R.id.settingsbutton);
         if (theme1 == 1) {
-            settingsbutton.setBackgroundResource(android.R.color.black);
+            settingsbutton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) settingsbutton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
         }settingsbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -269,7 +269,7 @@ public class MainActivity extends ActionBarActivity{
         });
         View appbutton = findViewById(R.id.appbutton);
         if (theme1 == 1)
-        {appbutton.setBackgroundResource(android.R.color.black);
+        {appbutton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_action_view_as_grid);
     }appbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -286,7 +286,7 @@ public class MainActivity extends ActionBarActivity{
         View bookbutton=findViewById(R.id.bookbutton);
         if(theme1==1) {
             ((ImageView) bookbutton.findViewById(R.id.bookicon)).setImageResource(R.drawable.ic_action_not_important);
-            bookbutton.setBackgroundResource(android.R.color.black);
+            bookbutton.setBackgroundResource(R.drawable.safr_ripple_black);
         }
             bookbutton.setOnClickListener(new View.OnClickListener() {
             @Override

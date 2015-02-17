@@ -184,18 +184,25 @@ public class RarAdapter extends ArrayAdapter<ZipObj> {
 
                 if (Build.VERSION.SDK_INT >= 21) {
 
-                    if (zipViewer.mainActivity.theme1==1)
+                    /*if (zipViewer.mainActivity.theme1==1)
                         holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.black));
                     else
-                        holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
+                        holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.white));*/
                     holder.rl.setElevation(6f);
-                }
-                else
+                } else
                     holder.rl.setBackgroundColor(zipViewer.skinselection);
             } else {
 
-                holder.rl.setBackgroundResource(R.drawable.listitem1);
+                if (Build.VERSION.SDK_INT >= 21) {
+                    holder.rl.setElevation(0f);
+                }
+            }
+            if (zipViewer.mainActivity.theme1 == 0) {
 
+                holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
+            } else {
+
+                holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
             }
         }
         holder.rl.setOnClickListener(new View.OnClickListener() {

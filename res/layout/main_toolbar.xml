@@ -97,7 +97,7 @@
             android:layout_width="fill_parent"
             android:layout_height="48dp"
             android:layout_above="@+id/bookbutton"
-            android:background="@drawable/listitem1"
+            android:background="@drawable/safr_ripple_white"
             android:clickable="true">
 
             <ImageView
@@ -128,7 +128,7 @@
             android:layout_width="fill_parent"
             android:layout_height="48dp"
             android:layout_above="@+id/settingsbutton"
-            android:background="@drawable/listitem1"
+            android:background="@drawable/safr_ripple_white"
             android:clickable="true">
 
             <ImageView
@@ -158,7 +158,7 @@
             android:layout_width="fill_parent"
             android:layout_height="48dp"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/listitem1"
+            android:background="@drawable/safr_ripple_white"
             android:clickable="true">
 
             <ImageView
