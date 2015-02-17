@@ -172,7 +172,7 @@ e.printStackTrace();
         ArrayList<String[]> a = new ArrayList<String[]>();
         ArrayList<String> ls = new ArrayList<String>();
         if (root) {
-            if (path.startsWith("/storage")) {
+            if (!path.startsWith("/storage")) {
                 String cpath = getCommandLineString(path);
                 ls = runAndWait1("ls -l" + p + cpath, root);
                 for (String file : ls) {

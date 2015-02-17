@@ -213,6 +213,7 @@ public class CopyService extends Service {
                     } catch (Exception e) {
                         System.out.println("amaze " + e);
                         publishResults("" + e, 0, 0, id, 0, 0, false, move);
+                        stopSelf(id);
                     }
 
                 }
@@ -223,11 +224,14 @@ public class CopyService extends Service {
                 Intent intent = new Intent("loadlist");
                 sendBroadcast(intent);
             } else if (rootmode) {
+                boolean m=true;
                 for (int i = 0; i < files.size(); i++) {
-                    RootTools.copyFile(getCommandLineString(files.get(i)),getCommandLineString(FILE2),true,true);
+                    boolean b=RootTools.copyFile(getCommandLineString(files.get(i)),getCommandLineString(FILE2),true,true);
+                    if(!b && files.get(i).contains("/0/"))b=RootTools.copyFile(getCommandLineString(files.get(i).replace("/0/","/legacy/")),getCommandLineString(FILE2),true,true);
+                    if(!b)m=false;
                     utils.scanFile(FILE2+"/"+new File(files.get(i)).getName(), c);
                 }
-                if(move){new DeleteTask(getContentResolver(),c).execute(utils.toFileArray(files));}
+                if(move  && m){new DeleteTask(getContentResolver(),c).execute(utils.toFileArray(files));}
 
                 Intent intent = new Intent("loadlist");
                 sendBroadcast(intent);
