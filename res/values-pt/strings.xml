@@ -296,5 +296,6 @@
     <string name="md5copied">MD5 copiada para a área de transferência</string>
     <string name="generating">A gerar..</string>
     <string name="tables">Tabela(s)</string>
+	<string name="colourednavigation">Barra de navegação colorida</string>
+    <string name="colourednavigationsum">Ative esta opção para colorir a barra de navegação com a cor do estilo</string>
 </resources>
-
