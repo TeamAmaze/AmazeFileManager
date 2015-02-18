@@ -141,7 +141,6 @@ public class DbViewer extends ActionBarActivity {
             @Override
             public void run() {
                 if (!file.canRead() && rootMode) {
-                    File 
                     RootTools.remount(file.getParent(), "RW");
                     RootHelper.runAndWait("chmod -R " + 777 + " " + file.getParent(), true);
                 }

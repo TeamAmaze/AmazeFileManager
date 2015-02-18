@@ -21,6 +21,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DbViewer;
 
 import java.lang.reflect.Array;
+import java.sql.Blob;
 import java.util.ArrayList;
 
 /**
@@ -38,6 +39,7 @@ public class DbViewerFragment extends Fragment {
     private ArrayList<String> schemaList;
     private RelativeLayout.LayoutParams matchParent;
     private RelativeLayout relativeLayout;
+    private String blobString;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -107,7 +109,31 @@ public class DbViewerFragment extends Fragment {
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             String[] temp = new String[c.getColumnCount()];
             for (int i = 0; i < temp.length; i++) {
-                temp[i] = c.getString(i);
+                int dataType = c.getType(i);
+                switch (dataType) {
+                    case 0:
+                        // #FIELD_TYPE_NULL
+                        temp[i] = null;
+                        break;
+                    case 1:
+                        // #FIELD_TYPE_INTEGER
+                        temp[i] = String.valueOf(c.getInt(i));
+                        break;
+                    case 2:
+                        // #FIELD_TYPE_FLOAT
+                        temp[i] = String.valueOf(c.getFloat(i));
+                        break;
+                    case 3:
+                        // #FIELD_TYPE_STRING
+                        temp[i] = c.getString(i);
+                        break;
+                    case 4:
+                        // #FIELD_TYPE_BLOB
+                        /*byte[] blob = c.getBlob(i);
+                        blobString = new String(blob);*/
+                        temp[i] = "(data)";
+                        break;
+                }
             }
             result.add(temp);
         }
