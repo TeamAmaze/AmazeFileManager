@@ -69,11 +69,11 @@ public class DbViewerFragment extends Fragment {
 
         int j = 0;
         for (String[] strings : contentList) {
-            Log.d("column number", "  " + j++);
+          //  Log.d("column number", "  " + j++);
             tableRow1 = new TableRow(getActivity());
             tableRow1.setLayoutParams(matchParent);
             for (int i=0; i<strings.length; i++) {
-                Log.d("column data", strings[i]);
+                //Log.d("column data", strings[i]);
                 textView = new TextView(getActivity());
                 textView.setText(strings[i]);
 

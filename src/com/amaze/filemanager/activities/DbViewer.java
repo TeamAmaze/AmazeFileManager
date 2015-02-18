@@ -141,20 +141,20 @@ public class DbViewer extends ActionBarActivity {
             @Override
             public void run() {
                 if (!file.canRead() && rootMode) {
-                    RootTools.remount(file.getPath(), "RO");
-                    RootHelper.runAndWait("chmod " + 0555 + " " + file.getPath(), true);
+                    File 
+                    RootTools.remount(file.getParent(), "RW");
+                    RootHelper.runAndWait("chmod -R " + 777 + " " + file.getParent(), true);
                 }
+                sqLiteDatabase = SQLiteDatabase.openDatabase(file.getPath(), null, SQLiteDatabase.OPEN_READONLY);
 
+                c = sqLiteDatabase.rawQuery(
+                        "SELECT name FROM sqlite_master WHERE type='table'", null);
+                arrayList = getDbTableNames(c);
+                arrayAdapter = new ArrayAdapter(DbViewer.this, android.R.layout.simple_list_item_1, arrayList);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 
-                        sqLiteDatabase = SQLiteDatabase.openDatabase(file.getPath(), null, SQLiteDatabase.OPEN_READONLY);
-
-                        c = sqLiteDatabase.rawQuery(
-                                "SELECT name FROM sqlite_master WHERE type='table'", null);
-                        arrayList = getDbTableNames(c);
-                        arrayAdapter = new ArrayAdapter(DbViewer.this, android.R.layout.simple_list_item_1, arrayList);
                         listView.setAdapter(arrayAdapter);
                     }
                 });
