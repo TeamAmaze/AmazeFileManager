@@ -258,7 +258,7 @@ public class AppsList extends ListFragment {
                 }
                 Collections.sort(c, new AppsSorter(p));
                 for (ApplicationInfo object:c)
-                a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk_grid), object.loadLabel(getActivity().getPackageManager()).toString(), object.publicSourceDir,"","","","",false));
+                a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk_grid), object.loadLabel(getActivity().getPackageManager()).toString(), object.publicSourceDir,"","","","",false,""));
 
             } catch (Exception e) {
                 //Toast.makeText(getActivity(), "" + e, Toast.LENGTH_LONG).show();

@@ -506,7 +506,7 @@ public class MainActivity extends ActionBarActivity{
                                 fragmentTransaction.commit();
                                 supportInvalidateOptionsMenu();
 
-                            }}else {zipViewer.mActionMode.finish();}}else if(name.contains("Process")){exit();}else goToMain("");
+                            }}else {zipViewer.mActionMode.finish();}}else if(name.contains("Process")){finish();}else goToMain("");
                 } catch (ClassCastException e) {
                     goToMain("");
                 }
@@ -1111,7 +1111,7 @@ public class MainActivity extends ActionBarActivity{
 
                 File f = new File(path);
 
-                for (String k1[] : RootHelper.getFilesList(f.getPath(),rootmode,true)) {
+                for (String k1[] : RootHelper.getFilesList(f.getPath(),rootmode,true,false)) {
                     File k=new File(k1[0]);
                     for (String j : ab) {
 

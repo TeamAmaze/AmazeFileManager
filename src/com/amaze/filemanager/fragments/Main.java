@@ -95,7 +95,6 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.services.asynctasks.LoadSearchList;
-import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.IconHolder;
@@ -527,7 +526,7 @@ public class Main extends android.support.v4.app.Fragment {
                 }if(gobackitem)
                 if (!f.getPath().equals("/")) {
                     if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))
-                        bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "..", "", "", goback, "", true));
+                        bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "..", "", "", goback, "", true,""));
                 }
                 adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
                         bitmap, ma);
@@ -1306,14 +1305,23 @@ public class Main extends android.support.v4.app.Fragment {
     public ArrayList<Layoutelements> addTo(ArrayList<String[]> mFile) {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         for (int i = 0; i < mFile.size(); i++) {
-            File f=new File(mFile.get(i)[0]);
-            if(!hiddenfiles.contains(mFile.get(i)[0])){
-                if (isDirectory(mFile.get(i))) {
-                    a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.count(f,res,showSize),mFile.get(i)[3],false));
+            String[] ele=mFile.get(i);
+            File f=new File(ele[0]);
+            String size="";
+            if(!hiddenfiles.contains(ele[0])){
+                if (isDirectory(ele)) {
+                    if(!ele[5].trim().equals(""))size=ele[5]+" Items";
+                    a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,mFile.get(i)[3],false,ele[4]));
 
                 } else {
+
                     try {
-                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],utils.getSize(mFile.get(i),showSize),mFile.get(i)[3],false));
+                        if(!ele[5].trim().equals(""))size=utils.readableFileSize(Long.parseLong(ele[5]));
+                    } catch (NumberFormatException e) {
+                        //e.printStackTrace();
+                    }
+                    try {
+                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,mFile.get(i)[3],false,ele[4]));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }}

@@ -85,7 +85,7 @@ boolean rootMode,showHidden;
     public void search(File file, String text) {
         if (file.isDirectory()) {
 
-            ArrayList<String[]> f= RootHelper.getFilesList(file.getPath(), rootMode, showHidden);
+            ArrayList<String[]> f= RootHelper.getFilesList(file.getPath(), rootMode, showHidden,false);
             // do you have permission to read this directory?
             if(run)
             for (String[] x : f) {

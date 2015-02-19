@@ -59,6 +59,11 @@
     <!-- appCompat -->
     <!-- light -->
     <style name="appCompatLight" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:actionModeCopyDrawable">@drawable/ic_content_copy_black_36dp</item>
+        <item name="android:actionModeCutDrawable">@drawable/ic_content_cut_black_36dp</item>
+        <item name="android:actionModeSelectAllDrawable">@drawable/ic_select_all_black_36dp</item>
+        <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_48dp</item>
+        <item name="android:actionModePasteDrawable">@drawable/ic_content_paste_black_36dp</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="popup">@style/ThemeOverlay.AppCompat.Light</item>
@@ -74,7 +79,11 @@
 
     <!-- dark -->
     <style name="appCompatDark" parent="Theme.AppCompat.NoActionBar">
-
+        <item name="android:actionModeCopyDrawable">@drawable/ic_content_copy_black_36dp</item>
+        <item name="android:actionModeCutDrawable">@drawable/ic_content_cut_black_36dp</item>
+        <item name="android:actionModeSelectAllDrawable">@drawable/ic_select_all_black_36dp</item>
+        <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_48dp</item>
+        <item name="android:actionModePasteDrawable">@drawable/ic_content_paste_black_36dp</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="popup">@style/Theme.AppCompat</item>

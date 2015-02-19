@@ -351,7 +351,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             if (main.showPermissions)
                 holder.perm.setText(rowItem.getPermissions());
             if (main.showLastModified)
-                holder.date.setText(rowItem.getDate("MMM dd, yyyy",main.year));
+                holder.date.setText(rowItem.getDate());
             String size=rowItem.getSize();
 
             if(size.equals(main.goback)){
@@ -474,7 +474,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 }
             }
             if(main.showLastModified)
-                holder.date.setText(rowItem.getDate("MMM dd, yyyy",main.year));
+                holder.date.setText(rowItem.getDate());
             if(rowItem.getSize().equals(main.goback)){
                 holder.date.setText(rowItem.getSize());
                 holder.txtDesc.setText("");

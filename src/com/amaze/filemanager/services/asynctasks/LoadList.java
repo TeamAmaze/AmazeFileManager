@@ -61,11 +61,13 @@ public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>>
 
         f = params[0];
         try {
-
+ArrayList<String[]> arrayList;
 if(ma.rootMode)
-            ma.list = ma.addTo(RootHelper.getFilesList(f.getPath(),ma.rootMode,ma.showHidden));
+{arrayList=RootHelper.getFilesList(f.getPath(),ma.rootMode,ma.showHidden,ma.showSize);}
+
 else
-    ma.list = ma.addTo(RootHelper.getFilesList(f.getPath(),ma.showHidden));
+    arrayList=(RootHelper.getFilesList(ma.showSize,f.getPath(),ma.showHidden));
+            ma.list = ma.addTo(arrayList);
             Collections.sort(ma.list,
                     new FileListSorter(ma.dsort, ma.sortby, ma.asc,ma.rootMode));
 

@@ -590,8 +590,8 @@ public void showPackageDialog(final File f,final MainActivity m){
         mat.build().show();
 
     }
-    public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size,String directorybool,boolean b) {
-        Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size,directorybool,b);
+    public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size,String directorybool,boolean b,String date) {
+        Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size,directorybool,b,date);
         return item;
     }
 
@@ -718,6 +718,10 @@ public void showPackageDialog(final File f,final MainActivity m){
             final CheckBox exegroup=(CheckBox) v.findViewById(R.id.cexegroup);
             final CheckBox exeother=(CheckBox) v.findViewById(R.id.cexeother);
             String perm=f.getPermissions();
+            if(perm.length()<6){
+                Toast.makeText(main.getActivity(),R.string.not_allowed,Toast.LENGTH_SHORT).show();
+                return;
+            }
             ArrayList<Boolean[]> arrayList=parse(perm);
             Boolean[] read=arrayList.get(0);
             Boolean[] write=arrayList.get(1);
@@ -793,29 +797,26 @@ public void showPackageDialog(final File f,final MainActivity m){
             a.build().show();}else{Toast.makeText(main.getActivity(),main.getResources().getString(R.string.enablerootmde),Toast.LENGTH_LONG).show();}
     }
     public String[] parseName(String line){
-        boolean linked=false;String name="",link="",size="-1";
+        boolean linked=false;String name="",link="",size="-1",date="";
         String[] array=line.split(" ");
         for(int i=0;i<array.length;i++){
             if(array[i].contains("->")){linked=true;}
-        }
-        if(!linked){int p=getColonPosition(array);
-            size=array[p-2];
+        }int p=getColonPosition(array);
+        date=array[p-1] +" | "+array[p];
+        size=array[p-2];
+        if(!linked){
             for(int i=p+1;i<array.length;i++){name=name+" "+array[i];}
             name=name.trim();
-            if(size.equals(""))size="-1";
-            return new String[]{name,"",array[0],size};
         }
-        else if(linked){int p=getColonPosition(array);
-            size=array[p-2];
+        else if(linked){
             int q=getLinkPosition(array);
             for(int i=p+1;i<q;i++){name=name+" "+array[i];}
             name=name.trim();
             for(int i=q+1;i<array.length;i++){link=link+" "+array[i];}
-            if(size.equals(""))size="-1";
-            return  new String[]{name,link,array[0],size};
         }
-        if(size.equals(""))size="-1";
-        return new String[]{name,"",array[0],size};
+        String size1=size;
+        if(size.equals("")){size="-1";size1="";}
+        return new String[]{name,link,array[0],size,date,size1};
     }
     public int getLinkPosition(String[] array){
         for(int i=0;i<array.length;i++){

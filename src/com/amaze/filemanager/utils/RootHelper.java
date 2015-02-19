@@ -73,7 +73,7 @@ Command cc=new Command(1,cmd) {
     @Override
     public void commandOutput(int i, String s) {
         output.add(s);
-        System.out.println("output "+root+s);
+//        System.out.println("output "+root+s);
     }
 
     @Override
@@ -139,20 +139,22 @@ e.printStackTrace();
     public static String getCommandLineString(String input) {
         return input.replaceAll(UNIX_ESCAPE_EXPRESSION, "\\\\$1");
     }	private static final String UNIX_ESCAPE_EXPRESSION = "(\\(|\\)|\\[|\\]|\\s|\'|\"|`|\\{|\\}|&|\\\\|\\?)";
-
-    public static ArrayList<String[]> getFilesList(String path,boolean showHidden){
+    static Futils futils=new Futils();
+    public static ArrayList<String[]> getFilesList(boolean showSize,String path,boolean showHidden){
         File f=new File(path);
         ArrayList<String[]> files=new ArrayList<String[]>();
         try {
             if(f.exists() && f.isDirectory()){
                 for(File x:f.listFiles()){
-                    String k="";
+                    String k="",size="";
                     if(x.isDirectory())
-                        k="-1";
+                    {k="-1";
+                    if(showSize)size=""+getCount(x);
+                    }else if(showSize)size=""+x.length();
                     if(showHidden){
-                        files.add(new String[]{x.getPath(),"",parseFilePermission(x),k});
+                        files.add(new String[]{x.getPath(),"",parseFilePermission(x),k,futils.getdate(x.lastModified(),"MMM dd, yyyy","15"),size});
                     }
-                    else{if(!x.isHidden()){files.add(new String[]{x.getPath(),"",parseFilePermission(x),k});}}
+                    else{if(!x.isHidden()){files.add(new String[]{x.getPath(),"",parseFilePermission(x),k,futils.getdate(x.lastModified(),"MMM dd, yyyy","15"),size});}}
                 }
             }}catch (Exception e){}
 
@@ -164,7 +166,7 @@ e.printStackTrace();
         if(f.canWrite()){per=per+"w";}
         if(f.canExecute()){per=per+"x";}
         return  per;}
-    public static ArrayList<String[]> getFilesList(String path,boolean root,boolean showHidden)
+    public static ArrayList<String[]> getFilesList(String path,boolean root,boolean showHidden,boolean showSize)
     {
         String p = " ";
         if (showHidden) p = "a ";
@@ -188,17 +190,17 @@ e.printStackTrace();
 
                 }
             } else if (futils.canListFiles(new File(path))) {
-                a = getFilesList(path, showHidden);
+                a = getFilesList(showSize,path, showHidden);
             } else {
                 a = new ArrayList<String[]>();
             }
         } else if (futils.canListFiles(new File(path))) {
-            a = getFilesList(path, showHidden);
+            a = getFilesList(showSize,path, showHidden);
         } else {
             a = new ArrayList<String[]>();
         }
         if (a.size() == 0 && futils.canListFiles(new File(path))) {
-            a = getFilesList(path, showHidden);
+            a = getFilesList(showSize,path, showHidden);
         }
         return a;
 
@@ -206,6 +208,6 @@ e.printStackTrace();
 
     public static Integer getCount(File f){
         if(f.exists() && f.canRead() && f.isDirectory()){
-            try{return f.listFiles().length;}catch(Exception e){return null;}
+            try{return f.listFiles().length;}catch(Exception e){return 0;}
         }
         return  null;}}

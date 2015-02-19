@@ -39,10 +39,10 @@ public class Layoutelements implements Parcelable {
         permissions=im.readString();
         symlink=im.readString();
         directorybool=im.readString();
+        date=im.readString();
         int i=im.readInt();
         if(i==0){header=false;}
         else{header=true;}
-        date=im.readLong();
         } catch (Exception e) {
             e.printStackTrace();
         }}
@@ -60,7 +60,7 @@ public class Layoutelements implements Parcelable {
         p1.writeString(permissions);
         p1.writeString(symlink);
         p1.writeString(directorybool);
-        p1.writeLong(date);
+        p1.writeString(date);
         p1.writeInt(header ? 1 : 0);
         p1.writeParcelable(((BitmapDrawable) imageId).getBitmap(), p2);
         // TODO: Implement this method
@@ -73,9 +73,9 @@ public class Layoutelements implements Parcelable {
     private String symlink;
     private String size;
     private String directorybool;
-    private long date;
+    private String date;
     boolean header;
-    public Layoutelements(Drawable imageId, String title, String desc,String permissions,String symlink,String size,String direcorybool,boolean header) {
+    public Layoutelements(Drawable imageId, String title, String desc,String permissions,String symlink,String size,String direcorybool,boolean header,String date) {
         this.imageId = imageId;
         this.title = title;
         this.desc = desc;
@@ -84,8 +84,7 @@ public class Layoutelements implements Parcelable {
         this.size=size;
         this.header=header;
         this.directorybool=direcorybool;
-        if(!header)
-        date=new File(desc).lastModified();
+         this.date=date;
 
     }
     public static final Parcelable.Creator<Layoutelements> CREATOR =
@@ -124,8 +123,7 @@ public boolean isDirectory(boolean rootmode){
     public String getSize() {
         return  size;
     }
-    public long getDate(){return date;}
-    public String getDate(String a,String year){if(!header)return new Futils().getdate(date,a,year);else return "";}
+    public String getDate(){return date;}
     public String getPermissions() {
         return permissions;
     }
