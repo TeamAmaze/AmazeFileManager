@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
     Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
@@ -17,14 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<resources>
-    <color name="theme_primary">#673ab7</color>
-    <color name="holo">#8833B5E5</color>
-    <color name="safr">#5f777777</color>
-    <color name="safrs">#5f777777</color>
-    <color name="bar">#3f333333</color>
-    <color name="toolbar_cab">#303030</color>
-    <color name="safr_ripple">#ffc3c3c3</color>
-    <color name="safr_pressed">#ffd7d7d7</color>
-    <color name="safr_pressed_dark">#ff282828</color>
-</resources>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/safr">
+    <item android:drawable="@android:color/black"/>
+</ripple>

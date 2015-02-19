@@ -287,6 +287,18 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             Boolean checked = myChecked.get(position);
             if (checked != null) {
 
+                if (main.uimode == 0) {
+                    if (main.theme1 == 0) {
+
+                        holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
+                    } else {
+
+                        holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
+                    }
+                } else if (main.uimode == 1) {
+                    holder.rl.setBackgroundResource(R.drawable.bg_card);
+                }
+
                 if (checked) {
                     holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
@@ -294,13 +306,14 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     holder.ext.setText("");
                     if (Build.VERSION.SDK_INT >= 21) {
 
-                    /*if (zipViewer.mainActivity.theme1==1)
-                        holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.black));
-                    else
-                        holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.white));*/
                         holder.rl.setElevation(6f);
-                    } else
-                        holder.rl.setBackgroundColor(main.skinselection);
+                    } else {
+                        if (main.theme1 == 0) {
+                            holder.rl.setBackgroundColor(getContext().getResources().getColor(R.color.safr_pressed));
+                        } else {
+                            holder.rl.setBackgroundColor(getContext().getResources().getColor(R.color.safr_pressed_dark));
+                        }
+                    }
                 } else {
 
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
@@ -335,17 +348,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     if (Build.VERSION.SDK_INT >= 21) {
                         holder.rl.setElevation(0f);
                     }
-                }
-                if (main.uimode == 0) {
-                    if (main.theme1 == 0) {
-
-                        holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
-                    } else {
-
-                        holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
-                    }
-                } else if (main.uimode == 1) {
-                    holder.rl.setBackgroundResource(R.drawable.bg_card);
                 }
             }
             if (main.showPermissions)

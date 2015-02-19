@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
     Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
@@ -18,7 +19,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/safr">
-    <item android:drawable="@android:color/white"/>
-</ripple>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true" android:drawable="@color/safr_pressed" />
+    <item android:drawable="@android:color/white" />
+</selector>

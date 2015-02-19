@@ -131,7 +131,7 @@ public class DbViewerFragment extends Fragment {
                         // #FIELD_TYPE_BLOB
                         /*byte[] blob = c.getBlob(i);
                         blobString = new String(blob);*/
-                        temp[i] = "(data)";
+                        temp[i] = "(BLOB)";
                         break;
                 }
             }

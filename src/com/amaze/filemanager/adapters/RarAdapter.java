@@ -178,31 +178,33 @@ public class RarAdapter extends ArrayAdapter<ZipObj> {
         Boolean checked = myChecked.get(position);
         if (checked != null) {
 
-            if (checked) {
-                holder.imageView.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
-                gradientDrawable.setColor(Color.parseColor("#757575"));
-
-                if (Build.VERSION.SDK_INT >= 21) {
-
-                    /*if (zipViewer.mainActivity.theme1==1)
-                        holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.black));
-                    else
-                        holder.rl.setBackgroundColor(getContext().getResources().getColor(android.R.color.white));*/
-                    holder.rl.setElevation(6f);
-                } else
-                    holder.rl.setBackgroundColor(zipViewer.skinselection);
-            } else {
-
-                if (Build.VERSION.SDK_INT >= 21) {
-                    holder.rl.setElevation(0f);
-                }
-            }
             if (zipViewer.mainActivity.theme1 == 0) {
 
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
             } else {
 
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
+            }
+
+            if (checked) {
+                holder.imageView.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                gradientDrawable.setColor(Color.parseColor("#757575"));
+
+                if (Build.VERSION.SDK_INT >= 21) {
+
+                    holder.rl.setElevation(6f);
+                } else {
+                    if (zipViewer.mainActivity.theme1 == 0) {
+                        holder.rl.setBackgroundColor(getContext().getResources().getColor(R.color.safr_pressed));
+                    } else {
+                        holder.rl.setBackgroundColor(getContext().getResources().getColor(R.color.safr_pressed_dark));
+                    }
+                }
+            } else {
+
+                if (Build.VERSION.SDK_INT >= 21) {
+                    holder.rl.setElevation(0f);
+                }
             }
         }
         holder.rl.setOnClickListener(new View.OnClickListener() {
