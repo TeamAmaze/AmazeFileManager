@@ -158,7 +158,7 @@ public class Main extends android.support.v4.app.Fragment {
     public String year,goback;
     ArrayList<String> hiddenfiles;
     private FloatingActionButton floatingActionButton;
-    String Intentpath;
+    String Intentpath,itemsstring;
     int no;
     TabHandler tabHandler;
     boolean savepaths;
@@ -244,6 +244,7 @@ public class Main extends android.support.v4.app.Fragment {
         ic=new IconHolder(getActivity(),showThumbs,!aBoolean);
         res = getResources();
         goback=res.getString(R.string.goback);
+        itemsstring=res.getString(R.string.items);
         apk=res.getDrawable(R.drawable.ic_doc_apk_grid);
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         if(theme1==1) {
@@ -1310,7 +1311,7 @@ public class Main extends android.support.v4.app.Fragment {
             String size="";
             if(!hiddenfiles.contains(ele[0])){
                 if (isDirectory(ele)) {
-                    if(!ele[5].trim().equals(""))size=ele[5]+" Items";
+                    if(!ele[5].trim().equals(""))size=ele[5]+" "+itemsstring;
                     a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,mFile.get(i)[3],false,ele[4]));
 
                 } else {

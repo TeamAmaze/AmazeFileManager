@@ -92,15 +92,15 @@ public class DeleteTask extends AsyncTask<ArrayList<File>, String, Boolean> {
                     }
                 }
             } else if (!b && rootMode) for (File f : files) {
-                RootTools.deleteFileOrDirectory(f.getPath(), true);
+                b=RootTools.deleteFileOrDirectory(f.getPath(), true);
                 return true;
             }
         } else if (rootMode) {
             for (File f : files) {
-                RootTools.deleteFileOrDirectory(f.getPath(), true);
+               b= RootTools.deleteFileOrDirectory(f.getPath(), true);
             }
 
-            return true;
+            return b;
 
 
         }
