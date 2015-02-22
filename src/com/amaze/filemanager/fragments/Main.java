@@ -53,6 +53,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.StringDef;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Property;
@@ -162,6 +163,7 @@ public class Main extends android.support.v4.app.Fragment {
     int no;
     TabHandler tabHandler;
     boolean savepaths;
+    SwipeRefreshLayout mSwipeRefreshLayout;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -320,12 +322,19 @@ public class Main extends android.support.v4.app.Fragment {
         }
         footerView=getActivity().getLayoutInflater().inflate(R.layout.divider, null);
         if (aBoolean) {
-            //listView.addFooterView(footerView);
+            rootView.findViewById(R.id.activity_main_swipe_refresh_layout1).setVisibility(View.GONE);
+            mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
             listView.setFastScrollEnabled(true);
         } else {
-
+            mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout1);
             gridView.setFastScrollEnabled(true);
         }
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadlist(new File(current),false);
+            }
+        });
         if (savedInstanceState == null){
             if(Intentpath!=null){File file1=new File(Intentpath);
             if(file1.isDirectory())loadlist(file1,false);
@@ -531,6 +540,7 @@ public class Main extends android.support.v4.app.Fragment {
                 }
                 adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
                         bitmap, ma);
+                mSwipeRefreshLayout.setRefreshing(false);
                 try {
 
                     if (aBoolean) {

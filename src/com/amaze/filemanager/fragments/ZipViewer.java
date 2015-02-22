@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -85,11 +86,18 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     public MainActivity mainActivity;
     public ListView listView;
     View rootView;
+    public SwipeRefreshLayout swipeRefreshLayout;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
-
+        swipeRefreshLayout=(SwipeRefreshLayout)rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
         LinearLayout pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
         TextView textView = (TextView) rootView.findViewById(R.id.fullpath);
         rootView.findViewById(R.id.fab).setVisibility(View.GONE);
@@ -300,6 +308,9 @@ public boolean cangoBack(){
     public void goBack() {
 
         new ZipHelperTask(this, new File(current).getParent()).execute(f);
+    }
+    void refresh(){
+        new ZipHelperTask(this, current).execute(f);
     }
     public void bbar(){
         ((TextView) zipViewer.rootView.findViewById(R.id.fullpath)).setText(zipViewer.current);

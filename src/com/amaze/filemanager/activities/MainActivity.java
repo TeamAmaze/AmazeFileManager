@@ -450,6 +450,8 @@ public class MainActivity extends ActionBarActivity{
         }rootmode = Sp.getBoolean("rootmode", false);
         if(rootmode)
             rv.add("/");
+        File usb=getUsbDrive();
+        if(usb!=null && !rv.contains(usb.getPath()))rv.add(usb.getPath());
         try {
             for(File file: s.readS()){
                 rv.add(file.getPath());
@@ -1256,5 +1258,23 @@ public class MainActivity extends ActionBarActivity{
     public void setPagingEnabled(boolean b){
         getFragment().mViewPager.setPagingEnabled(b);
     }
+
+    public  File getUsbDrive() {
+        File parent ;
+        parent=new File("/storage");
+        for(File f:parent.listFiles())
+        {if(f.exists() && f.getName().toLowerCase().contains("usb") && f.canExecute()){
+            return f;
+        }
+            parent = new File("/mnt/sdcard/usbStorage");
+            if (parent.exists() && parent.canExecute())
+                return (parent);
+            parent = new File("/mnt/sdcard/usb_storage");
+            if (parent.exists() && parent.canExecute())
+                return parent;
+        }
+        return null;
+    }
+
 
 }

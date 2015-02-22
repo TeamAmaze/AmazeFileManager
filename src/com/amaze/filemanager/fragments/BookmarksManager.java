@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -74,7 +75,8 @@ public class BookmarksManager extends Fragment {
   public   MainActivity m;
 ListView vl;int theme,theme1;
 View rootView;ListView listview;
-        @Override
+    SwipeRefreshLayout swipeRefreshLayout;
+    @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             rootView = inflater.inflate(R.layout.main_frag, container, false);
             MainActivity mainActivity=(MainActivity)getActivity();
@@ -94,6 +96,13 @@ View rootView;ListView listview;
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         theme=Integer.parseInt(Sp.getString("theme","0"));
+         swipeRefreshLayout=(SwipeRefreshLayout)rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
         theme1 = theme;
         if (theme == 2) {
             if(hour<=6 || hour>=18) {
@@ -235,5 +244,6 @@ View rootView;ListView listview;
     public void refresh(ArrayList<File> f) {
         b = new BooksAdapter(getActivity(), R.layout.bookmarkrow, f, this);
         listview.setAdapter(b);
+        swipeRefreshLayout.setRefreshing(false);
     }
 }
