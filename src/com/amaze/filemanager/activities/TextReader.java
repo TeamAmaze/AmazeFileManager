@@ -197,9 +197,9 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                 if (!mFile.canWrite())
 
                 {
-                    ArrayList<File> a = new ArrayList<File>();
-                    a.add(f);
-                    new MoveFiles(a, null, c).execute(mFile.getParent());
+                    RootTools.remount(mFile.getParent(),"rw");
+                    RootHelper.runAndWait("cat "+f.getPath()+" > "+mFile.getPath(),true);
+                    f.delete();
                 }
                 runOnUiThread(new Runnable() {
                     @Override
@@ -228,14 +228,7 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                 if (!mFile.exists()) {
                     finish();
                     return;
-                }if(!mFile.canRead() && rootMode){
-                    System.out.println("setting");
-                    try {//
-                        RootTools.remount(mFile.getPath(), "RW");
-                        RootHelper.runAndWait("chmod " + 777 + " " + mFile.getPath(), true);
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }}
+                }
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -244,7 +237,8 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                     }
                 });
                 try {
-                    try {
+                    if(mFile.canRead())
+                    {try {
                         mOriginal = FileUtils.fileRead(mFile);
                     } catch (final Exception e) {
                         e.printStackTrace();
@@ -254,6 +248,17 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                                 mInput.setHint(R.string.error);
                             }
                         });
+                    }}else{
+                        mOriginal="";
+                        RootTools.remount(mFile.getParent(),"rw");
+                    ArrayList<String> arrayList=    RootHelper.runAndWait1("cat "+mFile.getPath(),true);
+                        for(String x:arrayList){
+                            if(mOriginal.equals(""))mOriginal=x;
+                            else mOriginal=mOriginal+"\n"+x;
+
+                        }
+
+
                     }
                     runOnUiThread(new Runnable() {
                         @Override
