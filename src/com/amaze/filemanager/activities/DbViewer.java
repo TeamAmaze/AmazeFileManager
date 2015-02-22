@@ -144,12 +144,16 @@ public class DbViewer extends ActionBarActivity {
                     RootTools.remount(file.getParent(), "RW");
                     RootHelper.runAndWait("chmod -R " + 777 + " " + file.getParent(), true);
                 }
-                sqLiteDatabase = SQLiteDatabase.openDatabase(file.getPath(), null, SQLiteDatabase.OPEN_READONLY);
+                try {
+                    sqLiteDatabase = SQLiteDatabase.openDatabase(file.getPath(), null, SQLiteDatabase.OPEN_READONLY);
 
-                c = sqLiteDatabase.rawQuery(
-                        "SELECT name FROM sqlite_master WHERE type='table'", null);
-                arrayList = getDbTableNames(c);
-                arrayAdapter = new ArrayAdapter(DbViewer.this, android.R.layout.simple_list_item_1, arrayList);
+                    c = sqLiteDatabase.rawQuery(
+                            "SELECT name FROM sqlite_master WHERE type='table'", null);
+                    arrayList = getDbTableNames(c);
+                    arrayAdapter = new ArrayAdapter(DbViewer.this, android.R.layout.simple_list_item_1, arrayList);
+                } catch (Exception e) {
+                    finish();
+                }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -190,8 +194,8 @@ public class DbViewer extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        sqLiteDatabase.close();
-        c.close();
+       if(sqLiteDatabase!=null) sqLiteDatabase.close();
+        if(c!=null) c.close();
     }
 
     @Override

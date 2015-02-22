@@ -167,7 +167,7 @@ public class Futils {
     public void openWith(final File f,final Context c) {
         MaterialDialog.Builder a=new MaterialDialog.Builder(c);
         a.title(getString(c, R.string.openas));
-        String[] items=new String[]{getString(c,R.string.text),getString(c,R.string.image),getString(c,R.string.video),getString(c,R.string.audio),getString(c,R.string.other)};
+        String[] items=new String[]{getString(c,R.string.text),getString(c,R.string.image),getString(c,R.string.video),getString(c,R.string.audio),getString(c,R.string.database),getString(c,R.string.other)};
         a.items(items).itemsCallback(new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
@@ -186,7 +186,10 @@ public class Futils {
                     case 3:
                         intent.setDataAndType(Uri.fromFile(f), "audio/*");
                         break;
-                    case 4:
+                    case 4: intent = new Intent(c, DbViewer.class);
+                        intent.putExtra("path", f.getPath());
+                        break;
+                    case 5:
                         intent.setDataAndType(Uri.fromFile(f), "*/*");
                         break;
                 }
