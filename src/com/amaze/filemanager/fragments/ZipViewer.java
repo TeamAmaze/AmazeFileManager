@@ -29,7 +29,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -40,9 +39,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -56,17 +52,13 @@ import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.ZipExtractTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.ZipObj;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class ZipViewer extends Fragment {
 
@@ -91,6 +83,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
+        rootView.findViewById(R.id.activity_main_swipe_refresh_layout1).setVisibility(View.GONE);
         swipeRefreshLayout=(SwipeRefreshLayout)rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -322,6 +315,7 @@ public boolean cangoBack(){
         zipViewer.listView.setAdapter(zipViewer.zipAdapter);
         zipViewer.current = dir;
         zipViewer.bbar();
+        swipeRefreshLayout.setRefreshing(false);
     }
     public void loadlist(String path){
         File f=new File(path);

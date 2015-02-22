@@ -84,7 +84,7 @@ View rootView;ListView listview;
             mainActivity.tabsSpinner.setVisibility(View.GONE);
             listview=(ListView)rootView.findViewById(R.id.listView);
             rootView.findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
-            rootView.findViewById(R.id.gridView).setVisibility(View.GONE);
+            rootView.findViewById(R.id.activity_main_swipe_refresh_layout1).setVisibility(View.GONE);
         return rootView;}
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
