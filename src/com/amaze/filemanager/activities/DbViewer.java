@@ -52,7 +52,7 @@ public class DbViewer extends ActionBarActivity {
     private ArrayAdapter arrayAdapter;
     private Cursor c;
     private File pathFile;
-
+    boolean delete=false;
     public Toolbar toolbar;
     public SQLiteDatabase sqLiteDatabase;
     public int theme, theme1, skinStatusBar;
@@ -87,7 +87,6 @@ public class DbViewer extends ActionBarActivity {
         rootMode = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("rootmode", false);
         int sdk= Build.VERSION.SDK_INT;
-
         if(sdk==20 || sdk==19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
@@ -135,23 +134,28 @@ public class DbViewer extends ActionBarActivity {
         }
         return result;
     }
-
     private void load(final File file) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 if (!file.canRead() && rootMode) {
+                    File file1=getExternalCacheDir();
+                    if(file1!=null)file1=getCacheDir();
                     RootTools.remount(file.getParent(), "RW");
-                    RootHelper.runAndWait("chmod -R " + 777 + " " + file.getParent(), true);
+                    RootTools.copyFile(pathFile.getPath(),new File(file1.getPath(),file.getName()).getPath(), true,false);
+                    pathFile=new File(file1.getPath(),file.getName());
+                    RootHelper.runAndWait("chmod 777 "+pathFile.getPath(),true);
+                    delete=true;
                 }
                 try {
-                    sqLiteDatabase = SQLiteDatabase.openDatabase(file.getPath(), null, SQLiteDatabase.OPEN_READONLY);
+                    sqLiteDatabase = SQLiteDatabase.openDatabase(pathFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
 
                     c = sqLiteDatabase.rawQuery(
                             "SELECT name FROM sqlite_master WHERE type='table'", null);
                     arrayList = getDbTableNames(c);
                     arrayAdapter = new ArrayAdapter(DbViewer.this, android.R.layout.simple_list_item_1, arrayList);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     finish();
                 }
                 runOnUiThread(new Runnable() {
@@ -196,6 +200,7 @@ public class DbViewer extends ActionBarActivity {
         super.onDestroy();
        if(sqLiteDatabase!=null) sqLiteDatabase.close();
         if(c!=null) c.close();
+        if(true)pathFile.delete();
     }
 
     @Override

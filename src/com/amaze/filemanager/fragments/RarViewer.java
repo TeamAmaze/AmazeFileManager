@@ -31,6 +31,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -82,12 +83,21 @@ public class RarViewer extends Fragment {
     public ListView listView;
     public Archive archive;
     View rootView;
+    SwipeRefreshLayout swipeRefreshLayout;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
         mainActivity=(MainActivity)getActivity();
         mainActivity.supportInvalidateOptionsMenu();
+        swipeRefreshLayout=(SwipeRefreshLayout)rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
+
         LinearLayout pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
         TextView textView = (TextView) rootView.findViewById(R.id.fullpath);
         rootView.findViewById(R.id.fab).setVisibility(View.GONE);
@@ -110,7 +120,7 @@ public class RarViewer extends Fragment {
         super.onActivityCreated(savedInstanceState);
         s = getArguments().getString("path");
         f = new File(s);
-        rootView.findViewById(R.id.gridView).setVisibility(View.GONE);
+        rootView.findViewById(R.id.activity_main_swipe_refresh_layout1).setVisibility(View.GONE);
         listView.setVisibility(View.VISIBLE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
@@ -293,7 +303,9 @@ String path;
         }
         new RarHelperTask(this,path).execute(f);
     }
-
+    public void refresh(){
+        new RarHelperTask(this,current).execute(f);
+    }
     public void bbar(){
         ((TextView) zipViewer.rootView.findViewById(R.id.fullpath)).setText(zipViewer.current);
         ((TextView)rootView.findViewById(R.id.pathname)).setText("");
@@ -304,6 +316,7 @@ String path;
         zipViewer.listView.setAdapter(zipViewer.zipAdapter);
         zipViewer.current = dir;
         zipViewer.bbar();
+        swipeRefreshLayout.setRefreshing(false);
     }
     public void loadlist(String path){
         File f=new File(path);
