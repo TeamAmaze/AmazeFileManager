@@ -635,7 +635,6 @@ public class MainActivity extends ActionBarActivity{
                 menu.findItem(R.id.search).setVisible(true);
                 menu.findItem(R.id.home).setVisible(true);
                 menu.findItem(R.id.history).setVisible(true);
-                menu.findItem(R.id.item4).setVisible(true);
                 menu.findItem(R.id.item10).setVisible(true);
                 menu.findItem(R.id.hiddenitems).setVisible(true);
                 menu.findItem(R.id.view).setVisible(true);
@@ -645,7 +644,6 @@ public class MainActivity extends ActionBarActivity{
                 menu.findItem(R.id.search).setVisible(false);
                 menu.findItem(R.id.home).setVisible(false);
                 menu.findItem(R.id.history).setVisible(false);
-                menu.findItem(R.id.item4).setVisible(false);
                 menu.findItem(R.id.item10).setVisible(false);
                 menu.findItem(R.id.hiddenitems).setVisible(false);
                 menu.findItem(R.id.view).setVisible(false);
@@ -658,7 +656,6 @@ public class MainActivity extends ActionBarActivity{
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
-            menu.findItem(R.id.item4).setVisible(false);
             menu.findItem(R.id.item10).setVisible(false);
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
@@ -728,10 +725,6 @@ public class MainActivity extends ActionBarActivity{
                 break;
             case R.id.hiddenitems:
                 utils.showHiddenDialog(ma);
-                break;
-            case R.id.item4:
-                ma.ic.cleanup();
-                ma.loadlist(new File(ma.current), false);
                 break;
             case R.id.view:
                 // Save the changes, but don't show a disruptive Toast:

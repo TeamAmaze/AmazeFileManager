@@ -71,7 +71,7 @@ public class ProcessViewer extends Fragment {
 
 
         mainActivity = (MainActivity) getActivity();
-
+        if(mainActivity.theme1==1)root.setBackgroundResource(android.R.color.black);
         rootView = (LinearLayout) root.findViewById(R.id.secondbut);
         //((MainActivity)getActivity()).getSupportActionBar().setTitle(utils.getString(getActivity(),R.string.processes));
         mainActivity.toolbar.setTitle(utils.getString(getActivity(),R.string.processes));
@@ -148,6 +148,7 @@ public class ProcessViewer extends Fragment {
                         if (move) {
                             icon = icons.getCutDrawable();
                         }
+                        if(mainActivity.theme1==1)cancel.setImageResource(R.drawable.ic_action_cancel);
                         ((ImageView) root.findViewById(R.id.progressImage)).setImageDrawable(icon);
                         cancel.setOnClickListener(new View.OnClickListener() {
 
@@ -220,6 +221,7 @@ public class ProcessViewer extends Fragment {
                         root.setTag("extract" + id);
                         ((ImageView) root.findViewById(R.id.progressImage)).setImageDrawable(getResources().getDrawable(R.drawable.ic_doc_compressed_black));
                         ImageButton cancel = (ImageButton) root.findViewById(R.id.delete_button);
+                        if(mainActivity.theme1==1)cancel.setImageResource(R.drawable.ic_action_cancel);
                         cancel.setOnClickListener(new View.OnClickListener() {
 
                             public void onClick(View p1) {
@@ -284,6 +286,7 @@ public class ProcessViewer extends Fragment {
                         root.setTag("zip" + id);
                         ((ImageView) root.findViewById(R.id.progressImage)).setImageDrawable(getResources().getDrawable(R.drawable.ic_doc_compressed_black));
                         ImageButton cancel = (ImageButton) root.findViewById(R.id.delete_button);
+                        if(mainActivity.theme1==1)cancel.setImageResource(R.drawable.ic_action_cancel);
                         cancel.setOnClickListener(new View.OnClickListener() {
 
                             public void onClick(View p1) {
