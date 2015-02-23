@@ -57,7 +57,7 @@
             android:id="@+id/pathbar"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="1dp"
+            android:paddingBottom="2dp"
             android:orientation="vertical">
 
                 <HorizontalScrollView
@@ -66,7 +66,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="72dp"
-                    android:paddingTop="0dp">
+                    android:paddingTop="5dp">
 
                     <TextView
                         android:clickable="false"
@@ -80,7 +80,7 @@
                     android:clickable="false"
                     android:layout_width="wrap_content"
                     android:textSize="12sp"
-                    android:paddingBottom="5dp"
+                    android:paddingBottom="10dp"
                     android:paddingTop="5dp"
                     android:textColor="@android:color/white"
                     android:layout_height="wrap_content"
