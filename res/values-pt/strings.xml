@@ -38,7 +38,7 @@
     <string name="open">Abrir</string>
     <string name="backup">Backup</string>
     <string name="uninstall">Desinstalar</string>
-    <string name="play">Play store</string>
+    <string name="play">Google Play</string>
     <string name="properties">Propriedades</string>
     <string name="copyingapk">Copiar apk para </string>
     <string name="addbook">Adicionar marcador</string>
@@ -259,7 +259,7 @@
     <string name="invalid_dir">Diretório inválido</string>
     <string name="circularimages">Utilizar ícones circulares para imagens e vídeos</string>
     <string name="circularicons">Utilizar ícone circular</string>
-    <string name="back_title">Recuar na navegação</string>
+    <string name="back_title">Botão para recuar</string>
     <string name="back_summary">Coloca um botão no topo da lista para recuar na navegação</string>
     <string name="details">Detalhes</string>
     <string name="translators">Tradutores</string>
@@ -296,6 +296,7 @@
     <string name="md5copied">MD5 copiada para a área de transferência</string>
     <string name="generating">A gerar..</string>
     <string name="tables">Tabela(s)</string>
+	<string name="database">Base de dados</string>
 	<string name="colourednavigation">Barra de navegação colorida</string>
     <string name="colourednavigationsum">Ative esta opção para colorir a barra de navegação com a cor do estilo</string>
 </resources>
