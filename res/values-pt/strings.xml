@@ -58,7 +58,7 @@
     <string name="renameerror">Nome não alterado</string>
     <string name="renamed">Nome alterado com sucesso</string>
     <string name="bookmarksadded">Marcadores adicionados</string>
-    <string name="fileexist">Já existe um ficheiro com este nome </string>
+    <string name="fileexist">Já existe um ficheiro com este nome</string>
     <string name="filecreated">Ficheiro criado</string>
     <string name="searchpath">Caminho de procura</string>
     <string name="search">Procura</string>
@@ -108,7 +108,7 @@
     <string name="random">Estilo aleatório</string>
     <string name="random_summary">Define um estilo aleatório ao iniciar</string>
     <string name="colorize">Colorir ícones</string>
-    <string name="colorize_summary">Define a cor do ícone estático</string>
+    <string name="colorize_summary">Define a cor do ícone estático.</string>
     <string name="back">Recuar</string>
     <string name="home">Home</string>
     <string name="paste">Colar</string>
@@ -162,9 +162,9 @@
     <string name="blue_grey">Azul acinzentado</string>
     <string name="supersu">SuperSU</string>
     <!--DirectorySortMode-->
-    <string name="foldersOnTop">Pastas no inicio</string>
-    <string name="filesOnTop">Ficheiros no inicio</string>
-    <string name="noneOnTop">Nada no inicio</string>
+    <string name="foldersOnTop">Pastas no início</string>
+    <string name="filesOnTop">Ficheiros no início</string>
+    <string name="noneOnTop">Nada no início</string>
     <!--SortBy-->
     <string name="sortName">Nome</string>
     <string name="lastModified">Última modificação</string>
@@ -212,7 +212,7 @@
     <string name="exit">Sair</string>
     <string name="enternewname">Escreva o novo nome</string>
     <string name="doforall">Aplicar a todos os itens</string>
-    <string name="gridcolumnno">Número de colunas na vista em grelha</string>
+    <string name="gridcolumnno">N.º de colunas na vista em grelha</string>
     <string name="randomDialog">Aleatório</string>
     <string name="setRandom">As alterações serão aplicadas ao reiniciar</string>
     <string name="authors">Autores</string>
@@ -222,15 +222,15 @@
     <string name="chooseUI">Escolha o tipo de interface</string>
     <string name="ui">Interface</string>
     <string name="general">Geral</string>
-    <string name="thumbSummary">Mostrar miniaturas das aplicações e das imagens</string>
+    <string name="thumbSummary">Mostrar miniaturas das aplicações e das imagens.</string>
     <string name="thumb">Mostrar miniaturas</string>
     <string name="hidden">Mostrar ficheiros e pastas ocultas</string>
-    <string name="lastModifiedSummary">Mostrar data e hora da última modificação</string>
+    <string name="lastModifiedSummary">Mostrar data e hora da última modificação.</string>
     <string name="lastModifiedPref">Mostrar última modificação</string>
-    <string name="sizePrefSummary">Mostrar tamanho dos ficheiros e o número de itens da pasta</string>
+    <string name="sizePrefSummary">Mostrar tamanho dos ficheiros e o número de itens da pasta.</string>
     <string name="sizePref">Mostrar tamanho</string>
     <string name="miscellaneous">Outras</string>
-    <string name="rootPrefSummary">Mostrar permissões das pastas e dos ficheiros</string>
+    <string name="rootPrefSummary">Mostrar permissões das pastas e dos ficheiros.</string>
     <string name="rootPref">Mostrar permissões</string>
     <string name="aboutFileManager">Sobre o Amaze File Manager</string>
     <string name="version">Versão</string>
@@ -257,10 +257,10 @@
     <string name="xda_title">XDA</string>
     <string name="xda_summary">Q&amp;A, ajuda e resolução de problemas</string>
     <string name="invalid_dir">Diretório inválido</string>
-    <string name="circularimages">Utilizar ícones circulares para imagens e vídeos</string>
+    <string name="circularimages">Utilizar ícones circulares para imagens e vídeos.</string>
     <string name="circularicons">Utilizar ícone circular</string>
     <string name="back_title">Botão para recuar</string>
-    <string name="back_summary">Coloca um botão no topo da lista para recuar na navegação</string>
+    <string name="back_summary">Coloca um botão no topo da lista para recuar na navegação.</string>
     <string name="details">Detalhes</string>
     <string name="translators">Tradutores</string>
     <string name="german_translation_title">Alemão</string>
@@ -291,12 +291,12 @@
     <string name="image">Imagem</string>
     <string name="contributors">Colaboradores</string>
     <string name="savepaths">Memorizar caminho</string>
-    <string name="savepathsummary">Ao iniciar a aplicação, será mostrada a última pasta vista (por cada separador)</string>
+    <string name="savepathsummary">Ao iniciar a aplicação, será mostrada a última pasta aberta (por separador).</string>
     <string name="select_intent">Selecionar</string>
     <string name="md5copied">MD5 copiada para a área de transferência</string>
     <string name="generating">A gerar..</string>
     <string name="tables">Tabela(s)</string>
-	<string name="database">Base de dados</string>
-	<string name="colourednavigation">Barra de navegação colorida</string>
-    <string name="colourednavigationsum">Ative esta opção para colorir a barra de navegação com a cor do estilo</string>
+    <string name="database">Base de dados</string>
+    <string name="colourednavigation">Barra de navegação colorida</string>
+    <string name="colourednavigationsum">Ative esta opção para colorir a barra de navegação com a cor do estilo.</string>
 </resources>
