@@ -30,11 +30,6 @@
         android:title="@string/search"
         android:icon="@drawable/ic_action_search"
         app:showAsAction="always" />
-    <item android:id="@+id/home"
-        android:title="@string/home"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_home_white_48dp"
-        />
 
     <item
         app:showAsAction="ifRoom"

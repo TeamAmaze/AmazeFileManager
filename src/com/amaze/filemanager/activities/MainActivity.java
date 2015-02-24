@@ -249,73 +249,7 @@ public class MainActivity extends ActionBarActivity{
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
-        View settingsbutton = findViewById(R.id.settingsbutton);
-        if (theme1 == 1) {
-            settingsbutton.setBackgroundResource(R.drawable.safr_ripple_black);
-            ((ImageView) settingsbutton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
-        }settingsbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(MainActivity.this, Preferences.class);
-
-                final int enter_anim = R.anim.slide_out_bottom;
-                final int exit_anim = R.anim.slide_in_top;
-
-                overridePendingTransition(exit_anim, enter_anim);
-                finish();
-                overridePendingTransition(exit_anim, enter_anim);
-                startActivity(in);
-            }
-        });
-        View appbutton = findViewById(R.id.appbutton);
-        if (theme1 == 1)
-        {appbutton.setBackgroundResource(R.drawable.safr_ripple_black);
-            ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_action_view_as_grid);
-    }appbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-                transaction2.replace(R.id.content_frame, new AppsList());
-
-                pending_fragmentTransaction=transaction2;
-                mDrawerLayout.closeDrawer(mDrawerLinear);
-                select=list.size()+1;
-                adapter.toggleChecked(false);
-            }
-        });
-        View bookbutton=findViewById(R.id.bookbutton);
-        if(theme1==1) {
-            ((ImageView) bookbutton.findViewById(R.id.bookicon)).setImageResource(R.drawable.ic_action_not_important);
-            bookbutton.setBackgroundResource(R.drawable.safr_ripple_black);
-        }
-            bookbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-                transaction2.replace(R.id.content_frame, new BookmarksManager());
-
-                pending_fragmentTransaction=transaction2;
-                mDrawerLayout.closeDrawer(mDrawerLinear);
-                select=list.size()+2;
-                adapter.toggleChecked(false);
-            }
-        });
-        View v=getLayoutInflater().inflate(R.layout.drawerheader,null);
-        if(Build.VERSION.SDK_INT>=21){
-            v.setBackgroundColor(skinStatusBar);}
-        else{v.setBackgroundColor(Color.parseColor(skin));}
-        ((TextView)v.findViewById(R.id.firstline)).setTextColor(Color.WHITE);
-        mDrawerList.addHeaderView(v);
-        list = new ArrayList<String>();
-        for (int i = 0; i < val.size(); i++) {
-            File file = new File(val.get(i));
-            if(!file.isDirectory())
-                list.add(val.get(i));
-            else if(file.canExecute())
-                list.add(val.get(i));
-        }
-        adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
-        mDrawerList.setAdapter(adapter);
+        populateDrawer();
         if (savedInstanceState == null) {
 
             if (openprocesses) {
@@ -633,7 +567,6 @@ public class MainActivity extends ActionBarActivity{
                 invalidatePasteButton(paste);
                 search.setVisible(true);
                 menu.findItem(R.id.search).setVisible(true);
-                menu.findItem(R.id.home).setVisible(true);
                 menu.findItem(R.id.history).setVisible(true);
                 menu.findItem(R.id.item10).setVisible(true);
                 menu.findItem(R.id.hiddenitems).setVisible(true);
@@ -642,7 +575,6 @@ public class MainActivity extends ActionBarActivity{
             } else {
                 search.setVisible(false);
                 menu.findItem(R.id.search).setVisible(false);
-                menu.findItem(R.id.home).setVisible(false);
                 menu.findItem(R.id.history).setVisible(false);
                 menu.findItem(R.id.item10).setVisible(false);
                 menu.findItem(R.id.hiddenitems).setVisible(false);
@@ -711,9 +643,6 @@ public class MainActivity extends ActionBarActivity{
             e.printStackTrace();
         }
         switch (item.getItemId()) {
-            case R.id.home:
-                ma.home();
-                break;
             case R.id.history:
                 utils.showHistoryDialog(ma);
                 break;
@@ -1268,6 +1197,116 @@ public class MainActivity extends ActionBarActivity{
         }
         return null;
     }
+    public void populateDrawer(){
+        View settingsbutton = findViewById(R.id.settingsbutton);
+        if (theme1 == 1) {
+            settingsbutton.setBackgroundResource(R.drawable.safr_ripple_black);
+            ((TextView) settingsbutton.findViewById(R.id.settingtext)).setTextColor(Color.WHITE);
+            ((ImageView) settingsbutton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
+        } else
+            ((TextView) settingsbutton.findViewById(R.id.settingtext)).setTextColor(Color.BLACK);
+        settingsbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(MainActivity.this, Preferences.class);
 
+                final int enter_anim = R.anim.slide_out_bottom;
+                final int exit_anim = R.anim.slide_in_top;
+
+                overridePendingTransition(exit_anim, enter_anim);
+                finish();
+                overridePendingTransition(exit_anim, enter_anim);
+                startActivity(in);
+            }
+        });
+        View appbutton = findViewById(R.id.appbutton);
+        if (theme1 == 1) {
+            appbutton.setBackgroundResource(R.drawable.safr_ripple_black);
+            ((TextView) appbutton.findViewById(R.id.apptext)).setTextColor(Color.WHITE);
+            ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_action_view_as_grid);
+        } else
+            ((TextView) appbutton.findViewById(R.id.apptext)).setTextColor(Color.BLACK);
+        appbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                transaction2.replace(R.id.content_frame, new AppsList());
+
+                pending_fragmentTransaction = transaction2;
+                mDrawerLayout.closeDrawer(mDrawerLinear);
+                select = list.size() + 1;
+                adapter.toggleChecked(false);
+            }
+        });
+        View bookbutton = findViewById(R.id.bookbutton);
+        if (theme1 == 1) {
+            ((ImageView) bookbutton.findViewById(R.id.bookicon)).setImageResource(R.drawable.ic_action_not_important);
+            ((TextView) bookbutton.findViewById(R.id.booktext)).setTextColor(Color.WHITE);
+            bookbutton.setBackgroundResource(R.drawable.safr_ripple_black);
+        } else
+            ((TextView) bookbutton.findViewById(R.id.booktext)).setTextColor(Color.BLACK);
+        bookbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                transaction2.replace(R.id.content_frame, new BookmarksManager());
+
+                pending_fragmentTransaction = transaction2;
+                mDrawerLayout.closeDrawer(mDrawerLinear);
+                select = list.size() + 2;
+                adapter.toggleChecked(false);
+            }
+        });
+        View v=getLayoutInflater().inflate(R.layout.drawerheader,null);
+        v.setBackgroundColor(Color.parseColor(skin));
+        ((TextView)v.findViewById(R.id.firstline)).setTextColor(Color.WHITE);
+        mDrawerList.addHeaderView(v);
+        View v1=getLayoutInflater().inflate(R.layout.drawerrow,null);
+        v1.setMinimumHeight(settingsbutton.getHeight());
+        ((ImageView)v1.findViewById(R.id.icon)).setImageResource(R.drawable.ic_home_dark_48dp);
+        TextView a=(TextView)v1.findViewById(R.id.firstline);
+        (a).setText(R.string.home);
+        v1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (select == null || select >= list.size() -2) {
+                    TabFragment tabFragment=new TabFragment();
+                    Bundle a = new Bundle();
+                    a.putString("path", "");
+                    tabFragment.setArguments(a);
+
+                    android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_frame, tabFragment);
+
+                    transaction.addToBackStack("tabt1" + 1);
+                    pending_fragmentTransaction=transaction;
+
+
+                }else{
+                    try {
+                        pending_path=((Main)getFragment().getTab()).home;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                adapter.toggleChecked(false);
+                mDrawerLayout.closeDrawer(mDrawerLinear);
+            }
+        });
+        mDrawerList.addHeaderView(v1);
+        list = new ArrayList<String>();
+        for (int i = 0; i < val.size(); i++) {
+            File file = new File(val.get(i));
+            if(!file.isDirectory())
+                list.add(val.get(i));
+            else if(file.canExecute())
+                list.add(val.get(i));
+        }
+        adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
+        mDrawerList.setAdapter(adapter);
+
+    }
 
 }
