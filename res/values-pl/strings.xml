@@ -296,6 +296,9 @@
     <string name="select_intent">Wybierz</string>
     <string name="md5copied">MD5 skopiowano do schowka</string>
     <string name="generating">Generowanie..</string>
-    <string name="tables">Tablice</string>
+    <string name="tables">Tablica(e)</string>
+    <string name="database">Baza danych</string>
+    <string name="colourednavigation">Kolorowy pasek nawigacji</string>
+    <string name="colourednavigationsum">Kolorowanie paska nawigacji zgodnie z kolorystyką aplikacji</string>
 </resources>
 
