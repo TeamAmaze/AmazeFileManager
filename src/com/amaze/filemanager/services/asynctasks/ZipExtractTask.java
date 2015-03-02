@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -48,7 +49,7 @@ public class ZipExtractTask extends AsyncTask<Void, Void, Void> {
         this.rar = rar;
         this.zipViewer = zipViewer;
         this.fileName = fileName;
-        this.header=fileHeader;
+        this.header = fileHeader;
     }
     @Override
     protected Void doInBackground(Void... zipEntries) {
@@ -90,26 +91,12 @@ private void unzipEntry1(ZipFile zipfile, ZipEntry entry, String outputDir)
         }
     }
     
- private void unzipRAREntry(Archive zipfile, FileHeader entry, String outputDir)
+ private void unzipRAREntry(Archive zipfile, FileHeader header, String outputDir)
             throws IOException, RarException {
-        String name=entry.getFileNameString();
-        name=name.replaceAll("\\\\","/");
-         output = new File(outputDir, name);
-        if(!output.getParentFile().exists())output.mkdirs();
-        BufferedInputStream inputStream = new BufferedInputStream(
-                zipfile.getInputStream(entry));
-        BufferedOutputStream outputStream = new BufferedOutputStream(
-                new FileOutputStream(output));
-        try {
-            int len;
-            byte buf[] = new byte[20480];
-            while ((len = inputStream.read(buf)) > 0) {
-                    outputStream.write(buf, 0, len);
-            }
-        }finally {
-            outputStream.close();
-            inputStream.close();
-        }
+
+         output = new File(outputDir + "/" + header.getFileNameString().trim());
+        FileOutputStream fileOutputStream = new FileOutputStream(output);
+        zipfile.extractFile(header, fileOutputStream);
     }
 
 }

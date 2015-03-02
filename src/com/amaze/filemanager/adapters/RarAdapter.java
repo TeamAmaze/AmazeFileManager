@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,7 @@ public class RarAdapter extends ArrayAdapter<ZipObj> {
     Drawable folder, unknown;
     ArrayList<FileHeader> enter;
     RarViewer zipViewer;
+    private int HEADER_INDEX = 0;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     public RarAdapter(Context c, int id, ArrayList<FileHeader> enter, RarViewer zipViewer) {
         super(c, id);
@@ -210,8 +212,12 @@ public class RarAdapter extends ArrayAdapter<ZipObj> {
         holder.rl.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View p1) {
-                    if(zipViewer.selection)toggleChecked(p);else {
+                    if(zipViewer.selection)
+                        toggleChecked(p);
+                    else {
 
+                        HEADER_INDEX += position;
+                        Log.d("INDEX", "Index at adapter" + HEADER_INDEX);
                         if (rowItem.isDirectory()) {
 
                             new RarHelperTask(zipViewer,  rowItem.getFileNameString()).execute(zipViewer.f);
@@ -222,7 +228,10 @@ public class RarAdapter extends ArrayAdapter<ZipObj> {
                             File file = new File(getContext().getCacheDir().getAbsolutePath(),x);
                             zipViewer.files.clear();
                             zipViewer.files.add(0, file);
-                                new ZipExtractTask(zipViewer.archive, getContext().getCacheDir().getAbsolutePath(),zipViewer.mainActivity, x, false,rowItem).execute();
+                            if (headerRequired(rowItem)!=null) {
+                                new ZipExtractTask(zipViewer.archive, getContext().getCacheDir().getAbsolutePath(),
+                                        zipViewer.mainActivity, x, false, headerRequired(rowItem)).execute();
+                            }
 
                         }
                     }}
@@ -230,6 +239,16 @@ public class RarAdapter extends ArrayAdapter<ZipObj> {
 
 
         return view;
+    }
+
+    private FileHeader headerRequired(FileHeader rowItem) {
+
+        for (FileHeader fileHeader : zipViewer.archive.getFileHeaders()) {
+            String req = fileHeader.getFileNameString();
+            if (rowItem.getFileNameString().equals(req))
+                return fileHeader;
+        }
+        return null;
     }
 
     @Override

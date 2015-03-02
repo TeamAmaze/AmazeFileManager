@@ -57,6 +57,8 @@ public class Preffrag extends PreferenceFragment {
     int theme;
     SharedPreferences sharedPref;
     String skin;
+    private static int COUNT;
+    private Toast toast;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -618,7 +620,25 @@ public class Preffrag extends PreferenceFragment {
             }
         });
 
-        //go back
+        // studio
+        Preference studio = findPreference("studio");
+        studio.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                COUNT++;
+                if (COUNT >= 5) {
+                    if (toast!=null)
+                        toast.cancel();
+                    toast = Toast.makeText(getActivity(), "Studio Mode : " + COUNT, Toast.LENGTH_SHORT);
+                    toast.show();
+
+                    sharedPref.edit().putInt("studio", Integer.parseInt(Integer.toString(COUNT) + "000")).apply();
+                } else {
+                    sharedPref.edit().putInt("studio", 0).apply();
+                }
+                return false;
+            }
+        });
 
     }
 

@@ -4,6 +4,8 @@ package com.amaze.filemanager.services.asynctasks;
  * Created by Arpit on 25-01-2015.
  */
 import android.os.AsyncTask;
+import android.util.Log;
+
 import com.amaze.filemanager.fragments.RarViewer;
 import com.amaze.filemanager.utils.ZipObj;
 import com.github.junrar.Archive;
@@ -58,7 +60,9 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
                 for(FileHeader header:zipViewer.wholelist){
                     String name=header.getFileNameString();
                     if(name.substring(0,name.lastIndexOf("\\")).equals(dir)){
-                        elements.add(header);}
+                        elements.add(header);
+                    }
+                    Log.d("Header", name);
                 }
             }
         }catch (Exception e){}

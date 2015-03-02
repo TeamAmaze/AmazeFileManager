@@ -119,6 +119,7 @@
         <PreferenceScreen
             android:title="@string/aboutFileManager" >
             <Preference
+                android:key="studio"
                 android:title="@string/version"
                 android:summary="v1.4"/>
             <Preference

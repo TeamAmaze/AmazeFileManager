@@ -263,7 +263,8 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
 
                     new ZipHelperTask(zipViewer,  stringBuilder.toString()).execute(zipViewer.f);
 
-                } else {String x=rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1);
+                } else {
+                            String x=rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1);
                     File file = new File(getContext().getCacheDir().getAbsolutePath() + "/" + x);
                     zipViewer.files.clear();
                     zipViewer.files.add(0, file);

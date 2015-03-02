@@ -34,6 +34,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -76,6 +77,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Futils {
+
+    private Toast studioCount;
 
     public Futils() {
     }
@@ -521,6 +524,7 @@ public class Futils {
     }
 
     public void openFile(final File f, final MainActivity m) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
         if (Icons.isText(f.getPath())) {
             Intent i = new Intent(m, TextReader.class);
             i.putExtra("path", f.getPath());
@@ -538,13 +542,36 @@ public class Futils {
             Intent intent = new Intent(m, DbViewer.class);
             intent.putExtra("path", f.getPath());
             m.startActivity(intent);
-        } else {
-            try {
-                openunknown(f, m);
-            } catch (Exception e) {
-                Toast.makeText(m, getString(m, R.string.noappfound),Toast.LENGTH_LONG).show();
-                openWith(f, m);
-            }
+        } else if (Icons.isAudio(f.getPath())) {
+            final int studio_count = sharedPreferences.getInt("studio", 0);
+            Uri uri = Uri.fromFile(f);
+            final Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, "audio/*");
+
+            if (studio_count!=0) {
+                new CountDownTimer(studio_count, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        int sec = (int)millisUntilFinished/1000;
+                        if (studioCount!=null)
+                            studioCount.cancel();
+                        studioCount = Toast.makeText(m, sec + "", Toast.LENGTH_LONG);
+                        studioCount.show();
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        //openFile(f, m);
+                        if (studioCount!=null)
+                            studioCount.cancel();
+                        studioCount = Toast.makeText(m, "Opening..", Toast.LENGTH_LONG);
+                        studioCount.show();
+                        m.startActivity(intent);
+                    }
+                }.start();
+            } else
+                m.startActivity(intent);
         }
     }
 public void showPackageDialog(final File f,final MainActivity m){
