@@ -44,6 +44,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -83,6 +84,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.MediaFile;
 import com.amaze.filemanager.utils.RootHelper;
+import com.amaze.filemanager.utils.ScrimInsetsFrameLayout;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
@@ -111,7 +113,7 @@ public class MainActivity extends ActionBarActivity{
     MainActivity mainActivity=this;
     DrawerAdapter adapter;
     IconUtils util;
-    RelativeLayout mDrawerLinear;
+    ScrimInsetsFrameLayout mDrawerLinear;
     Shortcuts s;
     public String skin,path="";
     public int theme;
@@ -132,6 +134,7 @@ public class MainActivity extends ActionBarActivity{
     FragmentTransaction pending_fragmentTransaction;
     String pending_path;
     boolean openprocesses=false;
+    private StringBuilder statusBarColorBuilder;
     /**
      * Called when the activity is first created.
      */
@@ -236,16 +239,19 @@ public class MainActivity extends ActionBarActivity{
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (Build.VERSION.SDK_INT >= 21) {
             colourednavigation = Sp.getBoolean("colorednavigation", true);
+            statusBarColorBuilder = new StringBuilder();
+            statusBarColorBuilder.append("#00" + getStatusColor().substring(1));
+            Log.d("color req", statusBarColorBuilder.toString());
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(Color.parseColor(getStatusColor()));
+            window.setStatusBarColor(Color.parseColor(statusBarColorBuilder.toString()));
             if (colourednavigation)
                 window.setNavigationBarColor(skinStatusBar);
 
         }
 
-        mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
+        mDrawerLinear = (ScrimInsetsFrameLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);

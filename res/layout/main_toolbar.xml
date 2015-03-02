@@ -21,7 +21,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <RelativeLayout
         android:id="@+id/lin"
@@ -66,13 +67,16 @@
          the container. A solid background is used for contrast
          with the content view.
     -->
-    <RelativeLayout
+    <com.amaze.filemanager.utils.ScrimInsetsFrameLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         android:layout_width="290dp"
         android:layout_height="match_parent"
         android:id="@+id/left_drawer"
-        android:background="@android:color/white"
-        android:layout_gravity="start"
+        android:layout_gravity="start|left"
+        app:insetForeground="#4000"
+        android:paddingTop="25dp"
+        android:fitsSystemWindows="true"
         >
 
         <ListView
@@ -184,7 +188,7 @@
                 android:gravity="center_vertical" />
         </RelativeLayout>
 
-    </RelativeLayout>
+    </com.amaze.filemanager.utils.ScrimInsetsFrameLayout>
     <!--
     <ListView
         android:id="@+id/right_drawer"
