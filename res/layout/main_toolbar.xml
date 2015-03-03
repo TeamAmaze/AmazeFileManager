@@ -74,8 +74,6 @@
         android:layout_height="match_parent"
         android:id="@+id/left_drawer"
         android:layout_gravity="start|left"
-        app:insetForeground="#4000"
-        android:paddingTop="25dp"
         android:fitsSystemWindows="true"
         >
 
@@ -93,7 +91,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="#50989898"
+            android:background="#989898"
             android:layout_above="@+id/appbutton"
             android:id="@+id/divider1"></View>
         <RelativeLayout

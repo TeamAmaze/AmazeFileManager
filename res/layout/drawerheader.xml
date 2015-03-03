@@ -24,10 +24,10 @@
     android:id="@+id/drawerheader"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:minHeight="?actionBarSize"
-    android:padding="10dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
+    android:paddingBottom="10dp"
+    android:paddingTop="35dp"
     android:elevation="5dp"
     android:clickable="false">
 

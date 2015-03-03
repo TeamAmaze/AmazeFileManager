@@ -562,7 +562,6 @@ public class Futils {
 
                     @Override
                     public void onFinish() {
-                        //openFile(f, m);
                         if (studioCount!=null)
                             studioCount.cancel();
                         studioCount = Toast.makeText(m, "Opening..", Toast.LENGTH_LONG);
@@ -572,6 +571,13 @@ public class Futils {
                 }.start();
             } else
                 m.startActivity(intent);
+        } else {
+            try {
+                openunknown(f, m);
+            } catch (Exception e) {
+                Toast.makeText(m, getString(m, R.string.noappfound),Toast.LENGTH_LONG).show();
+                openWith(f, m);
+            }
         }
     }
 public void showPackageDialog(final File f,final MainActivity m){

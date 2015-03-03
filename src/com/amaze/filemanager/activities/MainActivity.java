@@ -54,11 +54,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsListView;
+import android.widget.ActionMenuView;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -134,7 +137,6 @@ public class MainActivity extends ActionBarActivity{
     FragmentTransaction pending_fragmentTransaction;
     String pending_path;
     boolean openprocesses=false;
-    private StringBuilder statusBarColorBuilder;
     /**
      * Called when the activity is first created.
      */
@@ -225,8 +227,13 @@ public class MainActivity extends ActionBarActivity{
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#03A9F4");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
 
-        String x = getStatusColor();
         skinStatusBar = Color.parseColor(getStatusColor());
+
+        mDrawerLinear = (ScrimInsetsFrameLayout) findViewById(R.id.left_drawer);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
+        mDrawerList = (ListView) findViewById(R.id.menu_drawer);
+
         // status bar
         int sdk = Build.VERSION.SDK_INT;
 
@@ -239,22 +246,17 @@ public class MainActivity extends ActionBarActivity{
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (Build.VERSION.SDK_INT >= 21) {
             colourednavigation = Sp.getBoolean("colorednavigation", true);
-            statusBarColorBuilder = new StringBuilder();
-            statusBarColorBuilder.append("#00" + getStatusColor().substring(1));
-            Log.d("color req", statusBarColorBuilder.toString());
+
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(Color.parseColor(statusBarColorBuilder.toString()));
+            //window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            //window.setStatusBarColor(Color.parseColor(statusBarColorBuilder.toString()));
             if (colourednavigation)
                 window.setNavigationBarColor(skinStatusBar);
 
         }
 
-        mDrawerLinear = (ScrimInsetsFrameLayout) findViewById(R.id.left_drawer);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
-        mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         View settingsbutton = findViewById(R.id.settingsbutton);
         if (theme1 == 1) {
             settingsbutton.setBackgroundResource(R.drawable.safr_ripple_black);
@@ -307,10 +309,9 @@ public class MainActivity extends ActionBarActivity{
             }
         });
         View v=getLayoutInflater().inflate(R.layout.drawerheader,null);
-        if(Build.VERSION.SDK_INT>=21){
-            v.setBackgroundColor(skinStatusBar);}
-        else{v.setBackgroundColor(Color.parseColor(skin));}
-        ((TextView)v.findViewById(R.id.firstline)).setTextColor(Color.WHITE);
+        v.setBackgroundColor(Color.parseColor(skin));
+
+        ((TextView) v.findViewById(R.id.firstline)).setTextColor(Color.WHITE);
         mDrawerList.addHeaderView(v);
         list = new ArrayList<String>();
         for (int i = 0; i < val.size(); i++) {
