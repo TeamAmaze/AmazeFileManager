@@ -638,9 +638,6 @@ public class Main extends android.support.v4.app.Fragment {
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                window.setStatusBarColor(res.getColor(android.R.color.black));
                 if(mainActivity.colourednavigation)
                     window.setNavigationBarColor(res.getColor(android.R.color.black));
             }
@@ -1065,9 +1062,6 @@ public class Main extends android.support.v4.app.Fragment {
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                window.setStatusBarColor(mainActivity.skinStatusBar);
                 if(mainActivity.colourednavigation)window.setNavigationBarColor(mainActivity.skinStatusBar);
             }
         }
