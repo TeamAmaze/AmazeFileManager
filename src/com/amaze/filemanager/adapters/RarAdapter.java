@@ -223,21 +223,19 @@ public class RarAdapter extends ArrayAdapter<ZipObj> {
                             new RarHelperTask(zipViewer,  rowItem.getFileNameString()).execute(zipViewer.f);
 
                         }else {
-                            String name=rowItem.getFileNameString();
-                            String x=name.replaceAll("\\\\","/");
-                            File file = new File(getContext().getCacheDir().getAbsolutePath(),x);
-                            zipViewer.files.clear();
-                            zipViewer.files.add(0, file);
                             if (headerRequired(rowItem)!=null) {
+                                FileHeader fileHeader = headerRequired(rowItem);
+                                File file1 = new File(getContext().getCacheDir().getAbsolutePath()
+                                        + "/" + fileHeader.getFileNameString());
+                                zipViewer.files.clear();
+                                zipViewer.files.add(0, file1);
                                 new ZipExtractTask(zipViewer.archive, getContext().getCacheDir().getAbsolutePath(),
-                                        zipViewer.mainActivity, x, false, headerRequired(rowItem)).execute();
+                                        zipViewer.mainActivity, fileHeader.getFileNameString(), false, fileHeader).execute();
                             }
 
                         }
                     }}
         });
-
-
         return view;
     }
 

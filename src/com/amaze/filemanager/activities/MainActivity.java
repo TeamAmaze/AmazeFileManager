@@ -128,7 +128,7 @@ public class MainActivity extends ActionBarActivity{
     private static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     public ArrayList<String> list;
     public int theme1;
-    boolean rootmode,aBoolean,openzip=false;
+    public boolean rootmode,aBoolean,openzip=false;
     String zippath;
     public Spinner tabsSpinner;
     public boolean mRingtonePickerIntent = false,restart=false,colourednavigation=false;

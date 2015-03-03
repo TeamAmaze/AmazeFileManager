@@ -223,9 +223,6 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                window.setStatusBarColor(getResources().getColor(android.R.color.black));
                 if(mainActivity.colourednavigation)window.setNavigationBarColor(getResources().getColor(android.R.color.black));
             }
             if(Build.VERSION.SDK_INT<19)
@@ -277,9 +274,6 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         if (Build.VERSION.SDK_INT >= 21) {
 
             Window window = getActivity().getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(mainActivity.skinStatusBar);
             if(mainActivity.colourednavigation)window.setNavigationBarColor(mainActivity.skinStatusBar);
         }mActionMode=null;}
     };
