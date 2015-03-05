@@ -533,7 +533,7 @@ public class Futils {
             Intent i = new Intent(m, TextReader.class);
             i.putExtra("path", f.getPath());
             m.startActivity(i);
-        } else if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".apk") || f.getName().toLowerCase().endsWith(".rar")|| f.getName().toLowerCase().endsWith(".tar")|| f.getName().toLowerCase().endsWith(".tar.gz") || f.getName().toLowerCase().endsWith(".7z")) {
+        } else if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".apk") || f.getName().toLowerCase().endsWith(".rar")|| f.getName().toLowerCase().endsWith(".tar")|| f.getName().toLowerCase().endsWith(".tar.gz")) {
             showArchiveDialog(f, m);
 
         }else if(f.getName().toLowerCase().endsWith(".apk")){
