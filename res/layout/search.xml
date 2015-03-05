@@ -17,34 +17,31 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:id="@+id/texteditor"
-    android:layout_height="fill_parent" >
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent" >
 
-    <include layout="@layout/toolbar" />
-
-
-    <ScrollView
+    <include layout="@layout/toolbar"
+        android:layout_height="?actionBarSize"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="16dp"
-        android:layout_below="@id/toolbar"
-        android:paddingBottom="16dp"
-        android:clipToPadding="false">
+        />
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+       <ScrollView
+           android:layout_width="fill_parent"
+           android:layout_height="fill_parent">
         <EditText
             android:id="@+id/fname"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:fontFamily="sans-serif-light"
             android:textSize="18sp"
             android:inputType="textCapSentences|textMultiLine"
-
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:minHeight="120dp"
-            android:gravity="top" />
-
-    </ScrollView>
-</RelativeLayout>
+            /></ScrollView>
+    </LinearLayout>
+</LinearLayout>
