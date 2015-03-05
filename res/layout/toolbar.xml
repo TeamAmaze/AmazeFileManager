@@ -29,4 +29,5 @@
     android:minHeight="?attr/actionBarSize"
     android:elevation="10dp"
     app:theme="?attr/toolbar_theme"
-    app:popupTheme="?attr/popup" />
+    app:popupTheme="?attr/popup"
+    android:fitsSystemWindows="true"/>

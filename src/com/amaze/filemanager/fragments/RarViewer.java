@@ -280,7 +280,7 @@ public class RarViewer extends Fragment {
         floatingActionButton.hide(true);
         if (files.size()==1) {
 
-            new DeleteTask(getActivity().getContentResolver(),  getActivity()).execute(files);
+            new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(files);
         }
     }
     public boolean cangoBack(){
