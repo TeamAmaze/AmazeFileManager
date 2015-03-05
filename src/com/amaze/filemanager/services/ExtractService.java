@@ -49,15 +49,25 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
+import net.sf.sevenzipjbinding.ExtractOperationResult;
+import net.sf.sevenzipjbinding.ISequentialOutStream;
+import net.sf.sevenzipjbinding.ISevenZipInArchive;
+import net.sf.sevenzipjbinding.SevenZip;
+import net.sf.sevenzipjbinding.SevenZipException;
+import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
+import net.sf.sevenzipjbinding.simple.ISimpleInArchive;
+import net.sf.sevenzipjbinding.simple.ISimpleInArchiveItem;
 public class ExtractService extends Service {
     public final String EXTRACT_CONDITION = "EXTRACT_CONDITION";
     Futils utils = new Futils();
@@ -341,7 +351,79 @@ public class ExtractService extends Service {
         }
 
     }
+        public void extract7z(final String path,final String outputdir, final int id) {
 
+            RandomAccessFile randomAccessFile = null;
+            ISevenZipInArchive inArchive = null;
+
+            try {
+                randomAccessFile = new RandomAccessFile(path, "r");
+                inArchive = SevenZip.openInArchive(null, // autodetect archive type
+                        new RandomAccessFileInStream(randomAccessFile));
+
+                // Getting simple interface of the archive inArchive
+                ISimpleInArchive simpleInArchive = inArchive.getSimpleInterface();
+                ArrayList<ISimpleInArchiveItem> archiveItems=new ArrayList<>();
+                for (final ISimpleInArchiveItem item : simpleInArchive.getArchiveItems()) {
+                  totalbytes=totalbytes+item.getSize();
+                    archiveItems.add(item);
+                }for(final ISimpleInArchiveItem item : archiveItems){
+                 if(hash.get(id)){if (!item.isFolder()) {
+                        ExtractOperationResult result;
+
+                        final long[] sizeArray = new long[1];
+                        result = item.extractSlow(new ISequentialOutStream() {
+                            public int write(byte[] data) throws SevenZipException {
+
+                                //Write to file
+                                FileOutputStream fos;
+                                try {
+                                    File file = new File(outputdir,item.getPath());
+                                    file.getParentFile().mkdirs();
+                                    fos = new FileOutputStream(file);
+                                    fos.write(data);
+                                    copiedbytes=data.length;
+                                    publishResults(new File(path).getName(),Math.round(100*copiedbytes/totalbytes),id,totalbytes,copiedbytes,false);
+                                    fos.close();
+
+                                } catch (FileNotFoundException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+
+                                sizeArray[0] += data.length;
+                                return data.length; // Return amount of consumed data
+                            }
+                        }); } else {
+                     stopSelf(id);
+                     publishResults(false);
+                 }
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Error occurs: " + e);
+                System.exit(1);
+            } finally {
+                if (inArchive != null) {
+                    try {
+                        inArchive.close();
+                    } catch (SevenZipException e) {
+                        System.err.println("Error closing archive: " + e);
+                    }
+                }
+                if (randomAccessFile != null) {
+                    try {
+                        randomAccessFile.close();
+                    } catch (IOException e) {
+                        System.err.println("Error closing file: " + e);
+                    }
+                }
+            }
+            publishCompletedResult("",Integer.parseInt("123"+id));
+        }
     public boolean extractTar(int id, File archive, String destinationPath) {
         int i = 0;
         try {ArrayList<TarArchiveEntry> archiveEntries=new ArrayList<TarArchiveEntry>();
@@ -440,9 +522,11 @@ public class ExtractService extends Service {
             extract(p1[0].getInt("id"), f,path);
             else if(f.getName().toLowerCase().endsWith(".rar"))
                 extractRar(p1[0].getInt("id"), f, path);
-            else if(f.getName().toLowerCase().endsWith(".tar"))
+            else if(f.getName().toLowerCase().endsWith(".tar") || f.getName().toLowerCase().endsWith(".tar.gz"))
                 extractTar(p1[0].getInt("id"), f, path);
-
+            else if(f.getName().toLowerCase().endsWith(".7z")){
+                extract7z(f.getPath(),path,p1[0].getInt("id"));
+            }
 
             Log.i("Amaze", "Almost Completed");
             // TODO: Implement this method

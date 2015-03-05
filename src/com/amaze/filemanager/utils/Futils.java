@@ -533,7 +533,7 @@ public class Futils {
             Intent i = new Intent(m, TextReader.class);
             i.putExtra("path", f.getPath());
             m.startActivity(i);
-        } else if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".rar")) {
+        } else if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".apk") || f.getName().toLowerCase().endsWith(".rar")|| f.getName().toLowerCase().endsWith(".tar")|| f.getName().toLowerCase().endsWith(".tar.gz") || f.getName().toLowerCase().endsWith(".7z")) {
             showArchiveDialog(f, m);
 
         }else if(f.getName().toLowerCase().endsWith(".apk")){
@@ -613,7 +613,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             @Override
             public void onNegative(MaterialDialog materialDialog) {
                 //m.addZipViewTab(f.getPath());
-                if(f.getName().endsWith(".rar"))
+                if(f.getName().toLowerCase().endsWith(".rar"))
                 m.openRar(f.getPath());
                 else
                 m.openZip(f.getPath());
@@ -623,7 +623,11 @@ public void showPackageDialog(final File f,final MainActivity m){
         mat.neutralColor(Color.parseColor(m.skin));
         mat.negativeColor(Color.parseColor(m.skin));
         if(m.theme1==1)mat.theme(Theme.DARK);
-        mat.build().show();
+        MaterialDialog b=mat.build();
+
+        if(!f.getName().toLowerCase().endsWith(".rar") && !f.getName().toLowerCase().endsWith(".jar") && !f.getName().toLowerCase().endsWith(".apk") && !f.getName().toLowerCase().endsWith(".zip"))
+            b.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
+                b.show();
 
     }
     public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size,String directorybool,boolean b,String date) {
