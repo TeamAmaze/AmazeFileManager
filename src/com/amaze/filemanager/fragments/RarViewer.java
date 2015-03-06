@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -60,6 +61,7 @@ import com.github.junrar.rarfile.FileHeader;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -247,17 +249,25 @@ public class RarViewer extends Fragment {
                         Toast.makeText(getActivity(), new Futils().getString(getActivity(), R.string.extracting), Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getActivity(), ExtractService.class);
                         ArrayList<String> a=new ArrayList<String>();
-                        for(int i:zipAdapter.getCheckedItemPositions()){
-                            a.add(elements.get(i).getFileNameString());
-                        }
-                        intent.putExtra("zip",f.getPath());
+                        FileOutputStream fileOutputStream;
+                            for(int i:zipAdapter.getCheckedItemPositions()) {
+                                Log.d("RARVIEWER", elements.get(i).getFileNameString());
+                                //a.add(elements.get(i).getFileNameString());
+                                fileOutputStream = new FileOutputStream(new File(f.getParent() +
+                                        "/" + elements.get(i).getFileNameString().trim()));
+                                archive.extractFile(elements.get(i), fileOutputStream);
+                            }
+                        /*intent.putExtra("zip",f.getParent());
                         intent.putExtra("entries1",true);
-                        intent.putExtra("entries",a);
-                        getActivity().startService(intent);
+                        intent.putExtra("entries",elements);
+                        getActivity().startService(intent);*/
                     } catch (Exception e) {
                         e.printStackTrace();}
                     mode.finish();
-                    return true;}return false;}
+                    return true;
+            }
+            return false;
+        }
 
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {

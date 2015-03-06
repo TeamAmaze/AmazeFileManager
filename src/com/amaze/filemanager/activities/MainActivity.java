@@ -507,6 +507,7 @@ public class MainActivity extends ActionBarActivity{
                         if(zipViewer.mActionMode==null)
                         {if (zipViewer.cangoBack()) {
 
+                                zipViewer.elements.clear();
                                 zipViewer.goBack();
                             } else {
                                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

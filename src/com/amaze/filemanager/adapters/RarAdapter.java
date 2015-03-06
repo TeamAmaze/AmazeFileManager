@@ -40,7 +40,6 @@ public class RarAdapter extends ArrayAdapter<ZipObj> {
     Drawable folder, unknown;
     ArrayList<FileHeader> enter;
     RarViewer zipViewer;
-    private int HEADER_INDEX = 0;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     public RarAdapter(Context c, int id, ArrayList<FileHeader> enter, RarViewer zipViewer) {
         super(c, id);
@@ -110,6 +109,7 @@ public class RarAdapter extends ArrayAdapter<ZipObj> {
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         final FileHeader rowItem = enter.get(position);
+        zipViewer.elements.add(position, headerRequired(rowItem));
         View view = convertView;
         final int p = position;
         if (convertView == null) {
@@ -216,10 +216,9 @@ public class RarAdapter extends ArrayAdapter<ZipObj> {
                         toggleChecked(p);
                     else {
 
-                        HEADER_INDEX += position;
-                        Log.d("INDEX", "Index at adapter" + HEADER_INDEX);
                         if (rowItem.isDirectory()) {
 
+                            zipViewer.elements.clear();
                             new RarHelperTask(zipViewer,  rowItem.getFileNameString()).execute(zipViewer.f);
 
                         }else {
