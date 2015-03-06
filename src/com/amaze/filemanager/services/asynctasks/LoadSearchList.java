@@ -30,8 +30,10 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.MyAdapter;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.FileListSorter;
+import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -56,20 +58,41 @@ public class LoadSearchList extends AsyncTask<ArrayList<String[]>, Void, ArrayLi
 
         f = params[0];
 
-
+         System.out.println("async"+f.size());
         try {
-            ma.slist = ma.addTo(f);
+            ma.slist = addTo(f);
+
             Collections.sort(ma.slist,
                     new FileListSorter(ma.dsort, ma.sortby, ma.asc,ma.rootMode));
 
             return ma.slist;
 
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
+
         }
 
     }
+    public ArrayList<Layoutelements> addTo(ArrayList<String[]> mFile) {
+        ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
+        for (int i = 0; i < mFile.size(); i++) {
+            String[] ele=mFile.get(i);
+            File f=new File(ele[0]);
+            String size="";
+                if (ma.isDirectory(ele)) {
+                    a.add(ma.utils.newElement(ma.folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,mFile.get(i)[3],false,""));
 
+                } else {
+
+                    try {
+                        a.add(ma.utils.newElement(Icons.loadMimeIcon(ma.getActivity(), f.getPath(), !ma.aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,mFile.get(i)[3],false,""));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }}
+            }
+        return a;
+    }
     @Override
     // Once the image is downloaded, associates it to the imageView
     protected void onPostExecute(ArrayList<Layoutelements> bitmap) {

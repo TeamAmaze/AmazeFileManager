@@ -11,6 +11,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.amaze.filemanager.utils.RootHelper;
+import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.execution.Command;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -81,11 +83,80 @@ boolean rootMode,showHidden;
             run=false;
         }
     };
+    public ArrayList<String> runAndWait1(String cmd, final boolean root)
+    {
+        final ArrayList<String> output=new ArrayList<String>();
+        Command cc=new Command(1,cmd) {
+            @Override
+            public void commandOutput(int i, String s) {
+                output.add(s);
+        System.out.println("output "+root+s);
+            }
+
+            @Override
+            public void commandTerminated(int i, String s) {
+
+                System.out.println("error"+root+s);
+
+            }
+
+            @Override
+            public void commandCompleted(int i, int i2) {
+
+            }
+        };
+        try {
+            RootTools.getShell(root).add(cc);
+        }
+        catch (Exception e)
+        {
+            //       Logger.errorST("Exception when trying to run shell command", e);
+            e.printStackTrace();
+            return null;
+        }
+
+        if (!waitForCommand(cc))
+        {
+            return null;
+        }
+
+        return output;
+    }
+    private boolean waitForCommand(Command cmd)
+    {
+        while (!cmd.isFinished())
+        {
+            synchronized (cmd)
+            {
+                try
+                {
+                    if (!cmd.isFinished())
+                    {
+                        cmd.wait(2000);
+                    }
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            if (!cmd.isExecuting() && !cmd.isFinished())
+            {
+                //         Logger.errorST("Error: Command is not executing and is not finished!");
+                return false;
+            }
+        }
+
+        //Logger.debug("Command Finished!");
+        return true;
+    }
 
     public void search(File file, String text) {
         if (file.isDirectory()) {
-
-            ArrayList<String[]> f= RootHelper.getFilesList(file.getPath(), rootMode, showHidden,false);
+            ArrayList<String> arrayList=runAndWait1("ls -l "+file.getPath(),true);
+            System.out.println(arrayList.size());
+            ArrayList<String[]> f= RootHelper.getFilesList(file.getPath(), rootMode, showHidden, false);
             // do you have permission to read this directory?
             if(run)
             for (String[] x : f) {

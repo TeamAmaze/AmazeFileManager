@@ -98,7 +98,6 @@
         <service
             android:name = "com.amaze.filemanager.services.SearchService"
             android:label = "Searching"
-            android:process=":amaze"
             >
         </service>
          <service
