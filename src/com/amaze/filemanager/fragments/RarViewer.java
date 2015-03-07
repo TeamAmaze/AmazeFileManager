@@ -247,8 +247,6 @@ public class RarViewer extends Fragment {
                 case R.id.ex:
                     try {
                         Toast.makeText(getActivity(), new Futils().getString(getActivity(), R.string.extracting), Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getActivity(), ExtractService.class);
-                        ArrayList<String> a=new ArrayList<String>();
                         FileOutputStream fileOutputStream;
                             for(int i:zipAdapter.getCheckedItemPositions()) {
                                 if(!elements.get(i).isDirectory()){File f1=new File(f.getParent() +
@@ -257,23 +255,25 @@ public class RarViewer extends Fragment {
                                 fileOutputStream = new FileOutputStream(f1);
                                 archive.extractFile(elements.get(i), fileOutputStream);
                             }else{
-                                    String name=elements.get(i).getFileNameString();
+                                    String name=elements.get(i).getFileNameString().trim();
+                                    Log.d("rarViewer", " parent " + name);
                                     for(FileHeader v:archive.getFileHeaders()){
-                                        if(v.getFileNameString().contains(name)){
-                                                File f2=new File(f.getParent() +
-                                                        "/" + v.getFileNameString().trim().replaceAll("\\\\","/"));
-                                            if(v.isDirectory())f2.mkdirs();
-                                            else{if(!f2.getParentFile().exists())f2.getParentFile().mkdirs();
+                                        if(v.getFileNameString().trim().contains(name+"\\") ||
+                                                v.getFileNameString().trim().equals(name)) {
+                                            File f2 = new File(f.getParent() +
+                                                    "/" + v.getFileNameString().trim().replaceAll("\\\\", "/"));
+                                            if (v.isDirectory()) f2.mkdirs();
+                                            else {
+                                                if (!f2.getParentFile().exists())
+                                                    f2.getParentFile().mkdirs();
                                                 fileOutputStream = new FileOutputStream(f2);
-                                                archive.extractFile(v, fileOutputStream);}
+                                                archive.extractFile(v, fileOutputStream);
+                                            }
                                         }
 
                                     }
-                                }}
-                        /*intent.putExtra("zip",f.getParent());
-                        intent.putExtra("entries1",true);
-                        intent.putExtra("entries",elements);
-                        getActivity().startService(intent);*/
+                                }
+                            }
                     } catch (Exception e) {
                         e.printStackTrace();}
                     mode.finish();

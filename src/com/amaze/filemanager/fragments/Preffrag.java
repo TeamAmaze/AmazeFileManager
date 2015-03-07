@@ -530,10 +530,10 @@ public class Preffrag extends PreferenceFragment {
                         "&nbsp;*/ " +
                         "<br><br></code></p>" +
                         "<h3>Notices for libraries:</h3>" +
-                        "<ul><li>Material-ish Progress</ul></li>" +	//progressBar
+                        "<ul><li>Android System Bar Tint</ul></li>" +	// SystemBar tint
                         "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
                         "<br>/*<br>" +
-                        "&nbsp;* Copyright 2014 Nico Hormazábal<br>" +
+                        "&nbsp;* Copyright 2013 readyState Software Limited<br>" +
                         "&nbsp;* <br>" +
                         "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
                         "&nbsp;* you may not use this file except in compliance with the License.<br>" +
@@ -572,6 +572,36 @@ public class Preffrag extends PreferenceFragment {
                         "&nbsp;* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>" +
                         "&nbsp;* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN<br>" +
                         "&nbsp;* THE SOFTWARE.<br>" +
+                        "&nbsp;*/ " +
+                        "<br><br></code></p>" +
+                        "<h3>Notices for libraries:</h3>" +
+                        "<ul><li>UnRAR</ul></li>" +	// junRar
+                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
+                        "<br>/*<br>" +
+                        "&nbsp;* UnRAR - free utility for RAR archives<br>" +
+                        "&nbsp;* License for use and distribution of<br>" +
+                        "&nbsp;* FREE portable version<br>" +
+                        "&nbsp;*/ " +
+                        "<br><br>" +
+                        "https://raw.githubusercontent.com/junrar/junrar/master/license.txt" +
+                        "<br><br></code></p>" +
+                        "<h3>Notices for libraries:</h3>" +
+                        "<ul><li>commons-compress</ul></li>" +	// commons-compress
+                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
+                        "<br>/*<br>" +
+                        "&nbsp;* Copyright [yyyy] [name of copyright owner]<br>" +
+                        "&nbsp;* <br>" +
+                        "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
+                        "&nbsp;* you may not use this file except in compliance with the License.<br>" +
+                        "&nbsp;* You may obtain a copy of the License at<br>" +
+                        "&nbsp;* <br>" +
+                        "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>" +
+                        "&nbsp;* <br>" +
+                        "&nbsp;* Unless required by applicable law or agreed to in writing, software<br>" +
+                        "&nbsp;* distributed under the License is distributed on an \"AS IS\" BASIS,<br>" +
+                        "&nbsp;* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>" +
+                        "&nbsp;* See the License for the specific language governing permissions and<br>" +
+                        "&nbsp;* limitations under the License.<br>" +
                         "&nbsp;*/ " +
                         "<br><br></code></p>" +
                         "</body></html>";

@@ -47,14 +47,12 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
             }
             if(dir==null || dir.trim().length()==0 || dir.equals("")){
 
-                System.out.println("fine here");
             for(FileHeader header:zipViewer.wholelist){
                 String name=header.getFileNameString();
 
                 if(!name.contains("\\")){
                     elements.add(header);
 
-                    System.out.println(name);
                 }
             }}else{
                 for(FileHeader header:zipViewer.wholelist){
@@ -62,7 +60,6 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
                     if(name.substring(0,name.lastIndexOf("\\")).equals(dir)){
                         elements.add(header);
                     }
-                    Log.d("Header", name);
                 }
             }
         }catch (Exception e){}
