@@ -251,14 +251,25 @@ public class RarViewer extends Fragment {
                         ArrayList<String> a=new ArrayList<String>();
                         FileOutputStream fileOutputStream;
                             for(int i:zipAdapter.getCheckedItemPositions()) {
-                                Log.d("RARVIEWER", elements.get(i).getFileNameString());
-                                //a.add(elements.get(i).getFileNameString());
-                                File f1=new File(f.getParent() +
+                                if(!elements.get(i).isDirectory()){File f1=new File(f.getParent() +
                                         "/" + elements.get(i).getFileNameString().trim().replaceAll("\\\\","/"));
                                 if(!f1.getParentFile().exists())f1.getParentFile().mkdirs();
                                 fileOutputStream = new FileOutputStream(f1);
                                 archive.extractFile(elements.get(i), fileOutputStream);
-                            }
+                            }else{
+                                    String name=elements.get(i).getFileNameString();
+                                    for(FileHeader v:wholelist){
+                                        if(v.getFileNameString().contains(name)){
+                                                File f2=new File(f.getParent() +
+                                                        "/" + v.getFileNameString().trim().replaceAll("\\\\","/"));
+                                            if(v.isDirectory())f2.mkdirs();
+                                            else{if(!f2.getParentFile().exists())f2.getParentFile().mkdirs();
+                                                fileOutputStream = new FileOutputStream(f2);
+                                                archive.extractFile(elements.get(i), fileOutputStream);}
+                                        }
+
+                                    }
+                                }}
                         /*intent.putExtra("zip",f.getParent());
                         intent.putExtra("entries1",true);
                         intent.putExtra("entries",elements);
@@ -283,7 +294,7 @@ public class RarViewer extends Fragment {
 
                 Window window = getActivity().getWindow();
                 if(mainActivity.colourednavigation)window.setNavigationBarColor(mainActivity.skinStatusBar);
-            }}
+            }mActionMode=null;}
     };
     @Override
     public void onResume() {
