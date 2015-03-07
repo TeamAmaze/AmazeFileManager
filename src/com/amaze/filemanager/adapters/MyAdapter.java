@@ -334,7 +334,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                             gradientDrawable.setColor(Color.parseColor("#f9a825"));
                         else if (Icons.isgeneric(rowItem.getDesc()))
                         {  gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
-                           String ext=MimeTypes.getExtension(rowItem.getDesc());
+                           String ext=MimeTypes.getExtension(new File(rowItem.getDesc()).getName());
                                 if(ext!=null && ext.trim().length()!=0) {
                                     holder.ext.setText(ext);
                                     holder.imageView.setImageDrawable(null);
