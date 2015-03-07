@@ -74,7 +74,7 @@ public class AppsList extends ListFragment {
     ListView vl;
     public IconHolder ic;
     ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
-    int theme1;
+    public int theme1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

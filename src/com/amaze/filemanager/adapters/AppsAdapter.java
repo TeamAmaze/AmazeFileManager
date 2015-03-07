@@ -175,7 +175,13 @@ app.onLongItemClick(p);   }
                 holder.rl.setBackgroundColor(Color.parseColor("#5f33b5e5"));
             } else {
                 if (app.uimode == 0) {
-                    holder.rl.setBackgroundResource(R.drawable.listitem1);
+                    if (app.theme1 == 0) {
+
+                        holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
+                    } else {
+
+                        holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
+                    }
                 } else if (app.uimode == 1) {
                     holder.rl.setBackgroundResource(R.drawable.bg_card);
                 }

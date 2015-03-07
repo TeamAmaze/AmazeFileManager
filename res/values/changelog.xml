@@ -53,7 +53,7 @@
       <string name="changelog_change_5">- Implemented Database viewer&lt;br>
                                       - Implemented rar viewer&lt;br>
                                       - Improved notifications for operations&lt;br>
-                                      - Fixed drawer&lt;br>
+                                      - Fixed drawer closing lag and improve layout&lt;br>
                                       - New circular icon&lt;br>
                                       - Introduced swipe(pull) to refresh&lt;br>
                                       - Added recognition of usb drive for some devices&lt;br>
