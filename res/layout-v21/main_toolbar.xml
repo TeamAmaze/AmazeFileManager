@@ -21,7 +21,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <RelativeLayout
         android:id="@+id/lin"
@@ -48,7 +49,7 @@
                 android:gravity="center_vertical"
                 android:background="@null"
                 android:minHeight="?android:attr/listPreferredItemHeightSmall"
-                 />
+                />
         </android.support.v7.widget.Toolbar>
         <FrameLayout
             android:layout_below="@id/action_bar"
@@ -73,6 +74,7 @@
         android:layout_height="match_parent"
         android:id="@+id/left_drawer"
         android:layout_gravity="start|left"
+        android:fitsSystemWindows="true"
         >
 
         <ListView

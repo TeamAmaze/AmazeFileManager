@@ -27,7 +27,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingBottom="10dp"
-    android:paddingTop="10dp"
+    android:paddingTop="35dp"
     android:elevation="5dp"
     android:clickable="false">
 
