@@ -73,16 +73,6 @@ public class ZipExtractTask extends AsyncTask<Void, Void, Void> {
         Log.d("change permissions", cmd);
         RootTools.remount(output.getParent(), "rw");
         RootHelper.runAndWait(cmd, true);
-        try {
-            Process process = Runtime.getRuntime().exec(cmd);
-            process.waitFor();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         Futils futils = new Futils();
         futils.openFile(output, (MainActivity) zipViewer);
 }

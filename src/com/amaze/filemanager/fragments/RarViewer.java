@@ -253,8 +253,10 @@ public class RarViewer extends Fragment {
                             for(int i:zipAdapter.getCheckedItemPositions()) {
                                 Log.d("RARVIEWER", elements.get(i).getFileNameString());
                                 //a.add(elements.get(i).getFileNameString());
-                                fileOutputStream = new FileOutputStream(new File(f.getParent() +
-                                        "/" + elements.get(i).getFileNameString().trim()));
+                                File f1=new File(f.getParent() +
+                                        "/" + elements.get(i).getFileNameString().trim().replaceAll("\\\\","/"));
+                                if(!f1.getParentFile().exists())f1.getParentFile().mkdirs();
+                                fileOutputStream = new FileOutputStream(f1);
                                 archive.extractFile(elements.get(i), fileOutputStream);
                             }
                         /*intent.putExtra("zip",f.getParent());
