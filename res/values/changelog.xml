@@ -49,4 +49,17 @@
                                       - Added preference to choose archive extract and compress directory&lt;br>
                                       - Added preference to remember paths&lt;br>
                                       - more...&lt;br>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#524ef8">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Mar 09, 2015&lt;/i>&lt;/font>&lt;br></string>
+      <string name="changelog_change_5">-Implemented Database viewer&lt;br>
+                                      - Implemented rar viewer&lt;br>
+                                      - Improved notifications for operations&lt;br>
+                                      - Fixed drawer&lt;br>
+                                      - New circular icon&lt;br>
+                                      - Introduced swipe(pull) to refresh&lt;br>
+                                      - Added recognition of usb drive for some devices
+                                      - Colored navigation bar for lollipop devices&lt;br>
+                                      - Ripple effect for lollipop devices
+                                      - Many UI improvements&lt;br>
+                                      - Many Bug fixes&lt;br>
+                                      - more...&lt;br>&lt;br></string>
 </resources>

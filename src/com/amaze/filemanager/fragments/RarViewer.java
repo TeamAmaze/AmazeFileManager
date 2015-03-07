@@ -265,7 +265,7 @@ public class RarViewer extends Fragment {
                                             if(v.isDirectory())f2.mkdirs();
                                             else{if(!f2.getParentFile().exists())f2.getParentFile().mkdirs();
                                                 fileOutputStream = new FileOutputStream(f2);
-                                                archive.extractFile(elements.get(i), fileOutputStream);}
+                                                archive.extractFile(v, fileOutputStream);}
                                         }
 
                                     }
