@@ -258,7 +258,7 @@ public class RarViewer extends Fragment {
                                 archive.extractFile(elements.get(i), fileOutputStream);
                             }else{
                                     String name=elements.get(i).getFileNameString();
-                                    for(FileHeader v:wholelist){
+                                    for(FileHeader v:archive.getFileHeaders()){
                                         if(v.getFileNameString().contains(name)){
                                                 File f2=new File(f.getParent() +
                                                         "/" + v.getFileNameString().trim().replaceAll("\\\\","/"));

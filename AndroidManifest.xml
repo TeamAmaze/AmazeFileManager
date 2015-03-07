@@ -86,7 +86,8 @@
         <activity
             android:label="Database Reader"
             android:name="com.amaze.filemanager.activities.DbViewer"
-            android:theme="@style/appCompatLight">
+            android:theme="@style/appCompatLight"
+            android:screenOrientation="portrait">
             <intent-filter
                 android:label="Amaze Database Reader">
                 <action android:name="android.intent.action.VIEW"/>
