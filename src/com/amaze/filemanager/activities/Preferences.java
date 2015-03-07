@@ -90,7 +90,8 @@ public class Preferences extends ActionBarActivity {
             boolean colourednavigation=Sp.getBoolean("colorednavigation",true);
             Window window =getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(Color.parseColor(getStatusColor()));
             if(colourednavigation)
                 window.setNavigationBarColor(Color.parseColor(getStatusColor()));
 

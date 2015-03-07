@@ -95,10 +95,13 @@ public class DbViewer extends ActionBarActivity {
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         }else if(Build.VERSION.SDK_INT>=21){
-
+            boolean colourednavigation=Sp.getBoolean("colorednavigation",true);
             Window window =getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(Color.parseColor(getStatusColor()));
+            if(colourednavigation)
+                window.setNavigationBarColor(Color.parseColor(getStatusColor()));
 
         }
 
