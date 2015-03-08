@@ -1263,17 +1263,20 @@ public class MainActivity extends ActionBarActivity{
     public  File getUsbDrive() {
         File parent ;
         parent=new File("/storage");
-        for(File f:parent.listFiles())
-        {if(f.exists() && f.getName().toLowerCase().contains("usb") && f.canExecute()){
-            return f;
-        }
-            parent = new File("/mnt/sdcard/usbStorage");
-            if (parent.exists() && parent.canExecute())
-                return (parent);
-            parent = new File("/mnt/sdcard/usb_storage");
-            if (parent.exists() && parent.canExecute())
-                return parent;
-        }
+
+        try{
+            for(File f:parent.listFiles())
+            {if(f.exists() && f.getName().toLowerCase().contains("usb") && f.canExecute()){
+                return f;
+            }}}catch (Exception e){}
+                parent = new File("/mnt/sdcard/usbStorage");
+                if (parent.exists() && parent.canExecute())
+                    return (parent);
+                parent = new File("/mnt/sdcard/usb_storage");
+                if (parent.exists() && parent.canExecute())
+                    return parent;
+
+
         return null;
     }
 
