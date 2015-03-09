@@ -173,9 +173,6 @@ static {
         add("application/msword", icon);
         add("application/vnd.openxmlformats-officedocument.wordprocessingml.document", icon);
         add("application/vnd.openxmlformats-officedocument.wordprocessingml.template", icon);
-
-        // Text
-        icon = R.drawable.ic_doc_text_am;
         add("application/vnd.oasis.opendocument.text", icon);
         add("application/vnd.oasis.opendocument.text-master", icon);
         add("application/vnd.oasis.opendocument.text-template", icon);
@@ -187,6 +184,9 @@ static {
         add("application/vnd.sun.xml.writer.template", icon);
         add("application/x-abiword", icon);
         add("application/x-kword", icon);
+
+        // Text
+        icon = R.drawable.ic_doc_text_am;
         add("text/plain", icon);
 
         // Video
