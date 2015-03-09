@@ -49,4 +49,17 @@
                                       - Adicionada preferência para escolher o local de extração e compressão dos ficheiros&lt;br>
                                       - Adicionada preferência para memorizar os caminhos&lt;br>
                                       - mais...&lt;br>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#524ef8">&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2015-003-08&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_5">- Adicionado um visualizador de bases de dados&lt;br>
+                                      - Adicionado um visualizador de arquivos rar&lt;br>
+                                      - Melhorias às notificações de operações&lt;br>
+                                      - Correções ao painel de navegação&lt;br>
+                                      - Adicionado um novo ícone circular&lt;br>
+                                      - Adicionada opção de deslizar para baixo para atualizar a vista&lt;br>
+                                      - Adicionado reconhecimento de unidades USB em alguns dispositivos&lt;br>
+                                      - Adicionada barra de nevagação colorida para dispositivos lollipop&lt;br>
+                                      - Adicionado efeito de ondulação em dispositivos lollipop&lt;br>
+                                      - Diversas melhorias à interface&lt;br>
+                                      - Diversas correções de erros&lt;br>
+                                      - mais...&lt;br>&lt;br></string>
 </resources>
