@@ -136,7 +136,7 @@ public class Shortcuts {
         return b;
     }
 
-    public void removeS(File f1, Activity s) throws IOException, SAXException, ParserConfigurationException, TransformerException {
+    public void removeS(File f1, Context s) throws IOException, SAXException, ParserConfigurationException, TransformerException {
         //	ArrayList<File> f=new ArrayList<File>();
         File g = new File(path);
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();

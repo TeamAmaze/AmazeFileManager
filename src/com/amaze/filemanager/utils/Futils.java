@@ -112,7 +112,7 @@ public class Futils {
         ArrayList<Uri> uris=new ArrayList<Uri>();
         if(a.size()==1){
             String mime=MimeTypes.getMimeType(a.get(0));
-            if(mime.equals("application/vnd.android.package-archive"))mime="*/*";
+            if(mime!=null && mime.equals("application/vnd.android.package-archive"))mime="*/*";
             uris.add(Uri.fromFile(a.get(0)));
             sendIntent.setType(mime);
         }else{boolean b=true;
@@ -126,7 +126,13 @@ public class Futils {
         }
 
         sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-        c.startActivity(sendIntent);
+        try {
+            c.startActivity(sendIntent);
+        } catch (Exception e) {
+            sendIntent.setType("*/*");
+            c.startActivity(sendIntent);
+            e.printStackTrace();
+        }
     }
     public String readableFileSize(long size) {
         if (size <= 0)

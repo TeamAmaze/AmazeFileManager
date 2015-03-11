@@ -19,7 +19,9 @@
 
 package com.amaze.filemanager.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -75,6 +77,7 @@ public class BookmarksManager extends Fragment {
   public   MainActivity m;
 ListView vl;int theme,theme1;
 View rootView;ListView listview;
+    Context c;
     SwipeRefreshLayout swipeRefreshLayout;
     @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -85,6 +88,7 @@ View rootView;ListView listview;
             listview=(ListView)rootView.findViewById(R.id.listView);
             rootView.findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
             rootView.findViewById(R.id.activity_main_swipe_refresh_layout1).setVisibility(View.GONE);
+            c=getActivity();
         return rootView;}
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -242,7 +246,7 @@ View rootView;ListView listview;
     }
 
     public void refresh(ArrayList<File> f) {
-        b = new BooksAdapter(getActivity(), R.layout.bookmarkrow, f, this);
+        b = new BooksAdapter(c, R.layout.bookmarkrow, f, this);
         listview.setAdapter(b);
         swipeRefreshLayout.setRefreshing(false);
     }
