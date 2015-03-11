@@ -57,7 +57,7 @@ public class Preffrag extends PreferenceFragment {
     int theme;
     SharedPreferences sharedPref;
     String skin;
-    private static int COUNT;
+    private int COUNT = 0;
     private Toast toast;
 
     @Override
