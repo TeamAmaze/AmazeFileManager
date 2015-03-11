@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">檔管理</string>
+    <string name="drawer_open">打開導航抽屜</string>
+    <string name="drawer_close">關閉導航抽屜</string>
+    <string name="books">書簽</string>
+    <string name="icon">圖示</string>
+    <string name="efn">請輸入檔案名</string>
+    <string name="storage">存儲</string>
+    <string name="gallery">圖庫</string>
+    <string name="apps">應用管理</string>
+    <string name="bookmanag">書簽管理</string>
+    <string name="setting">應用設置</string>
+    <string name="select">選擇專案</string>
+    <string name="pressagain">再按一次「返回鍵」退出</string>
+    <string name="open">打開</string>
+    <string name="backup">備份</string>
+    <string name="uninstall">卸載</string>
+    <string name="play">在 Play 商店中查看</string>
+    <string name="properties">屬性</string>
+    <string name="copyingapk">將 APK 複製到</string>
+    <string name="addbook">添加書簽</string>
+    <string name="addtobook">添加到書簽</string>
+    <string name="enterpath">輸入路徑</string>
+    <string name="cancel">取消</string>
+    <string name="create">新建</string>
+    <string name="success">成功</string>
+    <string name="filenotexists">檔不存在</string>
+    <string name="error">錯誤</string>
+    <string name="cantlistfiles">非 Root 許可權無法列出檔</string>
+    <string name="searchresults">搜索結果</string>
+    <string name="itemsselected">專案已選中</string>
+    <string name="newhomedirectory">新首頁目錄</string>
+    <string name="rename">重命名</string>
+    <string name="save">保存</string>
+    <string name="renameerror">重命名時出現問題</string>
+    <string name="renamed">重命名成功</string>
+    <string name="bookmarksadded">書簽已添加</string>
+    <string name="fileexist">同名檔已存在</string>
+    <string name="filecreated">檔已創建成功</string>
+    <string name="searchpath">搜索路徑</string>
+    <string name="search">搜索</string>
+    <string name="enterfile">請輸入檔案名</string>
+    <string name="name">名稱：</string>
+    <string name="date">時間戳：</string>
+    <string name="location">路徑：</string>
+    <string name="size">大小：</string>
+    <string name="totalitems">專案數：</string>
+    <string name="enterzipname">請輸入 ZIP 檔案名</string>
+    <string name="noappfound">找不到可以打開該檔的應用</string>
+    <string name="copying">正在複製</string>
+    <string name="moving">正在移動</string>
+    <string name="add">添加</string>
+    <string name="tab">標籤</string>
+    <string name="file">檔</string>
+    <string name="folder">檔夾</string>
+    <string name="newfolder">新檔夾</string>
+    <string name="entername">請輸入名稱</string>
+    <string name="extracting">正在解壓</string>
+    <string name="zipping">正在壓縮</string>
+    <string name="stopping">正在停止</string>
+    <string name="guide1">歡迎使用 Amaze 檔管理器！</string>
+    <string name="guide2">觸摸藍條以顯示或隱藏地址欄</string>
+    <string name="guide3">長按條目以使用更多選項</string>
+    <string name="guide4">例如複製、移動、查看屬性等等</string>
+    <string name="guide5">按返回鍵退出應用</string>
+    <string name="guide6">此外也可以使用左側欄進行流覽</string>
+    <string name="maintab">無法移除主標籤頁</string>
+    <string name="openparent">打開父目錄</string>
+    <string name="openwith">打開方式</string>
+    <string name="share">分享</string>
+    <string name="about">關於</string>
+    <string name="extract">提取</string>
+    <string name="compress">壓縮</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="confirm">確認</string>
+    <string name="deleting">正在刪除</string>
+    <string name="questiondelete">您確定要刪除以下檔嗎？</string>
+    <string name="viewmode">視圖模式</string>
+    <string name="uimode">介面模式</string>
+    <string name="directorysort">目錄排序方式</string>
+    <string name="sortby">排序方式</string>
+    <string name="theme">主題</string>
+    <string name="skin">皮膚</string>
+    <string name="random">隨機皮膚</string>
+    <string name="random_summary">每次啟動都顯示隨機主題</string>
+    <string name="colorize">多彩圖示</string>
+    <string name="colorize_summary">設置靜態圖示的顏色</string>
+    <string name="back">後退</string>
+    <string name="home">首頁目錄</string>
+    <string name="paste">粘貼</string>
+    <string name="close">關閉</string>
+    <string name="history">歷史記錄</string>
+    <string name="refresh">刷新</string>
+    <string name="copy">複製</string>
+    <string name="rootmode">Root 模式</string>
+    <string name="rootmodesummary">僅供已獲取 Root 許可權的設備使用</string>
+    <string name="mountsystemsummary">如果您想修改系統檔請啟用此選項</string>
+    <string name="mountsystem">掛載 System 分區為可讀寫</string>
+    <string name="rootfailure">未獲取 Root 訪問許可權</string>
+    <string name="cut">剪切</string>
+    <string name="selectall">全選</string>
+    <string name="delete">刪除</string>
+    <string name="setashome">設為為首頁目錄</string>
+    <string name="sethome">設置首頁目錄</string>
+    <string name="foldercolor">檔夾顏色</string>
+    <string name="imagegallery">圖庫</string>
+    <string name="fileexplorer">檔管理器</string>
+    <string name="changegallerypath">選擇圖庫目錄</string>
+    <string name="usedefaultgallerypath">使用默認圖庫目錄</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <string name="simple">簡潔式</string>
+    <string name="card">卡片式</string>
+    <!-- Theme -->
+    <string name="light">明亮</string>
+    <string name="dark">黑暗</string>
+    <string name="daytime">隨晝夜變化</string>
+    <!--Skin-->
+    <string name="red">紅色</string>
+    <string name="pink">粉色</string>
+    <string name="purple">淡紫</string>
+    <string name="deep_purple">深紫</string>
+    <string name="indigo">靛藍</string>
+    <string name="blue">藍色</string>
+    <string name="light_blue">亮藍</string>
+    <string name="cyan">青色</string>
+    <string name="teal">藍綠</string>
+    <string name="green">綠色</string>
+    <string name="light_green">草綠</string>
+    <string name="amber">琥珀</string>
+    <string name="orange">橙色</string>
+    <string name="deep_orange">暗橙</string>
+    <string name="brown">棕色</string>
+    <string name="black">黑色</string>
+    <string name="blue_grey">藍灰</string>
+    <string name="supersu">超級授權</string>
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">檔夾顯示在頂部</string>
+    <string name="filesOnTop">檔夾顯示在底部</string>
+    <string name="noneOnTop">檔與檔夾混合顯示</string>
+    <!--SortBy-->
+    <string name="sortName">名稱</string>
+    <string name="lastModified">日期</string>
+    <string name="sortSize">大小</string>
+    <string name="sortNameDesc">名稱（降序）</string>
+    <string name="lastModifiedDesc">日期（降序）</string>
+    <string name="sortSizeDesc">大小（降序）</string>
+    <!--ListMode-->
+    <string name="detailedView">詳細</string>
+    <string name="simpleView">簡潔</string>
+    <!--Folder-->
+    <string name="Yellow">黃色</string>
+    <string name="pick_a_file">選擇一個檔</string>
+    <string name="process_viewer">進程管理器</string>
+    <string name="in_safe">空間不足</string>
+    <string name="no_file_overwrite">未覆蓋任何檔</string>
+    <string name="skip">跳過</string>
+    <string name="overwrite">覆蓋</string>
+    <string name="cant_read_file">無法讀取檔</string>
+    <string name="not_allowed">不允許的操作</string>
+    <string name="processes">進程列表</string>
+    <string name="searching">搜索中</string>
+    <string name="copying_fles">正在複製檔</string>
+    <string name="done">完成</string>
+    <string name="Extracting_fles">正在提取檔</string>
+    <string name="Zipping_fles">正在創建壓縮檔</string>
+    <string name="items">個專案</string>
+    <string name="set">應用設置</string>
+    <string name="enablerootmde">啟用 Root 模式</string>
+    <string name="goback">返回上一級</string>
+    <string name="foldercreated">檔夾已創建</string>
+    <string name="newfile">新檔</string>
+    <string name="nofiles">無檔</string>
+    <string name="tapnhold">長按檔或檔夾，顯示更多選項</string>
+    <string name="pathcopied">路徑已複製到剪貼板</string>
+    <string name="used">已用：</string>
+    <string name="free">剩餘：</string>
+    <string name="atroot">已進入 Root 模式</string>
+    <string name="listview">列表模式</string>
+    <string name="gridview">網格模式</string>
+    <string name="setlistview">設置列表模式</string>
+    <string name="setgridview">設置網格模式</string>
+    <string name="permission">許可權</string>
+    <string name="hide">排除</string>
+    <string name="exit">退出應用</string>
+    <string name="enternewname">請輸入新的檔案名</string>
+    <string name="doforall">為所有專案執行操作</string>
+    <string name="gridcolumnno">網格模式列數</string>
+    <string name="randomDialog">隨機</string>
+    <string name="setRandom">更改將會在您重啟應用後生效。</string>
+    <string name="authors">開發人員</string>
+    <string name="changelog">更新日誌</string>
+    <string name="fullChangelog">完整更新日誌</string>
+    <string name="ok">確定</string>
+    <string name="chooseUI">選擇專案顯示模式</string>
+    <string name="ui">介面</string>
+    <string name="general">常規</string>
+    <string name="thumbSummary">顯示應用和圖片的縮略圖</string>
+    <string name="thumb">顯示縮略圖</string>
+    <string name="hidden">顯示隱藏檔</string>
+    <string name="lastModifiedSummary">顯示檔的最後修改時間</string>
+    <string name="lastModifiedPref">顯示修改時間</string>
+    <string name="sizePrefSummary">顯示檔大小及檔夾內檔數量</string>
+    <string name="sizePref">顯示大小</string>
+    <string name="miscellaneous">雜項</string>
+    <string name="rootPrefSummary">顯示檔及檔夾的許可權</string>
+    <string name="rootPref">顯示許可權</string>
+    <string name="aboutFileManager">關於</string>
+    <string name="version">應用版本</string>
+    <string name="rate">為本應用評分</string>
+    <string name="license">開源許可</string>
+    <string name="feedback">回饋</string>
+    <string name="hiddenfiles">排除檔</string>
+    <string name="type">類型</string>
+    <string name="typeDesc">類型（降序）</string>
+    <string name="rootdirectory">根目錄</string>
+    <string name="new_string">新建</string>
+    <string name="setringtone">設置為鈴聲</string>
+    <string name="copy_path">複製路徑</string>
+    <string name="addshortcut">創建快捷方式</string>
+    <string name="unsavedchanges">未保存修改</string>
+    <string name="unsavedchangesdesc">您已經修改了該檔，是否要在退出前保存您所作的修改？</string>
+    <string name="saving">保存</string>
+    <string name="packageinstaller">應用包安裝程式</string>
+    <string name="view">查看</string>
+    <string name="install">安裝</string>
+    <string name="archive">壓縮包</string>
+    <string name="archtext">這是一個壓縮包檔，您要執行哪一項操作？</string>
+    <string name="pitext">這是一個應用安裝包，您要執行哪一項操作？</string>
+    <string name="xda_title">XDA 鏈接</string>
+    <string name="xda_summary">獲取應用的問答及幫助</string>
+    <string name="invalid_dir">無效的目錄</string>
+    <string name="circularimages">對圖像和視頻使用圓形圖示</string>
+    <string name="circularicons">使用圓形圖示</string>
+    <string name="back_title">顯示返回選項</string>
+    <string name="back_summary">在列表的頂部顯示返回選項</string>
+    <string name="details">詳細</string>
+    <string name="translators">翻譯人員</string>
+    <string name="german_translation_title">德語</string>
+    <string name="italian_translation_title">義大利語</string>
+    <string name="french_translation_title">法語</string>
+    <string name="russian_translation_title">俄語</string>
+    <string name="spanish_translation_title">西班牙語</string>
+    <string name="basque_translation_title">巴斯克語</string>
+    <string name="chinese_translation_title">簡體中文</string>
+    <string name="serbian_translation_title">塞爾維亞語</string>
+    <string name="turkish_translation_title">土耳其語</string>
+    <string name="ukrainian_translation_title">烏克蘭語</string>
+    <string name="portuguese_translation_title">葡萄牙語</string>
+    <string name="polish_translation_title">波蘭語</string>
+    <string name="zip_viewer">ZIP 壓縮包查看器</string>
+    <string name="unin_system_apk">這是一個系統應用，刪除它可能導致系統不穩定。\n是否繼續？</string>
+    <string name="warning">警告</string>
+    <string name="donate">捐贈</string>
+    <string name="archive_preferences">壓縮</string>
+    <string name="archive_extract_folder">壓縮包提取目錄</string>
+    <string name="zip_create_folder">ZIP 創建目錄</string>
+    <string name="archive_summary">壓縮包檔將會被提取到該目錄，默認提取到壓縮包所在目錄</string>
+    <string name="zip_summary">新 ZIP 檔將會創建到該目錄，默認創建壓縮包到當前目錄</string>
+    <string name="openas">打開方式</string>
+    <string name="text">文本</string>
+    <string name="audio">音頻</string>
+    <string name="video">視頻</string>
+    <string name="other">其他</string>
+    <string name="image">圖像</string>
+    <string name="contributors">捐贈人員</string>
+    <string name="savepaths">記住路徑</string>
+    <string name="savepathsummary">當您開啟 Amaze 檔管理器時，每個標籤將會顯示您上次訪問的目錄</string>
+    <string name="select_intent">選擇</string>
+    <string name="md5copied">MD5 碼已複製到剪切板</string>
+    <string name="generating">正在生成…</string>
+    <string name="tables">表格</string>
+    <string name="database">資料庫</string>
+    <string name="colourednavigation">導航欄變色</string>
+    <string name="colourednavigationsum">設置導航欄是否跟隨皮膚顏色變色</string>
+</resources>
+
