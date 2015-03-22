@@ -38,9 +38,9 @@
     <string name="open">Ouvrir</string>
     <string name="backup">Sauvegarder</string>
     <string name="uninstall">Désinstaller</string>
-    <string name="play">Play Store</string>
+    <string name="play">Google Play</string>
     <string name="properties">Propriétés</string>
-    <string name="copyingapk">Copier l\'apk vers</string>
+    <string name="copyingapk">Copier l\'APK vers</string>
     <string name="addbook">Ajouter un favori</string>
     <string name="addtobook">Ajouter au Favori</string>
     <string name="enterpath">Entrer le chemin</string>
@@ -216,8 +216,8 @@
     <string name="randomDialog">Aléatoire</string>
     <string name="setRandom">Les modifications seront effectives après redémarrage de l\'application</string>
     <string name="authors">Auteurs</string>
-    <string name="changelog">Change log</string>
-    <string name="fullChangelog">Change log complets</string>
+    <string name="changelog">Changlog</string>
+    <string name="fullChangelog">Changlog complets</string>
     <string name="ok">OK</string>
     <string name="chooseUI">Choisissez l\'interface utilisateur de l\'élément</string>
     <string name="ui">Interface</string>
@@ -248,20 +248,20 @@
     <string name="unsavedchanges">Modifications annulées</string>
     <string name="unsavedchangesdesc">Vous avez annulé les changements, voulez-vous les sauvegarder avant de quitter ?</string>
     <string name="saving">Sauvegarde</string>
-    <string name="packageinstaller">Package d\'installation</string>
+    <string name="packageinstaller">Programme d\'installation</string>
     <string name="view">Affichage</string>
     <string name="install">Installer</string>
     <string name="archive">Archiver</string>
     <string name="archtext">Ceci est une archive. Quelle action souhaitez-vous faire ?</string>
-    <string name="pitext">Ceci est un package d\'installation. Quelle action souhaitez-vous faire ?</string>
+    <string name="pitext">Ceci est un programme d\'installation. Quelle action souhaitez-vous faire ?</string>
     <string name="xda_title">XDA</string>
     <string name="xda_summary">Questions/Réponses, Support</string>
     <string name="invalid_dir">Emplacement invalide</string>
     <string name="circularimages">Utiliser des icônes circulaires pour les images et vidéos</string>
     <string name="circularicons">Utiliser des icônes circulaires</string>
-    <string name="back_title">Back navigation</string>
-    <string name="back_summary">Enables custom back navigation at top of the list</string>
-    <string name="details">Details</string>
+    <string name="back_title">Navigation par l\'icône retour</string>
+    <string name="back_summary">Activer l\'icône de navigation retour en haut de la liste</string>
+    <string name="details">Détails</string>
     <string name="translators">Traducteurs</string>
     <string name="german_translation_title">Allemand</string>
     <string name="italian_translation_title">Italien</string>
@@ -274,6 +274,7 @@
     <string name="turkish_translation_title">Turc</string>
     <string name="ukrainian_translation_title">Ukrainien</string>
     <string name="portuguese_translation_title">Portugais</string>
+	<string name="polish_translation_title">Polonais</string>
     <string name="zip_viewer">Visionneur ZIP</string>
     <string name="unin_system_apk">Ceci est une application système, sa suppression pourrait conduire à une instabilité du système.\nPoursuivre ?</string>
     <string name="warning">Attention</string>
@@ -293,4 +294,10 @@
     <string name="savepaths">Se souvenir des chemins</string>
     <string name="savepathsummary">Lors du démarrage, le dossier récemment affiché pour chaque onglet sera affiché</string>
     <string name="select_intent">Sélectionner</string>
+    <string name="md5copied">Le MD5 est copié dans le presse-papiers</string>
+    <string name="generating">Génération..</string>
+    <string name="tables">Tableau(x)</string>
+    <string name="database">Base de données</string>
+    <string name="colourednavigation">Barre de navigation colorée</string>
+    <string name="colourednavigationsum">Choisir si la barre de navigation doit être colorée avec l'\habillage</string>
 </resources>
