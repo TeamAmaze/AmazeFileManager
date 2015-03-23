@@ -227,7 +227,7 @@ Context c=this;
                 zos.flush();
                 zos.close();
 
-            } catch (IOException e) {
+            } catch (Exception e) {
             }
         }
 

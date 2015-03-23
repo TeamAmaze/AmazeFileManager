@@ -132,7 +132,7 @@ public class AppsList extends ListFragment {
         if(theme1==1)
             builder.theme(Theme.DARK);
         builder.items(new String[]{utils.getString(getActivity(), R.string.open),utils.getString(getActivity(), R.string.backup), utils.getString(getActivity(), R.string.uninstall),
-                utils.getString(getActivity(), R.string.properties),utils.getString(getActivity(), R.string.play)})
+                utils.getString(getActivity(), R.string.properties),utils.getString(getActivity(), R.string.play),utils.getString(getActivity(),R.string.share)})
                 .itemsCallback(new MaterialDialog.ListCallback() {
 
                     @Override
@@ -223,6 +223,10 @@ public class AppsList extends ListFragment {
                                 intent1.setData(Uri.parse("market://details?id=" + c.get(position).packageName));
                                 startActivity(intent1);
                                 break;
+                            case 5:
+                                ArrayList<File> arrayList2=new ArrayList<File>();
+                                arrayList2.add(new File(c.get(position).publicSourceDir));
+                                utils.shareFiles(arrayList2,getActivity());
                         }
                     }
                 }).title(a.get(position).getTitle()).build()
