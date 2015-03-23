@@ -112,7 +112,7 @@ public class Futils {
         ArrayList<Uri> uris=new ArrayList<Uri>();
         if(a.size()==1){
             String mime=MimeTypes.getMimeType(a.get(0));
-            if(mime!=null && mime.equals("application/vnd.android.package-archive"))mime="*/*";
+            if(!mime.equals(null) && mime.equals("application/vnd.android.package-archive"))mime="*/*";
             uris.add(Uri.fromFile(a.get(0)));
             sendIntent.setType(mime);
         }else{boolean b=true;
