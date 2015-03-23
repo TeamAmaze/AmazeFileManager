@@ -49,4 +49,17 @@
                                       - Ajout d\'une préférence pour choisir le répertoire d\'extraction et la compression de l\'archive&lt;br>
                                       - Ajout d\'une préférence de se souvenir des chemins&lt;br>
                                       - plus...&lt;br>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#524ef8">&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>08 Mar, 2015&lt;/i>&lt;/font>&lt;br></string>
+      <string name="changelog_change_5">- Mis en place de la visionneuse de base de données&lt;br>
+                                      - Mis en place de la visionneuse de fichier rar&lt;br>
+                                      - Notifications améliorées pour les opérations&lt;br>
+                                      - Correction de la latence à la fermeture du tiroir et amélioration de la mise en page&lt;br>
+                                      - Nouvelles icônes circulaires&lt;br>
+                                      - Introduction du Glisser (pull) pour rafraîchir&lt;br>
+                                      - Ajout de la reconnaissance de clé USB pour certains périphériques&lt;br>
+                                      - Barre de navigation colorée pour les dispositifs Android Lollipop&lt;br>
+                                      - Effet d\'ondulation pour les appareils Lollipop&lt;br>
+                                      - Nombreuses améliorations de l\'interface utilisateur&lt;br>
+                                      - Beaucoup de corrections de bug&lt;br>
+                                      - Plus...&lt;br>&lt;br></string>
 </resources>
