@@ -50,7 +50,7 @@
                                       - Added preference to remember paths&lt;br>
                                       - more...&lt;br>&lt;br></string>
     <string name="changelog_version_5">&lt;font color="#524ef8">&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Mar 08, 2015&lt;/i>&lt;/font>&lt;br></string>
-      <string name="changelog_change_5">- Implemented Database viewer&lt;br>
+    <string name="changelog_change_5">- Implemented Database viewer&lt;br>
                                       - Implemented rar viewer&lt;br>
                                       - Improved notifications for operations&lt;br>
                                       - Fixed drawer closing lag and improve layout&lt;br>

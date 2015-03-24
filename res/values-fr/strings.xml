@@ -299,5 +299,5 @@
     <string name="tables">Tableau(x)</string>
     <string name="database">Base de données</string>
     <string name="colourednavigation">Barre de navigation colorée</string>
-    <string name="colourednavigationsum">Choisir si la barre de navigation doit être colorée avec l'\habillage</string>
+    <string name="colourednavigationsum">Choisir si la barre de navigation doit être colorée avec l\'habillage</string>
 </resources>

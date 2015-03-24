@@ -173,7 +173,6 @@ public class DbViewer extends ActionBarActivity {
 
     private String getStatusColor() {
 
-
         String[] colors = new String[]{
                 "#F44336","#D32F2F",
                 "#e91e63","#C2185B",
