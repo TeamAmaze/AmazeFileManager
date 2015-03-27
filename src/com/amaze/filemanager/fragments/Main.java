@@ -82,6 +82,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -1271,12 +1272,13 @@ public class Main extends android.support.v4.app.Fragment {
     public void onResume() {
         super.onResume();
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        floatingActionButton.attachToListView(listView);
-        floatingActionButton.attachToListView(gridView);
-        floatingActionButton.setColorNormal(Color.parseColor(skin));
-        floatingActionButton.setColorPressed(Color.parseColor(skin));
         floatingActionButton.setAnimation(animation1);
-        //floatingActionButton.setVisibility(View.VISIBLE);
+       if(no==2 && Build.VERSION.SDK_INT>=17) {
+           RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) floatingActionButton.getLayoutParams();
+           params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+           params.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
+           floatingActionButton.setLayoutParams(params);
+       }  //floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.show(true);
 
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));

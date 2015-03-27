@@ -312,8 +312,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     gradientDrawable.setColor(Color.parseColor("#757575"));
                     holder.ext.setText("");
                     if (Build.VERSION.SDK_INT >= 21) {
-
-                        if (main.theme1 == 0) {
+                    if (main.theme1 == 0) {
                         holder.rl.setElevation(6f);
                         } else {
                             holder.rl.setBackgroundColor(getContext().getResources().getColor(R.color.safr_pressed_dark));
