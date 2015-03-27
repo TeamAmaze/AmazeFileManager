@@ -54,6 +54,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
     List<Layoutelements> items;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     Main main;
+    int filetype=-1;
     Futils utils = new Futils();
     ColorMatrixColorFilter colorMatrixColorFilter;
     public MyAdapter(Context context, int resourceId,
@@ -204,7 +205,10 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 }
             });
 
-
+            filetype=-1;
+            if(Icons.isPicture((rowItem.getDesc().toLowerCase())))filetype=0;
+            else if(Icons.isApk((rowItem.getDesc())))filetype=1;
+            else if(Icons.isVideo(rowItem.getDesc()))filetype=2;
             holder.txtTitle.setText(rowItem.getTitle());
             holder.imageView.setImageDrawable(rowItem.getImageId());
             holder.ext.setText("");
@@ -238,7 +242,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             });
             holder.imageView.setVisibility(View.VISIBLE);
             holder.viewmageV.setVisibility(View.INVISIBLE);
-            if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
+            if (filetype==0) {
                 if (main.showThumbs) {
                     if (main.circularImages) {
                         holder.imageView.setVisibility(View.GONE);
@@ -255,7 +259,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                         main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);
                     }
                 }
-            } else if (Icons.isApk((rowItem.getDesc()))) {
+            } else if (filetype==1) {
                 if (main.showThumbs) {
                     holder.viewmageV.setVisibility(View.GONE);
                     holder.imageView.setVisibility(View.GONE);
@@ -265,7 +269,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                     main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);
                 }
 
-            } else if (Icons.isVideo(rowItem.getDesc())) {
+            } else if (filetype==2) {
                 if (main.showThumbs) {
                     if (main.circularImages) {
                         holder.imageView.setVisibility(View.GONE);
@@ -300,22 +304,30 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
                 }
 
                 if (checked) {
+                    holder.apk.setVisibility(View.GONE);
+                    holder.viewmageV.setVisibility(View.GONE);
+                    holder.imageView.setVisibility(View.VISIBLE);
                     holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
                     gradientDrawable.setColor(Color.parseColor("#757575"));
                     holder.ext.setText("");
                     if (Build.VERSION.SDK_INT >= 21) {
 
-                        holder.rl.setElevation(6f);
-                    } else {
                         if (main.theme1 == 0) {
-                            holder.rl.setBackgroundColor(getContext().getResources().getColor(R.color.safr_pressed));
+                        holder.rl.setElevation(6f);
                         } else {
                             holder.rl.setBackgroundColor(getContext().getResources().getColor(R.color.safr_pressed_dark));
                         }
+
                     }
                 } else {
-
+                    holder.viewmageV.setVisibility(View.GONE);
+                    holder.apk.setVisibility(View.GONE);
+                    holder.imageView.setVisibility(View.GONE);
+                    if(filetype==-1)holder.imageView.setVisibility(View.VISIBLE);
+                    else if(filetype==1)holder.apk.setVisibility(View.VISIBLE);
+                    else {if(main.circularImages)holder.viewmageV.setVisibility(View.VISIBLE);
+                    else holder.apk.setVisibility(View.VISIBLE);}
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
                     if(main.coloriseIcons) {
                         if (rowItem.isDirectory(main.rootMode))
