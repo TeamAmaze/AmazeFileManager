@@ -227,10 +227,7 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (!mFile.exists()) {
-                    finish();
-                    return;
-                }
+
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -252,7 +249,6 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                         });
                     }}else{
                         mOriginal="";
-                        RootTools.remount(mFile.getParent(),"rw");
                     ArrayList<String> arrayList=    RootHelper.runAndWait1("cat "+mFile.getPath(),true);
                         for(String x:arrayList){
                             if(mOriginal.equals(""))mOriginal=x;
