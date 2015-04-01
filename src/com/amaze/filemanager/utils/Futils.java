@@ -72,8 +72,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Futils {
@@ -862,7 +864,10 @@ public void showPackageDialog(final File f,final MainActivity m){
         }
         String size1=size;
         if(size.equals("")){size="-1";size1="";}
-        return new String[]{name,link,array[0],size,date,size1};
+        ParsePosition pos = new ParsePosition(0);
+        SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-mm-dd | HH:mm");
+        Date stringDate = simpledateformat.parse(date, pos);
+        return new String[]{name,link,array[0],size,stringDate.getTime()+"",size1};
     }
     public int getLinkPosition(String[] array){
         for(int i=0;i<array.length;i++){

@@ -39,13 +39,15 @@ public class Layoutelements implements Parcelable {
         permissions=im.readString();
         symlink=im.readString();
         directorybool=im.readString();
-        date=im.readString();
+        date=im.readLong();
         int i=im.readInt();
         if(i==0){header=false;}
         else{header=true;}
         } catch (Exception e) {
             e.printStackTrace();
-        }}
+        }
+    date1=im.readString();
+    }
 
 
 
@@ -60,9 +62,10 @@ public class Layoutelements implements Parcelable {
         p1.writeString(permissions);
         p1.writeString(symlink);
         p1.writeString(directorybool);
-        p1.writeString(date);
+        p1.writeLong(date);
         p1.writeInt(header ? 1 : 0);
         p1.writeParcelable(((BitmapDrawable) imageId).getBitmap(), p2);
+        p1.writeString(date1);
         // TODO: Implement this method
     }
 
@@ -73,8 +76,9 @@ public class Layoutelements implements Parcelable {
     private String symlink;
     private String size;
     private String directorybool;
-    private String date;
-    boolean header;
+    private long date;
+    private String date1;
+    private boolean header;
     public Layoutelements(Drawable imageId, String title, String desc,String permissions,String symlink,String size,String direcorybool,boolean header,String date) {
         this.imageId = imageId;
         this.title = title;
@@ -84,8 +88,8 @@ public class Layoutelements implements Parcelable {
         this.size=size;
         this.header=header;
         this.directorybool=direcorybool;
-         this.date=date;
-
+         this.date=Long.parseLong(date);
+        this.date1=new Futils().getdate(this.date,"MMM dd, yyyy","15");
     }
     public static final Parcelable.Creator<Layoutelements> CREATOR =
             new Parcelable.Creator<Layoutelements>() {
@@ -123,7 +127,8 @@ public boolean isDirectory(boolean rootmode){
     public String getSize() {
         return  size;
     }
-    public String getDate(){return date;}
+    public String getDate(){return date1;}
+    public long getDate1(){return date;}
     public String getPermissions() {
         return permissions;
     }

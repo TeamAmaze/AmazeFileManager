@@ -72,7 +72,7 @@ File f1;if(!file1.hasSymlink()){
         if (sort == 0) {
             return asc * file1.getTitle().compareToIgnoreCase(file2.getTitle());
         } else if (sort == 1) {
-            return asc * Long.valueOf(f1.lastModified()).compareTo(Long.valueOf(f2.lastModified()));
+            return asc * Long.valueOf(file1.getDate1()).compareTo(Long.valueOf(file2.getDate1()));
         } else if (sort == 2) {
             if (f1.isFile() && f2.isFile()) {
                 return asc * Long.valueOf(f1.length()).compareTo(Long.valueOf(f2.length()));
