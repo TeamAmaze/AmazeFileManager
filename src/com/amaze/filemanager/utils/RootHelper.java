@@ -152,9 +152,9 @@ e.printStackTrace();
                     if(showSize)size=""+getCount(x);
                     }else if(showSize)size=""+x.length();
                     if(showHidden){
-                        files.add(new String[]{x.getPath(),"",parseFilePermission(x),k,futils.getdate(x.lastModified(),"MMM dd, yyyy","15"),size});
+                        files.add(new String[]{x.getPath(),"",parseFilePermission(x),k,x.lastModified()+"",size});
                     }
-                    else{if(!x.isHidden()){files.add(new String[]{x.getPath(),"",parseFilePermission(x),k,futils.getdate(x.lastModified(),"MMM dd, yyyy","15"),size});}}
+                    else{if(!x.isHidden()){files.add(new String[]{x.getPath(),"",parseFilePermission(x),k,x.lastModified()+"",size});}}
                 }
             }}catch (Exception e){}
 
