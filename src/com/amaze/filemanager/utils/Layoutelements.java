@@ -76,21 +76,22 @@ public class Layoutelements implements Parcelable {
     private String symlink;
     private String size;
     private String directorybool;
-    private long date;
-    private String date1;
+    private long date=0;
+    private String date1="";
     private boolean header;
     public Layoutelements(Drawable imageId, String title, String desc,String permissions,String symlink,String size,String direcorybool,boolean header,String date) {
         this.imageId = imageId;
         this.title = title;
         this.desc = desc;
-        this.permissions=permissions.trim();
-        this.symlink=symlink.trim();
-        this.size=size;
-        this.header=header;
-        this.directorybool=direcorybool;
-         this.date=Long.parseLong(date);
+        this.permissions = permissions.trim();
+        this.symlink = symlink.trim();
+        this.size = size;
+        this.header = header;
+        this.directorybool = direcorybool;
+        if (!date.trim().equals(""))
+        {this.date=Long.parseLong(date);
         this.date1=new Futils().getdate(this.date,"MMM dd, yyyy","15");
-    }
+    }}
     public static final Parcelable.Creator<Layoutelements> CREATOR =
             new Parcelable.Creator<Layoutelements>() {
                 public Layoutelements createFromParcel(Parcel in) {

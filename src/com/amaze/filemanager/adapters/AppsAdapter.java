@@ -115,7 +115,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
         ImageView imageView;
         TextView txtTitle;
         RelativeLayout rl;
-
+        TextView txtDesc;
     }
 
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -127,11 +127,15 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
         if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater) context
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            view = mInflater.inflate(R.layout.simplerow, null);
+            view = mInflater.inflate(R.layout.rowlayout, null);
             final ViewHolder vholder = new ViewHolder();
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
-            vholder.imageView = (ImageView) view.findViewById(R.id.icon);
+            vholder.imageView = (ImageView) view.findViewById(R.id.bicon);
             vholder.rl = (RelativeLayout) view.findViewById(R.id.second);
+            vholder.txtDesc= (TextView) view.findViewById(R.id.date);
+            vholder.imageView.setVisibility(View.VISIBLE);
+            view.findViewById(R.id.icon).setVisibility(View.GONE);
+            view.findViewById(R.id.cicon).setVisibility(View.GONE);
             view.setTag(vholder);
 
         } else {
@@ -145,7 +149,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
 
         holder.txtTitle.setText(rowItem.getTitle());
         //	File f = new File(rowItem.getDesc());
-
+        holder.txtDesc.setText(rowItem.getSize());
         holder.rl.setClickable(true);
         holder.rl.setOnClickListener(new View.OnClickListener() {
 
@@ -190,16 +194,4 @@ app.onLongItemClick(p);   }
         return view;
     }
 
-    public void unin(String pkg) {
-
-        try {
-            Intent intent = new Intent(Intent.ACTION_DELETE);
-            intent.setData(Uri.parse("package:" + pkg));
-            context.startActivity(intent);
-        } catch (Exception e) {
-            Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-
-    }
 }
