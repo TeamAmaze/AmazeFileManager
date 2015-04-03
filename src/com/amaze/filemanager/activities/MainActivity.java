@@ -19,8 +19,11 @@
 
 package com.amaze.filemanager.activities;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -44,6 +47,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.transition.Explode;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -142,11 +146,17 @@ public class MainActivity extends ActionBarActivity{
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        try {
+        if (Build.VERSION.SDK_INT>=21) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
+// set an exit transition
+            getWindow().setExitTransition(new Explode());
+        }try {
             super.onCreate(savedInstanceState);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         utils = new Futils();
         s = new Shortcuts(this);
@@ -187,7 +197,11 @@ public class MainActivity extends ActionBarActivity{
             setTheme(R.style.appCompatDark);
         }
         setContentView(R.layout.main_toolbar);
-
+        IntentFilter newFilter = new IntentFilter();
+        newFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+        newFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
+        newFilter.addDataScheme(ContentResolver.SCHEME_FILE);
+        registerReceiver(mNotificationReceiver, newFilter);
         // Toolbar
         toolbar = (Toolbar) findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
@@ -265,14 +279,13 @@ public class MainActivity extends ActionBarActivity{
             @Override
             public void onClick(View v) {
                 Intent in = new Intent(MainActivity.this, Preferences.class);
-
+                if(Build.VERSION.SDK_INT>=21){startActivity(in, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());}else{
                 final int enter_anim = R.anim.slide_out_bottom;
                 final int exit_anim = R.anim.slide_in_top;
-
-                overridePendingTransition(exit_anim, enter_anim);
-                finish();
-                overridePendingTransition(exit_anim, enter_anim);
-                startActivity(in);
+                    Activity s=MainActivity.this;
+                //finish();
+                s.overridePendingTransition(exit_anim, enter_anim);
+               s.startActivity(in); }
             }
         });
         View appbutton = findViewById(R.id.appbutton);
@@ -1280,5 +1293,39 @@ public class MainActivity extends ActionBarActivity{
         return null;
     }
 
+    private final BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                 if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
+                    Toast.makeText(con,"Media Mounted",Toast.LENGTH_SHORT).show();
+                     String a=intent.getData().getPath();
+                     if(a!=null && a.trim().length()!=0 && new File(a).exists() && new File(a).canExecute()){
+                         list.add(0,a);
+                        adapter.notifyDataSetChanged();
+                     }else {refreshDrawer();
+                     }
+                 }else if(intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)){
 
+                     refreshDrawer();
+                 }
+            }
+        }
+    };
+public void refreshDrawer(){
+    val=getStorageDirectories();
+    list = new ArrayList<String>();
+    for (int i = 0; i < val.size(); i++) {
+        File file = new File(val.get(i));
+        if(!file.isDirectory())
+            list.add(val.get(i));
+        else if(file.canExecute())
+            list.add(val.get(i));
+    }
+
+
+        adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
+        mDrawerList.setAdapter(adapter);
+
+    }
 }
