@@ -85,6 +85,7 @@ public class AppsList extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setRetainInstance(true);
         MainActivity mainActivity=(MainActivity)getActivity();
         mainActivity.toolbar.setTitle(utils.getString(getActivity(),R.string.apps));
         mainActivity.tabsSpinner.setVisibility(View.GONE);
