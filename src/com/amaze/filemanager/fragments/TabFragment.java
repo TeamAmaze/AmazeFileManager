@@ -1,16 +1,22 @@
 package com.amaze.filemanager.fragments;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.RelativeLayout;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.TabSpinnerAdapter;
@@ -39,11 +45,13 @@ public class TabFragment extends android.support.v4.app.Fragment {
     TabSpinnerAdapter tabSpinnerAdapter;
     public ArrayList<String> tabs=new ArrayList<String>();
     public int theme1;
+    private Animation hideAnimation, showAnimation;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment,
                 container, false);
+
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -67,7 +75,11 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
             }
 
-            public void onPageSelected(int p1) { // TODO: Implement this								// method
+            public void onPageSelected(int p1) {
+
+                hideAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_hide);
+                showAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
+
                 currenttab=p1;
                 mainActivity.supportInvalidateOptionsMenu();
                 try {
@@ -86,6 +98,22 @@ public class TabFragment extends android.support.v4.app.Fragment {
                             //       e.printStackTrace();5
                         }
                     }
+
+                    // hiding other fab
+                    Main mainLeft = (Main) fragments.get(0);
+                    Main mainRight = (Main) fragments.get(1);
+                    if (p1==0) {
+
+                        mainRight.floatingActionButton.setAnimation(hideAnimation);
+                        mainRight.floatingActionButton.setVisibility(View.INVISIBLE);
+                    } else {
+
+                        mainLeft.floatingActionButton.setAnimation(hideAnimation);
+                        mainLeft.floatingActionButton.setVisibility(View.INVISIBLE);
+                    }
+
+                    ma.floatingActionButton.setAnimation(showAnimation);
+                    ma.floatingActionButton.setVisibility(View.VISIBLE);
                 }
 
             }
@@ -301,7 +329,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         return man;
     }
     public void updateSpinner(){
-        System.out.println("updatespinner");
+
         ArrayList<String> items=new ArrayList<String>();
         items.add(((Main)fragments.get(0)).current);
         items.add(((Main)fragments.get(1)).current);

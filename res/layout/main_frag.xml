@@ -127,9 +127,10 @@
         app:fab_colorRipple="#77777777"
         android:layout_height="wrap_content"
         android:layout_marginTop="42dp"
-        android:layout_marginLeft="18dp"
-        android:layout_marginRight="18dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:visibility="invisible"
         android:src="@drawable/ic_action_new_light" />
 </RelativeLayout>

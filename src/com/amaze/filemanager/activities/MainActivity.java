@@ -1056,6 +1056,7 @@ public class MainActivity extends ActionBarActivity{
             random();
         }
         Sp.edit().putBoolean("remember", true).apply();
+        unregisterReceiver(mNotificationReceiver);
     }
     public String getStatusColor() {
 

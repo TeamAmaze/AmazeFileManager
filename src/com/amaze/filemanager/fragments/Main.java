@@ -156,10 +156,10 @@ public class Main extends android.support.v4.app.Fragment {
     public int theme1;
     public float[] color;
     public ColorMatrixColorFilter colorMatrixColorFilter;
-    Animation animation,animation1;
+    public Animation animation,animation1;
     public String year,goback;
     ArrayList<String> hiddenfiles;
-    private FloatingActionButton floatingActionButton;
+    public FloatingActionButton floatingActionButton;
     String Intentpath,itemsstring;
     int no;
     TabHandler tabHandler;
@@ -561,7 +561,7 @@ public class Main extends android.support.v4.app.Fragment {
                             listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
                         }
                     }
-                    floatingActionButton.show();
+                    //floatingActionButton.show();
                     mainActivity.updatepaths();
 
                     if (buttons.getVisibility() == View.VISIBLE) bbar(current);
@@ -1272,14 +1272,12 @@ public class Main extends android.support.v4.app.Fragment {
     public void onResume() {
         super.onResume();
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        floatingActionButton.setAnimation(animation1);
        if(no==2 && Build.VERSION.SDK_INT>=17) {
            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) floatingActionButton.getLayoutParams();
-           params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-           params.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
+           params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+           params.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
            floatingActionButton.setLayoutParams(params);
-       }  //floatingActionButton.setVisibility(View.VISIBLE);
-        floatingActionButton.show(true);
+       }
 
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
     }
