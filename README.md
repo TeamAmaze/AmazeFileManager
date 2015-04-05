@@ -1,4 +1,4 @@
-# AmazeFileManager
+# AmazeFileManager ![Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)
 Amaze File Manager source code
 ###Overview:
 - Open Source, light and smooth
@@ -18,15 +18,25 @@ Amaze File Manager source code
 
 This app is still in beta stage, hence, you might face some bugs, lack of features.
 
-###Join G+ community to discuss and help in the improvment of app
-https://plus.google.com/communities/113997576965363268101
+###Join [G+ community](https://plus.google.com/communities/113997576965363268101) to discuss and help in the improvment of app
 
-###Google Play
-https://play.google.com/store/apps/details?id=com.amaze.filemanager
-
-###XDA
-http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314
+###[XDA](http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314)
 
 ###Team :
 - Arpit Khurana
 - Vishal Nehra
+
+###License: 
+
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+    This file is part of Amaze File Manager.
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
