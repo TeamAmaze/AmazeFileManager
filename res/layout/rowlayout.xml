@@ -30,29 +30,29 @@
         android:id="@+id/iconframe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="12dp">
+        android:layout_marginRight="16dp">
         <ImageView
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:padding="10dp"
             android:background="@drawable/circle_shape"
             android:layout_gravity="center_vertical"
             android:id="@+id/icon"/>
         <ImageView
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:visibility="gone"
             android:scaleType="centerCrop"
             android:layout_gravity="center"
             android:id="@+id/bicon"/>
         <com.amaze.filemanager.utils.RoundedImageView
             android:id="@+id/cicon"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:scaleType="centerCrop"
             android:contentDescription="@string/icon" />
         <TextView
-            android:layout_width="44dp"
+            android:layout_width="40dp"
             android:layout_height="40dp"
             android:textSize="12dp"
             android:singleLine="true"

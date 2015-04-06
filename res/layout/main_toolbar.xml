@@ -69,7 +69,7 @@
     <com.amaze.filemanager.utils.ScrimInsetsFrameLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
-        android:layout_width="290dp"
+        android:layout_width="304dp"
         android:layout_height="match_parent"
         android:id="@+id/left_drawer"
         android:layout_gravity="start|left"
@@ -78,14 +78,15 @@
         <ListView
             android:id="@+id/menu_drawer"
             style="@android:style/Theme.Holo.Light"
-            android:layout_width="290dp"
+            android:layout_width="304dp"
             android:layout_alignParentTop="true"
             android:layout_above="@+id/divider1"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:background="#ffffff"
             android:choiceMode="singleChoice"
-            android:dividerHeight="0dip" />
+            android:dividerHeight="0dip"
+            android:scrollbars="none"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"

@@ -20,18 +20,17 @@
     -->
 
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawerheader"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
+    android:layout_height="171dp"
+    android:minHeight="171dp"
     android:paddingBottom="10dp"
     android:paddingTop="10dp"
     android:elevation="5dp"
     android:clickable="false">
 
-    <ImageView
+    <!--<ImageView
         android:id="@+id/icon"
         android:layout_width="40dp"
         android:layout_height="fill_parent"
@@ -50,5 +49,9 @@
         android:textSize="20sp"
         style="@android:style/TextAppearance.Medium.Inverse"
         android:text="Amaze File Manager"
-        android:gravity="center_vertical" />
-</LinearLayout>
+        android:gravity="center_vertical" />-->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/amaze_logo"/>
+</RelativeLayout>

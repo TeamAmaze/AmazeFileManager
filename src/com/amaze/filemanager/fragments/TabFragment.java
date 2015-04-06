@@ -161,7 +161,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
         } else {
             fragments.clear();
-          tabs= savedInstanceState.getStringArrayList("tabs");
+            tabs= savedInstanceState.getStringArrayList("tabs");
             for(int i=0;i<tabs.size();i++){
                 try {
                     fragments.add(i, getActivity().getSupportFragmentManager().getFragment(savedInstanceState, "tab"+i));

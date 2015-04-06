@@ -324,7 +324,7 @@ public class MainActivity extends ActionBarActivity{
         View v=getLayoutInflater().inflate(R.layout.drawerheader,null);
         v.setBackgroundColor(Color.parseColor(skin));
 
-        ((TextView) v.findViewById(R.id.firstline)).setTextColor(Color.WHITE);
+        //((TextView) v.findViewById(R.id.firstline)).setTextColor(Color.WHITE);
         mDrawerList.addHeaderView(v);
         list = new ArrayList<String>();
         for (int i = 0; i < val.size(); i++) {
