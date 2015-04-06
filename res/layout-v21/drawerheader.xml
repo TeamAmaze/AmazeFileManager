@@ -24,9 +24,9 @@
     android:id="@+id/drawerheader"
     android:layout_width="fill_parent"
     android:layout_height="171dp"
-    android:minHeight="171dp"
     android:paddingBottom="10dp"
-    android:paddingTop="10dp"
+    android:minHeight="171dp"
+    android:paddingTop="35dp"
     android:elevation="5dp"
     android:gravity="left"
     android:clickable="false">
@@ -51,6 +51,7 @@
         style="@android:style/TextAppearance.Medium.Inverse"
         android:text="Amaze File Manager"
         android:gravity="center_vertical" />-->
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
