@@ -141,6 +141,7 @@ public class MainActivity extends ActionBarActivity{
     FragmentTransaction pending_fragmentTransaction;
     String pending_path;
     boolean openprocesses=false;
+    public int booksize=0;
     /**
      * Called when the activity is first created.
      */
@@ -478,9 +479,9 @@ public class MainActivity extends ActionBarActivity{
             }
         } catch (Exception e) {
             try {
-                s.makeS();
+                s.makeS();booksize=0;
                 for(File file: s.readS()){
-                    rv.add(file.getPath());
+                    rv.add(file.getPath());booksize++;
                 }} catch (Exception e1) {
                 e1.printStackTrace();
             }

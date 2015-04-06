@@ -300,5 +300,8 @@
     <string name="database">Database</string>
     <string name="colourednavigation">Coloured navigation bar</string>
     <string name="colourednavigationsum">Whether or not the system navigation bar is coloured with the skin</string>
+
+    <string name="sd_card_grant_next">sd_card_grant_next</string>
+    <string name="sd_card_grant_first">sd_card_grant_first</string>
 </resources>
 

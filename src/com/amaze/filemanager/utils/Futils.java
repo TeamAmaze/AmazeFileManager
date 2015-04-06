@@ -532,7 +532,6 @@ public class Futils {
     }
 
     public void openFile(final File f, final MainActivity m) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
         if (Icons.isText(f.getPath())) {
             Intent i = new Intent(m, TextReader.class);
             i.putExtra("path", f.getPath());
@@ -551,35 +550,12 @@ public class Futils {
             intent.putExtra("path", f.getPath());
             m.startActivity(intent);
         } else if (Icons.isAudio(f.getPath())) {
-            final int studio_count = sharedPreferences.getInt("studio", 0);
             Uri uri = Uri.fromFile(f);
             final Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setDataAndType(uri, "audio/*");
-
-            if (studio_count!=0) {
-                new CountDownTimer(studio_count, 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        int sec = (int)millisUntilFinished/1000;
-                        if (studioCount!=null)
-                            studioCount.cancel();
-                        studioCount = Toast.makeText(m, sec + "", Toast.LENGTH_LONG);
-                        studioCount.show();
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        if (studioCount!=null)
-                            studioCount.cancel();
-                        studioCount = Toast.makeText(m, "Opening..", Toast.LENGTH_LONG);
-                        studioCount.show();
-                        m.startActivity(intent);
-                    }
-                }.start();
-            } else
-                m.startActivity(intent);
-        } else {
+            m.startActivity(intent);
+      } else {
             try {
                 openunknown(f, m);
             } catch (Exception e) {
