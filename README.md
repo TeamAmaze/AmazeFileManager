@@ -1,4 +1,5 @@
-# AmazeFileManager ![Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)
+# AmazeFileManager [![Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=com.amaze.filemanager)[![F-Droid](https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Get_it_on_F-Droid.svg/130px-Get_it_on_F-Droid.svg.png)](https://f-droid.org/repository/browse/?fdid=com.amaze.filemanager)
+
 Amaze File Manager source code
 ###Overview:
 - Open Source, light and smooth
