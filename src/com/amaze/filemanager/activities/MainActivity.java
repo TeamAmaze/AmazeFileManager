@@ -598,7 +598,7 @@ public class MainActivity extends ActionBarActivity{
         toolbar.setTitle(null);
         tabsSpinner.setVisibility(View.VISIBLE);
         if(openzip && zippath!=null)
-        {openZip(zippath);openzip=false;zippath=null;}
+        {if(zippath.endsWith(".zip"))openZip(zippath);else{openRar(zippath);}openzip=false;zippath=null;}
 
     }
     public void selectItem(final int i) {

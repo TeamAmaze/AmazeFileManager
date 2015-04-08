@@ -80,14 +80,8 @@ import java.util.List;
 
 public class Futils {
 
-    private Toast studioCount;
-
     public Futils() {
     }
-
-    ArrayList<File> lis = new ArrayList<File>();
-    ArrayList<File> images = new ArrayList<File>();
-    AlertDialog.Builder b = null;
 
     public void scanFile(String path, Context c) {
         System.out.println(path+" "+Build.VERSION.SDK_INT);
@@ -302,41 +296,6 @@ public class Futils {
             date=date.substring(0,date.length()-6);
         return date;
     }
-    public ArrayList<File> getImages(File f) {
-
-        getImage(f);
-
-        return images;
-    }
-
-    public void getImage(File file) {
-
-        if (file.isDirectory()) {
-            if (!file.getName().equals(".thumbnails")) {
-                // do you have permission to read this directory?
-                if (file.canRead()) {
-                    for (File temp : file.listFiles()) {
-                        if (temp.isDirectory()) {
-
-                            getImage(temp);
-
-                        } else {
-                            if (getFileExtension(temp.getName()).equals(".jpg")
-                                    || getFileExtension(temp.getName()).equals(
-                                    ".jpeg")
-                                    || getFileExtension(temp.getName()).equals(
-                                    (".png"))) {
-                                images.add(temp);
-                            }
-                        }
-                    }
-                } else {
-                    System.out
-                            .println(file.getAbsoluteFile() + "Permission Denied");
-                }
-            }
-        }
-    }
 
     public int calculateInSampleSize(BitmapFactory.Options options,
                                      int reqWidth, int reqHeight) {
@@ -532,15 +491,7 @@ public class Futils {
     }
 
     public void openFile(final File f, final MainActivity m) {
-        if (Icons.isText(f.getPath())) {
-            Intent i = new Intent(m, TextReader.class);
-            i.putExtra("path", f.getPath());
-            m.startActivity(i);
-        } else if (Icons.isCode(f.getName())) {
-            Intent i = new Intent(m, TextReader.class);
-            i.putExtra("path", f.getPath());
-            m.startActivity(i);
-        } else if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".rar")|| f.getName().toLowerCase().endsWith(".tar")|| f.getName().toLowerCase().endsWith(".tar.gz")) {
+         if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".rar")|| f.getName().toLowerCase().endsWith(".tar")|| f.getName().toLowerCase().endsWith(".tar.gz")) {
             showArchiveDialog(f, m);
 
         }else if(f.getName().toLowerCase().endsWith(".apk")){
@@ -549,13 +500,7 @@ public class Futils {
             Intent intent = new Intent(m, DbViewer.class);
             intent.putExtra("path", f.getPath());
             m.startActivity(intent);
-        } else if (Icons.isAudio(f.getPath())) {
-            Uri uri = Uri.fromFile(f);
-            final Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.setDataAndType(uri, "audio/*");
-            m.startActivity(intent);
-      } else {
+        }else {
             try {
                 openunknown(f, m);
             } catch (Exception e) {
