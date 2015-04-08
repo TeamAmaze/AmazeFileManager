@@ -1026,10 +1026,10 @@ public class Main extends android.support.v4.app.Fragment {
                     return true;
                 case R.id.openwith:
                     if (results)utils.openunknown(new File(slist.get(
-                            (plist.get(0))).getDesc()), getActivity());
+                            (plist.get(0))).getDesc()), getActivity(), true);
                     else
                         utils.openunknown(new File(list.get(
-                                (plist.get(0))).getDesc()), getActivity());
+                                (plist.get(0))).getDesc()), getActivity(), true);
 
                     return true;
                 case R.id.permissions:

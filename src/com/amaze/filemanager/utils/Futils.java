@@ -152,15 +152,18 @@ public class Futils {
     }
 
 
-    public void openunknown(File f, Context c) {
+    public void openunknown(File f, Context c, boolean forcechooser) {
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);
 
         String type = MimeTypes.getMimeType(f);
         if(type!=null && type.trim().length()!=0 && !type.equals("*/*"))
         {intent.setDataAndType(Uri.fromFile(f), type);
+        Intent startintent;
+        if (forcechooser) startintent=Intent.createChooser(intent, c.getResources().getString(R.string.openwith));
+        else startintent=intent;
         try {
-            c.startActivity(intent);
+            c.startActivity(startintent);
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
         Toast.makeText(c,R.string.noappfound,Toast.LENGTH_SHORT).show();
@@ -502,7 +505,7 @@ public class Futils {
             m.startActivity(intent);
         }else {
             try {
-                openunknown(f, m);
+                openunknown(f, m, false);
             } catch (Exception e) {
                 Toast.makeText(m, getString(m, R.string.noappfound),Toast.LENGTH_LONG).show();
                 openWith(f, m);
@@ -514,7 +517,7 @@ public void showPackageDialog(final File f,final MainActivity m){
     mat.title(R.string.packageinstaller).content(R.string.pitext).positiveText(R.string.install).negativeText(R.string.view).neutralText(R.string.cancel).callback(new MaterialDialog.Callback() {
         @Override
         public void onPositive(MaterialDialog materialDialog) {
-            openunknown(f,m);
+            openunknown(f,m,false);
         }
 
         @Override
