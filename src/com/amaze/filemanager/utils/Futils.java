@@ -26,6 +26,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -151,6 +153,16 @@ public class Futils {
 
     }
 
+    private boolean isSelfDefault(File f, Context c){
+        Intent intent = new Intent();
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(f), MimeTypes.getMimeType(f));
+        String s="";
+        ResolveInfo rii = c.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (rii !=  null && rii.activityInfo != null) s = rii.activityInfo.packageName;
+        if (s=="com.amaze.filemanager" || rii==null) return true;
+        else return false;
+    }
 
     public void openunknown(File f, Context c, boolean forcechooser) {
         Intent intent = new Intent();
@@ -494,16 +506,16 @@ public class Futils {
     }
 
     public void openFile(final File f, final MainActivity m) {
-         if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".rar")|| f.getName().toLowerCase().endsWith(".tar")|| f.getName().toLowerCase().endsWith(".tar.gz")) {
+        boolean defaultHandler = isSelfDefault(f, m);
+        if (defaultHandler && f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".rar")|| f.getName().toLowerCase().endsWith(".tar")|| f.getName().toLowerCase().endsWith(".tar.gz")) {
             showArchiveDialog(f, m);
-
-        }else if(f.getName().toLowerCase().endsWith(".apk")){
+        } else if(defaultHandler && f.getName().toLowerCase().endsWith(".apk")) {
             showPackageDialog(f,m);
-        } else if (f.getName().toLowerCase().endsWith(".db")) {
+        } else if (defaultHandler && f.getName().toLowerCase().endsWith(".db")) {
             Intent intent = new Intent(m, DbViewer.class);
             intent.putExtra("path", f.getPath());
             m.startActivity(intent);
-        }else {
+        } else {
             try {
                 openunknown(f, m, false);
             } catch (Exception e) {
