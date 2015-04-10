@@ -306,7 +306,7 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
             utils.showProps(mFile, c, theme1);
             return true;
         } else if (item.getItemId() == R.id.openwith) {
-            utils.openunknown(mFile, c);
+            utils.openunknown(mFile, c, false);
         }
         return super.onOptionsItemSelected(item);
     }
