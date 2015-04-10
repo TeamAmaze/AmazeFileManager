@@ -150,6 +150,7 @@ public class Main extends android.support.v4.app.Fragment {
     private List<Tab> content;
     private ArrayList<String> list1;
     public MainActivity mainActivity;
+    public boolean showButtonOnStart = false;
     public String skin;
     public int skinselection;
     public int theme;
@@ -212,6 +213,7 @@ public class Main extends android.support.v4.app.Fragment {
         listView = (ListView) rootView.findViewById(R.id.listView);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        if (showButtonOnStart) floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
