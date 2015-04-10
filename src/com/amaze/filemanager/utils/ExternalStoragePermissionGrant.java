@@ -35,13 +35,6 @@ import android.text.TextUtils;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-
-/**
- * Helper class to get permission from {@link DocumentsProvider} to access files on a removable
- * storage device.
- *
- * @author Jared Rummler <jared.rummler@gmail.com>
- */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class ExternalStoragePermissionGrant {
 

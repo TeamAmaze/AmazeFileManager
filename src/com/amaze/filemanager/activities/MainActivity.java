@@ -147,12 +147,7 @@ public class MainActivity extends ActionBarActivity{
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (Build.VERSION.SDK_INT>=21) {
-            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-
-// set an exit transition
-            getWindow().setExitTransition(new Explode());
-        }try {
+       try {
             super.onCreate(savedInstanceState);
         } catch (Exception e) {
             e.printStackTrace();
@@ -280,14 +275,14 @@ public class MainActivity extends ActionBarActivity{
             @Override
             public void onClick(View v) {
                 Intent in = new Intent(MainActivity.this, Preferences.class);
-                if(Build.VERSION.SDK_INT>=21){startActivity(in, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());}else{
-                final int enter_anim = R.anim.slide_out_bottom;
-                final int exit_anim = R.anim.slide_in_top;
+                finish(); final int enter_anim = android.R.anim.fade_in;
+                final int exit_anim = android.R.anim.fade_out;
                     Activity s=MainActivity.this;
-                //finish();
-                s.overridePendingTransition(exit_anim, enter_anim);
+                s.overridePendingTransition( exit_anim,enter_anim);
+                s.finish();
+                s.overridePendingTransition(enter_anim, exit_anim);
                s.startActivity(in); }
-            }
+
         });
         View appbutton = findViewById(R.id.appbutton);
         if (theme1 == 1)
@@ -510,7 +505,8 @@ public class MainActivity extends ActionBarActivity{
                         {if (zipViewer.cangoBack()) {
 
                             zipViewer.goBack();
-                        } else {
+                        } else if(openzip) {openzip=false;finish();}
+                            else{
                             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                             fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom,R.anim.slide_out_bottom);
                             fragmentTransaction.remove(zipViewer);
@@ -523,7 +519,8 @@ public class MainActivity extends ActionBarActivity{
 
                                 zipViewer.elements.clear();
                                 zipViewer.goBack();
-                            } else {
+                            } else if(openzip) {openzip=false;finish();}
+                        else {
                                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                                 fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
                                 fragmentTransaction.remove(zipViewer);
@@ -598,7 +595,7 @@ public class MainActivity extends ActionBarActivity{
         toolbar.setTitle(null);
         tabsSpinner.setVisibility(View.VISIBLE);
         if(openzip && zippath!=null)
-        {if(zippath.endsWith(".zip"))openZip(zippath);else{openRar(zippath);}openzip=false;zippath=null;}
+        {if(zippath.endsWith(".zip"))openZip(zippath);else{openRar(zippath);}zippath=null;}
 
     }
     public void selectItem(final int i) {

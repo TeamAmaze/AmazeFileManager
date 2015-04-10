@@ -98,13 +98,33 @@ public class Preferences extends ActionBarActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent in = new Intent(Preferences.this, MainActivity.class);
+        in.setAction(Intent.ACTION_MAIN);
+        final int enter_anim = android.R.anim.fade_in;
+        final int exit_anim = android.R.anim.fade_out;
+        Activity activity=this;
+        activity.overridePendingTransition(enter_anim, exit_anim);
+        activity.finish();
+        activity.overridePendingTransition(enter_anim, exit_anim);
+        activity.startActivity(in);
 
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // Navigate "up" the demo structure to the launchpad activity.
-                finish();
+                Intent in = new Intent(Preferences.this, MainActivity.class);
+                in.setAction(Intent.ACTION_MAIN);
+                final int enter_anim = android.R.anim.fade_in;
+                final int exit_anim = android.R.anim.fade_out;
+                Activity activity=this;
+                activity.overridePendingTransition(enter_anim, exit_anim);
+                activity.finish();
+                activity.overridePendingTransition(enter_anim, exit_anim);
+                activity.startActivity(in);
                 return true;
 
         }
