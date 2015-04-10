@@ -160,7 +160,7 @@ public class Futils {
         String s="";
         ResolveInfo rii = c.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
         if (rii !=  null && rii.activityInfo != null) s = rii.activityInfo.packageName;
-        if (s=="com.amaze.filemanager" || rii==null) return true;
+        if (s.equals("com.amaze.filemanager") || rii==null) return true;
         else return false;
     }
 
