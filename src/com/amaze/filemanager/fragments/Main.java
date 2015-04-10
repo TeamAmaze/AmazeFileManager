@@ -1274,13 +1274,6 @@ public class Main extends android.support.v4.app.Fragment {
     public void onResume() {
         super.onResume();
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
-       if(no==2 && Build.VERSION.SDK_INT>=17) {
-           RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) floatingActionButton.getLayoutParams();
-           params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-           params.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-           floatingActionButton.setLayoutParams(params);
-       }
-
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
     }
 
