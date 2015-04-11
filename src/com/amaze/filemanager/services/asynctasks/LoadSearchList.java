@@ -107,9 +107,7 @@ public class LoadSearchList extends AsyncTask<ArrayList<String[]>, Void, ArrayLi
                 ma.adapter = new Recycleradapter(ma,
                         bitmap, ma.getActivity());
                 try {
-                    //ListView lv = (ListView) ma.listView.findViewById(R.id.listView);
-             if(ma.aBoolean)       ma.listView.setAdapter(ma.adapter);
-                    else //ma.gridView.setAdapter(ma.adapter);
+                  ma.listView.setAdapter(ma.adapter);
                     ma.results = true;
                     try {
                         Intent i = new Intent("updatepager");

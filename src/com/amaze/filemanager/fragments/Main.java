@@ -129,7 +129,6 @@ public class Main extends android.support.v4.app.Fragment {
     public CountDownTimer timer;
     private View rootView;
     public android.support.v7.widget.RecyclerView  listView;
-    public GridView gridView;
     public Boolean gobackitem,aBoolean,showThumbs,coloriseIcons;
     public IconHolder ic;
     public MainActivity mainActivity;
@@ -195,7 +194,6 @@ public class Main extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
-        gridView = (GridView) rootView.findViewById(R.id.gridView);
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -297,19 +295,12 @@ public class Main extends android.support.v4.app.Fragment {
               //  listView.setDividerHeight(dpAsPixels);
             } else {
 
-                gridView.setPadding(dpAsPixels, 0, dpAsPixels, 0);
             }
         }
         // use a linear layout manager
         footerView=getActivity().getLayoutInflater().inflate(R.layout.divider, null);
-        if (aBoolean) {
-            rootView.findViewById(R.id.activity_main_swipe_refresh_layout1).setVisibility(View.GONE);
-            mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
-           // listView.setFastScrollEnabled(true);
-        } else {
-            mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout1);
-            gridView.setFastScrollEnabled(true);
-        }
+           mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
+
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -373,7 +364,7 @@ public class Main extends android.support.v4.app.Fragment {
                 vi = listView.getChildAt(0);
             } else {
                 index =  (mLayoutManager).findFirstVisibleItemPosition();
-                vi = gridView.getChildAt(0);
+                vi = listView.getChildAt(0);
             }
             int top = (vi == null) ? 0 : vi.getTop();
             outState.putInt("index", index);
@@ -490,9 +481,6 @@ public class Main extends android.support.v4.app.Fragment {
         }
 
         listView.setAnimation(animation);
-        gridView.setAnimation(animation);
-
-        // Spinner
 
     }
 
@@ -1197,7 +1185,9 @@ public class Main extends android.support.v4.app.Fragment {
     public void computeScroll() {
         View vi = listView.getChildAt(0);
         int top = (vi == null) ? 0 : vi.getTop();
-        int index = mLayoutManager.findFirstVisibleItemPosition();
+        int index;if(aBoolean)
+        index= mLayoutManager.findFirstVisibleItemPosition();
+        else index=mLayoutManagerGrid.findFirstVisibleItemPosition();
         Bundle b = new Bundle();
         b.putInt("index", index);
         b.putInt("top", top);

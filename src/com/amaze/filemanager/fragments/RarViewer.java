@@ -122,7 +122,6 @@ public class RarViewer extends Fragment {
         super.onActivityCreated(savedInstanceState);
         s = getArguments().getString("path");
         f = new File(s);
-        rootView.findViewById(R.id.activity_main_swipe_refresh_layout1).setVisibility(View.GONE);
         listView.setVisibility(View.VISIBLE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 

@@ -83,7 +83,6 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
-        rootView.findViewById(R.id.activity_main_swipe_refresh_layout1).setVisibility(View.GONE);
         swipeRefreshLayout=(SwipeRefreshLayout)rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -113,7 +112,6 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             super.onActivityCreated(savedInstanceState);
             s = getArguments().getString("path");
             f = new File(s);
-            rootView.findViewById(R.id.gridView).setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
             Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
             mainActivity = (MainActivity) getActivity();

@@ -104,21 +104,6 @@
         android:layout_height="match_parent"
         android:divider="@null"/>
 </android.support.v4.widget.SwipeRefreshLayout>
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/activity_main_swipe_refresh_layout1"
-        android:layout_width="match_parent"
-        android:layout_below="@id/buttonbarframe"
-        android:layout_height="wrap_content">
-    <GridView
-        android:id="@+id/gridView"
-        android:verticalSpacing="5dp"
-        android:horizontalSpacing="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:numColumns="auto_fit"/>
-</android.support.v4.widget.SwipeRefreshLayout>
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
