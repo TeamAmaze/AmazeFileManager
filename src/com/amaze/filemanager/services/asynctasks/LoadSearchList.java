@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.MyAdapter;
+import com.amaze.filemanager.adapters.Recycleradapter;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Icons;
@@ -103,12 +104,12 @@ public class LoadSearchList extends AsyncTask<ArrayList<String[]>, Void, ArrayLi
         try {
             if (bitmap != null) {
                 ((TextView)ma.pathbar.findViewById(R.id.pathname)).setText(ma.utils.getString(ma.getActivity(),R.string.searchresults));
-                ma.adapter = new MyAdapter(ma.getActivity(), R.layout.rowlayout,
-                        bitmap, ma);
+                ma.adapter = new Recycleradapter(ma,
+                        bitmap, ma.getActivity());
                 try {
                     //ListView lv = (ListView) ma.listView.findViewById(R.id.listView);
              if(ma.aBoolean)       ma.listView.setAdapter(ma.adapter);
-                    else ma.gridView.setAdapter(ma.adapter);
+                    else //ma.gridView.setAdapter(ma.adapter);
                     ma.results = true;
                     try {
                         Intent i = new Intent("updatepager");

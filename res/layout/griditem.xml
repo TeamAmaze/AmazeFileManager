@@ -22,7 +22,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="170dp"
-    android:id="@+id/frame"
+    android:id="@+id/second"
     android:background="@drawable/item_doc_grid"
     android:foreground="@drawable/item_backgrund">
 
@@ -43,7 +43,7 @@
             android:foregroundGravity="fill">
 
             <ImageView
-                android:id="@+id/icon_mime"
+                android:id="@+id/icon"
                 android:layout_width="65dp"
                 android:layout_height="65dp"
                 android:layout_gravity="center"
@@ -57,7 +57,7 @@
                 android:contentDescription="@null" />
 
             <TextView
-                android:id="@+id/perm"
+                android:id="@+id/permis"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|top|end"
@@ -80,7 +80,7 @@
             android:baselineAligned="false">
 
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/firstline"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -105,7 +105,7 @@
 
 
             <TextView
-                android:id="@+id/size"
+                android:id="@+id/secondLine"
                 android:layout_height="wrap_content"
                  android:layout_width="wrap_content"
                 android:layout_alignParentRight="true"
@@ -122,7 +122,7 @@
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@id/size"
+                android:layout_toLeftOf="@id/secondLine"
                 android:layout_gravity="start"
                 android:textSize="12dp"
                 android:paddingLeft="5dp"

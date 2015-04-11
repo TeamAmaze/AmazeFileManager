@@ -50,13 +50,10 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.provider.Settings;
-import android.support.annotation.StringDef;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.DisplayMetrics;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
-import android.util.Property;
 import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -65,23 +62,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -90,9 +80,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.adapters.MyAdapter;
-import com.amaze.filemanager.adapters.TabSpinnerAdapter;
-import com.amaze.filemanager.database.Tab;
+import com.amaze.filemanager.adapters.Recycleradapter;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
@@ -105,7 +93,6 @@ import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.melnykov.fab.FloatingActionButton;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -113,13 +100,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 
 
 public class Main extends android.support.v4.app.Fragment {
     public File[] file;
     public ArrayList<Layoutelements> list, slist;
-    public MyAdapter adapter;
+    public Recycleradapter adapter;
     public Futils utils;
     public boolean selection;
     public boolean results = false;
@@ -140,15 +126,12 @@ public class Main extends android.support.v4.app.Fragment {
     public boolean rootMode,showHidden,circularImages,showPermissions,showSize,showLastModified;
     View footerView;
     public LinearLayout pathbar;
-    private TextView textView;
     public CountDownTimer timer;
     private View rootView;
-    public se.emilsjolander.stickylistheaders.StickyListHeadersListView  listView;
+    public android.support.v7.widget.RecyclerView  listView;
     public GridView gridView;
     public Boolean gobackitem,aBoolean,showThumbs,coloriseIcons;
     public IconHolder ic;
-    private List<Tab> content;
-    private ArrayList<String> list1;
     public MainActivity mainActivity;
     public String skin;
     public int skinselection;
@@ -164,6 +147,8 @@ public class Main extends android.support.v4.app.Fragment {
     int no;
     TabHandler tabHandler;
     boolean savepaths;
+    LinearLayoutManager mLayoutManager;
+    GridLayoutManager mLayoutManagerGrid;
     SwipeRefreshLayout mSwipeRefreshLayout;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -209,7 +194,7 @@ public class Main extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
-        listView = (se.emilsjolander.stickylistheaders.StickyListHeadersListView) rootView.findViewById(R.id.listView);
+        listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -241,8 +226,6 @@ public class Main extends android.support.v4.app.Fragment {
 
         buttons = (LinearLayout) rootView.findViewById(R.id.buttons);
         pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
-        textView = (TextView) rootView.findViewById(R.id.fullpath);
-
         showThumbs=Sp.getBoolean("showThumbs", true);
         ic=new IconHolder(getActivity(),showThumbs,!aBoolean);
         res = getResources();
@@ -258,27 +241,21 @@ public class Main extends android.support.v4.app.Fragment {
 
                 rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_light));
             }
-        }
-        listView.setDivider(null);
-        listView.setDividerHeight(0);
+        } listView.setHasFixedSize(true);
+        mLayoutManager=new LinearLayoutManager(getActivity());
+        int columns=Integer.parseInt(Sp.getString("columns","3"));
+        mLayoutManagerGrid=new GridLayoutManager(getActivity(),columns);
         if (aBoolean) {
-            listView.setVisibility(View.VISIBLE);
-            gridView.setVisibility(View.GONE);
+            listView.setLayoutManager(mLayoutManager);
         } else {
-            int columns=Integer.parseInt(Sp.getString("columns","3"));
-            gridView.setNumColumns(columns);
-            listView.setVisibility(View.GONE);
-            gridView.setVisibility(View.VISIBLE);
-        }
-listView.setAreHeadersSticky(false);
-        return rootView;
+            listView.setLayoutManager(mLayoutManagerGrid);
+        }return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
-        list1 = new ArrayList<String>();
         utils = new Futils();
         String x=getSelectionColor();
         skinselection=Color.parseColor(x);
@@ -316,13 +293,14 @@ listView.setAreHeadersSticky(false);
             if (aBoolean) {
 
                 listView.setPadding(dpAsPixels, 0, dpAsPixels, 0);
-                listView.setDivider(null);
-                listView.setDividerHeight(dpAsPixels);
+               // listView.setDivider(null);
+              //  listView.setDividerHeight(dpAsPixels);
             } else {
 
                 gridView.setPadding(dpAsPixels, 0, dpAsPixels, 0);
             }
         }
+        // use a linear layout manager
         footerView=getActivity().getLayoutInflater().inflate(R.layout.divider, null);
         if (aBoolean) {
             rootView.findViewById(R.id.activity_main_swipe_refresh_layout1).setVisibility(View.GONE);
@@ -359,12 +337,12 @@ listView.setAreHeadersSticky(false);
                         results = true;
                         slist = savedInstanceState.getParcelableArrayList("slist");
                         ((TextView) ma.pathbar.findViewById(R.id.pathname)).setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
-                        ma.adapter = new MyAdapter(ma.getActivity(), R.layout.rowlayout, slist
-                                , ma);
+                        ma.adapter = new Recycleradapter(ma,  slist
+                                , ma.getActivity());
 
                         //ListView lv = (ListView) ma.listView.findViewById(R.id.listView);
-                        if (ma.aBoolean) ma.listView.setAdapter(ma.adapter);
-                        else ma.gridView.setAdapter(ma.adapter);
+                         ma.listView.setAdapter(ma.adapter);
+
                         ma.results = true;
                     } catch (Exception e) {
                     }
@@ -391,10 +369,10 @@ listView.setAreHeadersSticky(false);
         if(listView!=null){
             if (aBoolean) {
 
-                index = listView.getFirstVisiblePosition();
+                index = (mLayoutManager).findFirstVisibleItemPosition();
                 vi = listView.getChildAt(0);
             } else {
-                index = gridView.getFirstVisiblePosition();
+                index =  (mLayoutManager).findFirstVisibleItemPosition();
                 vi = gridView.getChildAt(0);
             }
             int top = (vi == null) ? 0 : vi.getTop();
@@ -532,25 +510,22 @@ listView.setAreHeadersSticky(false);
                 TextView footerText = (TextView) footerView.findViewById(R.id.footerText);
                 if (bitmap.size() == 0) {
                     footerText.setText(res.getString(R.string.nofiles));
-                    listView.addFooterView(footerView);
+                   // listView.addFooterView(footerView);
                 } else {
                     footerText.setText(res.getString(R.string.tapnhold));
-                    listView.removeFooterView(footerView);
+                   // listView.removeFooterView(footerView);
                 }if(gobackitem)
                 if (!f.getPath().equals("/")) {
                     if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))
                         bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "..", "", "", goback, "", true,""));
                 }
-                adapter = new MyAdapter(getActivity(), R.layout.rowlayout,
-                        bitmap, ma);
+                adapter = new Recycleradapter(ma,
+                        bitmap, ma.getActivity());
                 mSwipeRefreshLayout.setRefreshing(false);
                 try {
 
-                    if (aBoolean) {
                         listView.setAdapter(adapter);
-                    } else {
-                        gridView.setAdapter(adapter);
-                    }
+
 
 
                     results = false;
@@ -559,8 +534,9 @@ listView.setAreHeadersSticky(false);
                     if (back) {
                         if (scrolls.containsKey(current)) {
                             Bundle b = scrolls.get(current);
-
-                            listView.setSelectionFromTop(b.getInt("index"), b.getInt("top"));
+                            if(aBoolean)
+                            mLayoutManager.scrollToPositionWithOffset(b.getInt("index"),b.getInt("top"));
+                        else    mLayoutManagerGrid.scrollToPositionWithOffset(b.getInt("index"),b.getInt("top"));
                         }
                     }
                     //floatingActionButton.show();
@@ -1219,9 +1195,9 @@ listView.setAreHeadersSticky(false);
 
 
     public void computeScroll() {
-        int index = listView.getFirstVisiblePosition();
         View vi = listView.getChildAt(0);
         int top = (vi == null) ? 0 : vi.getTop();
+        int index = mLayoutManager.findFirstVisibleItemPosition();
         Bundle b = new Bundle();
         b.putInt("index", index);
         b.putInt("top", top);

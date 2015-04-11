@@ -1,45 +1,23 @@
-/*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
- *
- * This file is part of Amaze File Manager.
- *
- * Amaze File Manager is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.preference.PreferenceManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.Main;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.MimeTypes;
@@ -47,33 +25,30 @@ import com.amaze.filemanager.utils.RoundedImageView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
-public class MyAdapter extends ArrayAdapter<Layoutelements>  {
-    Context context;
-    List<Layoutelements> items;
-    private SparseBooleanArray myChecked = new SparseBooleanArray();
+/**
+ * Created by Arpit on 11-04-2015.
+ */
+public class Recycleradapter extends  RecyclerView.Adapter<Recycleradapter.ViewHolder> {
     Main main;
-    int filetype=-1;
-    Futils utils = new Futils();
+    ArrayList<Layoutelements> items;
+    Context context;
+    private SparseBooleanArray myChecked = new SparseBooleanArray();
     ColorMatrixColorFilter colorMatrixColorFilter;
     LayoutInflater mInflater;
-    public MyAdapter(Context context, int resourceId,
-                     List<Layoutelements> items, Main main) {
-        super(context, resourceId, items);
-        this.context = context;
-        this.items = items;
-        this.main = main;
+    int filetype=-1;
+    public Recycleradapter(Main m,ArrayList<Layoutelements> items,Context context){
+        this.main=m;
+        this.items=items;
+        this.context=context;
         for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, false);
         }
         colorMatrixColorFilter=main.colorMatrixColorFilter;
-     mInflater = (LayoutInflater) context
+        mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
     }
-
-
     public void toggleChecked(int position) {
         if (myChecked.get(position)) {
             myChecked.put(position, false);
@@ -97,17 +72,17 @@ public class MyAdapter extends ArrayAdapter<Layoutelements>  {
     }
 
     public void toggleChecked(boolean b,String path) {
-       int a; if(path.equals("/") || !main.gobackitem)a=0;else a=1;
+        int a; if(path.equals("/") || !main.gobackitem)a=0;else a=1;
         for (int i = a; i < items.size(); i++) {
             myChecked.put(i, b);
         }
         notifyDataSetChanged();
         if(main.mActionMode!=null)
-        main.mActionMode.invalidate();
+            main.mActionMode.invalidate();
         if (getCheckedItemPositions().size() == 0) {
             main.selection = false;
             if(main.mActionMode!=null)
-            main.mActionMode.finish();
+                main.mActionMode.finish();
             main.mActionMode = null;
         }
     }
@@ -121,7 +96,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements>  {
         if (getCheckedItemPositions().size() == 0) {
             main.selection = false;
             if(main.mActionMode!=null)
-            main.mActionMode.finish();
+                main.mActionMode.finish();
             main.mActionMode = null;
         }
     }
@@ -148,46 +123,48 @@ public class MyAdapter extends ArrayAdapter<Layoutelements>  {
         return b;
     }
 
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        // each data item is just a string in this case
+        public RoundedImageView viewmageV;
+        public ImageView imageView,apk;
+        public ImageView imageView1;
+        public TextView txtTitle;
+        public TextView txtDesc;
+        public TextView date;
+        public TextView perm;
+        public View rl;
+        public TextView ext;
 
-    /* private view holder class */
-    private class ViewHolder {
-        RoundedImageView viewmageV;
-        ImageView imageView,apk;
-        ImageView imageView1;
-        TextView txtTitle;
-        TextView txtDesc;
-        TextView date;
-        TextView perm;
-        View rl;
-        TextView ext;
+        public ViewHolder(View view) {
+            super(view);
+
+            txtTitle = (TextView) view.findViewById(R.id.firstline);
+            viewmageV = (RoundedImageView) view.findViewById(R.id.cicon);
+            imageView = (ImageView) view.findViewById(R.id.icon);
+            rl = view.findViewById(R.id.second);
+            perm = (TextView) view.findViewById(R.id.permis);
+            date = (TextView) view.findViewById(R.id.date);
+            txtDesc = (TextView) view.findViewById(R.id.secondLine);
+            apk = (ImageView) view.findViewById(R.id.bicon);
+            ext = (TextView) view.findViewById(R.id.generictext);
+            imageView1 = (ImageView) view.findViewById(R.id.icon_thumb);
+            }
+    }
+    @Override
+    public Recycleradapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v;if(main.aBoolean) v= mInflater.inflate(R.layout.rowlayout, parent, false);
+        else  v= mInflater.inflate(R.layout.griditem, parent, false);
+        ViewHolder vh = new ViewHolder(v);
+        if(main.theme1==1)
+        vh.txtTitle.setTextColor(main.getActivity().getResources().getColor(android.R.color.white));
+        return vh;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
+    @Override
+    public void onBindViewHolder(final Recycleradapter.ViewHolder holder,final int p) {
 
-        final Layoutelements rowItem = getItem(position);
-
-
+        final Layoutelements rowItem = items.get(p);
         if (main.aBoolean) {
-            View view = convertView;
-            final int p = position;
-            if (convertView == null) {
-                view = mInflater.inflate(R.layout.rowlayout, parent, false);
-                final ViewHolder vholder = new ViewHolder();
-
-                vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
-                if (main.theme1==1)
-                    vholder.txtTitle.setTextColor(getContext().getResources().getColor(android.R.color.white));
-                vholder.viewmageV = (RoundedImageView) view.findViewById(R.id.cicon);
-                vholder.imageView = (ImageView) view.findViewById(R.id.icon);
-                vholder.rl = view.findViewById(R.id.second);
-                vholder.perm = (TextView) view.findViewById(R.id.permis);
-                vholder.date = (TextView) view.findViewById(R.id.date);
-                vholder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
-                vholder.apk = (ImageView) view.findViewById(R.id.bicon);
-                vholder.ext = (TextView) view.findViewById(R.id.generictext);
-                view.setTag(vholder);
-            }
-            final ViewHolder holder = (ViewHolder) view.getTag();
             holder.rl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -207,10 +184,10 @@ public class MyAdapter extends ArrayAdapter<Layoutelements>  {
                 }
             });
 
-            filetype=-1;
-            if(Icons.isPicture((rowItem.getDesc().toLowerCase())))filetype=0;
-            else if(Icons.isApk((rowItem.getDesc())))filetype=1;
-            else if(Icons.isVideo(rowItem.getDesc()))filetype=2;
+            filetype = -1;
+            if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) filetype = 0;
+            else if (Icons.isApk((rowItem.getDesc()))) filetype = 1;
+            else if (Icons.isVideo(rowItem.getDesc())) filetype = 2;
             holder.txtTitle.setText(rowItem.getTitle());
             holder.imageView.setImageDrawable(rowItem.getImageId());
             holder.ext.setText("");
@@ -244,7 +221,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements>  {
             });
             holder.imageView.setVisibility(View.VISIBLE);
             holder.viewmageV.setVisibility(View.INVISIBLE);
-            if (filetype==0) {
+            if (filetype == 0) {
                 if (main.showThumbs) {
                     if (main.circularImages) {
                         holder.imageView.setVisibility(View.GONE);
@@ -261,7 +238,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements>  {
                         main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);
                     }
                 }
-            } else if (filetype==1) {
+            } else if (filetype == 1) {
                 if (main.showThumbs) {
                     holder.viewmageV.setVisibility(View.GONE);
                     holder.imageView.setVisibility(View.GONE);
@@ -271,7 +248,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements>  {
                     main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);
                 }
 
-            } else if (filetype==2) {
+            } else if (filetype == 2) {
                 if (main.showThumbs) {
                     if (main.circularImages) {
                         holder.imageView.setVisibility(View.GONE);
@@ -287,10 +264,11 @@ public class MyAdapter extends ArrayAdapter<Layoutelements>  {
                         main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);
                     }
                 }
+            } else {
+                holder.viewmageV.setVisibility(View.GONE);
+                holder.apk.setVisibility(View.GONE);
             }
-        else{holder.viewmageV.setVisibility(View.GONE);
-            holder.apk.setVisibility(View.GONE);}
-            Boolean checked = myChecked.get(position);
+            Boolean checked = myChecked.get(p);
             if (checked != null) {
 
                 if (main.uimode == 0) {
@@ -314,16 +292,16 @@ public class MyAdapter extends ArrayAdapter<Layoutelements>  {
                     gradientDrawable.setColor(Color.parseColor("#757575"));
                     holder.ext.setText("");
                     if (Build.VERSION.SDK_INT >= 21) {
-                    if (main.theme1 == 0) {
-                        holder.rl.setElevation(6f);
+                        if (main.theme1 == 0) {
+                            holder.rl.setElevation(6f);
                         } else {
-                            holder.rl.setBackgroundColor(getContext().getResources().getColor(R.color.safr_pressed_dark));
+                            holder.rl.setBackgroundColor(context.getResources().getColor(R.color.safr_pressed_dark));
                         }
 
                     }
                 } else {
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
-                    if(main.coloriseIcons) {
+                    if (main.coloriseIcons) {
                         if (rowItem.isDirectory(main.rootMode))
                             gradientDrawable.setColor(Color.parseColor(main.skin));
                         else if (Icons.isVideo(rowItem.getDesc()))
@@ -338,16 +316,17 @@ public class MyAdapter extends ArrayAdapter<Layoutelements>  {
                             gradientDrawable.setColor(Color.parseColor("#e06055"));
                         else if (Icons.isArchive(rowItem.getDesc()))
                             gradientDrawable.setColor(Color.parseColor("#f9a825"));
-                        else if (Icons.isgeneric(rowItem.getDesc()))
-                        {  gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
-                           String ext=MimeTypes.getExtension(new File(rowItem.getDesc()).getName());
-                                if(ext!=null && ext.trim().length()!=0) {
-                                    holder.ext.setText(ext);
-                                    holder.imageView.setImageDrawable(null);
-                                }      }
-                    else{
-                        gradientDrawable.setColor(Color.parseColor(main.skin));
-                    }}else gradientDrawable.setColor(Color.parseColor(main.skin));
+                        else if (Icons.isgeneric(rowItem.getDesc())) {
+                            gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
+                            String ext = MimeTypes.getExtension(new File(rowItem.getDesc()).getName());
+                            if (ext != null && ext.trim().length() != 0) {
+                                holder.ext.setText(ext);
+                                holder.imageView.setImageDrawable(null);
+                            }
+                        } else {
+                            gradientDrawable.setColor(Color.parseColor(main.skin));
+                        }
+                    } else gradientDrawable.setColor(Color.parseColor(main.skin));
                     if (rowItem.getSize().equals(main.goback))
                         gradientDrawable.setColor(Color.parseColor("#757575"));
 
@@ -360,34 +339,18 @@ public class MyAdapter extends ArrayAdapter<Layoutelements>  {
                 holder.perm.setText(rowItem.getPermissions());
             if (main.showLastModified)
                 holder.date.setText(rowItem.getDate());
-            String size=rowItem.getSize();
+            String size = rowItem.getSize();
 
-            if(size.equals(main.goback)){
+            if (size.equals(main.goback)) {
 
                 holder.date.setText(size);
 
-                holder.txtDesc.setText("");}
-
-            else if(main.showSize)
+                holder.txtDesc.setText("");
+            } else if (main.showSize)
 
                 holder.txtDesc.setText(rowItem.getSize());
-            return view;
-        } else{   View view;
-            final int p = position;
-            if (convertView == null) {
-            view = mInflater.inflate(R.layout.griditem, parent, false);
-            final ViewHolder vholder = new ViewHolder();
-
-            if(main.theme1==1) {
-                view.findViewById(R.id.icon_frame).setBackgroundColor(Color.parseColor("#00000000"));
-                vholder.txtTitle.setTextColor(Color.parseColor("#ffffff"));
-                vholder.perm.setTextColor(Color.parseColor("#ffffff"));
-            }
-
-            view.setTag(vholder);
-            }else{ view = convertView;}
-            final ViewHolder holder = (ViewHolder) view.getTag();
-            Boolean checked = myChecked.get(position);
+        } else {
+            Boolean checked = myChecked.get(p);
             holder.rl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -410,54 +373,65 @@ public class MyAdapter extends ArrayAdapter<Layoutelements>  {
             holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setImageDrawable(rowItem.getImageId());
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
-                    holder.imageView.setColorFilter(null);
+                holder.imageView.setColorFilter(null);
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
-                if(main.theme==1)holder.imageView1.setBackgroundColor(Color.parseColor("#000000"));
+                if (main.theme == 1)
+                    holder.imageView1.setBackgroundColor(Color.parseColor("#000000"));
                 main.ic.cancelLoad(holder.imageView1);
-                main.ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
-            }
-            else if (Icons.isApk((rowItem.getDesc()))) {
+                main.ic.loadDrawable(holder.imageView1, new File(rowItem.getDesc()), null);
+            } else if (Icons.isApk((rowItem.getDesc()))) {
                 holder.imageView.setColorFilter(null);
                 main.ic.cancelLoad(holder.imageView);
-                main.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),null);
-            } if(Icons.isVideo(rowItem.getDesc())){
+                main.ic.loadDrawable(holder.imageView, new File(rowItem.getDesc()), null);
+            }
+            if (Icons.isVideo(rowItem.getDesc())) {
                 holder.imageView.setColorFilter(null);
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
-                if(main.theme==1)holder.imageView1.setBackgroundColor(Color.parseColor("#000000"));
+                if (main.theme == 1)
+                    holder.imageView1.setBackgroundColor(Color.parseColor("#000000"));
                 main.ic.cancelLoad(holder.imageView1);
-                main.ic.loadDrawable(holder.imageView1,new File(rowItem.getDesc()),null);
+                main.ic.loadDrawable(holder.imageView1, new File(rowItem.getDesc()), null);
 
             }
-            if(main.coloriseIcons){
+            if (main.coloriseIcons) {
 
-                if(rowItem.isDirectory(main.rootMode))holder.imageView.setColorFilter(Color.parseColor(main.skin));
+                if (rowItem.isDirectory(main.rootMode))
+                    holder.imageView.setColorFilter(Color.parseColor(main.skin));
 
-                else if(Icons.isVideo(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#f06292"));
+                else if (Icons.isVideo(rowItem.getDesc()))
+                    holder.imageView.setColorFilter(Color.parseColor("#f06292"));
 
-                else if(Icons.isAudio(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#9575cd"));
+                else if (Icons.isAudio(rowItem.getDesc()))
+                    holder.imageView.setColorFilter(Color.parseColor("#9575cd"));
 
-                else if(Icons.isPdf(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#da4336"));
+                else if (Icons.isPdf(rowItem.getDesc()))
+                    holder.imageView.setColorFilter(Color.parseColor("#da4336"));
 
-                else if(Icons.isCode(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#00bfa5"));
+                else if (Icons.isCode(rowItem.getDesc()))
+                    holder.imageView.setColorFilter(Color.parseColor("#00bfa5"));
 
-                else if(Icons.isText(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#e06055"));
+                else if (Icons.isText(rowItem.getDesc()))
+                    holder.imageView.setColorFilter(Color.parseColor("#e06055"));
 
-                else if(Icons.isArchive(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#f9a825"));
+                else if (Icons.isArchive(rowItem.getDesc()))
+                    holder.imageView.setColorFilter(Color.parseColor("#f9a825"));
 
-                else if(Icons.isgeneric(rowItem.getDesc()))holder.imageView.setColorFilter(Color.parseColor("#9e9e9e"));
+                else if (Icons.isgeneric(rowItem.getDesc()))
+                    holder.imageView.setColorFilter(Color.parseColor("#9e9e9e"));
 
-                else if(Icons.isApk(rowItem.getDesc()) || Icons.isPicture(rowItem.getDesc()))holder.imageView.setColorFilter(null);
+                else if (Icons.isApk(rowItem.getDesc()) || Icons.isPicture(rowItem.getDesc()))
+                    holder.imageView.setColorFilter(null);
 
                 else holder.imageView.setColorFilter(Color.parseColor(main.skin));
 
-            }else
-            if(!Icons.isApk(rowItem.getDesc()) && !Icons.isPicture(rowItem.getDesc()))
+            } else if (!Icons.isApk(rowItem.getDesc()) && !Icons.isPicture(rowItem.getDesc()))
                 holder.imageView.setColorFilter(Color.parseColor(main.skin));
             else
                 holder.imageView.setColorFilter(null);
-            if(rowItem.getSize().equals(main.goback))holder.imageView.setColorFilter(Color.parseColor("#757575"));
+            if (rowItem.getSize().equals(main.goback))
+                holder.imageView.setColorFilter(Color.parseColor("#757575"));
             if (checked != null) {
 
                 if (checked) {
@@ -466,24 +440,28 @@ public class MyAdapter extends ArrayAdapter<Layoutelements>  {
                     holder.rl.setBackgroundColor(Color.parseColor("#9f757575"));
                 } else {
                     if (main.uimode == 0) {
-                        if(main.theme1==0)holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
-                        else holder.rl.setBackgroundResource(R.drawable.ic_grid_card_background_dark);
+                        if (main.theme1 == 0)
+                            holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
+                        else
+                            holder.rl.setBackgroundResource(R.drawable.ic_grid_card_background_dark);
                     } else if (main.uimode == 1) {
                         holder.rl.setBackgroundResource(R.drawable.bg_card);
                     }
                 }
             }
-            if(main.showLastModified)
+            if (main.showLastModified)
                 holder.date.setText(rowItem.getDate());
-            if(rowItem.getSize().equals(main.goback)){
+            if (rowItem.getSize().equals(main.goback)) {
                 holder.date.setText(rowItem.getSize());
                 holder.txtDesc.setText("");
-            }else
+            } else
                 holder.txtDesc.setText(rowItem.getSize());
-            if(main.showPermissions)
+            if (main.showPermissions)
                 holder.perm.setText(rowItem.getPermissions());
-            return view;}}
-
-
+        }
+    }
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
 }
-
