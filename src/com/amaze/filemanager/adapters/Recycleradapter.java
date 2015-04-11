@@ -22,14 +22,18 @@ import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.MimeTypes;
 import com.amaze.filemanager.utils.RoundedImageView;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * Created by Arpit on 11-04-2015.
  */
-public class Recycleradapter extends  RecyclerView.Adapter<Recycleradapter.ViewHolder> {
+public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder>
+        implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
     Main main;
     ArrayList<Layoutelements> items;
     Context context;
@@ -151,7 +155,7 @@ public class Recycleradapter extends  RecyclerView.Adapter<Recycleradapter.ViewH
             }
     }
     @Override
-    public Recycleradapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;if(main.aBoolean) v= mInflater.inflate(R.layout.rowlayout, parent, false);
         else  v= mInflater.inflate(R.layout.griditem, parent, false);
         ViewHolder vh = new ViewHolder(v);
@@ -161,8 +165,8 @@ public class Recycleradapter extends  RecyclerView.Adapter<Recycleradapter.ViewH
     }
 
     @Override
-    public void onBindViewHolder(final Recycleradapter.ViewHolder holder,final int p) {
-
+    public void onBindViewHolder(RecyclerView.ViewHolder vholder,final int p) {
+        final Recycleradapter.ViewHolder holder=((Recycleradapter.ViewHolder)vholder);
         final Layoutelements rowItem = items.get(p);
         if (main.aBoolean) {
             holder.rl.setOnClickListener(new View.OnClickListener() {
@@ -460,6 +464,80 @@ public class Recycleradapter extends  RecyclerView.Adapter<Recycleradapter.ViewH
                 holder.perm.setText(rowItem.getPermissions());
         }
     }
+
+    @Override
+    public long getHeaderId(int i) {
+     if(items.get(i).isDirectory(main.rootMode))return 'D';
+        else return 'F';
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
+        View  view = mInflater.inflate(R.layout.listheader, viewGroup, false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
+    }
+
+    @Override
+    public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
+      ViewHolder holder=(ViewHolder)viewHolder;
+        if(items.get(i).isDirectory(main.rootMode))holder.date.setText("Directories");
+        else holder.date.setText("Files");
+    }
+
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
+}
+ abstract class RecyclerArrayAdapter<M, VH extends RecyclerView.ViewHolder>
+        extends RecyclerView.Adapter<VH> {
+    private ArrayList<M> items = new ArrayList<M>();
+
+    public RecyclerArrayAdapter() {
+        setHasStableIds(true);
+    }
+
+    public void add(M object) {
+        items.add(object);
+        notifyDataSetChanged();
+    }
+
+    public void add(int index, M object) {
+        items.add(index, object);
+        notifyDataSetChanged();
+    }
+
+    public void addAll(Collection<? extends M> collection) {
+        if (collection != null) {
+            items.addAll(collection);
+            notifyDataSetChanged();
+        }
+    }
+
+    public void addAll(M... items) {
+        addAll(Arrays.asList(items));
+    }
+
+    public void clear() {
+        items.clear();
+        notifyDataSetChanged();
+    }
+
+    public void remove(M object) {
+        items.remove(object);
+        notifyDataSetChanged();
+    }
+
+    public M getItem(int position) {
+        return items.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
     @Override
     public int getItemCount() {
         return items.size();

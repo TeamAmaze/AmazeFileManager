@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:minHeight="48dp"
-    android:id="@+id/headtext"
+    android:id="@+id/date"
     android:background="@android:color/white"
     android:textStyle="bold"
     android:gravity="center_vertical"

@@ -22,6 +22,7 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.junrar:junrar:0.7'
     compile 'org.apache.commons:commons-compress:1.8.1'
+    compile 'com.timehop.stickyheadersrecyclerview:library:0.3.6@aar'
     compile fileTree(include: '*.jar', dir: 'libs')
 }
 
