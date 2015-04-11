@@ -49,7 +49,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyAdapter extends ArrayAdapter<Layoutelements> {
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
+
+public class MyAdapter extends ArrayAdapter<Layoutelements> implements StickyListHeadersAdapter {
     Context context;
     List<Layoutelements> items;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
@@ -57,6 +59,7 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
     int filetype=-1;
     Futils utils = new Futils();
     ColorMatrixColorFilter colorMatrixColorFilter;
+    LayoutInflater mInflater;
     public MyAdapter(Context context, int resourceId,
                      List<Layoutelements> items, Main main) {
         super(context, resourceId, items);
@@ -67,6 +70,9 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             myChecked.put(i, false);
         }
         colorMatrixColorFilter=main.colorMatrixColorFilter;
+     mInflater = (LayoutInflater) context
+                .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+
     }
 
 
@@ -144,6 +150,28 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         return b;
     }
 
+    @Override
+    public View getHeaderView(int i, View view, ViewGroup viewGroup) {
+        ViewHolder holder;
+        if (view == null) {
+            holder = new ViewHolder();
+            view = mInflater.inflate(R.layout.listheader, viewGroup, false);
+            holder.date = (TextView) view.findViewById(R.id.headtext);
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
+        }
+        if(items.get(i).isDirectory(main.rootMode))holder.date.setText("Directories");
+        else holder.date.setText("Files");
+        return view;
+    }
+
+    @Override
+    public long getHeaderId(int i) {
+        if(items.get(i).isDirectory(main.rootMode))return 'D';
+        else return 'F';
+    }
+
     /* private view holder class */
     private class ViewHolder {
         RoundedImageView viewmageV;
@@ -166,8 +194,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
             View view = convertView;
             final int p = position;
             if (convertView == null) {
-                LayoutInflater mInflater = (LayoutInflater) context
-                        .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
                 view = mInflater.inflate(R.layout.rowlayout, parent, false);
                 final ViewHolder vholder = new ViewHolder();
 
@@ -320,13 +346,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
 
                     }
                 } else {
-                    holder.viewmageV.setVisibility(View.GONE);
-                    holder.apk.setVisibility(View.GONE);
-                    holder.imageView.setVisibility(View.GONE);
-                    if(filetype==-1)holder.imageView.setVisibility(View.VISIBLE);
-                    else if(filetype==1)holder.apk.setVisibility(View.VISIBLE);
-                    else {if(main.circularImages)holder.viewmageV.setVisibility(View.VISIBLE);
-                    else holder.apk.setVisibility(View.VISIBLE);}
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
                     if(main.coloriseIcons) {
                         if (rowItem.isDirectory(main.rootMode))
@@ -380,8 +399,6 @@ public class MyAdapter extends ArrayAdapter<Layoutelements> {
         } else{   View view;
             final int p = position;
             if (convertView == null) {
-            LayoutInflater mInflater = (LayoutInflater) context
-                    .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             view = mInflater.inflate(R.layout.griditem, parent, false);
             final ViewHolder vholder = new ViewHolder();
             vholder.rl=view.findViewById(R.id.frame);

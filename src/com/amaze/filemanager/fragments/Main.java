@@ -143,7 +143,7 @@ public class Main extends android.support.v4.app.Fragment {
     private TextView textView;
     public CountDownTimer timer;
     private View rootView;
-    public ListView listView;
+    public se.emilsjolander.stickylistheaders.StickyListHeadersListView  listView;
     public GridView gridView;
     public Boolean gobackitem,aBoolean,showThumbs,coloriseIcons;
     public IconHolder ic;
@@ -209,7 +209,7 @@ public class Main extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
-        listView = (ListView) rootView.findViewById(R.id.listView);
+        listView = (se.emilsjolander.stickylistheaders.StickyListHeadersListView) rootView.findViewById(R.id.listView);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -259,6 +259,8 @@ public class Main extends android.support.v4.app.Fragment {
                 rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_light));
             }
         }
+        listView.setDivider(null);
+        listView.setDividerHeight(0);
         if (aBoolean) {
             listView.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.GONE);
@@ -268,7 +270,7 @@ public class Main extends android.support.v4.app.Fragment {
             listView.setVisibility(View.GONE);
             gridView.setVisibility(View.VISIBLE);
         }
-
+listView.setAreHeadersSticky(false);
         return rootView;
     }
 
@@ -325,7 +327,7 @@ public class Main extends android.support.v4.app.Fragment {
         if (aBoolean) {
             rootView.findViewById(R.id.activity_main_swipe_refresh_layout1).setVisibility(View.GONE);
             mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
-            listView.setFastScrollEnabled(true);
+           // listView.setFastScrollEnabled(true);
         } else {
             mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout1);
             gridView.setFastScrollEnabled(true);

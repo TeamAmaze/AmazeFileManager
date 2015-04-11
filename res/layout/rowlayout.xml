@@ -34,7 +34,7 @@
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:padding="10dp"
+            android:padding="8dp"
             android:background="@drawable/circle_shape"
             android:layout_gravity="center_vertical"
             android:id="@+id/icon"/>

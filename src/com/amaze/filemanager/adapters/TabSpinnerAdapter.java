@@ -125,12 +125,10 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
             textView.setTextColor(Color.parseColor("#ffffff"));
         }
         LinearLayout linearLayout = (LinearLayout) row.findViewById(R.id.textParent);
-        ImageButton imageButton = (ImageButton) row.findViewById(R.id.spinnerButton);
         if(items.get(position).equals("/"))
             textView.setText(R.string.rootdirectory);
         else
         textView.setText(new File(items.get(position)).getName());
-        imageButton.setVisibility(View.VISIBLE);
         if (position == tabFragment.mViewPager.getCurrentItem()) {
             float[] src = {
 
@@ -141,12 +139,11 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
             };
             ColorMatrix colorMatrix = new ColorMatrix(src);
             ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
-            imageButton.setColorFilter(colorMatrixColorFilter);
+
             textView.setTextColor(Color.parseColor(skin));
        //     textView.setTypeface(null, Typeface.BOLD);
 
-        } imageButton.setVisibility(View.GONE);
-        row.setOnClickListener(new View.OnClickListener() {
+        }        row.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -160,12 +157,6 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
             }
         });
 
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-   hideSpinnerDropDown(spinner);
-            }
-        });
         return row;
     }
 
