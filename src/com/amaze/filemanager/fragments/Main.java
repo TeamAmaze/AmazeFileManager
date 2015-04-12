@@ -93,6 +93,7 @@ import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.melnykov.fab.FloatingActionButton;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
 import java.io.IOException;
@@ -149,6 +150,7 @@ public class Main extends android.support.v4.app.Fragment {
     LinearLayoutManager mLayoutManager;
     GridLayoutManager mLayoutManagerGrid;
     SwipeRefreshLayout mSwipeRefreshLayout;
+    boolean addheader=true;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -514,8 +516,9 @@ public class Main extends android.support.v4.app.Fragment {
 
                         listView.setAdapter(adapter);
 
-
-
+                    if(addheader){
+                    StickyRecyclerHeadersDecoration headersDecor = new StickyRecyclerHeadersDecoration(adapter);
+                    listView.addItemDecoration(headersDecor);addheader=false;}
                     results = false;
                     current = f.getPath();
                     updatePath(f.getPath());

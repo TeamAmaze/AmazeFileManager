@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.preference.PreferenceActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -470,19 +471,26 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
      if(items.get(i).isDirectory(main.rootMode))return 'D';
         else return 'F';
     }
+    public static class HeaderViewHolder extends RecyclerView.ViewHolder {
+        public TextView ext;
 
+        public HeaderViewHolder(View view) {
+            super(view);
+
+            ext = (TextView) view.findViewById(R.id.headertext);
+        }}
     @Override
     public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
         View  view = mInflater.inflate(R.layout.listheader, viewGroup, false);
-        ViewHolder holder = new ViewHolder(view);
+        HeaderViewHolder holder = new HeaderViewHolder(view);
         return holder;
     }
 
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-      ViewHolder holder=(ViewHolder)viewHolder;
-        if(items.get(i).isDirectory(main.rootMode))holder.date.setText("Directories");
-        else holder.date.setText("Files");
+      HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
+        if(items.get(i).isDirectory(main.rootMode))holder.ext.setText("Directories");
+        else holder.ext.setText("Files");
     }
 
     @Override
