@@ -133,6 +133,7 @@ public class Main extends android.support.v4.app.Fragment {
     public Boolean gobackitem,aBoolean,showThumbs,coloriseIcons;
     public IconHolder ic;
     public MainActivity mainActivity;
+    public boolean showButtonOnStart = false;
     public String skin;
     public int skinselection;
     public int theme;
@@ -197,6 +198,7 @@ public class Main extends android.support.v4.app.Fragment {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        if (showButtonOnStart) floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1243,13 +1245,6 @@ public class Main extends android.support.v4.app.Fragment {
     public void onResume() {
         super.onResume();
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
-       if(no==2 && Build.VERSION.SDK_INT>=17) {
-           RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) floatingActionButton.getLayoutParams();
-           params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-           params.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-           floatingActionButton.setLayoutParams(params);
-       }
-
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
     }
 

@@ -107,7 +107,6 @@
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
-        app:fab_type="mini"
         app:fab_colorNormal="#ffffff"
         app:fab_colorPressed="#ffffff"
         app:fab_colorRipple="#77777777"
