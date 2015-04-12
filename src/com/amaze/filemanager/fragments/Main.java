@@ -516,7 +516,7 @@ public class Main extends android.support.v4.app.Fragment {
 
                         listView.setAdapter(adapter);
 
-                    if(addheader){
+                    if(addheader && aBoolean){
                     StickyRecyclerHeadersDecoration headersDecor = new StickyRecyclerHeadersDecoration(adapter);
                     listView.addItemDecoration(headersDecor);addheader=false;}
                     results = false;
