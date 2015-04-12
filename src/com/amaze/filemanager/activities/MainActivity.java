@@ -101,6 +101,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
@@ -159,6 +164,7 @@ public class MainActivity extends ActionBarActivity implements
     public int booksize=0;
     private GoogleApiClient mGoogleApiClient;
     private View drawerHeaderView;
+    private DisplayImageOptions displayImageOptions;
 
     /* Request code used to invoke sign in user interactions. */
     private static final int RC_SIGN_IN = 0;
@@ -185,6 +191,17 @@ public class MainActivity extends ActionBarActivity implements
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
+
+        displayImageOptions = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.drawable.amaze_header)
+                .showImageForEmptyUri(R.drawable.amaze_header)
+                .showImageOnFail(R.drawable.amaze_header)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .considerExifParams(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .build();
+        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
 
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         utils = new Futils();
@@ -1388,27 +1405,19 @@ public void refreshDrawer(){
             Log.d("G+", personGooglePlusProfile);
             Log.d("G+", personCover.getUrl());
 
-            //setting image using AsyncTask
-            new AsyncTask<String, Void, Bitmap>() {
+            ImageLoader.getInstance().loadImage(personCover.getUrl(), displayImageOptions, new SimpleImageLoadingListener() {
                 @Override
-                protected Bitmap doInBackground(String... params) {
-                    try {
-                        URL url = new URL(params[0]);
-                        InputStream inputStream = url.openStream();
-                        return BitmapFactory.decodeStream(inputStream);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return null;
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    super.onLoadingComplete(imageUri, view, loadedImage);
+                    drawerHeaderView.setBackground(new BitmapDrawable(loadedImage));
                 }
 
                 @Override
-                protected void onPostExecute(Bitmap bitmap) {
-                    super.onPostExecute(bitmap);
-                    Log.d("G+", "Setting Drawer Header");
-                    drawerHeaderView.setBackground(new BitmapDrawable(bitmap));
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    super.onLoadingFailed(imageUri, view, failReason);
+                    drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
                 }
-            }.execute(personCover.getUrl());
+            });
         }
     }
 
