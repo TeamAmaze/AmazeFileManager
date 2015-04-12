@@ -28,9 +28,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -93,11 +97,20 @@ import com.amaze.filemanager.utils.MediaFile;
 import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.ScrimInsetsFrameLayout;
 import com.amaze.filemanager.utils.Shortcuts;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -107,7 +120,9 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 
-public class MainActivity extends ActionBarActivity{
+public class MainActivity extends ActionBarActivity implements
+        ConnectionCallbacks, OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
     public Integer select;
     Futils utils;
     private boolean backPressedToExitOnce = false;
@@ -142,6 +157,17 @@ public class MainActivity extends ActionBarActivity{
     String pending_path;
     boolean openprocesses=false;
     public int booksize=0;
+    private GoogleApiClient mGoogleApiClient;
+    private View drawerHeaderView;
+
+    /* Request code used to invoke sign in user interactions. */
+    private static final int RC_SIGN_IN = 0;
+
+    /* A flag indicating that a PendingIntent is in progress and prevents
+   * us from starting further intents.
+   */
+    private boolean mIntentInProgress;
+
     /**
      * Called when the activity is first created.
      */
@@ -152,6 +178,13 @@ public class MainActivity extends ActionBarActivity{
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Plus.API)
+                .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .build();
 
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         utils = new Futils();
@@ -317,11 +350,11 @@ public class MainActivity extends ActionBarActivity{
                 adapter.toggleChecked(false);
             }
         });
-        View v=getLayoutInflater().inflate(R.layout.drawerheader,null);
-        v.setBackgroundColor(Color.parseColor(skin));
+        drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader,null);
+        //v.setBackgroundColor(Color.parseColor(skin));
 
         //((TextView) v.findViewById(R.id.firstline)).setTextColor(Color.WHITE);
-        mDrawerList.addHeaderView(v);
+        mDrawerList.addHeaderView(drawerHeaderView);
         list = new ArrayList<String>();
         for (int i = 0; i < val.size(); i++) {
             File file = new File(val.get(i));
@@ -916,9 +949,6 @@ public class MainActivity extends ActionBarActivity{
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-
-    //
-
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -1288,7 +1318,6 @@ public class MainActivity extends ActionBarActivity{
                 if (parent.exists() && parent.canExecute())
                     return parent;
 
-
         return null;
     }
 
@@ -1326,5 +1355,98 @@ public void refreshDrawer(){
         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+        Log.d("G+", "Connected");
+        if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
+            Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+            String personName = currentPerson.getDisplayName();
+            Log.d("G+", personName);
+            Person.Image personPhoto = currentPerson.getImage();
+
+            Person.Cover.CoverPhoto personCover = currentPerson.getCover().getCoverPhoto();
+            String personGooglePlusProfile = currentPerson.getUrl();
+            Log.d("G+", personGooglePlusProfile);
+            Log.d("G+", personCover.getUrl());
+
+            //setting image using AsyncTask
+            new AsyncTask<String, Void, Bitmap>() {
+                @Override
+                protected Bitmap doInBackground(String... params) {
+                    try {
+                        URL url = new URL(params[0]);
+                        InputStream inputStream = url.openStream();
+                        return BitmapFactory.decodeStream(inputStream);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Bitmap bitmap) {
+                    super.onPostExecute(bitmap);
+                    Log.d("G+", "Setting Drawer Header");
+                    drawerHeaderView.setBackground(new BitmapDrawable(bitmap));
+                }
+            }.execute(personCover.getUrl());
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+        Log.d("G+", "Connection suspended");
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onDisconnected() {
+
+        Log.d("G+", "Disconnected");
+    }
+
+    public void onConnectionFailed(ConnectionResult result) {
+        if (!mIntentInProgress && result.hasResolution()) {
+            try {
+                mIntentInProgress = true;
+                startIntentSenderForResult(result.getResolution().getIntentSender(),
+                        RC_SIGN_IN, null, 0, 0, 0);
+            } catch (IntentSender.SendIntentException e) {
+                // The intent was canceled before it was sent.  Return to the default
+                // state and attempt to connect to get an updated ConnectionResult.
+                mIntentInProgress = false;
+                mGoogleApiClient.connect();
+            }
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+        if (requestCode == RC_SIGN_IN) {
+            mIntentInProgress = false;
+
+            if (!mGoogleApiClient.isConnecting()) {
+                mGoogleApiClient.connect();
+            }
+        }
     }
 }
