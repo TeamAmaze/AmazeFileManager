@@ -367,7 +367,7 @@ public class Main extends android.support.v4.app.Fragment {
                 index = (mLayoutManager).findFirstVisibleItemPosition();
                 vi = listView.getChildAt(0);
             } else {
-                index =  (mLayoutManager).findFirstVisibleItemPosition();
+                index =  (mLayoutManagerGrid).findFirstVisibleItemPosition();
                 vi = listView.getChildAt(0);
             }
             int top = (vi == null) ? 0 : vi.getTop();
