@@ -98,6 +98,7 @@ import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.ScrimInsetsFrameLayout;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
@@ -165,6 +166,9 @@ public class MainActivity extends ActionBarActivity implements
     private GoogleApiClient mGoogleApiClient;
     private View drawerHeaderView;
     private DisplayImageOptions displayImageOptions;
+
+    // Check for user interaction for google+ api only once
+    private boolean mGoogleApiKey = false;
 
     /* Request code used to invoke sign in user interactions. */
     private static final int RC_SIGN_IN = 0;
@@ -1435,6 +1439,7 @@ public void refreshDrawer(){
     }
 
     public void onConnectionFailed(ConnectionResult result) {
+        Log.d("G+", "Connection failed");
         if (!mIntentInProgress && result.hasResolution()) {
             try {
                 mIntentInProgress = true;
@@ -1450,12 +1455,16 @@ public void refreshDrawer(){
     }
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-        if (requestCode == RC_SIGN_IN) {
+        Log.d("G+", "onActivityResult");
+        if (requestCode == RC_SIGN_IN && !mGoogleApiKey) {
             mIntentInProgress = false;
+            mGoogleApiKey = true;
 
-            if (!mGoogleApiClient.isConnecting()) {
+            // !mGoogleApiClient.isConnecting
+            if (mGoogleApiClient.isConnecting()) {
                 mGoogleApiClient.connect();
             }
-        }
+        } else
+            mGoogleApiClient.disconnect();
     }
 }
