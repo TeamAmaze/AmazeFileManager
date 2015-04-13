@@ -30,6 +30,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -54,6 +57,7 @@ import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.ZipObj;
 import com.melnykov.fab.FloatingActionButton;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -76,13 +80,17 @@ SharedPreferences Sp;
     public ArrayList<ZipObj> wholelist=new ArrayList<ZipObj>();
 public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     public MainActivity mainActivity;
-    public ListView listView;
+    public RecyclerView listView;
     View rootView;
+    boolean addheader=true;
     public SwipeRefreshLayout swipeRefreshLayout;
+    StickyRecyclerHeadersDecoration headersDecor;
+    LinearLayoutManager mLayoutManager;
+    GridLayoutManager mLayoutManagerGrid;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
-        listView = (ListView) rootView.findViewById(R.id.listView);
+        listView = (RecyclerView) rootView.findViewById(R.id.listView);
         swipeRefreshLayout=(SwipeRefreshLayout)rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -92,7 +100,6 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         });
         LinearLayout pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
         TextView textView = (TextView) rootView.findViewById(R.id.fullpath);
-        rootView.findViewById(R.id.fab).setVisibility(View.GONE);
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,6 +121,11 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             f = new File(s);
             listView.setVisibility(View.VISIBLE);
             Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            mLayoutManager=new LinearLayoutManager(getActivity());
+            int columns=Integer.parseInt(Sp.getString("columns","3"));
+            mLayoutManagerGrid=new GridLayoutManager(getActivity(),columns);
+                listView.setLayoutManager(mLayoutManager);
+
             mainActivity = (MainActivity) getActivity();
             mainActivity.supportInvalidateOptionsMenu();
             if (mainActivity.theme1 == 1)
@@ -129,7 +141,6 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             skin = Sp.getString("skin_color", "#03A9F4");
             rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
-            listView.setDivider(null);
             String x = getSelectionColor();
             skinselection = Color.parseColor(x);
             files = new ArrayList<File>();
@@ -278,8 +289,6 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     @Override
     public void onResume() {
         super.onResume();
-        FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-        floatingActionButton.hide(true);
         if (files.size()==1) {
 
             new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(files);
@@ -303,8 +312,13 @@ public boolean cangoBack(){
 
     }
     public void createviews(ArrayList<ZipObj> zipEntries,String dir){
-        zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), R.layout.simplerow, zipEntries, zipViewer);
+        zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), zipEntries, zipViewer);
         zipViewer.listView.setAdapter(zipViewer.zipAdapter);
+        if(!addheader ){listView.removeItemDecoration(headersDecor);addheader=true;}
+        if(addheader ){
+            headersDecor = new StickyRecyclerHeadersDecoration(zipAdapter);
+            listView.addItemDecoration(headersDecor);addheader=false;}
+
         zipViewer.current = dir;
         zipViewer.bbar();
         swipeRefreshLayout.setRefreshing(false);

@@ -27,7 +27,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.adapters.MyAdapter;
 import com.amaze.filemanager.adapters.Recycleradapter;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.FileListSorter;

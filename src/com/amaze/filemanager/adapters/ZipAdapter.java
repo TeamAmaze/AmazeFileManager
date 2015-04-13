@@ -25,6 +25,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.RoundedImageView;
 import com.amaze.filemanager.utils.ZipObj;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,15 +54,16 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class ZipAdapter extends ArrayAdapter<ZipObj> {
+public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder>
+        implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
     Context c;
     Drawable folder, unknown;
     ArrayList<ZipObj> enter;
     ZipViewer zipViewer;
-    private ViewHolder holder;
+
     private SparseBooleanArray myChecked = new SparseBooleanArray();
-    public ZipAdapter(Context c, int id, ArrayList<ZipObj> enter, ZipViewer zipViewer) {
-        super(c, id, enter);
+    LayoutInflater mInflater;
+    public ZipAdapter(Context c, ArrayList<ZipObj> enter, ZipViewer zipViewer) {
         this.enter = enter;
         for (int i = 0; i < enter.size(); i++) {
             myChecked.put(i, false);
@@ -69,6 +72,9 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
         folder = c.getResources().getDrawable(R.drawable.ic_grid_folder_new);
         unknown = c.getResources().getDrawable(R.drawable.ic_doc_generic_am);
         this.zipViewer = zipViewer;
+        mInflater = (LayoutInflater) c
+                .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+
     }public void toggleChecked(int position) {
         if (myChecked.get(position)) {
             myChecked.put(position, false);
@@ -111,45 +117,42 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
 
         return checkedItemPositions;
     }
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        // each data item is just a string in this case
+        public RoundedImageView viewmageV;
+        public ImageView imageView,apk;
+        public TextView txtTitle;
+        public TextView txtDesc;
+        public TextView date;
+        public TextView perm;
+        public View rl;
 
-
-    private class ViewHolder {
-        RoundedImageView viewmageV;
-        ImageView imageView,apk;
-        TextView txtTitle;
-        TextView txtDesc;
-        TextView date;
-        TextView perm;
-        View rl;
+        public ViewHolder(View view) {
+            super(view);
+            txtTitle = (TextView) view.findViewById(R.id.firstline);
+            viewmageV = (RoundedImageView) view.findViewById(R.id.cicon);
+            imageView = (ImageView) view.findViewById(R.id.icon);
+            rl = view.findViewById(R.id.second);
+            perm = (TextView) view.findViewById(R.id.permis);
+            date = (TextView) view.findViewById(R.id.date);
+            txtDesc = (TextView) view.findViewById(R.id.secondLine);
+            apk=(ImageView)view.findViewById(R.id.bicon);
+        }
+    }
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        View v= mInflater.inflate(R.layout.rowlayout,viewGroup, false);
+        ViewHolder vh = new ViewHolder(v);
+        if(zipViewer.mainActivity.theme1==1)
+            vh.txtTitle.setTextColor(zipViewer.getActivity().getResources().getColor(android.R.color.white));
+        return vh;
     }
 
-    public View getView(final int position, View convertView, ViewGroup parent) {
-
-        final ZipObj rowItem = enter.get(position);
-        View view = convertView;
-        final int p = position;
-        if (convertView == null) {
-            LayoutInflater mInflater = (LayoutInflater) c
-                    .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            view = mInflater.inflate(R.layout.rowlayout, parent, false);
-            final ViewHolder vholder = new ViewHolder();
-
-            vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
-            if (zipViewer.mainActivity.theme1==1)
-                vholder.txtTitle.setTextColor(getContext().getResources().getColor(android.R.color.white));
-            vholder.viewmageV = (RoundedImageView) view.findViewById(R.id.cicon);
-            vholder.imageView = (ImageView) view.findViewById(R.id.icon);
-            vholder.rl = view.findViewById(R.id.second);
-            vholder.perm = (TextView) view.findViewById(R.id.permis);
-            vholder.date = (TextView) view.findViewById(R.id.date);
-            vholder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
-            vholder.apk=(ImageView)view.findViewById(R.id.bicon);
-            view.setTag(vholder);
-
-        }
-        holder = (ViewHolder) view.getTag();
-
-
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        final ZipObj rowItem=enter.get(position);
+        final ViewHolder holder=(ZipAdapter.ViewHolder)viewHolder;
+        final int p=position;
         GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
         if(rowItem.getEntry()==null){
             holder.imageView.setImageResource(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
@@ -174,28 +177,28 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
                         holder.txtTitle.setText(rowItem.getName().substring(0, rowItem.getName().lastIndexOf("/")));
                     }
                 } } else {
-                    if (zipViewer.showSize)
-                        holder.txtDesc.setText(new Futils().readableFileSize(rowItem.getSize()));
-                    holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/") + 1));
-                    if (zipViewer.coloriseIcons) {
-                        if (Icons.isVideo(rowItem.getName()))
-                            gradientDrawable.setColor(Color.parseColor("#f06292"));
-                        else if (Icons.isAudio(rowItem.getName()))
-                            gradientDrawable.setColor(Color.parseColor("#9575cd"));
-                        else if (Icons.isPdf(rowItem.getName()))
-                            gradientDrawable.setColor(Color.parseColor("#da4336"));
-                        else if (Icons.isCode(rowItem.getName()))
-                            gradientDrawable.setColor(Color.parseColor("#00bfa5"));
-                        else if (Icons.isText(rowItem.getName()))
-                            gradientDrawable.setColor(Color.parseColor("#e06055"));
-                        else if (Icons.isArchive(rowItem.getName()))
-                            gradientDrawable.setColor(Color.parseColor("#f9a825"));
-                        else if (Icons.isgeneric(rowItem.getName()))
-                            gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
-                        else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
-                    } else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
-                }
+                if (zipViewer.showSize)
+                    holder.txtDesc.setText(new Futils().readableFileSize(rowItem.getSize()));
+                holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/") + 1));
+                if (zipViewer.coloriseIcons) {
+                    if (Icons.isVideo(rowItem.getName()))
+                        gradientDrawable.setColor(Color.parseColor("#f06292"));
+                    else if (Icons.isAudio(rowItem.getName()))
+                        gradientDrawable.setColor(Color.parseColor("#9575cd"));
+                    else if (Icons.isPdf(rowItem.getName()))
+                        gradientDrawable.setColor(Color.parseColor("#da4336"));
+                    else if (Icons.isCode(rowItem.getName()))
+                        gradientDrawable.setColor(Color.parseColor("#00bfa5"));
+                    else if (Icons.isText(rowItem.getName()))
+                        gradientDrawable.setColor(Color.parseColor("#e06055"));
+                    else if (Icons.isArchive(rowItem.getName()))
+                        gradientDrawable.setColor(Color.parseColor("#f9a825"));
+                    else if (Icons.isgeneric(rowItem.getName()))
+                        gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
+                    else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+                } else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
             }
+        }
 
 
         holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
@@ -209,10 +212,10 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
             @Override
             public void onClick(View view) {
                 if(rowItem.getEntry()!=null){
-                final Animation animation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.holder_anim);
+                    final Animation animation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.holder_anim);
 
-                holder.imageView.setAnimation(animation);
-                toggleChecked(p);}
+                    holder.imageView.setAnimation(animation);
+                    toggleChecked(p);}
 
             }
         });
@@ -236,9 +239,9 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
                     holder.rl.setElevation(6f);
                 } else {
                     if (zipViewer.mainActivity.theme1 == 0) {
-                        holder.rl.setBackgroundColor(getContext().getResources().getColor(R.color.safr_pressed));
+                        holder.rl.setBackgroundColor(c.getResources().getColor(R.color.safr_pressed));
                     } else {
-                        holder.rl.setBackgroundColor(getContext().getResources().getColor(R.color.safr_pressed_dark));
+                        holder.rl.setBackgroundColor(c.getResources().getColor(R.color.safr_pressed_dark));
                     }
                 }
             } else {
@@ -253,31 +256,66 @@ public class ZipAdapter extends ArrayAdapter<ZipObj> {
             public void onClick(View p1) {
                 if(rowItem.getEntry()==null)
                     zipViewer.goBack();
-                    else{
-                if(zipViewer.selection)toggleChecked(p);else {
-                    final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
-                    if (rowItem.isDirectory())
-                        stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
+                else{
+                    if(zipViewer.selection)toggleChecked(p);else {
+                        final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
+                        if (rowItem.isDirectory())
+                            stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
 
                         if (rowItem.isDirectory()) {
 
-                    new ZipHelperTask(zipViewer,  stringBuilder.toString()).execute(zipViewer.f);
+                            new ZipHelperTask(zipViewer,  stringBuilder.toString()).execute(zipViewer.f);
 
-                } else {
+                        } else {
                             String x=rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1);
-                    File file = new File(getContext().getCacheDir().getAbsolutePath() + "/" + x);
-                    zipViewer.files.clear();
-                    zipViewer.files.add(0, file);
+                            File file = new File(c.getCacheDir().getAbsolutePath() + "/" + x);
+                            zipViewer.files.clear();
+                            zipViewer.files.add(0, file);
 
-                    try {
-                        ZipFile zipFile = new ZipFile(zipViewer.f);
-                     new ZipExtractTask(zipFile, getContext().getCacheDir().getAbsolutePath(), zipViewer.getActivity(), x,true,rowItem.getEntry()).execute();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                            try {
+                                ZipFile zipFile = new ZipFile(zipViewer.f);
+                                new ZipExtractTask(zipFile, c.getCacheDir().getAbsolutePath(), zipViewer.getActivity(), x,true,rowItem.getEntry()).execute();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }}
                 }}
-            }}
         });
-        return view;
+
     }
+
+    @Override
+    public long getHeaderId(int position) {
+    if(enter.get(position)==null)return -1;
+    else if(enter.get(position).isDirectory())return 'D';
+    else return 'F';
+    }
+    public static class HeaderViewHolder extends RecyclerView.ViewHolder {
+        public TextView ext;
+
+        public HeaderViewHolder(View view) {
+            super(view);
+
+            ext = (TextView) view.findViewById(R.id.headertext);
+        }}
+    @Override
+    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
+        View  view = mInflater.inflate(R.layout.listheader, viewGroup, false);
+        HeaderViewHolder holder = new HeaderViewHolder(view);
+        return holder;
+    }
+
+    @Override
+    public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
+        HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
+        if(enter.get(i)!=null && enter.get(i).isDirectory())holder.ext.setText("Directories");
+        else holder.ext.setText("Files");
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return enter.size();
+    }
+
 }
