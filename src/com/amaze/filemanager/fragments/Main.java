@@ -152,6 +152,7 @@ public class Main extends android.support.v4.app.Fragment {
     GridLayoutManager mLayoutManagerGrid;
     SwipeRefreshLayout mSwipeRefreshLayout;
     boolean addheader=true;
+    StickyRecyclerHeadersDecoration headersDecor;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -518,8 +519,9 @@ public class Main extends android.support.v4.app.Fragment {
 
                         listView.setAdapter(adapter);
 
+                    if(!addheader && aBoolean){listView.removeItemDecoration(headersDecor);addheader=true;}
                     if(addheader && aBoolean){
-                    StickyRecyclerHeadersDecoration headersDecor = new StickyRecyclerHeadersDecoration(adapter);
+                     headersDecor = new StickyRecyclerHeadersDecoration(adapter);
                     listView.addItemDecoration(headersDecor);addheader=false;}
                     results = false;
                     current = f.getPath();
