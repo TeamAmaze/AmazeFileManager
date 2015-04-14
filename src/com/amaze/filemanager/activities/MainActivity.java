@@ -1397,17 +1397,10 @@ public void refreshDrawer(){
     @Override
     public void onConnected(Bundle bundle) {
 
-        Log.d("G+", "Connected");
         if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
             Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-            String personName = currentPerson.getDisplayName();
-            Log.d("G+", personName);
-            Person.Image personPhoto = currentPerson.getImage();
 
             Person.Cover.CoverPhoto personCover = currentPerson.getCover().getCoverPhoto();
-            String personGooglePlusProfile = currentPerson.getUrl();
-            Log.d("G+", personGooglePlusProfile);
-            Log.d("G+", personCover.getUrl());
 
             ImageLoader.getInstance().loadImage(personCover.getUrl(), displayImageOptions, new SimpleImageLoadingListener() {
                 @Override
@@ -1429,7 +1422,12 @@ public void refreshDrawer(){
     public void onConnectionSuspended(int i) {
 
         Log.d("G+", "Connection suspended");
-        mGoogleApiClient.connect();
+    new Thread(new Runnable() {
+        @Override
+        public void run() {
+            mGoogleApiClient.connect();
+        }
+    })  .run();
     }
 
     @Override
@@ -1438,33 +1436,42 @@ public void refreshDrawer(){
         Log.d("G+", "Disconnected");
     }
 
-    public void onConnectionFailed(ConnectionResult result) {
+    public void onConnectionFailed(final ConnectionResult result) {
         Log.d("G+", "Connection failed");
         if (!mIntentInProgress && result.hasResolution()) {
-            try {
-                mIntentInProgress = true;
-                startIntentSenderForResult(result.getResolution().getIntentSender(),
-                        RC_SIGN_IN, null, 0, 0, 0);
-            } catch (IntentSender.SendIntentException e) {
-                // The intent was canceled before it was sent.  Return to the default
-                // state and attempt to connect to get an updated ConnectionResult.
-                mIntentInProgress = false;
-                mGoogleApiClient.connect();
-            }
+         new Thread(new Runnable() {
+             @Override
+             public void run() {
+                 try {
+                     mIntentInProgress = true;
+                     startIntentSenderForResult(result.getResolution().getIntentSender(),
+                             RC_SIGN_IN, null, 0, 0, 0);
+                 } catch (IntentSender.SendIntentException e) {
+                     // The intent was canceled before it was sent.  Return to the default
+                     // state and attempt to connect to get an updated ConnectionResult.
+                     mIntentInProgress = false;
+                     mGoogleApiClient.connect();
+                 }
+             }
+         }).run();
         }
     }
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         Log.d("G+", "onActivityResult");
         if (requestCode == RC_SIGN_IN && !mGoogleApiKey) {
-            mIntentInProgress = false;
-            mGoogleApiKey = true;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mIntentInProgress = false;
+                    mGoogleApiKey = true;
+                    // !mGoogleApiClient.isConnecting
+                    if (mGoogleApiClient.isConnecting()) {
+                        mGoogleApiClient.connect();
+                    } else
+                        mGoogleApiClient.disconnect();
 
-            // !mGoogleApiClient.isConnecting
-            if (mGoogleApiClient.isConnecting()) {
-                mGoogleApiClient.connect();
-            }
-        } else
-            mGoogleApiClient.disconnect();
-    }
+                }
+            }).run();
+        }}
 }
