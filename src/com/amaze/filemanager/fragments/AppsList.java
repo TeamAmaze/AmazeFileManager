@@ -26,6 +26,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -105,14 +106,7 @@ public class AppsList extends ListFragment {
                 theme1 = 0;
         }
         if(theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
-        if (uimode == 1) {
-            float scale = getResources().getDisplayMetrics().density;
-            int dpAsPixels = (int) (5 * scale + 0.5f);
-            vl.setPadding(dpAsPixels, 0, dpAsPixels, 0);
-            vl.setDividerHeight(dpAsPixels);
-        } vl.setDivider(null);
-        vl.setFastScrollEnabled(true);
-        if(savedInstanceState==null)new LoadListTask().execute();
+         if(savedInstanceState==null)new LoadListTask().execute();
         else{
         c=savedInstanceState.getParcelableArrayList("c");
         a=savedInstanceState.getParcelableArrayList("list");

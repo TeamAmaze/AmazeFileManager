@@ -483,6 +483,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     @Override
     public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
         View  view = mInflater.inflate(R.layout.listheader, viewGroup, false);
+        if(main.theme1==1)view.setBackgroundResource(android.R.color.black);
         HeaderViewHolder holder = new HeaderViewHolder(view);
         return holder;
     }

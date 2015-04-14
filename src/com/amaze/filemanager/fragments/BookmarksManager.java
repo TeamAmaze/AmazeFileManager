@@ -32,6 +32,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -75,19 +77,22 @@ public class BookmarksManager extends Fragment {
     public IconUtils icons;
     ArrayList<File> bx;
   public   MainActivity m;
-ListView vl;int theme,theme1;
-View rootView;ListView listview;
+int theme,theme1;
+View rootView;RecyclerView listview;
     Context c;
     SwipeRefreshLayout swipeRefreshLayout;
+    LinearLayoutManager linearLayoutManager;
     @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            rootView = inflater.inflate(R.layout.main_frag, container, false);
+            rootView = inflater.inflate(R.layout.bookmark_frag, container, false);
             MainActivity mainActivity=(MainActivity)getActivity();
             mainActivity.toolbar.setTitle(utils.getString(getActivity(),R.string.bookmanag));
             mainActivity.tabsSpinner.setVisibility(View.GONE);
-            listview=(ListView)rootView.findViewById(R.id.listView);
+            listview=(RecyclerView)rootView.findViewById(R.id.listView);
             rootView.findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
             c=getActivity();
+        linearLayoutManager=new LinearLayoutManager(c);
+        listview.setLayoutManager(linearLayoutManager);
         return rootView;}
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -117,18 +122,15 @@ View rootView;ListView listview;
         listview.setBackgroundColor(Color.BLACK);}
         m=(MainActivity)getActivity();
         m.supportInvalidateOptionsMenu();
-        listview.setDivider(null);
-
         Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
         FloatingActionButton floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
         floatingActionButton.show(true);
-        floatingActionButton.attachToListView(listview);
         floatingActionButton.setColorNormal(Color.parseColor(((MainActivity)getActivity()).skin));
         floatingActionButton.setColorPressed(Color.parseColor(((MainActivity)getActivity()).skin));
 
         floatingActionButton.setAnimation(animation1);
         //getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
-
+        listview.setHasFixedSize(true);
         getActivity().findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -175,13 +177,11 @@ View rootView;ListView listview;
         });
 
         icons = new IconUtils(Sp, getActivity());
-         vl = listview;
-        vl.setFastScrollEnabled(true);
         if (savedInstanceState == null)
             refresh();
         else {bx=utils.toFileArray(savedInstanceState.getStringArrayList("bx"));
             refresh(bx);
-            vl.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
+            linearLayoutManager.scrollToPositionWithOffset(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
         }
 
     }
@@ -189,10 +189,10 @@ View rootView;ListView listview;
     @Override
     public void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
-        if (vl != null) {
+        if (listview != null) {
             b.putStringArrayList("bx", utils.toStringArray(bx));
-            int index = vl.getFirstVisiblePosition();
-            View vi = vl.getChildAt(0);
+            int index = linearLayoutManager.findFirstVisibleItemPosition();
+            View vi = listview.getChildAt(0);
             int top = (vi == null) ? 0 : vi.getTop();
             b.putInt("index", index);
             b.putInt("top", top);

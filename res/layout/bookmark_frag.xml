@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:id="@+id/main_frag"
+    android:layout_height="match_parent"
+    android:background="#e6e6e6">
+
+    <!--
+     As the main content view, the view below consumes the entire
+     space available using match_parent in both dimensions.
+    -->
+
+    <FrameLayout
+        android:elevation="4dp"
+        android:paddingRight="16dp"
+        android:id="@+id/buttonbarframe"
+        android:layout_below="@id/action_bar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <HorizontalScrollView
+            android:scrollbars="none"
+            android:id="@+id/scroll"
+            android:paddingLeft="72dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/buttons"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
+        <LinearLayout
+            android:id="@+id/pathbar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            android:orientation="vertical">
+
+            <HorizontalScrollView
+                android:scrollbars="none"
+                android:id="@+id/scroll1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="72dp"
+                android:paddingTop="5dp">
+
+                <TextView
+                    android:clickable="false"
+                    android:layout_width="wrap_content"
+                    style="@android:style/TextAppearance.Medium"
+                    android:textColor="@android:color/white"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/fullpath" />
+            </HorizontalScrollView>
+            <TextView
+                android:clickable="false"
+                android:layout_width="wrap_content"
+                android:textSize="12sp"
+                android:paddingBottom="10dp"
+                android:paddingTop="5dp"
+                android:paddingLeft="72dp"
+                android:textColor="@android:color/white"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:id="@+id/pathname" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/activity_main_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_below="@id/buttonbarframe"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/listView"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        app:fab_colorNormal="#ffffff"
+        app:fab_colorPressed="#ffffff"
+        app:fab_colorRipple="#77777777"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_action_new" />
+</RelativeLayout>

@@ -33,7 +33,7 @@
         android:top="0dp"
         android:bottom="2dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/holo" />
+            <solid android:color="@color/safr" />
             <corners android:radius="1dp" />
         </shape>
     </item>
