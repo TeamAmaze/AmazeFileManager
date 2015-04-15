@@ -21,7 +21,7 @@
 
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawerheader"
+    android:id="@+id/drawer_header"
     android:layout_width="fill_parent"
     android:layout_height="171dp"
     android:minHeight="171dp"
@@ -29,24 +29,24 @@
     android:background="@drawable/amaze_header"
     android:clickable="false">
 
-    <!--<ImageView
-        android:id="@+id/icon"
-        android:layout_width="40dp"
-        android:layout_height="fill_parent"
-        android:clickable="false"
-        android:src="@drawable/ic_launcher1"
-        android:gravity="center_vertical"
-        android:contentDescription="@string/icon" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/amaze_header_bg"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/firstline"
-        android:layout_width="wrap_content"
-        android:layout_toRightOf="@id/icon"
-        android:layout_height="fill_parent"
-        android:clickable="false"
-        android:paddingLeft="16dp"
-        android:textSize="20sp"
-        style="@android:style/TextAppearance.Medium.Inverse"
-        android:text="Amaze File Manager"
-        android:gravity="center_vertical" />-->
+        <com.amaze.filemanager.utils.RoundedImageView
+            android:id="@+id/profile_pic"
+            android:layout_width="66dp"
+            android:layout_height="66dp"
+            android:layout_marginLeft="16dp"
+            android:scaleType="centerCrop"
+            android:visibility="invisible"
+            android:layout_alignParentLeft="true"/>
+        </RelativeLayout>
+
+    <!--<ImageView
+        android:src="@drawable/amaze_header_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />-->
 </RelativeLayout>

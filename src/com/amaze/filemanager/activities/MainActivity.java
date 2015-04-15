@@ -95,6 +95,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.MediaFile;
 import com.amaze.filemanager.utils.RootHelper;
+import com.amaze.filemanager.utils.RoundedImageView;
 import com.amaze.filemanager.utils.ScrimInsetsFrameLayout;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.google.android.gms.common.ConnectionResult;
@@ -165,7 +166,10 @@ public class MainActivity extends ActionBarActivity implements
     public int booksize=0;
     private GoogleApiClient mGoogleApiClient;
     private View drawerHeaderView;
+    private RelativeLayout drawerHeaderLayout;
+    private RoundedImageView drawerProfilePic;
     private DisplayImageOptions displayImageOptions;
+    private int sdk;
 
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
@@ -299,7 +303,7 @@ public class MainActivity extends ActionBarActivity implements
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
 
         // status bar
-        int sdk = Build.VERSION.SDK_INT;
+        sdk = Build.VERSION.SDK_INT;
 
         if (sdk == 20 || sdk == 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
@@ -372,9 +376,9 @@ public class MainActivity extends ActionBarActivity implements
             }
         });
         drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader,null);
-        //v.setBackgroundColor(Color.parseColor(skin));
+        drawerHeaderLayout = (RelativeLayout) drawerHeaderView.findViewById(R.id.drawer_header);
+        drawerProfilePic = (RoundedImageView) drawerHeaderView.findViewById(R.id.profile_pic);
 
-        //((TextView) v.findViewById(R.id.firstline)).setTextColor(Color.WHITE);
         mDrawerList.addHeaderView(drawerHeaderView);
         list = new ArrayList<String>();
         for (int i = 0; i < val.size(); i++) {
@@ -1400,19 +1404,52 @@ public void refreshDrawer(){
         if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
             Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
 
+            Person.Image personImage = currentPerson.getImage();
+            String imgUrl = personImage.getUrl();
+
+            // getting full size image
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(imgUrl);
+            stringBuilder.delete(imgUrl.length()-6, imgUrl.length());
+            Log.d("G+", stringBuilder.toString());
+
             Person.Cover.CoverPhoto personCover = currentPerson.getCover().getCoverPhoto();
 
+            // setting cover pic
             ImageLoader.getInstance().loadImage(personCover.getUrl(), displayImageOptions, new SimpleImageLoadingListener() {
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                     super.onLoadingComplete(imageUri, view, loadedImage);
-                    drawerHeaderView.setBackground(new BitmapDrawable(loadedImage));
+                    if (sdk >= 16) {
+
+                        drawerHeaderLayout.setBackground(new BitmapDrawable(loadedImage));
+                    } else {
+                        drawerHeaderLayout.setBackgroundDrawable(new BitmapDrawable(loadedImage));
+                    }
                 }
 
                 @Override
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                     super.onLoadingFailed(imageUri, view, failReason);
                     drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
+                }
+            });
+
+            // setting profile pic
+            ImageLoader.getInstance().loadImage(stringBuilder.toString(), displayImageOptions, new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+
+                    super.onLoadingComplete(imageUri, view, loadedImage);
+
+                    drawerProfilePic.setVisibility(View.VISIBLE);
+                    drawerProfilePic.setImageBitmap(loadedImage);
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    super.onLoadingFailed(imageUri, view, failReason);
+                    drawerHeaderLayout.setVisibility(View.INVISIBLE);
                 }
             });
         }
@@ -1458,7 +1495,6 @@ public void refreshDrawer(){
     }
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-        Log.d("G+", "onActivityResult");
         if (requestCode == RC_SIGN_IN && !mGoogleApiKey) {
             new Thread(new Runnable() {
                 @Override
