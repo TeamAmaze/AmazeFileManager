@@ -201,7 +201,8 @@ public class Main extends android.support.v4.app.Fragment {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        if (showButtonOnStart) floatingActionButton.setVisibility(View.VISIBLE);
+        if (showButtonOnStart)
+            floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

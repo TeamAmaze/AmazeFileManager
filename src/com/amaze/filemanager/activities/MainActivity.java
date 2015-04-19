@@ -62,6 +62,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.ActionMenuView;
 import android.widget.AdapterView;
@@ -209,7 +211,11 @@ public class MainActivity extends ActionBarActivity implements
                 .considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
+
+        if (!ImageLoader.getInstance().isInited()) {
+
+            ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
+        }
 
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         utils = new Futils();
@@ -1436,14 +1442,16 @@ public void refreshDrawer(){
             });
 
             // setting profile pic
+            final Animation animationUtils = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_newtab);
             ImageLoader.getInstance().loadImage(stringBuilder.toString(), displayImageOptions, new SimpleImageLoadingListener() {
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 
                     super.onLoadingComplete(imageUri, view, loadedImage);
 
-                    drawerProfilePic.setVisibility(View.VISIBLE);
                     drawerProfilePic.setImageBitmap(loadedImage);
+                    drawerProfilePic.setVisibility(View.VISIBLE);
+                    drawerProfilePic.setAnimation(animationUtils);
                 }
 
                 @Override

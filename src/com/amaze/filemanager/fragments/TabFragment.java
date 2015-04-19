@@ -102,20 +102,18 @@ public class TabFragment extends android.support.v4.app.Fragment {
                     // hiding other fab
                     Main mainLeft = (Main) fragments.get(0);
                     Main mainRight = (Main) fragments.get(1);
-                    if (ma.floatingActionButton != null){
-                    	if (p1==0) {
+                    if (p1==0) {
 
-                    		mainRight.floatingActionButton.setAnimation(hideAnimation);
-                    		mainRight.floatingActionButton.setVisibility(View.INVISIBLE);
-                    	} else {
+                        mainRight.floatingActionButton.setAnimation(hideAnimation);
+                        mainRight.floatingActionButton.setVisibility(View.INVISIBLE);
+                    } else {
 
-                    		mainLeft.floatingActionButton.setAnimation(hideAnimation);
-                    		mainLeft.floatingActionButton.setVisibility(View.INVISIBLE);
-                    	}
-
-                    	ma.floatingActionButton.setAnimation(showAnimation);
-                    	ma.floatingActionButton.setVisibility(View.VISIBLE);
+                        mainLeft.floatingActionButton.setAnimation(hideAnimation);
+                        mainLeft.floatingActionButton.setVisibility(View.INVISIBLE);
                     }
+
+                    ma.floatingActionButton.setAnimation(showAnimation);
+                    ma.floatingActionButton.setVisibility(View.VISIBLE);
                 }
 
             }
@@ -159,7 +157,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                ((Main) fragments.get(1)).showButtonOnStart=true;
 
         } else {
             fragments.clear();
@@ -180,6 +177,9 @@ public class TabFragment extends android.support.v4.app.Fragment {
             mSectionsPagerAdapter.notifyDataSetChanged();
 
         }
+        Main main = ((Main) fragments.get(currenttab));
+        main.showButtonOnStart=true;
+
         return rootView;
     }
 
