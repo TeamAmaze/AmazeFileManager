@@ -253,7 +253,68 @@ public class Preffrag extends PreferenceFragment {
                 return false;
             }
         });
+        final Preference fabpreference = (Preference) findPreference("fab_skin");
+        fabpreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
 
+                final int current = Integer.parseInt(sharedPref.getString("fab_skin", ""+0));
+                final String[] colors = new String[]{
+                        "#F44336",
+                        "#e91e63",
+                        "#9c27b0",
+                        "#673ab7",
+                        "#3f51b5",
+                        "#2196F3",
+                        "#03A9F4",
+                        "#00BCD4",
+                        "#009688",
+                        "#4CAF50",
+                        "#8bc34a",
+                        "#FFC107",
+                        "#FF9800",
+                        "#FF5722",
+                        "#795548",
+                        "#212121",
+                        "#607d8b",
+                        "#004d40"
+                };
+
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.skin)
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        })
+                        .setPositiveButton(R.string.randomDialog, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                //sharedPref.edit().putString("skin", "" + i).commit();
+                                dialogInterface.cancel();
+                                restartPC(getActivity());
+
+                                // Random
+                                Random random = new Random();
+                                int pos = random.nextInt(colors.length - 1);
+                                sharedPref.edit().putString("fab_skin_color", colors[pos]).commit();
+                            }
+                        })
+                        .setSingleChoiceItems(R.array.skin, current, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                sharedPref.edit().putString("fab_skin", "" + i).commit();
+                                dialogInterface.cancel();
+                                restartPC(getActivity());
+                                sharedPref.edit().putString("fab_skin_color", colors[i]).apply();
+
+                            }
+                        }).show();
+                return false;
+            }
+        });
         final CheckBoxPreference checkBoxPreference = (CheckBoxPreference) findPreference("random");
         boolean check = sharedPref.getBoolean("random_checkbox", false);
         checkBoxPreference.setChecked(check);

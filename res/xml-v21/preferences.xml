@@ -22,6 +22,10 @@
         <Preference
             android:key="theme"
             android:title="@string/theme" />
+
+        <Preference
+            android:key="fab_skin"
+            android:title="fab skin" />
         <Preference
             android:key="skin"
             android:title="@string/skin" />

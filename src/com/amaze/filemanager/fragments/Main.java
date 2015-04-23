@@ -141,7 +141,7 @@ public class Main extends android.support.v4.app.Fragment {
     public IconHolder ic;
     public MainActivity mainActivity;
     public boolean showButtonOnStart = false;
-    public String skin;
+    public String skin,fabskin;
     public int skinselection;
     public int theme;
     public int theme1;
@@ -171,6 +171,7 @@ public class Main extends android.support.v4.app.Fragment {
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         savepaths=Sp.getBoolean("savepaths",true);
         skin = Sp.getString("skin_color", "#03A9F4");
+        fabskin = Sp.getString("fab_skin_color", "#84ffff");
         sh = new Shortcuts(getActivity());
         islist = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();
@@ -1256,6 +1257,7 @@ public class Main extends android.support.v4.app.Fragment {
     public void onResume() {
         super.onResume();
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        floatingActionButton.setColorNormal(Color.parseColor(fabskin));
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
     }
 

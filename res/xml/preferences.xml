@@ -25,6 +25,10 @@
         <Preference
             android:key="skin"
             android:title="@string/skin" />
+
+        <Preference
+            android:key="fab_skin"
+            android:title="fab skin" />
         <CheckBoxPreference
             android:key="coloriseIcons"
             android:checked="true"
