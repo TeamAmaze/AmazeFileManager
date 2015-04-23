@@ -37,10 +37,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -55,6 +58,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Gravity;
@@ -87,6 +91,7 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.services.asynctasks.LoadSearchList;
+import com.amaze.filemanager.utils.DividerItemDecoration;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.IconHolder;
@@ -132,7 +137,7 @@ public class Main extends android.support.v4.app.Fragment {
     public CountDownTimer timer;
     private View rootView;
     public android.support.v7.widget.RecyclerView  listView;
-    public Boolean gobackitem,aBoolean,showThumbs,coloriseIcons;
+    public Boolean gobackitem,islist,showThumbs,coloriseIcons;
     public IconHolder ic;
     public MainActivity mainActivity;
     public boolean showButtonOnStart = false;
@@ -155,6 +160,7 @@ public class Main extends android.support.v4.app.Fragment {
     SwipeRefreshLayout mSwipeRefreshLayout;
     boolean addheader=true;
     StickyRecyclerHeadersDecoration headersDecor;
+    DividerItemDecoration dividerItemDecoration;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,7 +172,7 @@ public class Main extends android.support.v4.app.Fragment {
         savepaths=Sp.getBoolean("savepaths",true);
         skin = Sp.getString("skin_color", "#03A9F4");
         sh = new Shortcuts(getActivity());
-        aBoolean = Sp.getBoolean("view", true);
+        islist = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         year=(""+calendar.get(Calendar.YEAR)).substring(2,4);
@@ -233,7 +239,7 @@ public class Main extends android.support.v4.app.Fragment {
         buttons = (LinearLayout) rootView.findViewById(R.id.buttons);
         pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
         showThumbs=Sp.getBoolean("showThumbs", true);
-        ic=new IconHolder(getActivity(),showThumbs,!aBoolean);
+        ic=new IconHolder(getActivity(),showThumbs,!islist);
         res = getResources();
         goback=res.getString(R.string.goback);
         itemsstring=res.getString(R.string.items);
@@ -243,7 +249,7 @@ public class Main extends android.support.v4.app.Fragment {
             rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_dark));
         } else {
             //listView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
-            if (uimode==0 && aBoolean) {
+            if (uimode==0 && islist) {
 
                 rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_light));
             }
@@ -251,11 +257,12 @@ public class Main extends android.support.v4.app.Fragment {
         mLayoutManager=new LinearLayoutManager(getActivity());
         int columns=Integer.parseInt(Sp.getString("columns","3"));
         mLayoutManagerGrid=new GridLayoutManager(getActivity(),columns);
-        if (aBoolean) {
+        if (islist) {
             listView.setLayoutManager(mLayoutManager);
         } else {
             listView.setLayoutManager(mLayoutManagerGrid);
-        }return rootView;
+        }
+        return rootView;
     }
 
     @Override
@@ -274,7 +281,7 @@ public class Main extends android.support.v4.app.Fragment {
         rootMode = Sp.getBoolean("rootmode", false);
         showHidden=Sp.getBoolean("showHidden",false);
         coloriseIcons=Sp.getBoolean("coloriseIcons",false);
-        if(aBoolean){
+        if(islist){
             folder = res.getDrawable(R.drawable.ic_grid_folder_new);}
         else{folder = res.getDrawable(R.drawable.ic_grid_folder1);}
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
@@ -292,7 +299,7 @@ public class Main extends android.support.v4.app.Fragment {
         scroll = (HorizontalScrollView) rootView.findViewById(R.id.scroll);
         scroll1 = (HorizontalScrollView) rootView.findViewById(R.id.scroll1);
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
-        if (uimode == 1 && aBoolean) {
+        if (uimode == 1 && islist) {
             float scale = getResources().getDisplayMetrics().density;
             int dpAsPixels = (int) (5 * scale + 0.5f);
 
@@ -361,7 +368,7 @@ public class Main extends android.support.v4.app.Fragment {
         int index;
         View vi;
         if(listView!=null){
-            if (aBoolean) {
+            if (islist) {
 
                 index = (mLayoutManager).findFirstVisibleItemPosition();
                 vi = listView.getChildAt(0);
@@ -513,13 +520,17 @@ public class Main extends android.support.v4.app.Fragment {
                 adapter = new Recycleradapter(ma,
                         bitmap, ma.getActivity());
                 mSwipeRefreshLayout.setRefreshing(false);
-                try {
-
-                        listView.setAdapter(adapter);
-
-                    if(!addheader && aBoolean){listView.removeItemDecoration(headersDecor);addheader=true;}
-                    if(addheader && aBoolean){
-                     headersDecor = new StickyRecyclerHeadersDecoration(adapter);
+                try {    listView.setAdapter(adapter);
+                    if(!addheader && islist){
+                        if(uimode==0) listView.removeItemDecoration(dividerItemDecoration);
+                        listView.removeItemDecoration(headersDecor);
+                        addheader=true;}
+                    if(addheader && islist){
+                        if(uimode==0) {
+                            dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST);
+                            listView.addItemDecoration(dividerItemDecoration);
+                        }
+                    headersDecor = new StickyRecyclerHeadersDecoration(adapter);
                     listView.addItemDecoration(headersDecor);addheader=false;}
                     results = false;
                     current = f.getPath();
@@ -527,7 +538,7 @@ public class Main extends android.support.v4.app.Fragment {
                     if (back) {
                         if (scrolls.containsKey(current)) {
                             Bundle b = scrolls.get(current);
-                            if(aBoolean)
+                            if(islist)
                             mLayoutManager.scrollToPositionWithOffset(b.getInt("index"),b.getInt("top"));
                         else    mLayoutManagerGrid.scrollToPositionWithOffset(b.getInt("index"),b.getInt("top"));
                         }
@@ -1190,7 +1201,7 @@ public class Main extends android.support.v4.app.Fragment {
     public void computeScroll() {
         View vi = listView.getChildAt(0);
         int top = (vi == null) ? 0 : vi.getTop();
-        int index;if(aBoolean)
+        int index;if(islist)
         index= mLayoutManager.findFirstVisibleItemPosition();
         else index=mLayoutManagerGrid.findFirstVisibleItemPosition();
         Bundle b = new Bundle();
@@ -1292,7 +1303,7 @@ public class Main extends android.support.v4.app.Fragment {
                         //e.printStackTrace();
                     }
                     try {
-                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,mFile.get(i)[3],false,ele[4]));
+                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!islist), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,mFile.get(i)[3],false,ele[4]));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }}
@@ -1512,6 +1523,7 @@ public class Main extends android.support.v4.app.Fragment {
 
     }
 }
+
 class SpacesItemDecoration extends RecyclerView.ItemDecoration {
     private int space;
 

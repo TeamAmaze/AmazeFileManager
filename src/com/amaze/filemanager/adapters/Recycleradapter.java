@@ -157,7 +157,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v;if(main.aBoolean) v= mInflater.inflate(R.layout.rowlayout, parent, false);
+        View v;if(main.islist) v= mInflater.inflate(R.layout.rowlayout, parent, false);
         else  v= mInflater.inflate(R.layout.griditem, parent, false);
         ViewHolder vh = new ViewHolder(v);
         if(main.theme1==1)
@@ -169,7 +169,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     public void onBindViewHolder(RecyclerView.ViewHolder vholder,final int p) {
         final Recycleradapter.ViewHolder holder=((Recycleradapter.ViewHolder)vholder);
         final Layoutelements rowItem = items.get(p);
-        if (main.aBoolean) {
+        if (main.islist) {
             holder.rl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

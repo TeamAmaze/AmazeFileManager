@@ -811,7 +811,7 @@ public class MainActivity extends ActionBarActivity implements
                 break;
             case R.id.view:
                 // Save the changes, but don't show a disruptive Toast:
-                Sp.edit().putBoolean("view", !ma.aBoolean).commit();
+                Sp.edit().putBoolean("view", !ma.islist).commit();
                 ma.restartPC(ma.getActivity());
                 break;
             case R.id.search:
