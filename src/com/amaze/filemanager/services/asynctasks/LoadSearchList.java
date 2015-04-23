@@ -86,7 +86,7 @@ public class LoadSearchList extends AsyncTask<ArrayList<String[]>, Void, ArrayLi
                 } else {
 
                     try {
-                        a.add(ma.utils.newElement(Icons.loadMimeIcon(ma.getActivity(), f.getPath(), !ma.aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,mFile.get(i)[3],false,""));
+                        a.add(ma.utils.newElement(Icons.loadMimeIcon(ma.getActivity(), f.getPath(), !ma.islist), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,mFile.get(i)[3],false,""));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }}

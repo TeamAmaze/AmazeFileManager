@@ -85,8 +85,6 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         notifyDataSetChanged();
         if (zipViewer.selection == false || zipViewer.mActionMode == null) {
             zipViewer.selection = true;
-            /*zipViewer.mActionMode = zipViewer.getActivity().startActionMode(
-                   zipViewer.mActionModeCallback);*/
             zipViewer.mActionMode = zipViewer.mainActivity.toolbar.startActionMode(zipViewer.mActionModeCallback);
         }
         zipViewer.mActionMode.invalidate();
@@ -206,6 +204,7 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             public boolean onLongClick(View view) {
                 if(rowItem.getEntry()!=null)  toggleChecked(p);/*
                 }*/
+                System.out.println("onLongClick");
                 return false;
             }
         });holder.imageView.setOnClickListener(new View.OnClickListener() {
@@ -222,12 +221,16 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         Boolean checked = myChecked.get(position);
         if (checked != null) {
 
-            if (zipViewer.mainActivity.theme1 == 0) {
+            if (zipViewer.uimode == 0) {
+                if (zipViewer.mainActivity.theme1 == 0) {
 
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
             } else {
 
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
+            }
+            } else if (zipViewer.uimode == 1) {
+                holder.rl.setBackgroundResource(R.drawable.bg_card);
             }
 
             if (checked) {
@@ -254,6 +257,7 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         holder.rl.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View p1) {
+                System.out.println("onClick");
                 if(rowItem.getEntry()==null)
                     zipViewer.goBack();
                 else{

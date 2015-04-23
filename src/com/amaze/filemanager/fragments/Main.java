@@ -91,6 +91,7 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.services.asynctasks.LoadSearchList;
+import com.amaze.filemanager.utils.DividerItemDecoration;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.IconHolder;
@@ -136,7 +137,7 @@ public class Main extends android.support.v4.app.Fragment {
     public CountDownTimer timer;
     private View rootView;
     public android.support.v7.widget.RecyclerView  listView;
-    public Boolean gobackitem,aBoolean,showThumbs,coloriseIcons;
+    public Boolean gobackitem,islist,showThumbs,coloriseIcons;
     public IconHolder ic;
     public MainActivity mainActivity;
     public boolean showButtonOnStart = false;
@@ -171,7 +172,7 @@ public class Main extends android.support.v4.app.Fragment {
         savepaths=Sp.getBoolean("savepaths",true);
         skin = Sp.getString("skin_color", "#03A9F4");
         sh = new Shortcuts(getActivity());
-        aBoolean = Sp.getBoolean("view", true);
+        islist = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         year=(""+calendar.get(Calendar.YEAR)).substring(2,4);
@@ -238,7 +239,7 @@ public class Main extends android.support.v4.app.Fragment {
         buttons = (LinearLayout) rootView.findViewById(R.id.buttons);
         pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
         showThumbs=Sp.getBoolean("showThumbs", true);
-        ic=new IconHolder(getActivity(),showThumbs,!aBoolean);
+        ic=new IconHolder(getActivity(),showThumbs,!islist);
         res = getResources();
         goback=res.getString(R.string.goback);
         itemsstring=res.getString(R.string.items);
@@ -248,7 +249,7 @@ public class Main extends android.support.v4.app.Fragment {
             rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_dark));
         } else {
             //listView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
-            if (uimode==0 && aBoolean) {
+            if (uimode==0 && islist) {
 
                 rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_light));
             }
@@ -256,7 +257,7 @@ public class Main extends android.support.v4.app.Fragment {
         mLayoutManager=new LinearLayoutManager(getActivity());
         int columns=Integer.parseInt(Sp.getString("columns","3"));
         mLayoutManagerGrid=new GridLayoutManager(getActivity(),columns);
-        if (aBoolean) {
+        if (islist) {
             listView.setLayoutManager(mLayoutManager);
         } else {
             listView.setLayoutManager(mLayoutManagerGrid);
@@ -280,7 +281,7 @@ public class Main extends android.support.v4.app.Fragment {
         rootMode = Sp.getBoolean("rootmode", false);
         showHidden=Sp.getBoolean("showHidden",false);
         coloriseIcons=Sp.getBoolean("coloriseIcons",false);
-        if(aBoolean){
+        if(islist){
             folder = res.getDrawable(R.drawable.ic_grid_folder_new);}
         else{folder = res.getDrawable(R.drawable.ic_grid_folder1);}
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
@@ -298,7 +299,7 @@ public class Main extends android.support.v4.app.Fragment {
         scroll = (HorizontalScrollView) rootView.findViewById(R.id.scroll);
         scroll1 = (HorizontalScrollView) rootView.findViewById(R.id.scroll1);
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
-        if (uimode == 1 && aBoolean) {
+        if (uimode == 1 && islist) {
             float scale = getResources().getDisplayMetrics().density;
             int dpAsPixels = (int) (5 * scale + 0.5f);
 
@@ -367,7 +368,7 @@ public class Main extends android.support.v4.app.Fragment {
         int index;
         View vi;
         if(listView!=null){
-            if (aBoolean) {
+            if (islist) {
 
                 index = (mLayoutManager).findFirstVisibleItemPosition();
                 vi = listView.getChildAt(0);
@@ -519,15 +520,17 @@ public class Main extends android.support.v4.app.Fragment {
                 adapter = new Recycleradapter(ma,
                         bitmap, ma.getActivity());
                 mSwipeRefreshLayout.setRefreshing(false);
-                try {
-
-                        listView.setAdapter(adapter);
-
-                    if(!addheader && aBoolean){listView.removeItemDecoration(dividerItemDecoration);listView.removeItemDecoration(headersDecor);addheader=true;}
-                    if(addheader && aBoolean){
-                        dividerItemDecoration=new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL_LIST);
-                        listView.addItemDecoration(dividerItemDecoration);
-                     headersDecor = new StickyRecyclerHeadersDecoration(adapter);
+                try {    listView.setAdapter(adapter);
+                    if(!addheader && islist){
+                        if(uimode==0) listView.removeItemDecoration(dividerItemDecoration);
+                        listView.removeItemDecoration(headersDecor);
+                        addheader=true;}
+                    if(addheader && islist){
+                        if(uimode==0) {
+                            dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST);
+                            listView.addItemDecoration(dividerItemDecoration);
+                        }
+                    headersDecor = new StickyRecyclerHeadersDecoration(adapter);
                     listView.addItemDecoration(headersDecor);addheader=false;}
                     results = false;
                     current = f.getPath();
@@ -535,7 +538,7 @@ public class Main extends android.support.v4.app.Fragment {
                     if (back) {
                         if (scrolls.containsKey(current)) {
                             Bundle b = scrolls.get(current);
-                            if(aBoolean)
+                            if(islist)
                             mLayoutManager.scrollToPositionWithOffset(b.getInt("index"),b.getInt("top"));
                         else    mLayoutManagerGrid.scrollToPositionWithOffset(b.getInt("index"),b.getInt("top"));
                         }
@@ -1198,7 +1201,7 @@ public class Main extends android.support.v4.app.Fragment {
     public void computeScroll() {
         View vi = listView.getChildAt(0);
         int top = (vi == null) ? 0 : vi.getTop();
-        int index;if(aBoolean)
+        int index;if(islist)
         index= mLayoutManager.findFirstVisibleItemPosition();
         else index=mLayoutManagerGrid.findFirstVisibleItemPosition();
         Bundle b = new Bundle();
@@ -1300,7 +1303,7 @@ public class Main extends android.support.v4.app.Fragment {
                         //e.printStackTrace();
                     }
                     try {
-                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!aBoolean), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,mFile.get(i)[3],false,ele[4]));
+                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!islist), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,mFile.get(i)[3],false,ele[4]));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }}
@@ -1520,86 +1523,7 @@ public class Main extends android.support.v4.app.Fragment {
 
     }
 }
- class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
-    private static final int[] ATTRS = new int[]{
-            android.R.attr.listDivider
-    };
-
-    public static final int HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
-
-    public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
-
-    private Drawable mDivider;
-
-    private int mOrientation;
-    int pix=0,leftpix=0;
-    public DividerItemDecoration(Context context, int orientation) {
-        final TypedArray a = context.obtainStyledAttributes(ATTRS);
-        mDivider = a.getDrawable(0);
-        a.recycle();
-        setOrientation(orientation);
-        pix=(int)(16*(context.getResources().getDisplayMetrics().densityDpi/160f));
-        leftpix=(int)(72*(context.getResources().getDisplayMetrics().densityDpi/160f));
-    }
-
-    public void setOrientation(int orientation) {
-        if (orientation != HORIZONTAL_LIST && orientation != VERTICAL_LIST) {
-            throw new IllegalArgumentException("invalid orientation");
-        }
-        mOrientation = orientation;
-    }
-
-    @Override
-    public void onDraw(Canvas c, RecyclerView parent) {
-        if (mOrientation == VERTICAL_LIST) {
-            drawVertical(c, parent);
-        } else {
-            drawHorizontal(c, parent);
-        }
-    }
-
-    public void drawVertical(Canvas c, RecyclerView parent) {
-        final int left = parent.getPaddingLeft()+leftpix;
-        final int right = parent.getWidth() - parent.getPaddingRight()-pix;
-
-        final int childCount = parent.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            final View child = parent.getChildAt(i);
-            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
-                    .getLayoutParams();
-            final int top = child.getBottom() + params.bottomMargin;
-            final int bottom = top + mDivider.getIntrinsicHeight();
-            mDivider.setBounds(left, top, right, bottom);
-            mDivider.draw(c);
-        }
-    }
-
-    public void drawHorizontal(Canvas c, RecyclerView parent) {
-        final int top = parent.getPaddingTop();
-        final int bottom = parent.getHeight() - parent.getPaddingBottom();
-
-        final int childCount = parent.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            final View child = parent.getChildAt(i);
-            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
-                    .getLayoutParams();
-            final int left = child.getRight() + params.rightMargin;
-            final int right = left + mDivider.getIntrinsicHeight();
-            mDivider.setBounds(left, top, right, bottom);
-            mDivider.draw(c);
-        }
-    }
-
-    @Override
-    public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
-        if (mOrientation == VERTICAL_LIST) {
-            outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
-        } else {
-            outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
-        }
-    }
-}
 class SpacesItemDecoration extends RecyclerView.ItemDecoration {
     private int space;
 

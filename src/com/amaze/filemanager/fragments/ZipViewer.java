@@ -54,6 +54,7 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.ZipExtractTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
+import com.amaze.filemanager.utils.DividerItemDecoration;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.ZipObj;
 import com.melnykov.fab.FloatingActionButton;
@@ -87,6 +88,8 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     StickyRecyclerHeadersDecoration headersDecor;
     LinearLayoutManager mLayoutManager;
     GridLayoutManager mLayoutManagerGrid;
+    DividerItemDecoration dividerItemDecoration;
+    public int uimode;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
@@ -117,10 +120,20 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     public void onActivityCreated(Bundle savedInstanceState) {
 
             super.onActivityCreated(savedInstanceState);
+            Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
             s = getArguments().getString("path");
             f = new File(s);
+            uimode = Integer.parseInt(Sp.getString("uimode", "0"));
+            if (uimode == 1) {
+                float scale = getResources().getDisplayMetrics().density;
+                int dpAsPixels = (int) (5 * scale + 0.5f);
+
+                listView.setPadding(dpAsPixels, 0, dpAsPixels, 0);
+                listView.addItemDecoration(new SpacesItemDecoration(dpAsPixels));
+
+            }
+
             listView.setVisibility(View.VISIBLE);
-            Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
             mLayoutManager=new LinearLayoutManager(getActivity());
             int columns=Integer.parseInt(Sp.getString("columns","3"));
             mLayoutManagerGrid=new GridLayoutManager(getActivity(),columns);
@@ -131,7 +144,10 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             if (mainActivity.theme1 == 1)
                 listView.setBackgroundColor(Color.parseColor("#000000"));
             else
-                listView.setBackgroundColor(Color.parseColor("#ffffff"));
+                if (uimode==0) {
+
+                    listView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+                }
             gobackitem = Sp.getBoolean("goBack_checkbox", true);
             coloriseIcons = Sp.getBoolean("coloriseIcons", false);
             Calendar calendar = Calendar.getInstance();
@@ -314,10 +330,21 @@ public boolean cangoBack(){
     public void createviews(ArrayList<ZipObj> zipEntries,String dir){
         zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), zipEntries, zipViewer);
         zipViewer.listView.setAdapter(zipViewer.zipAdapter);
-        if(!addheader ){listView.removeItemDecoration(headersDecor);addheader=true;}
-        if(addheader ){
+        if(!addheader ){
+           if(uimode==0) listView.removeItemDecoration(dividerItemDecoration);
+            listView.removeItemDecoration(headersDecor);
+            addheader=true;
+        }
+        if(addheader ) {
+            if (uimode == 0)
+            {
+            dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST);
+            listView.addItemDecoration(dividerItemDecoration);
+            }
             headersDecor = new StickyRecyclerHeadersDecoration(zipAdapter);
-            listView.addItemDecoration(headersDecor);addheader=false;}
+            listView.addItemDecoration(headersDecor);
+            addheader=false;
+        }
 
         zipViewer.current = dir;
         zipViewer.bbar();
