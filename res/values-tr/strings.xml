@@ -24,7 +24,6 @@
     <string name="back_summary">Listenin en üstünde geri navigasyonunu sağlar</string>
     <string name="back_title">Geri navigasyonu</string>
     <string name="backup">Yedek</string>
-    <string name="basque_translation_summary">Aitor Beriain</string>
     <string name="basque_translation_title">Baskça</string>
     <string name="black">Siyah</string>
     <string name="blue">Mavi</string>
@@ -40,7 +39,6 @@
     <string name="changegallerypath">Galeri yolunu değiştir</string>
     <string name="changelog">Değişiklik</string>
 
-    <string name="chinese_translation_summary">amtlib-dot-dll, Felix2yu</string>
     <string name="chinese_translation_title">Çin</string>
     <string name="chooseUI">Ürün seç</string>
     <string name="circularicons">Dairesel simgeleri kullan</string>
@@ -100,13 +98,11 @@
     <string name="foldercreated">Klasör düzenlendi</string>
     <string name="foldersOnTop">Üst klasörler</string>
     <string name="free">Boş :</string>
-    <string name="french_translation_summary">Nicolas PIMENTEL, Primokorn, Renaud</string>
     <string name="french_translation_title">Fransızca</string>
     <string name="fullChangelog">Tam değişiklik</string>
     <string name="gallery">Galeri</string>
     <string name="general">Genel</string>
     <string name="generating">Yaratılıyor</string>
-    <string name="german_translation_summary">Patrick Mertens</string>
     <string name="german_translation_title">Almanca</string>
     <string name="goback">Geri git</string>
     <string name="green">Yeşil</string>
@@ -130,7 +126,6 @@
     <string name="indigo">Lacivert</string>
     <string name="install">Yükle</string>
     <string name="invalid_dir">Geçersiz dizin</string>
-    <string name="italian_translation_summary">Francesco Credidio</string>
     <string name="italian_translation_title">İtalyanca</string>
     <string name="items">Öğeler</string>
     <string name="itemsselected">Öğeler seçildi</string>
@@ -177,9 +172,7 @@
     <string name="pink">Pembe</string>
     <string name="pitext">Bu bir paket yükleyicidir. Ne eylemi gerçekleştirmek istersiniz?</string>
     <string name="play">Play store</string>
-    <string name="polish_translation_summary">M. Kucharskov, P. Kowalczyk</string>
     <string name="polish_translation_title">Polonyaca</string>
-    <string name="portuguese_translation_summary">Sérgio Marques</string>
     <string name="portuguese_translation_title">Portekizce</string>
     <string name="pressagain">Çıkmak için tekrar basın</string>
     <string name="process_viewer">İşlem görüntüleyici</string>
@@ -202,7 +195,6 @@
     <string name="rootfailure">Root erişimi verilmemiş</string>
     <string name="rootmode">Root gezgini</string>
     <string name="rootmodesummary">Sadece Rootlu cihazlar içindir. Rootlu olduğundan emin olun</string>
-    <string name="russian_translation_summary">Pablo Luchiano, Kim BeeJay</string>
     <string name="russian_translation_title">Rusça</string>
     <string name="save">Kaydet</string>
     <string name="savepaths">Yolu hatırla</string>
@@ -215,7 +207,6 @@
     <string name="select">Öğe seç</string>
     <string name="select_intent">Seç</string>
     <string name="selectall">Tümünü seç</string>
-    <string name="serbian_translation_summary">Mladen Pejaković</string>
     <string name="serbian_translation_title">Sırpça</string>
     <string name="set">Ayarla</string>
     <string name="setRandom">Değişiklikler uygulamayı yeniden başlatttıktan sonra gerçekleşecektir</string>
@@ -238,7 +229,6 @@
     <string name="sortSize">Boyut</string>
     <string name="sortSizeDesc">Boyut (Azalan)</string>
     <string name="sortby">Sırala</string>
-    <string name="spanish_translation_summary">Jose Miguel Sarasola</string>
     <string name="spanish_translation_title">İspanyolca</string>
     <string name="stopping">Durduruluyor</string>
     <string name="storage">Depolama</string>
@@ -258,7 +248,6 @@
     <string name="typeDesc">Tip (Azalan)</string>
     <string name="ui">Arayüz</string>
     <string name="uimode">Arayüz modu</string>
-    <string name="ukrainian_translation_summary">Pablo Luchiano</string>
     <string name="ukrainian_translation_title">Ukraynaca</string>
     <string name="unin_system_apk">"Bu sistem uygulamasını silmeniz durumunda sistemin istikrarına yol açabilir
 Devam etmek istiyor musunuz?"</string>
