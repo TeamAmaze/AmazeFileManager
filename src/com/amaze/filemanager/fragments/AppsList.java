@@ -179,7 +179,7 @@ public class AppsList extends ListFragment {
                                                 .title(utils.getString(getActivity(), R.string.warning))
                                                 .negativeText(utils.getString(getActivity(), R.string.no))
                                                 .positiveText(utils.getString(getActivity(), R.string.yes))
-                                                .callback(new MaterialDialog.Callback() {
+                                                .callback(new MaterialDialog.ButtonCallback() {
                                                     @Override
                                                     public void onNegative(MaterialDialog materialDialog) {
 

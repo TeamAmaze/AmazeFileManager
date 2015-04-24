@@ -882,12 +882,12 @@ public class Main extends android.support.v4.app.Fragment {
                     final EditText edit = (EditText) dialog
                             .findViewById(R.id.newname);
                     edit.setText(f.getName());
-                    a.customView(dialog);
+                    a.customView(dialog, true);
                     if(theme1==1)
                         a.theme(Theme.DARK);
                     a.title(utils.getString(getActivity(), R.string.rename));
 
-                    a.callback(new MaterialDialog.Callback() {
+                    a.callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog materialDialog) {
 

@@ -140,14 +140,14 @@ View rootView;RecyclerView listview;
                 View v = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
                 final EditText edir = (EditText) v.findViewById(R.id.newname);
                 edir.setHint(utils.getString(getActivity(), R.string.enterpath));
-                ba1.customView(v);
+                ba1.customView(v, true);
                 if(theme1==1)ba1.theme(Theme.DARK);
                 ba1.negativeText(R.string.cancel);
                 ba1.positiveText(R.string.create);
                 String skin=Sp.getString("skin_color", "#03A9F4");
                 ba1.positiveColor(Color.parseColor(skin));
                 ba1.negativeColor(Color.parseColor(skin));
-                ba1.callback(new MaterialDialog.Callback() {
+                ba1.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
                         try {

@@ -854,13 +854,13 @@ public class MainActivity extends ActionBarActivity implements
                 View v = getLayoutInflater().inflate(R.layout.dialog, null);
                 final EditText edir = (EditText) v.findViewById(R.id.newname);
                 edir.setHint(utils.getString(this, R.string.entername));
-                ba1.customView(v);
+                ba1.customView(v, true);
                 if(theme1==1)ba1.theme(Theme.DARK);
                 ba1.positiveText(R.string.create);
                 ba1.negativeText(R.string.cancel);
                 ba1.positiveColor(Color.parseColor(skin));
                 ba1.negativeColor(Color.parseColor(skin));
-                ba1.callback(new MaterialDialog.Callback() {
+                ba1.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
                         String a = edir.getText().toString();
@@ -902,13 +902,13 @@ public class MainActivity extends ActionBarActivity implements
                 View v1 = getLayoutInflater().inflate(R.layout.dialog, null);
                 final EditText edir1 = (EditText) v1.findViewById(R.id.newname);
                 edir1.setHint(utils.getString(this, R.string.entername));
-                ba2.customView(v1);
+                ba2.customView(v1, true);
                 if(theme1==1)ba2.theme(Theme.DARK);
                 ba2.negativeText(R.string.cancel);
                 ba2.positiveText(R.string.create);
                 ba2.positiveColor(Color.parseColor(skin));
                 ba2.negativeColor(Color.parseColor(skin));
-                ba2.callback(new MaterialDialog.Callback() {
+                ba2.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
                         String a = edir1.getText().toString();boolean b=false;
@@ -949,13 +949,13 @@ public class MainActivity extends ActionBarActivity implements
         View v =getLayoutInflater().inflate(R.layout.dialog, null);
         final EditText e = (EditText) v.findViewById(R.id.newname);
         e.setHint(utils.getString(this, R.string.enterfile));
-        a.customView(v);
+        a.customView(v, true);
         if(theme1==1)a.theme(Theme.DARK);
         a.negativeText(R.string.cancel);
         a.positiveText(R.string.search);
         a.positiveColor(Color.parseColor(skin));
         a.negativeColor(Color.parseColor(skin));
-        a.callback(new MaterialDialog.Callback() {
+        a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 String a = e.getText().toString();
@@ -1226,7 +1226,7 @@ public class MainActivity extends ActionBarActivity implements
                 final MaterialDialog.Builder x = new MaterialDialog.Builder(MainActivity.this);
                 LayoutInflater layoutInflater = (LayoutInflater) MainActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
                 View view = layoutInflater.inflate(R.layout.copy_dialog, null);
-                x.customView(view);
+                x.customView(view, true);
                 // textView
                 TextView textView = (TextView) view.findViewById(R.id.textView);
                 textView.setText(utils.getString(con,R.string.fileexist) + "\n" + new File(a.get(counter)).getName());
@@ -1240,7 +1240,7 @@ public class MainActivity extends ActionBarActivity implements
                 x.positiveColor(Color.parseColor(skin));
                 x.negativeColor(Color.parseColor(skin));
                 x.neutralColor(Color.parseColor(skin));
-                x.callback(new MaterialDialog.Callback() {
+                x.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
 

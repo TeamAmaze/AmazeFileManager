@@ -262,7 +262,7 @@ public class Futils {
         c.negativeText(getString(b.getActivity(), R.string.no));
         c.positiveText(getString(b.getActivity(), R.string.yes));
 
-        c.callback(new MaterialDialog.Callback() {
+        c.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_LONG).show();
@@ -351,7 +351,7 @@ public class Futils {
         a.negativeText(getString(c.getActivity(), R.string.copy) + " md5");
         a.neutralText(R.string.cancel);
         a.positiveColor(Color.parseColor(skin)).negativeColor(Color.parseColor(skin)).neutralColor(Color.parseColor(skin));
-        a.callback(new MaterialDialog.Callback() {
+        a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
 
@@ -383,7 +383,7 @@ public class Futils {
         a.negativeText(getString(c, R.string.copy) + " md5");
         a.neutralText(R.string.cancel);
         a.positiveColor(Color.parseColor(skin)).negativeColor(Color.parseColor(skin)).neutralColor(Color.parseColor(skin));
-        a.callback(new MaterialDialog.Callback() {
+        a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
 
@@ -526,7 +526,7 @@ public class Futils {
     }
 public void showPackageDialog(final File f,final MainActivity m){
     MaterialDialog.Builder mat=new MaterialDialog.Builder(m);
-    mat.title(R.string.packageinstaller).content(R.string.pitext).positiveText(R.string.install).negativeText(R.string.view).neutralText(R.string.cancel).callback(new MaterialDialog.Callback() {
+    mat.title(R.string.packageinstaller).content(R.string.pitext).positiveText(R.string.install).negativeText(R.string.view).neutralText(R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
         @Override
         public void onPositive(MaterialDialog materialDialog) {
             openunknown(f,m,false);
@@ -546,7 +546,7 @@ public void showPackageDialog(final File f,final MainActivity m){
 }
     public void showArchiveDialog(final File f,final MainActivity m){
         MaterialDialog.Builder mat=new MaterialDialog.Builder(m);
-        mat.title(R.string.archive).content(R.string.archtext).positiveText(R.string.extract).negativeText(R.string.view).neutralText(R.string.cancel).callback(new MaterialDialog.Callback() {
+        mat.title(R.string.archive).content(R.string.archtext).positiveText(R.string.extract).negativeText(R.string.view).neutralText(R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 Intent intent = new Intent(m, ExtractService.class);
@@ -600,13 +600,13 @@ public void showPackageDialog(final File f,final MainActivity m){
         View v = m.getLayoutInflater().inflate(R.layout.dialog, null);
         final EditText e = (EditText) v.findViewById(R.id.newname);
         e.setText("Newzip.zip");
-        a.customView(v);
+        a.customView(v, true);
         if(m.theme1==1)
             a.theme(Theme.DARK);
         a.title(getString(m, R.string.enterzipname));
         e.setHint(getString(m, R.string.enterzipname));
         a.positiveText(R.string.create);
-        a.callback(new MaterialDialog.Callback() {
+        a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 Intent intent2 = new Intent(m, ZipTask.class);
@@ -632,14 +632,15 @@ public void showPackageDialog(final File f,final MainActivity m){
         int current = Integer.parseInt(m.Sp.getString("sortby", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         if(m.theme1==1)a.theme(Theme.DARK);
-        a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallback() {
+        a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
             @Override
-            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
 
                 m.Sp.edit().putString("sortby", "" + which).commit();
                 m.getSortModes();
                 m.loadlist(new File(m.current), false);
                 dialog.dismiss();
+                return true;
             }
         });
         a.title(R.string.sortby);
@@ -658,7 +659,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         View view = layoutInflater.inflate(R.layout.list_dialog, null);
         ListView listView = (ListView) view.findViewById(R.id.listView);
         listView.setDivider(null);
-        a.customView(view);
+        a.customView(view, true);
         a.autoDismiss(true);
         MaterialDialog x=a.build();
         HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.hidden,x,true);
@@ -678,7 +679,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         LayoutInflater layoutInflater = (LayoutInflater) m.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.list_dialog, null);
         ListView listView = (ListView) view.findViewById(R.id.listView);
-        a.customView(view);
+        a.customView(view, true);
         a.autoDismiss(true);
         listView.setDivider(null);
         MaterialDialog x=a.build();
@@ -721,7 +722,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             exeother.setChecked(exe[2]);
             a.positiveText(R.string.set);
             a.positiveColor(Color.parseColor(main.skin));
-            a.callback(new MaterialDialog.Callback() {
+            a.callback(new MaterialDialog.ButtonCallback() {
                 @Override
                 public void onPositive(MaterialDialog materialDialog) {
                     int a=0,b=0,c=0;
@@ -776,7 +777,7 @@ public void showPackageDialog(final File f,final MainActivity m){
                 }
             });
             a.title(file.getName());
-            a.customView(v);
+            a.customView(v, true);
             if(main.theme1==1)a.theme(Theme.DARK);
             a.build().show();}else{Toast.makeText(main.getActivity(),main.getResources().getString(R.string.enablerootmde),Toast.LENGTH_LONG).show();}
     }

@@ -146,7 +146,7 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                     .content(R.string.unsavedchangesdesc)
                     .positiveText(R.string.yes)
                     .negativeText(R.string.no)
-                    .callback(new MaterialDialog.Callback() {
+                    .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
                             writeTextFile(mFile.getPath(), mInput.getText().toString());
