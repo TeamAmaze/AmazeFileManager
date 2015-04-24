@@ -24,7 +24,6 @@
     <string name="back_summary">تفعيل زر رجوع مخصص بأعلى القائمة</string>
     <string name="back_title">زر رجوع</string>
     <string name="backup">نسخ إحتياطي</string>
-    <string name="basque_translation_summary">Aitor Beriain</string>
     <string name="basque_translation_title">Basque</string>
     <string name="black">أسود</string>
     <string name="blue">أزرق</string>
@@ -47,7 +46,6 @@
     <string name="changelog_version_2">&lt;font color=#524ef8>&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color=#5299f2>&lt;br>Dec 04, 2014&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_version_3">&lt;font color=#524ef8>&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color=#5299f2>&lt;br>Dec 13, 2014&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_version_4">&lt;font color=#524ef8>&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color=#5299f2>&lt;br>Jan 17, 2015&lt;/i>&lt;/font>&lt;br></string>
-    <string name="chinese_translation_summary">amtlib-dot-dll, Felix2yu</string>
     <string name="chinese_translation_title">Chinese</string>
     <string name="chooseUI">اختر عنصر واجهة المستخدم</string>
     <string name="circularicons">إستخدام أيقونات دائرية</string>
@@ -105,12 +103,10 @@
     <string name="foldercreated">تم إنشاء المجلد</string>
     <string name="foldersOnTop">المجلدات أولًا</string>
     <string name="free">فارغ :</string>
-    <string name="russian_translation_summary">Pablo Luchiano, Kim BeeJay</string>
     <string name="russian_translation_title">Russian</string>
     <string name="fullChangelog">سجل التغيرات الكامل</string>
     <string name="gallery">المعرض</string>
     <string name="general">عام</string>
-    <string name="german_translation_summary">Patrick Mertens</string>
     <string name="german_translation_title">German</string>
     <string name="goback">عد للخلف</string>
     <string name="green">أخضر</string>
@@ -134,7 +130,6 @@
     <string name="indigo">نيلي</string>
     <string name="install">تثبيت</string>
     <string name="invalid_dir">مسار غير صالح</string>
-    <string name="italian_translation_summary">JetSub</string>
     <string name="italian_translation_title">العربية</string>
     <string name="items">العناصر</string>
     <string name="itemsselected">تم تحديد العناصر</string>
@@ -220,7 +215,6 @@
     <string name="searchresults">نتائج البحث</string>
     <string name="select">تحديد عنصر</string>
     <string name="selectall">تحديد الكل</string>
-    <string name="serbian_translation_summary">Mladen Pejaković</string>
     <string name="serbian_translation_title">Serbian</string>
     <string name="set">تعيين</string>
     <string name="setRandom">سيتم إجراء التغيرات بعد إعادة تشغيل التطبيق</string>
@@ -243,7 +237,6 @@
     <string name="sortSize">الحجم</string>
     <string name="sortSizeDesc">الحجم ( تنازلي )</string>
     <string name="sortby">ترتيب حسب</string>
-    <string name="spanish_translation_summary">Jose Miguel Sarasola</string>
     <string name="spanish_translation_title">Spanish</string>
     <string name="stopping">جاري الإيقاف</string>
     <string name="storage">التخزين</string>
@@ -258,13 +251,11 @@
     <string name="thumbSummary">عرض مصغرات للتطبيقات والصور</string>
     <string name="totalitems">العناصر الكلية:</string>
     <string name="translators">المترجم</string>
-    <string name="turkish_translation_summary">Hakan Güven</string>
     <string name="turkish_translation_title">Turkish</string>
     <string name="type">النوع</string>
     <string name="typeDesc">النوع ( تنازلي )</string>
     <string name="ui">واجهة المستخدم</string>
     <string name="uimode">نمط واجهة المستخدم</string>
-    <string name="ukrainian_translation_summary">Pablo Luchiano</string>
     <string name="ukrainian_translation_title">Ukrainian</string>
     <string name="unin_system_apk">" هذا تطبيق نظام ، حذفه قد يؤدي إلى عدم إستقرار النظام . هل تريد المتابعة ؟"</string>
     <string name="uninstall">إلغاء التثبيت</string>
