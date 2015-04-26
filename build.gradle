@@ -15,6 +15,7 @@ repositories {
 }
 
 dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'com.android.support:appcompat-v7:21.0.+'
     compile 'com.afollestad:material-dialogs:0.7.2.7'
@@ -25,8 +26,7 @@ dependencies {
     // Google Play Services
     compile 'com.google.android.gms:play-services-plus:6.5.87'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
-    compile project(":library1")
-    compile fileTree(include: '*.jar', dir: 'libs')
+    compile project(":libs:StickyHeadersRecyclerView")
 }
 
 android {
