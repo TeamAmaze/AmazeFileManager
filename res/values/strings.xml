@@ -303,5 +303,8 @@
 
     <string name="sd_card_grant_next">sd_card_grant_next</string>
     <string name="sd_card_grant_first">sd_card_grant_first</string>
+    <string name="fab_skin">FAB skin</string>
+    <string name="gplus_pic_title">G+ API</string>
+    <string name="gplus_pic_summary">Show G+ cover pic in drawer</string>
 </resources>
 

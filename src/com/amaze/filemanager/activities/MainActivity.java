@@ -172,6 +172,7 @@ public class MainActivity extends ActionBarActivity implements
     private RoundedImageView drawerProfilePic;
     private DisplayImageOptions displayImageOptions;
     private int sdk;
+    private TextView mGoogleName, mGoogleId;
 
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
@@ -195,12 +196,28 @@ public class MainActivity extends ActionBarActivity implements
             e.printStackTrace();
         }
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Plus.API)
-                .addScope(Plus.SCOPE_PLUS_LOGIN)
-                .build();
+        Sp = PreferenceManager.getDefaultSharedPreferences(this);
+
+        drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader, null);
+        drawerHeaderLayout = (RelativeLayout) drawerHeaderView.findViewById(R.id.drawer_header);
+        drawerProfilePic = (RoundedImageView) drawerHeaderView.findViewById(R.id.profile_pic);
+        mGoogleName = (TextView) drawerHeaderView.findViewById(R.id.account_header_drawer_name);
+        mGoogleId = (TextView) drawerHeaderView.findViewById(R.id.account_header_drawer_email);
+
+        // initialize g+ api client as per preferences
+        if (Sp.getBoolean("plus_pic", false)) {
+
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(Plus.API)
+                    .addScope(Plus.SCOPE_PLUS_LOGIN)
+                    .build();
+        } else {
+            drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
+        }
+
+
 
         displayImageOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.amaze_header)
@@ -217,7 +234,6 @@ public class MainActivity extends ActionBarActivity implements
             ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
         }
 
-        Sp = PreferenceManager.getDefaultSharedPreferences(this);
         utils = new Futils();
         s = new Shortcuts(this);
         path = getIntent().getStringExtra("path");
@@ -381,9 +397,6 @@ public class MainActivity extends ActionBarActivity implements
                 adapter.toggleChecked(false);
             }
         });
-        drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader,null);
-        drawerHeaderLayout = (RelativeLayout) drawerHeaderView.findViewById(R.id.drawer_header);
-        drawerProfilePic = (RoundedImageView) drawerHeaderView.findViewById(R.id.profile_pic);
 
         mDrawerList.addHeaderView(drawerHeaderView);
         list = new ArrayList<String>();
@@ -1307,7 +1320,7 @@ public class MainActivity extends ActionBarActivity implements
 
     public void openZip(String path) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_in_top,R.anim.slide_in_bottom);
+        fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
         Fragment zipFragment = new ZipViewer();
         Bundle bundle = new Bundle();
         bundle.putString("path", path);
@@ -1392,14 +1405,18 @@ public void refreshDrawer(){
     protected void onStart() {
         super.onStart();
 
-        mGoogleApiClient.connect();
+        // check if user enabled g+ api from preferences
+        if (mGoogleApiClient!=null) {
+
+            mGoogleApiClient.connect();
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        if (mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient!=null && mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
     }
@@ -1410,17 +1427,22 @@ public void refreshDrawer(){
         if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
             Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
 
+            String accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
+
             Person.Image personImage = currentPerson.getImage();
             String imgUrl = personImage.getUrl();
 
             // getting full size image
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(imgUrl);
-            stringBuilder.delete(imgUrl.length()-6, imgUrl.length());
+            stringBuilder.delete(imgUrl.length() - 6, imgUrl.length());
             Log.d("G+", stringBuilder.toString());
 
             Person.Cover.CoverPhoto personCover = currentPerson.getCover().getCoverPhoto();
-            ((TextView)drawerHeaderLayout.findViewById(R.id.account_header_drawer_name)).setText(currentPerson.getDisplayName());
+
+            mGoogleName.setText(currentPerson.getDisplayName());
+            mGoogleId.setText(accountName);
+
             // setting cover pic
             ImageLoader.getInstance().loadImage(personCover.getUrl(), displayImageOptions, new SimpleImageLoadingListener() {
                 @Override
@@ -1467,12 +1489,15 @@ public void refreshDrawer(){
     public void onConnectionSuspended(int i) {
 
         Log.d("G+", "Connection suspended");
-    new Thread(new Runnable() {
-        @Override
-        public void run() {
-            mGoogleApiClient.connect();
-        }
-    })  .run();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (mGoogleApiClient!=null) {
+
+                    mGoogleApiClient.connect();
+                }
+            }
+        }).run();
     }
 
     @Override
@@ -1495,7 +1520,10 @@ public void refreshDrawer(){
                      // The intent was canceled before it was sent.  Return to the default
                      // state and attempt to connect to get an updated ConnectionResult.
                      mIntentInProgress = false;
-                     mGoogleApiClient.connect();
+                     if (mGoogleApiClient != null) {
+
+                         mGoogleApiClient.connect();
+                     }
                  }
              }
          }).run();
@@ -1503,7 +1531,7 @@ public void refreshDrawer(){
     }
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-        if (requestCode == RC_SIGN_IN && !mGoogleApiKey) {
+        if (requestCode == RC_SIGN_IN && !mGoogleApiKey && mGoogleApiClient!=null) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -1517,5 +1545,6 @@ public void refreshDrawer(){
 
                 }
             }).run();
-        }}
+        }
+    }
 }

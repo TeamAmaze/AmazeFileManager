@@ -22,10 +22,9 @@
         <Preference
             android:key="theme"
             android:title="@string/theme" />
-
         <Preference
             android:key="fab_skin"
-            android:title="fab skin" />
+            android:title="@string/fab_skin" />
         <Preference
             android:key="skin"
             android:title="@string/skin" />
@@ -47,6 +46,11 @@
             android:defaultValue="true"
             android:summary="@string/circularimages"
             android:title="@string/circularicons"/>
+        <CheckBoxPreference
+            android:key="plus_pic"
+            android:title="@string/gplus_pic_title"
+            android:summary="@string/gplus_pic_summary"
+            android:defaultValue="false" />
         <Preference
             android:key="uimode"
             android:summary="@string/chooseUI"
