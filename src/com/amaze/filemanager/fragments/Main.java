@@ -99,6 +99,7 @@ import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.Shortcuts;
+import com.amaze.filemanager.utils.SpacesItemDecoration;
 import com.melnykov.fab.FloatingActionButton;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
@@ -1537,24 +1538,5 @@ public class Main extends android.support.v4.app.Fragment {
             }
         });
 
-    }
-}
-
-class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-    private int space;
-
-    public SpacesItemDecoration(int space) {
-        this.space = space;
-    }
-
-    @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        outRect.left = space;
-        outRect.right = space;
-        outRect.bottom = space;
-
-        // Add top margin only for the first item to avoid double space between items
-        if(parent.getChildPosition(view) == 0)
-            outRect.top = space;
     }
 }

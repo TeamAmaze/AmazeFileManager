@@ -37,6 +37,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
@@ -440,6 +441,11 @@ public class Preffrag extends PreferenceFragment {
                     }
                 });
 
+                // icon credits
+                TextView textView = (TextView) view.findViewById(R.id.icon_credits);
+                textView.setMovementMethod(LinkMovementMethod.getInstance());
+                textView.setLinksClickable(true);
+                textView.setText(Html.fromHtml(getActivity().getString(R.string.icon_credits)));
 
                 return false;
             }

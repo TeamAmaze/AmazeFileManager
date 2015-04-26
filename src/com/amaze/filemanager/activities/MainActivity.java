@@ -196,6 +196,8 @@ public class MainActivity extends ActionBarActivity implements
             e.printStackTrace();
         }
 
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader, null);

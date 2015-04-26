@@ -306,5 +306,6 @@
     <string name="fab_skin">FAB skin</string>
     <string name="gplus_pic_title">G+ API</string>
     <string name="gplus_pic_summary">Show G+ cover pic in drawer</string>
+    <string name="icon_credits">Graphics by &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
 </resources>
 

@@ -56,6 +56,7 @@ import com.amaze.filemanager.services.asynctasks.ZipExtractTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.utils.DividerItemDecoration;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.SpacesItemDecoration;
 import com.amaze.filemanager.utils.ZipObj;
 import com.melnykov.fab.FloatingActionButton;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
