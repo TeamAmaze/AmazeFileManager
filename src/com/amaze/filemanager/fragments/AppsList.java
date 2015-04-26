@@ -99,6 +99,7 @@ public class AppsList extends ListFragment {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int theme=Integer.parseInt(Sp.getString("theme","0"));
         theme1 = theme;
+        vl.setDivider(null);
         if (theme == 2) {
             if(hour<=6 || hour>=18) {
                 theme1 = 1;

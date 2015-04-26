@@ -66,6 +66,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <data android:mimeType="application/zip" />
                 <data android:mimeType="application/rar"/><!--<category android:name="android.intent.category.OPENABLE" />-->
+              <data android:mimeType="application/vnd.android.package-archive"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

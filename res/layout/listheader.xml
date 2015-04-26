@@ -5,7 +5,8 @@
     android:minHeight="48dp"
     android:id="@+id/headertext"
     android:background="@android:color/white"
-    android:textStyle="bold"
+    android:fontFamily="sans-serif-medium"
+    android:textSize="14sp"
     android:gravity="center_vertical"
     android:layout_gravity="center_vertical"
     android:paddingLeft="72dp"/>

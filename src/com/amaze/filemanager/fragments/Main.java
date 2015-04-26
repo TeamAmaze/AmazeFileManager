@@ -454,7 +454,7 @@ public class Main extends android.support.v4.app.Fragment {
 
             } else {
 
-                goBack();
+                goBackItemClick();
 
             }
         }
@@ -1227,7 +1227,21 @@ public class Main extends android.support.v4.app.Fragment {
             loadlist(f, true);
         }
     }
-
+    public void goBackItemClick() {
+        File f = new File(current);
+        if (!results) {
+            if(selection){
+                adapter.toggleChecked(false);}
+            else{
+                if(current.equals("/"))
+                    mainActivity.exit();
+                else if (utils.canGoBack(f) ) {
+                    loadlist(f.getParentFile(), true);
+                }else mainActivity.exit();}
+        } else {
+            loadlist(f, true);
+        }
+    }
     private BroadcastReceiver receiver2 = new BroadcastReceiver() {
 
         @Override

@@ -659,7 +659,7 @@ public class MainActivity extends ActionBarActivity implements
         toolbar.setTitle(null);
         tabsSpinner.setVisibility(View.VISIBLE);
         if(openzip && zippath!=null)
-        {if(zippath.endsWith(".zip"))openZip(zippath);else{openRar(zippath);}zippath=null;}
+        {if(zippath.endsWith(".zip") || zippath.endsWith(".apk"))openZip(zippath);else{openRar(zippath);}zippath=null;}
 
     }
     public void selectItem(final int i) {
@@ -1420,7 +1420,7 @@ public void refreshDrawer(){
             Log.d("G+", stringBuilder.toString());
 
             Person.Cover.CoverPhoto personCover = currentPerson.getCover().getCoverPhoto();
-
+            ((TextView)drawerHeaderLayout.findViewById(R.id.account_header_drawer_name)).setText(currentPerson.getDisplayName());
             // setting cover pic
             ImageLoader.getInstance().loadImage(personCover.getUrl(), displayImageOptions, new SimpleImageLoadingListener() {
                 @Override

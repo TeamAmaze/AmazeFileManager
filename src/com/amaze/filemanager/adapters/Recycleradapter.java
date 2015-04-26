@@ -485,6 +485,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         View  view = mInflater.inflate(R.layout.listheader, viewGroup, false);
         if(main.theme1==1)view.setBackgroundResource(android.R.color.black);
         HeaderViewHolder holder = new HeaderViewHolder(view);
+        if (main.theme1==0)holder.ext.setTextColor(Color.parseColor("#8A000000"));
+        else holder.ext.setTextColor(Color.parseColor("#B3ffffff"));
         return holder;
     }
 
