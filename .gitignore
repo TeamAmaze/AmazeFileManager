@@ -52,3 +52,4 @@ gradlew
 gradlew.bat
 .project
 AmazeFileManager.iml
+libs/libs.iml

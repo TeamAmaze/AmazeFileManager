@@ -319,7 +319,7 @@ public class MainActivity extends ActionBarActivity implements
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#03A9F4");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
 
-        skinStatusBar = Color.parseColor(getStatusColor());
+        skinStatusBar = Color.parseColor(getStatusColor(skin));
 
         mDrawerLinear = (ScrimInsetsFrameLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -1132,7 +1132,7 @@ public class MainActivity extends ActionBarActivity implements
         Sp.edit().putBoolean("remember", true).apply();
         unregisterReceiver(mNotificationReceiver);
     }
-    public String getStatusColor() {
+    public String getStatusColor(String reqSkin) {
 
         String[] colors = new String[]{
                 "#F44336","#D32F2F",
@@ -1154,7 +1154,7 @@ public class MainActivity extends ActionBarActivity implements
                 "#607d8b","#455A64",
                 "#004d40","#002620"
         };
-        return colors[ Arrays.asList(colors).indexOf(skin)+1];
+        return colors[ Arrays.asList(colors).indexOf(reqSkin)+1];
     }
 
     class CheckForFiles extends AsyncTask<ArrayList<String>, String, ArrayList<String>> {

@@ -261,6 +261,7 @@ public class Preffrag extends PreferenceFragment {
                 return false;
             }
         });
+
         final Preference fabpreference = (Preference) findPreference("fab_skin");
         fabpreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override

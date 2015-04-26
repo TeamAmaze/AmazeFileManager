@@ -142,7 +142,7 @@ public class Main extends android.support.v4.app.Fragment {
     public IconHolder ic;
     public MainActivity mainActivity;
     public boolean showButtonOnStart = false;
-    public String skin,fabskin;
+    public String skin,fabskin, fabSkinPressed;
     public int skinselection;
     public int theme;
     public int theme1;
@@ -165,19 +165,22 @@ public class Main extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mainActivity=(MainActivity)getActivity();
         no=getArguments().getInt("no",1);
         home=getArguments().getString("home");
         current=getArguments().getString("lastpath");
         tabHandler=new TabHandler(getActivity(),null,null,1);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        savepaths=Sp.getBoolean("savepaths",true);
+        savepaths=Sp.getBoolean("savepaths", true);
         skin = Sp.getString("skin_color", "#03A9F4");
         fabskin = Sp.getString("fab_skin_color", "#84ffff");
+        fabSkinPressed = mainActivity.getStatusColor(fabskin);
         sh = new Shortcuts(getActivity());
         islist = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        year=(""+calendar.get(Calendar.YEAR)).substring(2,4);
+        year=(""+calendar.get(Calendar.YEAR)).substring(2, 4);
         theme=Integer.parseInt(Sp.getString("theme","0"));
         theme1 = theme;
         if (theme == 2) {
@@ -186,7 +189,6 @@ public class Main extends android.support.v4.app.Fragment {
             } else
                 theme1 = 0;
         }
-        mainActivity=(MainActivity)getActivity();
         showPermissions=Sp.getBoolean("showPermissions",false);
         showSize=Sp.getBoolean("showFileSize",false);
         gobackitem=Sp.getBoolean("goBack_checkbox", false);
@@ -1273,6 +1275,7 @@ public class Main extends android.support.v4.app.Fragment {
         super.onResume();
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
         floatingActionButton.setColorNormal(Color.parseColor(fabskin));
+        floatingActionButton.setColorPressed(Color.parseColor(fabSkinPressed));
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
     }
 

@@ -107,8 +107,6 @@
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
-        app:fab_colorNormal="#ffffff"
-        app:fab_colorPressed="#ffffff"
         app:fab_colorRipple="#77777777"
         app:fab_type="mini"
         android:layout_height="wrap_content"
@@ -118,5 +116,5 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:visibility="invisible"
-        android:src="@drawable/ic_action_new_light" />
+        android:src="@drawable/ic_action_new" />
 </RelativeLayout>
