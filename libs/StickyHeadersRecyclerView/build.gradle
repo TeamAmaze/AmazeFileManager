@@ -1,0 +1,27 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion '21.1.2'
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 21
+        versionCode 1
+        versionName '0.4.6'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+}
+
+dependencies {
+    compile 'com.android.support:recyclerview-v7:21.0.0'
+}
+
+apply from: 'gradle-maven-push.gradle'
+
+afterEvaluate {
+    androidJavadocs.classpath += project.android.libraryVariants.toList().first().javaCompile.classpath
+}
