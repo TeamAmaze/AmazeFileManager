@@ -20,7 +20,6 @@
     -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:id="@+id/main_frag"
     android:layout_height="match_parent"
@@ -31,67 +30,6 @@
      space available using match_parent in both dimensions.
     -->
 
-    <FrameLayout
-        android:elevation="4dp"
-        android:paddingRight="16dp"
-        android:id="@+id/buttonbarframe"
-        android:layout_below="@id/action_bar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
-
-        <HorizontalScrollView
-            android:scrollbars="none"
-            android:id="@+id/scroll"
-            android:paddingLeft="72dp"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:id="@+id/buttons"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-            </LinearLayout>
-        </HorizontalScrollView>
-        <LinearLayout
-            android:id="@+id/pathbar"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="2dp"
-            android:orientation="vertical">
-
-                <HorizontalScrollView
-                    android:scrollbars="none"
-                    android:id="@+id/scroll1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="72dp"
-                    android:paddingTop="5dp">
-
-                    <TextView
-                        android:clickable="false"
-                        android:layout_width="wrap_content"
-                        style="@android:style/TextAppearance.Medium"
-                        android:textColor="@android:color/white"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/fullpath" />
-                </HorizontalScrollView>
-                <TextView
-                    android:clickable="false"
-                    android:layout_width="wrap_content"
-                    android:textSize="12sp"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingLeft="72dp"
-                    android:textColor="@android:color/white"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:id="@+id/pathname" />
-
-            </LinearLayout>
-
-    </FrameLayout>
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/activity_main_swipe_refresh_layout"
         android:layout_width="match_parent"
@@ -104,17 +42,5 @@
         android:layout_height="match_parent"
         android:divider="@null"/>
 </android.support.v4.widget.SwipeRefreshLayout>
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        app:fab_colorRipple="#77777777"
-        app:fab_type="mini"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="42dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:visibility="invisible"
-        android:src="@drawable/ic_action_new" />
+
 </RelativeLayout>

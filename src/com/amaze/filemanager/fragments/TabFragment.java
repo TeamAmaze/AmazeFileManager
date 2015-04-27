@@ -40,7 +40,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
     public CustomViewPager mViewPager;
     SharedPreferences Sp;
     String path;
-    int currenttab;
+    public int currenttab;
     MainActivity mainActivity;
     TabSpinnerAdapter tabSpinnerAdapter;
     public ArrayList<String> tabs=new ArrayList<String>();
@@ -77,9 +77,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
             public void onPageSelected(int p1) {
 
-                hideAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_hide);
-                showAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
-
                 currenttab=p1;
                 mainActivity.supportInvalidateOptionsMenu();
                 try {
@@ -93,27 +90,12 @@ public class TabFragment extends android.support.v4.app.Fragment {
                     if (ma.current != null) {
                         try {
                             mainActivity.updateDrawer(ma.current);
+                            mainActivity.updatePath(ma.current);
 
                         } catch (Exception e) {
                             //       e.printStackTrace();5
                         }
                     }
-
-                    // hiding other fab
-                    Main mainLeft = (Main) fragments.get(0);
-                    Main mainRight = (Main) fragments.get(1);
-                    if (p1==0) {
-
-                        mainRight.floatingActionButton.setAnimation(hideAnimation);
-                        mainRight.floatingActionButton.setVisibility(View.INVISIBLE);
-                    } else {
-
-                        mainLeft.floatingActionButton.setAnimation(hideAnimation);
-                        mainLeft.floatingActionButton.setVisibility(View.INVISIBLE);
-                    }
-
-                    ma.floatingActionButton.setAnimation(showAnimation);
-                    ma.floatingActionButton.setVisibility(View.VISIBLE);
                 }
 
             }

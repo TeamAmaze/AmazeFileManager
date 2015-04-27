@@ -355,7 +355,7 @@ public class Futils {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
 
-                c.copyToClipboard(c.getActivity(), f.getPath());
+                c.mainActivity.copyToClipboard(c.getActivity(), f.getPath());
                 Toast.makeText(c.getActivity(), c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
             }
 

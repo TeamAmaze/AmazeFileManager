@@ -19,6 +19,8 @@
 
 package com.amaze.filemanager.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.ProgressDialog;
@@ -36,11 +38,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -53,6 +57,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.transition.Explode;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -67,9 +72,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.ActionMenuView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -83,6 +91,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
+import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.BookmarksManager;
 import com.amaze.filemanager.fragments.Main;
@@ -105,6 +114,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.melnykov.fab.FloatingActionButton;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -146,7 +156,7 @@ public class MainActivity extends ActionBarActivity implements
     IconUtils util;
     ScrimInsetsFrameLayout mDrawerLinear;
     Shortcuts s;
-    public String skin,path="";
+    public String skin,path="", launchPath;
     public int theme;
     public ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
     Context con = this;
@@ -173,6 +183,14 @@ public class MainActivity extends ActionBarActivity implements
     private DisplayImageOptions displayImageOptions;
     private int sdk;
     private TextView mGoogleName, mGoogleId;
+    private FloatingActionButton floatingActionButton;
+    private boolean showButtonOnStart = false;
+    private String fabskin, fabSkinPressed;
+    private LinearLayout pathbar, buttons;
+    private HorizontalScrollView scroll, scroll1;
+    private CountDownTimer timer;
+    private IconUtils icons;
+    private TabHandler tabHandler;
 
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
@@ -198,7 +216,13 @@ public class MainActivity extends ActionBarActivity implements
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
+        tabHandler=new TabHandler(this,null,null,1);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
+
+        launchPath = tabHandler.findTab(Sp.getInt("currenttab", 1) + 1).getPath();
+
+        fabskin = Sp.getString("fab_skin_color", "#84ffff");
+        fabSkinPressed = getStatusColor(fabskin);
 
         drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderLayout = (RelativeLayout) drawerHeaderView.findViewById(R.id.drawer_header);
@@ -239,12 +263,14 @@ public class MainActivity extends ActionBarActivity implements
         utils = new Futils();
         s = new Shortcuts(this);
         path = getIntent().getStringExtra("path");
-        openprocesses=getIntent().getBooleanExtra("openprocesses",false);
+        openprocesses=getIntent().getBooleanExtra("openprocesses", false);
         restart = getIntent().getBooleanExtra("restart", false);
         val = getStorageDirectories();
         rootmode = Sp.getBoolean("rootmode", false);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         util = new IconUtils(Sp, this);
+        icons = new IconUtils(Sp, this);
+
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int th = Integer.parseInt(Sp.getString("theme", "0"));
@@ -275,6 +301,37 @@ public class MainActivity extends ActionBarActivity implements
             setTheme(R.style.appCompatDark);
         }
         setContentView(R.layout.main_toolbar);
+
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+        pathbar = (LinearLayout) findViewById(R.id.pathbar);
+        buttons = (LinearLayout) findViewById(R.id.buttons);
+        scroll = (HorizontalScrollView) findViewById(R.id.scroll);
+        scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
+
+        if (showButtonOnStart)
+            floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(MainActivity.this);
+                builder.items(new String[]{
+                        getResources().getString(R.string.folder),
+                        getResources().getString(R.string.file)
+
+                });
+                builder.itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence s) {
+                        add(i);
+                    }
+                });
+                builder.title(getResources().getString(R.string.new_string));
+                if (theme1 == 1)
+                    builder.theme(Theme.DARK);
+                builder.build().show();
+            }
+        });
+
         IntentFilter newFilter = new IntentFilter();
         newFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
         newFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
@@ -291,6 +348,16 @@ public class MainActivity extends ActionBarActivity implements
         tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
         //title = (TextView) findViewById(R.id.title);
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
+
+        timer=new CountDownTimer(5000,1000) {
+            @Override
+            public void onTick(long l) {
+            }
+            @Override
+            public void onFinish() {
+                crossfadeInverse();
+            }
+        };
 
         try {
             intent = getIntent();
@@ -317,6 +384,9 @@ public class MainActivity extends ActionBarActivity implements
         }
 
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#03A9F4");
+
+        findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
+
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
 
         skinStatusBar = Color.parseColor(getStatusColor(skin));
@@ -423,7 +493,9 @@ public class MainActivity extends ActionBarActivity implements
                 //Commit the transaction
                 transaction.commit();
                 supportInvalidateOptionsMenu();
-            }else goToMain(path);
+            } else {
+                goToMain(path);
+            }
         } else {
             select = savedInstanceState.getInt("selectitem", 0);
             adapter.toggleChecked(select);
@@ -1020,9 +1092,15 @@ public class MainActivity extends ActionBarActivity implements
     @Override
     public void onResume() {
         super.onResume();
+
+        Main ma= (Main) ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+        initiatebbar(ma.current, ma);
+        updatePath(launchPath);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+        floatingActionButton.setColorNormal(Color.parseColor(fabskin));
+        floatingActionButton.setColorPressed(Color.parseColor(fabSkinPressed));
         LocalBroadcastManager.getInstance(this).registerReceiver(SEARCHRECIEVER, new IntentFilter("searchresults"));
         LocalBroadcastManager.getInstance(this).registerReceiver(LOADSEARCHRECIEVER, new IntentFilter("loadsearchresults"));
-
     }
 
     @Override
@@ -1547,6 +1625,239 @@ public void refreshDrawer(){
 
                 }
             }).run();
+        }
+    }
+
+
+    public void bbar(String text, final Main main) {
+        try {
+            buttons.removeAllViews();
+            buttons.setMinimumHeight(pathbar.getHeight());
+            Drawable arrow=getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
+            Bundle b = utils.getPaths(text, this);
+            ArrayList<String> names = b.getStringArrayList("names");
+            ArrayList<String> rnames = new ArrayList<String>();
+
+            for (int i = names.size() - 1; i >= 0; i--) {
+                rnames.add(names.get(i));
+            }
+
+            ArrayList<String> paths = b.getStringArrayList("paths");
+            final ArrayList<String> rpaths = new ArrayList<String>();
+
+            for (int i = paths.size() - 1; i >= 0; i--) {
+                rpaths.add(paths.get(i));
+            }
+            for (int i = 0; i < names.size(); i++) {
+                final int k=i;
+                ImageView v=new ImageView(this);
+                v.setImageDrawable(arrow);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.gravity= Gravity.CENTER_VERTICAL;
+                v.setLayoutParams(params);
+                final int index = i;
+                if (rpaths.get(i).equals("/")) {
+                    ImageButton ib = new ImageButton(this);
+                    ib.setImageDrawable(icons.getRootDrawable());
+                    ib.setBackgroundColor(Color.parseColor("#00ffffff"));
+                    ib.setOnClickListener(new View.OnClickListener() {
+
+                        public void onClick(View p1) {
+                            main.loadlist(new File("/"), false);
+                            timer.cancel();
+                            timer.start();
+                        }
+                    });
+                    ib.setLayoutParams(params);
+                    buttons.addView(ib);
+                    if(names.size()-i!=1)
+                        buttons.addView(v);
+                } else if (rpaths.get(i).equals(Environment.getExternalStorageDirectory().getPath())) {
+                    ImageButton ib = new ImageButton(this);
+                    ib.setImageDrawable(icons.getSdDrawable());
+                    ib.setBackgroundColor(Color.parseColor("#00ffffff"));
+                    ib.setOnClickListener(new View.OnClickListener() {
+
+                        public void onClick(View p1) {
+                            main.loadlist(new File(rpaths.get(k)), false);
+                            timer.cancel();
+                            timer.start();
+                        }
+                    });
+                    ib.setLayoutParams(params);
+                    buttons.addView(ib);
+                    if(names.size()-i!=1)
+                        buttons.addView(v);
+                } else {
+                    Button button = new Button(this);
+                    button.setText(rnames.get(index));
+                    button.setTextColor(getResources().getColor(android.R.color.white));
+                    button.setTextSize(13);
+                    button.setLayoutParams(params);
+                    button.setBackgroundResource(0);
+                    button.setOnClickListener(new Button.OnClickListener() {
+
+                        public void onClick(View p1) {
+                            main.loadlist(new File(rpaths.get(k)), false);
+                            timer.cancel();
+                            timer.start();
+                        }
+                    });
+                    button.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
+
+                            File file1 = new File(rpaths.get(index));
+                            copyToClipboard(MainActivity.this, file1.getPath());
+                            Toast.makeText(MainActivity.this, getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                    });
+
+                    buttons.addView(button);
+                    if(names.size()-i!=1)
+                        buttons.addView(v);
+                }
+            }
+            File f=new File(text);
+
+            TextView textView = (TextView)pathbar.findViewById(R.id.pathname);
+            String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
+            String free = utils.readableFileSize(f.getFreeSpace());
+            textView.setText(getResources().getString(R.string.used)+" " + used +" "+ getResources().getString(R.string.free)+" " + free);
+
+            TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
+            bapath.setAllCaps(true);
+            bapath.setText(f.getPath());
+            scroll.post(new Runnable() {
+                @Override
+                public void run() {
+                    scroll.fullScroll(View.FOCUS_RIGHT);
+                    scroll1.fullScroll(View.FOCUS_RIGHT);
+                }
+            });
+
+            if(buttons.getVisibility()==View.VISIBLE){timer.cancel();timer.start();}
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("button view not available");
+        }
+    }
+
+    public void updatePath(String text){
+        File f=new File(text);
+        String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
+        String free = utils.readableFileSize(f.getFreeSpace());
+        TextView textView = (TextView)pathbar.findViewById(R.id.pathname);
+        textView.setText(getResources().getString(R.string.used)+" " + used +" "+ getResources().getString(R.string.free)+" " + free);
+
+        TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
+        bapath.setText(f.getPath());
+        bapath.setAllCaps(true);
+        scroll.post(new Runnable() {
+            @Override
+            public void run() {
+                scroll.fullScroll(View.FOCUS_RIGHT);
+                scroll1.fullScroll(View.FOCUS_RIGHT);
+            }
+        });
+    }
+
+    public void initiatebbar(final String current, final Main main) {
+        LinearLayout pathbar = (LinearLayout) findViewById(R.id.pathbar);
+        TextView textView = (TextView) findViewById(R.id.fullpath);
+
+        pathbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bbar(current, main);
+                crossfade();
+                timer.cancel();
+                timer.start();
+            }
+        });
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bbar(current, main);
+                crossfade();
+                timer.cancel();
+                timer.start();
+            }
+        });
+
+    }
+
+    public void crossfade() {
+
+        // Set the content view to 0% opacity but visible, so that it is visible
+        // (but fully transparent) during the animation.
+        buttons.setAlpha(0f);
+        buttons.setVisibility(View.VISIBLE);
+
+
+
+        // Animate the content view to 100% opacity, and clear any animation
+        // listener set on the view.
+        buttons.animate()
+                .alpha(1f)
+                .setDuration(100)
+                .setListener(null);
+        pathbar.animate()
+                .alpha(0f)
+                .setDuration(100)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        pathbar.setVisibility(View.GONE);
+                    }
+                });
+        // Animate the loading view to 0% opacity. After the animation ends,
+        // set its visibility to GONE as an optimization step (it won't
+        // participate in layout passes, etc.)
+
+    }
+
+    private void crossfadeInverse() {
+
+
+        // Set the content view to 0% opacity but visible, so that it is visible
+        // (but fully transparent) during the animation.
+
+        pathbar.setAlpha(0f);
+        pathbar.setVisibility(View.VISIBLE);
+
+        // Animate the content view to 100% opacity, and clear any animation
+        // listener set on the view.
+        pathbar.animate()
+                .alpha(1f)
+                .setDuration(500)
+                .setListener(null);
+        buttons.animate()
+                .alpha(0f)
+                .setDuration(500)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        buttons.setVisibility(View.GONE);
+                    }
+                });
+        // Animate the loading view to 0% opacity. After the animation ends,
+        // set its visibility to GONE as an optimization step (it won't
+        // participate in layout passes, etc.)
+    }
+
+    public boolean copyToClipboard(Context context, String text) {
+        try {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context
+                    .getSystemService(context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData
+                    .newPlainText("Path copied to clipboard", text);
+            clipboard.setPrimaryClip(clip);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 }

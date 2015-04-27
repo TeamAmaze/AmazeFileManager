@@ -162,6 +162,8 @@ public class Main extends android.support.v4.app.Fragment {
     boolean addheader=true;
     StickyRecyclerHeadersDecoration headersDecor;
     DividerItemDecoration dividerItemDecoration;
+    private String path;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,8 +176,6 @@ public class Main extends android.support.v4.app.Fragment {
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         savepaths=Sp.getBoolean("savepaths", true);
         skin = Sp.getString("skin_color", "#03A9F4");
-        fabskin = Sp.getString("fab_skin_color", "#84ffff");
-        fabSkinPressed = mainActivity.getStatusColor(fabskin);
         sh = new Shortcuts(getActivity());
         islist = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();
@@ -195,53 +195,20 @@ public class Main extends android.support.v4.app.Fragment {
         circularImages=Sp.getBoolean("circularimages",true);
         showLastModified=Sp.getBoolean("showLastModified",true);
         icons = new IconUtils(Sp, getActivity());
-        timer=new CountDownTimer(5000,1000) {
-            @Override
-            public void onTick(long l) {
-            }
-            @Override
-            public void onFinish() {
-                crossfadeInverse();
-            }
-        };
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
-        floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        if (showButtonOnStart)
-            floatingActionButton.setVisibility(View.VISIBLE);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-                builder.items(new String[]{
-                        getResources().getString(R.string.folder),
-                        getResources().getString(R.string.file)
-
-                });
-                builder.itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence s) {
-                        mainActivity.add(i);
-                    }
-                });
-                builder.title(getResources().getString(R.string.new_string));
-                if(theme1==1)
-                    builder.theme(Theme.DARK);
-                builder.build().show();
-            }
-        });
 
         if(getArguments()!=null)
         Intentpath=getArguments().getString("path");
         animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
         animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
 
-        buttons = (LinearLayout) rootView.findViewById(R.id.buttons);
-        pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
+        buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
+        pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
         showThumbs=Sp.getBoolean("showThumbs", true);
         ic=new IconHolder(getActivity(),showThumbs,!islist);
         res = getResources();
@@ -297,8 +264,7 @@ public class Main extends android.support.v4.app.Fragment {
         if(savepaths)
             f=new File(current);
         else f=new File(home);
-        rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
-        initiatebbar();
+        //mainActivity.initiatebbar(current, this);
 
         scroll = (HorizontalScrollView) rootView.findViewById(R.id.scroll);
         scroll1 = (HorizontalScrollView) rootView.findViewById(R.id.scroll1);
@@ -322,20 +288,27 @@ public class Main extends android.support.v4.app.Fragment {
             }
         });
         if (savedInstanceState == null){
-            if(Intentpath!=null){File file1=new File(Intentpath);
-            if(file1.isDirectory())loadlist(file1,false);
-                else {utils.openFile(file1,mainActivity);
-            loadlist(f,false);}
-            }else
-            loadlist(f, false);}
-        else {
+            if(Intentpath!=null) {
+                File file1=new File(Intentpath);
+                if(file1.isDirectory()) {
+
+                    loadlist(file1,false);
+                }
+                else {
+                    utils.openFile(file1, mainActivity);
+                    loadlist(f,false);
+                }
+            } else {
+
+                loadlist(f, false);
+            }
+        } else {
             Bundle b = new Bundle();
             String cur = savedInstanceState.getString("current");
             if (cur != null) {
                 b.putInt("index", savedInstanceState.getInt("index"));
                 b.putInt("top", savedInstanceState.getInt("top"));
                 scrolls.put(cur, b);
-                updatePath(cur);
                 list = savedInstanceState.getParcelableArrayList("list");
                 if (savedInstanceState.getBoolean("results")) {
                     try {
@@ -538,7 +511,6 @@ public class Main extends android.support.v4.app.Fragment {
                     listView.addItemDecoration(headersDecor);addheader=false;}
                     results = false;
                     current = f.getPath();
-                    updatePath(f.getPath());
                     if (back) {
                         if (scrolls.containsKey(current)) {
                             Bundle b = scrolls.get(current);
@@ -550,7 +522,7 @@ public class Main extends android.support.v4.app.Fragment {
                     //floatingActionButton.show();
                     mainActivity.updatepaths();
 
-                    if (buttons.getVisibility() == View.VISIBLE) bbar(current);
+                    if (buttons.getVisibility() == View.VISIBLE) mainActivity.bbar(current, this);
 
                     mainActivity.updateDrawer(current);
                     mainActivity.updatepager();
@@ -618,7 +590,7 @@ public class Main extends android.support.v4.app.Fragment {
             /*if(Build.VERSION.SDK_INT<19)
                 getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);*/
            // rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(res.getColor(R.color.toolbar_cab));
-            ObjectAnimator anim = ObjectAnimator.ofInt(rootView.findViewById(R.id.buttonbarframe), "backgroundColor", Color.parseColor(skin), res.getColor(R.color.toolbar_cab));
+            ObjectAnimator anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe), "backgroundColor", Color.parseColor(skin), res.getColor(R.color.toolbar_cab));
             anim.setDuration(200);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
@@ -1042,7 +1014,7 @@ public class Main extends android.support.v4.app.Fragment {
             if(!results)adapter.toggleChecked(false, current);
             else adapter.toggleChecked(false);
             mainActivity.setPagingEnabled(true);
-            ObjectAnimator anim = ObjectAnimator.ofInt(rootView.findViewById(R.id.buttonbarframe), "backgroundColor", res.getColor(R.color.toolbar_cab), Color.parseColor(skin));
+            ObjectAnimator anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe), "backgroundColor", res.getColor(R.color.toolbar_cab), Color.parseColor(skin));
             anim.setDuration(50);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
@@ -1053,154 +1025,6 @@ public class Main extends android.support.v4.app.Fragment {
             }
         }
     };
-    public void updatePath(String text){
-        File f=new File(text);
-        String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
-        String free = utils.readableFileSize(f.getFreeSpace());
-        TextView textView = (TextView)pathbar.findViewById(R.id.pathname);
-        textView.setText(res.getString(R.string.used)+" " + used +" "+ res.getString(R.string.free)+" " + free);
-
-        TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
-        bapath.setText(f.getPath());
-        bapath.setAllCaps(true);
-        scroll.post(new Runnable() {
-            @Override
-            public void run() {
-                scroll.fullScroll(View.FOCUS_RIGHT);
-                scroll1.fullScroll(View.FOCUS_RIGHT);
-            }
-        });
-    }
-    public void bbar(String text) {
-        try {
-            buttons.removeAllViews();
-            buttons.setMinimumHeight(pathbar.getHeight());
-            Drawable arrow=getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
-            Bundle b = utils.getPaths(text, getActivity());
-            ArrayList<String> names = b.getStringArrayList("names");
-            ArrayList<String> rnames = new ArrayList<String>();
-
-            for (int i = names.size() - 1; i >= 0; i--) {
-                rnames.add(names.get(i));
-            }
-
-            ArrayList<String> paths = b.getStringArrayList("paths");
-            final ArrayList<String> rpaths = new ArrayList<String>();
-
-            for (int i = paths.size() - 1; i >= 0; i--) {
-                rpaths.add(paths.get(i));
-            }
-            for (int i = 0; i < names.size(); i++) {
-                final int k=i;
-                ImageView v=new ImageView(getActivity());
-                v.setImageDrawable(arrow);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                params.gravity= Gravity.CENTER_VERTICAL;
-                v.setLayoutParams(params);
-                final int index = i;
-                if (rpaths.get(i).equals("/")) {
-                    ImageButton ib = new ImageButton(getActivity());
-                    ib.setImageDrawable(icons.getRootDrawable());
-                    ib.setBackgroundColor(Color.parseColor("#00ffffff"));
-                    ib.setOnClickListener(new View.OnClickListener() {
-
-                        public void onClick(View p1) {
-                            loadlist(new File("/"), false);
-                            timer.cancel();
-                            timer.start();
-                        }
-                    });
-                    ib.setLayoutParams(params);
-                    buttons.addView(ib);
-                    if(names.size()-i!=1)
-                        buttons.addView(v);
-                } else if (rpaths.get(i).equals(Environment.getExternalStorageDirectory().getPath())) {
-                    ImageButton ib = new ImageButton(getActivity());
-                    ib.setImageDrawable(icons.getSdDrawable());
-                    ib.setBackgroundColor(Color.parseColor("#00ffffff"));
-                    ib.setOnClickListener(new View.OnClickListener() {
-
-                        public void onClick(View p1) {
-                            loadlist(new File(rpaths.get(k)), false);
-                            timer.cancel();
-                            timer.start();
-                        }
-                    });
-                    ib.setLayoutParams(params);
-                    buttons.addView(ib);
-                    if(names.size()-i!=1)
-                        buttons.addView(v);
-                } else {
-                    Button button = new Button(getActivity());
-                    button.setText(rnames.get(index));
-                    button.setTextColor(getResources().getColor(android.R.color.white));
-                    button.setTextSize(13);
-                    button.setLayoutParams(params);
-                    button.setBackgroundResource(0);
-                    button.setOnClickListener(new Button.OnClickListener() {
-
-                        public void onClick(View p1) {
-                            loadlist(new File(rpaths.get(k)), false);
-                            timer.cancel();
-                            timer.start();
-                        }
-                    });
-                    button.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-
-                            File file1 = new File(rpaths.get(index));
-                            copyToClipboard(getActivity(), file1.getPath());
-                            Toast.makeText(getActivity(), res.getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
-                            return false;
-                        }
-                    });
-
-                    buttons.addView(button);
-                    if(names.size()-i!=1)
-                        buttons.addView(v);
-                }
-            }
-            File f=new File(text);
-
-            TextView textView = (TextView)pathbar.findViewById(R.id.pathname);
-            String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
-            String free = utils.readableFileSize(f.getFreeSpace());
-            textView.setText(res.getString(R.string.used)+" " + used +" "+ res.getString(R.string.free)+" " + free);
-
-            TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
-            bapath.setAllCaps(true);
-            bapath.setText(f.getPath());
-            scroll.post(new Runnable() {
-                @Override
-                public void run() {
-                    scroll.fullScroll(View.FOCUS_RIGHT);
-                    scroll1.fullScroll(View.FOCUS_RIGHT);
-                }
-            });
-
-            if(buttons.getVisibility()==View.VISIBLE){timer.cancel();timer.start();}
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("button view not available");
-        }
-
-    }
-
-    public boolean copyToClipboard(Context context, String text) {
-        try {
-            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context
-                    .getSystemService(context.CLIPBOARD_SERVICE);
-            android.content.ClipData clip = android.content.ClipData
-                    .newPlainText("Path copied to clipboard", text);
-            clipboard.setPrimaryClip(clip);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
 
     public void computeScroll() {
         View vi = listView.getChildAt(0);
@@ -1273,9 +1097,6 @@ public class Main extends android.support.v4.app.Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        floatingActionButton.setColorNormal(Color.parseColor(fabskin));
-        floatingActionButton.setColorPressed(Color.parseColor(fabSkinPressed));
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
     }
 
@@ -1387,35 +1208,8 @@ public class Main extends android.support.v4.app.Fragment {
             utils.scanFile(path,getActivity());}
 
     }
-    public void crossfade() {
 
-        // Set the content view to 0% opacity but visible, so that it is visible
-        // (but fully transparent) during the animation.
-        buttons.setAlpha(0f);
-        buttons.setVisibility(View.VISIBLE);
-
-
-
-        // Animate the content view to 100% opacity, and clear any animation
-        // listener set on the view.
-        buttons.animate()
-                .alpha(1f)
-                .setDuration(100)
-                .setListener(null);
-        pathbar.animate()
-                .alpha(0f)
-                .setDuration(100)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        pathbar.setVisibility(View.GONE);
-                    }
-                });
-        // Animate the loading view to 0% opacity. After the animation ends,
-        // set its visibility to GONE as an optimization step (it won't
-        // participate in layout passes, etc.)
-
-    }public  void restartPC(final Activity activity) {
+    public  void restartPC(final Activity activity) {
         if (activity == null)
             return;
         final int enter_anim = android.R.anim.fade_in;
@@ -1427,33 +1221,6 @@ public class Main extends android.support.v4.app.Fragment {
         i.putExtra("restart",true);
         i.setAction(Intent.ACTION_MAIN);
         activity.startActivity(i);
-    }private void crossfadeInverse() {
-
-
-        // Set the content view to 0% opacity but visible, so that it is visible
-        // (but fully transparent) during the animation.
-
-        pathbar.setAlpha(0f);
-        pathbar.setVisibility(View.VISIBLE);
-
-        // Animate the content view to 100% opacity, and clear any animation
-        // listener set on the view.
-        pathbar.animate()
-                .alpha(1f)
-                .setDuration(500)
-                .setListener(null);
-        buttons.animate()
-                .alpha(0f)
-                .setDuration(500)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        buttons.setVisibility(View.GONE);
-                    }
-                });
-        // Animate the loading view to 0% opacity. After the animation ends,
-        // set its visibility to GONE as an optimization step (it won't
-        // participate in layout passes, etc.)
     }
 
     public String getSelectionColor(){
@@ -1516,30 +1283,5 @@ public class Main extends android.support.v4.app.Fragment {
         addIntent
                 .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         getActivity().sendBroadcast(addIntent);
-    }
-
-    public void initiatebbar() {
-        LinearLayout pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
-        TextView textView = (TextView) rootView.findViewById(R.id.fullpath);
-
-        pathbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bbar(current);
-                crossfade();
-                timer.cancel();
-                timer.start();
-            }
-        });
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bbar(current);
-                crossfade();
-                timer.cancel();
-                timer.start();
-            }
-        });
-
     }
 }
