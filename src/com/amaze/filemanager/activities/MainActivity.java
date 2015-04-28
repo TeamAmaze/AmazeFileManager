@@ -186,11 +186,13 @@ public class MainActivity extends ActionBarActivity implements
     private FloatingActionButton floatingActionButton;
     private boolean showButtonOnStart = false;
     private String fabskin, fabSkinPressed;
-    private LinearLayout pathbar, buttons;
+    private LinearLayout buttons;
     private HorizontalScrollView scroll, scroll1;
     private CountDownTimer timer;
     private IconUtils icons;
     private TabHandler tabHandler;
+
+    public LinearLayout pathbar;
 
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
@@ -218,8 +220,6 @@ public class MainActivity extends ActionBarActivity implements
 
         tabHandler=new TabHandler(this,null,null,1);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
-
-        launchPath = tabHandler.findTab(Sp.getInt("currenttab", 1) + 1).getPath();
 
         fabskin = Sp.getString("fab_skin_color", "#84ffff");
         fabSkinPressed = getStatusColor(fabskin);
@@ -1093,9 +1093,6 @@ public class MainActivity extends ActionBarActivity implements
     public void onResume() {
         super.onResume();
 
-        Main ma= (Main) ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
-        initiatebbar(ma.current, ma);
-        updatePath(launchPath);
         floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         floatingActionButton.setColorNormal(Color.parseColor(fabskin));
         floatingActionButton.setColorPressed(Color.parseColor(fabSkinPressed));

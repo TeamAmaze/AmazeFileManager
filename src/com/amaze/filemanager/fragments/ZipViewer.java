@@ -94,6 +94,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
+        mainActivity = (MainActivity) getActivity();
         listView = (RecyclerView) rootView.findViewById(R.id.listView);
         swipeRefreshLayout=(SwipeRefreshLayout)rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -102,9 +103,10 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
                 refresh();
             }
         });
-        LinearLayout pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
-        TextView textView = (TextView) rootView.findViewById(R.id.fullpath);
-        pathbar.setOnClickListener(new View.OnClickListener() {
+        /*LinearLayout pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
+        TextView textView = (TextView) rootView.findViewById(R.id.fullpath);*/
+        TextView textView = (TextView) mainActivity.pathbar.findViewById(R.id.fullpath);
+        mainActivity.pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
             }
@@ -140,7 +142,6 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             mLayoutManagerGrid=new GridLayoutManager(getActivity(),columns);
                 listView.setLayoutManager(mLayoutManager);
 
-            mainActivity = (MainActivity) getActivity();
             mainActivity.supportInvalidateOptionsMenu();
             if (mainActivity.theme1 == 1)
                 listView.setBackgroundColor(Color.parseColor("#000000"));
@@ -156,7 +157,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             showLastModified = Sp.getBoolean("showLastModified", true);
             year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
             skin = Sp.getString("skin_color", "#03A9F4");
-            rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
+            mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
             String x = getSelectionColor();
             skinselection = Color.parseColor(x);
@@ -242,7 +243,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             hideOption(R.id.permissions, menu);
             hideOption(R.id.hide, menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
-            ObjectAnimator anim = ObjectAnimator.ofInt(rootView.findViewById(R.id.buttonbarframe), "backgroundColor", Color.parseColor(skin), getResources().getColor(R.color.toolbar_cab));
+            ObjectAnimator anim = ObjectAnimator.ofInt(mainActivity.findViewById(R.id.buttonbarframe), "backgroundColor", Color.parseColor(skin), getResources().getColor(R.color.toolbar_cab));
             anim.setDuration(200);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
@@ -293,7 +294,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         public void onDestroyActionMode(ActionMode actionMode) {
         if(zipAdapter!=null)zipAdapter.toggleChecked(false,"");
             selection=false;
-        ObjectAnimator anim = ObjectAnimator.ofInt(rootView.findViewById(R.id.buttonbarframe), "backgroundColor", getResources().getColor(R.color.toolbar_cab), Color.parseColor(skin));
+        ObjectAnimator anim = ObjectAnimator.ofInt(mainActivity.findViewById(R.id.buttonbarframe), "backgroundColor", getResources().getColor(R.color.toolbar_cab), Color.parseColor(skin));
         anim.setDuration(50);
         anim.setEvaluator(new ArgbEvaluator());
         anim.start();
@@ -324,8 +325,8 @@ public boolean cangoBack(){
         new ZipHelperTask(this, current).execute(f);
     }
     public void bbar(){
-        ((TextView) zipViewer.rootView.findViewById(R.id.fullpath)).setText(zipViewer.current);
-        ((TextView)rootView.findViewById(R.id.pathname)).setText("");
+        ((TextView) mainActivity.findViewById(R.id.fullpath)).setText(zipViewer.current);
+        ((TextView) mainActivity.findViewById(R.id.pathname)).setText("");
 
     }
     public void createviews(ArrayList<ZipObj> zipEntries,String dir){

@@ -176,6 +176,7 @@ public class Main extends android.support.v4.app.Fragment {
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         savepaths=Sp.getBoolean("savepaths", true);
         skin = Sp.getString("skin_color", "#03A9F4");
+        mainActivity.initiatebbar(ma.current, ma);
         sh = new Shortcuts(getActivity());
         islist = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();
@@ -468,6 +469,7 @@ public class Main extends android.support.v4.app.Fragment {
         }
 
         listView.setAnimation(animation);
+        mainActivity.updatePath(f.getPath());
 
     }
 

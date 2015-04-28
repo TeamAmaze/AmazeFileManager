@@ -206,6 +206,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
             e.printStackTrace();
         }
         Sp.edit().putInt("currenttab",currenttab).apply();
+        mainActivity.updatePath(tabHandler.findTab(currenttab+1).getPath());
 
         System.out.println("updatepaths");
     }
@@ -285,9 +286,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
             f = fragments.get(position);
             return f;
         }
-
     }
-
 
     public void addTab(Tab text,int pos,String path) {
         android.support.v4.app.Fragment main = new Main();
@@ -297,8 +296,8 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
         }
         b.putString("lastpath",text.getPath());
-        b.putString("home",text.getHome());
-        b.putInt("no",pos);
+        b.putString("home", text.getHome());
+        b.putInt("no", pos);
         main.setArguments(b);
         fragments.add(main);
         tabs.add(main.getClass().getName());
