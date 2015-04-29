@@ -169,14 +169,13 @@ public class Main extends android.support.v4.app.Fragment {
         super.onCreate(savedInstanceState);
 
         mainActivity=(MainActivity)getActivity();
-        no=getArguments().getInt("no",1);
+        no=getArguments().getInt("no", 1);
         home=getArguments().getString("home");
         current=getArguments().getString("lastpath");
         tabHandler=new TabHandler(getActivity(),null,null,1);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         savepaths=Sp.getBoolean("savepaths", true);
         skin = Sp.getString("skin_color", "#03A9F4");
-        mainActivity.initiatebbar(ma.current, ma);
         sh = new Shortcuts(getActivity());
         islist = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();
@@ -241,6 +240,7 @@ public class Main extends android.support.v4.app.Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
+        mainActivity = (MainActivity) getActivity();
         utils = new Futils();
         String x=getSelectionColor();
         skinselection=Color.parseColor(x);
@@ -265,7 +265,7 @@ public class Main extends android.support.v4.app.Fragment {
         if(savepaths)
             f=new File(current);
         else f=new File(home);
-        //mainActivity.initiatebbar(current, this);
+        mainActivity.initiatebbar(current, this);
 
         scroll = (HorizontalScrollView) rootView.findViewById(R.id.scroll);
         scroll1 = (HorizontalScrollView) rootView.findViewById(R.id.scroll1);
