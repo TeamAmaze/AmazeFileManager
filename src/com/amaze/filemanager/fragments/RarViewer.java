@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ActionMode;
@@ -55,11 +56,14 @@ import com.amaze.filemanager.adapters.ZipAdapter;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.RarHelperTask;
+import com.amaze.filemanager.utils.DividerItemDecoration;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.SpacesItemDecoration;
 import com.amaze.filemanager.utils.ZipObj;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
 import com.melnykov.fab.FloatingActionButton;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -85,8 +89,13 @@ public class RarViewer extends Fragment {
     public MainActivity mainActivity;
     public RecyclerView listView;
     public Archive archive;
-    View rootView;
-    SwipeRefreshLayout swipeRefreshLayout;
+    View rootView;boolean addheader=true;
+    public SwipeRefreshLayout swipeRefreshLayout;
+    StickyRecyclerHeadersDecoration headersDecor;
+    LinearLayoutManager mLayoutManager;
+    DividerItemDecoration dividerItemDecoration;
+    public int uimode;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
@@ -126,10 +135,26 @@ public class RarViewer extends Fragment {
         listView.setVisibility(View.VISIBLE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        if (mainActivity.theme1== 1)
+        uimode = Integer.parseInt(Sp.getString("uimode", "0"));
+        if (uimode == 1) {
+            float scale = getResources().getDisplayMetrics().density;
+            int dpAsPixels = (int) (5 * scale + 0.5f);
+
+            listView.setPadding(dpAsPixels, 0, dpAsPixels, 0);
+            listView.addItemDecoration(new SpacesItemDecoration(dpAsPixels));
+
+        }
+
+        listView.setVisibility(View.VISIBLE);
+        mLayoutManager=new LinearLayoutManager(getActivity());
+        listView.setLayoutManager(mLayoutManager);
+        if (mainActivity.theme1 == 1)
             listView.setBackgroundColor(Color.parseColor("#000000"));
         else
-            listView.setBackgroundColor(Color.parseColor("#ffffff"));
+        if (uimode==0) {
+
+            listView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+        }
         gobackitem = Sp.getBoolean("goBack_checkbox", true);
         coloriseIcons = Sp.getBoolean("coloriseIcons", false);
         Calendar calendar = Calendar.getInstance();
@@ -329,8 +354,24 @@ String path;
 
     }
     public void createviews(ArrayList<FileHeader> zipEntries,String dir){
-        zipViewer.zipAdapter = new RarAdapter(zipViewer.getActivity(), R.layout.simplerow, zipEntries, zipViewer);
+        zipViewer.zipAdapter = new RarAdapter(zipViewer.getActivity(), zipEntries, zipViewer);
         zipViewer.listView.setAdapter(zipViewer.zipAdapter);
+        if(!addheader ){
+            if(uimode==0) listView.removeItemDecoration(dividerItemDecoration);
+            listView.removeItemDecoration(headersDecor);
+            addheader=true;
+        }
+        if(addheader ) {
+            if (uimode == 0)
+            {
+                dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST);
+                listView.addItemDecoration(dividerItemDecoration);
+            }
+            headersDecor = new StickyRecyclerHeadersDecoration(zipAdapter);
+            listView.addItemDecoration(headersDecor);
+            addheader=false;
+        }
+
         zipViewer.current = dir;
         zipViewer.bbar();
         swipeRefreshLayout.setRefreshing(false);

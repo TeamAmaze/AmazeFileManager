@@ -88,7 +88,6 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     public SwipeRefreshLayout swipeRefreshLayout;
     StickyRecyclerHeadersDecoration headersDecor;
     LinearLayoutManager mLayoutManager;
-    GridLayoutManager mLayoutManagerGrid;
     DividerItemDecoration dividerItemDecoration;
     public int uimode;
 
@@ -139,8 +138,6 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
 
             listView.setVisibility(View.VISIBLE);
             mLayoutManager=new LinearLayoutManager(getActivity());
-            int columns=Integer.parseInt(Sp.getString("columns","3"));
-            mLayoutManagerGrid=new GridLayoutManager(getActivity(),columns);
                 listView.setLayoutManager(mLayoutManager);
 
             mainActivity.supportInvalidateOptionsMenu();
