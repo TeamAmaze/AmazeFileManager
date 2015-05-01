@@ -91,6 +91,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     GridLayoutManager mLayoutManagerGrid;
     DividerItemDecoration dividerItemDecoration;
     public int uimode;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
@@ -103,8 +104,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
                 refresh();
             }
         });
-        /*LinearLayout pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
-        TextView textView = (TextView) rootView.findViewById(R.id.fullpath);*/
+
         TextView textView = (TextView) mainActivity.pathbar.findViewById(R.id.fullpath);
         mainActivity.pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,7 +119,8 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
 
         return rootView;
     }
-        @Override
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
 
             super.onActivityCreated(savedInstanceState);

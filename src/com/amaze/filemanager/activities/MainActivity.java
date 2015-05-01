@@ -210,14 +210,15 @@ public class MainActivity extends ActionBarActivity implements
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-       try {
+        try {
             super.onCreate(savedInstanceState);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        setContentView(R.layout.main_toolbar);
 
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         tabHandler=new TabHandler(this,null,null,1);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -242,8 +243,6 @@ public class MainActivity extends ActionBarActivity implements
         } else {
             drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
         }
-
-
 
         displayImageOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.amaze_header)
@@ -300,7 +299,6 @@ public class MainActivity extends ActionBarActivity implements
         if (theme1 == 1) {
             setTheme(R.style.appCompatDark);
         }
-        setContentView(R.layout.main_toolbar);
 
         floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         pathbar = (LinearLayout) findViewById(R.id.pathbar);

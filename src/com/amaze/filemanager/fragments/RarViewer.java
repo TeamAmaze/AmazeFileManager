@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -82,14 +83,15 @@ public class RarViewer extends Fragment {
     public ArrayList<FileHeader> wholelist=new ArrayList<FileHeader>();
     public     ArrayList<FileHeader> elements = new ArrayList<FileHeader>();
     public MainActivity mainActivity;
-    public ListView listView;
+    public RecyclerView listView;
     public Archive archive;
     View rootView;
     SwipeRefreshLayout swipeRefreshLayout;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
-        listView = (ListView) rootView.findViewById(R.id.listView);
+        mainActivity = (MainActivity) getActivity();
+        listView = (RecyclerView) rootView.findViewById(R.id.listView);
         mainActivity=(MainActivity)getActivity();
         mainActivity.supportInvalidateOptionsMenu();
         swipeRefreshLayout=(SwipeRefreshLayout)rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
@@ -100,10 +102,9 @@ public class RarViewer extends Fragment {
             }
         });
 
-        LinearLayout pathbar = (LinearLayout) rootView.findViewById(R.id.pathbar);
-        TextView textView = (TextView) rootView.findViewById(R.id.fullpath);
-        rootView.findViewById(R.id.fab).setVisibility(View.GONE);
-        pathbar.setOnClickListener(new View.OnClickListener() {
+        TextView textView = (TextView) mainActivity.pathbar.findViewById(R.id.fullpath);
+        mainActivity.findViewById(R.id.fab).setVisibility(View.GONE);
+        mainActivity.pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
             }
@@ -113,9 +114,9 @@ public class RarViewer extends Fragment {
             public void onClick(View view) {
             }
         });
-
         return rootView;
     }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
 
@@ -136,9 +137,9 @@ public class RarViewer extends Fragment {
         showLastModified = Sp.getBoolean("showLastModified", true);
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
         skin = Sp.getString("skin_color", "#03A9F4");
-        rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
+        mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
-        listView.setDivider(null);
+        //listView.setDivider(null);
         String x = getSelectionColor();
         skinselection = Color.parseColor(x);
         files = new ArrayList<File>();
@@ -213,7 +214,7 @@ public class RarViewer extends Fragment {
             hideOption(R.id.permissions, menu);
             hideOption(R.id.hide, menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
-            ObjectAnimator anim = ObjectAnimator.ofInt(rootView.findViewById(R.id.buttonbarframe), "backgroundColor", Color.parseColor(skin), getResources().getColor(R.color.toolbar_cab));
+            ObjectAnimator anim = ObjectAnimator.ofInt(mainActivity.findViewById(R.id.buttonbarframe), "backgroundColor", Color.parseColor(skin), getResources().getColor(R.color.toolbar_cab));
             anim.setDuration(200);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
@@ -285,7 +286,7 @@ public class RarViewer extends Fragment {
         public void onDestroyActionMode(ActionMode actionMode) {
             if(zipAdapter!=null)zipAdapter.toggleChecked(false,"");
             selection=false;
-            ObjectAnimator anim = ObjectAnimator.ofInt(rootView.findViewById(R.id.buttonbarframe), "backgroundColor", getResources().getColor(R.color.toolbar_cab), Color.parseColor(skin));
+            ObjectAnimator anim = ObjectAnimator.ofInt(mainActivity.findViewById(R.id.buttonbarframe), "backgroundColor", getResources().getColor(R.color.toolbar_cab), Color.parseColor(skin));
             anim.setDuration(50);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
@@ -323,12 +324,12 @@ String path;
         new RarHelperTask(this,current).execute(f);
     }
     public void bbar(){
-        ((TextView) zipViewer.rootView.findViewById(R.id.fullpath)).setText(zipViewer.current);
-        ((TextView)rootView.findViewById(R.id.pathname)).setText("");
+        ((TextView) mainActivity.findViewById(R.id.fullpath)).setText(zipViewer.current);
+        ((TextView) mainActivity.findViewById(R.id.pathname)).setText("");
 
     }
     public void createviews(ArrayList<FileHeader> zipEntries,String dir){
-       zipViewer.zipAdapter = new RarAdapter(zipViewer.getActivity(), R.layout.simplerow, zipEntries, zipViewer);
+        zipViewer.zipAdapter = new RarAdapter(zipViewer.getActivity(), R.layout.simplerow, zipEntries, zipViewer);
         zipViewer.listView.setAdapter(zipViewer.zipAdapter);
         zipViewer.current = dir;
         zipViewer.bbar();
