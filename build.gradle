@@ -14,21 +14,6 @@ repositories {
     jcenter()
 }
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
-    compile 'com.android.support:appcompat-v7:21.0.+'
-    compile 'com.afollestad:material-dialogs:0.7.2.7'
-    compile 'com.melnykov:floatingactionbutton:1.3.0'
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.github.junrar:junrar:0.7'
-    compile 'org.apache.commons:commons-compress:1.8.1'
-    // Google Play Services
-    compile 'com.google.android.gms:play-services-plus:6.5.87'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
-    compile project(":libs:StickyHeadersRecyclerView")
-}
-
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
@@ -42,6 +27,14 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/DEPENDENCIES.txt'
         exclude 'META-INF/DEPENDENCIES'
+    }
+
+    defaultConfig {
+        applicationId "com.amaze.filemanager"
+        minSdkVersion 14
+        targetSdkVersion 21
+        versionCode 10
+        versionName "1.5.1"
     }
 
     signingConfigs {
@@ -58,12 +51,12 @@ android {
 
     sourceSets {
         main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
+            /*manifest.srcFile 'src/main/AndroidManifest.xml'
+            java.srcDirs = ['src', 'src/main/java', 'src/main/java/']
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
+            res.srcDirs = ['res', 'src/main/res', 'src/main/res/']*/
             assets.srcDirs = ['assets']
         }
 
@@ -79,20 +72,40 @@ android {
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
+
+    productFlavors {
+        fdroid {
+        }
+        play {}
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+    compile 'com.android.support:appcompat-v7:21.0.+'
+    compile 'com.afollestad:material-dialogs:0.7.2.7'
+    compile 'com.melnykov:floatingactionbutton:1.3.0'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.github.junrar:junrar:0.7'
+    compile 'org.apache.commons:commons-compress:1.8.1'
+    // Google Play Services
+    playCompile 'com.google.android.gms:play-services-plus:6.5.87'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
+    compile project(":libs:StickyHeadersRecyclerView")
 }
 
 def Properties props = new Properties()
 def propFile = new File('signing.properties')
 
-if (propFile.canRead()){
+if (propFile.canRead()) {
     props.load(new FileInputStream(propFile))
 
-    if (props !=null &&
-        props.containsKey('STORE_FILE')     &&
-        props.containsKey('STORE_PASSWORD') &&
-        props.containsKey('KEY_ALIAS')      &&
-        props.containsKey('KEY_PASSWORD'))
-    {
+    if (props != null &&
+            props.containsKey('STORE_FILE') &&
+            props.containsKey('STORE_PASSWORD') &&
+            props.containsKey('KEY_ALIAS') &&
+            props.containsKey('KEY_PASSWORD')) {
         android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
         android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
         android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
@@ -101,7 +114,7 @@ if (propFile.canRead()){
         println 'signing.properties found but some entries are missing'
         android.buildTypes.release.signingConfig = null
     }
-}else {
+} else {
     println 'signing.properties not found'
     android.buildTypes.release.signingConfig = null
 }
