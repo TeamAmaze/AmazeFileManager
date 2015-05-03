@@ -80,7 +80,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
-import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.BookmarksManager;
 import com.amaze.filemanager.fragments.Main;
@@ -95,11 +94,9 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.MediaFile;
 import com.amaze.filemanager.utils.RootHelper;
-import com.amaze.filemanager.utils.RoundedImageView;
 import com.amaze.filemanager.utils.ScrimInsetsFrameLayout;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.melnykov.fab.FloatingActionButton;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
@@ -347,7 +344,9 @@ public class MainActivity extends ActionBarActivity {
         if (theme1 == 1) {
             settingsbutton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) settingsbutton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
-        }settingsbutton.setOnClickListener(new View.OnClickListener() {
+            ((TextView)settingsbutton.findViewById(R.id.settingtext)).setTextColor(getResources().getColor(R.color.holo_dark_text));
+        }
+        settingsbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent in = new Intent(MainActivity.this, Preferences.class);
@@ -361,10 +360,13 @@ public class MainActivity extends ActionBarActivity {
 
         });
         View appbutton = findViewById(R.id.appbutton);
-        if (theme1 == 1)
-        {appbutton.setBackgroundResource(R.drawable.safr_ripple_black);
+        if (theme1 == 1) {
+
+            appbutton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_action_view_as_grid);
-        }appbutton.setOnClickListener(new View.OnClickListener() {
+            ((TextView)appbutton.findViewById(R.id.apptext)).setTextColor(getResources().getColor(R.color.holo_dark_text));
+        }
+        appbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
@@ -380,6 +382,7 @@ public class MainActivity extends ActionBarActivity {
         if(theme1==1) {
             ((ImageView) bookbutton.findViewById(R.id.bookicon)).setImageResource(R.drawable.ic_action_not_important);
             bookbutton.setBackgroundResource(R.drawable.safr_ripple_black);
+            ((TextView)bookbutton.findViewById(R.id.booktext)).setTextColor(getResources().getColor(R.color.holo_dark_text));
         }
         bookbutton.setOnClickListener(new View.OnClickListener() {
             @Override

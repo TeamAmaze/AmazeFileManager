@@ -142,7 +142,7 @@ public class RarViewer extends Fragment {
         mLayoutManager=new LinearLayoutManager(getActivity());
         listView.setLayoutManager(mLayoutManager);
         if (mainActivity.theme1 == 1)
-            listView.setBackgroundColor(Color.parseColor("#000000"));
+            rootView.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         else
         if (uimode==0) {
 

@@ -33,6 +33,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -197,12 +198,12 @@ public class Main extends android.support.v4.app.Fragment {
         apk=res.getDrawable(R.drawable.ic_doc_apk_grid);
         uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         if(theme1==1) {
-            rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_dark));
+
+            mainActivity.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.holo_dark_background)));
         } else {
-            //listView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
             if (uimode==0 && islist) {
 
-                rootView.findViewById(R.id.main_frag).setBackgroundColor(getResources().getColor(android.R.color.background_light));
+                mainActivity.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
             }
         } listView.setHasFixedSize(true);
         mLayoutManager=new LinearLayoutManager(getActivity());

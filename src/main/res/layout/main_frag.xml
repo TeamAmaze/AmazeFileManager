@@ -22,8 +22,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:id="@+id/main_frag"
-    android:layout_height="match_parent"
-    android:background="#e6e6e6">
+    android:layout_height="match_parent">
 
     <!--
      As the main content view, the view below consumes the entire

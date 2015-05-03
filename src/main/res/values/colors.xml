@@ -27,4 +27,6 @@
     <color name="safr_ripple">#ffc3c3c3</color>
     <color name="safr_pressed">#ffd7d7d7</color>
     <color name="safr_pressed_dark">#ff282828</color>
+    <color name="holo_dark_background">#ff242424</color>
+    <color name="holo_dark_text">#ff777777</color>
 </resources>

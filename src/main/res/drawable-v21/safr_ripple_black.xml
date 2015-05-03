@@ -20,5 +20,5 @@
 
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="@color/safr">
-    <item android:drawable="@android:color/black"/>
+    <item android:drawable="@color/holo_dark_background"/>
 </ripple>

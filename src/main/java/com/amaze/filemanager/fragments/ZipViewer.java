@@ -135,7 +135,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
 
             mainActivity.supportInvalidateOptionsMenu();
             if (mainActivity.theme1 == 1)
-                listView.setBackgroundColor(Color.parseColor("#000000"));
+                rootView.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
             else
                 if (uimode==0) {
 

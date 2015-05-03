@@ -480,7 +480,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     @Override
     public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
         View  view = mInflater.inflate(R.layout.listheader, viewGroup, false);
-        if(main.theme1==1)view.setBackgroundResource(android.R.color.black);
+        if(main.theme1==1)
+            view.setBackgroundResource(R.color.holo_dark_background);
         HeaderViewHolder holder = new HeaderViewHolder(view);
         if (main.theme1==0)holder.ext.setTextColor(Color.parseColor("#8A000000"));
         else holder.ext.setTextColor(Color.parseColor("#B3ffffff"));

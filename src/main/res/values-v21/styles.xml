@@ -24,7 +24,6 @@
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="popup">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="toolbar_theme">@style/overflow_white1</item>
-
     </style>
     <style name="overflow_white1" parent="Theme.AppCompat.Light.DarkActionBar">
 

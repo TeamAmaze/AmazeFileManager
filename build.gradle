@@ -91,7 +91,7 @@ dependencies {
     compile 'org.apache.commons:commons-compress:1.8.1'
     // Google Play Services
     playCompile 'com.google.android.gms:play-services-plus:6.5.87'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
+    playCompile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile project(":libs:StickyHeadersRecyclerView")
 }
 

@@ -301,7 +301,8 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     @Override
     public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
         View  view = mInflater.inflate(R.layout.listheader, viewGroup, false);
-        if(zipViewer.mainActivity.theme1==1)view.setBackgroundResource(android.R.color.black);
+        if(zipViewer.mainActivity.theme1==1)
+            view.setBackgroundResource(R.color.holo_dark_background);
         HeaderViewHolder holder = new HeaderViewHolder(view);
         return holder;
     }

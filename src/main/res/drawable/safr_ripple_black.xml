@@ -22,5 +22,5 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:state_pressed="true" android:drawable="@color/safr_pressed_dark" />
-    <item android:drawable="@android:color/black" />
+    <item android:drawable="@color/holo_dark_background" />
 </selector>
