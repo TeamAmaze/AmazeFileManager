@@ -29,12 +29,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
@@ -53,7 +50,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -64,8 +60,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -106,8 +100,6 @@ import com.amaze.filemanager.utils.ScrimInsetsFrameLayout;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.melnykov.fab.FloatingActionButton;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
@@ -137,7 +129,7 @@ public class MainActivity extends ActionBarActivity {
     IconUtils util;
     ScrimInsetsFrameLayout mDrawerLinear;
     Shortcuts s;
-    public String skin,path="", launchPath;
+    public String skin,path="";
     public int theme;
     public ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
     Context con = this;
@@ -157,13 +149,9 @@ public class MainActivity extends ActionBarActivity {
     String pending_path;
     boolean openprocesses=false;
     public int booksize=0;
-    //private GoogleApiClient mGoogleApiClient;
     private View drawerHeaderView;
     private RelativeLayout drawerHeaderLayout;
-    private RoundedImageView drawerProfilePic;
-    private DisplayImageOptions displayImageOptions;
     private int sdk;
-    private TextView mGoogleName, mGoogleId;
     private FloatingActionButton floatingActionButton;
     private boolean showButtonOnStart = false;
     private String fabskin, fabSkinPressed;
@@ -171,20 +159,8 @@ public class MainActivity extends ActionBarActivity {
     private HorizontalScrollView scroll, scroll1;
     private CountDownTimer timer;
     private IconUtils icons;
-    private TabHandler tabHandler;
 
     public LinearLayout pathbar;
-
-    // Check for user interaction for google+ api only once
-    private boolean mGoogleApiKey = false;
-
-    /* Request code used to invoke sign in user interactions. */
-    private static final int RC_SIGN_IN = 0;
-
-    /* A flag indicating that a PendingIntent is in progress and prevents
-   * us from starting further intents.
-   */
-    private boolean mIntentInProgress;
 
     /**
      * Called when the activity is first created.
@@ -200,7 +176,6 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.main_toolbar);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        tabHandler=new TabHandler(this,null,null,1);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         fabskin = Sp.getString("fab_skin_color", "#84ffff");
@@ -208,37 +183,7 @@ public class MainActivity extends ActionBarActivity {
 
         drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderLayout = (RelativeLayout) drawerHeaderView.findViewById(R.id.drawer_header);
-        drawerProfilePic = (RoundedImageView) drawerHeaderView.findViewById(R.id.profile_pic);
-        mGoogleName = (TextView) drawerHeaderView.findViewById(R.id.account_header_drawer_name);
-        mGoogleId = (TextView) drawerHeaderView.findViewById(R.id.account_header_drawer_email);
-
-        /*// initialize g+ api client as per preferences
-        if (Sp.getBoolean("plus_pic", false)) {
-
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(Plus.API)
-                    .addScope(Plus.SCOPE_PLUS_LOGIN)
-                    .build();
-        } else {
-            drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
-        }*/
-
-        displayImageOptions = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.amaze_header)
-                .showImageForEmptyUri(R.drawable.amaze_header)
-                .showImageOnFail(R.drawable.amaze_header)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
-
-        if (!ImageLoader.getInstance().isInited()) {
-
-            ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
-        }
+        drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
 
         utils = new Futils();
         s = new Shortcuts(this);
