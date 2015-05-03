@@ -27,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,18 +37,30 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.adapters.HiddenAdapter;
+import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.IconUtils;
 import com.stericson.RootTools.RootTools;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Random;
 
 public class Preffrag extends PreferenceFragment {
@@ -70,7 +83,7 @@ public class Preffrag extends PreferenceFragment {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
         final Preference ui = (Preference) findPreference("uimode");
-        int th1 = Integer.parseInt(sharedPref.getString("theme", "0"));
+        final int th1 = Integer.parseInt(sharedPref.getString("theme", "0"));
         theme = th1;
         if (th1 == 2) {
             ui.setEnabled(false);
@@ -221,8 +234,25 @@ public class Preffrag extends PreferenceFragment {
                         "#607d8b",
                         "#004d40"
                 };
-
-                new AlertDialog.Builder(getActivity())
+                final MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                a.positiveText(R.string.cancel);
+                a.positiveColor(Color.parseColor(skin));
+                a.title(R.string.skin);
+                if(theme==1)
+                    a.theme(Theme.DARK);
+                LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View view = layoutInflater.inflate(R.layout.list_dialog, null);
+                ListView listView = (ListView) view.findViewById(R.id.listView);
+                listView.setDivider(null);
+                a.customView(view, true);
+                a.autoDismiss(true);
+                MaterialDialog x=a.build();
+                ArrayList<String> arrayList=new ArrayList<String>();
+                for(String c:colors){arrayList.add(c);}
+                ColorAdapter adapter = new ColorAdapter(getActivity(), arrayList,"skin_color","skin");
+                listView.setAdapter(adapter);
+                x.show();
+     /*           new AlertDialog.Builder(getActivity())
                         .setTitle(R.string.skin)
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             @Override
@@ -253,7 +283,7 @@ public class Preffrag extends PreferenceFragment {
                                 sharedPref.edit().putString("skin_color", colors[i]).apply();
 
                             }
-                        }).show();
+                        }).show();*/
                 return false;
             }
         });
@@ -285,6 +315,24 @@ public class Preffrag extends PreferenceFragment {
                         "#004d40"
                 };
 
+                final MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                a.positiveText(R.string.cancel);
+                a.positiveColor(Color.parseColor(skin));
+                a.title(R.string.fab_skin);
+                if(th1==1)
+                    a.theme(Theme.DARK);
+                LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View view = layoutInflater.inflate(R.layout.list_dialog, null);
+                ListView listView = (ListView) view.findViewById(R.id.listView);
+                listView.setDivider(null);
+                a.customView(view, true);
+                a.autoDismiss(true);
+                MaterialDialog x=a.build();
+                ArrayList<String> arrayList=new ArrayList<String>();
+                for(String c:colors){arrayList.add(c);}
+                ColorAdapter adapter = new ColorAdapter(getActivity(), arrayList,"fab_skin_color","fab_skin");
+                listView.setAdapter(adapter);
+                x.show();/*
                 new AlertDialog.Builder(getActivity())
                         .setTitle(R.string.skin)
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -316,7 +364,7 @@ public class Preffrag extends PreferenceFragment {
                                 sharedPref.edit().putString("fab_skin_color", colors[i]).apply();
 
                             }
-                        }).show();
+                        }).show();*/
                 return false;
             }
         });
@@ -754,5 +802,54 @@ public class Preffrag extends PreferenceFragment {
         activity.finish();
         activity.overridePendingTransition(enter_anim, exit_anim);
         activity.startActivity(activity.getIntent());
+    }
+  class ColorAdapter extends ArrayAdapter<String> {
+      String pref,pref1;
+      String[] strings;
+      final String[] colors = new String[]{
+              "#F44336",
+              "#e91e63",
+              "#9c27b0",
+              "#673ab7",
+              "#3f51b5",
+              "#2196F3",
+              "#03A9F4",
+              "#00BCD4",
+              "#009688",
+              "#4CAF50",
+              "#8bc34a",
+              "#FFC107",
+              "#FF9800",
+              "#FF5722",
+              "#795548",
+              "#212121",
+              "#607d8b",
+              "#004d40"
+      };
+      public ColorAdapter(Context context, ArrayList<String> values, String pref,String pref1) {
+            super(context, R.layout.rowlayout, values);
+            strings=getResources().getStringArray(R.array.skin);
+       this.pref=pref;
+
+    } @Override
+      public View getView(final int position, View convertView, ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater)getContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View rowView = inflater.inflate(R.layout.rowlayout, parent, false);
+        TextView a=(TextView)rowView.findViewById(R.id.firstline);
+        a.setText(strings[position]);
+          if(theme==1)a.setTextColor(Color.parseColor("#ffffff"));
+        ImageView imageView=(ImageView)rowView.findViewById(R.id.icon);
+        GradientDrawable gradientDrawable = (GradientDrawable) imageView.getBackground();
+        gradientDrawable.setColor(Color.parseColor(colors[position]));
+        rowView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sharedPref.edit().putString(pref,colors[position]).apply();
+                sharedPref.edit().putString(pref1,""+position).apply();
+            restartPC(getActivity());
+            }
+        });
+        return rowView;}
     }
 }
