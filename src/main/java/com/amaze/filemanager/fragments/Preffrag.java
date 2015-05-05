@@ -51,6 +51,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
@@ -791,6 +792,15 @@ public class Preffrag extends PreferenceFragment {
             }
         });
 
+        // G+
+        CheckBoxPreference preference7 = (CheckBoxPreference) findPreference("plus_pic");
+        if (BuildConfig.IS_VERSION_FDROID)
+            preference7.setEnabled(false);
+
+        // Colored navigation bar
+        CheckBoxPreference preference8 = (CheckBoxPreference) findPreference("colorednavigation");
+        if (Build.VERSION.SDK_INT >= 21)
+            preference8.setEnabled(true);
     }
 
     public static void restartPC(final Activity activity) {

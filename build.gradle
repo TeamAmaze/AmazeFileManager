@@ -75,8 +75,11 @@ android {
 
     productFlavors {
         fdroid {
+            buildConfigField "boolean", "IS_VERSION_FDROID", "true"
         }
-        play {}
+        play {
+            buildConfigField "boolean", "IS_VERSION_FDROID", "false"
+        }
     }
 }
 

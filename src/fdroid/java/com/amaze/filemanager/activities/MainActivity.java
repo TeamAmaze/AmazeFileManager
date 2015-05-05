@@ -428,7 +428,7 @@ public class MainActivity extends ActionBarActivity {
             adapter.toggleChecked(select);
         }
         if (theme1 == 1) {
-            mDrawerList.setBackgroundResource(android.R.drawable.screen_background_dark);
+            mDrawerList.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         }
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerList.setDivider(null);

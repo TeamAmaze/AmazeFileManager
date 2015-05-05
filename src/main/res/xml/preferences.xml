@@ -29,6 +29,12 @@
             android:key="fab_skin"
             android:title="@string/fab_skin" />
         <CheckBoxPreference
+            android:key="colorednavigation"
+            android:defaultValue="false"
+            android:title="@string/colourednavigation"
+            android:summary="@string/colourednavigationsum"
+            android:enabled="false" />
+        <CheckBoxPreference
             android:key="coloriseIcons"
             android:checked="true"
             android:title="@string/colorize"
@@ -46,7 +52,8 @@
             android:key="plus_pic"
             android:title="@string/gplus_pic_title"
             android:summary="@string/gplus_pic_summary"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            android:enabled="true"/>
         <Preference
             android:key="uimode"
             android:summary="@string/chooseUI"
@@ -171,6 +178,9 @@
                 <Preference
                     android:title="@string/polish_translation_title"
                     android:summary="@string/polish_translation_summary" />
+                <Preference
+                    android:title="@string/korean_translation_title"
+                    android:summary="@string/korean_translation_summary" />
 
                 </PreferenceScreen>
             <Preference

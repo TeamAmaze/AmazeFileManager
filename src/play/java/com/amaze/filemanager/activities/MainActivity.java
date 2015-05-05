@@ -422,7 +422,9 @@ public class MainActivity extends AppCompatActivity implements
         if (theme1 == 1) {
             settingsbutton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) settingsbutton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
-        }settingsbutton.setOnClickListener(new View.OnClickListener() {
+            ((TextView)settingsbutton.findViewById(R.id.settingtext)).setTextColor(getResources().getColor(R.color.holo_dark_text));
+        }
+        settingsbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent in = new Intent(MainActivity.this, Preferences.class);
@@ -436,10 +438,12 @@ public class MainActivity extends AppCompatActivity implements
 
         });
         View appbutton = findViewById(R.id.appbutton);
-        if (theme1 == 1)
-        {appbutton.setBackgroundResource(R.drawable.safr_ripple_black);
+        if (theme1 == 1) {
+            appbutton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_action_view_as_grid);
-        }appbutton.setOnClickListener(new View.OnClickListener() {
+            ((TextView)appbutton.findViewById(R.id.apptext)).setTextColor(getResources().getColor(R.color.holo_dark_text));
+        }
+        appbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
@@ -455,6 +459,7 @@ public class MainActivity extends AppCompatActivity implements
         if(theme1==1) {
             ((ImageView) bookbutton.findViewById(R.id.bookicon)).setImageResource(R.drawable.ic_action_not_important);
             bookbutton.setBackgroundResource(R.drawable.safr_ripple_black);
+            ((TextView)bookbutton.findViewById(R.id.booktext)).setTextColor(getResources().getColor(R.color.holo_dark_text));
         }
         bookbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -500,7 +505,7 @@ public class MainActivity extends AppCompatActivity implements
             adapter.toggleChecked(select);
         }
         if (theme1 == 1) {
-            mDrawerList.setBackgroundResource(android.R.drawable.screen_background_dark);
+            mDrawerList.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         }
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerList.setDivider(null);
