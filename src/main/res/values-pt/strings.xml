@@ -275,7 +275,8 @@
     <string name="ukrainian_translation_title">Ucraniano</string>
     <string name="portuguese_translation_title">Português</string>
     <string name="polish_translation_title">Polaco</string>
-    <string name="zip_viewer">Visualizador zip</string>
+    <string name="korean_translation_title">Coreano</string>
+	<string name="zip_viewer">Visualizador zip</string>
     <string name="unin_system_apk">Esta aplicação é do sistema. Se a eliminar pode afetar a estabilidade do sistema.\nContinuar?</string>
     <string name="warning">Aviso</string>
     <string name="donate">Donativos</string>
