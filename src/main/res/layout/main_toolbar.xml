@@ -86,18 +86,32 @@
                 <HorizontalScrollView
                     android:scrollbars="none"
                     android:id="@+id/scroll1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="72dp"
                     android:paddingTop="5dp">
 
-                    <TextView
+                    <LinearLayout
                         android:clickable="false"
-                        android:layout_width="wrap_content"
-                        style="@android:style/TextAppearance.Medium"
-                        android:textColor="@android:color/white"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/fullpath" />
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:clickable="false"
+                            android:layout_width="wrap_content"
+                            style="@android:style/TextAppearance.Medium"
+                            android:textColor="@android:color/white"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/fullpath" />
+                        <TextView
+                            android:clickable="false"
+                            android:layout_width="wrap_content"
+                            style="@android:style/TextAppearance.Medium"
+                            android:textColor="@android:color/white"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/fullpath_anim"
+                            android:visibility="gone"/>
+                    </LinearLayout>
                 </HorizontalScrollView>
                 <TextView
                     android:clickable="false"

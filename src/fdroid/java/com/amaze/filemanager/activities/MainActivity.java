@@ -60,6 +60,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -228,6 +230,8 @@ public class MainActivity extends ActionBarActivity {
         buttons = (LinearLayout) findViewById(R.id.buttons);
         scroll = (HorizontalScrollView) findViewById(R.id.scroll);
         scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
+        scroll.setSmoothScrollingEnabled(true);
+        scroll1.setSmoothScrollingEnabled(true);
 
         if (showButtonOnStart)
             floatingActionButton.setVisibility(View.VISIBLE);
@@ -1521,23 +1525,87 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void updatePath(String text){
-        File f=new File(text);
+    public void updatePath(final String newPath, final String oldPath){
+        File f=new File(newPath);
         String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
         String free = utils.readableFileSize(f.getFreeSpace());
         TextView textView = (TextView)pathbar.findViewById(R.id.pathname);
         textView.setText(getResources().getString(R.string.used)+" " + used +" "+ getResources().getString(R.string.free)+" " + free);
 
-        TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
-        bapath.setText(f.getPath());
-        bapath.setAllCaps(true);
-        scroll.post(new Runnable() {
-            @Override
-            public void run() {
-                scroll.fullScroll(View.FOCUS_RIGHT);
-                scroll1.fullScroll(View.FOCUS_RIGHT);
-            }
-        });
+        final TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
+        final TextView animPath = (TextView) pathbar.findViewById(R.id.fullpath_anim);
+
+        // implement animation while setting text
+        final StringBuilder stringBuilder = new StringBuilder();
+        if (newPath.length() >= oldPath.length()) {
+            // navigate forward
+            Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in);
+            stringBuilder.append(newPath);
+            stringBuilder.delete(0, oldPath.length());
+            animPath.setAnimation(slideIn);
+            animPath.animate().setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    animPath.setVisibility(View.GONE);
+                    bapath.setText(newPath);
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    animPath.setVisibility(View.VISIBLE);
+                    animPath.setText(stringBuilder.toString());
+                    //bapath.setText(oldPath);
+
+                    scroll.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scroll.fullScroll(View.FOCUS_RIGHT);
+                            scroll1.fullScroll(View.FOCUS_RIGHT);
+                        }
+                    });
+                }
+            }).start();
+        } else if (newPath.length() <= oldPath.length()) {
+            // navigate backwards
+            Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_out);
+            stringBuilder.append(oldPath);
+            stringBuilder.delete(0, newPath.length());
+            animPath.setAnimation(slideOut);
+            animPath.animate().setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    animPath.setVisibility(View.GONE);
+                    bapath.setText(newPath);
+
+                    scroll.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scroll.fullScroll(View.FOCUS_RIGHT);
+                            scroll1.fullScroll(View.FOCUS_RIGHT);
+                        }
+                    });
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    animPath.setVisibility(View.VISIBLE);
+                    animPath.setText(stringBuilder.toString());
+                    bapath.setText(newPath);
+
+                    scroll.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scroll.fullScroll(View.FOCUS_LEFT);
+                            scroll1.fullScroll(View.FOCUS_LEFT);
+                        }
+                    });
+                }
+            }).start();
+        }
     }
 
     public void initiatebbar(final String current, final Main main) {

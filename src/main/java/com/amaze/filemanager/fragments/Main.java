@@ -307,7 +307,7 @@ public class Main extends android.support.v4.app.Fragment {
                     } catch (Exception e) {
                     }
                 }else{
-                createViews(list, true, new File(cur));
+                    createViews(list, true, new File(cur));
                 }
                 if (savedInstanceState.getBoolean("selection")) {
 
@@ -450,8 +450,7 @@ public class Main extends android.support.v4.app.Fragment {
         }
 
         listView.setAnimation(animation);
-        mainActivity.updatePath(f.getPath());
-
+        //mainActivity.updatePath(f.getPath());
     }
 
     @SuppressWarnings("unchecked")

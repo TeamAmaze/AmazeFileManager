@@ -83,10 +83,11 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 String name=fragments.get(p1).getClass().getName();
                 if(name.contains("Main")){
                     Main ma = ((Main) fragments.get(p1));
+                    tabHandler = new TabHandler(getActivity(), null, null, 1);
                     if (ma.current != null) {
                         try {
                             mainActivity.updateDrawer(ma.current);
-                            mainActivity.updatePath(ma.current);
+                            mainActivity.updatePath(ma.current, tabHandler.findTab(currenttab+1).getPath());
 
                         } catch (Exception e) {
                             //       e.printStackTrace();5
@@ -183,17 +184,24 @@ public class TabFragment extends android.support.v4.app.Fragment {
     }
     TabHandler tabHandler;
 
-    public void updatepaths(){
-                tabHandler = new TabHandler(getActivity(), null, null, 1);
+    public void updatepaths() {
+
+        tabHandler = new TabHandler(getActivity(), null, null, 1);
         int i=1;
         ArrayList<String> items=new ArrayList<String>();
-        tabHandler.clear();for(Fragment fragment:fragments){
+
+        // Getting old path from database before clearing
+        String oldPath = tabHandler.findTab(currenttab + 1).getPath();
+
+        tabHandler.clear();
+        for(Fragment fragment:fragments) {
             if(fragment.getClass().getName().contains("Main")){
                 Main m=(Main)fragment;
                 items.add(m.current);
                 tabHandler.addTab(new Tab(i,m.current,m.current,m.home));
                 i++;
-            }}
+            }
+        }
         try {
             tabSpinnerAdapter=new TabSpinnerAdapter(mainActivity.getSupportActionBar().getThemedContext(), R.layout.rowlayout,items,mainActivity.tabsSpinner,this);
             mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
@@ -201,11 +209,9 @@ public class TabFragment extends android.support.v4.app.Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Sp.edit().putInt("currenttab",currenttab).apply();
-        mainActivity.updatePath(tabHandler.findTab(currenttab+1).getPath());
-
-        System.out.println("updatepaths");
+        mainActivity.updatePath(tabHandler.findTab(currenttab+1).getPath(), oldPath);
     }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
