@@ -1115,13 +1115,15 @@ public class Main extends android.support.v4.app.Fragment {
             String size="";
             if(!hiddenfiles.contains(ele[0])){
                 if (isDirectory(ele)) {
-                    if(!ele[5].trim().equals(""))size=ele[5]+" "+itemsstring;
+                    if(!ele[5].trim().equals("") && !ele[5].toLowerCase().trim().equals("null"))size=ele[5]+" "+itemsstring;
+                    else size="";
                     a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,mFile.get(i)[3],false,ele[4]));
 
                 } else {
 
                     try {
-                        if(!ele[5].trim().equals(""))size=utils.readableFileSize(Long.parseLong(ele[5]));
+                        if(!ele[5].trim().equals("") && !ele[5].toLowerCase().trim().equals("null"))size=utils.readableFileSize(Long.parseLong(ele[5]));
+                        else size="";
                     } catch (NumberFormatException e) {
                         //e.printStackTrace();
                     }
