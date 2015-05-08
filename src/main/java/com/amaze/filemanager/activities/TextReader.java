@@ -95,7 +95,7 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
         setContentView(R.layout.search);
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        skin = Sp.getString("skin_color", "#03A9F4");
+        skin = Sp.getString("skin_color", "#3f51b5");
         String x = getStatusColor();
         skinStatusBar = Color.parseColor(x);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));

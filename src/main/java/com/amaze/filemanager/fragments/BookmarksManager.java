@@ -108,8 +108,8 @@ View rootView;RecyclerView listview;
         Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
         FloatingActionButton floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
         floatingActionButton.show(true);
-        floatingActionButton.setColorNormal(Color.parseColor(((MainActivity)getActivity()).skin));
-        floatingActionButton.setColorPressed(Color.parseColor(((MainActivity)getActivity()).skin));
+        floatingActionButton.setColorNormal(Color.parseColor(((MainActivity)getActivity()).fabskin));
+        floatingActionButton.setColorPressed(Color.parseColor(((MainActivity)getActivity()).fabSkinPressed));
 
         floatingActionButton.setAnimation(animation1);
         //getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);

@@ -154,7 +154,7 @@ public class RarViewer extends Fragment {
         showSize = Sp.getBoolean("showFileSize", false);
         showLastModified = Sp.getBoolean("showLastModified", true);
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
-        skin = Sp.getString("skin_color", "#03A9F4");
+        skin = Sp.getString("skin_color", "#3f51b5");
         mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
         //listView.setDivider(null);

@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements
     private TextView mGoogleName, mGoogleId;
     private FloatingActionButton floatingActionButton;
     private boolean showButtonOnStart = false;
-    private String fabskin, fabSkinPressed;
+    public String fabskin, fabSkinPressed;
     private LinearLayout buttons;
     private HorizontalScrollView scroll, scroll1;
     private CountDownTimer timer;
@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements
         tabHandler=new TabHandler(this,null,null,1);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-        fabskin = Sp.getString("fab_skin_color", "#84ffff");
+        fabskin = Sp.getString("fab_skin_color", "#e91e63");
         fabSkinPressed = getStatusColor(fabskin);
 
         drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader, null);
@@ -376,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements
 
         }
 
-        skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#03A9F4");
+        skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#3f51b5");
 
         findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
@@ -785,14 +785,18 @@ public class MainActivity extends AppCompatActivity implements
         MenuItem search = menu.findItem(R.id.search);
         MenuItem paste = menu.findItem(R.id.paste);
         String f= null;
-        try {
-            Fragment fragment=getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        Fragment fragment;
+        try { fragment=getSupportFragmentManager().findFragmentById(R.id.content_frame);
             f = fragment.getClass().getName();
         } catch (Exception e1) {
             return true;
         }
         if(f.contains("TabFragment")) {
-                tabsSpinner.setVisibility(View.VISIBLE);
+            try {
+                TabFragment tabFragment=(TabFragment)fragment;
+                updatePath(((Main)tabFragment.getTab()).current);
+            } catch (Exception e) {}
+            tabsSpinner.setVisibility(View.VISIBLE);
                 getSupportActionBar().setTitle("");
                 if (aBoolean) {
                     s.setTitle(getResources().getString(R.string.gridview));

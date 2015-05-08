@@ -128,11 +128,17 @@
             </LinearLayout>
 
         </FrameLayout>
+        <FrameLayout
+            android:layout_below="@id/buttonbarframe"
+            android:id="@+id/content_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
         <com.melnykov.fab.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             app:fab_colorRipple="#77777777"
             app:fab_type="mini"
+            app:fab_shadow="false"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
@@ -140,11 +146,6 @@
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/action_bar"
             android:src="@drawable/ic_action_new" />
-        <FrameLayout
-            android:layout_below="@id/buttonbarframe"
-            android:id="@+id/content_frame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
     </RelativeLayout>
 

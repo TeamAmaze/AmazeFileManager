@@ -102,7 +102,7 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         this.m = m;
         putColors();
         color=colors.get(m.skin);
-        if(color==null){color=colors.get("#03A9F4");}
+        if(color==null){color=colors.get("#3f51b5");}
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {

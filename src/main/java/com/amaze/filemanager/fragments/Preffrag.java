@@ -79,7 +79,7 @@ public class Preffrag extends PreferenceFragment {
         addPreferencesFromResource(R.xml.preferences);
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        skin = sharedPref.getString("skin_color", "#03A9F4");
+        skin = sharedPref.getString("skin_color", "#3f51b5");
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
 

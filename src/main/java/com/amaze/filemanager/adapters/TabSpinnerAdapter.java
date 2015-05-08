@@ -60,9 +60,9 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         this.tabFragment=tabFragment;
         putColors();
         final SharedPreferences sharedPreferences1 = PreferenceManager.getDefaultSharedPreferences(context);
-        skin = sharedPreferences1.getString("skin_color", "#03A9F4");
+        skin = sharedPreferences1.getString("skin_color", "#3f51b5");
         color=colors.get(skin);
-        if(color==null){color=colors.get("#03A9F4");}
+        if(color==null){color=colors.get("#3f51b5");}
     }
 
     void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c});}

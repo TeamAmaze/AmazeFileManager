@@ -69,7 +69,7 @@ public class Preferences extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prefsfrag);
         Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
-        skin = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("skin_color", "#03A9F4");
+        skin = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("skin_color", "#3f51b5");
 
         String x = getStatusColor();
         skinStatusBar = Color.parseColor(x);

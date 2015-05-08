@@ -123,7 +123,7 @@ public class Main extends android.support.v4.app.Fragment {
     public IconHolder ic;
     public MainActivity mainActivity;
     public boolean showButtonOnStart = false;
-    public String skin,fabskin, fabSkinPressed;
+    public String skin;
     public int skinselection;
     public int theme;
     public int theme1;
@@ -156,7 +156,7 @@ public class Main extends android.support.v4.app.Fragment {
         tabHandler=new TabHandler(getActivity(),null,null,1);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         savepaths=Sp.getBoolean("savepaths", true);
-        skin = Sp.getString("skin_color", "#03A9F4");
+        skin = Sp.getString("skin_color", "#3f51b5");
         sh = new Shortcuts(getActivity());
         islist = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();
