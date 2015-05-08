@@ -450,7 +450,6 @@ public class Main extends android.support.v4.app.Fragment {
         }
 
         listView.setAnimation(animation);
-        //mainActivity.updatePath(f.getPath());
     }
 
     @SuppressWarnings("unchecked")

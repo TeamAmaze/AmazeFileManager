@@ -145,6 +145,9 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         }
 
         if(myChecked.get(position)){
+            if(m.theme1==0)
+            rowView.setBackgroundColor(Color.parseColor("#ffeeeeee"));
+            else rowView.setBackgroundColor(Color.parseColor("#ff424242"));
             imageView.setColorFilter(colorMatrixColorFilter);
             //textView.setTypeface(Typeface.DEFAULT_BOLD);
             textView.setTextColor(Color.parseColor(m.skin));
@@ -160,7 +163,7 @@ public class DrawerAdapter extends ArrayAdapter<String> {
             }
             else
             {
-                textView.setTextColor(m.getResources().getColor(android.R.color.darker_gray));
+                textView.setTextColor(m.getResources().getColor(android.R.color.white));
             }
             imageView.setImageResource(R.drawable.folder_drawer);
         }

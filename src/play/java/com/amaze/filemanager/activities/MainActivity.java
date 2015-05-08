@@ -32,6 +32,7 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -66,6 +67,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -414,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements
         if (theme1 == 1) {
             settingsbutton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) settingsbutton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
-            ((TextView)settingsbutton.findViewById(R.id.settingtext)).setTextColor(getResources().getColor(R.color.holo_dark_text));
+            ((TextView)settingsbutton.findViewById(R.id.settingtext)).setTextColor(getResources().getColor(android.R.color.white));
         }
         settingsbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -433,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements
         if (theme1 == 1) {
             appbutton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_action_view_as_grid);
-            ((TextView)appbutton.findViewById(R.id.apptext)).setTextColor(getResources().getColor(R.color.holo_dark_text));
+            ((TextView)appbutton.findViewById(R.id.apptext)).setTextColor(getResources().getColor(android.R.color.white));
         }
         appbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -451,7 +453,7 @@ public class MainActivity extends AppCompatActivity implements
         if(theme1==1) {
             ((ImageView) bookbutton.findViewById(R.id.bookicon)).setImageResource(R.drawable.ic_action_not_important);
             bookbutton.setBackgroundResource(R.drawable.safr_ripple_black);
-            ((TextView)bookbutton.findViewById(R.id.booktext)).setTextColor(getResources().getColor(R.color.holo_dark_text));
+            ((TextView)bookbutton.findViewById(R.id.booktext)).setTextColor(getResources().getColor(android.R.color.white));
         }
         bookbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -779,23 +781,25 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-
         MenuItem s = menu.findItem(R.id.view);
         MenuItem search = menu.findItem(R.id.search);
         MenuItem paste = menu.findItem(R.id.paste);
-
-
+        String f= null;
         try {
-            tabsSpinner.setVisibility(View.VISIBLE);
-            TabFragment tabFragment=getFragment();
-            String name=tabFragment.getTab1().getClass().getName();
-            toolbar.setTitle("");
-            if (aBoolean) {
-                s.setTitle(getResources().getString(R.string.gridview));
-            } else {
-                s.setTitle(getResources().getString(R.string.listview));
-            } if(Build.VERSION.SDK_INT>=21)toolbar.setElevation(0);
-            if(name.contains("Main")) {
+            Fragment fragment=getSupportFragmentManager().findFragmentById(R.id.content_frame);
+            f = fragment.getClass().getName();
+        } catch (Exception e1) {
+            return true;
+        }
+        if(f.contains("TabFragment")) {
+                tabsSpinner.setVisibility(View.VISIBLE);
+                getSupportActionBar().setTitle("");
+                if (aBoolean) {
+                    s.setTitle(getResources().getString(R.string.gridview));
+                } else {
+                    s.setTitle(getResources().getString(R.string.listview));
+                }
+                if (Build.VERSION.SDK_INT >= 21) toolbar.setElevation(0);
                 invalidatePasteButton(paste);
                 search.setVisible(true);
                 menu.findItem(R.id.search).setVisible(true);
@@ -805,8 +809,11 @@ public class MainActivity extends AppCompatActivity implements
                 menu.findItem(R.id.hiddenitems).setVisible(true);
                 menu.findItem(R.id.view).setVisible(true);
                 invalidatePasteButton(menu.findItem(R.id.paste));
-            } else {
-                search.setVisible(false);
+                findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
+                findViewById(R.id.fab).setVisibility(View.VISIBLE);
+            }else if(f.contains("AppsList") || f.contains("BookmarksManager") || f.contains("ProcessViewer")){    tabsSpinner.setVisibility(View.GONE);
+                findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
+                findViewById(R.id.fab).setVisibility(View.GONE);
                 menu.findItem(R.id.search).setVisible(false);
                 menu.findItem(R.id.home).setVisible(false);
                 menu.findItem(R.id.history).setVisible(false);
@@ -814,20 +821,17 @@ public class MainActivity extends AppCompatActivity implements
                 menu.findItem(R.id.hiddenitems).setVisible(false);
                 menu.findItem(R.id.view).setVisible(false);
                 menu.findItem(R.id.paste).setVisible(false);
-                paste.setVisible(false);
-            }
-        } catch (ClassCastException e) {
-            tabsSpinner.setVisibility(View.GONE);
-            //toolbar.setTitle(list.get(select));
-            menu.findItem(R.id.search).setVisible(false);
-            menu.findItem(R.id.home).setVisible(false);
-            menu.findItem(R.id.history).setVisible(false);
-            menu.findItem(R.id.item10).setVisible(false);
-            menu.findItem(R.id.hiddenitems).setVisible(false);
-            menu.findItem(R.id.view).setVisible(false);
-            menu.findItem(R.id.paste).setVisible(false);
-            e.printStackTrace();
-        }catch (Exception e){}
+            }else if(f.contains("ZipViewer") || f.contains("RarViewer")){
+                tabsSpinner.setVisibility(View.GONE);
+                findViewById(R.id.fab).setVisibility(View.GONE);
+                menu.findItem(R.id.search).setVisible(false);
+                menu.findItem(R.id.home).setVisible(false);
+                menu.findItem(R.id.history).setVisible(false);
+                menu.findItem(R.id.item10).setVisible(false);
+                menu.findItem(R.id.hiddenitems).setVisible(false);
+                menu.findItem(R.id.view).setVisible(false);
+                menu.findItem(R.id.paste).setVisible(false);}
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -1025,14 +1029,25 @@ public class MainActivity extends AppCompatActivity implements
     public void search() {
         final Main ma=(Main)((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
         final String fpath = ma.current;
-        final MainActivity mainActivity=this;
-        //Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.searchpath) + fpath, Toast.LENGTH_LONG).show();
         final MaterialDialog.Builder a = new MaterialDialog.Builder(this);
         a.title(R.string.search);
         View v =getLayoutInflater().inflate(R.layout.dialog, null);
         final EditText e = (EditText) v.findViewById(R.id.newname);
         e.setHint(utils.getString(this, R.string.enterfile));
         a.customView(v, true);
+        e.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                e.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager inputMethodManager= (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.showSoftInput(e, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                });
+            }
+        });
+        e.requestFocus();
         if(theme1==1)a.theme(Theme.DARK);
         a.negativeText(R.string.cancel);
         a.positiveText(R.string.search);
@@ -1738,16 +1753,20 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public void updatePath(final String newPath, final String oldPath){
-        File f=new File(newPath);
+    public void updatePath(final String newPath){
+        File f= null;
+        try {
+            f = new File(newPath);
+        } catch (Exception e) {
+            return;
+        }
         String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
         String free = utils.readableFileSize(f.getFreeSpace());
         TextView textView = (TextView)pathbar.findViewById(R.id.pathname);
         textView.setText(getResources().getString(R.string.used)+" " + used +" "+ getResources().getString(R.string.free)+" " + free);
-
         final TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
         final TextView animPath = (TextView) pathbar.findViewById(R.id.fullpath_anim);
-
+        final String oldPath=bapath.getText().toString();
         // implement animation while setting text
         final StringBuilder stringBuilder = new StringBuilder();
         if (newPath.length() >= oldPath.length()) {

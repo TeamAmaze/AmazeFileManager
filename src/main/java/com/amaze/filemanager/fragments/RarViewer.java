@@ -167,6 +167,11 @@ public class RarViewer extends Fragment {
         mainActivity.tabsSpinner.setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
     }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mainActivity.supportInvalidateOptionsMenu();
+    }
     public String getSelectionColor(){
 
         String[] colors = new String[]{

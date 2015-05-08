@@ -87,7 +87,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                     if (ma.current != null) {
                         try {
                             mainActivity.updateDrawer(ma.current);
-                            mainActivity.updatePath(ma.current, tabHandler.findTab(currenttab+1).getPath());
+                            mainActivity.updatePath(ma.current);
 
                         } catch (Exception e) {
                             //       e.printStackTrace();5
@@ -171,7 +171,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
     }
-
     @Override
     public void onDestroyView(){
         Sp.edit().putInt("currenttab",currenttab).apply();
@@ -191,7 +190,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
         ArrayList<String> items=new ArrayList<String>();
 
         // Getting old path from database before clearing
-        String oldPath = tabHandler.findTab(currenttab + 1).getPath();
 
         tabHandler.clear();
         for(Fragment fragment:fragments) {
@@ -209,7 +207,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mainActivity.updatePath(tabHandler.findTab(currenttab+1).getPath(), oldPath);
+        mainActivity.updatePath(tabHandler.findTab(currenttab+1).getPath());
     }
 
     @Override

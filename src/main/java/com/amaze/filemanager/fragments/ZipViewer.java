@@ -296,6 +296,11 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         }mActionMode=null;}
     };
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    mainActivity.supportInvalidateOptionsMenu();
+    }
+        @Override
     public void onResume() {
         super.onResume();
         if (files.size()==1) {
@@ -316,8 +321,7 @@ public boolean cangoBack(){
         new ZipHelperTask(this, current).execute(f);
     }
     public void bbar(){
-        ((TextView) mainActivity.findViewById(R.id.fullpath)).setText(zipViewer.current);
-        ((TextView) mainActivity.findViewById(R.id.pathname)).setText("");
+        mainActivity.updatePath(current);
 
     }
     public void createviews(ArrayList<ZipObj> zipEntries,String dir){
