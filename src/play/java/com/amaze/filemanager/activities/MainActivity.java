@@ -22,6 +22,7 @@ package com.amaze.filemanager.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -377,7 +378,6 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#3f51b5");
-
         findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
@@ -554,6 +554,11 @@ public class MainActivity extends AppCompatActivity implements
                 } else mDrawerLayout.openDrawer(mDrawerLinear);
             }
         });*/
+        //recents header color implementation
+        if (Build.VERSION.SDK_INT>=21) {
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap(), Color.parseColor(skin));
+            ((Activity)this).setTaskDescription(taskDescription);
+        }
     }
 
     /**
@@ -794,7 +799,7 @@ public class MainActivity extends AppCompatActivity implements
         if(f.contains("TabFragment")) {
             try {
                 TabFragment tabFragment=(TabFragment)fragment;
-                updatePath(((Main)tabFragment.getTab()).current);
+                updatePath(((Main)tabFragment.getTab()).current,true);
             } catch (Exception e) {}
             tabsSpinner.setVisibility(View.VISIBLE);
                 getSupportActionBar().setTitle("");
@@ -1757,18 +1762,19 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public void updatePath(final String newPath){
+    public void updatePath(final String newPath,boolean calcsize){
         File f= null;
         try {
             f = new File(newPath);
         } catch (Exception e) {
             return;
-        }
-        String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
-        String free = utils.readableFileSize(f.getFreeSpace());
-        TextView textView = (TextView)pathbar.findViewById(R.id.pathname);
-        textView.setText(getResources().getString(R.string.used)+" " + used +" "+ getResources().getString(R.string.free)+" " + free);
-        final TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
+        }   TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
+        textView.setText("");
+        if(calcsize) {
+            String used = utils.readableFileSize(f.getTotalSpace() - f.getFreeSpace());
+            String free = utils.readableFileSize(f.getFreeSpace());
+            textView.setText(getResources().getString(R.string.used) + " " + used + " " + getResources().getString(R.string.free) + " " + free);
+        }final TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
         final TextView animPath = (TextView) pathbar.findViewById(R.id.fullpath_anim);
         final String oldPath=bapath.getText().toString();
         // implement animation while setting text

@@ -105,7 +105,7 @@
             android:divider="@null"/>
     </android.support.v4.widget.SwipeRefreshLayout>
     <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/fab1"
         android:layout_width="wrap_content"
         app:fab_colorNormal="#ffffff"
         app:fab_colorPressed="#ffffff"

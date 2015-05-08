@@ -321,7 +321,7 @@ public boolean cangoBack(){
         new ZipHelperTask(this, current).execute(f);
     }
     public void bbar(){
-        mainActivity.updatePath(current);
+        mainActivity.updatePath(current,false);
 
     }
     public void createviews(ArrayList<ZipObj> zipEntries,String dir){

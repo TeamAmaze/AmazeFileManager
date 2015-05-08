@@ -87,7 +87,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                     if (ma.current != null) {
                         try {
                             mainActivity.updateDrawer(ma.current);
-                            mainActivity.updatePath(ma.current);
+                            mainActivity.updatePath(ma.current,true);
 
                         } catch (Exception e) {
                             //       e.printStackTrace();5
@@ -207,7 +207,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mainActivity.updatePath(tabHandler.findTab(currenttab+1).getPath());
+        mainActivity.updatePath(tabHandler.findTab(currenttab+1).getPath(),true);
     }
 
     @Override

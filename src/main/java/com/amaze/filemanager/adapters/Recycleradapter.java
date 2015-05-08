@@ -444,9 +444,10 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     if (main.uimode == 0) {
                         if (main.theme1 == 0)
                             holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
-                        else
+                        else{
                             holder.rl.setBackgroundResource(R.drawable.ic_grid_card_background_dark);
-                    } else if (main.uimode == 1) {
+                            holder.rl.findViewById(R.id.icon_frame).setBackgroundColor(Color.parseColor("#303030"));
+                        }} else if (main.uimode == 1) {
                         holder.rl.setBackgroundResource(R.drawable.bg_card);
                     }
                 }
