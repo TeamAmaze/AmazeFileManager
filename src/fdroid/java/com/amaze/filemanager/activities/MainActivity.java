@@ -177,7 +177,7 @@ public class MainActivity extends ActionBarActivity {
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-        fabskin = Sp.getString("fab_skin_color", "#84ffff");
+        fabskin = Sp.getString("fab_skin_color", "#e91e63");
         fabSkinPressed = getStatusColor(fabskin);
 
         drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader, null);
@@ -308,7 +308,7 @@ public class MainActivity extends ActionBarActivity {
 
         }
 
-        skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#03A9F4");
+        skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#3f51b5");
 
         findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
@@ -714,46 +714,43 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-
         MenuItem s = menu.findItem(R.id.view);
         MenuItem search = menu.findItem(R.id.search);
         MenuItem paste = menu.findItem(R.id.paste);
-
-
-        try {
+        String f= null;
+        Fragment fragment;
+        try { fragment=getSupportFragmentManager().findFragmentById(R.id.content_frame);
+            f = fragment.getClass().getName();
+        } catch (Exception e1) {
+            return true;
+        }
+        if(f.contains("TabFragment")) {
+            try {
+                TabFragment tabFragment=(TabFragment)fragment;
+                updatePath(((Main)tabFragment.getTab()).current);
+            } catch (Exception e) {}
             tabsSpinner.setVisibility(View.VISIBLE);
-            TabFragment tabFragment=getFragment();
-            String name=tabFragment.getTab1().getClass().getName();
-            toolbar.setTitle("");
+            getSupportActionBar().setTitle("");
             if (aBoolean) {
                 s.setTitle(getResources().getString(R.string.gridview));
             } else {
                 s.setTitle(getResources().getString(R.string.listview));
-            } if(Build.VERSION.SDK_INT>=21)toolbar.setElevation(0);
-            if(name.contains("Main")) {
-                invalidatePasteButton(paste);
-                search.setVisible(true);
-                menu.findItem(R.id.search).setVisible(true);
-                menu.findItem(R.id.home).setVisible(true);
-                menu.findItem(R.id.history).setVisible(true);
-                menu.findItem(R.id.item10).setVisible(true);
-                menu.findItem(R.id.hiddenitems).setVisible(true);
-                menu.findItem(R.id.view).setVisible(true);
-                invalidatePasteButton(menu.findItem(R.id.paste));
-            } else {
-                search.setVisible(false);
-                menu.findItem(R.id.search).setVisible(false);
-                menu.findItem(R.id.home).setVisible(false);
-                menu.findItem(R.id.history).setVisible(false);
-                menu.findItem(R.id.item10).setVisible(false);
-                menu.findItem(R.id.hiddenitems).setVisible(false);
-                menu.findItem(R.id.view).setVisible(false);
-                menu.findItem(R.id.paste).setVisible(false);
-                paste.setVisible(false);
             }
-        } catch (ClassCastException e) {
-            tabsSpinner.setVisibility(View.GONE);
-            //toolbar.setTitle(list.get(select));
+            if (Build.VERSION.SDK_INT >= 21) toolbar.setElevation(0);
+            invalidatePasteButton(paste);
+            search.setVisible(true);
+            menu.findItem(R.id.search).setVisible(true);
+            menu.findItem(R.id.home).setVisible(true);
+            menu.findItem(R.id.history).setVisible(true);
+            menu.findItem(R.id.item10).setVisible(true);
+            menu.findItem(R.id.hiddenitems).setVisible(true);
+            menu.findItem(R.id.view).setVisible(true);
+            invalidatePasteButton(menu.findItem(R.id.paste));
+            findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
+            findViewById(R.id.fab).setVisibility(View.VISIBLE);
+        }else if(f.contains("AppsList") || f.contains("BookmarksManager") || f.contains("ProcessViewer")){    tabsSpinner.setVisibility(View.GONE);
+            findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
+            findViewById(R.id.fab).setVisibility(View.GONE);
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
@@ -761,8 +758,17 @@ public class MainActivity extends ActionBarActivity {
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
-            e.printStackTrace();
-        }catch (Exception e){}
+        }else if(f.contains("ZipViewer") || f.contains("RarViewer")){
+            tabsSpinner.setVisibility(View.GONE);
+            findViewById(R.id.fab).setVisibility(View.GONE);
+            menu.findItem(R.id.search).setVisible(false);
+            menu.findItem(R.id.home).setVisible(false);
+            menu.findItem(R.id.history).setVisible(false);
+            menu.findItem(R.id.item10).setVisible(false);
+            menu.findItem(R.id.hiddenitems).setVisible(false);
+            menu.findItem(R.id.view).setVisible(false);
+            menu.findItem(R.id.paste).setVisible(false);}
+
         return super.onPrepareOptionsMenu(menu);
     }
 
