@@ -143,10 +143,13 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        final ZipObj rowItem=enter.get(position);
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position1) {
         final ViewHolder holder=(ZipAdapter.ViewHolder)viewHolder;
-        final int p=position;
+        if(position1==0)
+        {holder.rl.setMinimumHeight(zipViewer.paddingTop);
+            return;
+        }final ZipObj rowItem=enter.get(position1-1);
+        final int p=position1-1;
         GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
         if(rowItem.getEntry()==null){
             holder.imageView.setImageResource(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
@@ -214,7 +217,7 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
             }
         });
-        Boolean checked = myChecked.get(position);
+        Boolean checked = myChecked.get(p);
         if (checked != null) {
 
             if (zipViewer.uimode == 0) {
@@ -286,9 +289,11 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     @Override
     public long getHeaderId(int position) {
-    if(enter.get(position)==null)return -1;
-    else if(enter.get(position).isDirectory())return 'D';
-    else return 'F';
+    if(position!=0){
+    if(enter.get(position-1)==null)return -1;
+    else if(enter.get(position-1).isDirectory())return 'D';
+    else return 'F';}
+        return -1;
     }
     public static class HeaderViewHolder extends RecyclerView.ViewHolder {
         public TextView ext;
@@ -309,15 +314,16 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-        HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
-        if(enter.get(i)!=null && enter.get(i).isDirectory())holder.ext.setText("Directories");
+        if(i!=0){
+            HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
+        if(enter.get(i-1)!=null && enter.get(i-1).isDirectory())holder.ext.setText("Directories");
         else holder.ext.setText("Files");
-    }
+    }}
 
 
     @Override
     public int getItemCount() {
-        return enter.size();
+        return enter.size()+1;
     }
 
 }

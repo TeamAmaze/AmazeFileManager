@@ -23,11 +23,19 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:id="@+id/lin"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         >
 
         <android.support.v7.widget.Toolbar
@@ -53,10 +61,8 @@
         </android.support.v7.widget.Toolbar>
 
         <FrameLayout
-            android:elevation="4dp"
             android:paddingRight="16dp"
             android:id="@+id/buttonbarframe"
-            android:layout_below="@id/action_bar"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:minHeight="72dp">
@@ -128,27 +134,19 @@
             </LinearLayout>
 
         </FrameLayout>
-        <FrameLayout
-            android:layout_below="@id/buttonbarframe"
-            android:id="@+id/content_frame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    </LinearLayout>
         <com.melnykov.fab.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             app:fab_colorRipple="#77777777"
-            app:fab_type="mini"
             app:fab_shadow="false"
+            android:layout_gravity="bottom|right"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="52dp"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/action_bar"
             android:src="@drawable/ic_action_new" />
 
-    </RelativeLayout>
-
+</FrameLayout>
     <!--
          android:layout_gravity="start" tells DrawerLayout to treat
          this as a sliding drawer on the left side for left-to-right

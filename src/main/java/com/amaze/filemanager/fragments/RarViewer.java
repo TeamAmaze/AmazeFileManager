@@ -24,7 +24,9 @@ package com.amaze.filemanager.fragments;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +35,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -42,6 +45,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +57,7 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.RarHelperTask;
 import com.amaze.filemanager.utils.DividerItemDecoration;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.HidingScrollListener;
 import com.amaze.filemanager.utils.SpacesItemDecoration;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
@@ -89,6 +95,9 @@ public class RarViewer extends Fragment {
     DividerItemDecoration dividerItemDecoration;
     public int uimode;
 
+    public int paddingTop;
+    int mToolbarHeight,hidemode;
+    View mToolbarContainer;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
@@ -159,10 +168,26 @@ public class RarViewer extends Fragment {
         skinselection = Color.parseColor(x);
         files = new ArrayList<File>();
         loadlist(f.getPath());
+        mToolbarContainer=getActivity().findViewById(R.id.lin);
+        hidemode=Sp.getInt("hidemode",0);
+        paddingTop = (mToolbarHeight=getToolbarHeight(getActivity())) + dpToPx(72);
         try{mainActivity.toolbar.setTitle(f.getName());}catch (Exception e){
         mainActivity.toolbar.setTitle(getResources().getString(R.string.zip_viewer));}
         mainActivity.tabsSpinner.setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
+    }
+    public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
+    }
+    public static int getToolbarHeight(Context context) {
+        final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
+                new int[]{android.R.attr.actionBarSize});
+        int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
+        styledAttributes.recycle();
+
+        return toolbarHeight;
     }
     @Override
     public void onDestroyView() {
@@ -363,7 +388,24 @@ String path;
             listView.addItemDecoration(headersDecor);
             addheader=false;
         }
+        listView.setOnScrollListener(new HidingScrollListener(getActivity(),hidemode) {
 
+            @Override
+            public void onMoved(int distance) {
+                mToolbarContainer.setTranslationY(-distance);
+            }
+
+            @Override
+            public void onShow() {
+                mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+            }
+
+            @Override
+            public void onHide() {
+                mToolbarContainer.findViewById(R.id.lin).animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(2)).start();
+            }
+
+        });
         zipViewer.current = dir;
         zipViewer.bbar();
         swipeRefreshLayout.setRefreshing(false);

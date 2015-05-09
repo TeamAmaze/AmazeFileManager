@@ -135,6 +135,27 @@ public class Preffrag extends PreferenceFragment {
                 return true;
             }
         });
+        findPreference("hidemode").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String[] sort = getResources().getStringArray(R.array.uimode);
+                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                if(theme==1)a.theme(Theme.DARK);
+                a.title("Hide Mode");
+                int current = sharedPref.getInt("hidemode", 0);
+                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
+                    @Override
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        sharedPref.edit().putString("hidemode", "" + which).commit();
+                        dialog.dismiss();
+                        return true;
+                    }
+                });
+                a.build().show();
+                return true;
+            }
+        });
+
         if(Build.VERSION.SDK_INT>=21)
         findPreference("colorednavigation").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override

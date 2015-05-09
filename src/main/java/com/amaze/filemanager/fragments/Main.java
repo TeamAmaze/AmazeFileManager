@@ -147,7 +147,7 @@ public class Main extends android.support.v4.app.Fragment {
     StickyRecyclerHeadersDecoration headersDecor;
     DividerItemDecoration dividerItemDecoration;
     public int paddingTop;
-    int mToolbarHeight;
+    int mToolbarHeight,hidemode;
     View mToolbarContainer;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -174,6 +174,7 @@ public class Main extends android.support.v4.app.Fragment {
             } else
                 theme1 = 0;
         }
+        hidemode=Sp.getInt("hidemode",0);
         showPermissions=Sp.getBoolean("showPermissions",false);
         showSize=Sp.getBoolean("showFileSize",false);
         gobackitem=Sp.getBoolean("goBack_checkbox", false);
@@ -219,7 +220,6 @@ public class Main extends android.support.v4.app.Fragment {
             listView.setLayoutManager(mLayoutManagerGrid);
         }
          paddingTop = (mToolbarHeight=getToolbarHeight(getActivity())) + dpToPx(72);
-        mToolbarContainer.setBackgroundColor(Color.parseColor(skin));
 
      //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
         return rootView;
@@ -522,7 +522,7 @@ public class Main extends android.support.v4.app.Fragment {
                     //floatingActionButton.show();
                     mainActivity.updatepaths();
 
-                    listView.setOnScrollListener(new HidingScrollListener(getActivity()) {
+                    listView.setOnScrollListener(new HidingScrollListener(getActivity(),hidemode) {
 
                         @Override
                         public void onMoved(int distance) {
@@ -542,6 +542,7 @@ public class Main extends android.support.v4.app.Fragment {
                     });
                     if (buttons.getVisibility() == View.VISIBLE) mainActivity.bbar(current, this);
 
+                    mToolbarContainer.setBackgroundColor(Color.parseColor(skin));
                     mainActivity.updateDrawer(current);
                     mainActivity.updatepager();
 

@@ -118,8 +118,9 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     @Override
     public long getHeaderId(int position) {
-        if(enter.get(position)==null)return -1;
-        else if(enter.get(position).isDirectory())return 'D';
+        if(position==0)return -1;
+        if(enter.get(position-1)==null)return -1;
+        else if(enter.get(position-1).isDirectory())return 'D';
         else return 'F';
     }
     public static class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -141,10 +142,11 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
+        if(i!=0){
         HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
-        if(enter.get(i)!=null && enter.get(i).isDirectory())holder.ext.setText("Directories");
+        if(enter.get(i-1)!=null && enter.get(i-1).isDirectory())holder.ext.setText("Directories");
         else holder.ext.setText("Files");
-    }
+    }}
 
 
     @Override
@@ -157,11 +159,16 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder vholder, int position) {
-        final FileHeader rowItem = enter.get(position);
-        zipViewer.elements.add(position, headerRequired(rowItem));
-        final int p = position;
+    public void onBindViewHolder(RecyclerView.ViewHolder vholder, int position1) {
         final RarAdapter.ViewHolder holder=(RarAdapter.ViewHolder)vholder;
+
+        if(position1==0){
+            holder.rl.setMinimumHeight(zipViewer.paddingTop);
+            return;
+        }
+            final FileHeader rowItem = enter.get(position1-1);
+        zipViewer.elements.add(position1-1, headerRequired(rowItem));
+        final int p = position1-1;
 
         GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
 
@@ -206,7 +213,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
                                                }
         );
-        Boolean checked = myChecked.get(position);
+        Boolean checked = myChecked.get(p);
         if (checked != null) {
 
             if (zipViewer.mainActivity.theme1 == 0) {
@@ -277,7 +284,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         return null;
     }    @Override
          public int getItemCount() {
-        return enter.size();
+        return enter.size()+1;
     }
 
 }
