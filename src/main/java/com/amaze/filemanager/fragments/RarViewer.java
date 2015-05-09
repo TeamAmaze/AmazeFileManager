@@ -105,7 +105,7 @@ public class RarViewer extends Fragment {
         });
 
         TextView textView = (TextView) mainActivity.pathbar.findViewById(R.id.fullpath);
-        mainActivity.findViewById(R.id.fab).setVisibility(View.GONE);
+
         mainActivity.pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,9 +155,6 @@ public class RarViewer extends Fragment {
         showLastModified = Sp.getBoolean("showLastModified", true);
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
         skin = Sp.getString("skin_color", "#3f51b5");
-        mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
-
-        //listView.setDivider(null);
         String x = getSelectionColor();
         skinselection = Color.parseColor(x);
         files = new ArrayList<File>();
@@ -171,6 +168,7 @@ public class RarViewer extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mainActivity.supportInvalidateOptionsMenu();
+        ((FloatingActionButton)getActivity().findViewById(R.id.fab)).show();
     }
     public String getSelectionColor(){
 
@@ -322,8 +320,6 @@ public class RarViewer extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-        floatingActionButton.hide(true);
         if (files.size()==1) {
 
             new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(files);

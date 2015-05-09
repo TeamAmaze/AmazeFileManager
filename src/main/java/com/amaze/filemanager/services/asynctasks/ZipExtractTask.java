@@ -66,8 +66,7 @@ public class ZipExtractTask extends AsyncTask<Void, Void, Void> {
 
         String cmd = "chmod 777 " + output.getPath();
         Log.d("change permissions", cmd);
-        RootTools.remount(output.getParent(), "rw");
-        RootHelper.runAndWait(cmd, true);
+        RootHelper.runAndWait(cmd, false);
         Futils futils = new Futils();
         futils.openFile(output, (MainActivity) zipViewer);
 }

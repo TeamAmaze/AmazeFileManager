@@ -487,6 +487,10 @@ public class MainActivity extends ActionBarActivity {
                 } else mDrawerLayout.openDrawer(mDrawerLinear);
             }
         });*/
+        if (Build.VERSION.SDK_INT>=21) {
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap(), Color.parseColor(skin));
+            ((Activity)this).setTaskDescription(taskDescription);
+        }
     }
 
     /**
