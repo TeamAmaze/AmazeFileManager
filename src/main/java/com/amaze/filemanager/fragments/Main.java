@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -46,6 +47,7 @@ import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -55,8 +57,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -74,6 +78,7 @@ import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.services.asynctasks.LoadSearchList;
 import com.amaze.filemanager.utils.DividerItemDecoration;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.HidingScrollListener;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.IconHolder;
 import com.amaze.filemanager.utils.IconUtils;
@@ -81,7 +86,6 @@ import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.amaze.filemanager.utils.SpacesItemDecoration;
-import com.melnykov.fab.FloatingActionButton;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
@@ -132,7 +136,6 @@ public class Main extends android.support.v4.app.Fragment {
     public Animation animation,animation1;
     public String year,goback;
     ArrayList<String> hiddenfiles;
-    public FloatingActionButton floatingActionButton;
     String Intentpath,itemsstring;
     int no;
     TabHandler tabHandler;
@@ -144,7 +147,8 @@ public class Main extends android.support.v4.app.Fragment {
     StickyRecyclerHeadersDecoration headersDecor;
     DividerItemDecoration dividerItemDecoration;
     private String path;
-
+    int mToolbarHeight;
+    View mToolbarContainer;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -187,7 +191,7 @@ public class Main extends android.support.v4.app.Fragment {
         Intentpath=getArguments().getString("path");
         animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
         animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
-
+        mToolbarContainer=getActivity().findViewById(R.id.lin);
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
         pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
         showThumbs=Sp.getBoolean("showThumbs", true);
@@ -214,9 +218,23 @@ public class Main extends android.support.v4.app.Fragment {
         } else {
             listView.setLayoutManager(mLayoutManagerGrid);
         }
+        int paddingTop = (mToolbarHeight=getToolbarHeight(getActivity())) + dpToPx(72);
+        mToolbarContainer.setBackgroundColor(Color.parseColor(skin));
+        listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
         return rootView;
+    }public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
     }
+    public static int getToolbarHeight(Context context) {
+        final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
+                new int[]{android.R.attr.actionBarSize});
+        int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
+        styledAttributes.recycle();
 
+        return toolbarHeight;
+    }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -503,6 +521,24 @@ public class Main extends android.support.v4.app.Fragment {
                     //floatingActionButton.show();
                     mainActivity.updatepaths();
 
+                    listView.setOnScrollListener(new HidingScrollListener(getActivity()) {
+
+                        @Override
+                        public void onMoved(int distance) {
+                            mToolbarContainer.setTranslationY(-distance);
+                        }
+
+                        @Override
+                        public void onShow() {
+                           mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                        }
+
+                        @Override
+                        public void onHide() {
+                            mToolbarContainer.findViewById(R.id.lin).animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(2)).start();
+                        }
+
+                    });
                     if (buttons.getVisibility() == View.VISIBLE) mainActivity.bbar(current, this);
 
                     mainActivity.updateDrawer(current);
