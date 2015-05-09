@@ -55,10 +55,6 @@
             android:defaultValue="false"
             android:enabled="true"/>
         <Preference
-            android:key="uimode"
-            android:summary="@string/chooseUI"
-            android:title="@string/uimode" />
-        <Preference
             android:key="hidemode"
             android:title="Hide Action Bar" />
     </PreferenceCategory>

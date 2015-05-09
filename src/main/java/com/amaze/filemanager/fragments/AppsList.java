@@ -58,7 +58,7 @@ public class AppsList extends ListFragment {
     Futils utils = new Futils();
     AppsList app = this;
     AppsAdapter adapter;
-    public int uimode;
+
     SharedPreferences Sp;
     public boolean selection = false;
     public ActionMode mActionMode;
@@ -84,7 +84,7 @@ public class AppsList extends ListFragment {
         mainActivity.supportInvalidateOptionsMenu();
         vl=getListView();
             Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        uimode = Integer.parseInt(Sp.getString("uimode", "0"));
+
         ListView vl = getListView();
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);

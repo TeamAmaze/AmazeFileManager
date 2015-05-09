@@ -154,7 +154,11 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if(viewType==0){
+            View v= mInflater.inflate(R.layout.rowlayout, parent, false);
+            return new ViewHolder(v);
 
+        }
         View v;if(main.islist) v= mInflater.inflate(R.layout.rowlayout, parent, false);
         else  v= mInflater.inflate(R.layout.griditem, parent, false);
         ViewHolder vh = new ViewHolder(v);
@@ -166,11 +170,19 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder vholder,final int p1) {
         final Recycleradapter.ViewHolder holder=((Recycleradapter.ViewHolder)vholder);
+        int i=0;
+        if(main.islist){
+            i=1;
         if(p1==0){
             holder.rl.setMinimumHeight(main.paddingTop);
-            return;
+            return;}}
+        else{
+            i=3;
+            if(p1==0 || p1==1 || p1==2){
+                holder.rl.setMinimumHeight(main.paddingTop);
+                return;}
         }
-        final int p=p1-1;
+        final int p=p1-i;
         final Layoutelements rowItem = items.get(p);
         if (main.islist) {
             holder.rl.setOnClickListener(new View.OnClickListener() {
@@ -279,7 +291,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             Boolean checked = myChecked.get(p);
             if (checked != null) {
 
-                if (main.uimode == 0) {
                     if (main.theme1 == 0) {
 
                         holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
@@ -287,9 +298,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                         holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
                     }
-                } else if (main.uimode == 1) {
-                    holder.rl.setBackgroundResource(R.drawable.bg_card);
-                }
 
                 if (checked) {
                     holder.apk.setVisibility(View.GONE);
@@ -447,15 +455,12 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                     holder.rl.setBackgroundColor(Color.parseColor("#9f757575"));
                 } else {
-                    if (main.uimode == 0) {
                         if (main.theme1 == 0)
                             holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
                         else{
                             holder.rl.setBackgroundResource(R.drawable.ic_grid_card_background_dark);
                             holder.rl.findViewById(R.id.icon_frame).setBackgroundColor(Color.parseColor("#303030"));
-                        }} else if (main.uimode == 1) {
-                        holder.rl.setBackgroundResource(R.drawable.bg_card);
-                    }
+                        }
                 }
             }
             if (main.showLastModified)
@@ -472,11 +477,17 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     @Override
     public long getHeaderId(int i) {
-        if(i!=0){
+        if(main.islist){if(i!=0){
         if(items.get(i-1).getSize().equals(main.goback))return -1;
      if(items.get(i-1).isDirectory(main.rootMode))return 'D';
-        else return 'F';
-    }return -1;}
+        else return 'F';}
+    }else{
+            if(i!=0 && i!=1 && i!=2){
+                if(items.get(i-3).getSize().equals(main.goback))return -1;
+                if(items.get(i-3).isDirectory(main.rootMode))return 'D';
+                else return 'F';}
+
+        }return -1;}
     public static class HeaderViewHolder extends RecyclerView.ViewHolder {
         public TextView ext;
 
@@ -506,8 +517,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     private boolean isPositionHeader(int position) {
-        return position == 0;
-    }
+   if(main.islist)     return position == 0;
+    else return position == 0 || position==1 || position==2;}
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
       if(i!=0){HeaderViewHolder holder=(HeaderViewHolder)viewHolder;

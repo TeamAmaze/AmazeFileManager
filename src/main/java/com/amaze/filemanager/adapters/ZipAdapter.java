@@ -220,16 +220,13 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         Boolean checked = myChecked.get(p);
         if (checked != null) {
 
-            if (zipViewer.uimode == 0) {
-                if (zipViewer.mainActivity.theme1 == 0) {
+              if (zipViewer.mainActivity.theme1 == 0) {
 
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
             } else {
 
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
-            }
-            } else if (zipViewer.uimode == 1) {
-                holder.rl.setBackgroundResource(R.drawable.bg_card);
+
             }
 
             if (checked) {

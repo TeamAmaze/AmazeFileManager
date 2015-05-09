@@ -83,17 +83,16 @@ public class Preffrag extends PreferenceFragment {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
-        final Preference ui = (Preference) findPreference("uimode");
+
         final int th1 = Integer.parseInt(sharedPref.getString("theme", "0"));
         theme = th1;
         if (th1 == 2) {
-            ui.setEnabled(false);
+
             if(hour<=6 || hour>=18) {
                 theme = 1;
             } else
                 theme = 0;
-        }if(th1==1){ui.setEnabled(false);}
-        findPreference("columns").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        }findPreference("columns").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 final String[] sort = getResources().getStringArray(R.array.columns);
@@ -107,26 +106,6 @@ public class Preffrag extends PreferenceFragment {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         sharedPref.edit().putString("columns", "" + sort[which]).commit();
-                        dialog.dismiss();
-                        return true;
-                    }
-                });
-                a.build().show();
-                return true;
-            }
-        });
-        findPreference("uimode").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                String[] sort = getResources().getStringArray(R.array.uimode);
-                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                if(theme==1)a.theme(Theme.DARK);
-                a.title(R.string.directorysort);
-                int current = Integer.parseInt(sharedPref.getString("uimode", "0"));
-                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        sharedPref.edit().putString("uimode", "" + which).commit();
                         dialog.dismiss();
                         return true;
                     }
@@ -196,8 +175,6 @@ public class Preffrag extends PreferenceFragment {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         sharedPref.edit().putString("theme", "" + which).commit();
-                        if(which!=0)
-                            sharedPref.edit().putString("uimode","0").commit();
                         dialog.dismiss();
                         restartPC(getActivity());
                         return true;

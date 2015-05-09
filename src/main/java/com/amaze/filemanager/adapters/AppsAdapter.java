@@ -169,7 +169,6 @@ app.onLongItemClick(p);   }
             if (checked) {
                 holder.rl.setBackgroundColor(Color.parseColor("#5f33b5e5"));
             } else {
-                if (app.uimode == 0) {
                     if (app.theme1 == 0) {
 
                         holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
@@ -177,9 +176,7 @@ app.onLongItemClick(p);   }
 
                         holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
                     }
-                } else if (app.uimode == 1) {
-                    holder.rl.setBackgroundResource(R.drawable.bg_card);
-                }
+
             }
         }
         return view;

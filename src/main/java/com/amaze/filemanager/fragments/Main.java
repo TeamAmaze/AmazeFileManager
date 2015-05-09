@@ -109,7 +109,7 @@ public class Main extends android.support.v4.app.Fragment {
     Resources res;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
-    public int uimode;
+
     public String home, current = Environment.getExternalStorageDirectory().getPath();
     Shortcuts sh;
     HashMap<String, Bundle> scrolls = new HashMap<String, Bundle>();
@@ -201,15 +201,13 @@ public class Main extends android.support.v4.app.Fragment {
         goback=res.getString(R.string.goback);
         itemsstring=res.getString(R.string.items);
         apk=res.getDrawable(R.drawable.ic_doc_apk_grid);
-        uimode = Integer.parseInt(Sp.getString("uimode", "0"));
         if(theme1==1) {
 
             mainActivity.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.holo_dark_background)));
         } else {
-            if (uimode==0 && islist) {
 
-                mainActivity.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
-            }
+            if(islist)  mainActivity.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
+
         } listView.setHasFixedSize(true);
         mLayoutManager=new LinearLayoutManager(getActivity());
         int columns=Integer.parseInt(Sp.getString("columns","3"));
@@ -220,7 +218,7 @@ public class Main extends android.support.v4.app.Fragment {
             listView.setLayoutManager(mLayoutManagerGrid);
         }
          paddingTop = (mToolbarHeight=getToolbarHeight(getActivity())) + dpToPx(72);
-
+        if(hidemode==2)mToolbarHeight=paddingTop;
      //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
         return rootView;
     }public int dpToPx(int dp) {
@@ -269,15 +267,7 @@ public class Main extends android.support.v4.app.Fragment {
 
         scroll = (HorizontalScrollView) rootView.findViewById(R.id.scroll);
         scroll1 = (HorizontalScrollView) rootView.findViewById(R.id.scroll1);
-        uimode = Integer.parseInt(Sp.getString("uimode", "0"));
-        if (uimode == 1 && islist) {
-            float scale = getResources().getDisplayMetrics().density;
-            int dpAsPixels = (int) (5 * scale + 0.5f);
 
-                listView.setPadding(dpAsPixels, 0, dpAsPixels, 0);
-            listView.addItemDecoration(new SpacesItemDecoration(dpAsPixels));
-
-        }
         // use a linear layout manager
         footerView=getActivity().getLayoutInflater().inflate(R.layout.divider, null);
            mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
@@ -337,6 +327,7 @@ public class Main extends android.support.v4.app.Fragment {
             }
         }
 
+        mSwipeRefreshLayout.setProgressViewOffset(true,paddingTop,paddingTop+dpToPx(72));
     }
 
     @Override
@@ -499,14 +490,13 @@ public class Main extends android.support.v4.app.Fragment {
                 mSwipeRefreshLayout.setRefreshing(false);
                 try {    listView.setAdapter(adapter);
                     if(!addheader && islist){
-                        if(uimode==0) listView.removeItemDecoration(dividerItemDecoration);
+                       listView.removeItemDecoration(dividerItemDecoration);
                         listView.removeItemDecoration(headersDecor);
                         addheader=true;}
                     if(addheader && islist){
-                        if(uimode==0) {
                             dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST);
                             listView.addItemDecoration(dividerItemDecoration);
-                        }
+
                     headersDecor = new StickyRecyclerHeadersDecoration(adapter);
                     listView.addItemDecoration(headersDecor);addheader=false;}
                     results = false;

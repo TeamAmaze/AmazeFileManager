@@ -93,7 +93,7 @@ public class RarViewer extends Fragment {
     StickyRecyclerHeadersDecoration headersDecor;
     LinearLayoutManager mLayoutManager;
     DividerItemDecoration dividerItemDecoration;
-    public int uimode;
+
 
     public int paddingTop;
     int mToolbarHeight,hidemode;
@@ -137,15 +137,6 @@ public class RarViewer extends Fragment {
         listView.setVisibility(View.VISIBLE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        uimode = Integer.parseInt(Sp.getString("uimode", "0"));
-        if (uimode == 1) {
-            float scale = getResources().getDisplayMetrics().density;
-            int dpAsPixels = (int) (5 * scale + 0.5f);
-
-            listView.setPadding(dpAsPixels, 0, dpAsPixels, 0);
-            listView.addItemDecoration(new SpacesItemDecoration(dpAsPixels));
-
-        }
 
         listView.setVisibility(View.VISIBLE);
         mLayoutManager=new LinearLayoutManager(getActivity());
@@ -153,10 +144,9 @@ public class RarViewer extends Fragment {
         if (mainActivity.theme1 == 1)
             rootView.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         else
-        if (uimode==0) {
 
             listView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
-        }
+
         gobackitem = Sp.getBoolean("goBack_checkbox", true);
         coloriseIcons = Sp.getBoolean("coloriseIcons", false);
         Calendar calendar = Calendar.getInstance();
@@ -374,16 +364,14 @@ String path;
         zipViewer.zipAdapter = new RarAdapter(zipViewer.getActivity(), zipEntries, zipViewer);
         zipViewer.listView.setAdapter(zipViewer.zipAdapter);
         if(!addheader ){
-            if(uimode==0) listView.removeItemDecoration(dividerItemDecoration);
+             listView.removeItemDecoration(dividerItemDecoration);
             listView.removeItemDecoration(headersDecor);
             addheader=true;
         }
         if(addheader ) {
-            if (uimode == 0)
-            {
                 dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST);
                 listView.addItemDecoration(dividerItemDecoration);
-            }
+
             headersDecor = new StickyRecyclerHeadersDecoration(zipAdapter);
             listView.addItemDecoration(headersDecor);
             addheader=false;
