@@ -138,7 +138,7 @@ public class Preffrag extends PreferenceFragment {
         findPreference("hidemode").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                String[] sort = getResources().getStringArray(R.array.uimode);
+                String[] sort = getResources().getStringArray(R.array.hidemode);
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
                 if(theme==1)a.theme(Theme.DARK);
                 a.title("Hide Mode");
@@ -146,7 +146,7 @@ public class Preffrag extends PreferenceFragment {
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        sharedPref.edit().putString("hidemode", "" + which).commit();
+                        sharedPref.edit().putInt("hidemode", which).commit();
                         dialog.dismiss();
                         return true;
                     }
