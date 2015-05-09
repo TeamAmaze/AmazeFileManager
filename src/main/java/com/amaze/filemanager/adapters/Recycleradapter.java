@@ -154,6 +154,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         View v;if(main.islist) v= mInflater.inflate(R.layout.rowlayout, parent, false);
         else  v= mInflater.inflate(R.layout.griditem, parent, false);
         ViewHolder vh = new ViewHolder(v);
@@ -163,8 +164,13 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder vholder,final int p) {
+    public void onBindViewHolder(RecyclerView.ViewHolder vholder,final int p1) {
         final Recycleradapter.ViewHolder holder=((Recycleradapter.ViewHolder)vholder);
+        if(p1==0){
+            holder.rl.setMinimumHeight(main.paddingTop);
+            return;
+        }
+        final int p=p1-1;
         final Layoutelements rowItem = items.get(p);
         if (main.islist) {
             holder.rl.setOnClickListener(new View.OnClickListener() {
@@ -466,10 +472,11 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     @Override
     public long getHeaderId(int i) {
-        if(items.get(i).getSize().equals(main.goback))return -1;
-     if(items.get(i).isDirectory(main.rootMode))return 'D';
+        if(i!=0){
+        if(items.get(i-1).getSize().equals(main.goback))return -1;
+     if(items.get(i-1).isDirectory(main.rootMode))return 'D';
         else return 'F';
-    }
+    }return -1;}
     public static class HeaderViewHolder extends RecyclerView.ViewHolder {
         public TextView ext;
 
@@ -488,17 +495,29 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         else holder.ext.setTextColor(Color.parseColor("#B3ffffff"));
         return holder;
     }
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_ITEM = 1;
+    @Override
+    public int getItemViewType(int position) {
+        if (isPositionHeader(position))
+            return TYPE_HEADER;
 
+        return TYPE_ITEM;
+    }
+
+    private boolean isPositionHeader(int position) {
+        return position == 0;
+    }
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-      HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
+      if(i!=0){HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
         if(items.get(i).isDirectory(main.rootMode))holder.ext.setText("Directories");
         else holder.ext.setText("Files");
-    }
+    }}
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return items.size()+1;
     }
 }
 

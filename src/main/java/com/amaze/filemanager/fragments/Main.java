@@ -146,7 +146,7 @@ public class Main extends android.support.v4.app.Fragment {
     boolean addheader=true;
     StickyRecyclerHeadersDecoration headersDecor;
     DividerItemDecoration dividerItemDecoration;
-    private String path;
+    public int paddingTop;
     int mToolbarHeight;
     View mToolbarContainer;
     @Override
@@ -218,9 +218,10 @@ public class Main extends android.support.v4.app.Fragment {
         } else {
             listView.setLayoutManager(mLayoutManagerGrid);
         }
-        int paddingTop = (mToolbarHeight=getToolbarHeight(getActivity())) + dpToPx(72);
+         paddingTop = (mToolbarHeight=getToolbarHeight(getActivity())) + dpToPx(72);
         mToolbarContainer.setBackgroundColor(Color.parseColor(skin));
-        listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
+
+     //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
         return rootView;
     }public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();

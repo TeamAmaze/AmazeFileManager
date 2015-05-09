@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -42,12 +43,13 @@ public class TabFragment extends android.support.v4.app.Fragment {
     public ArrayList<String> tabs=new ArrayList<String>();
     public int theme1;
     private Animation hideAnimation, showAnimation;
+    View mToolBarContainer;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment,
                 container, false);
-
+        mToolBarContainer=getActivity().findViewById(R.id.lin);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -72,6 +74,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
             }
 
             public void onPageSelected(int p1) {
+               mToolBarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 
                 currenttab=p1;
                 mainActivity.supportInvalidateOptionsMenu();

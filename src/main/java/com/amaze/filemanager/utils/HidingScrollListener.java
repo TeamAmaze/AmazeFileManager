@@ -2,6 +2,7 @@ package com.amaze.filemanager.utils;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 
 /*
 * This class is a ScrollListener for RecyclerView that allows to show/hide
@@ -18,7 +19,7 @@ public abstract class HidingScrollListener extends RecyclerView.OnScrollListener
     private int mTotalScrolledDistance;
 
     public HidingScrollListener(Context context) {
-        mToolbarHeight = getToolbarHeight(context);
+        mToolbarHeight = getToolbarHeight(context)+dpToPx(72,context);
     }
     public static int getToolbarHeight(Context context) {
         final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
@@ -27,6 +28,10 @@ public abstract class HidingScrollListener extends RecyclerView.OnScrollListener
         styledAttributes.recycle();
 
         return toolbarHeight;
+    }public int dpToPx(int dp,Context contextc) {
+        DisplayMetrics displayMetrics = contextc.getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
     }
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
