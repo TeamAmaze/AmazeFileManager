@@ -219,6 +219,7 @@ public class Main extends android.support.v4.app.Fragment {
         }
          paddingTop = (mToolbarHeight=getToolbarHeight(getActivity())) + dpToPx(72);
         if(hidemode==2)mToolbarHeight=paddingTop;
+        mToolbarContainer.setBackgroundColor(Color.parseColor(skin));
      //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
         return rootView;
     }public int dpToPx(int dp) {
@@ -532,7 +533,7 @@ public class Main extends android.support.v4.app.Fragment {
                     });
                     if (buttons.getVisibility() == View.VISIBLE) mainActivity.bbar(current, this);
 
-                    mToolbarContainer.setBackgroundColor(Color.parseColor(skin));
+                    //mToolbarContainer.setBackgroundColor(Color.parseColor(skin));
                     mainActivity.updateDrawer(current);
                     mainActivity.updatepager();
 

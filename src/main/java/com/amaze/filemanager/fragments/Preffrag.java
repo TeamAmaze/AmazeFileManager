@@ -127,6 +127,7 @@ public class Preffrag extends PreferenceFragment {
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         sharedPref.edit().putInt("hidemode", which).commit();
                         dialog.dismiss();
+                        restartPC(getActivity());
                         return true;
                     }
                 });
@@ -134,7 +135,10 @@ public class Preffrag extends PreferenceFragment {
                 return true;
             }
         });
-
+        int hidemode = sharedPref.getInt("hidemode", 0);
+        if(hidemode==0){
+            findPreference("topfab").setEnabled(true);
+        }
         if(Build.VERSION.SDK_INT>=21)
         findPreference("colorednavigation").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override

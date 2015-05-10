@@ -156,6 +156,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType==0){
             View v= mInflater.inflate(R.layout.rowlayout, parent, false);
+            v.findViewById(R.id.icon).setVisibility(View.INVISIBLE);
             return new ViewHolder(v);
 
         }

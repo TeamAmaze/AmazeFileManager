@@ -183,7 +183,7 @@ public class RarViewer extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mainActivity.supportInvalidateOptionsMenu();
-        ((FloatingActionButton)getActivity().findViewById(R.id.fab)).show();
+        mainActivity.floatingActionButton.show();
     }
     public String getSelectionColor(){
 

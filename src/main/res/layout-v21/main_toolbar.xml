@@ -32,8 +32,7 @@
         android:layout_width="match_parent"
         android:clipToPadding="false"
         android:layout_height="match_parent" />
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout
         android:id="@+id/lin"
         android:elevation="4dp"
         android:layout_width="match_parent"
@@ -66,6 +65,7 @@
             android:id="@+id/buttonbarframe"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_below="@id/action_bar"
             android:minHeight="72dp">
 
             <HorizontalScrollView
@@ -135,9 +135,25 @@
             </LinearLayout>
 
         </FrameLayout>
-</LinearLayout>
+    </RelativeLayout>
+
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/fab2"
+        android:layout_width="wrap_content"
+        app:fab_colorRipple="#77777777"
+        app:fab_type="mini"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="106dp"
+        android:visibility="gone"
+        android:src="@drawable/ic_action_new" />
+
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab"
+        app:fab_colorNormal="#00000000"
+        app:fab_shadow="false"
         android:layout_width="wrap_content"
         app:fab_colorRipple="#77777777"
         android:layout_gravity="bottom|right"

@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements
     private DisplayImageOptions displayImageOptions;
     private int sdk;
     private TextView mGoogleName, mGoogleId;
-    private FloatingActionButton floatingActionButton;
+    public FloatingActionButton floatingActionButton;
     private boolean showButtonOnStart = false;
     public String fabskin, fabSkinPressed;
     private LinearLayout buttons;
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements
     private CountDownTimer timer;
     private IconUtils icons;
     private TabHandler tabHandler;
-
+    int hidemode;
     public LinearLayout pathbar;
 
     // Check for user interaction for google+ api only once
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements
     /* A flag indicating that a PendingIntent is in progress and prevents
    * us from starting further intents.
    */
-    private boolean mIntentInProgress;
+    private boolean mIntentInProgress,topfab=false;
 
     /**
      * Called when the activity is first created.
@@ -218,6 +218,16 @@ public class MainActivity extends AppCompatActivity implements
 
         fabskin = Sp.getString("fab_skin_color", "#e91e63");
         fabSkinPressed = getStatusColor(fabskin);
+        topfab=Sp.getBoolean("topfab",false);
+        hidemode=Sp.getInt("hidemode",0);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+        if(topfab && hidemode==0) {
+            floatingActionButton.hide();
+            floatingActionButton = (FloatingActionButton) findViewById(R.id.fab2);
+        }else floatingActionButton.setShadow(true);
+        floatingActionButton.setColorNormal(Color.parseColor(fabskin));
+        floatingActionButton.setColorPressed(Color.parseColor(fabSkinPressed));
+        floatingActionButton.setVisibility(View.VISIBLE);
 
         drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderLayout = (RelativeLayout) drawerHeaderView.findViewById(R.id.drawer_header);
@@ -293,8 +303,6 @@ public class MainActivity extends AppCompatActivity implements
         if (theme1 == 1) {
             setTheme(R.style.appCompatDark);
         }
-
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         pathbar = (LinearLayout) findViewById(R.id.pathbar);
         buttons = (LinearLayout) findViewById(R.id.buttons);
         scroll = (HorizontalScrollView) findViewById(R.id.scroll);
@@ -302,8 +310,6 @@ public class MainActivity extends AppCompatActivity implements
         scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
 
-        if (showButtonOnStart)
-            floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1113,9 +1119,6 @@ public class MainActivity extends AppCompatActivity implements
     public void onResume() {
         super.onResume();
 
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
-        floatingActionButton.setColorNormal(Color.parseColor(fabskin));
-        floatingActionButton.setColorPressed(Color.parseColor(fabSkinPressed));
         LocalBroadcastManager.getInstance(this).registerReceiver(SEARCHRECIEVER, new IntentFilter("searchresults"));
         LocalBroadcastManager.getInstance(this).registerReceiver(LOADSEARCHRECIEVER, new IntentFilter("loadsearchresults"));
     }

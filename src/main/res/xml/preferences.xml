@@ -57,6 +57,11 @@
         <Preference
             android:key="hidemode"
             android:title="Hide Action Bar" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:enabled="false"
+            android:key="topfab"
+            android:title="Top Fab" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/general">

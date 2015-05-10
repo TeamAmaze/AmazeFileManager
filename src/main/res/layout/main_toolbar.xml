@@ -31,8 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout
         android:id="@+id/lin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -61,6 +60,7 @@
         </android.support.v7.widget.Toolbar>
 
         <FrameLayout
+            android:layout_below="@id/action_bar"
             android:paddingRight="16dp"
             android:id="@+id/buttonbarframe"
             android:layout_height="wrap_content"
@@ -134,7 +134,7 @@
             </LinearLayout>
 
         </FrameLayout>
-    </LinearLayout>
+    </RelativeLayout>
         <com.melnykov.fab.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
