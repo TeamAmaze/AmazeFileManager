@@ -20,10 +20,8 @@
 package com.amaze.filemanager.fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -31,13 +29,13 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.util.SparseBooleanArray;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +43,6 @@ import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,23 +50,19 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.adapters.HiddenAdapter;
-import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.IconUtils;
+import com.amaze.filemanager.utils.PreferenceUtils;
 import com.stericson.RootTools.RootTools;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Random;
 
-public class Preffrag extends PreferenceFragment {
+public class Preffrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
     int theme;
     SharedPreferences sharedPref;
     String skin;
     private int COUNT = 0;
     private Toast toast;
+    private final String TAG = getClass().getName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -120,7 +113,7 @@ public class Preffrag extends PreferenceFragment {
                 String[] sort = getResources().getStringArray(R.array.hidemode);
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
                 if(theme==1)a.theme(Theme.DARK);
-                a.title("Hide Mode");
+                a.title(getString(R.string.hide_mode_title));
                 int current = sharedPref.getInt("hidemode", 0);
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
@@ -135,10 +128,7 @@ public class Preffrag extends PreferenceFragment {
                 return true;
             }
         });
-        int hidemode = sharedPref.getInt("hidemode", 0);
-        if(hidemode==0){
-            findPreference("topfab").setEnabled(true);
-        }
+
         if(Build.VERSION.SDK_INT>=21)
         findPreference("colorednavigation").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -195,7 +185,7 @@ public class Preffrag extends PreferenceFragment {
                 String[] sort = getResources().getStringArray(R.array.sortby);
                 int current = Integer.parseInt(sharedPref.getString("sortby", "0"));
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                if(theme==1)a.theme(Theme.DARK);
+                if (theme == 1) a.theme(Theme.DARK);
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
@@ -210,168 +200,12 @@ public class Preffrag extends PreferenceFragment {
                 return true;
             }
         });
-        final Preference preference = (Preference) findPreference("skin");
-        final int current = Integer.parseInt(sharedPref.getString("skin", ""+6));
-        preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
 
-                final int current = Integer.parseInt(sharedPref.getString("skin", ""+6));
-                final String[] colors = new String[]{
-                        "#F44336",
-                        "#e91e63",
-                        "#9c27b0",
-                        "#673ab7",
-                        "#3f51b5",
-                        "#2196F3",
-                        "#03A9F4",
-                        "#00BCD4",
-                        "#009688",
-                        "#4CAF50",
-                        "#8bc34a",
-                        "#FFC107",
-                        "#FF9800",
-                        "#FF5722",
-                        "#795548",
-                        "#212121",
-                        "#607d8b",
-                        "#004d40"
-                };
-                final MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                a.positiveText(R.string.cancel);
-                a.positiveColor(Color.parseColor(skin));
-                a.title(R.string.skin);
-                if(theme==1)
-                    a.theme(Theme.DARK);
-                LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View view = layoutInflater.inflate(R.layout.list_dialog, null);
-                ListView listView = (ListView) view.findViewById(R.id.listView);
-                listView.setDivider(null);
-                a.customView(view, true);
-                a.autoDismiss(true);
-                MaterialDialog x=a.build();
-                ArrayList<String> arrayList=new ArrayList<String>();
-                for(String c:colors){arrayList.add(c);}
-                ColorAdapter adapter = new ColorAdapter(getActivity(), arrayList,"skin_color","skin");
-                listView.setAdapter(adapter);
-                x.show();
-     /*           new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.skin)
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        })
-                        .setPositiveButton(R.string.randomDialog, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+        findPreference("skin").setOnPreferenceClickListener(this);
+        findPreference("fab_skin").setOnPreferenceClickListener(this);
+        findPreference("icon_skin").setOnPreferenceClickListener(this);
 
-                                //sharedPref.edit().putString("skin", "" + i).commit();
-                                dialogInterface.cancel();
-                                restartPC(getActivity());
-
-                                // Random
-                                Random random = new Random();
-                                int pos = random.nextInt(colors.length - 1);
-                                sharedPref.edit().putString("skin_color", colors[pos]).commit();
-                            }
-                        })
-                        .setSingleChoiceItems(R.array.skin, current, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                sharedPref.edit().putString("skin", "" + i).commit();
-                                dialogInterface.cancel();
-                                restartPC(getActivity());
-                                sharedPref.edit().putString("skin_color", colors[i]).apply();
-
-                            }
-                        }).show();*/
-                return false;
-            }
-        });
-
-        final Preference fabpreference = (Preference) findPreference("fab_skin");
-        fabpreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-
-                final int current = Integer.parseInt(sharedPref.getString("fab_skin", ""+0));
-                final String[] colors = new String[]{
-                        "#F44336",
-                        "#e91e63",
-                        "#9c27b0",
-                        "#673ab7",
-                        "#3f51b5",
-                        "#2196F3",
-                        "#03A9F4",
-                        "#00BCD4",
-                        "#009688",
-                        "#4CAF50",
-                        "#8bc34a",
-                        "#FFC107",
-                        "#FF9800",
-                        "#FF5722",
-                        "#795548",
-                        "#212121",
-                        "#607d8b",
-                        "#004d40"
-                };
-
-                final MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                a.positiveText(R.string.cancel);
-                a.positiveColor(Color.parseColor(skin));
-                a.title(R.string.fab_skin);
-                if(th1==1)
-                    a.theme(Theme.DARK);
-                LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View view = layoutInflater.inflate(R.layout.list_dialog, null);
-                ListView listView = (ListView) view.findViewById(R.id.listView);
-                listView.setDivider(null);
-                a.customView(view, true);
-                a.autoDismiss(true);
-                MaterialDialog x=a.build();
-                ArrayList<String> arrayList=new ArrayList<String>();
-                for(String c:colors){arrayList.add(c);}
-                ColorAdapter adapter = new ColorAdapter(getActivity(), arrayList,"fab_skin_color","fab_skin");
-                listView.setAdapter(adapter);
-                x.show();/*
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.skin)
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        })
-                        .setPositiveButton(R.string.randomDialog, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                                //sharedPref.edit().putString("skin", "" + i).commit();
-                                dialogInterface.cancel();
-                                restartPC(getActivity());
-
-                                // Random
-                                Random random = new Random();
-                                int pos = random.nextInt(colors.length - 1);
-                                sharedPref.edit().putString("fab_skin_color", colors[pos]).commit();
-                            }
-                        })
-                        .setSingleChoiceItems(R.array.skin, current, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                sharedPref.edit().putString("fab_skin", "" + i).commit();
-                                dialogInterface.cancel();
-                                restartPC(getActivity());
-                                sharedPref.edit().putString("fab_skin_color", colors[i]).apply();
-
-                            }
-                        }).show();*/
-                return false;
-            }
-        });
-        final CheckBoxPreference checkBoxPreference = (CheckBoxPreference) findPreference("random");
+        final SwitchPreference checkBoxPreference = (SwitchPreference) findPreference("random");
         boolean check = sharedPref.getBoolean("random_checkbox", false);
         checkBoxPreference.setChecked(check);
         checkBoxPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -389,7 +223,7 @@ public class Preffrag extends PreferenceFragment {
             }
         });
 
-        final CheckBoxPreference rootmode = (CheckBoxPreference) findPreference("rootmode");
+        final SwitchPreference rootmode = (SwitchPreference) findPreference("rootmode");
         rootmode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -554,181 +388,10 @@ public class Preffrag extends PreferenceFragment {
 
             @Override
             public boolean onPreferenceClick(Preference arg0) {
-                String oss_dialog = "<html><body>" +
-                        "<h3>Notices for files:</h3>" +
-                        "<ul><li>nineoldandroids-2.4.0.jar</ul></li>" +	//nineoldandroids
-                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
-                        "<br>/*<br>" +
-                        "&nbsp;* Copyright 2012 Jake Wharton<br>" +
-                        "&nbsp;* <br>" +
-                        "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
-                        "&nbsp;* you may not use this file except in compliance with the License.<br>" +
-                        "&nbsp;* You may obtain a copy of the License at<br>" +
-                        "&nbsp;* <br>" +
-                        "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>" +
-                        "&nbsp;* <br>" +
-                        "&nbsp;* Unless required by applicable law or agreed to in writing, software<br>" +
-                        "&nbsp;* distributed under the License is distributed on an \"AS IS\" BASIS,<br>" +
-                        "&nbsp;* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>" +
-                        "&nbsp;* See the License for the specific language governing permissions and<br>" +
-                        "&nbsp;* limitations under the License.<br>" +
-                        "&nbsp;*/ " +
-                        "<br><br></code></p>" +
-                        "<h3>Notices for files:</h3> " +
-                        "<ul><li>RootTools.jar</ul></li>" +	//RootTools
-                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
-                        "<br>/*<br>" +
-                        "&nbsp;* This file is part of the RootTools Project: http://code.google.com/p/roottools/<br>" +
-                        "&nbsp;*<br>" +
-                        "&nbsp;* Copyright (c) 2012 Stephen Erickson, Chris Ravenscroft, Dominik Schuermann, Adam Shanks<br>" +
-                        "&nbsp;*<br>" +
-                        "&nbsp;* This code is dual-licensed under the terms of the Apache License Version 2.0 and<br>" +
-                        "&nbsp;* the terms of the General Public License (GPL) Version 2.<br>" +
-                        "&nbsp;* You may use this code according to either of these licenses as is most appropriate<br>" +
-                        "&nbsp;* for your project on a case-by-case basis.<br>" +
-                        "&nbsp;*<br>" +
-                        "&nbsp;* The terms of each license can be found in the root directory of this project's repository as well as at:<br>" +
-                        "&nbsp;*<br>" +
-                        "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>" +
-                        "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.gnu.org/licenses/gpl-2.0.txt<br>" +
-                        "&nbsp;*<br>" +
-                        "&nbsp;* Unless required by applicable law or agreed to in writing, software<br>" +
-                        "&nbsp;* distributed under these Licenses is distributed on an \"AS IS\" BASIS,<br>" +
-                        "&nbsp;* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>" +
-                        "&nbsp;* See each License for the specific language governing permissions and<br>" +
-                        "&nbsp;* limitations under that License.<br>" +
-                        "&nbsp;*/ " +
-                        "<br><br></code></p>" +
-                        "<h3>Notices for libraries:</h3> " +
-                        "<ul><li>CircularImageView</ul></li>" +	//CircularImageView
-                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
-                        "<br>/*<br>" +
-                        "&nbsp;* The MIT License (MIT)<br>" +
-                        "&nbsp;*<br>" +
-                        "&nbsp;* Copyright (c) 2014 Pkmmte Xeleon<br>" +
-                        "&nbsp;*<br>" +
-                        "&nbsp;* Permission is hereby granted, free of charge, to any person obtaining a copy<br>" +
-                        "&nbsp;* of this software and associated documentation files (the \"Software\"), to deal<br>" +
-                        "&nbsp;* in the Software without restriction, including without limitation the rights<br>" +
-                        "&nbsp;* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>" +
-                        "&nbsp;* copies of the Software, and to permit persons to whom the Software is<br>" +
-                        "&nbsp;* furnished to do so, subject to the following conditions:" +
-                        "&nbsp;*<br>" +
-                        "&nbsp;* The above copyright notice and this permission notice shall be included in<br>" +
-                        "&nbsp;* all copies or substantial portions of the Software.<br>" +
-                        "&nbsp;* THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>" +
-                        "&nbsp;* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>" +
-                        "&nbsp;* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>" +
-                        "&nbsp;* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>" +
-                        "&nbsp;* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>" +
-                        "&nbsp;* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN<br>" +
-                        "&nbsp;* THE SOFTWARE.<br>" +
-                        "&nbsp;*/ " +
-                        "<br><br></code></p>" +
-                        "<h3>Notices for libraries:</h3> " +
-                        "<ul><li>FloatingActionButton</ul></li>" +	//FloatingActionBar
-                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
-                        "<br>/*<br>" +
-                        "&nbsp;* The MIT License (MIT)<br>" +
-                        "&nbsp;*<br>" +
-                        "&nbsp;* Copyright (c) 2014 Oleksandr Melnykov<br>" +
-                        "&nbsp;*<br>" +
-                        "&nbsp;* Permission is hereby granted, free of charge, to any person obtaining a copy<br>" +
-                        "&nbsp;* of this software and associated documentation files (the \"Software\"), to deal<br>" +
-                        "&nbsp;* in the Software without restriction, including without limitation the rights<br>" +
-                        "&nbsp;* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>" +
-                        "&nbsp;* copies of the Software, and to permit persons to whom the Software is<br>" +
-                        "&nbsp;* furnished to do so, subject to the following conditions:" +
-                        "&nbsp;*<br>" +
-                        "&nbsp;* The above copyright notice and this permission notice shall be included in<br>" +
-                        "&nbsp;* all copies or substantial portions of the Software.<br>" +
-                        "&nbsp;* THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>" +
-                        "&nbsp;* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>" +
-                        "&nbsp;* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>" +
-                        "&nbsp;* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>" +
-                        "&nbsp;* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>" +
-                        "&nbsp;* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN<br>" +
-                        "&nbsp;* THE SOFTWARE.<br>" +
-                        "&nbsp;*/ " +
-                        "<br><br></code></p>" +
-                        "<h3>Notices for libraries:</h3>" +
-                        "<ul><li>Android System Bar Tint</ul></li>" +	// SystemBar tint
-                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
-                        "<br>/*<br>" +
-                        "&nbsp;* Copyright 2013 readyState Software Limited<br>" +
-                        "&nbsp;* <br>" +
-                        "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
-                        "&nbsp;* you may not use this file except in compliance with the License.<br>" +
-                        "&nbsp;* You may obtain a copy of the License at<br>" +
-                        "&nbsp;* <br>" +
-                        "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>" +
-                        "&nbsp;* <br>" +
-                        "&nbsp;* Unless required by applicable law or agreed to in writing, software<br>" +
-                        "&nbsp;* distributed under the License is distributed on an \"AS IS\" BASIS,<br>" +
-                        "&nbsp;* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>" +
-                        "&nbsp;* See the License for the specific language governing permissions and<br>" +
-                        "&nbsp;* limitations under the License.<br>" +
-                        "&nbsp;*/ " +
-                        "<br><br></code></p>" +
-                        "<h3>Notices for libraries:</h3> " +
-                        "<ul><li>Material Dialogs</ul></li>" +	//Material Dialogs
-                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
-                        "<br>/*<br>" +
-                        "&nbsp;* The MIT License (MIT)<br>" +
-                        "&nbsp;*<br>" +
-                        "&nbsp;* Copyright (c) 2014 Aidan Michael Follestad<br>" +
-                        "&nbsp;*<br>" +
-                        "&nbsp;* Permission is hereby granted, free of charge, to any person obtaining a copy<br>" +
-                        "&nbsp;* of this software and associated documentation files (the \"Software\"), to deal<br>" +
-                        "&nbsp;* in the Software without restriction, including without limitation the rights<br>" +
-                        "&nbsp;* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>" +
-                        "&nbsp;* copies of the Software, and to permit persons to whom the Software is<br>" +
-                        "&nbsp;* furnished to do so, subject to the following conditions:" +
-                        "&nbsp;*<br>" +
-                        "&nbsp;* The above copyright notice and this permission notice shall be included in<br>" +
-                        "&nbsp;* all copies or substantial portions of the Software.<br>" +
-                        "&nbsp;* THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>" +
-                        "&nbsp;* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>" +
-                        "&nbsp;* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>" +
-                        "&nbsp;* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>" +
-                        "&nbsp;* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>" +
-                        "&nbsp;* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN<br>" +
-                        "&nbsp;* THE SOFTWARE.<br>" +
-                        "&nbsp;*/ " +
-                        "<br><br></code></p>" +
-                        "<h3>Notices for libraries:</h3>" +
-                        "<ul><li>UnRAR</ul></li>" +	// junRar
-                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
-                        "<br>/*<br>" +
-                        "&nbsp;* UnRAR - free utility for RAR archives<br>" +
-                        "&nbsp;* License for use and distribution of<br>" +
-                        "&nbsp;* FREE portable version<br>" +
-                        "&nbsp;*/ " +
-                        "<br><br>" +
-                        "https://raw.githubusercontent.com/junrar/junrar/master/license.txt" +
-                        "<br><br></code></p>" +
-                        "<h3>Notices for libraries:</h3>" +
-                        "<ul><li>commons-compress</ul></li>" +	// commons-compress
-                        "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
-                        "<br>/*<br>" +
-                        "&nbsp;* Copyright [yyyy] [name of copyright owner]<br>" +
-                        "&nbsp;* <br>" +
-                        "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
-                        "&nbsp;* you may not use this file except in compliance with the License.<br>" +
-                        "&nbsp;* You may obtain a copy of the License at<br>" +
-                        "&nbsp;* <br>" +
-                        "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>" +
-                        "&nbsp;* <br>" +
-                        "&nbsp;* Unless required by applicable law or agreed to in writing, software<br>" +
-                        "&nbsp;* distributed under the License is distributed on an \"AS IS\" BASIS,<br>" +
-                        "&nbsp;* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>" +
-                        "&nbsp;* See the License for the specific language governing permissions and<br>" +
-                        "&nbsp;* limitations under the License.<br>" +
-                        "&nbsp;*/ " +
-                        "<br><br></code></p>" +
-                        "</body></html>";
+
                 WebView wv = (WebView) dialog_view.findViewById(R.id.webView1);
-                wv.loadData(oss_dialog, "text/html", null);
+                PreferenceUtils preferenceUtils = new PreferenceUtils();
+                wv.loadData(PreferenceUtils.LICENCE_TERMS, "text/html", null);
                 dialog.show();
                 return false;
             }
@@ -795,12 +458,12 @@ public class Preffrag extends PreferenceFragment {
         });
 
         // G+
-        CheckBoxPreference preference7 = (CheckBoxPreference) findPreference("plus_pic");
+        SwitchPreference preference7 = (SwitchPreference) findPreference("plus_pic");
         if (BuildConfig.IS_VERSION_FDROID)
             preference7.setEnabled(false);
 
         // Colored navigation bar
-        CheckBoxPreference preference8 = (CheckBoxPreference) findPreference("colorednavigation");
+        SwitchPreference preference8 = (SwitchPreference) findPreference("colorednavigation");
         if (Build.VERSION.SDK_INT >= 21)
             preference8.setEnabled(true);
     }
@@ -815,53 +478,77 @@ public class Preffrag extends PreferenceFragment {
         activity.overridePendingTransition(enter_anim, exit_anim);
         activity.startActivity(activity.getIntent());
     }
-  class ColorAdapter extends ArrayAdapter<String> {
-      String pref,pref1;
-      String[] strings;
-      final String[] colors = new String[]{
-              "#F44336",
-              "#e91e63",
-              "#9c27b0",
-              "#673ab7",
-              "#3f51b5",
-              "#2196F3",
-              "#03A9F4",
-              "#00BCD4",
-              "#009688",
-              "#4CAF50",
-              "#8bc34a",
-              "#FFC107",
-              "#FF9800",
-              "#FF5722",
-              "#795548",
-              "#212121",
-              "#607d8b",
-              "#004d40"
-      };
-      public ColorAdapter(Context context, ArrayList<String> values, String pref,String pref1) {
-            super(context, R.layout.rowlayout, values);
-            strings=getResources().getStringArray(R.array.skin);
-       this.pref=pref;
 
-    } @Override
-      public View getView(final int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater)getContext()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.rowlayout, parent, false);
-        TextView a=(TextView)rowView.findViewById(R.id.firstline);
-        a.setText(strings[position]);
-          if(theme==1)a.setTextColor(Color.parseColor("#ffffff"));
-        ImageView imageView=(ImageView)rowView.findViewById(R.id.icon);
-        GradientDrawable gradientDrawable = (GradientDrawable) imageView.getBackground();
-        gradientDrawable.setColor(Color.parseColor(colors[position]));
-        rowView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sharedPref.edit().putString(pref,colors[position]).apply();
-                sharedPref.edit().putString(pref1,""+position).apply();
-            restartPC(getActivity());
-            }
-        });
-        return rowView;}
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+
+        final MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+        a.positiveText(R.string.cancel);
+        a.positiveColor(Color.parseColor(skin));
+        a.title(R.string.choose_color);
+        if(theme==1)
+            a.theme(Theme.DARK);
+        LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = layoutInflater.inflate(R.layout.list_dialog, null);
+        ListView listView = (ListView) view.findViewById(R.id.listView);
+        listView.setDivider(null);
+        a.customView(view, true);
+        a.autoDismiss(true);
+        MaterialDialog x=a.build();
+        ColorAdapter adapter = null;
+        ArrayList<String> arrayList = new ArrayList<>();
+        for(String c : getResources().getStringArray(R.array.material_primary_color_codes)) {
+            arrayList.add(c);
+        }
+        switch (preference.getKey()) {
+            case "skin":
+                adapter = new ColorAdapter(getActivity(), arrayList, "skin_color","skin");
+                break;
+            case "fab_skin":
+                adapter = new ColorAdapter(getActivity(), arrayList, "fab_skin_color","skin");
+                break;
+            case "icon_skin":
+                adapter = new ColorAdapter(getActivity(), arrayList, "icon_skin_color","skin");
+                break;
+        }
+        listView.setAdapter(adapter);
+        x.show();
+        return false;
+    }
+
+    class ColorAdapter extends ArrayAdapter<String> {
+
+        String pref,pref1;
+        String[] strings;
+        final String[] colors = getResources().getStringArray(R.array.material_primary_color_codes);
+        public ColorAdapter(Context context, ArrayList<String> arrayList, String pref, String pref1) {
+            super(context, R.layout.rowlayout, arrayList);
+            strings = getResources().getStringArray(R.array.skin);
+            this.pref = pref;
+            this.pref1 = pref1;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+
+            LayoutInflater inflater = (LayoutInflater)getContext()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View rowView = inflater.inflate(R.layout.rowlayout, parent, false);
+            TextView a=(TextView)rowView.findViewById(R.id.firstline);
+            a.setText(strings[position]);
+            if(theme==1)a.setTextColor(Color.parseColor("#ffffff"));
+            ImageView imageView=(ImageView)rowView.findViewById(R.id.icon);
+            GradientDrawable gradientDrawable = (GradientDrawable) imageView.getBackground();
+            gradientDrawable.setColor(Color.parseColor(colors[position]));
+            rowView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sharedPref.edit().putString(pref,colors[position]).apply();
+                    sharedPref.edit().putString(pref1,""+position).apply();
+                    restartPC(getActivity());
+                }
+            });
+            return rowView;
+        }
     }
 }

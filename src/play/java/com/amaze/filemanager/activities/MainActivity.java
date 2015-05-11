@@ -103,6 +103,7 @@ import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.MediaFile;
+import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.RoundedImageView;
 import com.amaze.filemanager.utils.ScrimInsetsFrameLayout;
@@ -217,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         fabskin = Sp.getString("fab_skin_color", "#e91e63");
-        fabSkinPressed = getStatusColor(fabskin);
+        fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
         topfab=Sp.getBoolean("topfab",false);
         hidemode=Sp.getInt("hidemode",0);
         floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
@@ -388,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
 
-        skinStatusBar = Color.parseColor(getStatusColor(skin));
+        skinStatusBar = Color.parseColor(PreferenceUtils.getStatusColor(skin));
 
         mDrawerLinear = (ScrimInsetsFrameLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -1191,33 +1192,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
     };
-    private void random() {
-
-        String[] colors = new String[]{
-                "#F44336",
-                "#e91e63",
-                "#9c27b0",
-                "#673ab7",
-                "#3f51b5",
-                "#2196F3",
-                "#03A9F4",
-                "#00BCD4",
-                "#009688",
-                "#4CAF50",
-                "#8bc34a",
-                "#FFC107",
-                "#FF9800",
-                "#FF5722",
-                "#795548",
-                "#212121",
-                "#607d8b",
-                "#004d40"
-        };
-
-        Random random = new Random();
-        int pos = random.nextInt(colors.length - 1);
-        Sp.edit().putString("skin_color", colors[pos]).commit();
-    }
 
     @Override
     protected void onDestroy() {
@@ -1225,34 +1199,10 @@ public class MainActivity extends AppCompatActivity implements
 
         boolean check = Sp.getBoolean("random_checkbox", false);
         if (check) {
-            random();
+            PreferenceUtils.random(Sp);
         }
         Sp.edit().putBoolean("remember", true).apply();
         unregisterReceiver(mNotificationReceiver);
-    }
-    public String getStatusColor(String reqSkin) {
-
-        String[] colors = new String[]{
-                "#F44336","#D32F2F",
-                "#e91e63","#C2185B",
-                "#9c27b0","#7B1FA2",
-                "#673ab7","#512DA8",
-                "#3f51b5","#303F9F",
-                "#2196F3","#1976D2",
-                "#03A9F4","#0288D1",
-                "#00BCD4","#0097A7",
-                "#009688","#00796B",
-                "#4CAF50","#388E3C",
-                "#8bc34a","#689F38",
-                "#FFC107","#FFA000",
-                "#FF9800","#F57C00",
-                "#FF5722","#E64A19",
-                "#795548","#5D4037",
-                "#212121","#000000",
-                "#607d8b","#455A64",
-                "#004d40","#002620"
-        };
-        return colors[ Arrays.asList(colors).indexOf(reqSkin)+1];
     }
 
     class CheckForFiles extends AsyncTask<ArrayList<String>, String, ArrayList<String>> {

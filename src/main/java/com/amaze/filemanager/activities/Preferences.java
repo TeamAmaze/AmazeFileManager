@@ -29,6 +29,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -37,12 +38,13 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.PreferenceUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.util.Arrays;
 import java.util.Calendar;
 
-public class Preferences extends ActionBarActivity {
+public class Preferences extends AppCompatActivity {
     int theme, skinStatusBar;
     String skin;
 
@@ -71,14 +73,14 @@ public class Preferences extends ActionBarActivity {
         Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
         skin = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("skin_color", "#3f51b5");
 
-        String x = getStatusColor();
+        String x = PreferenceUtils.getStatusColor(skin);
         skinStatusBar = Color.parseColor(x);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
         int sdk=Build.VERSION.SDK_INT;
 
-        if(sdk==20 || sdk==19) {
+        /*if(sdk==20 || sdk==19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintColor(Color.parseColor(skin));
@@ -86,14 +88,14 @@ public class Preferences extends ActionBarActivity {
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.preferences).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
-        }else if(Build.VERSION.SDK_INT>=21){
+        }else*/ if(Build.VERSION.SDK_INT>=21){
             boolean colourednavigation=Sp.getBoolean("colorednavigation",true);
             Window window =getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(Color.parseColor(getStatusColor()));
+            window.setStatusBarColor(Color.parseColor(PreferenceUtils.getStatusColor(skin)));
             if(colourednavigation)
-                window.setNavigationBarColor(Color.parseColor(getStatusColor()));
+                window.setNavigationBarColor(Color.parseColor(PreferenceUtils.getStatusColor(skin)));
 
         }
     }
@@ -129,30 +131,5 @@ public class Preferences extends ActionBarActivity {
 
         }
         return true;
-    }
-
-    private String getStatusColor() {
-
-        String[] colors = new String[]{
-                "#F44336","#D32F2F",
-                "#e91e63","#C2185B",
-                "#9c27b0","#7B1FA2",
-                "#673ab7","#512DA8",
-                "#3f51b5","#303F9F",
-                "#2196F3","#1976D2",
-                "#03A9F4","#0288D1",
-                "#00BCD4","#0097A7",
-                "#009688","#00796B",
-                "#4CAF50","#388E3C",
-                "#8bc34a","#689F38",
-                "#FFC107","#FFA000",
-                "#FF9800","#F57C00",
-                "#FF5722","#E64A19",
-                "#795548","#5D4037",
-                "#212121","#000000",
-                "#607d8b","#455A64",
-                "#004d40","#002620"
-        };
-        return colors[ Arrays.asList(colors).indexOf(skin)+1];
     }
 }

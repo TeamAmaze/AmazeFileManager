@@ -22,33 +22,46 @@
         <Preference
             android:key="theme"
             android:title="@string/theme" />
-        <Preference
-            android:key="skin"
-            android:title="@string/skin" />
-        <Preference
-            android:key="fab_skin"
-            android:title="@string/fab_skin" />
-        <CheckBoxPreference
-            android:key="colorednavigation"
-            android:defaultValue="false"
-            android:title="@string/colourednavigation"
-            android:summary="@string/colourednavigationsum"
-            android:enabled="false" />
-        <CheckBoxPreference
+        <PreferenceScreen
+            android:title="@string/color_title"
+            android:summary="@string/color_summary">
+            <PreferenceCategory
+                android:title="@string/color_title">
+                <Preference
+                    android:key="skin"
+                    android:title="@string/primary_color_title"
+                    android:summary="@string/primary_color_summary" />
+                <Preference
+                    android:key="fab_skin"
+                    android:title="@string/accent_color_title"
+                    android:summary="@string/accent_color_summary"/>
+                <Preference
+                    android:key="icon_skin"
+                    android:title="@string/icon_color_title"
+                    android:summary="@string/icon_color_summary"/>
+                <SwitchPreference
+                    android:key="colorednavigation"
+                    android:defaultValue="false"
+                    android:title="@string/colourednavigation"
+                    android:summary="@string/colourednavigationsum"
+                    android:enabled="false" />
+                <SwitchPreference
+                    android:key="random"
+                    android:title="@string/random"
+                    android:summary="@string/random_summary"/>
+                </PreferenceCategory>
+            </PreferenceScreen>
+        <!--<CheckBoxPreference
             android:key="coloriseIcons"
             android:checked="true"
             android:title="@string/colorize"
-            android:summary="@string/colorize_summary" />
-        <CheckBoxPreference
-            android:key="random"
-            android:title="@string/random"
-            android:summary="@string/random_summary"/>
-        <CheckBoxPreference
+            android:summary="@string/colorize_summary" />-->
+        <SwitchPreference
             android:key="circularimages"
             android:defaultValue="true"
             android:summary="@string/circularimages"
             android:title="@string/circularicons"/>
-        <CheckBoxPreference
+        <SwitchPreference
             android:key="plus_pic"
             android:title="@string/gplus_pic_title"
             android:summary="@string/gplus_pic_summary"
@@ -56,42 +69,41 @@
             android:enabled="true"/>
         <Preference
             android:key="hidemode"
-            android:title="Hide Action Bar" />
-        <CheckBoxPreference
+            android:title="@string/hide_mode_title" />
+        <!--<SwitchPreference
             android:defaultValue="false"
             android:enabled="false"
             android:key="topfab"
-            android:title="Top Fab" />
+            android:title="Top Fab" />-->
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/general">
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="savepaths"
             android:summary="@string/savepathsummary"
             android:title="@string/savepaths" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="showThumbs"
             android:summary="@string/thumbSummary"
             android:title="@string/thumb" />
-		<CheckBoxPreference
+		<SwitchPreference
             android:defaultValue="false"
             android:key="showHidden"
-          
             android:title="@string/hidden" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="showLastModified"
             android:enabled="false"
             android:summary="@string/lastModifiedSummary"
             android:title="@string/lastModifiedPref" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="showFileSize"
             android:summary="@string/sizePrefSummary"
             android:title="@string/sizePref" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="goBack_checkbox"
             android:title="@string/back_title"
@@ -122,12 +134,12 @@
 </PreferenceCategory>
     <PreferenceCategory android:title="@string/miscellaneous">
 
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="showPermissions"
             android:summary="@string/rootPrefSummary"
             android:title="@string/rootPref" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="rootmode"
             android:summary="@string/rootmodesummary"

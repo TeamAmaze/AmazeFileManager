@@ -135,6 +135,20 @@
 
         </FrameLayout>
     </RelativeLayout>
+
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/fab2"
+        android:layout_width="wrap_content"
+        app:fab_colorRipple="#77777777"
+        app:fab_type="mini"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="106dp"
+        android:visibility="gone"
+        android:src="@drawable/ic_action_new" />
+
         <com.melnykov.fab.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"

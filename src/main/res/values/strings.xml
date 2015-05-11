@@ -106,7 +106,7 @@
     <string name="theme">Theme</string>
     <string name="skin">Skin</string>
     <string name="random">Random Skin</string>
-    <string name="random_summary">Sets random theme at startup</string>
+    <string name="random_summary">Sets random primary color at startup</string>
     <string name="colorize">Colorize Icons</string>
     <string name="colorize_summary">Sets static icon color</string>
     <string name="back">Back</string>
@@ -299,14 +299,28 @@
     <string name="generating">Generating..</string>
     <string name="tables">Table(s)</string>
     <string name="database">Database</string>
-    <string name="colourednavigation">Coloured navigation bar</string>
-    <string name="colourednavigationsum">Whether or not the system navigation bar is coloured with the skin</string>
+    <string name="colourednavigation">Colored Navigation bar</string>
+    <string name="colourednavigationsum">Whether or not the system navigation bar is colored with the skin</string>
 
     <string name="sd_card_grant_next">sd_card_grant_next</string>
     <string name="sd_card_grant_first">sd_card_grant_first</string>
     <string name="fab_skin">FAB skin</string>
-    <string name="gplus_pic_title">G+ API</string>
+    <string name="gplus_pic_title">Sign-In with G+</string>
     <string name="gplus_pic_summary">Show G+ cover pic in drawer</string>
     <string name="icon_credits">Graphics by &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
+
+    <string name="color_title">Color</string>
+    <string name="color_summary">Set color to various UI components</string>
+    <string name="primary_color_title">Primary Color</string>
+    <string name="primary_color_summary">Set color to large UI elements</string>
+    <string name="accent_color_title">Accent Color</string>
+    <string name="accent_color_summary">Set color to FAB and other small UI elements</string>
+    <string name="icon_color_title">Icon Color</string>
+    <string name="icon_color_summary">Set color to icons</string>
+    <string name="hide_mode_title">Hide Mode</string>
+    <string name="none">None</string>
+    <string name="hide_toolbar">Hide Toolbar</string>
+    <string name="hide_appbar">Hide whole AppBar</string>
+    <string name="choose_color">Choose color</string>
 </resources>
 
