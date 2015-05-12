@@ -107,11 +107,11 @@ View rootView;RecyclerView listview;
         m.supportInvalidateOptionsMenu();
         Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
         FloatingActionButton floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab1);
-        floatingActionButton.show(true);
+        //floatingActionButton.show(true);
         floatingActionButton.setColorNormal(Color.parseColor(((MainActivity)getActivity()).fabskin));
         floatingActionButton.setColorPressed(Color.parseColor(((MainActivity)getActivity()).fabSkinPressed));
 
-        floatingActionButton.setAnimation(animation1);
+        //floatingActionButton.setAnimation(animation1);
         //getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
         listview.setHasFixedSize(true);
         getActivity().findViewById(R.id.fab1).setOnClickListener(new View.OnClickListener() {

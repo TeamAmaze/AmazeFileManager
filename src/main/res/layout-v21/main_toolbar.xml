@@ -46,8 +46,8 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_width="match_parent"
             android:minHeight="?attr/actionBarSize"
-            app:theme="?attr/toolbar_theme"
-            app:popupTheme="?attr/popup">
+            android:theme="?attr/toolbar_theme"
+            android:popupTheme="?attr/popup">
 
             <Spinner
                 android:id="@+id/tab_spinner"
@@ -152,14 +152,14 @@
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab"
-        app:fab_colorNormal="#00000000"
-        app:fab_shadow="false"
         android:layout_width="wrap_content"
         app:fab_colorRipple="#77777777"
+        app:fab_shadow="false"
         android:layout_gravity="bottom|right"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
+        android:visibility="gone"
         android:src="@drawable/ic_action_new" />
 
 </FrameLayout>

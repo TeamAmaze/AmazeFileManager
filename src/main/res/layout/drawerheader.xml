@@ -3,7 +3,6 @@
     android:layout_width="fill_parent"
     android:layout_height="171dp"
     android:minHeight="171dp"
-    android:elevation="5dp"
     android:background="@drawable/amaze_header"
     android:clickable="false"
     android:gravity="center_vertical">

@@ -322,5 +322,6 @@
     <string name="hide_toolbar">Hide Toolbar</string>
     <string name="hide_appbar">Hide whole AppBar</string>
     <string name="choose_color">Choose color</string>
+    <string name="g_plus_community_title">G+ Community</string>
 </resources>
 

@@ -207,6 +207,9 @@
                 android:title="@string/xda_title"
                 android:summary="@string/xda_summary"/>
             <Preference
+                android:key="g_plus"
+                android:title="@string/g_plus_community_title"/>
+            <Preference
                 android:key="rate"
                 android:title="@string/rate" />
 

@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.android.tools.build:gradle:1.2.3'
     }
 }
 apply plugin: 'com.android.application'
@@ -87,7 +87,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'com.android.support:appcompat-v7:21.0.+'
-    compile 'com.afollestad:material-dialogs:0.7.2.7'
+    compile 'com.afollestad:material-dialogs:0.7.4.0'
     compile 'com.melnykov:floatingactionbutton:1.3.0'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.junrar:junrar:0.7'

@@ -33,7 +33,6 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -109,6 +108,8 @@ import com.amaze.filemanager.utils.RoundedImageView;
 import com.amaze.filemanager.utils.ScrimInsetsFrameLayout;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
@@ -120,17 +121,13 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Pattern;
 
 
@@ -188,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements
     private TabHandler tabHandler;
     int hidemode;
     public LinearLayout pathbar;
+    private Animation fabAnim;
 
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
@@ -219,16 +217,18 @@ public class MainActivity extends AppCompatActivity implements
 
         fabskin = Sp.getString("fab_skin_color", "#e91e63");
         fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
-        topfab=Sp.getBoolean("topfab",false);
-        hidemode=Sp.getInt("hidemode",0);
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
-        if(topfab && hidemode==0) {
-            floatingActionButton.hide();
-            floatingActionButton = (FloatingActionButton) findViewById(R.id.fab2);
-        }else floatingActionButton.setShadow(true);
+        hidemode=Sp.getInt("hidemode", 0);
+        topfab = hidemode==0 ? true:false;
+
+        floatingActionButton = !topfab ?
+                (FloatingActionButton) findViewById(R.id.fab) : (FloatingActionButton) findViewById(R.id.fab2);
+        fabAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
+        floatingActionButton.setAnimation(fabAnim);
+        floatingActionButton.animate();
+        floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.setShadow(true);
         floatingActionButton.setColorNormal(Color.parseColor(fabskin));
         floatingActionButton.setColorPressed(Color.parseColor(fabSkinPressed));
-        floatingActionButton.setVisibility(View.VISIBLE);
 
         drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderLayout = (RelativeLayout) drawerHeaderView.findViewById(R.id.drawer_header);
@@ -1500,21 +1500,20 @@ public class MainActivity extends AppCompatActivity implements
                     super.onLoadingComplete(imageUri, view, loadedImage);
                     if (sdk >= 16) {
 
-                        drawerHeaderLayout.setBackground(new BitmapDrawable(loadedImage));
+                        drawerHeaderLayout.setBackground(new BitmapDrawable(getResources(), loadedImage));
                     } else {
-                        drawerHeaderLayout.setBackgroundDrawable(new BitmapDrawable(loadedImage));
+                        drawerHeaderLayout.setBackgroundDrawable(new BitmapDrawable(getResources(), loadedImage));
                     }
                 }
 
                 @Override
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                     super.onLoadingFailed(imageUri, view, failReason);
-                    drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
+                    drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
                 }
             });
 
             // setting profile pic
-            final Animation animationUtils = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_newtab);
             ImageLoader.getInstance().loadImage(stringBuilder.toString(), displayImageOptions, new SimpleImageLoadingListener() {
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
@@ -1523,13 +1522,12 @@ public class MainActivity extends AppCompatActivity implements
 
                     drawerProfilePic.setImageBitmap(loadedImage);
                     drawerProfilePic.setVisibility(View.VISIBLE);
-                    drawerProfilePic.setAnimation(animationUtils);
                 }
 
                 @Override
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                     super.onLoadingFailed(imageUri, view, failReason);
-                    drawerHeaderLayout.setVisibility(View.INVISIBLE);
+                    drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
                 }
             });
         }
