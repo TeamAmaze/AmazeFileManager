@@ -47,10 +47,10 @@ import com.amaze.filemanager.utils.AppsSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconHolder;
 import com.amaze.filemanager.utils.Layoutelements;
+import com.amaze.filemanager.utils.PreferenceUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -67,6 +67,8 @@ public class AppsList extends ListFragment {
     public IconHolder ic;
     ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
     public int theme1;
+    private MainActivity mainActivity;
+    private String fabSkin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,26 +80,20 @@ public class AppsList extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
-        MainActivity mainActivity=(MainActivity)getActivity();
-        mainActivity.toolbar.setTitle(utils.getString(getActivity(),R.string.apps));
+        mainActivity=(MainActivity)getActivity();
+        mainActivity.toolbar.setTitle(utils.getString(getActivity(), R.string.apps));
         mainActivity.tabsSpinner.setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
+        fabSkin = mainActivity.fabskin;
         vl=getListView();
             Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         ListView vl = getListView();
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int theme=Integer.parseInt(Sp.getString("theme","0"));
-        theme1 = theme;
+        theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
         vl.setDivider(null);
-        if (theme == 2) {
-            if(hour<=6 || hour>=18) {
-                theme1 = 1;
-            } else
-                theme1 = 0;
-        }
-        if(theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+
+        if(theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
          if(savedInstanceState==null)new LoadListTask().execute();
         else{
         c=savedInstanceState.getParcelableArrayList("c");
@@ -171,6 +167,8 @@ public class AppsList extends ListFragment {
                                                 .title(utils.getString(getActivity(), R.string.warning))
                                                 .negativeText(utils.getString(getActivity(), R.string.no))
                                                 .positiveText(utils.getString(getActivity(), R.string.yes))
+                                                .negativeColor(Color.parseColor(fabSkin))
+                                                .positiveColor(Color.parseColor(fabSkin))
                                                 .callback(new MaterialDialog.ButtonCallback() {
                                                     @Override
                                                     public void onNegative(MaterialDialog materialDialog) {

@@ -55,8 +55,6 @@ public class DrawerAdapter extends ArrayAdapter<String> {
     public void toggleChecked(int position) {
         toggleChecked(false);
         myChecked.put(position, true);
-
-
         notifyDataSetChanged();
     }
 
@@ -101,8 +99,10 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         icons = new IconUtils(Sp, m);
         this.m = m;
         putColors();
-        color=colors.get(m.skin);
-        if(color==null){color=colors.get("#3f51b5");}
+        color=colors.get(m.fabskin);
+        if(color==null) {
+            color=colors.get("#e91e63");
+        }
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -150,7 +150,7 @@ public class DrawerAdapter extends ArrayAdapter<String> {
             else rowView.setBackgroundColor(Color.parseColor("#ff424242"));
             imageView.setColorFilter(colorMatrixColorFilter);
             //textView.setTypeface(Typeface.DEFAULT_BOLD);
-            textView.setTextColor(Color.parseColor(m.skin));
+            textView.setTextColor(Color.parseColor(m.fabskin));
 
             imageView.setImageResource(R.drawable.folder_drawer_white);
             //if(m.theme1==0)

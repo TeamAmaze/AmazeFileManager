@@ -53,15 +53,8 @@ public class Preferences extends AppCompatActivity {
         SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         int th = Integer.parseInt(Sp.getString("theme", "0"));
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        theme = th;
-        if (th == 2) {
-            if(hour<=6 || hour>=18) {
-                theme = 1;
-            } else
-                theme = 0;
-        }
+
+        theme = th==2 ? PreferenceUtils.hourOfDay() : th;
 
         if (theme == 1) {
             setTheme(R.style.appCompatDark);

@@ -1,7 +1,6 @@
 package com.amaze.filemanager.fragments;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -22,9 +21,10 @@ import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.utils.CustomViewPager;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.PreferenceUtils;
+
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -52,16 +52,8 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 container, false);
         mToolBarContainer=getActivity().findViewById(R.id.lin);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int theme=Integer.parseInt(Sp.getString("theme","0"));
-        theme1 = theme;
-        if (theme == 2) {
-            if(hour<=6 || hour>=18) {
-                theme1 = 1;
-            } else
-                theme1 = 0;
-        }
+        theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
         mViewPager = (CustomViewPager) rootView.findViewById(R.id.pager);
         if (getArguments() != null){
             path = getArguments().getString("path");

@@ -44,12 +44,12 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.BooksAdapter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
+import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 
 public class BookmarksManager extends Fragment {
@@ -59,52 +59,55 @@ public class BookmarksManager extends Fragment {
     SharedPreferences Sp;
     public IconUtils icons;
     ArrayList<File> bx;
-  public   MainActivity m;
-int theme,theme1;
-View rootView;RecyclerView listview;
+    public MainActivity m;
+    int theme,theme1;
+    View rootView;
+    RecyclerView listview;
     Context c;
     SwipeRefreshLayout swipeRefreshLayout;
     LinearLayoutManager linearLayoutManager;
+
     @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            rootView = inflater.inflate(R.layout.bookmark_frag, container, false);
-            MainActivity mainActivity=(MainActivity)getActivity();
-            mainActivity.toolbar.setTitle(utils.getString(getActivity(),R.string.bookmanag));
-            mainActivity.tabsSpinner.setVisibility(View.GONE);
-            listview=(RecyclerView)rootView.findViewById(R.id.listView);
-            rootView.findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
-            c=getActivity();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        rootView = inflater.inflate(R.layout.bookmark_frag, container, false);
+        MainActivity mainActivity=(MainActivity)getActivity();
+        mainActivity.toolbar.setTitle(utils.getString(getActivity(),R.string.bookmanag));
+
+        mainActivity.tabsSpinner.setVisibility(View.GONE);
+        mainActivity.floatingActionButton.setVisibility(View.GONE);
+
+        listview=(RecyclerView)rootView.findViewById(R.id.listView);
+        rootView.findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
+        c=getActivity();
         linearLayoutManager=new LinearLayoutManager(c);
         listview.setLayoutManager(linearLayoutManager);
-        return rootView;}
+        return rootView;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
         setRetainInstance(false);
         s = new Shortcuts(getActivity());
-        Calendar calendar = Calendar.getInstance();
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
         theme=Integer.parseInt(Sp.getString("theme","0"));
-         swipeRefreshLayout=(SwipeRefreshLayout)rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
+        swipeRefreshLayout=(SwipeRefreshLayout)rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 refresh();
             }
         });
-        theme1 = theme;
-        if (theme == 2) {
-            if(hour<=6 || hour>=18) {
-                theme1 = 1;
-            } else
-                theme1 = 0;
+        theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
+        if(theme1==1) {
+            //getActivity().getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+            listview.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         }
-        if(theme1==1){getActivity().getWindow().getDecorView().setBackgroundColor(Color.BLACK);
-        listview.setBackgroundColor(Color.BLACK);}
         m=(MainActivity)getActivity();
         m.supportInvalidateOptionsMenu();
+        m.floatingActionButton.setVisibility(View.GONE);
         Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
         FloatingActionButton floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab1);
         //floatingActionButton.show(true);
@@ -127,9 +130,9 @@ View rootView;RecyclerView listview;
                 if(theme1==1)ba1.theme(Theme.DARK);
                 ba1.negativeText(R.string.cancel);
                 ba1.positiveText(R.string.create);
-                String skin=Sp.getString("skin_color", "#03A9F4");
-                ba1.positiveColor(Color.parseColor(skin));
-                ba1.negativeColor(Color.parseColor(skin));
+                String fabskin = Sp.getString("fab_skin_color", "#e91e63");
+                ba1.positiveColor(Color.parseColor(fabskin));
+                ba1.negativeColor(Color.parseColor(fabskin));
                 ba1.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {

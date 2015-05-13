@@ -27,7 +27,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -54,12 +54,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TextReader extends ActionBarActivity implements TextWatcher {
+public class TextReader extends AppCompatActivity implements TextWatcher {
 
     String path;
     Futils utils = new Futils();
@@ -74,24 +72,18 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
     private Timer mTimer;
     private boolean mModified;
     private int skinStatusBar;
+    private String fabSkin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
+        fabSkin = Sp.getString("fab_skin_color", "#e91e63");
         theme = Integer.parseInt(Sp.getString("theme", "0"));
-        theme1 = theme;
-        if (theme == 2) {
-            Calendar calendar = Calendar.getInstance();
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            if (hour <= 6 || hour >= 18) {
-                theme1 = 1;
-            } else
-                theme1 = 0;
-        }
+        theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
         if (theme1 == 1) {
             setTheme(R.style.appCompatDark);
-            getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+            getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         }
         setContentView(R.layout.search);
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
@@ -146,6 +138,8 @@ public class TextReader extends ActionBarActivity implements TextWatcher {
                     .content(R.string.unsavedchangesdesc)
                     .positiveText(R.string.yes)
                     .negativeText(R.string.no)
+                    .positiveColor(Color.parseColor(fabSkin))
+                    .negativeColor(Color.parseColor(fabSkin))
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {

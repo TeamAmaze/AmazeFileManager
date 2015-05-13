@@ -3,6 +3,7 @@ package com.amaze.filemanager.utils;
 import android.content.SharedPreferences;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Random;
 
 /**
@@ -237,5 +238,14 @@ public class PreferenceUtils {
             "&nbsp;*/ " +
             "<br><br></code></p>" +
             "</body></html>";
+
+    public static int hourOfDay() {
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        if (hour <= 6 || hour >= 18) {
+            return 1;
+        } else
+            return 0;
+    }
 
 }

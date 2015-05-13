@@ -84,6 +84,7 @@ import com.amaze.filemanager.utils.IconHolder;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
+import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.amaze.filemanager.utils.SpacesItemDecoration;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
@@ -127,7 +128,7 @@ public class Main extends android.support.v4.app.Fragment {
     public IconHolder ic;
     public MainActivity mainActivity;
     public boolean showButtonOnStart = false;
-    public String skin;
+    public String skin, fabSkin;
     public int skinselection;
     public int theme;
     public int theme1;
@@ -161,19 +162,13 @@ public class Main extends android.support.v4.app.Fragment {
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         savepaths=Sp.getBoolean("savepaths", true);
         skin = Sp.getString("skin_color", "#3f51b5");
+        fabSkin = Sp.getString("fab_skin_color", "#e91e63");
         sh = new Shortcuts(getActivity());
         islist = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
         year=(""+calendar.get(Calendar.YEAR)).substring(2, 4);
-        theme=Integer.parseInt(Sp.getString("theme","0"));
-        theme1 = theme;
-        if (theme == 2) {
-            if(hour<=6 || hour>=18) {
-                theme1 = 1;
-            } else
-                theme1 = 0;
-        }
+        theme=Integer.parseInt(Sp.getString("theme", "0"));
+        theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
         hidemode=Sp.getInt("hidemode",0);
         showPermissions=Sp.getBoolean("showPermissions",false);
         showSize=Sp.getBoolean("showFileSize",false);
@@ -264,7 +259,7 @@ public class Main extends android.support.v4.app.Fragment {
         if(savepaths)
             f=new File(current);
         else f=new File(home);
-        mainActivity.initiatebbar(current, this);
+        mainActivity.initiatebbar();
 
         scroll = (HorizontalScrollView) rootView.findViewById(R.id.scroll);
         scroll1 = (HorizontalScrollView) rootView.findViewById(R.id.scroll1);
@@ -531,7 +526,7 @@ public class Main extends android.support.v4.app.Fragment {
                         }
 
                     });
-                    if (buttons.getVisibility() == View.VISIBLE) mainActivity.bbar(current, this);
+                    if (buttons.getVisibility() == View.VISIBLE) mainActivity.bbar();
 
                     //mToolbarContainer.setBackgroundColor(Color.parseColor(skin));
                     mainActivity.updateDrawer(current);
@@ -900,8 +895,8 @@ public class Main extends android.support.v4.app.Fragment {
                     });
                     a.positiveText(R.string.save);
                     a.negativeText(R.string.cancel);
-                    a.positiveColor(Color.parseColor(skin));
-                    a.negativeColor(Color.parseColor(skin));
+                    a.positiveColor(Color.parseColor(fabSkin));
+                    a.negativeColor(Color.parseColor(fabSkin));
                     a.build().show();
                     mode.finish();
                     return true;

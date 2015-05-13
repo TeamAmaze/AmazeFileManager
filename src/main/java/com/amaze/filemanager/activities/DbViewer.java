@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.activities;
 
 import android.content.SharedPreferences;
@@ -31,8 +50,6 @@ import com.stericson.RootTools.RootTools;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 
 /**
  * Created by Vishal on 02-02-2015.
@@ -58,18 +75,12 @@ public class DbViewer extends ActionBarActivity {
 
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
-        theme1 = theme;
-        if (theme == 2) {
-            Calendar calendar = Calendar.getInstance();
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            if (hour <= 6 || hour >= 18) {
-                theme1 = 1;
-            } else
-                theme1 = 0;
-        }
+
+        theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
+
         if (theme1 == 1) {
             setTheme(R.style.appCompatDark);
-            getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+            getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         }
         setContentView(R.layout.activity_db_viewer);
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);

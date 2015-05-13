@@ -121,6 +121,8 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
             view = mInflater.inflate(R.layout.rowlayout, null);
             final ViewHolder vholder = new ViewHolder();
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
+            if (app.theme1!=0)
+                vholder.txtTitle.setTextColor(Color.WHITE);
             vholder.imageView = (ImageView) view.findViewById(R.id.bicon);
             vholder.rl = (RelativeLayout) view.findViewById(R.id.second);
             vholder.txtDesc= (TextView) view.findViewById(R.id.date);

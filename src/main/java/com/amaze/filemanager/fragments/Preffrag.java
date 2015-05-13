@@ -35,7 +35,6 @@ import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +53,6 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import com.stericson.RootTools.RootTools;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class Preffrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
     int theme;
@@ -63,6 +61,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
     private int COUNT = 0;
     private Toast toast;
     private final String TAG = getClass().getName();
+    private String fabSkin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,19 +72,12 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         skin = sharedPref.getString("skin_color", "#3f51b5");
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-
+        fabSkin = sharedPref.getString("fab_skin_color", "#e91e63");
 
         final int th1 = Integer.parseInt(sharedPref.getString("theme", "0"));
-        theme = th1;
-        if (th1 == 2) {
+        theme = th1==2 ? PreferenceUtils.hourOfDay() : th1;
 
-            if(hour<=6 || hour>=18) {
-                theme = 1;
-            } else
-                theme = 0;
-        }findPreference("columns").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        findPreference("columns").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 final String[] sort = getResources().getStringArray(R.array.columns);
@@ -258,7 +250,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                     a.theme(Theme.DARK);
 
                 a.positiveText(R.string.close);
-                a.positiveColor(Color.parseColor(skin));
+                a.positiveColor(Color.parseColor(fabSkin));
                 LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = layoutInflater.inflate(R.layout.authors, null);
                 a.customView(view, true);
@@ -355,7 +347,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                 a.negativeText(R.string.close);
                 a.negativeColor(Color.parseColor(skin));
                 a.positiveText(R.string.fullChangelog);
-                a.positiveColor(Color.parseColor(skin));
+                a.positiveColor(Color.parseColor(fabSkin));
                 a.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -484,7 +476,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
 
         final MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
         a.positiveText(R.string.cancel);
-        a.positiveColor(Color.parseColor(skin));
+        a.positiveColor(Color.parseColor(fabSkin));
         a.title(R.string.choose_color);
         if(theme==1)
             a.theme(Theme.DARK);

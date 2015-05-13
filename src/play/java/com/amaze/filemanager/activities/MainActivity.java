@@ -125,7 +125,6 @@ import com.stericson.RootTools.RootTools;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -185,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements
     private TabHandler tabHandler;
     int hidemode;
     public LinearLayout pathbar;
-    private Animation fabAnim;
+    public Animation fabShowAnim, fabHideAnim;
 
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
@@ -222,8 +221,9 @@ public class MainActivity extends AppCompatActivity implements
 
         floatingActionButton = !topfab ?
                 (FloatingActionButton) findViewById(R.id.fab) : (FloatingActionButton) findViewById(R.id.fab2);
-        fabAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
-        floatingActionButton.setAnimation(fabAnim);
+        fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
+        fabHideAnim = AnimationUtils.loadAnimation(this, R.anim.fab_hide);
+        floatingActionButton.setAnimation(fabShowAnim);
         floatingActionButton.animate();
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.setShadow(true);
@@ -275,8 +275,6 @@ public class MainActivity extends AppCompatActivity implements
         util = new IconUtils(Sp, this);
         icons = new IconUtils(Sp, this);
 
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int th = Integer.parseInt(Sp.getString("theme", "0"));
         boolean v142 = Sp.getBoolean("v1.4.2", false);
         if (!v142) {
@@ -292,14 +290,8 @@ public class MainActivity extends AppCompatActivity implements
             }
             Sp.edit().putBoolean("v1.4.2", true).apply();
         }
-        theme1 = th;
-        if (th == 2) {
-            Sp.edit().putString("uimode", "0").commit();
-            if (hour <= 6 || hour >= 18) {
-                theme1 = 1;
-            } else
-                theme1 = 0;
-        }
+
+        theme1 = th==2 ? PreferenceUtils.hourOfDay() : th;
 
         if (theme1 == 1) {
             setTheme(R.style.appCompatDark);
@@ -529,7 +521,8 @@ public class MainActivity extends AppCompatActivity implements
             public void onDrawerClosed(View view) {
                 if(pending_fragmentTransaction!=null){
                     pending_fragmentTransaction.commit();
-                    pending_fragmentTransaction=null;}
+                    pending_fragmentTransaction=null;
+                }
                 if(pending_path!=null){
                     try {
                         TabFragment m=getFragment();
@@ -538,7 +531,8 @@ public class MainActivity extends AppCompatActivity implements
                         }   else utils.openFile(new File(pending_path),mainActivity);
 
                     } catch (ClassCastException e) {
-                        select=null;goToMain("");
+                        select=null;
+                        goToMain("");
                     }pending_path=null;}
                 supportInvalidateOptionsMenu();
             }
@@ -662,33 +656,50 @@ public class MainActivity extends AppCompatActivity implements
                     main.goBack();
                 } else if (name.contains("ZipViewer")){
                     ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                    if(zipViewer.mActionMode==null)
-                    {if (zipViewer.cangoBack()) {
+                    if(zipViewer.mActionMode==null) {
+                        if (zipViewer.cangoBack()) {
 
-                        zipViewer.goBack();
-                    } else if(openzip) {openzip=false;finish();}
-                    else{
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom,R.anim.slide_out_bottom);
-                        fragmentTransaction.remove(zipViewer);
-                        fragmentTransaction.commit();
-                        supportInvalidateOptionsMenu();
-                    }}else {zipViewer.mActionMode.finish();}}else if (name.contains("RarViewer")){
+                            zipViewer.goBack();
+                        } else if(openzip) {
+                            openzip=false;
+                            finish();
+                        } else {
+
+                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                            fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
+                            fragmentTransaction.remove(zipViewer);
+                            fragmentTransaction.commit();
+                            supportInvalidateOptionsMenu();
+                        }
+                    } else {
+                        zipViewer.mActionMode.finish();
+                    }
+                }else if (name.contains("RarViewer")) {
+
                     RarViewer zipViewer = (RarViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                    if(zipViewer.mActionMode==null)
-                    {if (zipViewer.cangoBack()) {
+                    if(zipViewer.mActionMode==null) {
+                        if (zipViewer.cangoBack()) {
 
-                        zipViewer.elements.clear();
-                        zipViewer.goBack();
-                    } else if(openzip) {openzip=false;finish();}
-                    else {
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
-                        fragmentTransaction.remove(zipViewer);
-                        fragmentTransaction.commit();
-                        supportInvalidateOptionsMenu();
+                            zipViewer.elements.clear();
+                            zipViewer.goBack();
+                        } else if(openzip) {
 
-                    }}else {zipViewer.mActionMode.finish();}}else if(name.contains("Process")){finish();}else goToMain("");
+                            openzip=false;finish();
+                        } else {
+
+                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                            fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
+                            fragmentTransaction.remove(zipViewer);
+                            fragmentTransaction.commit();
+                            supportInvalidateOptionsMenu();
+                        }
+                    } else {
+                        zipViewer.mActionMode.finish();
+                    }
+                } else if(name.contains("Process")) {
+                    finish();
+                } else
+                    goToMain("");
             } catch (ClassCastException e) {
                 goToMain("");
             }
@@ -754,10 +765,11 @@ public class MainActivity extends AppCompatActivity implements
         transaction.addToBackStack("tabt" + 1);
         transaction.commit();
         toolbar.setTitle(null);
-        tabsSpinner.setVisibility(View.VISIBLE);
-        if(openzip && zippath!=null)
-        {if(zippath.endsWith(".zip") || zippath.endsWith(".apk"))openZip(zippath);else{openRar(zippath);}zippath=null;}
 
+        tabsSpinner.setVisibility(View.VISIBLE);
+        if(openzip && zippath!=null) {
+            if(zippath.endsWith(".zip") || zippath.endsWith(".apk"))openZip(zippath);else{openRar(zippath);}zippath=null;
+        }
     }
     public void selectItem(final int i) {
         if (select == null || select >= list.size() -2) {
@@ -771,11 +783,8 @@ public class MainActivity extends AppCompatActivity implements
 
             transaction.addToBackStack("tabt1" + 1);
             pending_fragmentTransaction=transaction;
-
-
-        }else{
+        } else {
             pending_path=list.get(i);
-
         }
         select = i;
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
@@ -804,50 +813,59 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         }
         if(f.contains("TabFragment")) {
-            try {
-                TabFragment tabFragment=(TabFragment)fragment;
-                updatePath(((Main)tabFragment.getTab()).current,true);
-            } catch (Exception e) {}
-            tabsSpinner.setVisibility(View.VISIBLE);
-                getSupportActionBar().setTitle("");
-                if (aBoolean) {
-                    s.setTitle(getResources().getString(R.string.gridview));
-                } else {
-                    s.setTitle(getResources().getString(R.string.listview));
-                }
-                if (Build.VERSION.SDK_INT >= 21) toolbar.setElevation(0);
-                invalidatePasteButton(paste);
-                search.setVisible(true);
-                menu.findItem(R.id.search).setVisible(true);
-                menu.findItem(R.id.home).setVisible(true);
-                menu.findItem(R.id.history).setVisible(true);
-                menu.findItem(R.id.item10).setVisible(true);
-                menu.findItem(R.id.hiddenitems).setVisible(true);
-                menu.findItem(R.id.view).setVisible(true);
-                invalidatePasteButton(menu.findItem(R.id.paste));
-                findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab).setVisibility(View.VISIBLE);
-            }else if(f.contains("AppsList") || f.contains("BookmarksManager") || f.contains("ProcessViewer")){    tabsSpinner.setVisibility(View.GONE);
-                findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
-                findViewById(R.id.fab).setVisibility(View.GONE);
-                menu.findItem(R.id.search).setVisible(false);
-                menu.findItem(R.id.home).setVisible(false);
-                menu.findItem(R.id.history).setVisible(false);
-                menu.findItem(R.id.item10).setVisible(false);
-                menu.findItem(R.id.hiddenitems).setVisible(false);
-                menu.findItem(R.id.view).setVisible(false);
-                menu.findItem(R.id.paste).setVisible(false);
-            }else if(f.contains("ZipViewer") || f.contains("RarViewer")){
-                tabsSpinner.setVisibility(View.GONE);
-                findViewById(R.id.fab).setVisibility(View.GONE);
-                menu.findItem(R.id.search).setVisible(false);
-                menu.findItem(R.id.home).setVisible(false);
-                menu.findItem(R.id.history).setVisible(false);
-                menu.findItem(R.id.item10).setVisible(false);
-                menu.findItem(R.id.hiddenitems).setVisible(false);
-                menu.findItem(R.id.view).setVisible(false);
-                menu.findItem(R.id.paste).setVisible(false);}
 
+            try {
+                TabFragment tabFragment = (TabFragment) fragment;
+                updatePath(((Main) tabFragment.getTab()).current, true);
+            } catch (Exception e) {
+            }
+            tabsSpinner.setVisibility(View.VISIBLE);
+            getSupportActionBar().setTitle("");
+            if (aBoolean) {
+                s.setTitle(getResources().getString(R.string.gridview));
+            } else {
+                s.setTitle(getResources().getString(R.string.listview));
+            }
+            if (Build.VERSION.SDK_INT >= 21) toolbar.setElevation(0);
+            invalidatePasteButton(paste);
+            search.setVisible(true);
+            menu.findItem(R.id.search).setVisible(true);
+            menu.findItem(R.id.home).setVisible(true);
+            menu.findItem(R.id.history).setVisible(true);
+            menu.findItem(R.id.item10).setVisible(true);
+            menu.findItem(R.id.hiddenitems).setVisible(true);
+            menu.findItem(R.id.view).setVisible(true);
+            invalidatePasteButton(menu.findItem(R.id.paste));
+            findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
+            floatingActionButton.setAnimation(fabShowAnim);
+            floatingActionButton.animate();
+            floatingActionButton.setVisibility(View.VISIBLE);
+        } else if(f.contains("AppsList") || f.contains("BookmarksManager") || f.contains("ProcessViewer")) {
+            tabsSpinner.setVisibility(View.GONE);
+            findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
+            floatingActionButton.setAnimation(fabHideAnim);
+            floatingActionButton.animate();
+            floatingActionButton.setVisibility(View.GONE);
+            menu.findItem(R.id.search).setVisible(false);
+            menu.findItem(R.id.home).setVisible(false);
+            menu.findItem(R.id.history).setVisible(false);
+            menu.findItem(R.id.item10).setVisible(false);
+            menu.findItem(R.id.hiddenitems).setVisible(false);
+            menu.findItem(R.id.view).setVisible(false);
+            menu.findItem(R.id.paste).setVisible(false);
+        } else if(f.contains("ZipViewer") || f.contains("RarViewer")) {
+            tabsSpinner.setVisibility(View.GONE);
+            floatingActionButton.setAnimation(fabHideAnim);
+            floatingActionButton.animate();
+            floatingActionButton.setVisibility(View.GONE);
+            menu.findItem(R.id.search).setVisible(false);
+            menu.findItem(R.id.home).setVisible(false);
+            menu.findItem(R.id.history).setVisible(false);
+            menu.findItem(R.id.item10).setVisible(false);
+            menu.findItem(R.id.hiddenitems).setVisible(false);
+            menu.findItem(R.id.view).setVisible(false);
+            menu.findItem(R.id.paste).setVisible(false);
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -961,8 +979,8 @@ public class MainActivity extends AppCompatActivity implements
                 if(theme1==1)ba1.theme(Theme.DARK);
                 ba1.positiveText(R.string.create);
                 ba1.negativeText(R.string.cancel);
-                ba1.positiveColor(Color.parseColor(skin));
-                ba1.negativeColor(Color.parseColor(skin));
+                ba1.positiveColor(Color.parseColor(fabskin));
+                ba1.negativeColor(Color.parseColor(fabskin));
                 ba1.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -1009,8 +1027,8 @@ public class MainActivity extends AppCompatActivity implements
                 if(theme1==1)ba2.theme(Theme.DARK);
                 ba2.negativeText(R.string.cancel);
                 ba2.positiveText(R.string.create);
-                ba2.positiveColor(Color.parseColor(skin));
-                ba2.negativeColor(Color.parseColor(skin));
+                ba2.positiveColor(Color.parseColor(fabskin));
+                ba2.negativeColor(Color.parseColor(fabskin));
                 ba2.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -1067,8 +1085,8 @@ public class MainActivity extends AppCompatActivity implements
         if(theme1==1)a.theme(Theme.DARK);
         a.negativeText(R.string.cancel);
         a.positiveText(R.string.search);
-        a.positiveColor(Color.parseColor(skin));
-        a.negativeColor(Color.parseColor(skin));
+        a.positiveColor(Color.parseColor(fabskin));
+        a.negativeColor(Color.parseColor(fabskin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -1300,9 +1318,9 @@ public class MainActivity extends AppCompatActivity implements
                 x.positiveText(R.string.skip);
                 x.negativeText(R.string.overwrite);
                 x.neutralText(R.string.cancel);
-                x.positiveColor(Color.parseColor(skin));
-                x.negativeColor(Color.parseColor(skin));
-                x.neutralColor(Color.parseColor(skin));
+                x.positiveColor(Color.parseColor(fabskin));
+                x.negativeColor(Color.parseColor(fabskin));
+                x.neutralColor(Color.parseColor(fabskin));
                 x.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -1597,7 +1615,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    public void bbar(String text, final Main main) {
+    public void bbar() {
+        TabFragment fragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        final Main main = (Main) fragment.getTab();
+        final String text = ((Main) fragment.getTab()).current;
         try {
             buttons.removeAllViews();
             buttons.setMinimumHeight(pathbar.getHeight());
@@ -1696,7 +1717,6 @@ public class MainActivity extends AppCompatActivity implements
             textView.setText(getResources().getString(R.string.used)+" " + used +" "+ getResources().getString(R.string.free)+" " + free);
 
             TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
-            bapath.setAllCaps(true);
             bapath.setText(f.getPath());
             scroll.post(new Runnable() {
                 @Override
@@ -1801,14 +1821,14 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public void initiatebbar(final String current, final Main main) {
+    public void initiatebbar() {
         LinearLayout pathbar = (LinearLayout) findViewById(R.id.pathbar);
         TextView textView = (TextView) findViewById(R.id.fullpath);
 
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bbar(current, main);
+                bbar();
                 crossfade();
                 timer.cancel();
                 timer.start();
@@ -1817,7 +1837,7 @@ public class MainActivity extends AppCompatActivity implements
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bbar(current, main);
+                bbar();
                 crossfade();
                 timer.cancel();
                 timer.start();
