@@ -273,6 +273,9 @@
     <string name="serbian_translation_title">Serbiera</string>
     <string name="turkish_translation_title">Turkiera</string>
     <string name="ukrainian_translation_title">Ukrainiera</string>
+    <string name="portuguese_translation_title">Portugesa</string>
+	<string name="polish_translation_title">Poloniera</string>
+	<string name="korean_translation_title">Koreera</string>
     <string name="zip_viewer">Zip bisorea</string>
     <string name="unin_system_apk">Sistemaren aplikazio bat da hau, ezabatzeak sistemaren ezegonkortasuna ekar lezake.\nJarraitu?</string>
     <string name="warning">Abisua</string>
@@ -291,4 +294,33 @@
     <string name="contributors">Laguntzaileak</string>
     <string name="savepaths">Bideak gogoratu</string>
     <string name="savepathsummary">Abiarazterakoan, azkenengoz ikusi den karpeta erakutsiko da fitxa bakoitzean</string>
+    <string name="select_intent">Aukeratu</string>
+	<string name="md5copied">MD5 arbelera kopiatu da</string>
+	<string name="generating">Sortzen...</string>
+	<string name="tables">Taula(k)</string>
+	<string name="database">Datu-basea</string>
+	<string name="colourednavigation">Nabigazio barra koloreztatua</string>
+	<string name="colourednavigationsum">Sistemaren nabigazio barra azalarekin koloreztatzen den edo ez</string>
+
+	<string name="sd_card_grant_next">sd_card_grant_next</string>
+	<string name="sd_card_grant_first">sd_card_grant_first</string>
+	<string name="fab_skin">FAB azala</string>
+	<string name="gplus_pic_title">G+rekin saioa hasi</string>
+	<string name="gplus_pic_summary">G+eko irudia tiraderan erakutsi</string>
+	<string name="icon_credits">Grafikoak &lt;a href="http://cookicons.co/">CookIcons&lt;/a>ek eginak</string>
+
+	<string name="color_title">Kolorea</string>
+	<string name="color_summary">UI osagai batzuen kolorea ezarri</string>
+	<string name="primary_color_title">Lehen kolorea</string>
+	<string name="primary_color_summary">UI elementu handien kolorea ezarri</string>
+	<string name="accent_color_title">Azentu kolorea</string>
+	<string name="accent_color_summary">FAB eta beste UI elementu txikien kolorea ezarri</string>
+	<string name="icon_color_title">Ikonoen kolorea</string>
+	<string name="icon_color_summary">Ikonoen kolorea ezarri</string>
+	<string name="hide_mode_title">Ezkutatze modua</string>
+	<string name="none">Bat ere ez</string>
+	<string name="hide_toolbar">Tresna-barra ezkutatu</string>
+	<string name="hide_appbar">AppBar osoa ezkutatu</string>
+	<string name="choose_color">Kolorea aukeratu</string>
+	<string name="g_plus_community_title">G+ komunitatea</string>
 </resources>
