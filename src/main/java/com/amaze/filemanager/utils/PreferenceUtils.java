@@ -247,5 +247,4 @@ public class PreferenceUtils {
         } else
             return 0;
     }
-
 }

@@ -522,14 +522,19 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     else return position == 0 || position==1 || position==2;}
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-      if(i!=0){HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
-        if(items.get(i-1).isDirectory(main.rootMode))holder.ext.setText("Directories");
-        else holder.ext.setText("Files");
-    }}
+        if(i!=0) {
+            HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
+            if(items.get(i-1).isDirectory(main.rootMode))holder.ext.setText("Directories");
+            else holder.ext.setText("Files");
+        }
+    }
 
     @Override
     public int getItemCount() {
-        return items.size()+1;
+        if (!main.islist)
+            return items.size()+3;
+        else
+            return items.size()+1;
     }
 }
 
