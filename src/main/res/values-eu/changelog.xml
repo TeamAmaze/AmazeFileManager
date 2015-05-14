@@ -49,4 +49,17 @@
                                       - Artxiboen erauzketa eta konpresio karpeta hautatzeko aukera gehituta&lt;br>
                                       - Bideak gogoratzeko aukera gehituta&lt;br>
                                       - gehiago...&lt;br>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#524ef8">&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Mar 08, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_5">- Datu-base bisorea inplementatuta&lt;br>
+                                      - Rar bisorea inplementatuta&lt;br>
+                                      - Lanentzako jakinarazpen hobetuak&lt;br>
+                                      - Tiradera ixterako atzerapena konponduta eta diseinua hobetuta&lt;br>
+                                      - Ikono biribil berria&lt;br>
+                                      - Freskatzeko irristatu(behera tira egin) sartuta&lt;br>
+                                      - USB unitateen errekonozimendua gehituta gailu batzuetan&lt;br>
+                                      - Koloreztatutako nagigazio barra lollipop gailuentzat&lt;br>
+                                      - Uhin efektua lollipop gailuentzat&lt;br>
+                                      - UI hobekuntza ugari&lt;br>
+                                      - Akats konponketa anitz&lt;br>
+                                      - gehiago...&lt;br>&lt;br></string>
 </resources>
