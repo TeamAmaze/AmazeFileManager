@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+    Copyright (C) 2014-2015 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
     This file is part of Amaze File Manager.
 
@@ -83,7 +83,7 @@
     <string name="stopping">A parar</string>
     <string name="guide1">Bem-vindo ao Amaze File Manager</string>
     <string name="guide2">Toque na faixa azul para mostrar/ocultar a barra de caminho</string>
-    <string name="guide3">Toque longo num ficheiro para mais opções...</string>
+    <string name="guide3">Toque longo no ficheiro para mais opções...</string>
     <string name="guide4">Por exemplo: copiar, mover, propriedades...</string>
     <string name="guide5">Utilize o botão Back do dispositivo para sair da aplicação...</string>
     <string name="guide6">...E utilize as setas para a esquerda/direita para navegar</string>
@@ -104,11 +104,11 @@
     <string name="directorysort">Organização de diretórios</string>
     <string name="sortby">Organizar por</string>
     <string name="theme">Tema</string>
-    <string name="skin">Estilo</string>
-    <string name="random">Estilo aleatório</string>
-    <string name="random_summary">Define um estilo aleatório ao iniciar</string>
+    <string name="skin">Cor</string>
+    <string name="random">Cor aleatória</string>
+    <string name="random_summary">Define uma cor aleatória ao iniciar</string>
     <string name="colorize">Colorir ícones</string>
-    <string name="colorize_summary">Define a cor do ícone estático.</string>
+    <string name="colorize_summary">Define a cor estática do ícone</string>
     <string name="back">Recuar</string>
     <string name="home">Home</string>
     <string name="paste">Colar</string>
@@ -222,15 +222,15 @@
     <string name="chooseUI">Escolha o tipo de interface</string>
     <string name="ui">Interface</string>
     <string name="general">Geral</string>
-    <string name="thumbSummary">Mostrar miniaturas das aplicações e das imagens.</string>
+    <string name="thumbSummary">Mostrar miniaturas das aplicações e das imagens</string>
     <string name="thumb">Mostrar miniaturas</string>
     <string name="hidden">Mostrar ficheiros e pastas ocultas</string>
-    <string name="lastModifiedSummary">Mostrar data e hora da última modificação.</string>
+    <string name="lastModifiedSummary">Mostrar data e hora da última modificação</string>
     <string name="lastModifiedPref">Mostrar última modificação</string>
-    <string name="sizePrefSummary">Mostrar tamanho dos ficheiros e o número de itens da pasta.</string>
+    <string name="sizePrefSummary">Mostrar tamanho dos ficheiros e o número de itens da pasta</string>
     <string name="sizePref">Mostrar tamanho</string>
     <string name="miscellaneous">Outras</string>
-    <string name="rootPrefSummary">Mostrar permissões das pastas e dos ficheiros.</string>
+    <string name="rootPrefSummary">Mostrar permissões das pastas e dos ficheiros</string>
     <string name="rootPref">Mostrar permissões</string>
     <string name="aboutFileManager">Sobre o Amaze File Manager</string>
     <string name="version">Versão</string>
@@ -257,10 +257,10 @@
     <string name="xda_title">XDA</string>
     <string name="xda_summary">Q&amp;A, ajuda e resolução de problemas</string>
     <string name="invalid_dir">Diretório inválido</string>
-    <string name="circularimages">Utilizar ícones circulares para imagens e vídeos.</string>
+    <string name="circularimages">Utilizar ícones circulares para imagens e vídeos</string>
     <string name="circularicons">Utilizar ícone circular</string>
     <string name="back_title">Botão para recuar</string>
-    <string name="back_summary">Coloca um botão no topo da lista para recuar na navegação.</string>
+    <string name="back_summary">Coloca um botão no topo da lista para recuar na navegação</string>
     <string name="details">Detalhes</string>
     <string name="translators">Tradutores</string>
     <string name="german_translation_title">Alemão</string>
@@ -293,19 +293,35 @@
     <string name="image">Imagem</string>
     <string name="contributors">Colaboradores</string>
     <string name="savepaths">Memorizar caminho</string>
-    <string name="savepathsummary">Ao iniciar a aplicação, será mostrada a última pasta aberta (por separador).</string>
+    <string name="savepathsummary">Ao iniciar, mostrar a última pasta aberta (por separador)</string>
     <string name="select_intent">Selecionar</string>
     <string name="md5copied">MD5 copiada para a área de transferência</string>
-    <string name="generating">A gerar..</string>
+    <string name="generating">A gerar...</string>
     <string name="tables">Tabela(s)</string>
     <string name="database">Base de dados</string>
     <string name="colourednavigation">Barra de navegação colorida</string>
-    <string name="colourednavigationsum">Ative esta opção para colorir a barra de navegação com a cor do estilo.</string>
+    <string name="colourednavigationsum">Ative esta opção para colorir a barra de navegação</string>
 	
 	<string name="sd_card_grant_next">sd_card_grant_next</string>
     <string name="sd_card_grant_first">sd_card_grant_first</string>
-    <string name="fab_skin">Estilo FAB</string>
-    <string name="gplus_pic_title">API do G+</string>
+    <string name="fab_skin">Cor FAB</string>
+    <string name="gplus_pic_title">Iniciar sessão com G+</string>
     <string name="gplus_pic_summary">Mostrar imagem do G+ no menu de navegação</string>
     <string name="icon_credits">Criado por &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
+
+	<string name="color_title">Cor</string>
+    <string name="color_summary">Definir a cor de diversos itens da interface</string>
+    <string name="primary_color_title">Cor primária</string>
+    <string name="primary_color_summary">Define a cor dos principais itens</string>
+    <string name="accent_color_title">Cor secundária</string>
+    <string name="accent_color_summary">Define a cor FAB e restantes itens</string>
+    <string name="icon_color_title">Cor do ícone</string>
+    <string name="icon_color_summary">Define a cor dos ícones</string>
+    <string name="hide_mode_title">Modo de ocultação</string>
+    <string name="none">Nenhum</string>
+    <string name="hide_toolbar">Ocultar barra de ferramentas</string>
+    <string name="hide_appbar">Ocultar barra da aplicação</string>
+    <string name="choose_color">Escolha a cor</string>
+    <string name="g_plus_community_title">Comunidade G+</string>
 </resources>
+
