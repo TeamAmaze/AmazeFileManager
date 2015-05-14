@@ -139,8 +139,8 @@
     <string name="simple">Simple UI</string>
     <string name="card">Card UI</string>
     <!-- Theme -->
-    <string name="light">Light</string>
-    <string name="dark">Dark</string>
+    <string name="light">Material Light</string>
+    <string name="dark">Material Dark</string>
     <string name="daytime">Daytime</string>
     <!--Skin-->
     <string name="red">Red</string>

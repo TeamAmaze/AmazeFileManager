@@ -31,6 +31,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -68,11 +69,14 @@ public class ProcessViewer extends Fragment {
 
 
         mainActivity = (MainActivity) getActivity();
-        if(mainActivity.theme1==1)root.setBackgroundResource(android.R.color.black);
+        if(mainActivity.theme1==1)
+            root.setBackgroundResource(getResources().getColor(R.color.holo_dark_background));
         rootView = (LinearLayout) root.findViewById(R.id.secondbut);
         //((MainActivity)getActivity()).getSupportActionBar().setTitle(utils.getString(getActivity(),R.string.processes));
-        mainActivity.toolbar.setTitle(utils.getString(getActivity(),R.string.processes));
+        mainActivity.toolbar.setTitle(utils.getString(getActivity(), R.string.processes));
         mainActivity.tabsSpinner.setVisibility(View.GONE);
+        mainActivity.floatingActionButton.setVisibility(View.GONE);
+
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         icons = new IconUtils(Sp, getActivity());
         mainActivity.supportInvalidateOptionsMenu();

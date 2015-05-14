@@ -345,7 +345,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                         getActivity().getString(R.string.changelog_version_1) +
                         getActivity().getString(R.string.changelog_change_1)));
                 a.negativeText(R.string.close);
-                a.negativeColor(Color.parseColor(skin));
+                a.negativeColor(Color.parseColor(fabSkin));
                 a.positiveText(R.string.fullChangelog);
                 a.positiveColor(Color.parseColor(fabSkin));
                 a.callback(new MaterialDialog.ButtonCallback() {

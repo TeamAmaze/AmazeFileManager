@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements
     int hidemode;
     public LinearLayout pathbar;
     public Animation fabShowAnim, fabHideAnim;
+    public FrameLayout buttonBarFrame;
 
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
@@ -214,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements
         tabHandler=new TabHandler(this,null,null,1);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
 
+        buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
         fabskin = Sp.getString("fab_skin_color", "#e91e63");
         fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
         hidemode=Sp.getInt("hidemode", 0);
@@ -670,6 +672,11 @@ public class MainActivity extends AppCompatActivity implements
                             fragmentTransaction.remove(zipViewer);
                             fragmentTransaction.commit();
                             supportInvalidateOptionsMenu();
+
+                            fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
+                            floatingActionButton.setAnimation(fabShowAnim);
+                            floatingActionButton.animate();
+                            floatingActionButton.setVisibility(View.VISIBLE);
                         }
                     } else {
                         zipViewer.mActionMode.finish();
@@ -692,6 +699,11 @@ public class MainActivity extends AppCompatActivity implements
                             fragmentTransaction.remove(zipViewer);
                             fragmentTransaction.commit();
                             supportInvalidateOptionsMenu();
+
+                            fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
+                            floatingActionButton.setAnimation(fabShowAnim);
+                            floatingActionButton.animate();
+                            floatingActionButton.setVisibility(View.VISIBLE);
                         }
                     } else {
                         zipViewer.mActionMode.finish();
@@ -766,7 +778,11 @@ public class MainActivity extends AppCompatActivity implements
         transaction.commit();
         toolbar.setTitle(null);
 
+        fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
         tabsSpinner.setVisibility(View.VISIBLE);
+        floatingActionButton.setAnimation(fabShowAnim);
+        floatingActionButton.animate();
+        floatingActionButton.setVisibility(View.VISIBLE);
         if(openzip && zippath!=null) {
             if(zippath.endsWith(".zip") || zippath.endsWith(".apk"))openZip(zippath);else{openRar(zippath);}zippath=null;
         }
@@ -837,15 +853,9 @@ public class MainActivity extends AppCompatActivity implements
             menu.findItem(R.id.view).setVisible(true);
             invalidatePasteButton(menu.findItem(R.id.paste));
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
-            floatingActionButton.setAnimation(fabShowAnim);
-            floatingActionButton.animate();
-            floatingActionButton.setVisibility(View.VISIBLE);
         } else if(f.contains("AppsList") || f.contains("BookmarksManager") || f.contains("ProcessViewer")) {
             tabsSpinner.setVisibility(View.GONE);
             findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
-            floatingActionButton.setAnimation(fabHideAnim);
-            floatingActionButton.animate();
-            floatingActionButton.setVisibility(View.GONE);
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
@@ -855,9 +865,6 @@ public class MainActivity extends AppCompatActivity implements
             menu.findItem(R.id.paste).setVisible(false);
         } else if(f.contains("ZipViewer") || f.contains("RarViewer")) {
             tabsSpinner.setVisibility(View.GONE);
-            floatingActionButton.setAnimation(fabHideAnim);
-            floatingActionButton.animate();
-            floatingActionButton.setVisibility(View.GONE);
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);

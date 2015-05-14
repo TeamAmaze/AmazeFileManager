@@ -87,6 +87,7 @@
                 android:id="@+id/pathbar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:clickable="false"
                 android:paddingBottom="2dp"
                 android:orientation="vertical">
 
@@ -95,6 +96,7 @@
                     android:id="@+id/scroll1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clickable="false"
                     android:paddingLeft="72dp"
                     android:paddingTop="5dp">
 

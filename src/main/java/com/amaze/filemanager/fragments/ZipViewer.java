@@ -43,6 +43,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -124,52 +125,58 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
 
-            super.onActivityCreated(savedInstanceState);
-            Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            s = getArguments().getString("path");
-            f = new File(s);
+        super.onActivityCreated(savedInstanceState);
+        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        s = getArguments().getString("path");
+        f = new File(s);
 
-
-            mToolbarContainer=getActivity().findViewById(R.id.lin);
-             hidemode=Sp.getInt("hidemode",0);
+        mToolbarContainer=getActivity().findViewById(R.id.lin);
+        hidemode=Sp.getInt("hidemode", 0);
         paddingTop = (mToolbarHeight=getToolbarHeight(getActivity())) + dpToPx(72);
         listView.setVisibility(View.VISIBLE);
-            mLayoutManager=new LinearLayoutManager(getActivity());
-                listView.setLayoutManager(mLayoutManager);
+        mLayoutManager=new LinearLayoutManager(getActivity());
+        listView.setLayoutManager(mLayoutManager);
 
-            mainActivity.supportInvalidateOptionsMenu();
-            if (mainActivity.theme1 == 1)
-                rootView.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
-            else
+        mainActivity.supportInvalidateOptionsMenu();
+        if (mainActivity.theme1 == 1)
+            rootView.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+        else
 
-                    listView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+            listView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
 
-            gobackitem = Sp.getBoolean("goBack_checkbox", true);
-            coloriseIcons = Sp.getBoolean("coloriseIcons", false);
-            Calendar calendar = Calendar.getInstance();
-            showSize = Sp.getBoolean("showFileSize", false);
-            showLastModified = Sp.getBoolean("showLastModified", true);
-            year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
-            skin = Sp.getString("skin_color", "#3f51b5");
-            mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
+        gobackitem = Sp.getBoolean("goBack_checkbox", true);
+        coloriseIcons = Sp.getBoolean("coloriseIcons", false);
+        Calendar calendar = Calendar.getInstance();
+        showSize = Sp.getBoolean("showFileSize", false);
+        showLastModified = Sp.getBoolean("showLastModified", true);
+        year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
+        skin = Sp.getString("skin_color", "#3f51b5");
+        mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
-            String x = getSelectionColor();
-            skinselection = Color.parseColor(x);
-            files = new ArrayList<File>();
-            if (savedInstanceState == null)
-                loadlist(f.getPath());
-            else {
-                wholelist = savedInstanceState.getParcelableArrayList("wholelist");
-                elements = savedInstanceState.getParcelableArrayList("elements");
-                current = savedInstanceState.getString("path");
-                f = new File(savedInstanceState.getString("file"));
-                createviews(elements, current);
-            }
-            mainActivity.tabsSpinner.setVisibility(View.GONE);
-            try{mainActivity.toolbar.setTitle(f.getName());}catch (Exception e){
-            mainActivity.toolbar.setTitle(getResources().getString(R.string.zip_viewer));}
-            mainActivity.supportInvalidateOptionsMenu();
+        String x = getSelectionColor();
+        skinselection = Color.parseColor(x);
+        files = new ArrayList<File>();
+        if (savedInstanceState == null)
+            loadlist(f.getPath());
+        else {
+            wholelist = savedInstanceState.getParcelableArrayList("wholelist");
+            elements = savedInstanceState.getParcelableArrayList("elements");
+            current = savedInstanceState.getString("path");
+            f = new File(savedInstanceState.getString("file"));
+            createviews(elements, current);
         }
+        mainActivity.tabsSpinner.setVisibility(View.GONE);
+
+        mainActivity.fabHideAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_hide);
+        mainActivity.floatingActionButton.setAnimation(mainActivity.fabHideAnim);
+        mainActivity.floatingActionButton.animate();
+        mainActivity.floatingActionButton.setVisibility(View.GONE);
+
+        try{mainActivity.toolbar.setTitle(f.getName());}catch (Exception e){
+            mainActivity.toolbar.setTitle(getResources().getString(R.string.zip_viewer));}
+        mainActivity.supportInvalidateOptionsMenu();
+    }
+
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));

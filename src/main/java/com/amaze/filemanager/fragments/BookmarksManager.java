@@ -76,9 +76,9 @@ public class BookmarksManager extends Fragment {
 
         mainActivity.tabsSpinner.setVisibility(View.GONE);
         mainActivity.floatingActionButton.setVisibility(View.GONE);
+        mainActivity.buttonBarFrame.setVisibility(View.GONE);
 
         listview=(RecyclerView)rootView.findViewById(R.id.listView);
-        rootView.findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
         c=getActivity();
         linearLayoutManager=new LinearLayoutManager(c);
         listview.setLayoutManager(linearLayoutManager);
@@ -188,7 +188,6 @@ public class BookmarksManager extends Fragment {
     public void refresh() {
 
         new LoadList().execute();
-
     }
     public class LoadList extends AsyncTask<Void, Void, ArrayList<File>> {
 

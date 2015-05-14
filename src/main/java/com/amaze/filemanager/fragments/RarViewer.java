@@ -46,6 +46,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -164,6 +165,12 @@ public class RarViewer extends Fragment {
         try{mainActivity.toolbar.setTitle(f.getName());}catch (Exception e){
         mainActivity.toolbar.setTitle(getResources().getString(R.string.zip_viewer));}
         mainActivity.tabsSpinner.setVisibility(View.GONE);
+
+        mainActivity.fabHideAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_hide);
+        mainActivity.floatingActionButton.setAnimation(mainActivity.fabHideAnim);
+        mainActivity.floatingActionButton.animate();
+        mainActivity.floatingActionButton.setVisibility(View.GONE);
+
         mainActivity.supportInvalidateOptionsMenu();
     }
     public int dpToPx(int dp) {
