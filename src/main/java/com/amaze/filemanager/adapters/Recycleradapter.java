@@ -320,7 +320,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
                     if (main.coloriseIcons) {
                         if (rowItem.isDirectory(main.rootMode))
-                            gradientDrawable.setColor(Color.parseColor(main.skin));
+                            gradientDrawable.setColor(Color.parseColor(main.iconskin));
                         else if (Icons.isVideo(rowItem.getDesc()))
                             gradientDrawable.setColor(Color.parseColor("#f06292"));
                         else if (Icons.isAudio(rowItem.getDesc()))
@@ -341,9 +341,9 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 holder.imageView.setImageDrawable(null);
                             }
                         } else {
-                            gradientDrawable.setColor(Color.parseColor(main.skin));
+                            gradientDrawable.setColor(Color.parseColor(main.iconskin));
                         }
-                    } else gradientDrawable.setColor(Color.parseColor(main.skin));
+                    } else gradientDrawable.setColor(Color.parseColor(main.iconskin));
                     if (rowItem.getSize().equals(main.goback))
                         gradientDrawable.setColor(Color.parseColor("#757575"));
 

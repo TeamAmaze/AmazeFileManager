@@ -19,10 +19,12 @@
 
 package com.amaze.filemanager.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -33,6 +35,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.view.ActionMode;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -94,7 +97,11 @@ public class AppsList extends ListFragment {
         int theme=Integer.parseInt(Sp.getString("theme","0"));
         theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
         vl.setDivider(null);
-
+        if (vl.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) vl.getLayoutParams();
+            p.setMargins(0, getToolbarHeight(getActivity()), 0, 0);
+            vl.requestLayout();
+        }
         if(theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
          if(savedInstanceState==null)new LoadListTask().execute();
         else{
@@ -106,7 +113,14 @@ public class AppsList extends ListFragment {
 
         }
     }
+    public static int getToolbarHeight(Context context) {
+        final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
+                new int[]{android.R.attr.actionBarSize});
+        int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
+        styledAttributes.recycle();
 
+        return toolbarHeight;
+    }
     @Override
     public void onResume() {
         super.onResume();

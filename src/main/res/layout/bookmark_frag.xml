@@ -23,6 +23,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:id="@+id/main_frag"
+    android:layout_marginTop="?actionBarSize"
     android:layout_height="match_parent"
     android:background="#e6e6e6">
 

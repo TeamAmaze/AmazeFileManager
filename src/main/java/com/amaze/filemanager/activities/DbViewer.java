@@ -19,10 +19,13 @@
 
 package com.amaze.filemanager.activities;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -86,6 +89,10 @@ public class DbViewer extends ActionBarActivity {
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         skin = Sp.getString("skin_color", "#3f51b5");
+        if (Build.VERSION.SDK_INT>=21) {
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap(), Color.parseColor(skin));
+            ((Activity)this).setTaskDescription(taskDescription);
+        }
         String x = PreferenceUtils.getStatusColor(skin);
         skinStatusBar = Color.parseColor(x);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));

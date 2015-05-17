@@ -20,9 +20,12 @@
 package com.amaze.filemanager.activities;
 
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -79,6 +82,10 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         fabSkin = Sp.getString("fab_skin_color", "#e91e63");
+        if (Build.VERSION.SDK_INT>=21) {
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap(), Color.parseColor(skin));
+            ((Activity)this).setTaskDescription(taskDescription);
+        }
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
         if (theme1 == 1) {
