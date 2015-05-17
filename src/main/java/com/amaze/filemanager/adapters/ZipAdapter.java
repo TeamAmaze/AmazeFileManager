@@ -135,6 +135,12 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        if(i==0){
+            View v= mInflater.inflate(R.layout.rowlayout, viewGroup, false);
+            v.findViewById(R.id.icon).setVisibility(View.INVISIBLE);
+            return new ViewHolder(v);
+
+        }
         View v= mInflater.inflate(R.layout.rowlayout,viewGroup, false);
         ViewHolder vh = new ViewHolder(v);
         if(zipViewer.mainActivity.theme1==1)
@@ -165,7 +171,7 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                 holder.date.setText(new Futils().getdate(rowItem.getTime(), "MMM dd, yyyy", zipViewer.year));
             if (rowItem.isDirectory()) {
                 holder.imageView.setImageDrawable(folder);
-                gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+                gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
                 if (stringBuilder.toString().length() > 0) {
                     stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
                     try {
@@ -192,8 +198,8 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                         gradientDrawable.setColor(Color.parseColor("#f9a825"));
                     else if (Icons.isgeneric(rowItem.getName()))
                         gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
-                    else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
-                } else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+                    else gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
+                } else gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
             }
         }
 
@@ -284,8 +290,21 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     }
 
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_ITEM = 1;
+    @Override
+    public int getItemViewType(int position) {
+        if (isPositionHeader(position))
+            return TYPE_HEADER;
+
+        return TYPE_ITEM;
+    }
+
+    private boolean isPositionHeader(int position) {
+        return position == 0;}
     @Override
     public long getHeaderId(int position) {
+        if(position>=0 && position<enter.size())
     if(position!=0){
     if(enter.get(position-1)==null)return -1;
     else if(enter.get(position-1).isDirectory())return 'D';

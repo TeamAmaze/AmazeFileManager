@@ -151,6 +151,12 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if(viewType==0){
+            View v= mInflater.inflate(R.layout.rowlayout, parent, false);
+            v.findViewById(R.id.icon).setVisibility(View.INVISIBLE);
+            return new ViewHolder(v);
+
+        }
         View v= mInflater.inflate(R.layout.rowlayout,parent, false);
         ViewHolder vh = new ViewHolder(v);
         if(zipViewer.mainActivity.theme1==1)
@@ -166,7 +172,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             holder.rl.setMinimumHeight(zipViewer.paddingTop);
             return;
         }
-            final FileHeader rowItem = enter.get(position1-1);
+        final FileHeader rowItem = enter.get(position1-1);
         zipViewer.elements.add(position1-1, headerRequired(rowItem));
         final int p = position1-1;
 
@@ -176,7 +182,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         holder.txtTitle.setText(rowItem.getFileNameString().substring(rowItem.getFileNameString().lastIndexOf("\\") + 1));
         if (rowItem.isDirectory()) {
             holder.imageView.setImageDrawable(folder);
-            gradientDrawable.setColor(Color.parseColor(zipViewer.skin));} else {
+            gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));} else {
             if (zipViewer.coloriseIcons) {
                 if (Icons.isVideo(rowItem.getFileNameString()))
                     gradientDrawable.setColor(Color.parseColor("#f06292"));
@@ -192,8 +198,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                     gradientDrawable.setColor(Color.parseColor("#f9a825"));
                 else if (Icons.isgeneric(rowItem.getFileNameString()))
                     gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
-                else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
-            } else gradientDrawable.setColor(Color.parseColor(zipViewer.skin));
+                else gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
+            } else gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
         }
 
 
@@ -272,6 +278,19 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                 }}
         });
     }
+
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_ITEM = 1;
+    @Override
+    public int getItemViewType(int position) {
+        if (isPositionHeader(position))
+            return TYPE_HEADER;
+
+        return TYPE_ITEM;
+    }
+
+    private boolean isPositionHeader(int position) {
+        return position == 0;}
 
 
     private FileHeader headerRequired(FileHeader rowItem) {

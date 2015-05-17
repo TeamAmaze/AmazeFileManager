@@ -478,17 +478,21 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     @Override
     public long getHeaderId(int i) {
-        if(main.islist){if(i!=0){
-        if(items.get(i-1).getSize().equals(main.goback))return -1;
-     if(items.get(i-1).isDirectory(main.rootMode))return 'D';
-        else return 'F';}
-    }else{
+        if(i>=0 && i<items.size())
+        if(main.islist){
+            if(i!=0){
+                    if(items.get(i-1).getSize().equals(main.goback))return -1;
+                    if(items.get(i-1).isDirectory(main.rootMode))return 'D';
+                    else return 'F';}
+    }
+        else{
             if(i!=0 && i!=1 && i!=2){
                 if(items.get(i-3).getSize().equals(main.goback))return -1;
                 if(items.get(i-3).isDirectory(main.rootMode))return 'D';
                 else return 'F';}
 
-        }return -1;}
+        }
+        return -1;}
     public static class HeaderViewHolder extends RecyclerView.ViewHolder {
         public TextView ext;
 

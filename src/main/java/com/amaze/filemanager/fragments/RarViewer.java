@@ -79,7 +79,7 @@ public class RarViewer extends Fragment {
     public Boolean results,selection=false;
     public String current;
     public Futils utils=new Futils();
-    public String skin,year;public RarAdapter zipAdapter;
+    public String skin,iconskin,year;public RarAdapter zipAdapter;
     public ActionMode mActionMode;public int skinselection;
     public boolean coloriseIcons,showSize,showLastModified,gobackitem;
     SharedPreferences Sp;
@@ -155,6 +155,7 @@ public class RarViewer extends Fragment {
         showLastModified = Sp.getBoolean("showLastModified", true);
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
         skin = Sp.getString("skin_color", "#3f51b5");
+        iconskin=Sp.getString("icon_skin_color",skin);
         String x = getSelectionColor();
         skinselection = Color.parseColor(x);
         files = new ArrayList<File>();

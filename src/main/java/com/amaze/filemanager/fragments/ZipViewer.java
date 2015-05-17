@@ -74,7 +74,7 @@ public class ZipViewer extends Fragment {
     public Boolean results,selection=false;
     public String current;
     public Futils utils=new Futils();
-    public String skin,year;public ZipAdapter zipAdapter;
+    public String skin,iconskin,year;public ZipAdapter zipAdapter;
     public ActionMode mActionMode;public int skinselection;
     public boolean coloriseIcons,showSize,showLastModified,gobackitem;
 SharedPreferences Sp;
@@ -151,6 +151,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         showLastModified = Sp.getBoolean("showLastModified", true);
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
         skin = Sp.getString("skin_color", "#3f51b5");
+        iconskin=Sp.getString("icon_skin_color",skin);
         mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
         String x = getSelectionColor();
