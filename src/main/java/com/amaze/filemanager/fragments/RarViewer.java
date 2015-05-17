@@ -44,6 +44,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationUtils;
@@ -94,7 +95,7 @@ public class RarViewer extends Fragment {
     StickyRecyclerHeadersDecoration headersDecor;
     LinearLayoutManager mLayoutManager;
     DividerItemDecoration dividerItemDecoration;
-
+    HidingScrollListener scrollListener;
 
     public int paddingTop;
     int mToolbarHeight,hidemode;
@@ -162,7 +163,6 @@ public class RarViewer extends Fragment {
         loadlist(f.getPath());
         mToolbarContainer=getActivity().findViewById(R.id.lin);
         hidemode=Sp.getInt("hidemode",0);
-        paddingTop = (mToolbarHeight=getToolbarHeight(getActivity())) + dpToPx(72);
         try{mainActivity.toolbar.setTitle(f.getName());}catch (Exception e){
         mainActivity.toolbar.setTitle(getResources().getString(R.string.zip_viewer));}
         mainActivity.tabsSpinner.setVisibility(View.GONE);
@@ -173,6 +173,44 @@ public class RarViewer extends Fragment {
         mainActivity.floatingActionButton.setVisibility(View.GONE);
 
         mainActivity.supportInvalidateOptionsMenu();
+        mToolbarHeight=getToolbarHeight(getActivity());
+        paddingTop = (mToolbarHeight) + dpToPx(72);
+        if(hidemode==2)mToolbarHeight=paddingTop;
+        mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+                else {
+                    mToolbarContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+                paddingTop=mToolbarContainer.getHeight();
+
+                if(hidemode!=2)mToolbarHeight=mainActivity.toolbar.getHeight();
+                if(scrollListener!=null)scrollListener.updatedimens(mToolbarHeight);
+            }
+
+        });
+
+        scrollListener=new HidingScrollListener(mToolbarHeight) {
+
+            @Override
+            public void onMoved(int distance) {
+                mToolbarContainer.setTranslationY(-distance);
+            }
+
+            @Override
+            public void onShow() {
+                mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+            }
+
+            @Override
+            public void onHide() {
+                mToolbarContainer.findViewById(R.id.lin).animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(2)).start();
+            }
+
+        };
     }
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -384,24 +422,7 @@ String path;
             listView.addItemDecoration(headersDecor);
             addheader=false;
         }
-        listView.setOnScrollListener(new HidingScrollListener(getActivity(),hidemode) {
-
-            @Override
-            public void onMoved(int distance) {
-                mToolbarContainer.setTranslationY(-distance);
-            }
-
-            @Override
-            public void onShow() {
-                mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-            }
-
-            @Override
-            public void onHide() {
-                mToolbarContainer.findViewById(R.id.lin).animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(2)).start();
-            }
-
-        });
+        listView.setOnScrollListener(scrollListener);
         zipViewer.current = dir;
         zipViewer.bbar();
         swipeRefreshLayout.setRefreshing(false);

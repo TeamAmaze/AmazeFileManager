@@ -40,6 +40,11 @@
                     android:title="@string/icon_color_title"
                     android:summary="@string/icon_color_summary"/>
                 <SwitchPreference
+                    android:key="coloriseIcons"
+                    android:defaultValue="false"
+                    android:title="@string/colorize"
+                    android:summary="@string/colorize_summary" />
+                <SwitchPreference
                     android:key="colorednavigation"
                     android:defaultValue="false"
                     android:title="@string/colourednavigation"
@@ -51,11 +56,7 @@
                     android:summary="@string/random_summary"/>
                 </PreferenceCategory>
             </PreferenceScreen>
-        <!--<CheckBoxPreference
-            android:key="coloriseIcons"
-            android:checked="true"
-            android:title="@string/colorize"
-            android:summary="@string/colorize_summary" />-->
+
         <SwitchPreference
             android:key="circularimages"
             android:defaultValue="true"

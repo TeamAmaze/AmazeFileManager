@@ -56,6 +56,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
@@ -150,6 +151,7 @@ public class Main extends android.support.v4.app.Fragment {
     public int paddingTop;
     int mToolbarHeight,hidemode;
     View mToolbarContainer;
+    HidingScrollListener scrollListener;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -213,8 +215,6 @@ public class Main extends android.support.v4.app.Fragment {
         } else {
             listView.setLayoutManager(mLayoutManagerGrid);
         }
-         paddingTop = (mToolbarHeight=getToolbarHeight(getActivity())) + dpToPx(72);
-        if(hidemode==2)mToolbarHeight=paddingTop;
         mToolbarContainer.setBackgroundColor(Color.parseColor(skin));
      //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
         return rootView;
@@ -323,7 +323,44 @@ public class Main extends android.support.v4.app.Fragment {
                 }
             }
         }
+        mToolbarHeight=getToolbarHeight(getActivity());
+        paddingTop = (mToolbarHeight) + dpToPx(72);
+        if(hidemode==2)mToolbarHeight=paddingTop;
+        mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+                else {
+                    mToolbarContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+                paddingTop=mToolbarContainer.getHeight();
 
+                if(hidemode!=2)mToolbarHeight=mainActivity.toolbar.getHeight();
+                if(scrollListener!=null)scrollListener.updatedimens(mToolbarHeight);
+            }
+
+        });
+
+        scrollListener=new HidingScrollListener(mToolbarHeight) {
+
+            @Override
+            public void onMoved(int distance) {
+                mToolbarContainer.setTranslationY(-distance);
+            }
+
+            @Override
+            public void onShow() {
+                mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+            }
+
+            @Override
+            public void onHide() {
+                mToolbarContainer.findViewById(R.id.lin).animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(2)).start();
+            }
+
+        };
         mSwipeRefreshLayout.setProgressViewOffset(true,paddingTop,paddingTop+dpToPx(72));
     }
 
@@ -508,25 +545,7 @@ public class Main extends android.support.v4.app.Fragment {
                     }
                     //floatingActionButton.show();
                     mainActivity.updatepaths();
-
-                    listView.setOnScrollListener(new HidingScrollListener(getActivity(),hidemode) {
-
-                        @Override
-                        public void onMoved(int distance) {
-                            mToolbarContainer.setTranslationY(-distance);
-                        }
-
-                        @Override
-                        public void onShow() {
-                           mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-                        }
-
-                        @Override
-                        public void onHide() {
-                            mToolbarContainer.findViewById(R.id.lin).animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(2)).start();
-                        }
-
-                    });
+                    listView.setOnScrollListener(scrollListener);
                     if (buttons.getVisibility() == View.VISIBLE) mainActivity.bbar();
 
                     //mToolbarContainer.setBackgroundColor(Color.parseColor(skin));
