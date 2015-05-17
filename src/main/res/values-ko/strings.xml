@@ -169,9 +169,9 @@
     <string name="sortName">이름</string>
     <string name="lastModified">최종 수정일</string>
     <string name="sortSize">크기</string>
-    <string name="sortNameDesc">이름 (Desc)</string>
-    <string name="lastModifiedDesc">최종 수정일 (Desc)</string>
-    <string name="sortSizeDesc">크기 (Desc)</string>
+    <string name="sortNameDesc">이름 (역순)</string>
+    <string name="lastModifiedDesc">최종 수정일 (역순)</string>
+    <string name="sortSizeDesc">크기 (역순)</string>
     <!--ListMode-->
     <string name="detailedView">자세히 보기</string>
     <string name="simpleView">간단히 보기</string>
@@ -239,7 +239,7 @@
     <string name="feedback">피드백 보내기</string>
     <string name="hiddenfiles">숨겨진 파일</string>
     <string name="type">종류</string>
-    <string name="typeDesc">종류 (Desc)</string>
+    <string name="typeDesc">종류 (역순)</string>
     <string name="rootdirectory">최상위 폴더</string>
     <string name="new_string">추가</string>
     <string name="setringtone">벨소리로 설정</string>
