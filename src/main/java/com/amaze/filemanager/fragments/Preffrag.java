@@ -112,7 +112,6 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         sharedPref.edit().putInt("hidemode", which).commit();
                         dialog.dismiss();
-                        restartPC(getActivity());
                         return true;
                     }
                 });
@@ -494,13 +493,13 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
         }
         switch (preference.getKey()) {
             case "skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "skin_color","skin");
+                adapter = new ColorAdapter(getActivity(), arrayList, "skin_color","skin",true);
                 break;
             case "fab_skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "fab_skin_color","skin");
+                adapter = new ColorAdapter(getActivity(), arrayList, "fab_skin_color","skin",true);
                 break;
             case "icon_skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "icon_skin_color","skin");
+                adapter = new ColorAdapter(getActivity(), arrayList, "icon_skin_color","skin",false);
                 break;
         }
         listView.setAdapter(adapter);
@@ -513,11 +512,13 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
         String pref,pref1;
         String[] strings;
         final String[] colors = getResources().getStringArray(R.array.material_primary_color_codes);
-        public ColorAdapter(Context context, ArrayList<String> arrayList, String pref, String pref1) {
+        boolean restart;
+        public ColorAdapter(Context context, ArrayList<String> arrayList, String pref, String pref1,boolean restart) {
             super(context, R.layout.rowlayout, arrayList);
             strings = getResources().getStringArray(R.array.skin);
             this.pref = pref;
             this.pref1 = pref1;
+            this.restart=restart;
         }
 
         @Override
@@ -537,7 +538,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                 public void onClick(View v) {
                     sharedPref.edit().putString(pref,colors[position]).apply();
                     sharedPref.edit().putString(pref1,""+position).apply();
-                    restartPC(getActivity());
+                    if(restart)restartPC(getActivity());
                 }
             });
             return rowView;
