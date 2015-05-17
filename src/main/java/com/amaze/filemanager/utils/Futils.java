@@ -71,52 +71,83 @@ public class Futils {
     }
 
     public void scanFile(String path, Context c) {
-        System.out.println(path+" "+Build.VERSION.SDK_INT);
-        if(Build.VERSION.SDK_INT>=19){
-        MediaScannerConnection.scanFile(c, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
+        System.out.println(path + " " + Build.VERSION.SDK_INT);
+        if (Build.VERSION.SDK_INT >= 19) {
+            MediaScannerConnection.scanFile(c, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
 
-            @Override
-            public void onScanCompleted(String path, Uri uri) {
-                System.out.println("SCAN COMPLETED: " + path);
+                @Override
+                public void onScanCompleted(String path, Uri uri) {
+                    System.out.println("SCAN COMPLETED: " + path);
 
-            }
-        });}else{
-        Uri contentUri = Uri.fromFile(new File(path));
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, contentUri);
-        c.sendBroadcast(mediaScanIntent);
-    }}
+                }
+            });
+        } else {
+            Uri contentUri = Uri.fromFile(new File(path));
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, contentUri);
+            c.sendBroadcast(mediaScanIntent);
+        }
+    }
 
     public String getString(Context c, int a) {
         return c.getResources().getString(a);
     }
-    public void shareFiles(ArrayList<File> a,Context c){
+
+    public void shareFiles(ArrayList<File> a, Context c) {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
-        ArrayList<Uri> uris=new ArrayList<Uri>();
-        if(a.size()==1){
-            String mime=MimeTypes.getMimeType(a.get(0));
-            if(!mime.equals(null) && mime.equals("application/vnd.android.package-archive"))mime="*/*";
-            uris.add(Uri.fromFile(a.get(0)));
-            sendIntent.setType(mime);
-        }else{boolean b=true;
-            for(File f:a){
-                uris.add(Uri.fromFile(f));
-            }String mime=MimeTypes.getMimeType(a.get(0));
-            for(File f:a){
-                if(!mime.equals(MimeTypes.getMimeType(f))){b=false;}
-            }if(b)sendIntent.setType(mime);
-            else sendIntent.setType("*/*");
-        }
+        ArrayList<Uri> uris = new ArrayList<Uri>();
+        if (a.size() == 1) {
+            String mime = MimeTypes.getMimeType(a.get(0));
+            if (!mime.equals(null) && mime.equals("application/vnd.android.package-archive"))
+                mime = "*/*";
+            String filename = a.get(0).getPath();
 
-        sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-        try {
-            c.startActivity(sendIntent);
-        } catch (Exception e) {
-            sendIntent.setType("*/*");
-            c.startActivity(sendIntent);
-            e.printStackTrace();
+            Intent i = new Intent();
+            i.setAction(Intent.ACTION_SEND);
+            i.setType(mime);
+            i.putExtra(Intent.EXTRA_SUBJECT, filename);
+            i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(a.get(0)));
+            i.putExtra(Intent.EXTRA_STREAM, Uri.parse("content://" + "com.amaze.filemanager" + a.get(0).getAbsolutePath()));
+
+            try {
+                c.startActivity(i);
+                return;
+            } catch (ActivityNotFoundException e) {
+
+            }
         }
+        boolean b = true;
+        for (File f : a) {
+            uris.add(Uri.fromFile(f));
+        }
+        String mime = MimeTypes.getMimeType(a.get(0));
+        for (File f : a) {
+            if (!mime.equals(MimeTypes.getMimeType(f))) {
+                b = false;
+            }
+        }
+        if (b) sendIntent.setType(mime);
+        else sendIntent.setType("*/*");
+
+
+    sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,uris);
+    try
+
+    {
+        c.startActivity(sendIntent);
+
     }
+    catch(
+    Exception e
+    )
+
+    {
+        sendIntent.setType("*/*");
+        c.startActivity(sendIntent);
+        e.printStackTrace();
+    }
+
+}
     public String readableFileSize(long size) {
         if (size <= 0)
             return "0 B";

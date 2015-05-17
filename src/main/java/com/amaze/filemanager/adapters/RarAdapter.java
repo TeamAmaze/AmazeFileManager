@@ -208,7 +208,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             @Override
             public boolean onLongClick(View view) {
                 toggleChecked(p);
-                return false;
+                return true;
             }
         });holder.imageView.setOnClickListener(new View.OnClickListener() {
                                                    @Override

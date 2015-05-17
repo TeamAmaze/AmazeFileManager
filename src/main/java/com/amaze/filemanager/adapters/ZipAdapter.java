@@ -81,10 +81,12 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         notifyDataSetChanged();
         if (zipViewer.selection == false || zipViewer.mActionMode == null) {
             zipViewer.selection = true;
+            System.out.println("Starting am");
             zipViewer.mActionMode = zipViewer.mainActivity.toolbar.startActionMode(zipViewer.mActionModeCallback);
         }
         zipViewer.mActionMode.invalidate();
         if (getCheckedItemPositions().size() == 0) {
+            System.out.println("Zero items");
             zipViewer.selection = false;
             zipViewer.mActionMode.finish();
             zipViewer.mActionMode = null;
@@ -210,7 +212,7 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                 if(rowItem.getEntry()!=null)  toggleChecked(p);/*
                 }*/
                 System.out.println("onLongClick");
-                return false;
+                return true;
             }
         });holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -263,7 +265,8 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                 if(rowItem.getEntry()==null)
                     zipViewer.goBack();
                 else{
-                    if(zipViewer.selection)toggleChecked(p);else {
+                    if(zipViewer.selection)toggleChecked(p);
+                    else {
                         final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
                         if (rowItem.isDirectory())
                             stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
