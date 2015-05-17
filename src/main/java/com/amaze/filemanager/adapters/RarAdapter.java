@@ -118,7 +118,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     @Override
     public long getHeaderId(int position) {
-        if(position==0)return -1;
+        if(position>=0 && position<enter.size()+1)
+            if(position==0)return -1;
         if(enter.get(position-1)==null)return -1;
         else if(enter.get(position-1).isDirectory())return 'D';
         else return 'F';

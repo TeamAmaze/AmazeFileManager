@@ -478,7 +478,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     @Override
     public long getHeaderId(int i) {
-        if(i>=0 && i<items.size())
+        if(i>=0 && i<items.size()+(main.islist?1:3))
         if(main.islist){
             if(i!=0){
                     if(items.get(i-1).getSize().equals(main.goback))return -1;

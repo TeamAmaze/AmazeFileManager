@@ -304,7 +304,7 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         return position == 0;}
     @Override
     public long getHeaderId(int position) {
-        if(position>=0 && position<enter.size())
+        if(position>=0 && position<enter.size()+1)
     if(position!=0){
     if(enter.get(position-1)==null)return -1;
     else if(enter.get(position-1).isDirectory())return 'D';
