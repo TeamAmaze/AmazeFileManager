@@ -19,11 +19,9 @@ public abstract class HidingScrollListener extends RecyclerView.OnScrollListener
     private int mTotalScrolledDistance;
     static final int HIDE_NONE=0,HIDE_TOOLBAR=1,HIDE_WHOLE_BAR=2;
 
-    public HidingScrollListener(int mToolbarHeight) {
-       this.mToolbarHeight=mToolbarHeight;
-    }
-    public void updatedimens(int mToolbarHeight){
+    public HidingScrollListener(int mToolbarHeight,int mode){
         this.mToolbarHeight=mToolbarHeight;
+        if(mode==0)this.mToolbarHeight=0;
 
     }
     public static int getToolbarHeight(Context context) {

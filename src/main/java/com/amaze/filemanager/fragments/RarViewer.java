@@ -95,7 +95,7 @@ public class RarViewer extends Fragment {
     StickyRecyclerHeadersDecoration headersDecor;
     LinearLayoutManager mLayoutManager;
     DividerItemDecoration dividerItemDecoration;
-    HidingScrollListener scrollListener;
+
 
     public int paddingTop;
     int mToolbarHeight,hidemode;
@@ -188,29 +188,9 @@ public class RarViewer extends Fragment {
                 paddingTop=mToolbarContainer.getHeight();
 
                 if(hidemode!=2)mToolbarHeight=mainActivity.toolbar.getHeight();
-                if(scrollListener!=null)scrollListener.updatedimens(mToolbarHeight);
             }
 
         });
-
-        scrollListener=new HidingScrollListener(mToolbarHeight) {
-
-            @Override
-            public void onMoved(int distance) {
-                mToolbarContainer.setTranslationY(-distance);
-            }
-
-            @Override
-            public void onShow() {
-                mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-            }
-
-            @Override
-            public void onHide() {
-                mToolbarContainer.findViewById(R.id.lin).animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(2)).start();
-            }
-
-        };
     }
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -422,7 +402,24 @@ String path;
             listView.addItemDecoration(headersDecor);
             addheader=false;
         }
-        listView.setOnScrollListener(scrollListener);
+        listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight,hidemode) {
+
+            @Override
+            public void onMoved(int distance) {
+                mToolbarContainer.setTranslationY(-distance);
+            }
+
+            @Override
+            public void onShow() {
+                mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+            }
+
+            @Override
+            public void onHide() {
+                mToolbarContainer.findViewById(R.id.lin).animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(2)).start();
+            }
+
+        });
         zipViewer.current = dir;
         zipViewer.bbar();
         swipeRefreshLayout.setRefreshing(false);

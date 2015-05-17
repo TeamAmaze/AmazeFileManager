@@ -151,7 +151,6 @@ public class Main extends android.support.v4.app.Fragment {
     public int paddingTop;
     int mToolbarHeight,hidemode;
     View mToolbarContainer;
-    HidingScrollListener scrollListener;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -338,29 +337,9 @@ public class Main extends android.support.v4.app.Fragment {
                 paddingTop=mToolbarContainer.getHeight();
 
                 if(hidemode!=2)mToolbarHeight=mainActivity.toolbar.getHeight();
-                if(scrollListener!=null)scrollListener.updatedimens(mToolbarHeight);
             }
 
         });
-
-        scrollListener=new HidingScrollListener(mToolbarHeight) {
-
-            @Override
-            public void onMoved(int distance) {
-                mToolbarContainer.setTranslationY(-distance);
-            }
-
-            @Override
-            public void onShow() {
-                mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-            }
-
-            @Override
-            public void onHide() {
-                mToolbarContainer.findViewById(R.id.lin).animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(2)).start();
-            }
-
-        };
         mSwipeRefreshLayout.setProgressViewOffset(true,paddingTop,paddingTop+dpToPx(72));
     }
 
@@ -545,7 +524,24 @@ public class Main extends android.support.v4.app.Fragment {
                     }
                     //floatingActionButton.show();
                     mainActivity.updatepaths();
-                    listView.setOnScrollListener(scrollListener);
+                    listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight,hidemode) {
+
+                        @Override
+                        public void onMoved(int distance) {
+                            mToolbarContainer.setTranslationY(-distance);
+                        }
+
+                        @Override
+                        public void onShow() {
+                            mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                        }
+
+                        @Override
+                        public void onHide() {
+                            mToolbarContainer.findViewById(R.id.lin).animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(2)).start();
+                        }
+
+                    });
                     if (buttons.getVisibility() == View.VISIBLE) mainActivity.bbar();
 
                     //mToolbarContainer.setBackgroundColor(Color.parseColor(skin));
