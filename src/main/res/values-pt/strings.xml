@@ -83,9 +83,9 @@
     <string name="stopping">A parar</string>
     <string name="guide1">Bem-vindo ao Amaze File Manager</string>
     <string name="guide2">Toque na faixa azul para mostrar/ocultar a barra de caminho</string>
-    <string name="guide3">Toque longo no ficheiro para mais opções...</string>
+    <string name="guide3">Toque longo no ficheiro para mais opções</string>
     <string name="guide4">Por exemplo: copiar, mover, propriedades...</string>
-    <string name="guide5">Utilize o botão Back do dispositivo para sair da aplicação...</string>
+    <string name="guide5">Utilize o botão Back do dispositivo para sair da aplicação</string>
     <string name="guide6">...E utilize as setas para a esquerda/direita para navegar</string>
     <string name="maintab">O separador principal não pode ser removido</string>
     <string name="openparent">Abrir diretório superior</string>
@@ -139,8 +139,8 @@
     <string name="simple">Interface simples</string>
     <string name="card">Interface em cartão</string>
     <!-- Theme -->
-    <string name="light">Claro</string>
-    <string name="dark">Escuro</string>
+    <string name="light">Material claro</string>
+    <string name="dark">Material escuro</string>
     <string name="daytime">Horas do dia</string>
     <!--Skin-->
     <string name="red">Vermelho</string>
