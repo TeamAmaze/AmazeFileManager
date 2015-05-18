@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -39,6 +40,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     ColorMatrixColorFilter colorMatrixColorFilter;
     LayoutInflater mInflater;
     int filetype=-1;
+    int item_count;
     public Recycleradapter(Main m,ArrayList<Layoutelements> items,Context context){
         this.main=m;
         this.items=items;
@@ -49,7 +51,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         colorMatrixColorFilter=main.colorMatrixColorFilter;
         mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-
+        item_count=items.size()+(main.islist?2:3);
     }
     public void toggleChecked(int position) {
         if (myChecked.get(position)) {
@@ -155,8 +157,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType==0){
-            View v= mInflater.inflate(R.layout.rowlayout, parent, false);
-            v.findViewById(R.id.icon).setVisibility(View.INVISIBLE);
+            View v= mInflater.inflate(R.layout.list_footer, parent, false);
             return new ViewHolder(v);
 
         }
@@ -174,6 +175,12 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         int i=0;
         if(main.islist){
             i=1;
+        if(p1==getItemCount()-1){
+            holder.rl.setMinimumHeight(main.paddingTop);
+            if(item_count==2)
+            holder.txtTitle.setText(R.string.nofiles);
+            else holder.txtTitle.setText(R.string.guide3);
+            return;}
         if(p1==0){
             holder.rl.setMinimumHeight(main.paddingTop);
             return;}}
@@ -320,7 +327,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
                     if (main.coloriseIcons) {
                         if (rowItem.isDirectory(main.rootMode))
-                            gradientDrawable.setColor(Color.parseColor(main.iconskin));
+                            gradientDrawable.setColor(main.icon_skin_color);
                         else if (Icons.isVideo(rowItem.getDesc()))
                             gradientDrawable.setColor(Color.parseColor("#f06292"));
                         else if (Icons.isAudio(rowItem.getDesc()))
@@ -341,9 +348,9 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 holder.imageView.setImageDrawable(null);
                             }
                         } else {
-                            gradientDrawable.setColor(Color.parseColor(main.iconskin));
+                            gradientDrawable.setColor(main.icon_skin_color);
                         }
-                    } else gradientDrawable.setColor(Color.parseColor(main.iconskin));
+                    } else gradientDrawable.setColor((main.icon_skin_color));
                     if (rowItem.getSize().equals(main.goback))
                         gradientDrawable.setColor(Color.parseColor("#757575"));
 
@@ -415,7 +422,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             if (main.coloriseIcons) {
 
                 if (rowItem.isDirectory(main.rootMode))
-                    holder.imageView.setColorFilter(Color.parseColor(main.skin));
+                    holder.imageView.setColorFilter(main.icon_skin_color);
 
                 else if (Icons.isVideo(rowItem.getDesc()))
                     holder.imageView.setColorFilter(Color.parseColor("#f06292"));
@@ -441,10 +448,10 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 else if (Icons.isApk(rowItem.getDesc()) || Icons.isPicture(rowItem.getDesc()))
                     holder.imageView.setColorFilter(null);
 
-                else holder.imageView.setColorFilter(Color.parseColor(main.skin));
+                else holder.imageView.setColorFilter(main.icon_skin_color);
 
             } else if (!Icons.isApk(rowItem.getDesc()) && !Icons.isPicture(rowItem.getDesc()))
-                holder.imageView.setColorFilter(Color.parseColor(main.skin));
+                holder.imageView.setColorFilter(main.icon_skin_color);
             else
                 holder.imageView.setColorFilter(null);
             if (rowItem.getSize().equals(main.goback))
@@ -452,7 +459,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             if (checked != null) {
 
                 if (checked) {
-                    holder.imageView.setColorFilter(Color.parseColor(main.skin));
+                    holder.imageView.setColorFilter(main.icon_skin_color);
                     holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                     holder.rl.setBackgroundColor(Color.parseColor("#9f757575"));
                 } else {
@@ -478,9 +485,9 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     @Override
     public long getHeaderId(int i) {
-        if(i>=0 && i<items.size()+(main.islist?1:3))
+        if(i>=0 && i<item_count)
         if(main.islist){
-            if(i!=0){
+            if(i!=0 && i!=item_count-1){
                     if(items.get(i-1).getSize().equals(main.goback))return -1;
                     if(items.get(i-1).isDirectory(main.rootMode))return 'D';
                     else return 'F';}
@@ -522,7 +529,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     private boolean isPositionHeader(int position) {
-   if(main.islist)     return position == 0;
+   if(main.islist)     return position == 0 || position==item_count-1;
     else return position == 0 || position==1 || position==2;}
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
@@ -535,10 +542,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     @Override
     public int getItemCount() {
-        if (!main.islist)
-            return items.size()+3;
-        else
-            return items.size()+1;
+        return item_count;
     }
 }
 

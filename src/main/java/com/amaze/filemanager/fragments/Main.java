@@ -34,6 +34,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -47,6 +48,7 @@ import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ActionMode;
@@ -151,6 +153,7 @@ public class Main extends android.support.v4.app.Fragment {
     public int paddingTop;
     int mToolbarHeight,hidemode;
     View mToolbarContainer;
+    public int skin_color,icon_skin_color;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,6 +168,8 @@ public class Main extends android.support.v4.app.Fragment {
         skin = Sp.getString("skin_color", "#3f51b5");
         fabSkin = Sp.getString("fab_skin_color", "#e91e63");
         iconskin=Sp.getString("icon_skin_color",skin);
+        skin_color=Color.parseColor(skin);
+        icon_skin_color=Color.parseColor(iconskin);
         sh = new Shortcuts(getActivity());
         islist = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();
@@ -214,7 +219,7 @@ public class Main extends android.support.v4.app.Fragment {
         } else {
             listView.setLayoutManager(mLayoutManagerGrid);
         }
-        mToolbarContainer.setBackgroundColor(Color.parseColor(skin));
+        mToolbarContainer.setBackgroundColor(skin_color);
      //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
         return rootView;
     }public int dpToPx(int dp) {
@@ -340,6 +345,7 @@ public class Main extends android.support.v4.app.Fragment {
             }
 
         });
+        mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor(fabSkin));
         mSwipeRefreshLayout.setProgressViewOffset(true,paddingTop,paddingTop+dpToPx(72));
     }
 
@@ -486,14 +492,7 @@ public class Main extends android.support.v4.app.Fragment {
     public void createViews(ArrayList<Layoutelements> bitmap, boolean back, File f) {
         try {
             if (bitmap != null) {
-                TextView footerText = (TextView) footerView.findViewById(R.id.footerText);
-                if (bitmap.size() == 0) {
-                    footerText.setText(res.getString(R.string.nofiles));
-                   // listView.addFooterView(footerView);
-                } else {
-                    footerText.setText(res.getString(R.string.tapnhold));
-                   // listView.removeFooterView(footerView);
-                }if(gobackitem)
+                if(gobackitem)
                 if (!f.getPath().equals("/")) {
                     if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))
                         bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "..", "", "", goback, "", true,""));
@@ -544,7 +543,6 @@ public class Main extends android.support.v4.app.Fragment {
                     });
                     if (buttons.getVisibility() == View.VISIBLE) mainActivity.bbar();
 
-                    //mToolbarContainer.setBackgroundColor(Color.parseColor(skin));
                     mainActivity.updateDrawer(current);
                     mainActivity.updatepager();
 
@@ -611,7 +609,7 @@ public class Main extends android.support.v4.app.Fragment {
             /*if(Build.VERSION.SDK_INT<19)
                 getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);*/
            // rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(res.getColor(R.color.toolbar_cab));
-            ObjectAnimator anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe), "backgroundColor", Color.parseColor(skin), res.getColor(R.color.toolbar_cab));
+            ObjectAnimator anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe), "backgroundColor", skin_color, res.getColor(R.color.toolbar_cab));
             anim.setDuration(200);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
@@ -1035,7 +1033,7 @@ public class Main extends android.support.v4.app.Fragment {
             if(!results)adapter.toggleChecked(false, current);
             else adapter.toggleChecked(false);
             mainActivity.setPagingEnabled(true);
-            ObjectAnimator anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe), "backgroundColor", res.getColor(R.color.toolbar_cab), Color.parseColor(skin));
+            ObjectAnimator anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe), "backgroundColor", res.getColor(R.color.toolbar_cab), skin_color);
             anim.setDuration(50);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();

@@ -83,7 +83,7 @@
     <string name="stopping">Stopping</string>
     <string name="guide1">Welcome to Amaze File Manager</string>
     <string name="guide2">Touch the blue strip to show or hide PathBar</string>
-    <string name="guide3">Touch and hold any file for more options...</string>
+    <string name="guide3">Touch and hold any file for more options</string>
     <string name="guide4">Like copy,move,properties etc</string>
     <string name="guide5">Use Back Button of your device to exit app anytime...</string>
     <string name="guide6">..And use left arrow button for navigation in file manager</string>
