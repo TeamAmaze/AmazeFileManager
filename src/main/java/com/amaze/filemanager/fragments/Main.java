@@ -99,10 +99,14 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import jcifs.smb.NtlmPasswordAuthentication;
+import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
+
 
 public class Main extends android.support.v4.app.Fragment {
     public File[] file;
-    public ArrayList<Layoutelements> list, slist;
+    public ArrayList<Layoutelements> list;
     public Recycleradapter adapter;
     public Futils utils;
     public boolean selection;
@@ -147,7 +151,7 @@ public class Main extends android.support.v4.app.Fragment {
     LinearLayoutManager mLayoutManager;
     GridLayoutManager mLayoutManagerGrid;
     SwipeRefreshLayout mSwipeRefreshLayout;
-    boolean addheader=true;
+    boolean addheader=false;
     StickyRecyclerHeadersDecoration headersDecor;
     DividerItemDecoration dividerItemDecoration;
     public int paddingTop;
@@ -167,7 +171,7 @@ public class Main extends android.support.v4.app.Fragment {
         savepaths=Sp.getBoolean("savepaths", true);
         skin = Sp.getString("skin_color", "#3f51b5");
         fabSkin = Sp.getString("fab_skin_color", "#e91e63");
-        iconskin=Sp.getString("icon_skin_color",skin);
+        iconskin=Sp.getString("icon_skin_color", skin);
         skin_color=Color.parseColor(skin);
         icon_skin_color=Color.parseColor(iconskin);
         sh = new Shortcuts(getActivity());
@@ -176,8 +180,8 @@ public class Main extends android.support.v4.app.Fragment {
         year=(""+calendar.get(Calendar.YEAR)).substring(2, 4);
         theme=Integer.parseInt(Sp.getString("theme", "0"));
         theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
-        hidemode=Sp.getInt("hidemode",0);
-        showPermissions=Sp.getBoolean("showPermissions",false);
+        hidemode=Sp.getInt("hidemode", 0);
+        showPermissions=Sp.getBoolean("showPermissions", false);
         showSize=Sp.getBoolean("showFileSize",false);
         gobackitem=Sp.getBoolean("goBack_checkbox", false);
         circularImages=Sp.getBoolean("circularimages",true);
@@ -189,7 +193,6 @@ public class Main extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
-
         if(getArguments()!=null)
         Intentpath=getArguments().getString("path");
         animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
@@ -304,16 +307,9 @@ public class Main extends android.support.v4.app.Fragment {
                 list = savedInstanceState.getParcelableArrayList("list");
                 if (savedInstanceState.getBoolean("results")) {
                     try {
-                        results = true;
-                        slist = savedInstanceState.getParcelableArrayList("slist");
+                        createViews(list, true, new File(current));
                         ((TextView) ma.pathbar.findViewById(R.id.pathname)).setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
-                        ma.adapter = new Recycleradapter(ma,  slist
-                                , ma.getActivity());
-
-                        //ListView lv = (ListView) ma.listView.findViewById(R.id.listView);
-                         ma.listView.setAdapter(ma.adapter);
-
-                        ma.results = true;
+                        results = true;
                     } catch (Exception e) {
                     }
                 }else{
@@ -373,7 +369,7 @@ public class Main extends android.support.v4.app.Fragment {
             if (selection) {
                 outState.putIntegerArrayList("position", adapter.getCheckedItemPositions());
             }
-            if(results){ outState.putParcelableArrayList("slist", slist);
+            if(results){
                 outState.putBoolean("results", results);
             }
         }}
@@ -386,12 +382,12 @@ public class Main extends android.support.v4.app.Fragment {
 
     public void onListItemClicked(int position, View v) {
         if (results) {
-            String path = slist.get(position).getDesc();
+            String path = list.get(position).getDesc();
             if(selection)adapter.toggleChecked(position);
             else{
 
             final File f = new File(path);
-            if (slist.get(position).isDirectory(rootMode)) {
+            if (list.get(position).isDirectory(rootMode)) {
 
                 loadlist(f, false);
                 results = false;
@@ -700,7 +696,7 @@ public class Main extends android.support.v4.app.Fragment {
                     showOption(R.id.share,menu);
                     showOption(R.id.rename, menu);
 
-                    File x = new File(slist.get(adapter.getCheckedItemPositions().get(0))
+                    File x = new File(list.get(adapter.getCheckedItemPositions().get(0))
 
                             .getDesc());
 
@@ -725,7 +721,7 @@ public class Main extends android.support.v4.app.Fragment {
                             showOption(R.id.openmulti,menu);
                     try {
                         for (int c : adapter.getCheckedItemPositions()) {
-                            File x = new File(slist.get(c).getDesc());
+                            File x = new File(list.get(c).getDesc());
                             if (x.isDirectory()) {
                                 hideOption(R.id.share, menu);
                                 hideOption(R.id.openmulti,menu);
@@ -781,7 +777,7 @@ public class Main extends android.support.v4.app.Fragment {
                 case R.id.sethome:
                     int pos = plist.get(0);
                     if(results)
-                        home = slist.get(pos).getDesc();
+                        home = list.get(pos).getDesc();
                     else
                         home = list.get(pos).getDesc();
                     Toast.makeText(getActivity(),
@@ -793,7 +789,7 @@ public class Main extends android.support.v4.app.Fragment {
                 case R.id.about:
                     String x;
                     if(results)
-                        x=slist.get((plist.get(0))).getDesc();
+                        x=list.get((plist.get(0))).getDesc();
                     else
                         x=list.get((plist.get(0))).getDesc();
                     utils.showProps(new File(x), ma,rootMode);
@@ -830,7 +826,7 @@ public class Main extends android.support.v4.app.Fragment {
                     return true;*/
                 case R.id.delete:
                     if(results)
-                        utils.deleteFiles(slist,ma,plist);
+                        utils.deleteFiles(list,ma,plist);
                     else
                         utils.deleteFiles(list,ma, plist);
 
@@ -840,7 +836,7 @@ public class Main extends android.support.v4.app.Fragment {
                     ArrayList<File> arrayList=new ArrayList<File>();
                     if(results){
                         for(int i:plist){
-                            arrayList.add(new File(slist.get(i).getDesc()));
+                            arrayList.add(new File(list.get(i).getDesc()));
                         }
                     }
                     else{
@@ -850,7 +846,7 @@ public class Main extends android.support.v4.app.Fragment {
                     utils.shareFiles(arrayList,getActivity());
                     return true;
                 case R.id.openparent:
-                    loadlist(new File(slist.get(plist.get(0)).getDesc()).getParentFile(),false);
+                    loadlist(new File(list.get(plist.get(0)).getDesc()).getParentFile(),false);
                     return true;
                 case R.id.all:
                     if (adapter.areAllChecked(current)) {
@@ -866,7 +862,7 @@ public class Main extends android.support.v4.app.Fragment {
                     final ActionMode m = mode;
                     final File f;
                     if(results)
-                        f=new File(slist.get(
+                        f=new File(list.get(
                                 (plist.get(0))).getDesc());
                     else     f= new File(list.get(
                             (plist.get(0))).getDesc());
@@ -916,7 +912,7 @@ public class Main extends android.support.v4.app.Fragment {
                     return true;
                 case R.id.hide:
                     if(results){for (int i1 = 0; i1 < plist.size(); i1++) {
-                        hide(slist.get(plist.get(i1)).getDesc());
+                        hide(list.get(plist.get(i1)).getDesc());
                     }}
                     else{
                         for (int i1 = 0; i1 < plist.size(); i1++) {
@@ -928,7 +924,7 @@ public class Main extends android.support.v4.app.Fragment {
                     if(results)
                     {for (int i1 = 0; i1 < plist.size(); i1++) {
                         try {
-                            sh.addS(new File(slist.get(plist.get(i1)).getDesc()));
+                            sh.addS(new File(list.get(plist.get(i1)).getDesc()));
 
                         } catch (Exception e) {
                         }
@@ -947,7 +943,7 @@ public class Main extends android.support.v4.app.Fragment {
                 case R.id.ex:
                     Intent intent = new Intent(getActivity(), ExtractService.class);
 
-                    if(results)intent.putExtra("zip", slist.get(
+                    if(results)intent.putExtra("zip", list.get(
                             (plist.get(0))).getDesc());
                     else intent.putExtra("zip", list.get(
                             (plist.get(0))).getDesc());
@@ -960,7 +956,7 @@ public class Main extends android.support.v4.app.Fragment {
                     ArrayList<String> copies = new ArrayList<String>();
                     if(results){
                         for (int i2 = 0; i2 < plist.size(); i2++) {
-                            copies.add(slist.get(plist.get(i2)).getDesc());
+                            copies.add(list.get(plist.get(i2)).getDesc());
                         }
                     }
                     else{
@@ -976,7 +972,7 @@ public class Main extends android.support.v4.app.Fragment {
                     ArrayList<String> copie = new ArrayList<String>();
                     if(results){
                         for (int i3 = 0; i3 < plist.size(); i3++) {
-                            copie.add(slist.get(plist.get(i3)).getDesc());
+                            copie.add(list.get(plist.get(i3)).getDesc());
                         }
                     }
                     else{
@@ -991,7 +987,7 @@ public class Main extends android.support.v4.app.Fragment {
                     ArrayList<String> copies1 = new ArrayList<String>();
                     if(results){
                         for (int i4 = 0; i4 < plist.size(); i4++) {
-                            copies1.add(slist.get(plist.get(i4)).getDesc());
+                            copies1.add(list.get(plist.get(i4)).getDesc());
                         }
                     }
                     else {
@@ -1002,7 +998,7 @@ public class Main extends android.support.v4.app.Fragment {
                     mode.finish();
                     return true;
                 case R.id.openwith:
-                    if (results)utils.openunknown(new File(slist.get(
+                    if (results)utils.openunknown(new File(list.get(
                             (plist.get(0))).getDesc()), getActivity(), true);
                     else
                         utils.openunknown(new File(list.get(
@@ -1011,14 +1007,14 @@ public class Main extends android.support.v4.app.Fragment {
                     return true;
                 case R.id.permissions:
                     if(results)
-                        utils.setPermissionsDialog(slist.get(plist.get(0)),ma);
+                        utils.setPermissionsDialog(list.get(plist.get(0)),ma);
                     else
                         utils.setPermissionsDialog(list.get(plist.get(0)),ma);
                     mode.finish();
                     return true;
                 case R.id.addshortcut:
                     if(results)
-                        addShortcut(slist.get(plist.get(0)));
+                        addShortcut(list.get(plist.get(0)));
                     else addShortcut(list.get(plist.get(0)));
                     mode.finish();return true;
                 default:
@@ -1144,6 +1140,24 @@ public class Main extends android.support.v4.app.Fragment {
         history = new HistoryManager(getActivity(), "Table1");
     }
 
+    public ArrayList<Layoutelements> addToSmb(SmbFile[] mFile) throws SmbException {
+        ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
+        for (int i = 0; i < mFile.length; i++) {
+
+            String size="";
+                if (mFile[i].isDirectory()) {
+                    a.add(new Layoutelements(folder,mFile[i].getName(), mFile[i].getPath(),"","","","-1",false,"",mFile[i]));
+
+                } else {
+
+                    try {
+                        a.add(new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(),!islist),mFile[i].getName(), mFile[i].getPath(),"","",utils.readableFileSize(mFile[i].length()), "",false, "",mFile[i]));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }}
+            }
+        return a;
+    }
     public ArrayList<Layoutelements> addTo(ArrayList<String[]> mFile) {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         for (int i = 0; i < mFile.size(); i++) {
@@ -1173,6 +1187,7 @@ public class Main extends android.support.v4.app.Fragment {
         }
         return a;
     }
+
     public boolean isDirectory(String[] path){
         if(rootMode)
             if(path[1].length()!=0)return new File(path[0]).isDirectory();
@@ -1188,7 +1203,25 @@ public class Main extends android.support.v4.app.Fragment {
 
 
     }
-
+    public SmbFile connectingWithSmbServer(String[] auth,boolean anonym) {
+        try {
+            String yourPeerIP=auth[0];
+            String path = "smb://" + yourPeerIP;
+            SmbFile smbFile;
+            if(anonym){
+               smbFile = new SmbFile(path,NtlmPasswordAuthentication.ANONYMOUS);
+            }
+            else {
+                NtlmPasswordAuthentication auth1 = new NtlmPasswordAuthentication(
+                        null, auth[1], auth[2]);
+                 smbFile = new SmbFile(path, auth1);
+            }return smbFile;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Connected", e.getMessage());
+            return null;
+        }
+    }
     public void updatehiddenfiles(){
         hiddenfiles=hidden.readTable();
     }
@@ -1268,6 +1301,7 @@ public class Main extends android.support.v4.app.Fragment {
         };
         return colors[ Arrays.asList(colors).indexOf(skin)+1];
     }
+
     public float[] calculatefilter(float[] values){
         float[] src= {
 

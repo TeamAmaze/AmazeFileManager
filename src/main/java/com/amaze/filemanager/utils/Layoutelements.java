@@ -27,6 +27,8 @@ import android.os.Parcelable;
 
 import java.io.File;
 
+import jcifs.smb.SmbFile;
+
 public class Layoutelements implements Parcelable {
     public Layoutelements(Parcel im) {
         try {
@@ -34,21 +36,30 @@ public class Layoutelements implements Parcelable {
             // Convert Bitmap to Drawable:
             imageId = new BitmapDrawable(bitmap);
 
-        title = im.readString();
-        desc = im.readString();
-        permissions=im.readString();
-        symlink=im.readString();
-        directorybool=im.readString();
-        date=im.readLong();
-        int i=im.readInt();
-        if(i==0){header=false;}
-        else{header=true;}
+            title = im.readString();
+            desc = im.readString();
+            permissions = im.readString();
+            symlink = im.readString();
+            directorybool = im.readString();
+            date = im.readLong();
+            int i = im.readInt();
+            if (i == 0) {
+                header = false;
+            } else {
+                header = true;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    date1=im.readString();
+        date1 = im.readString();
+        int j = im.readInt();
+        if (j == 0) {
+            isSmb = false;
+        } else {
+            isSmb = true;
+            smbFile = (SmbFile) im.readParcelable(getClass().getClassLoader());
+        }
     }
-
 
 
     public int describeContents() {
@@ -66,6 +77,8 @@ public class Layoutelements implements Parcelable {
         p1.writeInt(header ? 1 : 0);
         p1.writeParcelable(((BitmapDrawable) imageId).getBitmap(), p2);
         p1.writeString(date1);
+        p1.writeInt(isSmb ? 1 : 0);
+        if (isSmb) p1.writeParcelable((Parcelable) smbFile, p2);
         // TODO: Implement this method
     }
 
@@ -76,10 +89,13 @@ public class Layoutelements implements Parcelable {
     private String symlink;
     private String size;
     private String directorybool;
-    private long date=0;
-    private String date1="";
+    private long date = 0;
+    private String date1 = "";
     private boolean header;
-    public Layoutelements(Drawable imageId, String title, String desc,String permissions,String symlink,String size,String direcorybool,boolean header,String date) {
+    private boolean isSmb = false;
+    SmbFile smbFile;
+
+    public Layoutelements(Drawable imageId, String title, String desc, String permissions, String symlink, String size, String direcorybool, boolean header, String date) {
         this.imageId = imageId;
         this.title = title;
         this.desc = desc;
@@ -88,10 +104,29 @@ public class Layoutelements implements Parcelable {
         this.size = size;
         this.header = header;
         this.directorybool = direcorybool;
-        if (!date.trim().equals(""))
-        {this.date=Long.parseLong(date);
-        this.date1=new Futils().getdate(this.date,"MMM dd, yyyy","15");
-    }}
+        if (!date.trim().equals("")) {
+            this.date = Long.parseLong(date);
+            this.date1 = new Futils().getdate(this.date, "MMM dd, yyyy", "15");
+        }
+    }
+
+    public Layoutelements(Drawable imageId, String title, String desc, String permissions, String symlink, String size, String direcorybool, boolean header, String date, SmbFile smbFile) {
+        this.imageId = imageId;
+        this.title = title;
+        this.desc = desc;
+        this.isSmb = true;
+        this.smbFile = smbFile;
+        this.permissions = permissions.trim();
+        this.symlink = symlink.trim();
+        this.size = size;
+        this.header = header;
+        this.directorybool = direcorybool;
+        if (!date.trim().equals("")) {
+            this.date = Long.parseLong(date);
+            this.date1 = new Futils().getdate(this.date, "MMM dd, yyyy", "15");
+        }
+    }
+
     public static final Parcelable.Creator<Layoutelements> CREATOR =
             new Parcelable.Creator<Layoutelements>() {
                 public Layoutelements createFromParcel(Parcel in) {
@@ -112,31 +147,55 @@ public class Layoutelements implements Parcelable {
         return desc.toString();
     }
 
+    public SmbFile getSmbFile() {
+        return smbFile;
+    }
 
     public String getTitle() {
         return title.toString();
     }
-public String getDirectorybool(){return directorybool;}
-public boolean isDirectory(boolean rootmode){
-    if(rootmode)
-    if(hasSymlink()){boolean b=new File(desc).isDirectory();
-     return b;}else
-        return directorybool.equals("-1");
+
+    public String getDirectorybool() {
+        return directorybool;
+    }
+
+    public boolean isDirectory(boolean rootmode) {
+        if (rootmode)
+            if (hasSymlink()) {
+                boolean b = new File(desc).isDirectory();
+                return b;
+            } else
+                return directorybool.equals("-1");
         else
-    return new File(getDesc()).isDirectory();
+            return new File(getDesc()).isDirectory();
     }
+
     public String getSize() {
-        return  size;
+        return size;
     }
-    public String getDate(){return date1;}
-    public long getDate1(){return date;}
+
+    public String getDate() {
+        return date1;
+    }
+
+    public long getDate1() {
+        return date;
+    }
+
     public String getPermissions() {
         return permissions;
     }
+
     public String getSymlink() {
         return symlink;
     }
-    public boolean hasSymlink(){if(getSymlink()!=null && getSymlink().length()!=0){return true;}else return false;}
+
+    public boolean hasSymlink() {
+        if (getSymlink() != null && getSymlink().length() != 0) {
+            return true;
+        } else return false;
+    }
+
     @Override
     public String toString() {
         return title + "\n" + desc;

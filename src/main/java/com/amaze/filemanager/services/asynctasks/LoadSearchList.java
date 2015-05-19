@@ -60,12 +60,12 @@ public class LoadSearchList extends AsyncTask<ArrayList<String[]>, Void, ArrayLi
 
          System.out.println("async"+f.size());
         try {
-            ma.slist = addTo(f);
+            ma.list = addTo(f);
 
-            Collections.sort(ma.slist,
+            Collections.sort(ma.list,
                     new FileListSorter(ma.dsort, ma.sortby, ma.asc,ma.rootMode));
 
-            return ma.slist;
+            return ma.list;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,18 +103,10 @@ public class LoadSearchList extends AsyncTask<ArrayList<String[]>, Void, ArrayLi
         try {
             if (bitmap != null) {
                 ((TextView)ma.pathbar.findViewById(R.id.pathname)).setText(ma.utils.getString(ma.getActivity(),R.string.searchresults));
-                ma.adapter = new Recycleradapter(ma,
-                        bitmap, ma.getActivity());
                 try {
-                  ma.listView.setAdapter(ma.adapter);
+                    ma.createViews(ma.list,false,new File(ma.current));
+                    ((TextView)ma.pathbar.findViewById(R.id.pathname)).setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
                     ma.results = true;
-                    try {
-                        Intent i = new Intent("updatepager");
-                        LocalBroadcastManager.getInstance(ma.getActivity()).sendBroadcast(i);
-                    } catch (Exception e) {
-
-                        e.printStackTrace();
-                    }
 
                 } catch (Exception e) {
                 }
