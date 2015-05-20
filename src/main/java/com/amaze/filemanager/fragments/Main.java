@@ -43,6 +43,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -79,6 +81,7 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.services.asynctasks.LoadSearchList;
+import com.amaze.filemanager.services.asynctasks.LoadSmbList;
 import com.amaze.filemanager.utils.DividerItemDecoration;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HidingScrollListener;
@@ -107,6 +110,7 @@ import jcifs.smb.SmbFile;
 public class Main extends android.support.v4.app.Fragment {
     public File[] file;
     public ArrayList<Layoutelements> list;
+    public ArrayList<SmbFile> smbFiles;
     public Recycleradapter adapter;
     public Futils utils;
     public boolean selection;
@@ -150,7 +154,7 @@ public class Main extends android.support.v4.app.Fragment {
     boolean savepaths;
     LinearLayoutManager mLayoutManager;
     GridLayoutManager mLayoutManagerGrid;
-    SwipeRefreshLayout mSwipeRefreshLayout;
+    public SwipeRefreshLayout mSwipeRefreshLayout;
     boolean addheader=false;
     StickyRecyclerHeadersDecoration headersDecor;
     DividerItemDecoration dividerItemDecoration;
@@ -387,7 +391,7 @@ public class Main extends android.support.v4.app.Fragment {
             else{
 
             final File f = new File(path);
-            if (list.get(position).isDirectory(rootMode)) {
+            if (list.get(position).isDirectory()) {
 
                 loadlist(f, false);
                 results = false;
@@ -422,7 +426,7 @@ public class Main extends android.support.v4.app.Fragment {
 
                 final File f = new File(path);
 
-                if (l.isDirectory(rootMode)) {
+                if (l.isDirectory()) {
 
                     computeScroll();
                     loadlist(f, false);
@@ -466,7 +470,7 @@ public class Main extends android.support.v4.app.Fragment {
 
     public void loadlist(final File f, boolean back) {
         if(mActionMode!=null){mActionMode.finish();}
-        new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (f));
+        new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, f);
 
         try {
             animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
@@ -491,7 +495,7 @@ public class Main extends android.support.v4.app.Fragment {
                 if(gobackitem)
                 if (!f.getPath().equals("/")) {
                     if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))
-                        bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "..", "", "", goback, "", true,""));
+                        bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "..", "", "", goback,false, true,""));
                 }
                 adapter = new Recycleradapter(ma,
                         bitmap, ma.getActivity());
@@ -776,9 +780,6 @@ public class Main extends android.support.v4.app.Fragment {
                     return true;
                 case R.id.sethome:
                     int pos = plist.get(0);
-                    if(results)
-                        home = list.get(pos).getDesc();
-                    else
                         home = list.get(pos).getDesc();
                     Toast.makeText(getActivity(),
                             utils.getString(getActivity(), R.string.newhomedirectory) + " " + list.get(pos).getTitle(),
@@ -788,9 +789,6 @@ public class Main extends android.support.v4.app.Fragment {
                     return true;
                 case R.id.about:
                     String x;
-                    if(results)
-                        x=list.get((plist.get(0))).getDesc();
-                    else
                         x=list.get((plist.get(0))).getDesc();
                     utils.showProps(new File(x), ma,rootMode);
                     mode.finish();
@@ -825,24 +823,15 @@ public class Main extends android.support.v4.app.Fragment {
                     }
                     return true;*/
                 case R.id.delete:
-                    if(results)
-                        utils.deleteFiles(list,ma,plist);
-                    else
                         utils.deleteFiles(list,ma, plist);
 
 
                     return true;
                 case R.id.share:
                     ArrayList<File> arrayList=new ArrayList<File>();
-                    if(results){
                         for(int i:plist){
                             arrayList.add(new File(list.get(i).getDesc()));
                         }
-                    }
-                    else{
-                        for(int i:plist){
-                            arrayList.add(new File(list.get(i).getDesc()));
-                        }}
                     utils.shareFiles(arrayList,getActivity());
                     return true;
                 case R.id.openparent:
@@ -861,10 +850,7 @@ public class Main extends android.support.v4.app.Fragment {
 
                     final ActionMode m = mode;
                     final File f;
-                    if(results)
-                        f=new File(list.get(
-                                (plist.get(0))).getDesc());
-                    else     f= new File(list.get(
+                      f= new File(list.get(
                             (plist.get(0))).getDesc());
                     View dialog = getActivity().getLayoutInflater().inflate(
                             R.layout.dialog, null);
@@ -911,58 +897,34 @@ public class Main extends android.support.v4.app.Fragment {
                     mode.finish();
                     return true;
                 case R.id.hide:
-                    if(results){for (int i1 = 0; i1 < plist.size(); i1++) {
-                        hide(list.get(plist.get(i1)).getDesc());
-                    }}
-                    else{
                         for (int i1 = 0; i1 < plist.size(); i1++) {
                             hide(list.get(plist.get(i1)).getDesc());
-                        }}
+                        }
                     updateList();mode.finish();
                     return true;
                 case R.id.book:
-                    if(results)
-                    {for (int i1 = 0; i1 < plist.size(); i1++) {
-                        try {
-                            sh.addS(new File(list.get(plist.get(i1)).getDesc()));
-
-                        } catch (Exception e) {
-                        }
-                    }}else{
-                        for (int i1 = 0; i1 < plist.size(); i1++) {
+                      for (int i1 = 0; i1 < plist.size(); i1++) {
                             try {
                                 sh.addS(new File(list.get(plist.get(i1)).getDesc()));
-
                             } catch (Exception e) {
                             }
-                        }}
+                        }
                     mainActivity.updateDrawer();
                     Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                     mode.finish();
                     return true;
                 case R.id.ex:
                     Intent intent = new Intent(getActivity(), ExtractService.class);
-
-                    if(results)intent.putExtra("zip", list.get(
-                            (plist.get(0))).getDesc());
-                    else intent.putExtra("zip", list.get(
-                            (plist.get(0))).getDesc());
-
+                    intent.putExtra("zip", list.get((plist.get(0))).getDesc());
                     getActivity().startService(intent);
                     mode.finish();
                     return true;
                 case R.id.cpy:
                     mainActivity.MOVE_PATH=null;
                     ArrayList<String> copies = new ArrayList<String>();
-                    if(results){
-                        for (int i2 = 0; i2 < plist.size(); i2++) {
-                            copies.add(list.get(plist.get(i2)).getDesc());
-                        }
+                    for (int i2 = 0; i2 < plist.size(); i2++) {
+                    copies.add(list.get(plist.get(i2)).getDesc());
                     }
-                    else{
-                        for (int i2 = 0; i2 < plist.size(); i2++) {
-                            copies.add(list.get(plist.get(i2)).getDesc());
-                        }}
                     mainActivity.COPY_PATH = copies;
                     mainActivity.supportInvalidateOptionsMenu();
                     mode.finish();
@@ -970,52 +932,29 @@ public class Main extends android.support.v4.app.Fragment {
                 case R.id.cut:
                     mainActivity.COPY_PATH=null;
                     ArrayList<String> copie = new ArrayList<String>();
-                    if(results){
-                        for (int i3 = 0; i3 < plist.size(); i3++) {
-                            copie.add(list.get(plist.get(i3)).getDesc());
-                        }
+                    for (int i3 = 0; i3 < plist.size(); i3++) {
+                    copie.add(list.get(plist.get(i3)).getDesc());
                     }
-                    else{
-                        for (int i3 = 0; i3 < plist.size(); i3++) {
-                            copie.add(list.get(plist.get(i3)).getDesc());
-                        }}
                     mainActivity.MOVE_PATH = copie;
                     mainActivity.supportInvalidateOptionsMenu();
                     mode.finish();
                     return true;
                 case R.id.compress:
                     ArrayList<String> copies1 = new ArrayList<String>();
-                    if(results){
-                        for (int i4 = 0; i4 < plist.size(); i4++) {
-                            copies1.add(list.get(plist.get(i4)).getDesc());
-                        }
-                    }
-                    else {
-                        for (int i4 = 0; i4 < plist.size(); i4++) {
-                            copies1.add(list.get(plist.get(i4)).getDesc());
-                        }}
+                    for (int i4 = 0; i4 < plist.size(); i4++) {
+                    copies1.add(list.get(plist.get(i4)).getDesc());}
                     utils.showNameDialog((MainActivity) getActivity(), copies1, current);
                     mode.finish();
                     return true;
                 case R.id.openwith:
-                    if (results)utils.openunknown(new File(list.get(
-                            (plist.get(0))).getDesc()), getActivity(), true);
-                    else
-                        utils.openunknown(new File(list.get(
-                                (plist.get(0))).getDesc()), getActivity(), true);
-
+                    utils.openunknown(new File(list.get((plist.get(0))).getDesc()), getActivity(), true);
                     return true;
                 case R.id.permissions:
-                    if(results)
-                        utils.setPermissionsDialog(list.get(plist.get(0)),ma);
-                    else
-                        utils.setPermissionsDialog(list.get(plist.get(0)),ma);
+                    utils.setPermissionsDialog(list.get(plist.get(0)),ma);
                     mode.finish();
                     return true;
                 case R.id.addshortcut:
-                    if(results)
-                        addShortcut(list.get(plist.get(0)));
-                    else addShortcut(list.get(plist.get(0)));
+                    addShortcut(list.get(plist.get(0)));
                     mode.finish();return true;
                 default:
                     return false;
@@ -1142,16 +1081,14 @@ public class Main extends android.support.v4.app.Fragment {
 
     public ArrayList<Layoutelements> addToSmb(SmbFile[] mFile) throws SmbException {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
+        smbFiles=new ArrayList<SmbFile>();
         for (int i = 0; i < mFile.length; i++) {
-
-            String size="";
+            smbFiles.add(mFile[i]);
                 if (mFile[i].isDirectory()) {
-                    a.add(new Layoutelements(folder,mFile[i].getName(), mFile[i].getPath(),"","","","-1",false,"",mFile[i]));
-
+                    a.add(new Layoutelements(folder,mFile[i].getName(), mFile[i].getPath(),"","","",false,"",true));
                 } else {
-
                     try {
-                        a.add(new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(),!islist),mFile[i].getName(), mFile[i].getPath(),"","",utils.readableFileSize(mFile[i].length()), "",false, "",mFile[i]));
+                        a.add(new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(),!islist),mFile[i].getName(), mFile[i].getPath(),"","",utils.readableFileSize(mFile[i].length()), false, "",false));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }}
@@ -1168,7 +1105,7 @@ public class Main extends android.support.v4.app.Fragment {
                 if (isDirectory(ele)) {
                     if(!ele[5].trim().equals("") && !ele[5].toLowerCase().trim().equals("null"))size=ele[5]+" "+itemsstring;
                     else size="";
-                    a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,mFile.get(i)[3],false,ele[4]));
+                    a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,true,false,ele[4]));
 
                 } else {
 
@@ -1179,7 +1116,7 @@ public class Main extends android.support.v4.app.Fragment {
                         //e.printStackTrace();
                     }
                     try {
-                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!islist), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,mFile.get(i)[3],false,ele[4]));
+                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!islist), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,false,false,ele[4]));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }}
@@ -1203,7 +1140,7 @@ public class Main extends android.support.v4.app.Fragment {
 
 
     }
-    public SmbFile connectingWithSmbServer(String[] auth,boolean anonym) {
+       public SmbFile connectingWithSmbServer(String[] auth,boolean anonym) {
         try {
             String yourPeerIP=auth[0];
             String path = "smb://" + yourPeerIP;

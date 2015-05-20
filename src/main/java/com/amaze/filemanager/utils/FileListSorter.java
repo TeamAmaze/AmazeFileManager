@@ -37,13 +37,8 @@ boolean rootMode;
         this.rootMode=rootMode;
     }
 
-    public boolean isDirectory(Layoutelements path){
-        if(rootMode)
-            if(path.hasSymlink())return new File(path.getDesc()).isDirectory();
-            else return path.getDirectorybool().equals("-1");
-        else
-            return new File(path.getDesc()).isDirectory();
-    }
+     boolean isDirectory(Layoutelements path){
+    return path.isDirectory();}
     @Override
     public int compare(Layoutelements file1, Layoutelements file2) {
 File f1;if(!file1.hasSymlink()){
@@ -99,7 +94,7 @@ if(f1.isFile() && f2.isFile()){
 
     }
 
-    public static String getExtension(String a) {
+     static String getExtension(String a) {
         return a.substring(a.lastIndexOf(".") + 1).toLowerCase();
     }
 

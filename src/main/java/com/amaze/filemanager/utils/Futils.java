@@ -590,8 +590,8 @@ public void showPackageDialog(final File f,final MainActivity m){
                 b.show();
 
     }
-    public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size,String directorybool,boolean b,String date) {
-        Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size,directorybool,b,date);
+    public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size,boolean directorybool,boolean b,String date) {
+        Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size,b,date,directorybool);
         return item;
     }
 

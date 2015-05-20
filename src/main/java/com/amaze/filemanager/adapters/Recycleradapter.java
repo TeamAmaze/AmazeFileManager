@@ -326,7 +326,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 } else {
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
                     if (main.coloriseIcons) {
-                        if (rowItem.isDirectory(main.rootMode))
+                        if (rowItem.isDirectory())
                             gradientDrawable.setColor(main.icon_skin_color);
                         else if (Icons.isVideo(rowItem.getDesc()))
                             gradientDrawable.setColor(Color.parseColor("#f06292"));
@@ -421,7 +421,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             }
             if (main.coloriseIcons) {
 
-                if (rowItem.isDirectory(main.rootMode))
+                if (rowItem.isDirectory())
                     holder.imageView.setColorFilter(main.icon_skin_color);
 
                 else if (Icons.isVideo(rowItem.getDesc()))
@@ -489,13 +489,13 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         if(main.islist){
             if(i!=0 && i!=item_count-1){
                     if(items.get(i-1).getSize().equals(main.goback))return -1;
-                    if(items.get(i-1).isDirectory(main.rootMode))return 'D';
+                    if(items.get(i-1).isDirectory())return 'D';
                     else return 'F';}
     }
         else{
             if(i!=0 && i!=1 && i!=2){
                 if(items.get(i-3).getSize().equals(main.goback))return -1;
-                if(items.get(i-3).isDirectory(main.rootMode))return 'D';
+                if(items.get(i-3).isDirectory())return 'D';
                 else return 'F';}
 
         }
@@ -535,7 +535,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
         if(i!=0) {
             HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
-            if(items.get(i-1).isDirectory(main.rootMode))holder.ext.setText("Directories");
+            if(items.get(i-1).isDirectory())holder.ext.setText("Directories");
             else holder.ext.setText("Files");
         }
     }

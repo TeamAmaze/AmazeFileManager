@@ -26,13 +26,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.amaze.filemanager.fragments.Main;
-import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Layoutelements;
-import com.amaze.filemanager.utils.RootHelper;
-
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import jcifs.smb.SmbFile;
 
@@ -64,12 +60,12 @@ public class LoadSmbList extends AsyncTask<SmbFile, String, ArrayList<Layoutelem
         // params comes from the execute() call: params[0] is the url.
 
         f = params[0];
-        ma.list.clear();
+        ma.list=new ArrayList<Layoutelements>();
         try {
-            ma.addToSmb(f.listFiles());
+            ma.list=ma.addToSmb(f.listFiles());
             return ma.list;
-
         } catch (Exception e) {
+            publishProgress(e.getMessage());
             return null;
         }
 

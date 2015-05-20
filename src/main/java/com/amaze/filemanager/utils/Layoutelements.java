@@ -40,25 +40,22 @@ public class Layoutelements implements Parcelable {
             desc = im.readString();
             permissions = im.readString();
             symlink = im.readString();
-            directorybool = im.readString();
+            int j = im.readInt();
             date = im.readLong();
             int i = im.readInt();
             if (i == 0) {
                 header = false;
             } else {
                 header = true;
+            } if (j == 0) {
+                isDirectory = false;
+            } else {
+                isDirectory= true;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         date1 = im.readString();
-        int j = im.readInt();
-        if (j == 0) {
-            isSmb = false;
-        } else {
-            isSmb = true;
-            smbFile = (SmbFile) im.readParcelable(getClass().getClassLoader());
-        }
     }
 
 
@@ -72,13 +69,11 @@ public class Layoutelements implements Parcelable {
         p1.writeString(desc);
         p1.writeString(permissions);
         p1.writeString(symlink);
-        p1.writeString(directorybool);
+        p1.writeInt(isDirectory?1:0);
         p1.writeLong(date);
         p1.writeInt(header ? 1 : 0);
         p1.writeParcelable(((BitmapDrawable) imageId).getBitmap(), p2);
         p1.writeString(date1);
-        p1.writeInt(isSmb ? 1 : 0);
-        if (isSmb) p1.writeParcelable((Parcelable) smbFile, p2);
         // TODO: Implement this method
     }
 
@@ -88,14 +83,12 @@ public class Layoutelements implements Parcelable {
     private String permissions;
     private String symlink;
     private String size;
-    private String directorybool;
+    private boolean isDirectory;
     private long date = 0;
     private String date1 = "";
     private boolean header;
-    private boolean isSmb = false;
-    SmbFile smbFile;
 
-    public Layoutelements(Drawable imageId, String title, String desc, String permissions, String symlink, String size, String direcorybool, boolean header, String date) {
+    public Layoutelements(Drawable imageId, String title, String desc, String permissions, String symlink, String size,  boolean header, String date,boolean isDirectory) {
         this.imageId = imageId;
         this.title = title;
         this.desc = desc;
@@ -103,29 +96,13 @@ public class Layoutelements implements Parcelable {
         this.symlink = symlink.trim();
         this.size = size;
         this.header = header;
-        this.directorybool = direcorybool;
+        this.isDirectory = isDirectory;
         if (!date.trim().equals("")) {
             this.date = Long.parseLong(date);
             this.date1 = new Futils().getdate(this.date, "MMM dd, yyyy", "15");
         }
     }
 
-    public Layoutelements(Drawable imageId, String title, String desc, String permissions, String symlink, String size, String direcorybool, boolean header, String date, SmbFile smbFile) {
-        this.imageId = imageId;
-        this.title = title;
-        this.desc = desc;
-        this.isSmb = true;
-        this.smbFile = smbFile;
-        this.permissions = permissions.trim();
-        this.symlink = symlink.trim();
-        this.size = size;
-        this.header = header;
-        this.directorybool = direcorybool;
-        if (!date.trim().equals("")) {
-            this.date = Long.parseLong(date);
-            this.date1 = new Futils().getdate(this.date, "MMM dd, yyyy", "15");
-        }
-    }
 
     public static final Parcelable.Creator<Layoutelements> CREATOR =
             new Parcelable.Creator<Layoutelements>() {
@@ -147,28 +124,13 @@ public class Layoutelements implements Parcelable {
         return desc.toString();
     }
 
-    public SmbFile getSmbFile() {
-        return smbFile;
-    }
 
     public String getTitle() {
         return title.toString();
     }
 
-    public String getDirectorybool() {
-        return directorybool;
-    }
-
-    public boolean isDirectory(boolean rootmode) {
-        if (rootmode)
-            if (hasSymlink()) {
-                boolean b = new File(desc).isDirectory();
-                return b;
-            } else
-                return directorybool.equals("-1");
-        else
-            return new File(getDesc()).isDirectory();
-    }
+    public boolean isDirectory() {
+    return isDirectory;}
 
     public String getSize() {
         return size;
