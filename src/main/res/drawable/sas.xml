@@ -23,6 +23,5 @@
 
 
     <item
-
         android:drawable="@color/safrs" />
 </selector>

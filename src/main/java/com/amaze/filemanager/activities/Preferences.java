@@ -212,7 +212,7 @@ public class Preferences extends AppCompatActivity {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
         int sdk=Build.VERSION.SDK_INT;
 
-        /*if(sdk==20 || sdk==19) {
+        if(sdk==20 || sdk==19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintColor(Color.parseColor(skin));
@@ -220,7 +220,7 @@ public class Preferences extends AppCompatActivity {
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.preferences).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
-        }else*/ if(Build.VERSION.SDK_INT>=21){
+        }else if(Build.VERSION.SDK_INT>=21){
             boolean colourednavigation=Sp.getBoolean("colorednavigation",true);
             Window window =getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);

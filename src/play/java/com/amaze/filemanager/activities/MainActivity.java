@@ -122,12 +122,17 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
+import org.xml.sax.SAXException;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -450,24 +455,6 @@ public class MainActivity extends AppCompatActivity implements
                 adapter.toggleChecked(false);
             }
         });
-        View bookbutton=findViewById(R.id.bookbutton);
-        if(theme1==1) {
-            ((ImageView) bookbutton.findViewById(R.id.bookicon)).setImageResource(R.drawable.ic_action_not_important);
-            bookbutton.setBackgroundResource(R.drawable.safr_ripple_black);
-            ((TextView)bookbutton.findViewById(R.id.booktext)).setTextColor(getResources().getColor(android.R.color.white));
-        }
-        bookbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-                transaction2.replace(R.id.content_frame, new BookmarksManager());
-
-                pending_fragmentTransaction=transaction2;
-                mDrawerLayout.closeDrawer(mDrawerLinear);
-                select=list.size()+2;
-                adapter.toggleChecked(false);
-            }
-        });
 
         mDrawerList.addHeaderView(drawerHeaderView);
         list = new ArrayList<String>();
@@ -787,8 +774,9 @@ public class MainActivity extends AppCompatActivity implements
             if(zippath.endsWith(".zip") || zippath.endsWith(".apk"))openZip(zippath);else{openRar(zippath);}zippath=null;
         }
     }
-    public void selectItem(final int i) {
-        if (select == null || select >= list.size() -2) {
+    public void selectItem(final int i, boolean removeBookmark) {
+        if (select == null || select >= list.size() -2 && !removeBookmark) {
+
             TabFragment tabFragment=new TabFragment();
             Bundle a = new Bundle();
             a.putString("path", list.get(i));
@@ -799,14 +787,28 @@ public class MainActivity extends AppCompatActivity implements
 
             transaction.addToBackStack("tabt1" + 1);
             pending_fragmentTransaction=transaction;
+            select = i;
+            adapter.toggleChecked(select);
+            mDrawerLayout.closeDrawer(mDrawerLinear);
+        }  else if (removeBookmark) {
+
+            //adapter.notifyDataSetChanged();
+            try {
+                s.removeS(new File(list.get(i)), MainActivity.this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            list.remove(i);
         } else {
+
             pending_path=list.get(i);
+            select = i;
+            adapter.toggleChecked(select);
+            mDrawerLayout.closeDrawer(mDrawerLinear);
         }
-        select = i;
+
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
-        adapter.toggleChecked(select);
-        mDrawerLayout.closeDrawer(mDrawerLinear);
     }
 
     @Override
@@ -853,7 +855,7 @@ public class MainActivity extends AppCompatActivity implements
             menu.findItem(R.id.view).setVisible(true);
             invalidatePasteButton(menu.findItem(R.id.paste));
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
-        } else if(f.contains("AppsList") || f.contains("BookmarksManager") || f.contains("ProcessViewer")) {
+        } else if(f.contains("AppsList") || f.contains("ProcessViewer")) {
             tabsSpinner.setVisibility(View.GONE);
             findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
             menu.findItem(R.id.search).setVisible(false);
@@ -1122,7 +1124,7 @@ public class MainActivity extends AppCompatActivity implements
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
+            selectItem(position, false);
 
         }
     }

@@ -24,6 +24,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +53,7 @@ public class DrawerAdapter extends ArrayAdapter<String> {
     Float[] color;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     HashMap<String,Float[]> colors=new HashMap<String,Float[]>();
+
     public void toggleChecked(int position) {
         toggleChecked(false);
         myChecked.put(position, true);
@@ -110,7 +112,7 @@ public class DrawerAdapter extends ArrayAdapter<String> {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.drawerrow, parent, false);
         TextView textView = (TextView) rowView.findViewById(R.id.firstline);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
+        final ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         l = (RelativeLayout) rowView.findViewById(R.id.second);
         if(m.theme1 == 0) {
             l.setBackgroundResource(R.drawable.safr_ripple_white);
@@ -120,10 +122,35 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         l.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View p1) {
-                m.selectItem(position);
+                m.selectItem(position, false);
             }
             // TODO: Implement this method
 
+        });
+        l.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                // not to remove the first bookmark (storage)
+                if (position!=0) {
+
+                    if (m.theme1 == 0)
+                        imageView.setImageResource(R.drawable.ic_action_cancel_light);
+                    else
+                        imageView.setImageResource(R.drawable.ic_action_cancel);
+                    imageView.setClickable(true);
+
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            m.selectItem(position, true);
+                        }
+                    });
+                }
+
+                // return true to denote no further processing
+                return true;
+            }
         });
 
         float[] src = {

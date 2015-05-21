@@ -202,7 +202,7 @@
             android:id="@+id/appbutton"
             android:layout_width="fill_parent"
             android:layout_height="48dp"
-            android:layout_above="@+id/bookbutton"
+            android:layout_above="@+id/settingsbutton"
             android:background="@drawable/safr_ripple_white"
             android:clickable="true">
 
@@ -230,37 +230,6 @@
                 android:gravity="center_vertical" />
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/bookbutton"
-            android:layout_width="fill_parent"
-            android:layout_height="48dp"
-            android:layout_above="@+id/settingsbutton"
-            android:background="@drawable/safr_ripple_white"
-            android:clickable="true">
-
-            <ImageView
-                android:id="@+id/bookicon"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="16dp"
-                android:clickable="false"
-                android:gravity="center_vertical"
-                android:src="@drawable/ic_action_not_important_light"
-                android:contentDescription="@string/icon" />
-
-            <TextView
-                android:id="@+id/booktext"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="72dp"
-                android:textSize="14sp"
-                android:fontFamily="sans-serif-medium"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:text="@string/bookmanag"
-                android:clickable="false"
-                android:gravity="center_vertical" />
-        </RelativeLayout>
         <RelativeLayout
             android:id="@+id/settingsbutton"
             android:layout_width="fill_parent"

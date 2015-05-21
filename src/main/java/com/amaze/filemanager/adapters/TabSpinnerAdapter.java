@@ -112,24 +112,14 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         View row = inflater.inflate(R.layout.spinner_dropdown_layout, parent, false);
         final TextView textView = (TextView) row.findViewById(R.id.spinnerText);
         if(tabFragment.theme1==1) {
-            row.setBackgroundResource(R.drawable.spinner_row_dark);
+            row.setBackgroundResource(R.color.holo_dark_background);
             textView.setTextColor(Color.parseColor("#ffffff"));
         }
-        LinearLayout linearLayout = (LinearLayout) row.findViewById(R.id.textParent);
         if(items.get(position).equals("/"))
             textView.setText(R.string.rootdirectory);
         else
         textView.setText(new File(items.get(position)).getName());
         if (position == tabFragment.mViewPager.getCurrentItem()) {
-            float[] src = {
-
-                    color[0], 0, 0, 0, 0,
-                    0, color[1], 0, 0, 0,
-                    0, 0,  color[2],0, 0,
-                    0, 0, 0, 1, 0
-            };
-            ColorMatrix colorMatrix = new ColorMatrix(src);
-            ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
 
             textView.setTextColor(Color.parseColor(skin));
        //     textView.setTypeface(null, Typeface.BOLD);

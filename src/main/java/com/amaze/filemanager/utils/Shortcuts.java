@@ -163,6 +163,5 @@ public class Shortcuts {
         DOMSource source = new DOMSource(doc);
         StreamResult result = new StreamResult(new File(path));
         transformer.transform(source, result);
-        Toast.makeText(s, "Successful", Toast.LENGTH_LONG).show();
     }
 }
