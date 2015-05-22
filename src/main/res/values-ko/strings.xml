@@ -34,7 +34,7 @@
     <string name="bookmanag">북마크 매니저</string>
     <string name="setting">설정</string>
     <string name="select">항목 선택</string>
-    <string name="pressagain">한번 더 누르면 종료됩니다</string>
+    <string name="pressagain">한번 더 누르시면 종료됩니다</string>
     <string name="open">열기</string>
     <string name="backup">백업</string>
     <string name="uninstall">삭제</string>
