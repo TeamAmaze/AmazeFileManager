@@ -22,6 +22,7 @@ package com.amaze.filemanager.services.asynctasks;
  */
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -46,6 +47,8 @@ public class LoadSmbList extends AsyncTask<SmbFile, String, ArrayList<Layoutelem
 
     @Override
     protected void onPreExecute() {
+
+        Log.e("Connected","onPreExecute");
         ma.history.addPath(ma.current);
     }
 
@@ -58,14 +61,18 @@ public class LoadSmbList extends AsyncTask<SmbFile, String, ArrayList<Layoutelem
     // Actual download method, run in the task thread
     protected ArrayList<Layoutelements> doInBackground(SmbFile... params) {
         // params comes from the execute() call: params[0] is the url.
-
+        Log.e("Connected","doinbackground");
         f = params[0];
+        Log.e("Connected",f.getPath());
         ma.list=new ArrayList<Layoutelements>();
         try {
-            ma.list=ma.addToSmb(f.listFiles());
+            SmbFile[] smbFile =f.listFiles();
+            Log.e("Connected","arpit"+smbFile.length);
+            ma.list=ma.addToSmb(smbFile);
             return ma.list;
         } catch (Exception e) {
             publishProgress(e.getMessage());
+            e.printStackTrace();
             return null;
         }
 
@@ -78,8 +85,10 @@ public class LoadSmbList extends AsyncTask<SmbFile, String, ArrayList<Layoutelem
             bitmap = null;
 
         }
+        Log.e("Connected","onPost");
         ma.createViews(bitmap, back, new File(f.getPath()));
-
+        ma.smbPath=f.getPath();
+        ma.smbMode=true;
         //ListView lv = (ListView) ma.listView.findViewById(R.id.listView);
         ma.listView.setVisibility(View.VISIBLE);
     }

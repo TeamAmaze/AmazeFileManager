@@ -58,7 +58,7 @@
 
     <!-- appCompat -->
     <!-- light -->
-    <style name="appCompatLight" parent="Theme.AppCompat.Light">
+    <style name="appCompatLight" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="android:actionModeCopyDrawable">@drawable/ic_content_copy_black_36dp</item>

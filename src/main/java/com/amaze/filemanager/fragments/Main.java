@@ -97,6 +97,7 @@ import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -114,7 +115,7 @@ public class Main extends android.support.v4.app.Fragment {
     public Recycleradapter adapter;
     public Futils utils;
     public boolean selection;
-    public boolean results = false;
+    public boolean results = false,smbMode=false;
     public ActionMode mActionMode;
     public SharedPreferences Sp;
     public Drawable folder,apk,darkimage,darkvideo;
@@ -162,6 +163,9 @@ public class Main extends android.support.v4.app.Fragment {
     int mToolbarHeight,hidemode;
     View mToolbarContainer;
     public int skin_color,icon_skin_color;
+    boolean SmbAnonym=false;
+    String smbUser,smbPass;
+    public String smbPath;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -286,6 +290,27 @@ public class Main extends android.support.v4.app.Fragment {
                 loadlist(new File(current),false);
             }
         });
+        mToolbarHeight=getToolbarHeight(getActivity());
+        paddingTop = (mToolbarHeight) + dpToPx(72);
+        if(hidemode==2)mToolbarHeight=paddingTop;
+        mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+                else {
+                    mToolbarContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+                paddingTop=mToolbarContainer.getHeight();
+
+                if(hidemode!=2)mToolbarHeight=mainActivity.toolbar.getHeight();
+            }
+
+        });
+        mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor(fabSkin));
+        mSwipeRefreshLayout.setProgressViewOffset(true, paddingTop, paddingTop + dpToPx(72));
+
         if (savedInstanceState == null){
             if(Intentpath!=null) {
                 File file1=new File(Intentpath);
@@ -308,6 +333,7 @@ public class Main extends android.support.v4.app.Fragment {
                 b.putInt("index", savedInstanceState.getInt("index"));
                 b.putInt("top", savedInstanceState.getInt("top"));
                 scrolls.put(cur, b);
+                retreiveSmbFromSavedInstance(savedInstanceState);
                 list = savedInstanceState.getParcelableArrayList("list");
                 if (savedInstanceState.getBoolean("results")) {
                     try {
@@ -327,27 +353,7 @@ public class Main extends android.support.v4.app.Fragment {
                 }
             }
         }
-        mToolbarHeight=getToolbarHeight(getActivity());
-        paddingTop = (mToolbarHeight) + dpToPx(72);
-        if(hidemode==2)mToolbarHeight=paddingTop;
-        mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                    mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                }
-                else {
-                    mToolbarContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-                paddingTop=mToolbarContainer.getHeight();
-
-                if(hidemode!=2)mToolbarHeight=mainActivity.toolbar.getHeight();
-            }
-
-        });
-        mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor(fabSkin));
-        mSwipeRefreshLayout.setProgressViewOffset(true,paddingTop,paddingTop+dpToPx(72));
-    }
+     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -376,6 +382,8 @@ public class Main extends android.support.v4.app.Fragment {
             if(results){
                 outState.putBoolean("results", results);
             }
+            if(smbMode)
+                addSmbToSavedInstance(outState,smbUser,smbPass,smbFiles,SmbAnonym);
         }}
 
     public void home() {
@@ -401,6 +409,10 @@ public class Main extends android.support.v4.app.Fragment {
                 } else
                 utils.openFile(f, (MainActivity) getActivity());
             }}
+        }else if(smbMode){
+            if(selection)adapter.toggleChecked(position);
+            else{Toast.makeText(getActivity(),"Go",Toast.LENGTH_LONG).show();
+                    loadSmblist(smbFiles.get(position), false);}
         } else if (selection == true) {
             if(!list.get(position).getSize().equals(goback)){
                 adapter.toggleChecked(position);
@@ -471,6 +483,18 @@ public class Main extends android.support.v4.app.Fragment {
     public void loadlist(final File f, boolean back) {
         if(mActionMode!=null){mActionMode.finish();}
         new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, f);
+
+        try {
+            animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        listView.setAnimation(animation);
+    }
+    public void loadSmblist(final SmbFile f, boolean back) {
+        if(mActionMode!=null){mActionMode.finish();}
+        new LoadSmbList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, f);
 
         try {
             animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
@@ -1080,6 +1104,7 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
     public ArrayList<Layoutelements> addToSmb(SmbFile[] mFile) throws SmbException {
+        Log.e("Connected",mFile.length+"");
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         smbFiles=new ArrayList<SmbFile>();
         for (int i = 0; i < mFile.length; i++) {
@@ -1093,6 +1118,7 @@ public class Main extends android.support.v4.app.Fragment {
                         e.printStackTrace();
                     }}
             }
+        Log.e("Connected",a.size()+"Size");
         return a;
     }
     public ArrayList<Layoutelements> addTo(ArrayList<String[]> mFile) {
@@ -1140,15 +1166,57 @@ public class Main extends android.support.v4.app.Fragment {
 
 
     }
+
+    void addSmbToSavedInstance(Bundle savedInstance, String user, String pass, ArrayList<SmbFile> list, boolean anonym) {
+        savedInstance.putBoolean("SmbMode", smbMode);
+        savedInstance.putString("SmbPath",smbPath);
+        if (!anonym) {
+            savedInstance.putString("SmbUser", user);
+            savedInstance.putString("SmbPass", pass);
+            savedInstance.putBoolean("SmbAnonym", false);
+        } else savedInstance.putBoolean("SmbAnonym", true);
+        ArrayList<String> stringArrayList = new ArrayList<>();
+        for (SmbFile smbFile : list) {
+            stringArrayList.add(smbFile.getPath());
+        }
+        savedInstance.putStringArrayList("SmbFileList", stringArrayList);
+    }
+
+    void retreiveSmbFromSavedInstance(Bundle savedInstance) {
+        smbMode = savedInstance.getBoolean("SmbMode");
+        if (!smbMode) return;
+        smbPath=savedInstance.getString("SmbPath");
+        SmbAnonym = savedInstance.getBoolean("SmbAnonym");
+        ArrayList<String> stringArrayList = savedInstance.getStringArrayList("SmbFileList");
+        smbFiles=new ArrayList<SmbFile>();
+        try {
+            if(SmbAnonym) {
+             for(String a:stringArrayList)
+                 smbFiles.add( new SmbFile(a,NtlmPasswordAuthentication.ANONYMOUS));
+            }else{
+                NtlmPasswordAuthentication auth1 = new NtlmPasswordAuthentication(
+                        null,smbUser= savedInstance.getString("SmbUser"),smbPass=savedInstance.getString("SmbPass"));
+                for(String a:stringArrayList)
+                    smbFiles.add( new SmbFile(a,auth1));
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
        public SmbFile connectingWithSmbServer(String[] auth,boolean anonym) {
         try {
             String yourPeerIP=auth[0];
             String path = "smb://" + yourPeerIP;
+            smbPath=path;
             SmbFile smbFile;
             if(anonym){
+                SmbAnonym=true;
                smbFile = new SmbFile(path,NtlmPasswordAuthentication.ANONYMOUS);
             }
             else {
+                SmbAnonym=false;
+                smbUser=auth[1];
+                smbPass=auth[2];
                 NtlmPasswordAuthentication auth1 = new NtlmPasswordAuthentication(
                         null, auth[1], auth[2]);
                  smbFile = new SmbFile(path, auth1);
