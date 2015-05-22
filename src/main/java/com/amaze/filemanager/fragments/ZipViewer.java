@@ -341,6 +341,13 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     public void onDestroyView() {
         super.onDestroyView();
     mainActivity.supportInvalidateOptionsMenu();
+
+        // needed to remove any extracted file from cache, when onResume was not called
+        // in case of opening any unknown file inside the zip
+        if (files.size()==1) {
+
+            new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(files);
+        }
     }
         @Override
     public void onResume() {
@@ -350,6 +357,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(files);
         }
     }
+
 public boolean cangoBack(){
     if(current==null || current.trim().length()==0)
     return false;

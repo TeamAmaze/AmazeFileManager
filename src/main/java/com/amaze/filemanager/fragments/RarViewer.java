@@ -210,6 +210,13 @@ public class RarViewer extends Fragment {
         super.onDestroyView();
         mainActivity.supportInvalidateOptionsMenu();
         //mainActivity.floatingActionButton.show();
+
+        // needed to remove any extracted file from cache, when onResume was not called
+        // in case of opening any unknown file inside the rar
+        if (files.size()==1) {
+
+            new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(files);
+        }
     }
     public String getSelectionColor(){
 

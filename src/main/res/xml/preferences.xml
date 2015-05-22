@@ -209,7 +209,11 @@
                 android:summary="@string/xda_summary"/>
             <Preference
                 android:key="g_plus"
-                android:title="@string/g_plus_community_title"/>
+                android:title="@string/g_plus_community_title">
+                <intent
+                    android:action="android.intent.action.VIEW"
+                    android:data="https://plus.google.com/communities/113997576965363268101" />
+            </Preference>
             <Preference
                 android:key="rate"
                 android:title="@string/rate" />
