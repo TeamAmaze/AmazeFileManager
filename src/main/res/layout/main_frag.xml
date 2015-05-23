@@ -19,7 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:id="@+id/main_frag"
     android:layout_height="match_parent">
@@ -41,5 +41,4 @@
         android:layout_height="match_parent"
         android:divider="@null"/>
 </android.support.v4.widget.SwipeRefreshLayout>
-
-</RelativeLayout>
+</FrameLayout>

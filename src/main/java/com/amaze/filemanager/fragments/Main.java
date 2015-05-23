@@ -566,7 +566,7 @@ public class Main extends android.support.v4.app.Fragment {
                         }
 
                     });
-                    if (buttons.getVisibility() == View.VISIBLE) mainActivity.bbar();
+                    if (buttons.getVisibility() == View.VISIBLE) mainActivity.bbar(this);
 
                     mainActivity.updateDrawer(current);
                     mainActivity.updatepager();

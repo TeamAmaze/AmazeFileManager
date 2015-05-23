@@ -44,6 +44,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
     public ArrayList<String> tabs=new ArrayList<String>();
     public int theme1;
     private Animation hideAnimation, showAnimation;
+    View buttons;
     View mToolBarContainer;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +59,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         if (getArguments() != null){
             path = getArguments().getString("path");
         }
+        buttons=getActivity().findViewById(R.id.buttons);
         mainActivity = ((MainActivity)getActivity());
         mainActivity.supportInvalidateOptionsMenu();
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -84,7 +86,9 @@ public class TabFragment extends android.support.v4.app.Fragment {
                         try {
                             mainActivity.updateDrawer(ma.current);
                             mainActivity.updatePath(ma.current,true);
-
+                        if(buttons.getVisibility()==View.VISIBLE){
+                            mainActivity.bbar(ma);
+                        }
                         } catch (Exception e) {
                             //       e.printStackTrace();5
                         }

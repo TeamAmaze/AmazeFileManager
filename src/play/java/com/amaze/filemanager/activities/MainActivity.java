@@ -1407,7 +1407,7 @@ public class MainActivity extends AppCompatActivity implements
     }
     public void openRar(String path) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_in_top,R.anim.slide_in_bottom);
+        fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
         Fragment zipFragment = new RarViewer();
         Bundle bundle = new Bundle();
         bundle.putString("path", path);
@@ -1624,10 +1624,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    public void bbar() {
-        TabFragment fragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-        final Main main = (Main) fragment.getTab();
-        final String text = ((Main) fragment.getTab()).current;
+    public void bbar(final Main main) {
+        final String text = main.current;
         try {
             buttons.removeAllViews();
             buttons.setMinimumHeight(pathbar.getHeight());
@@ -1730,9 +1728,8 @@ public class MainActivity extends AppCompatActivity implements
             scroll.post(new Runnable() {
                 @Override
                 public void run() {
-                    scroll.fullScroll(View.FOCUS_RIGHT);
-                    scroll1.fullScroll(View.FOCUS_RIGHT);
-                }
+                   sendScroll(scroll);
+                    sendScroll(scroll1);}
             });
 
             if(buttons.getVisibility()==View.VISIBLE){timer.cancel();timer.start();}
@@ -1741,7 +1738,21 @@ public class MainActivity extends AppCompatActivity implements
             System.out.println("button view not available");
         }
     }
-
+    private void sendScroll(final HorizontalScrollView scrollView){
+        final Handler handler = new Handler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {Thread.sleep(100);} catch (InterruptedException e) {}
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollView.fullScroll(View.FOCUS_RIGHT);
+                    }
+                });
+            }
+        }).start();
+    }
     public void updatePath(final String newPath,boolean calcsize){
         File f= null;
         try {
@@ -1783,7 +1794,6 @@ public class MainActivity extends AppCompatActivity implements
                     scroll.post(new Runnable() {
                         @Override
                         public void run() {
-                            scroll.fullScroll(View.FOCUS_RIGHT);
                             scroll1.fullScroll(View.FOCUS_RIGHT);
                         }
                     });
@@ -1805,7 +1815,6 @@ public class MainActivity extends AppCompatActivity implements
                     scroll.post(new Runnable() {
                         @Override
                         public void run() {
-                            scroll.fullScroll(View.FOCUS_RIGHT);
                             scroll1.fullScroll(View.FOCUS_RIGHT);
                         }
                     });
@@ -1821,7 +1830,6 @@ public class MainActivity extends AppCompatActivity implements
                     scroll.post(new Runnable() {
                         @Override
                         public void run() {
-                            scroll.fullScroll(View.FOCUS_LEFT);
                             scroll1.fullScroll(View.FOCUS_LEFT);
                         }
                     });
@@ -1837,7 +1845,7 @@ public class MainActivity extends AppCompatActivity implements
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bbar();
+                bbar(((Main)getFragment().getTab()));
                 crossfade();
                 timer.cancel();
                 timer.start();
@@ -1846,7 +1854,7 @@ public class MainActivity extends AppCompatActivity implements
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bbar();
+                bbar(((Main)getFragment().getTab()));
                 crossfade();
                 timer.cancel();
                 timer.start();
