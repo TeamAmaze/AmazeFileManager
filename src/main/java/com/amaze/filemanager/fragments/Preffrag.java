@@ -415,19 +415,6 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
             }
         });
 
-        //xda
-        Preference preference6 = findPreference("xda");
-        preference6.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Uri uri = Uri.parse("http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314");
-                Intent intent = new Intent();
-                intent.setData(uri);
-                startActivity(intent);
-                return false;
-            }
-        });
-
         // studio
         Preference studio = findPreference("studio");
         studio.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

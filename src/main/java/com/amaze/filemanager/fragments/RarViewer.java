@@ -214,6 +214,7 @@ public class RarViewer extends Fragment {
 
         // needed to remove any extracted file from cache, when onResume was not called
         // in case of opening any unknown file inside the rar
+        // bug : only deletes most recent openUnknown file from cache
         if (files.size()==1) {
 
             new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(files);

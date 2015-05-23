@@ -125,7 +125,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
         mInput = (EditText) findViewById(R.id.fname);
         mInput.addTextChangedListener(this);
         try {
-            if (theme1 == 1) mInput.setBackgroundColor(Color.parseColor("#000000"));
+            if (theme1 == 1) mInput.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (Exception e) {
 

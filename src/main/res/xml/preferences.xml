@@ -205,7 +205,11 @@
             <Preference
                 android:key="xda"
                 android:title="@string/xda_title"
-                android:summary="@string/xda_summary"/>
+                android:summary="@string/xda_summary">
+                <intent
+                    android:action="android.intent.action.VIEW"
+                    android:data="http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314" />
+            </Preference>
             <Preference
                 android:key="g_plus"
                 android:title="@string/g_plus_community_title">
