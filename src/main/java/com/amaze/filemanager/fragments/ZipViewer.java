@@ -90,7 +90,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     StickyRecyclerHeadersDecoration headersDecor;
     LinearLayoutManager mLayoutManager;
     DividerItemDecoration dividerItemDecoration;
-
+    boolean showDividers;
     public int paddingTop;
     int mToolbarHeight,hidemode;
     View mToolbarContainer;
@@ -148,6 +148,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         Calendar calendar = Calendar.getInstance();
         showSize = Sp.getBoolean("showFileSize", false);
         showLastModified = Sp.getBoolean("showLastModified", true);
+        showDividers=Sp.getBoolean("showDividers",true);
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
         skin = Sp.getString("skin_color", "#3f51b5");
         iconskin=Sp.getString("icon_skin_color",skin);
@@ -383,7 +384,7 @@ public boolean cangoBack(){
             addheader=true;
         }
         if(addheader ) {
-            dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST);
+            dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST,showDividers);
             listView.addItemDecoration(dividerItemDecoration);
 
             headersDecor = new StickyRecyclerHeadersDecoration(zipAdapter);

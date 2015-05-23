@@ -136,7 +136,7 @@ public class Main extends android.support.v4.app.Fragment {
     public CountDownTimer timer;
     private View rootView;
     public android.support.v7.widget.RecyclerView  listView;
-    public Boolean gobackitem,islist,showThumbs,coloriseIcons;
+    public boolean gobackitem,islist,showThumbs,coloriseIcons,showDividers;
     public IconHolder ic;
     public MainActivity mainActivity;
     public boolean showButtonOnStart = false;
@@ -191,6 +191,7 @@ public class Main extends android.support.v4.app.Fragment {
         hidemode=Sp.getInt("hidemode", 0);
         showPermissions=Sp.getBoolean("showPermissions", false);
         showSize=Sp.getBoolean("showFileSize",false);
+        showDividers=Sp.getBoolean("showDividers",true);
         gobackitem=Sp.getBoolean("goBack_checkbox", false);
         circularImages=Sp.getBoolean("circularimages",true);
         showLastModified=Sp.getBoolean("showLastModified",true);
@@ -530,7 +531,7 @@ public class Main extends android.support.v4.app.Fragment {
                         listView.removeItemDecoration(headersDecor);
                         addheader=true;}
                     if(addheader && islist){
-                            dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST);
+                            dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST,showDividers);
                             listView.addItemDecoration(dividerItemDecoration);
 
                     headersDecor = new StickyRecyclerHeadersDecoration(adapter);

@@ -96,7 +96,7 @@ public class RarViewer extends Fragment {
     LinearLayoutManager mLayoutManager;
     DividerItemDecoration dividerItemDecoration;
 
-
+    boolean showDividers;
     public int paddingTop;
     int mToolbarHeight,hidemode;
     View mToolbarContainer;
@@ -154,6 +154,7 @@ public class RarViewer extends Fragment {
         Calendar calendar = Calendar.getInstance();
         showSize = Sp.getBoolean("showFileSize", false);
         showLastModified = Sp.getBoolean("showLastModified", true);
+        showDividers=Sp.getBoolean("showDividers",true);
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
         skin = Sp.getString("skin_color", "#3f51b5");
         iconskin=Sp.getString("icon_skin_color",skin);
@@ -402,7 +403,7 @@ String path;
             addheader=true;
         }
         if(addheader ) {
-                dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST);
+                dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST,showDividers);
                 listView.addItemDecoration(dividerItemDecoration);
 
             headersDecor = new StickyRecyclerHeadersDecoration(zipAdapter);

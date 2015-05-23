@@ -71,11 +71,10 @@
         <Preference
             android:key="hidemode"
             android:title="@string/hide_mode_title" />
-        <!--<SwitchPreference
-            android:defaultValue="false"
-            android:enabled="false"
-            android:key="topfab"
-            android:title="Top Fab" />-->
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="showDividers"
+            android:title="Show Dividers" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/general">
