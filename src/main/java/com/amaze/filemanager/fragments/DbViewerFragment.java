@@ -53,8 +53,8 @@ public class DbViewerFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         if (dbViewer.theme1 == 1) {
 
-            relativeLayout.setBackgroundColor(Color.parseColor("#000000"));
-            webView.setBackgroundColor(Color.parseColor("#000000"));
+            relativeLayout.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+            webView.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         } else {
 
             relativeLayout.setBackgroundColor(Color.parseColor("#ffffff"));

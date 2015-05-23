@@ -51,7 +51,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
     TabFragment tabFragment;
     HashMap<String,Float[]> colors=new HashMap<String,Float[]>();
     Float[] color;
-    String skin;
+    String fabSkin;
     public TabSpinnerAdapter(Context context, int resource, ArrayList<String> items, Spinner spin,TabFragment tabFragment) {
         super(context, resource, items);
         this.items = items;
@@ -60,8 +60,8 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         this.tabFragment=tabFragment;
         putColors();
         final SharedPreferences sharedPreferences1 = PreferenceManager.getDefaultSharedPreferences(context);
-        skin = sharedPreferences1.getString("skin_color", "#3f51b5");
-        color=colors.get(skin);
+        fabSkin = sharedPreferences1.getString("fab_skin_color", "#e91e63");
+        color=colors.get(fabSkin);
         if(color==null){color=colors.get("#3f51b5");}
     }
 
@@ -121,7 +121,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         textView.setText(new File(items.get(position)).getName());
         if (position == tabFragment.mViewPager.getCurrentItem()) {
 
-            textView.setTextColor(Color.parseColor(skin));
+            textView.setTextColor(Color.parseColor(fabSkin));
        //     textView.setTypeface(null, Typeface.BOLD);
 
         }        row.setOnClickListener(new View.OnClickListener() {
