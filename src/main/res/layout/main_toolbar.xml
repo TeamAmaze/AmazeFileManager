@@ -227,6 +227,7 @@
                 android:ellipsize="end"
                 android:text="@string/apps"
                 android:clickable="false"
+                android:textColor="@android:color/black"
                 android:gravity="center_vertical" />
         </RelativeLayout>
 
@@ -259,6 +260,7 @@
                 android:ellipsize="end"
                 android:text="@string/setting"
                 android:clickable="false"
+                android:textColor="@android:color/black"
                 android:gravity="center_vertical" />
         </RelativeLayout>
 

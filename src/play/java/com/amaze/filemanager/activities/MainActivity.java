@@ -214,11 +214,19 @@ public class MainActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
 
+        Sp = PreferenceManager.getDefaultSharedPreferences(this);
+
+        int th = Integer.parseInt(Sp.getString("theme", "0"));
+        theme1 = th==2 ? PreferenceUtils.hourOfDay() : th;
+
+        if (theme1 == 1) {
+            setTheme(R.style.appCompatDark);
+        }
+
         setContentView(R.layout.main_toolbar);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         tabHandler=new TabHandler(this,null,null,1);
-        Sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
         fabskin = Sp.getString("fab_skin_color", "#e91e63");
@@ -282,7 +290,6 @@ public class MainActivity extends AppCompatActivity implements
         util = new IconUtils(Sp, this);
         icons = new IconUtils(Sp, this);
 
-        int th = Integer.parseInt(Sp.getString("theme", "0"));
         boolean v142 = Sp.getBoolean("v1.4.2", false);
         if (!v142) {
             try {
@@ -298,11 +305,6 @@ public class MainActivity extends AppCompatActivity implements
             Sp.edit().putBoolean("v1.4.2", true).apply();
         }
 
-        theme1 = th==2 ? PreferenceUtils.hourOfDay() : th;
-
-        if (theme1 == 1) {
-            setTheme(R.style.appCompatDark);
-        }
         pathbar = (LinearLayout) findViewById(R.id.pathbar);
         buttons = (LinearLayout) findViewById(R.id.buttons);
         scroll = (HorizontalScrollView) findViewById(R.id.scroll);

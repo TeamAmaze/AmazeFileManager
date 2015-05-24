@@ -14,7 +14,7 @@
             android:id="@+id/name1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.Medium"
+            style="@android:style/TextAppearance.Medium"
             android:textStyle="bold"
             android:text="Arpit Khurana"/>
         <TextView
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/name1"
             android:layout_marginTop="15dp"
-            style="@style/TextAppearance.Small"
+            style="@android:style/TextAppearance.Small"
             android:text="Github"/>
         <TextView
             android:id="@+id/googlePlus1"
@@ -33,7 +33,7 @@
             android:layout_below="@+id/name1"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="15dp"
-            style="@style/TextAppearance.Small"
+            style="@android:style/TextAppearance.Small"
             android:text="Google+"/>
         </RelativeLayout>
     <RelativeLayout
@@ -47,7 +47,7 @@
             android:id="@+id/name2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.Medium"
+            style="@android:style/TextAppearance.Medium"
             android:textStyle="bold"
             android:text="Vishal Nehra"/>
         <TextView
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/name2"
             android:layout_marginTop="15dp"
-            style="@style/TextAppearance.Small"
+            style="@android:style/TextAppearance.Small"
             android:text="Github"/>
         <TextView
             android:id="@+id/googlePlus2"
@@ -66,7 +66,7 @@
             android:layout_below="@+id/name2"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="15dp"
-            style="@style/TextAppearance.Small"
+            style="@android:style/TextAppearance.Small"
             android:text="Google+"/>
     </RelativeLayout>
 

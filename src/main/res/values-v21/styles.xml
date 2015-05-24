@@ -24,6 +24,7 @@
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="popup">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="toolbar_theme">@style/overflow_white1</item>
+
     </style>
     <style name="overflow_white1" parent="Theme.AppCompat.Light.DarkActionBar">
 
@@ -45,7 +46,7 @@
     <style name="overflow_white2" parent="Theme.AppCompat">
 
         <item name="android:textColorSecondary">#ffffff</item>
-        <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
+        <item name="android:textColorPrimary">#ffffff</item>
         <item name="android:actionModeBackground">@color/toolbar_cab</item>
     </style>
 
@@ -53,5 +54,4 @@
         <item name="spinBars">true</item>
         <item name="color">@android:color/white</item>
     </style>
-
 </resources>

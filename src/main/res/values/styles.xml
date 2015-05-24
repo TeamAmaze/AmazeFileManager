@@ -16,84 +16,33 @@
 
 <resources>
 
-    <style name="DarkTheme" parent="android:Theme.Holo">
-
-        <item name="android:actionOverflowButtonStyle">@style/OverflowActionModeDark</item>
-        <item name="android:actionModeBackground">@drawable/action_bar_dark</item>
-        <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_36dp</item>
-    </style>
-    <style name="TextAppearance" />
-    <style name="TextAppearance.Medium">
-        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-        <item name="android:textColor">?android:attr/textColorSecondary</item>
-    </style>
-
-    <style name="TextAppearance.Small">
-        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
-        <item name="android:textColor">?android:attr/textColorTertiary</item>
-    </style>
-    <style name="LightTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <item name="android:actionOverflowButtonStyle">@style/OverflowActionMode</item>
-        <item name="android:actionModeBackground">@drawable/action_bar</item>
-        <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_48dp</item>
-        <!--<item name="android:dropDownListViewStyle">@style/spinner_style</item>-->
-    </style>
-
-    <style name="OverflowActionModeDark" parent="@android:style/Widget.Holo.ActionButton.Overflow">
-        <item name="android:src">@drawable/ic_action_overflow</item>
-    </style>
-    <style name="OverflowActionMode" parent="@android:style/Widget.Holo.ActionButton.Overflow">
-        <item name="android:src">@drawable/ic_more_vert_black_48dp</item>
-    </style>
-    <style name="spinner_style" parent="android:style/Widget.ListView.DropDown">
-        <item name="android:divider">@android:color/transparent</item>
-        <item name="android:dividerHeight">@null</item>
-    </style>
-
-    <style name="secondary_text_appearance">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">#99000000</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
     <!-- appCompat -->
     <!-- light -->
-    <style name="appCompatLight" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="appCompatLight" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowActionModeOverlay">true</item>
         <item name="android:actionModeCopyDrawable">@drawable/ic_content_copy_black_36dp</item>
         <item name="android:actionModeCutDrawable">@drawable/ic_content_cut_black_36dp</item>
         <item name="android:actionModeSelectAllDrawable">@drawable/ic_select_all_black_36dp</item>
         <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_48dp</item>
         <item name="android:actionModePasteDrawable">@drawable/ic_content_paste_black_36dp</item>
-        <item name="windowActionModeOverlay">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="popup">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="toolbar_theme">@style/overflow_white1</item>
-        <item name="ripple_color">@android:color/white</item>
-        <item name="android:actionModeBackground">@color/holo_dark_action_mode</item>
-        <item name="android:actionModeStyle">@style/customActionMdoe</item>
 
     </style>
-    <style name="customActionMdoe" parent="Widget.AppCompat.ActionMode">
-        <item name="android:background">@color/holo_dark_action_mode</item>
-    </style>
-    <style name="overflow_white1" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+    <style name="overflow_white1" parent="Theme.AppCompat.Light.DarkActionBar">
 
         <item name="android:textColorSecondary">#ffffff</item>
-        <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
+        <item name="android:textColorPrimary">#ffffff</item>
+        <item name="android:actionModeBackground">@color/toolbar_cab</item>
     </style>
 
     <!-- dark -->
     <style name="appCompatDark" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:actionModeCopyDrawable">@drawable/ic_content_copy_black_36dp</item>
-        <item name="android:actionModeCutDrawable">@drawable/ic_content_cut_black_36dp</item>
-        <item name="android:actionModeSelectAllDrawable">@drawable/ic_select_all_black_36dp</item>
-        <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_48dp</item>
-        <item name="android:actionModePasteDrawable">@drawable/ic_content_paste_black_36dp</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="popup">@style/Theme.AppCompat</item>
         <item name="toolbar_theme">@style/overflow_white2</item>
-        <item name="ripple_color">@android:color/black</item>
     </style>
     <style name="overflow_white2" parent="Theme.AppCompat">
 
