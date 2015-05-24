@@ -20,11 +20,7 @@
     <!-- light -->
     <style name="appCompatLight" parent="Theme.AppCompat.NoActionBar">
         <item name="windowActionModeOverlay">true</item>
-        <item name="android:actionModeCopyDrawable">@drawable/ic_content_copy_black_36dp</item>
-        <item name="android:actionModeCutDrawable">@drawable/ic_content_cut_black_36dp</item>
-        <item name="android:actionModeSelectAllDrawable">@drawable/ic_select_all_black_36dp</item>
-        <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_48dp</item>
-        <item name="android:actionModePasteDrawable">@drawable/ic_content_paste_black_36dp</item>
+        <item name="actionBarTheme">@style/custom_action_mode</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="popup">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="toolbar_theme">@style/overflow_white1</item>
@@ -34,7 +30,9 @@
 
         <item name="android:textColorSecondary">#ffffff</item>
         <item name="android:textColorPrimary">#ffffff</item>
-        <item name="android:actionModeBackground">@color/toolbar_cab</item>
+    </style>
+    <style name="custom_action_mode" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 
     <!-- dark -->
