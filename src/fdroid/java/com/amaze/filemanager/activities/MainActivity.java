@@ -97,7 +97,7 @@ import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.MediaFile;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootHelper;
-import com.amaze.filemanager.utils.ScrimInsetsFrameLayout;
+import com.amaze.filemanager.utils.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.melnykov.fab.FloatingActionButton;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -106,11 +106,9 @@ import com.stericson.RootTools.RootTools;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Pattern;
 
 
@@ -127,7 +125,7 @@ public class MainActivity extends ActionBarActivity {
     MainActivity mainActivity=this;
     DrawerAdapter adapter;
     IconUtils util;
-    ScrimInsetsFrameLayout mDrawerLinear;
+    ScrimInsetsRelativeLayout mDrawerLinear;
     Shortcuts s;
     public String skin,path="";
     public int theme;
@@ -317,7 +315,7 @@ public class MainActivity extends ActionBarActivity {
 
         skinStatusBar = Color.parseColor(PreferenceUtils.getStatusColor(skin));
 
-        mDrawerLinear = (ScrimInsetsFrameLayout) findViewById(R.id.left_drawer);
+        mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);

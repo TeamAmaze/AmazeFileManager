@@ -98,8 +98,6 @@ public class Futils {
         ArrayList<Uri> uris = new ArrayList<Uri>();
         if (a.size() == 1) {
             String mime = MimeTypes.getMimeType(a.get(0));
-            if (!mime.equals(null) && mime.equals("application/vnd.android.package-archive"))
-                mime = "*/*";
             String filename = a.get(0).getPath();
 
             Intent i = new Intent();
@@ -126,28 +124,31 @@ public class Futils {
                 b = false;
             }
         }
+        if (!mime.equals(null) && mime.equals("application/vnd.android.package-archive"))
+            mime = "*/*";
         if (b) sendIntent.setType(mime);
         else sendIntent.setType("*/*");
 
 
-    sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,uris);
-    try
+        sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,uris);
+        try
 
-    {
-        c.startActivity(sendIntent);
+        {
+            c.startActivity(sendIntent);
+
+        }
+        catch(
+                Exception e
+                )
+
+        {
+            sendIntent.setType("*/*");
+            c.startActivity(sendIntent);
+            e.printStackTrace();
+        }
 
     }
-    catch(
-    Exception e
-    )
 
-    {
-        sendIntent.setType("*/*");
-        c.startActivity(sendIntent);
-        e.printStackTrace();
-    }
-
-}
     public String readableFileSize(long size) {
         if (size <= 0)
             return "0 B";

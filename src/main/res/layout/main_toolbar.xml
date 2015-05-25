@@ -171,7 +171,7 @@
          the container. A solid background is used for contrast
          with the content view.
     -->
-    <com.amaze.filemanager.utils.ScrimInsetsFrameLayout
+    <com.amaze.filemanager.utils.ScrimInsetsRelativeLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         android:layout_width="304dp"
@@ -264,7 +264,7 @@
                 android:gravity="center_vertical" />
         </RelativeLayout>
 
-    </com.amaze.filemanager.utils.ScrimInsetsFrameLayout>
+    </com.amaze.filemanager.utils.ScrimInsetsRelativeLayout>
     <!--
     <ListView
         android:id="@+id/right_drawer"
