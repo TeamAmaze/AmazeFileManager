@@ -17,7 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
     <string name="german_translation_summary" translatable="false">Patrick Mertens, Unpublished</string>
     <string name="italian_translation_summary" translatable="false">Francesco Credidio</string>
     <string name="french_translation_summary" translatable="false">Nicolas PIMENTEL, Primokorn, Renaud ROLLAND</string>

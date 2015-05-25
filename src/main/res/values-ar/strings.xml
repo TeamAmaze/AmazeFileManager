@@ -69,7 +69,6 @@
     <string name="daytime">نهاري</string>
     <string name="deep_orange">برتقالي مشبّع</string>
     <string name="deep_purple">أرجواني مشبّع</string>
-    <string name="define_FloatingActionButton" />
     <string name="delete">حذف</string>
     <string name="deleting">جاري الحذف</string>
     <string name="detailedView">Detailed View</string>
@@ -137,15 +136,6 @@
     <string name="lastModifiedDesc">أخر تعديل ( تنازلي )</string>
     <string name="lastModifiedPref">عرض الملفات المعدلة مؤخرًا</string>
     <string name="lastModifiedSummary">عرض التاريخ والوقت الذي تم فيه تعديل الملف لأخر مرة</string>
-    <string name="library_FloatingActionButton_author">Oleksandr Melnykov</string>
-    <string name="library_FloatingActionButton_authorWebsite">https://github.com/makovkastar/FloatingActionButton</string>
-    <string name="library_FloatingActionButton_isOpenSource">صحيح</string>
-    <string name="library_FloatingActionButton_libraryDescription">Android Google+ like floating action button which reacts on the list view scrolling events. Becomes visible when the list view is scrolled up and invisible when scrolled down.</string>
-    <string name="library_FloatingActionButton_libraryName">FloatingActionButton</string>
-    <string name="library_FloatingActionButton_libraryVersion">1.0.0</string>
-    <string name="library_FloatingActionButton_libraryWebsite">https://github.com/makovkastar/FloatingActionButton</string>
-    <string name="library_FloatingActionButton_licenseId">mit</string>
-    <string name="library_FloatingActionButton_repositoryLink">https://github.com/makovkastar/FloatingActionButton</string>
     <string name="license">تراخيص المصادر المفتوحة</string>
     <string name="light">ساطع</string>
     <string name="light_blue">أزرق فاتح</string>
