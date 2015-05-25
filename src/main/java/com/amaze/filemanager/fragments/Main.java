@@ -635,7 +635,7 @@ public class Main extends android.support.v4.app.Fragment {
                 getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);*/
            // rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(res.getColor(R.color.toolbar_cab));
             ObjectAnimator anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe), "backgroundColor", skin_color, res.getColor(R.color.toolbar_cab));
-            anim.setDuration(200);
+            anim.setDuration(0);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
             if (Build.VERSION.SDK_INT >= 21) {
@@ -994,7 +994,7 @@ public class Main extends android.support.v4.app.Fragment {
             else adapter.toggleChecked(false);
             mainActivity.setPagingEnabled(true);
             ObjectAnimator anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe), "backgroundColor", res.getColor(R.color.toolbar_cab), skin_color);
-            anim.setDuration(50);
+            anim.setDuration(0);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
             if (Build.VERSION.SDK_INT >= 21) {
