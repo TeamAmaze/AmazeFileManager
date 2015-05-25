@@ -96,11 +96,7 @@ public class Futils {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
         ArrayList<Uri> uris = new ArrayList<Uri>();
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
-        boolean b = true;
+         boolean b = true;
         for (File f : a) {
             uris.add(Uri.fromFile(f));
         }
