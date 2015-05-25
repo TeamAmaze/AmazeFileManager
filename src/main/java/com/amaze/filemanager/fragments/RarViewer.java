@@ -285,8 +285,8 @@ public class RarViewer extends Fragment {
             hideOption(R.id.permissions, menu);
             hideOption(R.id.hide, menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
-            ObjectAnimator anim = ObjectAnimator.ofInt(mainActivity.findViewById(R.id.buttonbarframe), "backgroundColor", Color.parseColor(skin), getResources().getColor(R.color.toolbar_cab));
-            anim.setDuration(200);
+            ObjectAnimator anim = ObjectAnimator.ofInt(mainActivity.findViewById(R.id.buttonbarframe), "backgroundColor", Color.parseColor(skin), getResources().getColor(R.color.holo_dark_action_mode));
+            anim.setDuration(0);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
             if (Build.VERSION.SDK_INT >= 21) {
@@ -357,8 +357,8 @@ public class RarViewer extends Fragment {
         public void onDestroyActionMode(ActionMode actionMode) {
             if(zipAdapter!=null)zipAdapter.toggleChecked(false,"");
             selection=false;
-            ObjectAnimator anim = ObjectAnimator.ofInt(mainActivity.findViewById(R.id.buttonbarframe), "backgroundColor", getResources().getColor(R.color.toolbar_cab), Color.parseColor(skin));
-            anim.setDuration(50);
+            ObjectAnimator anim = ObjectAnimator.ofInt(mainActivity.findViewById(R.id.buttonbarframe), "backgroundColor", getResources().getColor(R.color.holo_dark_action_mode), Color.parseColor(skin));
+            anim.setDuration(0);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
             if (Build.VERSION.SDK_INT >= 21) {

@@ -22,6 +22,7 @@
     <style name="appCompatLight" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionModeOverlay">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="actionBarTheme">@style/custom_action_mode_light</item>
         <item name="popup">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="toolbar_theme">@style/overflow_white1</item>
 
@@ -30,7 +31,10 @@
 
         <item name="android:textColorSecondary">#ffffff</item>
         <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
-        <item name="android:actionModeBackground">@color/toolbar_cab</item>
+        <item name="android:actionModeBackground">@color/holo_dark_action_mode</item>
+    </style>
+    <style name="custom_action_mode_light" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 
     <!-- dark -->
@@ -38,7 +42,6 @@
 
         <item name="windowActionModeOverlay">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-        <item name="android:actionModeBackground">@drawable/action_bar_dark</item>
         <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_36dp</item>
         <item name="popup">@style/Theme.AppCompat</item>
         <item name="toolbar_theme">@style/overflow_white2</item>
@@ -47,7 +50,7 @@
 
         <item name="android:textColorSecondary">#ffffff</item>
         <item name="android:textColorPrimary">#ffffff</item>
-        <item name="android:actionModeBackground">@color/toolbar_cab</item>
+        <item name="android:actionModeBackground">@color/holo_dark_action_mode</item>
     </style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
