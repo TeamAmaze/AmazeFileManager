@@ -96,24 +96,6 @@ public class Futils {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
         ArrayList<Uri> uris = new ArrayList<Uri>();
-        if (a.size() == 1) {
-            String mime = MimeTypes.getMimeType(a.get(0));
-            String filename = a.get(0).getPath();
-
-            Intent i = new Intent();
-            i.setAction(Intent.ACTION_SEND);
-            i.setType(mime);
-            i.putExtra(Intent.EXTRA_SUBJECT, filename);
-            i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(a.get(0)));
-            i.putExtra(Intent.EXTRA_STREAM, Uri.parse("content://" + "com.amaze.filemanager" + a.get(0).getAbsolutePath()));
-
-            try {
-                c.startActivity(i);
-                return;
-            } catch (ActivityNotFoundException e) {
-
-            }
-        }
         boolean b = true;
         for (File f : a) {
             uris.add(Uri.fromFile(f));
@@ -526,12 +508,12 @@ public class Futils {
         boolean defaultHandler = isSelfDefault(f, m);
         if (defaultHandler && f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".rar")|| f.getName().toLowerCase().endsWith(".tar")|| f.getName().toLowerCase().endsWith(".tar.gz")) {
             showArchiveDialog(f, m);
-        } else if(defaultHandler && f.getName().toLowerCase().endsWith(".apk")) {
-            showPackageDialog(f,m);
         } else if (defaultHandler && f.getName().toLowerCase().endsWith(".db")) {
             Intent intent = new Intent(m, DbViewer.class);
             intent.putExtra("path", f.getPath());
             m.startActivity(intent);
+        } else if( f.getName().toLowerCase().endsWith(".apk")) {
+            showPackageDialog(f,m);
         } else {
             try {
                 openunknown(f, m, false);
