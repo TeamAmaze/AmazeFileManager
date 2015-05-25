@@ -96,6 +96,10 @@ public class Futils {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
         ArrayList<Uri> uris = new ArrayList<Uri>();
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
         boolean b = true;
         for (File f : a) {
             uris.add(Uri.fromFile(f));
@@ -111,24 +115,14 @@ public class Futils {
         if (b) sendIntent.setType(mime);
         else sendIntent.setType("*/*");
 
-
         sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,uris);
-        try
-
-        {
+        try {
             c.startActivity(sendIntent);
-
-        }
-        catch(
-                Exception e
-                )
-
-        {
+        } catch(Exception e) {
             sendIntent.setType("*/*");
             c.startActivity(sendIntent);
             e.printStackTrace();
         }
-
     }
 
     public String readableFileSize(long size) {
