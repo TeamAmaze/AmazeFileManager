@@ -284,8 +284,8 @@ public class MainActivity extends AppCompatActivity implements
         util = new IconUtils(Sp, this);
         icons = new IconUtils(Sp, this);
 
-        boolean v142 = Sp.getBoolean("v1.4.2", false);
-        if (!v142) {
+        boolean v20 = Sp.getBoolean("v2.0", false);
+        if (!v20) {
             try {
                 utils.deletedirectory(new File("/data/data/com.amaze.filemanager"));
             } catch (Exception e) {
@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
 
             }
-            Sp.edit().putBoolean("v1.4.2", true).apply();
+            Sp.edit().putBoolean("v2.0", true).apply();
         }
 
         pathbar = (LinearLayout) findViewById(R.id.pathbar);

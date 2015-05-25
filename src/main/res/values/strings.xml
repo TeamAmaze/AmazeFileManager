@@ -323,5 +323,8 @@
     <string name="hide_appbar">Hide whole AppBar</string>
     <string name="choose_color">Choose color</string>
     <string name="g_plus_community_title">G+ Community</string>
+    <string name="hide_mode_nothing">App bar remains intact</string>
+    <string name="hide_mode_toolbar">Toolbar hides on scroll</string>
+    <string name="hide_mode_app_bar">App bar hides on scroll</string>
 </resources>
 
