@@ -346,7 +346,9 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
                 if(theme==1)a.theme(Theme.DARK);
                 a.title(R.string.changelog);
-                a.content(Html.fromHtml(getActivity().getString(R.string.changelog_version_5) +
+                a.content(Html.fromHtml(getActivity().getString(R.string.changelog_version_6) +
+                        getActivity().getString(R.string.changelog_change_6) +
+                        getActivity().getString(R.string.changelog_version_5) +
                         getActivity().getString(R.string.changelog_change_5) +
                         getActivity().getString(R.string.changelog_version_4) +
                         getActivity().getString(R.string.changelog_change_4) +
