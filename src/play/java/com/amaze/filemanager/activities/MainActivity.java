@@ -726,7 +726,7 @@ public class MainActivity extends AppCompatActivity implements
     }
     public void updateDrawer(){
         list.clear();
-        for (String file:getStorageDirectories()) {
+        for (String file:val=getStorageDirectories()) {
             File f=new File(file);
             if(!f.isDirectory())
                 list.add(file);

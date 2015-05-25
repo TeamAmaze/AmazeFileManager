@@ -129,7 +129,6 @@ public class Main extends android.support.v4.app.Fragment {
     Main ma = this;
     public HistoryManager history,hidden;
     IconUtils icons;
-    HorizontalScrollView scroll,scroll1;
     public boolean rootMode,showHidden,circularImages,showPermissions,showSize,showLastModified;
     View footerView;
     public LinearLayout pathbar;
@@ -277,9 +276,6 @@ public class Main extends android.support.v4.app.Fragment {
             f=new File(current);
         else f=new File(home);
         mainActivity.initiatebbar();
-
-        scroll = (HorizontalScrollView) rootView.findViewById(R.id.scroll);
-        scroll1 = (HorizontalScrollView) rootView.findViewById(R.id.scroll1);
 
         // use a linear layout manager
         footerView=getActivity().getLayoutInflater().inflate(R.layout.divider, null);
