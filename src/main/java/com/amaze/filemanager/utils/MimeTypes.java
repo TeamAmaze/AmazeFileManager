@@ -141,7 +141,7 @@ public final class MimeTypes {
             return null;
         }
 
-        String type = null;
+        String type = "*/*";
         final String extension = getExtension(file.getName());
 
         if (extension != null && !extension.isEmpty()) {
@@ -153,6 +153,7 @@ public final class MimeTypes {
                 type = MIME_TYPES.get(extensionLowerCase);
             }
         }
+        if(type==null)type="*/*";
         return type;
     }
 

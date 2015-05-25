@@ -96,25 +96,26 @@ public class Futils {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
         ArrayList<Uri> uris = new ArrayList<Uri>();
-         boolean b = true;
+        boolean b = true;
         for (File f : a) {
             uris.add(Uri.fromFile(f));
         }
         String mime = MimeTypes.getMimeType(a.get(0));
-        for (File f : a) {
-            if (!mime.equals(MimeTypes.getMimeType(f))) {
-                b = false;
+        if (a.size() > 1)
+            for (File f : a) {
+                if (!mime.equals(MimeTypes.getMimeType(f))) {
+                    b = false;
+                }
             }
-        }
-        if (!mime.equals(null) && mime.equals("application/vnd.android.package-archive"))
+        if (mime.equals(null) || mime.equals("application/vnd.android.package-archive"))
             mime = "*/*";
         if (b) sendIntent.setType(mime);
         else sendIntent.setType("*/*");
 
-        sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,uris);
+        sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
         try {
             c.startActivity(sendIntent);
-        } catch(Exception e) {
+        } catch (Exception e) {
             sendIntent.setType("*/*");
             c.startActivity(sendIntent);
             e.printStackTrace();
