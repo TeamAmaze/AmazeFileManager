@@ -23,7 +23,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.amaze.filemanager"
     android:versionCode="11"
-    android:versionName="2.0" >
+    android:versionName="2.0">
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER"/>

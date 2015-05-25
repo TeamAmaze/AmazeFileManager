@@ -21,9 +21,7 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.amaze.filemanager"
-    android:versionCode="10"
-    android:versionName="1.5.1" >
+    package="com.amaze.filemanager">
 
     <application
         android:icon="@drawable/ic_launcher"
