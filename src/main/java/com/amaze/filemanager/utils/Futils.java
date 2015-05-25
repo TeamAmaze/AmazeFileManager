@@ -34,6 +34,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +67,8 @@ import java.util.Date;
 import java.util.List;
 
 public class Futils {
+
+    private Toast studioCount;
 
     public Futils() {
     }
@@ -497,14 +500,44 @@ public class Futils {
 
     public void openFile(final File f, final MainActivity m) {
         boolean defaultHandler = isSelfDefault(f, m);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
         if (defaultHandler && f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".rar")|| f.getName().toLowerCase().endsWith(".tar")|| f.getName().toLowerCase().endsWith(".tar.gz")) {
             showArchiveDialog(f, m);
+        } else if(f.getName().toLowerCase().endsWith(".apk")) {
+            showPackageDialog(f, m);
         } else if (defaultHandler && f.getName().toLowerCase().endsWith(".db")) {
             Intent intent = new Intent(m, DbViewer.class);
             intent.putExtra("path", f.getPath());
             m.startActivity(intent);
-        } else if( f.getName().toLowerCase().endsWith(".apk")) {
-            showPackageDialog(f,m);
+        }  else if (Icons.isAudio(f.getPath())) {
+            final int studio_count = sharedPreferences.getInt("studio", 0);
+            Uri uri = Uri.fromFile(f);
+            final Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, "audio/*");
+
+            if (studio_count!=0) {
+                new CountDownTimer(studio_count, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        int sec = (int)millisUntilFinished/1000;
+                        if (studioCount!=null)
+                            studioCount.cancel();
+                        studioCount = Toast.makeText(m, sec + "", Toast.LENGTH_LONG);
+                        studioCount.show();
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        if (studioCount!=null)
+                            studioCount.cancel();
+                        studioCount = Toast.makeText(m, "Opening..", Toast.LENGTH_LONG);
+                        studioCount.show();
+                        m.startActivity(intent);
+                    }
+                }.start();
+            } else
+                m.startActivity(intent);
         } else {
             try {
                 openunknown(f, m, false);

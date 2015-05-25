@@ -62,4 +62,17 @@
                                       - Many UI improvements&lt;br>
                                       - Many Bug fixes&lt;br>
                                       - more...&lt;br>&lt;br></string>
+    <string name="changelog_version_6">&lt;font color="#524ef8">&lt;b>v2.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>May 25, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_6">- Redesigned UI as per material design guidelines&lt;br>
+                                      - New icon and graphics by CookIcons.co&lt;br>
+                                      - Improved animations for smoother experience&lt;br>
+                                      - Added custom primary, accent and icon colors to make UI dynamic&lt;br>
+                                      - Added headers and dividers in the list&lt;br>
+                                      - Drawer can now sync the G+ profile pic and cover pic&lt;br>
+                                      - Light and Dark themes are improved, looks more beautiful now!&lt;br>
+                                      - Removed Bookmark Manager from drawer, long click on Bookmark instead&lt;br>
+                                      - You can now enable toolbar hiding or app bar hiding as you scroll&lt;br>
+                                      - Lots of performance and bug fixes&lt;br>
+                                      - Many translation fixes&lt;br>
+                                      - more...&lt;br>&lt;br></string>
 </resources>
