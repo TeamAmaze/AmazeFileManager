@@ -22,6 +22,7 @@ package com.amaze.filemanager.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -31,7 +32,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
@@ -62,6 +65,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -82,6 +86,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
+import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.BookmarksManager;
 import com.amaze.filemanager.fragments.Main;
@@ -97,6 +102,7 @@ import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.MediaFile;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootHelper;
+import com.amaze.filemanager.utils.RoundedImageView;
 import com.amaze.filemanager.utils.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.melnykov.fab.FloatingActionButton;
@@ -127,7 +133,7 @@ public class MainActivity extends ActionBarActivity {
     IconUtils util;
     ScrimInsetsRelativeLayout mDrawerLinear;
     Shortcuts s;
-    public String skin,path="";
+    public String skin,path="", launchPath;
     public int theme;
     public ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
     Context con = this;
@@ -150,34 +156,61 @@ public class MainActivity extends ActionBarActivity {
     private View drawerHeaderView;
     private RelativeLayout drawerHeaderLayout;
     private int sdk;
-    private FloatingActionButton floatingActionButton;
-    private boolean showButtonOnStart = false;
-    private String fabskin, fabSkinPressed;
+    public FloatingActionButton floatingActionButton;
+    public String fabskin, fabSkinPressed;
     private LinearLayout buttons;
     private HorizontalScrollView scroll, scroll1;
     private CountDownTimer timer;
     private IconUtils icons;
-
+    private TabHandler tabHandler;
+    int hidemode;
     public LinearLayout pathbar;
+    public Animation fabShowAnim, fabHideAnim;
+    public FrameLayout buttonBarFrame;
+    private boolean topfab=false;
 
     /**
      * Called when the activity is first created.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         try {
             super.onCreate(savedInstanceState);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        Sp = PreferenceManager.getDefaultSharedPreferences(this);
+
+        int th = Integer.parseInt(Sp.getString("theme", "0"));
+        theme1 = th==2 ? PreferenceUtils.hourOfDay() : th;
+
+        if (theme1 == 1) {
+            setTheme(R.style.appCompatDark);
+        }
+
         setContentView(R.layout.main_toolbar);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        Sp = PreferenceManager.getDefaultSharedPreferences(this);
+        tabHandler=new TabHandler(this,null,null,1);
 
+        buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
         fabskin = Sp.getString("fab_skin_color", "#e91e63");
         fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
+        hidemode=Sp.getInt("hidemode", 0);
+        topfab = hidemode==0 ? true:false;
+
+        floatingActionButton = !topfab ?
+                (FloatingActionButton) findViewById(R.id.fab) : (FloatingActionButton) findViewById(R.id.fab2);
+        fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
+        fabHideAnim = AnimationUtils.loadAnimation(this, R.anim.fab_hide);
+        floatingActionButton.setAnimation(fabShowAnim);
+        floatingActionButton.animate();
+        floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.setShadow(true);
+        floatingActionButton.setColorNormal(Color.parseColor(fabskin));
+        floatingActionButton.setColorPressed(Color.parseColor(fabSkinPressed));
 
         drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderLayout = (RelativeLayout) drawerHeaderView.findViewById(R.id.drawer_header);
@@ -194,9 +227,6 @@ public class MainActivity extends ActionBarActivity {
         util = new IconUtils(Sp, this);
         icons = new IconUtils(Sp, this);
 
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int th = Integer.parseInt(Sp.getString("theme", "0"));
         boolean v142 = Sp.getBoolean("v1.4.2", false);
         if (!v142) {
             try {
@@ -211,20 +241,7 @@ public class MainActivity extends ActionBarActivity {
             }
             Sp.edit().putBoolean("v1.4.2", true).apply();
         }
-        theme1 = th;
-        if (th == 2) {
-            Sp.edit().putString("uimode", "0").commit();
-            if (hour <= 6 || hour >= 18) {
-                theme1 = 1;
-            } else
-                theme1 = 0;
-        }
 
-        if (theme1 == 1) {
-            setTheme(R.style.appCompatDark);
-        }
-
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         pathbar = (LinearLayout) findViewById(R.id.pathbar);
         buttons = (LinearLayout) findViewById(R.id.buttons);
         scroll = (HorizontalScrollView) findViewById(R.id.scroll);
@@ -232,8 +249,6 @@ public class MainActivity extends ActionBarActivity {
         scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
 
-        if (showButtonOnStart)
-            floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -308,7 +323,6 @@ public class MainActivity extends ActionBarActivity {
         }
 
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#3f51b5");
-
         findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
@@ -347,7 +361,7 @@ public class MainActivity extends ActionBarActivity {
         if (theme1 == 1) {
             settingsbutton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) settingsbutton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
-            ((TextView)settingsbutton.findViewById(R.id.settingtext)).setTextColor(getResources().getColor(R.color.holo_dark_text));
+            ((TextView)settingsbutton.findViewById(R.id.settingtext)).setTextColor(getResources().getColor(android.R.color.white));
         }
         settingsbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -364,10 +378,9 @@ public class MainActivity extends ActionBarActivity {
         });
         View appbutton = findViewById(R.id.appbutton);
         if (theme1 == 1) {
-
             appbutton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_action_view_as_grid);
-            ((TextView)appbutton.findViewById(R.id.apptext)).setTextColor(getResources().getColor(R.color.holo_dark_text));
+            ((TextView)appbutton.findViewById(R.id.apptext)).setTextColor(getResources().getColor(android.R.color.white));
         }
         appbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -378,24 +391,6 @@ public class MainActivity extends ActionBarActivity {
                 pending_fragmentTransaction=transaction2;
                 mDrawerLayout.closeDrawer(mDrawerLinear);
                 select=list.size()+1;
-                adapter.toggleChecked(false);
-            }
-        });
-        View bookbutton=findViewById(R.id.bookbutton);
-        if(theme1==1) {
-            ((ImageView) bookbutton.findViewById(R.id.bookicon)).setImageResource(R.drawable.ic_action_not_important);
-            bookbutton.setBackgroundResource(R.drawable.safr_ripple_black);
-            ((TextView)bookbutton.findViewById(R.id.booktext)).setTextColor(getResources().getColor(R.color.holo_dark_text));
-        }
-        bookbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-                transaction2.replace(R.id.content_frame, new BookmarksManager());
-
-                pending_fragmentTransaction=transaction2;
-                mDrawerLayout.closeDrawer(mDrawerLinear);
-                select=list.size()+2;
                 adapter.toggleChecked(false);
             }
         });
@@ -454,7 +449,8 @@ public class MainActivity extends ActionBarActivity {
             public void onDrawerClosed(View view) {
                 if(pending_fragmentTransaction!=null){
                     pending_fragmentTransaction.commit();
-                    pending_fragmentTransaction=null;}
+                    pending_fragmentTransaction=null;
+                }
                 if(pending_path!=null){
                     try {
                         TabFragment m=getFragment();
@@ -463,7 +459,8 @@ public class MainActivity extends ActionBarActivity {
                         }   else utils.openFile(new File(pending_path),mainActivity);
 
                     } catch (ClassCastException e) {
-                        select=null;goToMain("");
+                        select=null;
+                        goToMain("");
                     }pending_path=null;}
                 supportInvalidateOptionsMenu();
             }
@@ -486,6 +483,7 @@ public class MainActivity extends ActionBarActivity {
                 } else mDrawerLayout.openDrawer(mDrawerLinear);
             }
         });*/
+        //recents header color implementation
         if (Build.VERSION.SDK_INT>=21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap(), Color.parseColor(skin));
             ((Activity)this).setTaskDescription(taskDescription);
@@ -586,33 +584,60 @@ public class MainActivity extends ActionBarActivity {
                     main.goBack();
                 } else if (name.contains("ZipViewer")){
                     ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                    if(zipViewer.mActionMode==null)
-                    {if (zipViewer.cangoBack()) {
+                    if(zipViewer.mActionMode==null) {
+                        if (zipViewer.cangoBack()) {
 
-                        zipViewer.goBack();
-                    } else if(openzip) {openzip=false;finish();}
-                    else{
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom,R.anim.slide_out_bottom);
-                        fragmentTransaction.remove(zipViewer);
-                        fragmentTransaction.commit();
-                        supportInvalidateOptionsMenu();
-                    }}else {zipViewer.mActionMode.finish();}}else if (name.contains("RarViewer")){
+                            zipViewer.goBack();
+                        } else if(openzip) {
+                            openzip=false;
+                            finish();
+                        } else {
+
+                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                            fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
+                            fragmentTransaction.remove(zipViewer);
+                            fragmentTransaction.commit();
+                            supportInvalidateOptionsMenu();
+
+                            fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
+                            floatingActionButton.setAnimation(fabShowAnim);
+                            floatingActionButton.animate();
+                            floatingActionButton.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        zipViewer.mActionMode.finish();
+                    }
+                }else if (name.contains("RarViewer")) {
+
                     RarViewer zipViewer = (RarViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                    if(zipViewer.mActionMode==null)
-                    {if (zipViewer.cangoBack()) {
+                    if(zipViewer.mActionMode==null) {
+                        if (zipViewer.cangoBack()) {
 
-                        zipViewer.elements.clear();
-                        zipViewer.goBack();
-                    } else if(openzip) {openzip=false;finish();}
-                    else {
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
-                        fragmentTransaction.remove(zipViewer);
-                        fragmentTransaction.commit();
-                        supportInvalidateOptionsMenu();
+                            zipViewer.elements.clear();
+                            zipViewer.goBack();
+                        } else if(openzip) {
 
-                    }}else {zipViewer.mActionMode.finish();}}else if(name.contains("Process")){finish();}else goToMain("");
+                            openzip=false;finish();
+                        } else {
+
+                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                            fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
+                            fragmentTransaction.remove(zipViewer);
+                            fragmentTransaction.commit();
+                            supportInvalidateOptionsMenu();
+
+                            fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
+                            floatingActionButton.setAnimation(fabShowAnim);
+                            floatingActionButton.animate();
+                            floatingActionButton.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        zipViewer.mActionMode.finish();
+                    }
+                } else if(name.contains("Process")) {
+                    finish();
+                } else
+                    goToMain("");
             } catch (ClassCastException e) {
                 goToMain("");
             }
@@ -678,13 +703,19 @@ public class MainActivity extends ActionBarActivity {
         transaction.addToBackStack("tabt" + 1);
         transaction.commit();
         toolbar.setTitle(null);
-        tabsSpinner.setVisibility(View.VISIBLE);
-        if(openzip && zippath!=null)
-        {if(zippath.endsWith(".zip") || zippath.endsWith(".apk"))openZip(zippath);else{openRar(zippath);}zippath=null;}
 
+        fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
+        tabsSpinner.setVisibility(View.VISIBLE);
+        floatingActionButton.setAnimation(fabShowAnim);
+        floatingActionButton.animate();
+        floatingActionButton.setVisibility(View.VISIBLE);
+        if(openzip && zippath!=null) {
+            if(zippath.endsWith(".zip") || zippath.endsWith(".apk"))openZip(zippath);else{openRar(zippath);}zippath=null;
+        }
     }
-    public void selectItem(final int i) {
-        if (select == null || select >= list.size() -2) {
+    public void selectItem(final int i, boolean removeBookmark) {
+        if (select == null || select >= list.size() -2 && !removeBookmark) {
+
             TabFragment tabFragment=new TabFragment();
             Bundle a = new Bundle();
             a.putString("path", list.get(i));
@@ -695,17 +726,28 @@ public class MainActivity extends ActionBarActivity {
 
             transaction.addToBackStack("tabt1" + 1);
             pending_fragmentTransaction=transaction;
+            select = i;
+            adapter.toggleChecked(select);
+            mDrawerLayout.closeDrawer(mDrawerLinear);
+        }  else if (removeBookmark) {
 
+            //adapter.notifyDataSetChanged();
+            try {
+                s.removeS(new File(list.get(i)), MainActivity.this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            list.remove(i);
+        } else {
 
-        }else{
             pending_path=list.get(i);
-
+            select = i;
+            adapter.toggleChecked(select);
+            mDrawerLayout.closeDrawer(mDrawerLinear);
         }
-        select = i;
+
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
-        adapter.toggleChecked(select);
-        mDrawerLayout.closeDrawer(mDrawerLinear);
     }
 
     @Override
@@ -728,10 +770,12 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         if(f.contains("TabFragment")) {
+
             try {
-                TabFragment tabFragment=(TabFragment)fragment;
-                updatePath(((Main)tabFragment.getTab()).current);
-            } catch (Exception e) {}
+                TabFragment tabFragment = (TabFragment) fragment;
+                updatePath(((Main) tabFragment.getTab()).current, true);
+            } catch (Exception e) {
+            }
             tabsSpinner.setVisibility(View.VISIBLE);
             getSupportActionBar().setTitle("");
             if (aBoolean) {
@@ -750,10 +794,9 @@ public class MainActivity extends ActionBarActivity {
             menu.findItem(R.id.view).setVisible(true);
             invalidatePasteButton(menu.findItem(R.id.paste));
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
-            findViewById(R.id.fab).setVisibility(View.VISIBLE);
-        }else if(f.contains("AppsList") || f.contains("BookmarksManager") || f.contains("ProcessViewer")){    tabsSpinner.setVisibility(View.GONE);
+        } else if(f.contains("AppsList") || f.contains("ProcessViewer")) {
+            tabsSpinner.setVisibility(View.GONE);
             findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
-            findViewById(R.id.fab).setVisibility(View.GONE);
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
@@ -761,17 +804,16 @@ public class MainActivity extends ActionBarActivity {
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
-        }else if(f.contains("ZipViewer") || f.contains("RarViewer")){
+        } else if(f.contains("ZipViewer") || f.contains("RarViewer")) {
             tabsSpinner.setVisibility(View.GONE);
-            findViewById(R.id.fab).setVisibility(View.GONE);
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
             menu.findItem(R.id.item10).setVisible(false);
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
-            menu.findItem(R.id.paste).setVisible(false);}
-
+            menu.findItem(R.id.paste).setVisible(false);
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -885,8 +927,8 @@ public class MainActivity extends ActionBarActivity {
                 if(theme1==1)ba1.theme(Theme.DARK);
                 ba1.positiveText(R.string.create);
                 ba1.negativeText(R.string.cancel);
-                ba1.positiveColor(Color.parseColor(skin));
-                ba1.negativeColor(Color.parseColor(skin));
+                ba1.positiveColor(Color.parseColor(fabskin));
+                ba1.negativeColor(Color.parseColor(fabskin));
                 ba1.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -933,8 +975,8 @@ public class MainActivity extends ActionBarActivity {
                 if(theme1==1)ba2.theme(Theme.DARK);
                 ba2.negativeText(R.string.cancel);
                 ba2.positiveText(R.string.create);
-                ba2.positiveColor(Color.parseColor(skin));
-                ba2.negativeColor(Color.parseColor(skin));
+                ba2.positiveColor(Color.parseColor(fabskin));
+                ba2.negativeColor(Color.parseColor(fabskin));
                 ba2.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -969,19 +1011,30 @@ public class MainActivity extends ActionBarActivity {
     public void search() {
         final Main ma=(Main)((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
         final String fpath = ma.current;
-        final MainActivity mainActivity=this;
-        //Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.searchpath) + fpath, Toast.LENGTH_LONG).show();
         final MaterialDialog.Builder a = new MaterialDialog.Builder(this);
         a.title(R.string.search);
         View v =getLayoutInflater().inflate(R.layout.dialog, null);
         final EditText e = (EditText) v.findViewById(R.id.newname);
         e.setHint(utils.getString(this, R.string.enterfile));
         a.customView(v, true);
+        e.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                e.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.showSoftInput(e, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                });
+            }
+        });
+        e.requestFocus();
         if(theme1==1)a.theme(Theme.DARK);
         a.negativeText(R.string.cancel);
         a.positiveText(R.string.search);
-        a.positiveColor(Color.parseColor(skin));
-        a.negativeColor(Color.parseColor(skin));
+        a.positiveColor(Color.parseColor(fabskin));
+        a.negativeColor(Color.parseColor(fabskin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -1010,7 +1063,7 @@ public class MainActivity extends ActionBarActivity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
+            selectItem(position, false);
 
         }
     }
@@ -1033,9 +1086,6 @@ public class MainActivity extends ActionBarActivity {
     public void onResume() {
         super.onResume();
 
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
-        floatingActionButton.setColorNormal(Color.parseColor(fabskin));
-        floatingActionButton.setColorPressed(Color.parseColor(fabSkinPressed));
         LocalBroadcastManager.getInstance(this).registerReceiver(SEARCHRECIEVER, new IntentFilter("searchresults"));
         LocalBroadcastManager.getInstance(this).registerReceiver(LOADSEARCHRECIEVER, new IntentFilter("loadsearchresults"));
     }
@@ -1216,9 +1266,9 @@ public class MainActivity extends ActionBarActivity {
                 x.positiveText(R.string.skip);
                 x.negativeText(R.string.overwrite);
                 x.neutralText(R.string.cancel);
-                x.positiveColor(Color.parseColor(skin));
-                x.negativeColor(Color.parseColor(skin));
-                x.neutralColor(Color.parseColor(skin));
+                x.positiveColor(Color.parseColor(fabskin));
+                x.negativeColor(Color.parseColor(fabskin));
+                x.neutralColor(Color.parseColor(fabskin));
                 x.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -1296,7 +1346,7 @@ public class MainActivity extends ActionBarActivity {
     }
     public void openRar(String path) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_in_top,R.anim.slide_in_bottom);
+        fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
         Fragment zipFragment = new RarViewer();
         Bundle bundle = new Bundle();
         bundle.putString("path", path);
@@ -1367,7 +1417,8 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    public void bbar(String text, final Main main) {
+    public void bbar(final Main main) {
+        final String text = main.current;
         try {
             buttons.removeAllViews();
             buttons.setMinimumHeight(pathbar.getHeight());
@@ -1466,14 +1517,12 @@ public class MainActivity extends ActionBarActivity {
             textView.setText(getResources().getString(R.string.used)+" " + used +" "+ getResources().getString(R.string.free)+" " + free);
 
             TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
-            bapath.setAllCaps(true);
             bapath.setText(f.getPath());
             scroll.post(new Runnable() {
                 @Override
                 public void run() {
-                    scroll.fullScroll(View.FOCUS_RIGHT);
-                    scroll1.fullScroll(View.FOCUS_RIGHT);
-                }
+                    sendScroll(scroll);
+                    sendScroll(scroll1);}
             });
 
             if(buttons.getVisibility()==View.VISIBLE){timer.cancel();timer.start();}
@@ -1482,17 +1531,36 @@ public class MainActivity extends ActionBarActivity {
             System.out.println("button view not available");
         }
     }
-
-    public void updatePath(final String newPath, final String oldPath){
-        File f=new File(newPath);
-        String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
-        String free = utils.readableFileSize(f.getFreeSpace());
-        TextView textView = (TextView)pathbar.findViewById(R.id.pathname);
-        textView.setText(getResources().getString(R.string.used)+" " + used +" "+ getResources().getString(R.string.free)+" " + free);
-
-        final TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
+    private void sendScroll(final HorizontalScrollView scrollView){
+        final Handler handler = new Handler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {Thread.sleep(100);} catch (InterruptedException e) {}
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollView.fullScroll(View.FOCUS_RIGHT);
+                    }
+                });
+            }
+        }).start();
+    }
+    public void updatePath(final String newPath,boolean calcsize){
+        File f= null;
+        try {
+            f = new File(newPath);
+        } catch (Exception e) {
+            return;
+        }   TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
+        textView.setText("");
+        if(calcsize) {
+            String used = utils.readableFileSize(f.getTotalSpace() - f.getFreeSpace());
+            String free = utils.readableFileSize(f.getFreeSpace());
+            textView.setText(getResources().getString(R.string.used) + " " + used + " " + getResources().getString(R.string.free) + " " + free);
+        }final TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
         final TextView animPath = (TextView) pathbar.findViewById(R.id.fullpath_anim);
-
+        final String oldPath=bapath.getText().toString();
         // implement animation while setting text
         final StringBuilder stringBuilder = new StringBuilder();
         if (newPath.length() >= oldPath.length()) {
@@ -1519,7 +1587,6 @@ public class MainActivity extends ActionBarActivity {
                     scroll.post(new Runnable() {
                         @Override
                         public void run() {
-                            scroll.fullScroll(View.FOCUS_RIGHT);
                             scroll1.fullScroll(View.FOCUS_RIGHT);
                         }
                     });
@@ -1541,7 +1608,6 @@ public class MainActivity extends ActionBarActivity {
                     scroll.post(new Runnable() {
                         @Override
                         public void run() {
-                            scroll.fullScroll(View.FOCUS_RIGHT);
                             scroll1.fullScroll(View.FOCUS_RIGHT);
                         }
                     });
@@ -1557,7 +1623,6 @@ public class MainActivity extends ActionBarActivity {
                     scroll.post(new Runnable() {
                         @Override
                         public void run() {
-                            scroll.fullScroll(View.FOCUS_LEFT);
                             scroll1.fullScroll(View.FOCUS_LEFT);
                         }
                     });
@@ -1566,14 +1631,14 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void initiatebbar(final String current, final Main main) {
+    public void initiatebbar() {
         LinearLayout pathbar = (LinearLayout) findViewById(R.id.pathbar);
         TextView textView = (TextView) findViewById(R.id.fullpath);
 
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bbar(current, main);
+                bbar(((Main)getFragment().getTab()));
                 crossfade();
                 timer.cancel();
                 timer.start();
@@ -1582,7 +1647,7 @@ public class MainActivity extends ActionBarActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bbar(current, main);
+                bbar(((Main)getFragment().getTab()));
                 crossfade();
                 timer.cancel();
                 timer.start();
