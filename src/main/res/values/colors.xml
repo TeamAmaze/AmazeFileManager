@@ -31,6 +31,7 @@
     <color name="holo_dark_text">#ff777777</color>
     <color name="holo_dark_action_mode">#212121</color>
     <color name="holo_dark_selection">#424242</color>
+    <color name="divider">#e0e0e0</color>
 
     <!-- primary color palatte -->
     <color name="primary_red">#F44336</color>

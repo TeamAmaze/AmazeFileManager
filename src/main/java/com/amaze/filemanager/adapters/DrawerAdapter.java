@@ -132,7 +132,6 @@ public class DrawerAdapter extends ArrayAdapter<String> {
             public boolean onLongClick(View v) {
 
                 // not to remove the first bookmark (storage)
-                Log.d("tags", m.val.size() + "");
                 if (position>=m.getStorageDirectories().size()) {
 
                     if (m.theme1 == 0)
