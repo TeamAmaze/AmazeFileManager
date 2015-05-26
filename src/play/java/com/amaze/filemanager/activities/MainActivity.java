@@ -786,6 +786,13 @@ public class MainActivity extends AppCompatActivity implements
             select = i;
             adapter.toggleChecked(select);
             mDrawerLayout.closeDrawer(mDrawerLinear);
+
+            fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
+            tabsSpinner.setVisibility(View.VISIBLE);
+            floatingActionButton.setAnimation(fabShowAnim);
+            floatingActionButton.animate();
+            floatingActionButton.setVisibility(View.VISIBLE);
+
         }  else if (removeBookmark) {
 
             //adapter.notifyDataSetChanged();
@@ -1511,56 +1518,62 @@ public class MainActivity extends AppCompatActivity implements
             String accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
 
             Person.Image personImage = currentPerson.getImage();
-            String imgUrl = personImage.getUrl();
-
-            // getting full size image
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(imgUrl);
-            stringBuilder.delete(imgUrl.length() - 6, imgUrl.length());
-            Log.d("G+", stringBuilder.toString());
 
             Person.Cover.CoverPhoto personCover = currentPerson.getCover().getCoverPhoto();
 
-            mGoogleName.setText(currentPerson.getDisplayName());
-            mGoogleId.setText(accountName);
+            if (personCover != null && personImage != null) {
 
-            // setting cover pic
-            ImageLoader.getInstance().loadImage(personCover.getUrl(), displayImageOptions, new SimpleImageLoadingListener() {
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    super.onLoadingComplete(imageUri, view, loadedImage);
-                    if (sdk >= 16) {
+                String imgUrl = personImage.getUrl();
 
-                        drawerHeaderLayout.setBackground(new BitmapDrawable(getResources(), loadedImage));
-                    } else {
-                        drawerHeaderLayout.setBackgroundDrawable(new BitmapDrawable(getResources(), loadedImage));
+                // getting full size image
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(imgUrl);
+                stringBuilder.delete(imgUrl.length() - 6, imgUrl.length());
+                Log.d("G+", stringBuilder.toString());
+                mGoogleName.setText(currentPerson.getDisplayName());
+                mGoogleId.setText(accountName);
+
+                // setting cover pic
+                ImageLoader.getInstance().loadImage(personCover.getUrl(), displayImageOptions, new SimpleImageLoadingListener() {
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        super.onLoadingComplete(imageUri, view, loadedImage);
+                        if (sdk >= 16) {
+
+                            drawerHeaderLayout.setBackground(new BitmapDrawable(getResources(), loadedImage));
+                        } else {
+                            drawerHeaderLayout.setBackgroundDrawable(new BitmapDrawable(getResources(), loadedImage));
+                        }
                     }
-                }
 
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    super.onLoadingFailed(imageUri, view, failReason);
-                    drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
-                }
-            });
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                        super.onLoadingFailed(imageUri, view, failReason);
+                        drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
+                    }
+                });
 
-            // setting profile pic
-            ImageLoader.getInstance().loadImage(stringBuilder.toString(), displayImageOptions, new SimpleImageLoadingListener() {
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                // setting profile pic
+                ImageLoader.getInstance().loadImage(stringBuilder.toString(), displayImageOptions, new SimpleImageLoadingListener() {
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 
-                    super.onLoadingComplete(imageUri, view, loadedImage);
+                        super.onLoadingComplete(imageUri, view, loadedImage);
 
-                    drawerProfilePic.setImageBitmap(loadedImage);
-                    drawerProfilePic.setVisibility(View.VISIBLE);
-                }
+                        drawerProfilePic.setImageBitmap(loadedImage);
+                        drawerProfilePic.setVisibility(View.VISIBLE);
+                    }
 
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    super.onLoadingFailed(imageUri, view, failReason);
-                    drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
-                }
-            });
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                        super.onLoadingFailed(imageUri, view, failReason);
+                        drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
+                    }
+                });
+            } else {
+                Toast.makeText(this, getResources().getText(R.string.no_cover_photo), Toast.LENGTH_SHORT).show();
+                drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
+            }
         }
     }
 

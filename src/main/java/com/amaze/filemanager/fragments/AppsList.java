@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.View;
 import android.view.ViewGroup;
@@ -156,7 +157,7 @@ public class AppsList extends ListFragment {
                                 Intent intent = new Intent(getActivity(), CopyService.class);
                                 //Toast.makeText(getActivity(), f.getParent(), Toast.LENGTH_LONG).show();
 
-                                if (Build.VERSION.SDK_INT == 21) {
+                                if (Build.VERSION.SDK_INT >= 21) {
                                     a.add(f.getParent());
                                 } else {
                                     a.add(f.getPath());

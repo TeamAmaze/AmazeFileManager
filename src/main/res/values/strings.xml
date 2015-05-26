@@ -326,5 +326,6 @@
     <string name="hide_mode_nothing">App bar remains intact</string>
     <string name="hide_mode_toolbar">Toolbar hides on scroll</string>
     <string name="hide_mode_app_bar">App bar hides on scroll</string>
+    <string name="no_cover_photo">No cover photo</string>
 </resources>
 

@@ -730,6 +730,13 @@ public class MainActivity extends ActionBarActivity {
             select = i;
             adapter.toggleChecked(select);
             mDrawerLayout.closeDrawer(mDrawerLinear);
+
+            fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
+            tabsSpinner.setVisibility(View.VISIBLE);
+            floatingActionButton.setAnimation(fabShowAnim);
+            floatingActionButton.animate();
+            floatingActionButton.setVisibility(View.VISIBLE);
+
         }  else if (removeBookmark) {
 
             //adapter.notifyDataSetChanged();
