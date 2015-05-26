@@ -128,6 +128,7 @@ public class MainActivity extends ActionBarActivity {
     SharedPreferences Sp;
     private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
     public List<String> val;
+    ArrayList<String> books;
     MainActivity mainActivity=this;
     DrawerAdapter adapter;
     IconUtils util;
@@ -152,7 +153,7 @@ public class MainActivity extends ActionBarActivity {
     FragmentTransaction pending_fragmentTransaction;
     String pending_path;
     boolean openprocesses=false;
-    public int booksize=0;
+    public int storage_count=0;
     private View drawerHeaderView;
     private RelativeLayout drawerHeaderLayout;
     private int sdk;
@@ -221,20 +222,6 @@ public class MainActivity extends ActionBarActivity {
         path = getIntent().getStringExtra("path");
         openprocesses=getIntent().getBooleanExtra("openprocesses", false);
         restart = getIntent().getBooleanExtra("restart", false);
-        val = getStorageDirectories();
-        try {
-            for(File file: s.readS()){
-                val.add(file.getPath());
-            }
-        } catch (Exception e) {
-            try {
-                s.makeS();booksize=0;
-                for(File file: s.readS()){
-                    val.add(file.getPath());booksize++;
-                }} catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        }
         rootmode = Sp.getBoolean("rootmode", false);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         util = new IconUtils(Sp, this);
@@ -409,16 +396,7 @@ public class MainActivity extends ActionBarActivity {
         });
 
         mDrawerList.addHeaderView(drawerHeaderView);
-        list = new ArrayList<String>();
-        for (int i = 0; i < val.size(); i++) {
-            File file = new File(val.get(i));
-            if(!file.isDirectory())
-                list.add(val.get(i));
-            else if(file.canExecute())
-                list.add(val.get(i));
-        }
-        adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
-        mDrawerList.setAdapter(adapter);
+        updateDrawer();
         if (savedInstanceState == null) {
 
             if (openprocesses) {
@@ -669,16 +647,35 @@ public class MainActivity extends ActionBarActivity {
         }
     }
     public void updateDrawer(){
-        list.clear();
+        list=new ArrayList<>();
+        val=getStorageDirectories();
+        books=new ArrayList<>();
+        storage_count=0;
         for (String file:val) {
             File f=new File(file);
-            if(!f.isDirectory())
+            if(!f.isDirectory()){
+                storage_count++;
+                list.add(file);}
+            else if(f.canExecute()){
                 list.add(file);
-            else if(f.canExecute())
-                list.add(file);
+                storage_count++;
+            }
         }
-        /*list.add(utils.getString(this, R.string.apps));
-        list.add(utils.getString(this, R.string.bookmanag));*/
+        try {
+            for(File file: s.readS()){
+                books.add(file.getPath());
+                list.add(file.getPath());
+            }
+        } catch (Exception e) {
+            try {
+                s.makeS();
+                for(File file: s.readS()){
+                    books.add(file.getPath());
+                    list.add(file.getPath());
+                }} catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
     }
@@ -1398,7 +1395,9 @@ public class MainActivity extends ActionBarActivity {
                     String a=intent.getData().getPath();
                     if(a!=null && a.trim().length()!=0 && new File(a).exists() && new File(a).canExecute()){
                         list.add(0,a);
-                        adapter.notifyDataSetChanged();
+
+                        adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
+                        mDrawerList.setAdapter(adapter);
                     }else {refreshDrawer();
                     }
                 }else if(intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)){
@@ -1411,14 +1410,20 @@ public class MainActivity extends ActionBarActivity {
     public void refreshDrawer(){
         val=getStorageDirectories();
         list = new ArrayList<String>();
+        storage_count=0;
         for (int i = 0; i < val.size(); i++) {
             File file = new File(val.get(i));
-            if(!file.isDirectory())
+            if(!file.isDirectory()){
                 list.add(val.get(i));
-            else if(file.canExecute())
+                storage_count++;}
+            else if(file.canExecute()) {
                 list.add(val.get(i));
+                storage_count++;
+            }
         }
-
+        for(String a:books){
+            list.add(a);
+        }
 
         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
