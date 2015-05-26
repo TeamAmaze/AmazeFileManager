@@ -89,7 +89,7 @@ public class ExternalStoragePermissionGrant {
         return null;
     }
     public  String getStorageDirectories(MainActivity m,String path) {
-        for(int i=0;i<m.list.size()-m.booksize;i++){
+        for(int i=0;i<m.storage_count;i++){
             if(path.contains(m.list.get(i)))return m.list.get(i);
 
 

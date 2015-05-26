@@ -132,7 +132,7 @@ public class DrawerAdapter extends ArrayAdapter<String> {
             public boolean onLongClick(View v) {
 
                 // not to remove the first bookmark (storage)
-                if (position>=m.getStorageDirectories().size()) {
+                if (position>=m.storage_count) {
 
                     if (m.theme1 == 0)
                         imageView.setImageResource(R.drawable.ic_action_cancel_light);
