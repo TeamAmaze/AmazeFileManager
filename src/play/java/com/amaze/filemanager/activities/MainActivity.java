@@ -735,7 +735,6 @@ public class MainActivity extends AppCompatActivity implements
                 e1.printStackTrace();
             }
         }
-        Toast.makeText(this,books.size()+"\n"+list.size(),Toast.LENGTH_SHORT).show();
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
     }

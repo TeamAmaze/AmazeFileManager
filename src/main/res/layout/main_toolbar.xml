@@ -195,7 +195,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/holo_dark_text"
+            android:background="@color/divider"
             android:layout_above="@+id/appbutton"
             android:id="@+id/divider1"></View>
         <RelativeLayout
