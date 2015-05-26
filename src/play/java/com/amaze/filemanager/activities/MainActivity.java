@@ -278,7 +278,22 @@ public class MainActivity extends AppCompatActivity implements
         path = getIntent().getStringExtra("path");
         openprocesses=getIntent().getBooleanExtra("openprocesses", false);
         restart = getIntent().getBooleanExtra("restart", false);
+
         val = getStorageDirectories();
+        try {
+            for(File file: s.readS()){
+                val.add(file.getPath());
+            }
+        } catch (Exception e) {
+            try {
+                s.makeS();booksize=0;
+                for(File file: s.readS()){
+                    val.add(file.getPath());booksize++;
+                }} catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
+
         rootmode = Sp.getBoolean("rootmode", false);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         util = new IconUtils(Sp, this);
@@ -608,19 +623,7 @@ public class MainActivity extends AppCompatActivity implements
             rv.add("/");
         File usb=getUsbDrive();
         if(usb!=null && !rv.contains(usb.getPath()))rv.add(usb.getPath());
-        try {
-            for(File file: s.readS()){
-                rv.add(file.getPath());
-            }
-        } catch (Exception e) {
-            try {
-                s.makeS();booksize=0;
-                for(File file: s.readS()){
-                    rv.add(file.getPath());booksize++;
-                }} catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        }
+
         return rv;
     }
 
@@ -726,7 +729,8 @@ public class MainActivity extends AppCompatActivity implements
     }
     public void updateDrawer(){
         list.clear();
-        for (String file:val=getStorageDirectories()) {
+
+        for (String file:val) {
             File f=new File(file);
             if(!f.isDirectory())
                 list.add(file);
