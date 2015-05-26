@@ -154,7 +154,7 @@
     <string name="teal">짙은 초록</string>
     <string name="green">초록</string>
     <string name="light_green">옅은 초록</string>
-    <string name="amber">옅은 주황</string>
+    <string name="amber">노랑</string>
     <string name="orange">주황</string>
     <string name="deep_orange">짙은 주황</string>
     <string name="brown">고동</string>
@@ -308,4 +308,23 @@
     <string name="gplus_pic_title">G+ API</string>
     <string name="gplus_pic_summary">G+ 커버 사진을 보여줍니다</string>
     <string name="icon_credits">Graphics by &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
+
+    <string name="color_title">색상</string>
+    <string name="color_summary">다양한 항목에 색상을 입힙니다</string>
+    <string name="primary_color_title">대표 색상</string>
+    <string name="primary_color_summary">가장 큰 항목의 색상을 설정합니다</string>
+    <string name="accent_color_title">강조 색상</string>
+    <string name="accent_color_summary">FAB과 기타 작은 항목의 색상을 설정합니다</string>
+    <string name="icon_color_title">아이콘 색상</string>
+    <string name="icon_color_summary">아이콘의 색상을 설정합니다</string>
+    <string name="hide_mode_title">숨김 모드</string>
+    <string name="none">사용 안 함</string>
+    <string name="hide_toolbar">툴바 숨김</string>
+    <string name="hide_appbar">앱바 숨김</string>
+    <string name="choose_color">색상을 선택해 주세요</string>
+    <string name="g_plus_community_title">구글 플러스 커뮤니티</string>
+    <string name="hide_mode_nothing">앱바가 숨겨지지 않습니다</string>
+    <string name="hide_mode_toolbar">스크롤 시 툴바가 숨겨집니다</string>
+    <string name="hide_mode_app_bar">스크롤 시 앱바가 숨겨집니다</string>
+    <string name="no_cover_photo">커버 사진이 없습니다</string>
 </resources>
