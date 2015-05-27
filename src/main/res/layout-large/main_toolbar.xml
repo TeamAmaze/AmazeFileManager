@@ -150,7 +150,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="106dp"
+            android:layout_marginTop="116dp"
             android:visibility="gone"
             android:src="@drawable/ic_action_new" />
 
@@ -174,7 +174,7 @@
         android:background="@color/divider"/>
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
-        android:layout_width="306dp"
+        android:layout_width="@dimen/drawer_width"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
         <!--
