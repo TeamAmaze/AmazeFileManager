@@ -453,8 +453,10 @@ public class MainActivity extends AppCompatActivity implements
 
                 pending_fragmentTransaction = transaction2;
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
+                else onDrawerClosed();
                 select = list.size() + 1;
                 adapter.toggleChecked(false);
+
             }
         });
 
@@ -482,7 +484,6 @@ public class MainActivity extends AppCompatActivity implements
         if (theme1 == 1) {
             mDrawerList.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         }
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerList.setDivider(null);
         if (select == 0) {
 
@@ -502,22 +503,7 @@ public class MainActivity extends AppCompatActivity implements
                 R.string.drawer_close  /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
-                if(pending_fragmentTransaction!=null){
-                    pending_fragmentTransaction.commit();
-                    pending_fragmentTransaction=null;
-                }
-                if(pending_path!=null){
-                    try {
-                        TabFragment m=getFragment();
-                        if(new File(pending_path).isDirectory()) {
-                            ((Main) m.getTab()).loadlist(new File(pending_path), false);
-                        }   else utils.openFile(new File(pending_path),mainActivity);
-
-                    } catch (ClassCastException e) {
-                        select=null;
-                        goToMain("");
-                    }pending_path=null;}
-                supportInvalidateOptionsMenu();
+              mainActivity.onDrawerClosed();
             }
 
             public void onDrawerOpened(View drawerView) {
@@ -613,9 +599,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
-            if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
-        }else {
+        if (!isDrawerLocked){if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
+            mDrawerLayout.closeDrawer(mDrawerLinear);
+        }}else {
             try {
 
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
@@ -715,28 +701,36 @@ public class MainActivity extends AppCompatActivity implements
         val=getStorageDirectories();
         books=new ArrayList<>();
         storage_count=0;
-        for (String file:val) {
+        for (String file:val)
+        {
             File f=new File(file);
-            if(!f.isDirectory()){
+            if(!f.isDirectory())
+            {
                 storage_count++;
-                list.add(file);}
-            else if(f.canExecute()){
+                list.add(file);
+            }
+            else if(f.canExecute())
+            {
                 list.add(file);
                 storage_count++;
             }
         }
         try {
-            for(File file: s.readS()){
+            for(File file: s.readS())
+            {
                 books.add(file.getPath());
                 list.add(file.getPath());
             }
         } catch (Exception e) {
             try {
                 s.makeS();
-                for(File file: s.readS()){
+                for(File file: s.readS())
+                {
                     books.add(file.getPath());
                     list.add(file.getPath());
-                }} catch (Exception e1) {
+                }
+                } catch (Exception e1)
+            {
                 e1.printStackTrace();
             }
         }
@@ -776,6 +770,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
     public void selectItem(final int i, boolean removeBookmark) {
+        System.out.print("Selectitem");
         if (select == null || select >= list.size() -2 && !removeBookmark) {
 
             TabFragment tabFragment=new TabFragment();
@@ -791,7 +786,7 @@ public class MainActivity extends AppCompatActivity implements
             select = i;
             adapter.toggleChecked(select);
             if(!isDrawerLocked)mDrawerLayout.closeDrawer(mDrawerLinear);
-
+            else onDrawerClosed();
             fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
             tabsSpinner.setVisibility(View.VISIBLE);
             floatingActionButton.setAnimation(fabShowAnim);
@@ -813,10 +808,12 @@ public class MainActivity extends AppCompatActivity implements
             select = i;
             adapter.toggleChecked(select);
             if(!isDrawerLocked)mDrawerLayout.closeDrawer(mDrawerLinear);
+            else onDrawerClosed();
         }
 
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
+
     }
 
     @Override
@@ -1129,13 +1126,7 @@ public class MainActivity extends AppCompatActivity implements
        if(mDrawerToggle!=null) mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position, false);
 
-        }
-    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -1955,5 +1946,23 @@ public class MainActivity extends AppCompatActivity implements
         } catch (Exception e) {
             return false;
         }
+    }
+    private void onDrawerClosed(){
+        if(pending_fragmentTransaction!=null){
+            pending_fragmentTransaction.commit();
+            pending_fragmentTransaction=null;
+        }
+        if(pending_path!=null){
+            try {
+                TabFragment m=getFragment();
+                if(new File(pending_path).isDirectory()) {
+                    ((Main) m.getTab()).loadlist(new File(pending_path), false);
+                }   else utils.openFile(new File(pending_path),mainActivity);
+
+            } catch (ClassCastException e) {
+                select=null;
+                goToMain("");
+            }pending_path=null;}
+        supportInvalidateOptionsMenu();
     }
 }

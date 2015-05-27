@@ -20,8 +20,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/second"
     android:layout_width="fill_parent"
-    android:layout_height="48dp"
-    android:clickable="true">
+    android:layout_height="48dp">
 
     <ImageView
         android:id="@+id/icon"
