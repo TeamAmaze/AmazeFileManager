@@ -40,7 +40,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     ColorMatrixColorFilter colorMatrixColorFilter;
     LayoutInflater mInflater;
     int filetype=-1;
-    int item_count;
+    int item_count,column;
     public Recycleradapter(Main m,ArrayList<Layoutelements> items,Context context){
         this.main=m;
         this.items=items;
@@ -51,7 +51,9 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         colorMatrixColorFilter=main.colorMatrixColorFilter;
         mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        item_count=items.size()+(main.islist?2:3);
+
+        column=main.columns;
+        item_count=items.size()+(main.islist?2:column);
     }
     public void toggleChecked(int position) {
         if (myChecked.get(position)) {
@@ -185,8 +187,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.rl.setMinimumHeight(main.paddingTop);
             return;}}
         else{
-            i=3;
-            if(p1==0 || p1==1 || p1==2){
+            i=column;
+            if(p1>=0 && p1<i){
                 holder.rl.setMinimumHeight(main.paddingTop);
                 return;}
         }
@@ -493,9 +495,9 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     else return 'F';}
     }
         else{
-            if(i!=0 && i!=1 && i!=2){
-                if(items.get(i-3).getSize().equals(main.goback))return -1;
-                if(items.get(i-3).isDirectory())return 'D';
+            if(i>=0 && i<column){
+                if(items.get(i-column).getSize().equals(main.goback))return -1;
+                if(items.get(i-column).isDirectory())return 'D';
                 else return 'F';}
 
         }
@@ -530,7 +532,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     private boolean isPositionHeader(int position) {
    if(main.islist)     return position == 0 || position==item_count-1;
-    else return position == 0 || position==1 || position==2;}
+    else return position>= 0 && position<column;}
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
         if(i!=0) {

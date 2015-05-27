@@ -161,7 +161,7 @@ public class Main extends android.support.v4.app.Fragment {
     public int paddingTop;
     int mToolbarHeight,hidemode;
     View mToolbarContainer;
-    public int skin_color,icon_skin_color;
+    public int skin_color,icon_skin_color, columns;
     boolean SmbAnonym=false;
     String smbUser,smbPass;
     public String smbPath;
@@ -223,7 +223,7 @@ public class Main extends android.support.v4.app.Fragment {
 
         } listView.setHasFixedSize(true);
         mLayoutManager=new LinearLayoutManager(getActivity());
-        int columns=Integer.parseInt(Sp.getString("columns","3"));
+        columns=Integer.parseInt(Sp.getString("columns","3"));
         mLayoutManagerGrid=new GridLayoutManager(getActivity(),columns);
         if (islist) {
             listView.setLayoutManager(mLayoutManager);
@@ -607,7 +607,7 @@ public class Main extends android.support.v4.app.Fragment {
 
                     }
                 });
-                v.setMinimumWidth(getActivity().findViewById(R.id.tab_spinner).getWidth());
+            //    v.setMinimumWidth(getActivity().findViewById(R.id.tab_spinner).getWidth());
             } catch (Exception e) {
                 e.printStackTrace();
             }

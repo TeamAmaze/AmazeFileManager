@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements
    * us from starting further intents.
    */
     private boolean mIntentInProgress,topfab=false;
-
+    private boolean isDrawerLocked = false;
     /**
      * Called when the activity is first created.
      */
@@ -392,7 +392,11 @@ public class MainActivity extends AppCompatActivity implements
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
-
+        if(((ViewGroup.MarginLayoutParams)findViewById(R.id.main_frame).getLayoutParams()).leftMargin == (int)getResources().getDimension(R.dimen.drawer_width)) {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, mDrawerLinear);
+            mDrawerLayout.setScrimColor(Color.TRANSPARENT);
+            isDrawerLocked = true;
+        }
         // status bar
         sdk = Build.VERSION.SDK_INT;
 
@@ -448,7 +452,7 @@ public class MainActivity extends AppCompatActivity implements
                 transaction2.replace(R.id.content_frame, new AppsList());
 
                 pending_fragmentTransaction=transaction2;
-                mDrawerLayout.closeDrawer(mDrawerLinear);
+                if(!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 select=list.size()+1;
                 adapter.toggleChecked(false);
             }
@@ -489,7 +493,8 @@ public class MainActivity extends AppCompatActivity implements
             //title.setVisibility(View.VISIBLE);
             tabsSpinner.setVisibility(View.GONE);
         }
-        mDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(
+        if(!isDrawerLocked) {
+            mDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
                 toolbar,  /* nav drawer image to replace 'Up' caret */
@@ -521,11 +526,11 @@ public class MainActivity extends AppCompatActivity implements
                 supportInvalidateOptionsMenu();
             }
         };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        mDrawerToggle.syncState();
-        /*((ImageButton) findViewById(R.id.drawer_buttton)).setOnClickListener(new ImageView.OnClickListener() {
+            mDrawerLayout.setDrawerListener(mDrawerToggle);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+            mDrawerToggle.syncState();
+        }/*((ImageButton) findViewById(R.id.drawer_buttton)).setOnClickListener(new ImageView.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
@@ -609,7 +614,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(mDrawerLinear))
-            mDrawerLayout.closeDrawer(mDrawerLinear);
+            if(!isDrawerLocked)mDrawerLayout.closeDrawer(mDrawerLinear);
         else {
             try {
 
@@ -785,7 +790,7 @@ public class MainActivity extends AppCompatActivity implements
             pending_fragmentTransaction=transaction;
             select = i;
             adapter.toggleChecked(select);
-            mDrawerLayout.closeDrawer(mDrawerLinear);
+            if(!isDrawerLocked)mDrawerLayout.closeDrawer(mDrawerLinear);
 
             fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
             tabsSpinner.setVisibility(View.VISIBLE);
@@ -807,7 +812,7 @@ public class MainActivity extends AppCompatActivity implements
             pending_path=list.get(i);
             select = i;
             adapter.toggleChecked(select);
-            mDrawerLayout.closeDrawer(mDrawerLinear);
+            if(!isDrawerLocked)mDrawerLayout.closeDrawer(mDrawerLinear);
         }
 
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
@@ -916,7 +921,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
         // ActionBarDrawerToggle will take care of this.
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
+        if (mDrawerToggle!=null && mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         // Handle action buttons
@@ -973,7 +978,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
+        if(mDrawerToggle!=null)mDrawerToggle.syncState();
     }
     public void add(int pos) {
         final MainActivity mainActivity=this;
@@ -1121,7 +1126,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
-        mDrawerToggle.onConfigurationChanged(newConfig);
+       if(mDrawerToggle!=null) mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
