@@ -108,7 +108,7 @@
     <string name="random">Cor aleatória</string>
     <string name="random_summary">Define uma cor aleatória ao iniciar</string>
     <string name="colorize">Colorir ícones</string>
-    <string name="colorize_summary">Define a cor estática do ícone</string>
+    <string name="colorize_summary">Define a cor estática do ícone. Não altera a definição da cor de ícone do diretório.</string>
     <string name="back">Recuar</string>
     <string name="home">Home</string>
     <string name="paste">Colar</string>
@@ -193,7 +193,7 @@
     <string name="Zipping_fles">A comprimir ficheiros</string>
     <string name="items">Itens</string>
     <string name="set">Definir</string>
-    <string name="enablerootmde">Ativar modo root</string>
+    <string name="enablerootmde">Ative o modo root</string>
     <string name="goback">Recuar</string>
     <string name="foldercreated">Pasta criada</string>
     <string name="newfile">Novo ficheiro</string>
@@ -323,5 +323,9 @@
     <string name="hide_appbar">Ocultar barra da aplicação</string>
     <string name="choose_color">Escolha a cor</string>
     <string name="g_plus_community_title">Comunidade G+</string>
+	<string name="hide_mode_nothing">A barra da aplicação fica inalterada</string>
+    <string name="hide_mode_toolbar">Ocultar barra de ferramentas ao deslocar</string>
+    <string name="hide_mode_app_bar">Ocultar barra da aplicação ao deslocar</string>
+    <string name="no_cover_photo">Sem imagem</string>
 </resources>
 

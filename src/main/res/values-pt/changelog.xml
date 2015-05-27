@@ -49,7 +49,7 @@
                                       - Adicionada preferência para escolher o local de extração e compressão dos ficheiros&lt;br>
                                       - Adicionada preferência para memorizar os caminhos&lt;br>
                                       - mais...&lt;br>&lt;br></string>
-    <string name="changelog_version_5">&lt;font color="#524ef8">&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2015-003-08&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#524ef8">&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2015-03-08&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_5">- Adicionado um visualizador de bases de dados&lt;br>
                                       - Adicionado um visualizador de arquivos rar&lt;br>
                                       - Melhorias às notificações de operações&lt;br>
@@ -61,5 +61,18 @@
                                       - Adicionado efeito de ondulação em dispositivos lollipop&lt;br>
                                       - Diversas melhorias à interface&lt;br>
                                       - Diversas correções de erros&lt;br>
+                                      - mais...&lt;br>&lt;br></string>
+<string name="changelog_version_6">&lt;font color="#524ef8">&lt;b>v2.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2015-05-25&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_6">- Nova interface conforme as Material Design Guidelines&lt;br>
+                                      - Novo ícone criado por CookIcons.co&lt;br>
+                                      - Melhorias nas animações da aplicação&lt;br>
+                                      - Adição de cores primárias, de acentos e de ícones na interface&lt;br>
+                                      - Adição de cabeçalhos e separadores à lista&lt;br>
+                                      - Possibilidade de sincronizar a imagem e a capa do perfil G+&lt;br>
+                                      - Melhorias nos temas, agora ainda mais bonitos&lt;br>
+                                      - Remoção do gestor de marcadores do menu de navegação&lt;br>
+                                      - Possibilidade de ocultar a barra de ferramentas e a barra da aplicação ao deslocar&lt;br>
+                                      - Diversas melhorias de desempenho e correção de erros&lt;br>
+                                      - Atualização de traduções&lt;br>
                                       - mais...&lt;br>&lt;br></string>
 </resources>
