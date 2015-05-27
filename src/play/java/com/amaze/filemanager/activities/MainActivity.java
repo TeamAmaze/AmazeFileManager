@@ -451,9 +451,9 @@ public class MainActivity extends AppCompatActivity implements
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                 transaction2.replace(R.id.content_frame, new AppsList());
 
-                pending_fragmentTransaction=transaction2;
-                if(!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
-                select=list.size()+1;
+                pending_fragmentTransaction = transaction2;
+                if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
+                select = list.size() + 1;
                 adapter.toggleChecked(false);
             }
         });
@@ -613,9 +613,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(mDrawerLinear))
-            if(!isDrawerLocked)mDrawerLayout.closeDrawer(mDrawerLinear);
-        else {
+        if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
+            if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
+        }else {
             try {
 
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
