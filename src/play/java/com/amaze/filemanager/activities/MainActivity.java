@@ -406,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements
             tintManager.setStatusBarTintColor(Color.parseColor(skin));
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
-            p.setMargins(0, config.getStatusBarHeight(), 0, 0);
+            if(!isDrawerLocked)p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (Build.VERSION.SDK_INT >= 21) {
             colourednavigation = Sp.getBoolean("colorednavigation", true);
 
