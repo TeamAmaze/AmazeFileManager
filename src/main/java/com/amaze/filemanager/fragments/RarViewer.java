@@ -404,7 +404,7 @@ String path;
             addheader=true;
         }
         if(addheader ) {
-                dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST,showDividers);
+                dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST,false,showDividers);
                 listView.addItemDecoration(dividerItemDecoration);
 
             headersDecor = new StickyRecyclerHeadersDecoration(zipAdapter);

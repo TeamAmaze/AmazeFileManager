@@ -27,11 +27,13 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     private int mOrientation;
     boolean show;
     int pix=0,leftpix=0;
-    public DividerItemDecoration(Context context, int orientation,boolean show) {
+    boolean showtopbottomdividers;
+    public DividerItemDecoration(Context context, int orientation,boolean showtopbottomdividers,boolean show) {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         mDivider = a.getDrawable(0);
         a.recycle();
         this.show=show;
+        this.showtopbottomdividers=showtopbottomdividers;
         setOrientation(orientation);
         pix=(int)(16*(context.getResources().getDisplayMetrics().densityDpi/160f));
         leftpix=(int)(72*(context.getResources().getDisplayMetrics().densityDpi/160f));
@@ -59,7 +61,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         final int right = parent.getWidth() - parent.getPaddingRight()-pix;
 
         final int childCount = parent.getChildCount();
-        for (int i = 0; i < childCount; i++) {
+        for (int i = showtopbottomdividers?1:0; i < (showtopbottomdividers?childCount-1:childCount); i++) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
                     .getLayoutParams();

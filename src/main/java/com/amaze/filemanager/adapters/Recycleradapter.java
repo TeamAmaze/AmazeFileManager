@@ -179,7 +179,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             i=1;
         if(p1==getItemCount()-1){
             holder.rl.setMinimumHeight(main.paddingTop);
-            if(item_count==2)
+            if(item_count==(main.gobackitem?3:2))
             holder.txtTitle.setText(R.string.nofiles);
             else holder.txtTitle.setText(R.string.guide3);
             return;}

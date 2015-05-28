@@ -527,7 +527,7 @@ public class Main extends android.support.v4.app.Fragment {
                         listView.removeItemDecoration(headersDecor);
                         addheader=true;}
                     if(addheader && islist){
-                            dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST,showDividers);
+                            dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST,false,showDividers);
                             listView.addItemDecoration(dividerItemDecoration);
 
                     headersDecor = new StickyRecyclerHeadersDecoration(adapter);
