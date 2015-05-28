@@ -55,7 +55,7 @@
                     android:id="@+id/tab_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingLeft="12dp"
+                    android:paddingLeft="52dp"
                     android:gravity="center_vertical"
                     android:background="@null"
                     android:minHeight="?android:attr/listPreferredItemHeightSmall"
@@ -171,7 +171,7 @@
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/drawer_width"
-        android:background="@color/divider"/>
+        android:background="#9e9e9e"/>
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="@dimen/drawer_width"
