@@ -219,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         setContentView(R.layout.main_toolbar);
-
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         tabHandler=new TabHandler(this,null,null,1);
 
@@ -586,80 +585,82 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        if (!isDrawerLocked){if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
-            mDrawerLayout.closeDrawer(mDrawerLinear);
-        }}else {
-            try {
-
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                String name = fragment.getClass().getName();
-                if (name.contains("TabFragment")) {
-                    TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
-                    Fragment fragment1 = tabFragment.getTab();
-                    Main main = (Main) fragment1;
-                    main.goBack();
-                } else if (name.contains("ZipViewer")){
-                    ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                    if(zipViewer.mActionMode==null) {
-                        if (zipViewer.cangoBack()) {
-
-                            zipViewer.goBack();
-                        } else if(openzip) {
-                            openzip=false;
-                            finish();
-                        } else {
-
-                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                            fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
-                            fragmentTransaction.remove(zipViewer);
-                            fragmentTransaction.commit();
-                            supportInvalidateOptionsMenu();
-
-                            fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
-                            floatingActionButton.setAnimation(fabShowAnim);
-                            floatingActionButton.animate();
-                            floatingActionButton.setVisibility(View.VISIBLE);
-                        }
-                    } else {
-                        zipViewer.mActionMode.finish();
-                    }
-                }else if (name.contains("RarViewer")) {
-
-                    RarViewer zipViewer = (RarViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                    if(zipViewer.mActionMode==null) {
-                        if (zipViewer.cangoBack()) {
-
-                            zipViewer.elements.clear();
-                            zipViewer.goBack();
-                        } else if(openzip) {
-
-                            openzip=false;finish();
-                        } else {
-
-                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                            fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
-                            fragmentTransaction.remove(zipViewer);
-                            fragmentTransaction.commit();
-                            supportInvalidateOptionsMenu();
-
-                            fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
-                            floatingActionButton.setAnimation(fabShowAnim);
-                            floatingActionButton.animate();
-                            floatingActionButton.setVisibility(View.VISIBLE);
-                        }
-                    } else {
-                        zipViewer.mActionMode.finish();
-                    }
-                } else if(name.contains("Process")) {
-                    finish();
-                } else
-                    goToMain("");
-            } catch (ClassCastException e) {
-                goToMain("");
+        if (!isDrawerLocked) {
+            if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
+                mDrawerLayout.closeDrawer(mDrawerLinear);
+            } else {
+                onbackpressed();
             }
-        }
+        } else onbackpressed();
     }
+    void onbackpressed(){try {
 
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        String name = fragment.getClass().getName();
+        if (name.contains("TabFragment")) {
+            TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
+            Fragment fragment1 = tabFragment.getTab();
+            Main main = (Main) fragment1;
+            main.goBack();
+        } else if (name.contains("ZipViewer")){
+            ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+            if(zipViewer.mActionMode==null) {
+                if (zipViewer.cangoBack()) {
+
+                    zipViewer.goBack();
+                } else if(openzip) {
+                    openzip=false;
+                    finish();
+                } else {
+
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
+                    fragmentTransaction.remove(zipViewer);
+                    fragmentTransaction.commit();
+                    supportInvalidateOptionsMenu();
+
+                    fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
+                    floatingActionButton.setAnimation(fabShowAnim);
+                    floatingActionButton.animate();
+                    floatingActionButton.setVisibility(View.VISIBLE);
+                }
+            } else {
+                zipViewer.mActionMode.finish();
+            }
+        }else if (name.contains("RarViewer")) {
+
+            RarViewer zipViewer = (RarViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+            if(zipViewer.mActionMode==null) {
+                if (zipViewer.cangoBack()) {
+
+                    zipViewer.elements.clear();
+                    zipViewer.goBack();
+                } else if(openzip) {
+
+                    openzip=false;finish();
+                } else {
+
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
+                    fragmentTransaction.remove(zipViewer);
+                    fragmentTransaction.commit();
+                    supportInvalidateOptionsMenu();
+
+                    fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
+                    floatingActionButton.setAnimation(fabShowAnim);
+                    floatingActionButton.animate();
+                    floatingActionButton.setVisibility(View.VISIBLE);
+                }
+            } else {
+                zipViewer.mActionMode.finish();
+            }
+        } else if(name.contains("Process")) {
+            finish();
+        } else
+            goToMain("");
+    } catch (ClassCastException e) {
+        goToMain("");
+    }}
     public void invalidatePasteButton(MenuItem paste) {
         if (MOVE_PATH != null || COPY_PATH != null) {
             paste.setVisible(true);
