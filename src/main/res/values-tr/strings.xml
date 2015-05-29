@@ -38,7 +38,6 @@
     <string name="card">Kart</string>
     <string name="changegallerypath">Galeri yolunu değiştir</string>
     <string name="changelog">Değişiklik</string>
-
     <string name="chinese_translation_title">Çin</string>
     <string name="chooseUI">Ürün seç</string>
     <string name="circularicons">Dairesel simgeleri kullan</string>
@@ -46,8 +45,6 @@
     <string name="close">Kapat</string>
     <string name="colorize">Simgeleri renklendirme</string>
     <string name="colorize_summary">Statik simge rengini ayarlar</string>
-    <string name="colourednavigation">Renkli gezinti çubuğu</string>
-    <string name="colourednavigationsum">Sistem gezinti çubuğu ile renklendirilmiş olsun ya da olmasın</string>
     <string name="compress">Sıkıştırma</string>
     <string name="confirm">Onayla</string>
     <string name="contributors">Katkıda bulunanlar</string>
@@ -60,7 +57,6 @@
     <string name="cut">Kes</string>
     <string name="cyan">Camgöbeği</string>
     <string name="dark">Koyu</string>
-    <string name="database">Veri tabanı</string>
     <string name="date">Tarih:</string>
     <string name="daytime">Gündüz</string>
     <string name="deep_orange">Derin turuncu</string>
@@ -98,11 +94,9 @@
     <string name="foldercreated">Klasör düzenlendi</string>
     <string name="foldersOnTop">Üst klasörler</string>
     <string name="free">Boş :</string>
-    <string name="french_translation_title">Fransızca</string>
     <string name="fullChangelog">Tam değişiklik</string>
     <string name="gallery">Galeri</string>
     <string name="general">Genel</string>
-    <string name="generating">Yaratılıyor</string>
     <string name="german_translation_title">Almanca</string>
     <string name="goback">Geri git</string>
     <string name="green">Yeşil</string>
@@ -140,7 +134,6 @@
     <string name="listview">Liste görünümü</string>
     <string name="location">Bulunan:</string>
     <string name="maintab">Ana sekme kaldırılamaz</string>
-    <string name="md5copied">MD5 panoya kopyalanan</string>
     <string name="miscellaneous">Diğer</string>
     <string name="mountsystem">Yazılabilir klasörler</string>
     <string name="mountsystemsummary">Sistem dosyalarını düzenlemek istiyorsanız bunu etkinleştirin</string>
@@ -172,8 +165,6 @@
     <string name="pink">Pembe</string>
     <string name="pitext">Bu bir paket yükleyicidir. Ne eylemi gerçekleştirmek istersiniz?</string>
     <string name="play">Play store</string>
-    <string name="polish_translation_title">Polonyaca</string>
-    <string name="portuguese_translation_title">Portekizce</string>
     <string name="pressagain">Çıkmak için tekrar basın</string>
     <string name="process_viewer">İşlem görüntüleyici</string>
     <string name="processes">İşlemler</string>
@@ -205,7 +196,6 @@
     <string name="searchpath">Arama yolu</string>
     <string name="searchresults">Arama sonuçları</string>
     <string name="select">Öğe seç</string>
-    <string name="select_intent">Seç</string>
     <string name="selectall">Tümünü seç</string>
     <string name="serbian_translation_title">Sırpça</string>
     <string name="set">Ayarla</string>
@@ -235,7 +225,6 @@
     <string name="success">Başarılı</string>
     <string name="supersu">SuperSU</string>
     <string name="tab">Sekme</string>
-    <string name="tables">Sekmeler</string>
     <string name="tapnhold">Daha fazla seçenek için dosya veya klasörün üzerine basılı tutun</string>
     <string name="teal">Turkuaz</string>
     <string name="text">Metin</string>
@@ -244,6 +233,7 @@
     <string name="thumbSummary">Uygulamaların ve görüntülerin küçük resimlerini gösterir</string>
     <string name="totalitems">Toplam öğeler:</string>
     <string name="translators">Çevirmenler</string>
+    <string name="turkish_translation_title">Türkçe</string>
     <string name="type">Tip</string>
     <string name="typeDesc">Tip (Azalan)</string>
     <string name="ui">Arayüz</string>
@@ -268,4 +258,58 @@ Devam etmek istiyor musunuz?"</string>
     <string name="zip_summary">Yeni sıkıştırılmış dosyalar bu klasörde olacak</string>
     <string name="zip_viewer">Sıkıştırma görüntüleyicisi</string>
     <string name="zipping">Sıkıştırılıyor</string>
+    <string name="database">Veri tabanı</string>
+    <string name="french_translation_title">Fransızca</string>
+    <string name="generating">Yaratılıyor</string>
+    <string name="polish_translation_title">Polonyaca</string>
+    <string name="portuguese_translation_title">Portekizce</string>
+    <string name="accent_color_summary">FAB ve diğer küçük sistem öğelerinin renklerini ayarlayın</string>
+    <string name="accent_color_title">Vurgu rengi</string>
+    <string name="changelog_change_5">- Uygulanan veri tabanı görüntüleyici&lt;br> - Uygulanan rar görüntüleyici&lt;br> -Operasyonlar için geliştirilmiş bildirimler&lt;br> - Sabit çekmece kapanışı ve düzenini iyileştirme&lt;br> - Yeni dairesel simgesi&lt;br> - Yenilemek için çekme&lt;br> - Bazı cihazlar için usb sürücü tanıması eklendi&lt;br> - Lolipop cihazlar için renkli gezinti çubuğu&lt;br> - Lolipop cihazlar için dalgalanma efekti&lt;br> - Birçok sistem iyileştirmeleri&lt;br> - Birçok hata düzeltmeleri&lt;br> - Daha fazlası...&lt;br>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color=#524ef8>&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color=#5299f2>&lt;br>Mar 08, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="choose_color">Renk seç</string>
+    <string name="color_summary">Çeşitli sistem bileşenlerinin renklerini ayarlayın</string>
+    <string name="color_title">Renk</string>
+    <string name="colourednavigation">Renkli gezinti çubuğu</string>
+    <string name="colourednavigationsum">Sistem gezinti çubuğu ile renklendirilmiş olsun ya da olmasın</string>
+    <string name="fab_skin">FAB arayüzü</string>
+    <string name="g_plus_community_title">Google+</string>
+    <string name="gplus_pic_summary">Çekmecede Google+ kapak resmini göster</string>
+    <string name="gplus_pic_title">Google+ ile oturum aç</string>
+    <string name="hide_appbar">Tüm uygulama çubuklarını gizle</string>
+    <string name="hide_mode_title">Gizleme modu</string>
+    <string name="hide_toolbar">Araç çubuğunu gizle</string>
+    <string name="icon_color_summary">Simge renklerini ayarla</string>
+    <string name="icon_color_title">Simge rengi</string>
+    <string name="icon_credits">Grafik: &lt;a href=http://cookicons.co/>CookIcons&lt;/a></string>
+    <string name="korean_translation_title">Kore</string>
+    <string name="md5copied">MD5 panoya kopyalanan</string>
+    <string name="none">Hiçbiri</string>
+    <string name="primary_color_summary">Büyük sistem öğelerinin renklerini ayarlayın</string>
+    <string name="primary_color_title">Ana renk</string>
+    <string name="sd_card_grant_first">sd_card_grant_first</string>
+    <string name="sd_card_grant_next">sd_card_grant_next</string>
+    <string name="select_intent">Seç</string>
+    <string name="tables">Sekmeler</string>
+    <string name="abc_action_bar_home_description_format">%1$s, %2$s</string>
+    <string name="abc_action_bar_home_subtitle_description_format">%1$s, %2$s, %3$s</string>
+    <string name="abc_search_hint">Ara</string>
+    <string name="abc_toolbar_collapse_description">Çöktü</string>
+    <string name="basque_translation_summary">Aitor Beriain</string>
+    <string name="chinese_translation_summary">amtlib-dot-dll, Felix2yu, Charles Kane</string>
+    <string name="define_FloatingActionButton" />
+    <string name="french_translation_summary">Nicolas PIMENTEL, Primokorn, Renaud ROLLAND</string>
+    <string name="german_translation_summary">Patrick Mertens, Unpublished</string>
+    <string name="hide_mode_app_bar">Uygulama çubuğunu kaydırmalarda gizler</string>
+    <string name="hide_mode_nothing">Uygulama çubuğu bozulmadan kalır</string>
+    <string name="hide_mode_toolbar">Araç çubuğunu kaydırmalarda gizler</string>
+    <string name="italian_translation_summary">Francesco Credidio</string>
+    <string name="korean_translation_summary">Park Kyungjin</string>
+    <string name="polish_translation_summary">M. Kucharskov, P. Kowalczyk</string>
+    <string name="portuguese_translation_summary">Sérgio Marques</string>
+    <string name="russian_translation_summary">Pablo Luchiano, Kim BeeJay</string>
+    <string name="serbian_translation_summary">Mladen Pejaković</string>
+    <string name="spanish_translation_summary">Jose Miguel Sarasola</string>
+    <string name="turkish_translation_summary">Hakan Güven</string>
+    <string name="ukrainian_translation_summary">Pablo Luchiano</string>
 </resources>
