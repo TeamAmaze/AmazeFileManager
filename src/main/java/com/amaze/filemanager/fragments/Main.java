@@ -613,6 +613,7 @@ public class Main extends android.support.v4.app.Fragment {
             }
             mode.setCustomView(v);
             mainActivity.setPagingEnabled(false);
+            if(mainActivity.isDrawerLocked)mainActivity.translateDrawerList(true);
             // assumes that you have "contexual.xml" menu resources
             inflater.inflate(R.menu.contextual, menu);
             initMenu(menu);
@@ -986,6 +987,7 @@ public class Main extends android.support.v4.app.Fragment {
         public void onDestroyActionMode(ActionMode mode) {
             mActionMode = null;
             selection = false;
+            if(mainActivity.isDrawerLocked)mainActivity.translateDrawerList(false);
             if(!results)adapter.toggleChecked(false, current);
             else adapter.toggleChecked(false);
             mainActivity.setPagingEnabled(true);

@@ -169,7 +169,7 @@ public class MainActivity extends ActionBarActivity {
     public Animation fabShowAnim, fabHideAnim;
     public FrameLayout buttonBarFrame;
     private boolean topfab=false;
-    private boolean isDrawerLocked = false;
+    public boolean isDrawerLocked = false;
     /**
      * Called when the activity is first created.
      */
@@ -1753,5 +1753,10 @@ public class MainActivity extends ActionBarActivity {
                 goToMain("");
             }pending_path=null;}
         supportInvalidateOptionsMenu();
+    }
+    public void translateDrawerList(boolean down) {
+        if (down)
+            mDrawerList.animate().translationY(toolbar.getHeight());
+        else mDrawerList.setTranslationY(0);
     }
 }

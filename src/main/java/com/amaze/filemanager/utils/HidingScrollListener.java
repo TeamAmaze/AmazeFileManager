@@ -17,24 +17,11 @@ public abstract class HidingScrollListener extends RecyclerView.OnScrollListener
     private boolean mControlsVisible = true;
     private int mToolbarHeight;
     private int mTotalScrolledDistance;
-    static final int HIDE_NONE=0,HIDE_TOOLBAR=1,HIDE_WHOLE_BAR=2;
 
     public HidingScrollListener(int mToolbarHeight,int mode){
         this.mToolbarHeight=mToolbarHeight;
         if(mode==0)this.mToolbarHeight=0;
 
-    }
-    public static int getToolbarHeight(Context context) {
-        final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
-                new int[]{android.R.attr.actionBarSize});
-        int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
-        styledAttributes.recycle();
-
-        return toolbarHeight;
-    }public int dpToPx(int dp,Context contextc) {
-        DisplayMetrics displayMetrics = contextc.getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
     }
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
