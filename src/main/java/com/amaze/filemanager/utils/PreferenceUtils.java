@@ -37,7 +37,7 @@ public class PreferenceUtils {
     }
 
 
-    public static void random(SharedPreferences Sp) {
+    public static String random(SharedPreferences Sp) {
 
         String[] colors = new String[]{
                 "#F44336",
@@ -63,6 +63,7 @@ public class PreferenceUtils {
         Random random = new Random();
         int pos = random.nextInt(colors.length - 1);
         Sp.edit().putString("skin_color", colors[pos]).commit();
+        return colors[pos];
     }
 
     public static final String LICENCE_TERMS = "<html><body>" +

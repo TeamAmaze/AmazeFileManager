@@ -209,21 +209,12 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
         findPreference("fab_skin").setOnPreferenceClickListener(this);
         findPreference("icon_skin").setOnPreferenceClickListener(this);
 
-        final SwitchPreference checkBoxPreference = (SwitchPreference) findPreference("random");
-        boolean check = sharedPref.getBoolean("random_checkbox", false);
-        checkBoxPreference.setChecked(check);
-        checkBoxPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        final SwitchPreference checkBoxPreference = (SwitchPreference) findPreference("random_checkbox");
+        checkBoxPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
-            public boolean onPreferenceChange(Preference preference, Object o) {
-                if (!checkBoxPreference.isChecked()) {
-                    sharedPref.edit().putBoolean("random_checkbox", true).apply();
-                    checkBoxPreference.setChecked(true);
-                } else {
-                    sharedPref.edit().putBoolean("random_checkbox", false).apply();
-                    checkBoxPreference.setChecked(false);
-                }
+            public boolean onPreferenceClick(Preference preference) {
                 Toast.makeText(getActivity(), R.string.setRandom, Toast.LENGTH_LONG).show();
-                return false;
+                return true;
             }
         });
 

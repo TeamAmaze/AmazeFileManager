@@ -365,8 +365,10 @@ public class MainActivity extends AppCompatActivity implements
         } catch (Exception e) {
 
         }
-
-        skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#3f51b5");
+        boolean random=Sp.getBoolean("random_checkbox",false);
+        if(random)skin=PreferenceUtils.random(Sp);
+        else
+        skin = Sp.getString("skin_color", "#3f51b5");
         findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
@@ -1207,11 +1209,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        boolean check = Sp.getBoolean("random_checkbox", false);
-        if (check) {
-            PreferenceUtils.random(Sp);
-        }
         Sp.edit().putBoolean("remember", true).apply();
         unregisterReceiver(mNotificationReceiver);
     }

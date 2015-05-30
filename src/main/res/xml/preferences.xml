@@ -51,7 +51,7 @@
                     android:summary="@string/colourednavigationsum"
                     android:enabled="false" />
                 <SwitchPreference
-                    android:key="random"
+                    android:key="random_checkbox"
                     android:title="@string/random"
                     android:summary="@string/random_summary"/>
                 </PreferenceCategory>
