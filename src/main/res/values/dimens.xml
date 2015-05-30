@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="drawerWidth">306dp</dimen>
     <dimen name="drawer_width">306dp</dimen>
 </resources>

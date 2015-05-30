@@ -123,6 +123,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
         });
         switch (sharedPref.getInt("hidemode", 0)) {
             case 0:
+                findPreference("topFab").setEnabled(true);
                 hideModePreference.setSummary(getResources().getString(R.string.hide_mode_nothing));
                 break;
             case 1:

@@ -332,5 +332,7 @@
     <string name="textreader">Text Reader</string>
     <string name="databasereader">Database Reader</string>
     <string name="showDividers">Show Dividers</string>
+    <string name="topFab">Top Fab</string>
+    <string name="topFabS">Whether + button should be at the top or bottom.Only applicable if app bar doesnt hides</string>
 </resources>
 

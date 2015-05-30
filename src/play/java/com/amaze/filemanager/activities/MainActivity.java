@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements
         fabskin = Sp.getString("fab_skin_color", "#e91e63");
         fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
         hidemode=Sp.getInt("hidemode", 0);
-        topfab = hidemode==0 ? true:false;
+        topfab = hidemode==0 ? Sp.getBoolean("topFab",true):false;
 
         floatingActionButton = !topfab ?
                 (FloatingActionButton) findViewById(R.id.fab) : (FloatingActionButton) findViewById(R.id.fab2);
