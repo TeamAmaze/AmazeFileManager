@@ -26,7 +26,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     private int mOrientation;
     boolean show;
-    int pix=0,leftpix=0;
+    int leftpix=0;
     boolean showtopbottomdividers;
     public DividerItemDecoration(Context context, int orientation,boolean showtopbottomdividers,boolean show) {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
@@ -35,7 +35,6 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         this.show=show;
         this.showtopbottomdividers=showtopbottomdividers;
         setOrientation(orientation);
-        pix=(int)(16*(context.getResources().getDisplayMetrics().densityDpi/160f));
         leftpix=(int)(72*(context.getResources().getDisplayMetrics().densityDpi/160f));
     }
 
@@ -58,7 +57,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     public void drawVertical(Canvas c, RecyclerView parent) {
         final int left = parent.getPaddingLeft()+leftpix;
-        final int right = parent.getWidth() - parent.getPaddingRight()-pix;
+        final int right = parent.getWidth() - parent.getPaddingRight();
 
         final int childCount = parent.getChildCount();
         for (int i = showtopbottomdividers?0:1; i < (showtopbottomdividers?childCount:childCount-1); i++) {

@@ -219,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         setContentView(R.layout.main_toolbar);
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         tabHandler=new TabHandler(this,null,null,1);
 
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);

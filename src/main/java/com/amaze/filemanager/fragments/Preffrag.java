@@ -473,12 +473,8 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
         if(theme==1)
             a.theme(Theme.DARK);
         LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.list_dialog, null);
-        ListView listView = (ListView) view.findViewById(R.id.listView);
-        listView.setDivider(null);
-        a.customView(view, true);
+
         a.autoDismiss(true);
-        MaterialDialog x=a.build();
         ColorAdapter adapter = null;
         ArrayList<String> arrayList = new ArrayList<>();
         for(String c : getResources().getStringArray(R.array.material_primary_color_codes)) {
@@ -495,7 +491,14 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                 adapter = new ColorAdapter(getActivity(), arrayList, "icon_skin_color","skin");
                 break;
         }
-        listView.setAdapter(adapter);
+        a.adapter(adapter, new MaterialDialog.ListCallback() {
+            @Override
+            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+
+            }
+        });
+        MaterialDialog x=a.build();
+
         x.show();
         return false;
     }
@@ -504,13 +507,13 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
 
         String pref,pref1;
         String[] strings;
-        final String[] colors = getResources().getStringArray(R.array.material_primary_color_codes);
-        boolean restart;
+        final String[] colors;
         public ColorAdapter(Context context, ArrayList<String> arrayList, String pref, String pref1) {
             super(context, R.layout.rowlayout, arrayList);
             strings = getResources().getStringArray(R.array.skin);
             this.pref = pref;
             this.pref1 = pref1;
+            colors= getResources().getStringArray(R.array.material_primary_color_codes);
         }
 
         @Override
