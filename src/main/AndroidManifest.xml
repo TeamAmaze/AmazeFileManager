@@ -68,13 +68,13 @@
         </activity>
 		<activity
 			android:uiOptions="splitActionBarWhenNarrow"
-            android:label="Settings"
+            android:label="@string/setting"
             android:name=".activities.Preferences" 
 			android:theme="@style/appCompatLight">
            
         </activity>
 		<activity
-            android:label="Text Reader"
+            android:label="@string/textreader"
             android:name=".activities.TextReader"
 			android:theme="@style/appCompatLight">
             <intent-filter
@@ -86,7 +86,7 @@
 
         </activity>
         <activity
-            android:label="Database Reader"
+            android:label="@string/databasereader"
             android:name=".activities.DbViewer"
             android:theme="@style/appCompatLight"
             android:screenOrientation="portrait">

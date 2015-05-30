@@ -537,8 +537,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
         if(i!=0) {
             HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
-            if(items.get(i-1).isDirectory())holder.ext.setText("Directories");
-            else holder.ext.setText("Files");
+            if(items.get(i-1).isDirectory())holder.ext.setText(R.string.directories);
+            else holder.ext.setText(R.string.files);
         }
     }
 

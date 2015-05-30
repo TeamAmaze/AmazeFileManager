@@ -327,5 +327,10 @@
     <string name="hide_mode_toolbar">Toolbar hides on scroll</string>
     <string name="hide_mode_app_bar">App bar hides on scroll</string>
     <string name="no_cover_photo">No cover photo</string>
+    <string name="files">Files</string>
+    <string name="directories">Directories</string>
+    <string name="textreader">Text Reader</string>
+    <string name="databasereader">Database Reader</string>
+    <string name="showDividers">Show Dividers</string>
 </resources>
 
