@@ -758,8 +758,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
     public void selectItem(final int i, boolean removeBookmark) {
-        System.out.print("Selectitem");
-        if (select == null || select >= list.size() -2 && !removeBookmark) {
+        if ((select == null || select >= list.size()) && !removeBookmark) {
 
             TabFragment tabFragment=new TabFragment();
             Bundle a = new Bundle();
@@ -782,25 +781,23 @@ public class MainActivity extends AppCompatActivity implements
             floatingActionButton.setVisibility(View.VISIBLE);
 
         }  else if (removeBookmark) {
-
-            //adapter.notifyDataSetChanged();
             try {
                 s.removeS(new File(list.get(i)), MainActivity.this);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             list.remove(i);
+            select=0;
+            adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
+            mDrawerList.setAdapter(adapter);
         } else {
-
             pending_path=list.get(i);
             select = i;
             adapter.toggleChecked(select);
             if(!isDrawerLocked)mDrawerLayout.closeDrawer(mDrawerLinear);
             else onDrawerClosed();
-        }
 
-        adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
-        mDrawerList.setAdapter(adapter);
+        }
 
     }
 

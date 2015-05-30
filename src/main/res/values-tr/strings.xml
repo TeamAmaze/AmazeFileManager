@@ -265,8 +265,6 @@ Devam etmek istiyor musunuz?"</string>
     <string name="portuguese_translation_title">Portekizce</string>
     <string name="accent_color_summary">FAB ve diğer küçük sistem öğelerinin renklerini ayarlayın</string>
     <string name="accent_color_title">Vurgu rengi</string>
-    <string name="changelog_change_5">- Uygulanan veri tabanı görüntüleyici&lt;br> - Uygulanan rar görüntüleyici&lt;br> -Operasyonlar için geliştirilmiş bildirimler&lt;br> - Sabit çekmece kapanışı ve düzenini iyileştirme&lt;br> - Yeni dairesel simgesi&lt;br> - Yenilemek için çekme&lt;br> - Bazı cihazlar için usb sürücü tanıması eklendi&lt;br> - Lolipop cihazlar için renkli gezinti çubuğu&lt;br> - Lolipop cihazlar için dalgalanma efekti&lt;br> - Birçok sistem iyileştirmeleri&lt;br> - Birçok hata düzeltmeleri&lt;br> - Daha fazlası...&lt;br>&lt;br></string>
-    <string name="changelog_version_5">&lt;font color=#524ef8>&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color=#5299f2>&lt;br>Mar 08, 2015&lt;/i>&lt;/font>&lt;br></string>
     <string name="choose_color">Renk seç</string>
     <string name="color_summary">Çeşitli sistem bileşenlerinin renklerini ayarlayın</string>
     <string name="color_title">Renk</string>
