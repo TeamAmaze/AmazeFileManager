@@ -22,8 +22,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.amaze.filemanager"
-    android:versionCode="14"
-    android:versionName="2.0.3">
+    android:versionCode="16"
+    android:versionName="2.0.4 beta">
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER"/>

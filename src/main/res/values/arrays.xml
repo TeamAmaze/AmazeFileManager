@@ -85,6 +85,14 @@
         <item>@string/typeDesc</item>
     </string-array>
 
+    <string-array name="sortbyApps">
+        <item>@string/sortName</item>
+        <item>@string/lastModified</item>
+        <item>@string/sortSize</item>
+        <item>@string/sortNameDesc</item>
+        <item>@string/lastModifiedDesc</item>
+        <item>@string/sortSizeDesc</item>
+    </string-array>
 
     <string-array name="ints2">
         <item>0</item>

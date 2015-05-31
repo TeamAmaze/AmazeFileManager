@@ -48,6 +48,7 @@ import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.utils.AppsSorter;
+import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconHolder;
 import com.amaze.filemanager.utils.Layoutelements;
@@ -63,7 +64,7 @@ public class AppsList extends ListFragment {
     AppsList app = this;
     AppsAdapter adapter;
 
-    SharedPreferences Sp;
+    public SharedPreferences Sp;
     public boolean selection = false;
     public ActionMode mActionMode;
     public ArrayList<ApplicationInfo> c = new ArrayList<ApplicationInfo>();
@@ -73,7 +74,7 @@ public class AppsList extends ListFragment {
     public int theme1;
     private MainActivity mainActivity;
     private String fabSkin;
-
+    int asc,sortby;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,8 +93,8 @@ public class AppsList extends ListFragment {
         mainActivity.supportInvalidateOptionsMenu();
         fabSkin = mainActivity.fabskin;
         vl=getListView();
-            Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
+        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        getSortModes();
         ListView vl = getListView();
         int theme=Integer.parseInt(Sp.getString("theme","0"));
         theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
@@ -104,7 +105,7 @@ public class AppsList extends ListFragment {
             vl.requestLayout();
         }
         if(theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
-         if(savedInstanceState==null)new LoadListTask().execute();
+         if(savedInstanceState==null)loadlist();
         else{
         c=savedInstanceState.getParcelableArrayList("c");
         a=savedInstanceState.getParcelableArrayList("list");
@@ -113,6 +114,9 @@ public class AppsList extends ListFragment {
             vl.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
 
         }
+    }
+    public void loadlist(){
+        new LoadListTask().execute();
     }
     public static int getToolbarHeight(Context context) {
         final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
@@ -250,22 +254,21 @@ public class AppsList extends ListFragment {
     class LoadListTask extends AsyncTask<Void, Void, ArrayList<Layoutelements>> {
 
         protected ArrayList<Layoutelements> doInBackground(Void[] p1) {
-            try {PackageManager p=getActivity().getPackageManager();
+            try {
+                PackageManager p = getActivity().getPackageManager();
                 List<ApplicationInfo> all_apps = p.getInstalledApplications(PackageManager.GET_META_DATA);
-
-
+                a = new ArrayList<>();
+                c = new ArrayList<>();
                 for (ApplicationInfo object : all_apps) {
 
 
                     c.add(object);
 
 
-
                 }
-                Collections.sort(c, new AppsSorter(p));
-                for (ApplicationInfo object:c)
-                a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk_grid), object.loadLabel(getActivity().getPackageManager()).toString(), object.publicSourceDir,"","",utils.readableFileSize(new File(object.publicSourceDir).length()),false,"",false));
-
+                for (ApplicationInfo object : c)
+                    a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk_grid), object.loadLabel(getActivity().getPackageManager()).toString(), object.publicSourceDir, "", "", utils.readableFileSize(new File(object.publicSourceDir).length()), false, "", false));
+                Collections.sort(a, new FileListSorter(0, sortby, asc, false));
             } catch (Exception e) {
                 //Toast.makeText(getActivity(), "" + e, Toast.LENGTH_LONG).show();
             }//ArrayAdapter<String> b=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,a);
@@ -319,4 +322,14 @@ public class AppsList extends ListFragment {
         }
         return true;
     }
-}
+    public void getSortModes() {
+        int t = Integer.parseInt(Sp.getString("sortbyApps", "0"));
+        if (t <= 2) {
+            sortby = t;
+            asc = 1;
+        } else if (t > 2) {
+            asc = -1;
+            sortby = t - 3;
+        }
+
+    }}

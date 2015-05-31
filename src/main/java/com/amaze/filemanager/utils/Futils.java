@@ -50,6 +50,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
+import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
@@ -669,7 +670,25 @@ public void showPackageDialog(final File f,final MainActivity m){
         a.title(R.string.sortby);
         a.build().show();
     }
+    public void showSortDialog(final AppsList m) {
+        String[] sort = m.getResources().getStringArray(R.array.sortbyApps);
+        int current = Integer.parseInt(m.Sp.getString("sortbyApps", "0"));
+        MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
+        if(m.theme1==1)a.theme(Theme.DARK);
+        a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
+            @Override
+            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
 
+                m.Sp.edit().putString("sortbyApps", "" + which).commit();
+                m.getSortModes();
+                m.loadlist();
+                dialog.dismiss();
+                return true;
+            }
+        });
+        a.title(R.string.sortby);
+        a.build().show();
+    }
     public void showHistoryDialog(final Main m) {
         final ArrayList<String> paths = m.history.readTable();
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());

@@ -993,7 +993,7 @@ public class MainActivity extends AppCompatActivity implements
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
-            menu.findItem(R.id.item10).setVisible(false);
+            if(f.contains("ProcessViewer"))menu.findItem(R.id.item10).setVisible(false);
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
@@ -1051,9 +1051,8 @@ public class MainActivity extends AppCompatActivity implements
         // Handle action buttons
         Main ma=null;
         try {
-            ma=(Main)((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+       ma=(Main)getFragment().getTab();
         } catch (ClassCastException e) {
-            e.printStackTrace();
         }
         switch (item.getItemId()) {
             case R.id.home:
@@ -1066,7 +1065,11 @@ public class MainActivity extends AppCompatActivity implements
                 finish();
                 break;
             case R.id.item10:
+                Fragment fragment=getDFragment();
+                if(fragment .getClass().getName().contains("TabFragment"))
                 utils.showSortDialog(ma);
+                else
+                utils.showSortDialog((AppsList)fragment);
                 break;
             case R.id.hiddenitems:
                 utils.showHiddenDialog(ma);
@@ -1539,6 +1542,9 @@ public class MainActivity extends AppCompatActivity implements
     public TabFragment getFragment(){
         TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
         return tabFragment;
+    }
+    public Fragment getDFragment(){
+        return getSupportFragmentManager().findFragmentById(R.id.content_frame);
     }
     public void setPagingEnabled(boolean b){
         getFragment().mViewPager.setPagingEnabled(b);
