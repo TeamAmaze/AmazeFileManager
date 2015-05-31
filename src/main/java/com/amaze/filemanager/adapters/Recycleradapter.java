@@ -40,7 +40,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     ColorMatrixColorFilter colorMatrixColorFilter;
     LayoutInflater mInflater;
     int filetype=-1;
-    int item_count,column;
+    int item_count,column,rowHeight;
+    boolean topFab;
     public Recycleradapter(Main m,ArrayList<Layoutelements> items,Context context){
         this.main=m;
         this.items=items;
@@ -53,7 +54,9 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
         column=main.columns;
-        item_count=items.size()+(main.islist?2:column);
+        topFab=main.topFab;
+        item_count=items.size()+(main.islist?(topFab?1:2):column);
+        rowHeight=main.dpToPx(72);
     }
     public void toggleChecked(int position) {
         if (myChecked.get(position)) {
@@ -177,11 +180,10 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         int i=0;
         if(main.islist){
             i=1;
-        if(p1==getItemCount()-1){
-            holder.rl.setMinimumHeight(main.paddingTop);
+        if(!topFab && p1==getItemCount()-1){
+            holder.rl.setMinimumHeight(rowHeight);
             if(item_count==(main.gobackitem?3:2))
             holder.txtTitle.setText(R.string.nofiles);
-            else holder.txtTitle.setText(R.string.guide3);
             return;}
         if(p1==0){
             holder.rl.setMinimumHeight(main.paddingTop);
@@ -489,7 +491,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     public long getHeaderId(int i) {
         if(i>=0 && i<item_count)
         if(main.islist){
-            if(i!=0 && i!=item_count-1){
+            if(i!=0 && (topFab ?i!=0: i!=item_count-1)){
                     if(items.get(i-1).getSize().equals(main.goback))return -1;
                     if(items.get(i-1).isDirectory())return 'D';
                     else return 'F';}
@@ -531,7 +533,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     private boolean isPositionHeader(int position) {
-   if(main.islist)     return position == 0 || position==item_count-1;
+   if(main.islist)     return position == 0 || (!topFab && position==item_count-1);
     else return position>= 0 && position<column;}
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {

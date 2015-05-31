@@ -24,7 +24,7 @@
     android:fitsSystemWindows="true"
     android:id="@+id/tab_frame"
     >
-<FrameLayout
+    <FrameLayout
         android:layout_marginLeft="@dimen/drawer_width"
         android:layout_width="match_parent"
         android:id="@+id/main_frame"

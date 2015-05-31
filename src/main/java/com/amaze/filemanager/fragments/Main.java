@@ -135,7 +135,7 @@ public class Main extends android.support.v4.app.Fragment {
     public CountDownTimer timer;
     private View rootView;
     public android.support.v7.widget.RecyclerView  listView;
-    public boolean gobackitem,islist,showThumbs,coloriseIcons,showDividers;
+    public boolean gobackitem,islist,showThumbs,coloriseIcons,showDividers,topFab;
     public IconHolder ic;
     public MainActivity mainActivity;
     public boolean showButtonOnStart = false;
@@ -188,6 +188,7 @@ public class Main extends android.support.v4.app.Fragment {
         theme=Integer.parseInt(Sp.getString("theme", "0"));
         theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
         hidemode=Sp.getInt("hidemode", 0);
+        topFab = hidemode==0 ? Sp.getBoolean("topFab",true):false;
         showPermissions=Sp.getBoolean("showPermissions", false);
         showSize=Sp.getBoolean("showFileSize",false);
         showDividers=Sp.getBoolean("showDividers",true);
