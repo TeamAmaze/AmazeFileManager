@@ -304,7 +304,7 @@
 	
 	<string name="sd_card_grant_next">sd_card_grant_next</string>
     <string name="sd_card_grant_first">sd_card_grant_first</string>
-    <string name="fab_skin">Cor FAB</string>
+    <string name="fab_skin">Cor do FAB</string>
     <string name="gplus_pic_title">Iniciar sessão com G+</string>
     <string name="gplus_pic_summary">Mostrar imagem do G+ no menu de navegação</string>
     <string name="icon_credits">Criado por &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
@@ -314,7 +314,7 @@
     <string name="primary_color_title">Cor primária</string>
     <string name="primary_color_summary">Define a cor dos principais itens</string>
     <string name="accent_color_title">Cor secundária</string>
-    <string name="accent_color_summary">Define a cor FAB e restantes itens</string>
+    <string name="accent_color_summary">Define a cor do FAB e dos restantes itens</string>
     <string name="icon_color_title">Cor do ícone</string>
     <string name="icon_color_summary">Define a cor dos ícones</string>
     <string name="hide_mode_title">Modo de ocultação</string>
@@ -327,5 +327,12 @@
     <string name="hide_mode_toolbar">Ocultar barra de ferramentas ao deslocar</string>
     <string name="hide_mode_app_bar">Ocultar barra da aplicação ao deslocar</string>
     <string name="no_cover_photo">Sem imagem</string>
+	<string name="files">Ficheiros</string>
+    <string name="directories">Diretórios</string>
+    <string name="textreader">Leitor de texto</string>
+    <string name="databasereader">Leitor de bases de dados</string>
+    <string name="showDividers">Mostrar linhas divisórias</string>
+    <string name="topFab">FAB em cima</string>
+    <string name="topFabS">Se o botão + deve aparecer em cima ou em baixo. Apenas aplicável se a barra da aplicação estiver visível</string>
 </resources>
 
