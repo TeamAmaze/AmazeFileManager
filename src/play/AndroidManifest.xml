@@ -24,7 +24,7 @@
     package="com.amaze.filemanager">
 
     <application
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
         tools:replace="android:label"
         android:label="Amaze">
 

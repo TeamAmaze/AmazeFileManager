@@ -94,7 +94,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
         setSupportActionBar(toolbar);
         skin = Sp.getString("skin_color", "#3f51b5");
         if (Build.VERSION.SDK_INT>=21) {
-            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap(), Color.parseColor(skin));
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
             ((Activity)this).setTaskDescription(taskDescription);
         }
         String x = PreferenceUtils.getStatusColor(skin);

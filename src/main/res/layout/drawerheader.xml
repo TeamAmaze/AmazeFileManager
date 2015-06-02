@@ -1,46 +1,60 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_header"
+    android:id="@+id/drawer_header_parent"
     android:layout_width="fill_parent"
-    android:layout_height="171dp"
-    android:minHeight="171dp"
-    android:background="@drawable/amaze_header"
-    android:clickable="false"
-    android:gravity="center_vertical">
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/drawer_header_height"
+    android:clickable="false">
 
-    <com.amaze.filemanager.utils.RoundedImageView
-        android:id="@+id/profile_pic"
-        android:layout_width="66dp"
-        android:layout_height="66dp"
-        android:layout_marginLeft="16dp"
-        android:elevation="2dp"
-        android:scaleType="centerCrop"
-        android:visibility="invisible"
+    <View
+        android:id="@+id/drawer_header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawer_header_height"
+        android:minHeight="@dimen/drawer_header_height"
+        android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"/>
 
-    <TextView
-        android:id="@+id/account_header_drawer_name"
-        android:fontFamily="sans-serif-medium"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lines="1"
-        android:singleLine="true"
-        android:textSize="14sp"
-        android:layout_marginLeft="16dp"
-        android:textColor="@android:color/white"
-        android:layout_below="@+id/profile_pic"
-        android:textStyle="bold"
-        android:layout_marginStart="16dp"/>
+        android:layout_centerInParent="true"
+        android:layout_alignParentLeft="true"
+        android:orientation="vertical">
+        <com.amaze.filemanager.utils.RoundedImageView
+            android:id="@+id/profile_pic"
+            android:layout_width="66dp"
+            android:layout_height="66dp"
+            android:layout_marginLeft="16dp"
+            android:elevation="2dp"
+            android:scaleType="centerCrop"
+            android:visibility="invisible"
+            android:layout_alignParentLeft="true"/>
 
-    <TextView
-        android:id="@+id/account_header_drawer_email"
-        android:fontFamily="sans-serif"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:layout_below="@+id/account_header_drawer_name"
-        android:lines="1"
-        android:singleLine="true"
-        android:textSize="14sp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"/>
+        <TextView
+            android:id="@+id/account_header_drawer_name"
+            android:fontFamily="sans-serif-medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:singleLine="true"
+            android:textSize="14sp"
+            android:layout_marginLeft="16dp"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/profile_pic"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp"/>
+
+        <TextView
+            android:id="@+id/account_header_drawer_email"
+            android:fontFamily="sans-serif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/account_header_drawer_name"
+            android:lines="1"
+            android:singleLine="true"
+            android:textSize="14sp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"/>
+    </LinearLayout>
+
 </RelativeLayout>

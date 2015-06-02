@@ -1341,7 +1341,7 @@ public class Main extends android.support.v4.app.Fragment {
 
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                 Intent.ShortcutIconResource.fromContext(getActivity(),
-                        R.drawable.ic_launcher));
+                        R.mipmap.ic_launcher));
 
         addIntent
                 .setAction("com.android.launcher.action.INSTALL_SHORTCUT");

@@ -182,15 +182,19 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+
+                paddingTop=mToolbarContainer.getHeight();
+                if(hidemode!=2)
+                    mToolbarHeight=mainActivity.toolbar.getHeight();
+                else
+                    mToolbarHeight=paddingTop;
+
                 if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
                     mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
                 else {
                     mToolbarContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
-                paddingTop=mToolbarContainer.getHeight();
-
-                if(hidemode!=2)mToolbarHeight=mainActivity.toolbar.getHeight();
             }
 
         });

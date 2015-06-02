@@ -168,8 +168,8 @@ public class MainActivity extends AppCompatActivity implements
     boolean openprocesses=false;
     public int storage_count=0;
     private GoogleApiClient mGoogleApiClient;
+    private View drawerHeaderLayout;
     private View drawerHeaderView;
-    private RelativeLayout drawerHeaderLayout;
     private RoundedImageView drawerProfilePic;
     private DisplayImageOptions displayImageOptions;
     private int sdk;
@@ -186,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements
     public LinearLayout pathbar;
     public Animation fabShowAnim, fabHideAnim;
     public FrameLayout buttonBarFrame;
+    private RelativeLayout drawerHeaderParent;
 
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
@@ -214,16 +215,158 @@ public class MainActivity extends AppCompatActivity implements
         int th = Integer.parseInt(Sp.getString("theme", "0"));
         theme1 = th==2 ? PreferenceUtils.hourOfDay() : th;
 
-        if (theme1 == 1) {
-            setTheme(R.style.appCompatDark);
+        fabskin = Sp.getString("fab_skin_color", "#e91e63");
+
+        // setting accent theme
+        if (Build.VERSION.SDK_INT >= 21) {
+
+            switch (fabskin) {
+                case "#F44336":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_red);
+                    else
+                        setTheme(R.style.pref_accent_dark_red);
+                    break;
+
+                case "#e91e63":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_pink);
+                    else
+                        setTheme(R.style.pref_accent_dark_pink);
+                    break;
+
+                case "#9c27b0":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_purple);
+                    else
+                        setTheme(R.style.pref_accent_dark_purple);
+                    break;
+
+                case "#673ab7":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_deep_purple);
+                    else
+                        setTheme(R.style.pref_accent_dark_deep_purple);
+                    break;
+
+                case "#3f51b5":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_indigo);
+                    else
+                        setTheme(R.style.pref_accent_dark_indigo);
+                    break;
+
+                case "#2196F3":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_blue);
+                    else
+                        setTheme(R.style.pref_accent_dark_blue);
+                    break;
+
+                case "#03A9F4":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_light_blue);
+                    else
+                        setTheme(R.style.pref_accent_dark_light_blue);
+                    break;
+
+                case "#00BCD4":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_cyan);
+                    else
+                        setTheme(R.style.pref_accent_dark_cyan);
+                    break;
+
+                case "#009688":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_teal);
+                    else
+                        setTheme(R.style.pref_accent_dark_teal);
+                    break;
+
+                case "#4CAF50":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_green);
+                    else
+                        setTheme(R.style.pref_accent_dark_green);
+                    break;
+
+                case "#8bc34a":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_light_green);
+                    else
+                        setTheme(R.style.pref_accent_dark_light_green);
+                    break;
+
+                case "#FFC107":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_amber);
+                    else
+                        setTheme(R.style.pref_accent_dark_amber);
+                    break;
+
+                case "#FF9800":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_orange);
+                    else
+                        setTheme(R.style.pref_accent_dark_orange);
+                    break;
+
+                case "#FF5722":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_deep_orange);
+                    else
+                        setTheme(R.style.pref_accent_dark_deep_orange);
+                    break;
+
+                case "#795548":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_brown);
+                    else
+                        setTheme(R.style.pref_accent_dark_brown);
+                    break;
+
+                case "#212121":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_black);
+                    else
+                        setTheme(R.style.pref_accent_dark_black);
+                    break;
+
+                case "#607d8b":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_blue_grey);
+                    else
+                        setTheme(R.style.pref_accent_dark_blue_grey);
+                    break;
+
+                case "#004d40":
+                    if (theme==0)
+                        setTheme(R.style.pref_accent_light_super_su);
+                    else
+                        setTheme(R.style.pref_accent_dark_super_su);
+                    break;
+            }
+        } else {
+            if (theme==1) {
+                setTheme(R.style.appCompatDark);
+            } else {
+                setTheme(R.style.appCompatLight);
+            }
         }
 
         setContentView(R.layout.main_toolbar);
         tabHandler=new TabHandler(this,null,null,1);
 
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
-        fabskin = Sp.getString("fab_skin_color", "#e91e63");
         fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
+
+        boolean random=Sp.getBoolean("random_checkbox",false);
+        if(random)
+            skin=PreferenceUtils.random(Sp);
+        else
+            skin = Sp.getString("skin_color", "#3f51b5");
+
         hidemode=Sp.getInt("hidemode", 0);
         topfab = hidemode==0 ? Sp.getBoolean("topFab",true):false;
 
@@ -238,11 +381,12 @@ public class MainActivity extends AppCompatActivity implements
         floatingActionButton.setColorNormal(Color.parseColor(fabskin));
         floatingActionButton.setColorPressed(Color.parseColor(fabSkinPressed));
 
-        drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader, null);
-        drawerHeaderLayout = (RelativeLayout) drawerHeaderView.findViewById(R.id.drawer_header);
-        drawerProfilePic = (RoundedImageView) drawerHeaderView.findViewById(R.id.profile_pic);
-        mGoogleName = (TextView) drawerHeaderView.findViewById(R.id.account_header_drawer_name);
-        mGoogleId = (TextView) drawerHeaderView.findViewById(R.id.account_header_drawer_email);
+        drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
+        drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
+        drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
+        drawerProfilePic = (RoundedImageView) drawerHeaderLayout.findViewById(R.id.profile_pic);
+        mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
+        mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
 
         // initialize g+ api client as per preferences
         if (Sp.getBoolean("plus_pic", false)) {
@@ -254,7 +398,8 @@ public class MainActivity extends AppCompatActivity implements
                     .addScope(Plus.SCOPE_PLUS_LOGIN)
                     .build();
         } else {
-            drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
+            drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
+            drawerHeaderParent.setBackgroundColor(Color.parseColor(skin));
         }
 
         displayImageOptions = new DisplayImageOptions.Builder()
@@ -364,10 +509,6 @@ public class MainActivity extends AppCompatActivity implements
         } catch (Exception e) {
 
         }
-        boolean random=Sp.getBoolean("random_checkbox",false);
-        if(random)skin=PreferenceUtils.random(Sp);
-        else
-        skin = Sp.getString("skin_color", "#3f51b5");
         findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
@@ -447,7 +588,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        mDrawerList.addHeaderView(drawerHeaderView);
+        mDrawerList.addHeaderView(drawerHeaderLayout);
         updateDrawer();
         if (savedInstanceState == null) {
 
@@ -513,7 +654,7 @@ public class MainActivity extends AppCompatActivity implements
         });*/
         //recents header color implementation
         if (Build.VERSION.SDK_INT>=21) {
-            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap(), Color.parseColor(skin));
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
             ((Activity)this).setTaskDescription(taskDescription);
         }
     }
@@ -1515,18 +1656,22 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         super.onLoadingComplete(imageUri, view, loadedImage);
-                        if (sdk >= 16) {
 
-                            drawerHeaderLayout.setBackground(new BitmapDrawable(getResources(), loadedImage));
-                        } else {
-                            drawerHeaderLayout.setBackgroundDrawable(new BitmapDrawable(getResources(), loadedImage));
-                        }
+                        drawerHeaderView.setBackground(new BitmapDrawable(loadedImage));
                     }
 
                     @Override
                     public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                         super.onLoadingFailed(imageUri, view, failReason);
-                        drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
+                        drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
+                        drawerHeaderParent.setBackgroundColor(Color.parseColor(skin));
+                    }
+
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+                        super.onLoadingStarted(imageUri, view);
+                        drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
+                        drawerHeaderParent.setBackgroundColor(Color.parseColor(skin));
                     }
                 });
 
@@ -1544,12 +1689,12 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                         super.onLoadingFailed(imageUri, view, failReason);
-                        drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
                     }
                 });
             } else {
                 Toast.makeText(this, getResources().getText(R.string.no_cover_photo), Toast.LENGTH_SHORT).show();
-                drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
+                drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
+                drawerHeaderParent.setBackgroundColor(Color.parseColor(skin));
             }
         }
     }
