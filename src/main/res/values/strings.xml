@@ -320,7 +320,7 @@
     <string name="hide_mode_title">Hide Mode</string>
     <string name="none">None</string>
     <string name="hide_toolbar">Hide Toolbar</string>
-    <string name="hide_appbar">Hide whole AppBar</string>
+    <string name="hide_appbar">Hide whole App bar</string>
     <string name="choose_color">Choose color</string>
     <string name="g_plus_community_title">G+ Community</string>
     <string name="hide_mode_nothing">App bar remains intact</string>
@@ -332,7 +332,7 @@
     <string name="textreader">Text Reader</string>
     <string name="databasereader">Database Reader</string>
     <string name="showDividers">Show Dividers</string>
-    <string name="topFab">Top Fab</string>
-    <string name="topFabS">Whether + button should be at the top or bottom.Only applicable if app bar doesnt hides</string>
+    <string name="topFab">FAB on App bar</string>
+    <string name="topFabS">Whether + button should be at the top or bottom. Only applicable if app bar doesn\'t hide.</string>
 </resources>
 
