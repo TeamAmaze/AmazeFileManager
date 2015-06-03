@@ -62,4 +62,17 @@
                                       - UI hobekuntza ugari&lt;br>
                                       - Akats konponketa anitz&lt;br>
                                       - gehiago...&lt;br>&lt;br></string>
+    <string name="changelog_version_6">&lt;font color="#524ef8">&lt;b>v2.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Mai 25, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_6">- Material design gida-lerroen araberako erabiltzaile interfazearen diseinu berria&lt;br>
+                                      - Ikono eta grafico berriak CookIcons.co egindakoak&lt;br>
+                                      - Animazio hobetuak esperientzi leunagoa izateko&lt;br>
+                                      - Lehen, azentu eta ikono kolore pertsonalizatuak gehitu dira erabiltzaile interfazea dinamikoa bihurtzeko&lt;br>
+                                      - Zerrendetan goiburuak eta banatzaileak gehitu dira&lt;br>
+                                      - Tiradera G+ profil argazki eta azalarekin sinkronizatu daiteke&lt;br>
+                                      - Gai argi eta ilunak hobetu dira, itxura ederragoa du orain!&lt;br>
+                                      - Laster-marka kudeatzailea tiraderatik kendu da, sakatu luze laster-markan orain&lt;br>
+                                      - Orain tresna-barra edo aplikazio barra ezkutatzea gaitu dezakezu desplazatzerakoan&lt;br>
+                                      - Errendimendu eta akatsen konponketa anitz&lt;br>
+                                      - Itzulpenen konponketa ugari&lt;br>
+                                      - gehiago...&lt;br>&lt;br></string>
 </resources>
