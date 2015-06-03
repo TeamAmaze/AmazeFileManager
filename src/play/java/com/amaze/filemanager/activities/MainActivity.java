@@ -397,11 +397,7 @@ public class MainActivity extends AppCompatActivity implements
                     .addApi(Plus.API)
                     .addScope(Plus.SCOPE_PLUS_LOGIN)
                     .build();
-        } else {
-            drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-            drawerHeaderParent.setBackgroundColor(Color.parseColor(skin));
         }
-
         displayImageOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.amaze_header)
                 .showImageForEmptyUri(R.drawable.amaze_header)
@@ -590,6 +586,8 @@ public class MainActivity extends AppCompatActivity implements
 
         mDrawerList.addHeaderView(drawerHeaderLayout);
         updateDrawer();
+        drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
+        drawerHeaderParent.setBackgroundColor(Color.parseColor(skin));
         if (savedInstanceState == null) {
 
             if (openprocesses) {
@@ -1664,7 +1662,6 @@ public class MainActivity extends AppCompatActivity implements
                 Log.d("G+", stringBuilder.toString());
                 mGoogleName.setText(currentPerson.getDisplayName());
                 mGoogleId.setText(accountName);
-
                 // setting cover pic
                 ImageLoader.getInstance().loadImage(personCover.getUrl(), displayImageOptions, new SimpleImageLoadingListener() {
                     @Override
