@@ -1634,10 +1634,18 @@ public class MainActivity extends AppCompatActivity implements
             Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
 
             String accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
+            Person.Image personImage;
+            Person.Cover.CoverPhoto personCover;
 
-            Person.Image personImage = currentPerson.getImage();
+            try {
 
-            Person.Cover.CoverPhoto personCover = currentPerson.getCover().getCoverPhoto();
+                personImage = currentPerson.getImage();
+                personCover = currentPerson.getCover().getCoverPhoto();
+            } catch (Exception e) {
+
+                personCover = null;
+                personImage = null;
+            }
 
             if (personCover != null && personImage != null) {
 
