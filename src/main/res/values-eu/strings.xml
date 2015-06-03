@@ -323,4 +323,15 @@
 	<string name="hide_appbar">AppBar osoa ezkutatu</string>
 	<string name="choose_color">Kolorea aukeratu</string>
 	<string name="g_plus_community_title">G+ komunitatea</string>
+	<string name="hide_mode_nothing">Aplikazioaren barra ez da aldatzen</string>
+	<string name="hide_mode_toolbar">Tresna barra ezkutatzen da mugitzerakoan</string>
+	<string name="hide_mode_app_bar">Aplikazioaren barra ezkutatzen da mugitzerakoan</string>
+	<string name="no_cover_photo">Azal argazkirik ez</string>
+	<string name="files">Fitxategiak</string>
+	<string name="directories">Direktorioak</string>
+	<string name="textreader">Testu irakurlea</string>
+	<string name="databasereader">Datubase irakurlea</string>
+	<string name="showDividers">Banatzaileak erakutsi</string>
+	<string name="topFab">FAB aplikazioa barran</string>
+	<string name="topFabS">+ botoia goian edo behean egon behar den. Aplikazioaren barra ezkutatzen ez bada izango du eragina soilik.</string>
 </resources>
