@@ -259,8 +259,8 @@ public class Futils {
         c.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-                Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_LONG).show();
-                new DeleteTask(b.getActivity().getContentResolver(), b.getActivity()).execute(todelete);
+                Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_SHORT).show();
+            b.mainActivity.deleteFiles(b,todelete);
             }
 
             @Override

@@ -98,6 +98,7 @@ import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.SearchService;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
+import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 import com.amaze.filemanager.utils.MediaFile;
@@ -187,7 +188,9 @@ public class MainActivity extends AppCompatActivity implements
     public Animation fabShowAnim, fabHideAnim;
     public FrameLayout buttonBarFrame;
     private RelativeLayout drawerHeaderParent;
-
+    int operation;
+    ArrayList<File> oparrayList;
+    String oppathe;
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
 
@@ -1770,7 +1773,84 @@ public class MainActivity extends AppCompatActivity implements
 
                 }
             }).run();
+        }else if (requestCode == 3) {
+            String p=Sp.getString("URI",null);
+            Uri oldUri =null;
+            if(p!=null)oldUri=Uri.parse(p);
+            Uri treeUri = null;
+            if (responseCode == Activity.RESULT_OK) {
+                // Get Uri from Storage Access Framework.
+                treeUri = intent.getData();
+                // Persist URI - this is required for verification of writability.
+                if(treeUri!=null)Sp.edit().putString("URI", treeUri.toString()).commit();
+            }
+
+            // If not confirmed SAF, or if still not writable, then revert settings.
+            if (responseCode != Activity.RESULT_OK  ) {
+               /* DialogUtil.displayError(getActivity(), R.string.message_dialog_cannot_write_to_folder_saf, false,
+                        currentFolder);||!FileUtil.isWritableNormalOrSaf(currentFolder)
+*/
+                Sp.edit().putString("URI", oldUri.toString()).commit();
+                return;
+            }
+
+            // After confirmation, update stored value of folder.
+            // Persist access permissions.
+            final int takeFlags = intent.getFlags()
+                    & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
+            if(operation==0)
+                for(File f:oparrayList)FileUtil.deleteFile(f,this);
         }
+    }
+    private int checkFolder(final File folder,Context context) {
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
+            if (!folder.exists() || !folder.isDirectory()) {
+                return 0;
+            }
+
+            // On Android 5, trigger storage access framework.
+            if (!FileUtil.isWritableNormalOrSaf(folder,context)) {
+                // Ensure via listener that storage access framework is called only after information
+                // message.
+/*
+                MessageDialogListener listener = new MessageDialogListener() {
+                    */
+/**
+ * Default serial version id.
+ *//*
+
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public void onDialogClick(final DialogFragment dialog) {
+                    }
+                };
+*/
+                triggerStorageAccessFramework();
+                return 2;
+/*
+                DialogUtil.displayInfo(getActivity(), listener, R.string.message_dialog_select_extsdcard,
+                        FileUtil.getExtSdCardFolder(folder));
+*/
+            }
+            return 1;
+        }
+        else if (Build.VERSION.SDK_INT==19 && FileUtil.isOnExtSdCard(folder,context)) {
+            // Assume that Kitkat workaround works
+            return 1;
+        }
+        else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+    private void triggerStorageAccessFramework() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        startActivityForResult(intent, 3);
     }
 
 
@@ -2102,7 +2182,17 @@ public class MainActivity extends AppCompatActivity implements
             }pending_path=null;}
         supportInvalidateOptionsMenu();
     }
-
+    public void deleteFiles(Main m,ArrayList<File> files){
+       int mode=checkFolder( files.get(0).getParentFile(),this);
+        if(mode==2){
+            oparrayList=files;
+            operation=0;
+        }else if(mode==1)
+            for(File f:files)FileUtil.deleteFile(f,this);
+        else if(mode==0)
+            for(File f:files)RootTools.deleteFileOrDirectory(f.getPath(),true);
+        m.loadlist(new File(m.current),true);
+    }
     public void translateDrawerList(boolean down) {
         if (down)
             mDrawerList.animate().translationY(toolbar.getHeight());
