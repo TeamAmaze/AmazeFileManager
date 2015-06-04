@@ -152,7 +152,39 @@ public abstract class FileUtil {
         }
         return true;
     }
+    public static OutputStream getOutputStream(final File target,Context context) {
 
+        OutputStream outStream = null;
+        try {
+
+            // First try the normal way
+            if (isWritable(target)) {
+                // standard way
+                outStream = new FileOutputStream(target);
+            }
+            else {
+                if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+                    // Storage Access Framework
+                    DocumentFile targetDocument = getDocumentFile(target, false,context);
+                    outStream =
+                            context.getContentResolver().openOutputStream(targetDocument.getUri());
+                }
+                else if (Build.VERSION.SDK_INT==Build.VERSION_CODES.KITKAT) {
+                    // Workaround for Kitkat ext SD card
+                    Uri uri = MediaStoreUtil.getUriFromFile(target.getAbsolutePath(),context);
+                    outStream = context.getContentResolver().openOutputStream(uri);
+                }
+
+
+
+            }
+        }
+        catch (Exception e) {
+            Log.e("AmazeFileUtils",
+                    "Error when copying file from " +  target.getAbsolutePath(), e);
+        }
+      return outStream;
+        }
     /**
      * Delete a file. May be even on external SD card.
      *

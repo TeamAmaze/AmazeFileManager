@@ -46,6 +46,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -211,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements
             super.onCreate(savedInstanceState);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }System.out.println("onCreate");
 
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -607,6 +608,12 @@ public class MainActivity extends AppCompatActivity implements
                 goToMain(path);
             }
         } else {
+            ArrayList<String> k=savedInstanceState.getStringArrayList("oparrayList");
+            if(k!=null) {
+                oparrayList = utils.toFileArray(k);
+                operation = savedInstanceState.getInt("operation");
+                oppathe=savedInstanceState.getString("oppathe");
+            }
             select = savedInstanceState.getInt("selectitem", 0);
             adapter.toggleChecked(select);
         }
@@ -1263,11 +1270,18 @@ public class MainActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("selectitem", select);
+        System.out.println("onSaved");
+        if(oparrayList!=null){
+            outState.putStringArrayList("oparraylist",utils.toStringArray(oparrayList));
+            outState.putInt("operation", operation);
+            outState.putString("oppathe",oppathe);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        System.out.println("onPause");
         killToast();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(SEARCHRECIEVER);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(LOADSEARCHRECIEVER);
@@ -1276,7 +1290,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onResume() {
         super.onResume();
-
+        System.out.println("onresume");
         LocalBroadcastManager.getInstance(this).registerReceiver(SEARCHRECIEVER, new IntentFilter("searchresults"));
         LocalBroadcastManager.getInstance(this).registerReceiver(LOADSEARCHRECIEVER, new IntentFilter("loadsearchresults"));
     }
@@ -1421,7 +1435,8 @@ public class MainActivity extends AppCompatActivity implements
             if (counter == a.size() || a.size()==0) {
 
                 if (ab != null && ab.size()!=0) {
-
+                    int mode=checkFolder(new File(path),mainActivity);
+                    if(mode==1 || mode==0){
                     if(!move){
 
                         Intent intent = new Intent(con, CopyService.class);
@@ -1431,6 +1446,10 @@ public class MainActivity extends AppCompatActivity implements
                     } else{
 
                         new MoveFiles(utils.toFileArray(ab), ma,ma.getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                    }}else{
+                        operation=move?2:1;
+                        oparrayList=new Futils().toFileArray(a);
+                        oppathe=path;
                     }
                 } else {
 
@@ -1800,9 +1819,16 @@ public class MainActivity extends AppCompatActivity implements
                     & (Intent.FLAG_GRANT_READ_URI_PERMISSION
                     | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
-            if(operation==0)
-                for(File f:oparrayList)FileUtil.deleteFile(f,this);
-        }
+            switch (operation) {
+                case 0:    for (File f : oparrayList) FileUtil.deleteFile(f, this);
+                break;
+                case 1:
+                    Intent intent1 = new Intent(con, CopyService.class);
+                    intent1.putExtra("FILE_PATHS", utils.toStringArray(oparrayList));
+                    intent1.putExtra("COPY_DIRECTORY", oppathe);
+                    startService(intent1);
+                break;
+            } }
     }
     private int checkFolder(final File folder,Context context) {
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {

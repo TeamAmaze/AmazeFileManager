@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -36,6 +37,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MediaFile;
 import com.stericson.RootTools.RootTools;
@@ -180,6 +182,27 @@ public class CopyService extends Service {
         sendBroadcast(intent);
 
     }
+    private int checkFolder(final File folder,Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
+            if (!folder.exists() || !folder.isDirectory()) {
+                return 0;
+            }
+
+            // On Android 5, trigger storage access framework.
+            if (FileUtil.isWritableNormalOrSaf(folder, context)) {
+                return 1;
+
+            }
+        } else if (Build.VERSION.SDK_INT == 19 && FileUtil.isOnExtSdCard(folder, context)) {
+            // Assume that Kitkat workaround works
+            return 1;
+        } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+            return 1;
+        } else {
+            return 0;
+        }
+        return 0;
+    }
 
     class copy {
         public copy() {
@@ -188,7 +211,7 @@ public class CopyService extends Service {
         long totalBytes = 0L, copiedBytes = 0L;
         int lastpercent=0;
         public void execute(int id, final ArrayList<String> files,final String FILE2,final boolean move) {
-            if (new File(FILE2).canWrite() && new File(files.get(0)).canRead()) {
+            if (checkFolder(new File(FILE2),c)==1) {
                 try{
                     for (int i = 0; i < files.size(); i++) {
                         File f1 = new File(files.get(i));
@@ -213,7 +236,8 @@ public class CopyService extends Service {
                 }
                 if (move) {
                     boolean b = hash.get(id);
-                    if (b) new DeleteTask(getContentResolver(),  c).execute(utils.toFileArray(files));
+                    if (b)
+                        for(String a:files){FileUtil.deleteFile(new File(a),c);}
                 }
                 Intent intent = new Intent("loadlist");
                 sendBroadcast(intent);
@@ -242,7 +266,7 @@ public class CopyService extends Service {
 
         private void copyFiles(File sourceFile, File targetFile, int id,boolean move) throws IOException {
             if (sourceFile.isDirectory()) {
-                if (!targetFile.exists()) targetFile.mkdirs();
+                if (!targetFile.exists()) FileUtil.mkdir(targetFile,c);
 
                 String[] filePaths = sourceFile.list();
 
@@ -257,10 +281,8 @@ public class CopyService extends Service {
                 // txtDetails.append("Copying " + sourceFile.getAbsolutePath() + " ... ");
                 BufferedInputStream in = new BufferedInputStream(new FileInputStream(sourceFile));
                 OutputStream out;
-                try {
-                out= new FileOutputStream(targetFile);
-}catch (Exception e){out=new MediaFile(c,targetFile).write(size);}
-
+                out= FileUtil.getOutputStream(targetFile,c);
+                    if(out!=null){
                 byte[] buffer = new byte[20480];
 
                 int length;
@@ -289,7 +311,7 @@ public class CopyService extends Service {
                 out.close();
 
                 utils.scanFile(targetFile.getPath(), c);
-            }
+            }}
         }
     }
     Futils utils = new Futils();
