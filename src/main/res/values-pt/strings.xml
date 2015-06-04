@@ -332,7 +332,7 @@
     <string name="textreader">Leitor de texto</string>
     <string name="databasereader">Leitor de bases de dados</string>
     <string name="showDividers">Mostrar linhas divisórias</string>
-    <string name="topFab">FAB em cima</string>
+    <string name="topFab">FAB na barra da aplicaçao</string>
     <string name="topFabS">Se o botão + deve aparecer em cima ou em baixo. Apenas aplicável se a barra da aplicação estiver visível</string>
 </resources>
 
