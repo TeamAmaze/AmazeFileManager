@@ -36,7 +36,6 @@ import com.amaze.filemanager.utils.MediaFile;
 import com.stericson.RootTools.RootTools;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class DeleteTask extends AsyncTask<ArrayList<File>, String, Boolean> {
