@@ -892,21 +892,9 @@ public class Main extends android.support.v4.app.Fragment {
                     a.callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog materialDialog) {
+                        m.finish();
+                            mainActivity.rename((f),new File(f.getPath()+"/"+edit.getText()));
 
-                            boolean b = utils.rename(f, edit.getText()
-                                    .toString(),rootMode);
-                            m.finish();
-                            updateList();
-                            if (b) {
-                                Toast.makeText(getActivity(),
-                                        utils.getString(getActivity(), R.string.renamed),
-                                        Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(getActivity(),
-                                        utils.getString(getActivity(), R.string.renameerror),
-                                        Toast.LENGTH_LONG).show();
-
-                            }
                         }
 
                         @Override
