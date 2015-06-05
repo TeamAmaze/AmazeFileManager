@@ -39,7 +39,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.MediaFile;
 import com.stericson.RootTools.RootTools;
 
 import java.io.BufferedInputStream;

@@ -32,7 +32,7 @@ import com.amaze.filemanager.fragments.RarViewer;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.MediaFile;
+
 import com.stericson.RootTools.RootTools;
 
 import java.io.File;

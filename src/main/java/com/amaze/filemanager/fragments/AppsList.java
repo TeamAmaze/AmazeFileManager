@@ -143,7 +143,7 @@ public class AppsList extends ListFragment {
                     public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence s) {
                         switch (i) {
                             case 0:
-                                Intent i1 = app.getActivity().getPackageManager().getLaunchIntentForPackage(c.get(position).packageName);
+                                Intent i1 = app.getActivity().getPackageManager().getLaunchIntentForPackage(a.get(position).getPermissions());
                                 if (i1!= null)
                                     app.startActivity(i1);
                                 else
@@ -152,9 +152,9 @@ public class AppsList extends ListFragment {
 
                             case 1:
                                 Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
-                                ApplicationInfo info = c.get(position);
-                                File f = new File(info.publicSourceDir);
-                                ArrayList<String> a = new ArrayList<String>();
+
+                                File f = new File(a.get(position).getDesc());
+                                ArrayList<String> ab = new ArrayList<String>();
                                 //a.add(info.publicSourceDir);
                                 File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");
                                 if(!dst.exists() || !dst.isDirectory())dst.mkdirs();
@@ -162,20 +162,22 @@ public class AppsList extends ListFragment {
                                 //Toast.makeText(getActivity(), f.getParent(), Toast.LENGTH_LONG).show();
 
                                 if (Build.VERSION.SDK_INT >= 21) {
-                                    a.add(f.getParent());
+                                    ab.add(f.getParent());
                                 } else {
-                                    a.add(f.getPath());
+                                    ab.add(f.getPath());
                                 }
-                                intent.putExtra("FILE_PATHS", a);
+                                intent.putExtra("FILE_PATHS", ab);
                                 intent.putExtra("COPY_DIRECTORY", dst.getPath());
                                 getActivity().startService(intent);
                                 break;
                             case 2:
-                                ArrayList<Layoutelements> arrayList = new ArrayList<Layoutelements>();
-                                ApplicationInfo info1 = c.get(position);
                                 ArrayList<Integer> arrayList1 = new ArrayList<Integer>();
                                 arrayList1.add(position);
-                                final File f1 = new File(info1.publicSourceDir);
+                                final File f1 = new File(a.get(position).getDesc());
+                                ApplicationInfo info1=null;
+                                for(ApplicationInfo info:c){
+                                    if(info.packageName.equals(a.get(position).getPermissions()))info1=info;
+                                }
                                 //arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1),"", false));
                                 //utils.deleteFiles(arrayList, null, arrayList1);
                                 if ((info1.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
@@ -222,16 +224,16 @@ public class AppsList extends ListFragment {
                             case 3:
                                 startActivity(new Intent(
                                         android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                        Uri.parse("package:" + c.get(position).packageName)));
+                                        Uri.parse("package:" + a.get(position).getPermissions())));
                                 break;
                             case 4:
                                 Intent intent1 = new Intent(Intent.ACTION_VIEW);
-                                intent1.setData(Uri.parse("market://details?id=" + c.get(position).packageName));
+                                intent1.setData(Uri.parse("market://details?id=" + a.get(position).getPermissions()));
                                 startActivity(intent1);
                                 break;
                             case 5:
                                 ArrayList<File> arrayList2=new ArrayList<File>();
-                                arrayList2.add(new File(c.get(position).publicSourceDir));
+                                arrayList2.add(new File(a.get(position).getDesc()));
                                 utils.shareFiles(arrayList2,getActivity());
                         }
                     }
@@ -267,7 +269,7 @@ public class AppsList extends ListFragment {
 
                 }
                 for (ApplicationInfo object : c)
-                    a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk_grid), object.loadLabel(getActivity().getPackageManager()).toString(), object.publicSourceDir, "", "", utils.readableFileSize(new File(object.publicSourceDir).length()), false, "", false));
+                    a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk_grid), object.loadLabel(getActivity().getPackageManager()).toString(), object.publicSourceDir, object.packageName, "", utils.readableFileSize(new File(object.publicSourceDir).length()), false, new File(object.publicSourceDir).lastModified()+"", false));
                 Collections.sort(a, new FileListSorter(0, sortby, asc, false));
             } catch (Exception e) {
                 //Toast.makeText(getActivity(), "" + e, Toast.LENGTH_LONG).show();
