@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.RarViewer;
 import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MediaFile;
 import com.stericson.RootTools.RootTools;
@@ -50,20 +51,17 @@ public class DeleteTask extends AsyncTask<ArrayList<File>, String, Boolean> {
     RarViewer rarViewer;
 
     public DeleteTask(ContentResolver c, Context cd) {
-        this.contentResolver = c;
         this.cd = cd;
         rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean("rootmode", false);
     }
 
     public DeleteTask(ContentResolver c, Context cd, ZipViewer zipViewer) {
-        this.contentResolver = c;
         this.cd = cd;
         rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean("rootmode", false);
         this.zipViewer = zipViewer;
     }
 
     public DeleteTask(ContentResolver c, Context cd, RarViewer rarViewer) {
-        this.contentResolver = c;
         this.cd = cd;
         rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean("rootmode", false);
         this.rarViewer = rarViewer;
@@ -78,41 +76,40 @@ public class DeleteTask extends AsyncTask<ArrayList<File>, String, Boolean> {
     protected Boolean doInBackground(ArrayList<File>... p1) {
         files = p1[0];
         boolean b = true;
-        if (files.get(0).getParentFile().canWrite()) {
-
-            for (int i = 0; i < files.size(); i++) {
-                boolean c = utils.deletefiles(files.get(i));
-                if (!c) {
-                    b = false;
-                }
+        int mode=checkFolder(files.get(0).getParentFile(),cd);
+        if (mode==1) {
+            for(File f:files)
+                if(!FileUtil.deleteFile(f,cd))b=false;
             }
-            if (!b && Build.VERSION.SDK_INT >= 19) {
-                for (File f : files) {
-                    MediaFile mediaFile = new MediaFile(cd, f);
-                    try {
-                        boolean delete = mediaFile.delete();
-                        if (!delete) {
-                            b = false;
-                        }
-                    } catch (IOException e) {
-                        b = false;
-                        publishProgress(utils.getString(cd, R.string.error));
-                    }
-                }
-            } else if (!b && rootMode) for (File f : files) {
+         if ((!b || mode==0 || mode ==2) && rootMode)
+             for (File f : files) {
                 b=RootTools.deleteFileOrDirectory(f.getPath(), true);
-                return true;
-            }
-        } else if (rootMode) {
-            for (File f : files) {
-               b= RootTools.deleteFileOrDirectory(f.getPath(), true);
+                return b;
             }
 
-            return b;
-
-
-        }
         return b;
+    }
+    private int checkFolder(final File folder,Context context) {
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
+            if (!folder.exists() || !folder.isDirectory()) {
+                return 0;
+            }
+
+            if (!FileUtil.isWritableNormalOrSaf(folder,context)) {
+                return 2;
+            }
+            return 1;
+        }
+        else if (Build.VERSION.SDK_INT==19 && FileUtil.isOnExtSdCard(folder,context)) {
+            // Assume that Kitkat workaround works
+            return 1;
+        }
+        else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
     }
 
     @Override

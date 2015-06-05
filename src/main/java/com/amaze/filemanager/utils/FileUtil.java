@@ -194,6 +194,8 @@ public abstract class FileUtil {
      */
     public static final boolean deleteFile(final File file,Context context) {
         // First try the normal deletion.
+        if(file.isDirectory())
+            deleteFilesInFolder(file,context);
         if (file.delete()) {
             return true;
         }
@@ -379,6 +381,17 @@ public abstract class FileUtil {
      *
      * @return true if successful.
      */
+    public static boolean rmdir1(final File file,Context context){
+        boolean b = true;
+        for (File file1 : file.listFiles()) {
+            if (file1.isDirectory()) {
+                if (!rmdir1(file1, context)) b = false;
+            } else {
+                if (!deleteFile(file1, context)) b = false;
+            }
+        }
+        return b;
+    }
     public static boolean rmdir(final File file,Context context) {
         if (!file.exists()) {
             return true;
@@ -388,10 +401,14 @@ public abstract class FileUtil {
         }
         String[] fileList = file.list();
         if (fileList != null && fileList.length > 0) {
+            //  empty the folder.
+               rmdir1(file,context);
+        }
+        String[] fileList1 = file.list();
+        if (fileList1 != null && fileList1.length > 0) {
             // Delete only empty folder.
             return false;
         }
-
         // Try the normal way
         if (file.delete()) {
             return true;
@@ -438,7 +455,7 @@ public abstract class FileUtil {
                         Log.w("AmazeFileUtils", "Failed to delete file" + children[i]);
                         totalSuccess = false;
                     }
-                }
+                }else deleteFilesInFolder(file,context);
             }
         }
         return totalSuccess;

@@ -97,6 +97,7 @@ import com.amaze.filemanager.fragments.RarViewer;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
+import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.SearchService;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.utils.FileUtil;
@@ -190,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements
     public FrameLayout buttonBarFrame;
     private RelativeLayout drawerHeaderParent;
     int operation;
-    ArrayList<File> oparrayList;
+    ArrayList<String> oparrayList;
     String oppathe;
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
@@ -610,7 +611,7 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             ArrayList<String> k=savedInstanceState.getStringArrayList("oparrayList");
             if(k!=null) {
-                oparrayList = utils.toFileArray(k);
+                oparrayList = (k);
                 operation = savedInstanceState.getInt("operation");
                 oppathe=savedInstanceState.getString("oppathe");
             }
@@ -1140,7 +1141,12 @@ public class MainActivity extends AppCompatActivity implements
                         File f = new File(path + "/" + a);
                         boolean b=false;
                         if (!f.exists()) {
-                            b=f.mkdirs();
+                            int mode=checkFolder(new File(path),mainActivity);
+                            if(mode==1)b=FileUtil.mkdir(f,mainActivity);
+                            else if(mode==2){
+                                oppathe=f.getPath();
+                                operation=3;
+                            }
                             ma.updateList();
                             if(b)
                                 Toast.makeText(mainActivity, (R.string.foldercreated), Toast.LENGTH_LONG).show();
@@ -1151,13 +1157,6 @@ public class MainActivity extends AppCompatActivity implements
                             RootTools.remount(f.getParent(), "rw");
                             RootHelper.runAndWait("mkdir "+f.getPath(),true);
                             ma.updateList();
-                        }
-                        else if(!b && !rootmode){
-                            try {
-                                new MediaFile(mainActivity,f).mkdir();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
                         }
                     }
 
@@ -1272,7 +1271,7 @@ public class MainActivity extends AppCompatActivity implements
         outState.putInt("selectitem", select);
         System.out.println("onSaved");
         if(oparrayList!=null){
-            outState.putStringArrayList("oparraylist",utils.toStringArray(oparrayList));
+            outState.putStringArrayList("oparraylist",(oparrayList));
             outState.putInt("operation", operation);
             outState.putString("oppathe",oppathe);
         }
@@ -1436,7 +1435,14 @@ public class MainActivity extends AppCompatActivity implements
 
                 if (ab != null && ab.size()!=0) {
                     int mode=checkFolder(new File(path),mainActivity);
-                    if(mode==1 || mode==0){
+                    if(mode==2)
+                    {
+                        oparrayList=(ab);
+                        operation=move?2:1;
+                        oppathe=path;
+
+                    }
+                    else if(mode==1 || mode==0){
                     if(!move){
 
                         Intent intent = new Intent(con, CopyService.class);
@@ -1446,11 +1452,7 @@ public class MainActivity extends AppCompatActivity implements
                     } else{
 
                         new MoveFiles(utils.toFileArray(ab), ma,ma.getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
-                    }}else{
-                        operation=move?2:1;
-                        oparrayList=new Futils().toFileArray(a);
-                        oppathe=path;
-                    }
+                    }}
                 } else {
 
                     Toast.makeText(MainActivity.this, utils.getString(con,R.string.no_file_overwrite), Toast.LENGTH_SHORT).show();
@@ -1820,14 +1822,24 @@ public class MainActivity extends AppCompatActivity implements
                     | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
             switch (operation) {
-                case 0:    for (File f : oparrayList) FileUtil.deleteFile(f, this);
-                break;
-                case 1:
+                case 0://deletion
+                    new DeleteTask(null,mainActivity).execute(utils.toFileArray(oparrayList));
+                    break;
+                case 1://copying
                     Intent intent1 = new Intent(con, CopyService.class);
-                    intent1.putExtra("FILE_PATHS", utils.toStringArray(oparrayList));
+                    intent1.putExtra("FILE_PATHS", (oparrayList));
                     intent1.putExtra("COPY_DIRECTORY", oppathe);
                     startService(intent1);
                 break;
+                case 2://moving
+                    new MoveFiles(utils.toFileArray(oparrayList), ((Main)getFragment().getTab()),((Main)getFragment().getTab()).getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                    break;
+                case 3://mkdir
+                    FileUtil.mkdir(new File(oppathe),mainActivity);
+                    Main ma1=((Main) getFragment().getTab());
+                    ma1.loadlist(new File(ma1.current), true);
+                    break;
+
             } }
     }
     private int checkFolder(final File folder,Context context) {
@@ -1838,29 +1850,9 @@ public class MainActivity extends AppCompatActivity implements
 
             // On Android 5, trigger storage access framework.
             if (!FileUtil.isWritableNormalOrSaf(folder,context)) {
-                // Ensure via listener that storage access framework is called only after information
-                // message.
-/*
-                MessageDialogListener listener = new MessageDialogListener() {
-                    */
-/**
- * Default serial version id.
- *//*
-
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public void onDialogClick(final DialogFragment dialog) {
-                    }
-                };
-*/
                 triggerStorageAccessFramework();
                 return 2;
-/*
-                DialogUtil.displayInfo(getActivity(), listener, R.string.message_dialog_select_extsdcard,
-                        FileUtil.getExtSdCardFolder(folder));
-*/
-            }
+         }
             return 1;
         }
         else if (Build.VERSION.SDK_INT==19 && FileUtil.isOnExtSdCard(folder,context)) {
@@ -2211,14 +2203,11 @@ public class MainActivity extends AppCompatActivity implements
     public void deleteFiles(Main m,ArrayList<File> files){
        int mode=checkFolder( files.get(0).getParentFile(),this);
         if(mode==2){
-            oparrayList=files;
+            oparrayList=utils.toStringArray(files);
             operation=0;
-        }else if(mode==1)
-            for(File f:files)FileUtil.deleteFile(f,this);
-        else if(mode==0)
-            for(File f:files)RootTools.deleteFileOrDirectory(f.getPath(),true);
-        m.loadlist(new File(m.current),true);
-    }
+        }else if(mode==1 || mode==2)
+        new DeleteTask(null,mainActivity).execute(files);
+      }
     public void translateDrawerList(boolean down) {
         if (down)
             mDrawerList.animate().translationY(toolbar.getHeight());
