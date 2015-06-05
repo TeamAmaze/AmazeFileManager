@@ -159,7 +159,7 @@
             <Preference
                 android:key="studio"
                 android:title="@string/version"
-                android:summary="v2.0"/>
+                android:summary="v2.0.4"/>
             <Preference
                 android:key="authors"
                 android:title="@string/authors" />

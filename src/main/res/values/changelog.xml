@@ -75,4 +75,9 @@
                                       - Lots of performance and bug fixes&lt;br>
                                       - Many translation fixes&lt;br>
                                       - more...&lt;br>&lt;br></string>
+    <string name="changelog_version_7">&lt;font color="#524ef8">&lt;b>v2.0.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>June 5, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_7">- Sorts options for appslist&lt;br>
+                                      - Improved tab UI and drawer header&lt;br>
+                                      - Introducing lollipop external storage write access&lt;br>
+                                   </string>
 </resources>
