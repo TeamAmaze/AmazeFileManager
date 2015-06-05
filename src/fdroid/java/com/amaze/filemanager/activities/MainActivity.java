@@ -95,11 +95,12 @@ import com.amaze.filemanager.fragments.RarViewer;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
+import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.SearchService;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
+import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
-import com.amaze.filemanager.utils.MediaFile;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.RoundedImageView;
@@ -111,6 +112,7 @@ import com.stericson.RootTools.RootTools;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.Override;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -170,6 +172,9 @@ public class MainActivity extends ActionBarActivity {
     public FrameLayout buttonBarFrame;
     private boolean topfab=false;
     public boolean isDrawerLocked = false;
+    int operation;
+    ArrayList<String> oparrayList;
+    String oppathe;
     /**
      * Called when the activity is first created.
      */
@@ -211,10 +216,6 @@ public class MainActivity extends ActionBarActivity {
         floatingActionButton.setShadow(true);
         floatingActionButton.setColorNormal(Color.parseColor(fabskin));
         floatingActionButton.setColorPressed(Color.parseColor(fabSkinPressed));
-
-        drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader, null);
-        drawerHeaderLayout = (RelativeLayout) drawerHeaderView.findViewById(R.id.drawer_header);
-        drawerHeaderLayout.setBackgroundResource(R.drawable.amaze_header);
 
         utils = new Futils();
         s = new Shortcuts(this);
@@ -323,6 +324,9 @@ public class MainActivity extends ActionBarActivity {
 
         skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#3f51b5");
         findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
+        drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader, null);
+        drawerHeaderView.findViewById(R.id.drawer_header).setBackgroundResource(R.drawable.amaze_header);
+        drawerHeaderView.setBackgroundColor(Color.parseColor(skin));
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
 
@@ -467,7 +471,7 @@ public class MainActivity extends ActionBarActivity {
         });*/
         //recents header color implementation
         if (Build.VERSION.SDK_INT>=21) {
-            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap(), Color.parseColor(skin));
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
             ((Activity)this).setTaskDescription(taskDescription);
         }
     }
@@ -937,7 +941,12 @@ public class MainActivity extends ActionBarActivity {
                         File f = new File(path + "/" + a);
                         boolean b=false;
                         if (!f.exists()) {
-                            b=f.mkdirs();
+                            int mode=checkFolder(new File(path),mainActivity);
+                            if(mode==1)b=FileUtil.mkdir(f,mainActivity);
+                            else if(mode==2){
+                                oppathe=f.getPath();
+                                operation=3;
+                            }
                             ma.updateList();
                             if(b)
                                 Toast.makeText(mainActivity, (R.string.foldercreated), Toast.LENGTH_LONG).show();
@@ -948,13 +957,6 @@ public class MainActivity extends ActionBarActivity {
                             RootTools.remount(f.getParent(), "rw");
                             RootHelper.runAndWait("mkdir "+f.getPath(),true);
                             ma.updateList();
-                        }
-                        else if(!b && !rootmode){
-                            try {
-                                new MediaFile(mainActivity,f).mkdir();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
                         }
                     }
 
@@ -1236,17 +1238,25 @@ public class MainActivity extends ActionBarActivity {
             if (counter == a.size() || a.size()==0) {
 
                 if (ab != null && ab.size()!=0) {
+                    int mode=checkFolder(new File(path),mainActivity);
+                    if(mode==2)
+                    {
+                        oparrayList=(ab);
+                        operation=move?2:1;
+                        oppathe=path;
 
-                    if(!move){
-
-                        Intent intent = new Intent(con, CopyService.class);
-                        intent.putExtra("FILE_PATHS", ab);
-                        intent.putExtra("COPY_DIRECTORY", path);
-                        startService(intent);
-                    } else{
-
-                        new MoveFiles(utils.toFileArray(ab), ma,ma.getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     }
+                    else if(mode==1 || mode==0){
+                        if(!move){
+
+                            Intent intent = new Intent(con, CopyService.class);
+                            intent.putExtra("FILE_PATHS", ab);
+                            intent.putExtra("COPY_DIRECTORY", path);
+                            startService(intent);
+                        } else{
+
+                            new MoveFiles(utils.toFileArray(ab), ma,ma.getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                        }}
                 } else {
 
                     Toast.makeText(MainActivity.this, utils.getString(con,R.string.no_file_overwrite), Toast.LENGTH_SHORT).show();
@@ -1639,7 +1649,56 @@ public class MainActivity extends ActionBarActivity {
             }).start();
         }
     }
+    @Override
+    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+         if (requestCode == 3) {
+            String p=Sp.getString("URI",null);
+            Uri oldUri =null;
+            if(p!=null)oldUri=Uri.parse(p);
+            Uri treeUri = null;
+            if (responseCode == Activity.RESULT_OK) {
+                // Get Uri from Storage Access Framework.
+                treeUri = intent.getData();
+                // Persist URI - this is required for verification of writability.
+                if(treeUri!=null)Sp.edit().putString("URI", treeUri.toString()).commit();
+            }
 
+            // If not confirmed SAF, or if still not writable, then revert settings.
+            if (responseCode != Activity.RESULT_OK  ) {
+               /* DialogUtil.displayError(getActivity(), R.string.message_dialog_cannot_write_to_folder_saf, false,
+                        currentFolder);||!FileUtil.isWritableNormalOrSaf(currentFolder)
+*/
+                Sp.edit().putString("URI", oldUri.toString()).commit();
+                return;
+            }
+
+            // After confirmation, update stored value of folder.
+            // Persist access permissions.
+            final int takeFlags = intent.getFlags()
+                    & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
+            switch (operation) {
+                case 0://deletion
+                    new DeleteTask(null,mainActivity).execute(utils.toFileArray(oparrayList));
+                    break;
+                case 1://copying
+                    Intent intent1 = new Intent(con, CopyService.class);
+                    intent1.putExtra("FILE_PATHS", (oparrayList));
+                    intent1.putExtra("COPY_DIRECTORY", oppathe);
+                    startService(intent1);
+                    break;
+                case 2://moving
+                    new MoveFiles(utils.toFileArray(oparrayList), ((Main)getFragment().getTab()),((Main)getFragment().getTab()).getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                    break;
+                case 3://mkdir
+                    FileUtil.mkdir(new File(oppathe),mainActivity);
+                    Main ma1=((Main) getFragment().getTab());
+                    ma1.loadlist(new File(ma1.current), true);
+                    break;
+
+            } }
+    }
     public void initiatebbar() {
         LinearLayout pathbar = (LinearLayout) findViewById(R.id.pathbar);
         TextView textView = (TextView) findViewById(R.id.fullpath);
@@ -1752,6 +1811,41 @@ public class MainActivity extends ActionBarActivity {
                 goToMain("");
             }pending_path=null;}
         supportInvalidateOptionsMenu();
+    }private int checkFolder(final File folder,Context context) {
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
+            if (!folder.exists() || !folder.isDirectory()) {
+                return 0;
+            }
+
+            // On Android 5, trigger storage access framework.
+            if (!FileUtil.isWritableNormalOrSaf(folder,context)) {
+                triggerStorageAccessFramework();
+                return 2;
+            }
+            return 1;
+        }
+        else if (Build.VERSION.SDK_INT==19 && FileUtil.isOnExtSdCard(folder,context)) {
+            // Assume that Kitkat workaround works
+            return 1;
+        }
+        else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+    private void triggerStorageAccessFramework() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        startActivityForResult(intent, 3);
+    }
+    public void deleteFiles(Main m,ArrayList<File> files){
+        int mode=checkFolder( files.get(0).getParentFile(),this);
+        if(mode==2){
+            oparrayList=utils.toStringArray(files);
+            operation=0;
+        }else if(mode==1 || mode==2)
+            new DeleteTask(null,mainActivity).execute(files);
     }
     public void translateDrawerList(boolean down) {
         if (down)
