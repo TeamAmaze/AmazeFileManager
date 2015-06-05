@@ -171,12 +171,10 @@ public class AppsList extends ListFragment {
                                 getActivity().startService(intent);
                                 break;
                             case 2:
-                                ArrayList<Integer> arrayList1 = new ArrayList<Integer>();
-                                arrayList1.add(position);
                                 final File f1 = new File(a.get(position).getDesc());
                                 ApplicationInfo info1=null;
                                 for(ApplicationInfo info:c){
-                                    if(info.packageName.equals(a.get(position).getPermissions()))info1=info;
+                                    if(info.publicSourceDir.equals(a.get(position).getDesc()))info1=info;
                                 }
                                 //arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1),"", false));
                                 //utils.deleteFiles(arrayList, null, arrayList1);
@@ -218,7 +216,7 @@ public class AppsList extends ListFragment {
                                         Toast.makeText(getActivity(),utils.getString(getActivity(), R.string.enablerootmde),Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
-                                    unin(c.get(position).packageName);
+                                    unin(a.get(position).getPermissions());
                                 }
                                 break;
                             case 3:
