@@ -332,7 +332,10 @@
     <string name="textreader">Leitor de texto</string>
     <string name="databasereader">Leitor de bases de dados</string>
     <string name="showDividers">Mostrar linhas divisórias</string>
-    <string name="topFab">FAB na barra da aplicaçao</string>
+    <string name="topFab">FAB na barra da aplicação</string>
     <string name="topFabS">Se o botão + deve aparecer em cima ou em baixo. Apenas aplicável se a barra da aplicação estiver visível</string>
+	<string name="needsaccess">Requer acesso de escrita</string>
+    <string name="needsaccesssummary">Por favor escolha o diretório raiz do \t</string>
+    <string name="needsaccesssummary1">\tpara poder ter acesso de escrita </string>
 </resources>
 
