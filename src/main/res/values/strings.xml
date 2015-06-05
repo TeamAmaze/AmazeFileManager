@@ -334,5 +334,9 @@
     <string name="showDividers">Show Dividers</string>
     <string name="topFab">FAB on App bar</string>
     <string name="topFabS">Whether + button should be at the top or bottom. Only applicable if app bar doesn\'t hide.</string>
+    <string name="needsaccess">Write Access Required</string>
+    <string name="needsaccesssummary">Please choose the root directory of \t</string>
+    <string name="needsaccesssummary1">\tto grant write access to operate </string>
+
 </resources>
 

@@ -35,6 +35,7 @@ import android.util.Log;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.github.junrar.Archive;
 import com.github.junrar.exception.RarException;
@@ -155,7 +156,7 @@ public class ExtractService extends Service {
         BufferedInputStream inputStream = new BufferedInputStream(
                 zipfile.getInputStream(entry));
         BufferedOutputStream outputStream = new BufferedOutputStream(
-                new FileOutputStream(outputFile));
+                FileUtil.getOutputStream(outputFile,cd));
         try {
             int len;
             byte buf[] = new byte[20480];
@@ -197,7 +198,7 @@ public class ExtractService extends Service {
         BufferedInputStream inputStream = new BufferedInputStream(
                 zipfile.getInputStream(entry));
         BufferedOutputStream outputStream = new BufferedOutputStream(
-                new FileOutputStream(outputFile));
+                FileUtil.getOutputStream(outputFile, cd));
         try {
             int len;
             byte buf[] = new byte[20480];
@@ -237,7 +238,7 @@ public class ExtractService extends Service {
         //	Log.i("Amaze", "Extracting: " + entry);
 
         BufferedOutputStream outputStream = new BufferedOutputStream(
-                new FileOutputStream(outputFile));
+                FileUtil.getOutputStream(outputFile,cd));
         try {
             int len;
             byte buf[] = new byte[20480];
