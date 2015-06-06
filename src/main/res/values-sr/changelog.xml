@@ -75,4 +75,9 @@
                                       - Много побољшања перформанси и исправки грешака&lt;br>
                                       - Многе исправке превода&lt;br>
                                       - још тога...&lt;br>&lt;br></string>
+    <string name="changelog_version_7">&lt;font color="#524ef8">&lt;b>в2.0.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>5. јун, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_7">- Опције ређања за списак апликација&lt;br>
+                                      - Побољшани УИ језичака и заглавље фиоке&lt;br>
+                                      - Дозвола уписа у спољашње складиште за Лолипоп уређаје&lt;br>&lt;br>
+                                   </string>
 </resources>

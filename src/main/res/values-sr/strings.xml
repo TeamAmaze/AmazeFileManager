@@ -88,7 +88,7 @@
     <string name="guide5">Користите дугме за назад на вашем уређају да изађете из апликације било кад...</string>
     <string name="guide6">...и користите дугме стрелице улево за навигацију у менаџеру фајлова</string>
     <string name="maintab">Главни језичак не можете да уклоните</string>
-    <string name="openparent">Отвори родитељски директоријум</string>
+    <string name="openparent">Отвори родитељску фасциклу</string>
     <string name="openwith">Отвори помоћу</string>
     <string name="share">Дели</string>
     <string name="about">О програму</string>
@@ -101,7 +101,7 @@
     <string name="questiondelete">Желите ли заиста да обришете следеће ставке?</string>
     <string name="viewmode">Режим приказа</string>
     <string name="uimode">Режим сучеља</string>
-    <string name="directorysort">Режим ређања директоријума</string>
+    <string name="directorysort">Режим ређања фасцикли</string>
     <string name="sortby">Поређај по</string>
     <string name="theme">Тема</string>
     <string name="skin">Маска</string>
@@ -327,5 +327,16 @@
     <string name="hide_mode_toolbar">Трака алатки скривена при клизању</string>
     <string name="hide_mode_app_bar">Трака апликације скривена при клизању</string>
     <string name="no_cover_photo">Нема насловне слике</string>
+    <string name="files">Фајлови</string>
+    <string name="directories">Фасцикле</string>
+    <string name="textreader">Читач текста</string>
+    <string name="databasereader">Читач базе података</string>
+    <string name="showDividers">Прикажи раздвајаче</string>
+    <string name="topFab">ФАБ на траци апликације</string>
+    <string name="topFabS">Приказ + дугмета при врху или дну. Примењиво само ако трака апликације није скривена.</string>
+    <string name="needsaccess">Потребна дозвола уписа</string>
+    <string name="needsaccesssummary">Одредите корени директоријум од \t</string>
+    <string name="needsaccesssummary1">\tда бисте одобрили дозволу уписа за радњу </string>
+
 </resources>
 
