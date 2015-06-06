@@ -198,14 +198,13 @@ public abstract class FileUtil {
      */
     public static final boolean deleteFile(final File file,Context context) {
         // First try the normal deletion.
-        if(file.isDirectory())
-            deleteFilesInFolder(file,context);
-        if (file.delete()) {
+        boolean fileDelete = deleteFilesInFolder(file, context);
+        if (file.delete() || fileDelete)
             return true;
-        }
 
         // Try with Storage Access Framework.
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(file, context)) {
+
             DocumentFile document = getDocumentFile(file, false,context);
             return document.delete();
         }
@@ -427,18 +426,17 @@ public abstract class FileUtil {
     public static final boolean deleteFilesInFolder(final File folder,Context context) {
         boolean totalSuccess = true;
 
-        String[] children = folder.list();
-        if (children != null) {
-            for (int i = 0; i < children.length; i++) {
-                File file = new File(folder, children[i]);
-                if (!file.isDirectory()) {
-                    boolean success = FileUtil.deleteFile(file,context);
-                    if (!success) {
-                        Log.w("AmazeFileUtils", "Failed to delete file" + children[i]);
-                        totalSuccess = false;
-                    }
-                }else deleteFilesInFolder(file,context);
+        if (folder.isDirectory()) {
+            for (File child : folder.listFiles()) {
+                deleteFilesInFolder(child, context);
             }
+
+            if (!folder.delete())
+                totalSuccess = false;
+        } else {
+
+            if (!folder.delete())
+                totalSuccess = false;
         }
         return totalSuccess;
     }
