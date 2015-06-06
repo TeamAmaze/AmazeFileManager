@@ -1745,20 +1745,23 @@ public class MainActivity extends AppCompatActivity implements
             oppathe=file.getPath();
             oppathe1=file1.getPath();
             operation = 4;
-        } else if (mode == 1)
-        {
+        } else if (mode == 0) {
             boolean b = FileUtil.renameFolder(file, file1, mainActivity);
-        if (b) {
-            Toast.makeText(mainActivity,
-                    utils.getString(mainActivity, R.string.renamed),
-                    Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(mainActivity,
-                    utils.getString(mainActivity, R.string.renameerror),
-                    Toast.LENGTH_LONG).show();
+            if (b) {
+                Toast.makeText(mainActivity,
+                        utils.getString(mainActivity, R.string.renamed),
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(mainActivity,
+                        utils.getString(mainActivity, R.string.renameerror),
+                        Toast.LENGTH_LONG).show();
 
-        }
-    }  else if(mode==0)utils.rename(file,file1.getName(),rootmode); }
+            }
+        } else if(mode==1) utils.rename(file,file1.getName(),rootmode);
+
+        Intent intent = new Intent("loadlist");
+        sendBroadcast(intent);
+    }
     private int checkFolder(final File folder,Context context) {
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
             if (!folder.exists() || !folder.isDirectory()) {
@@ -1769,17 +1772,14 @@ public class MainActivity extends AppCompatActivity implements
             if (!FileUtil.isWritableNormalOrSaf(folder,context)) {
                 guideDialogForLEXA(folder.getPath());
                 return 2;
-         }
+            }
             return 1;
-        }
-        else if (Build.VERSION.SDK_INT==19 && FileUtil.isOnExtSdCard(folder,context)) {
+        } else if (Build.VERSION.SDK_INT==19 && FileUtil.isOnExtSdCard(folder,context)) {
             // Assume that Kitkat workaround works
             return 1;
-        }
-        else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+        } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
             return 1;
-        }
-        else {
+        } else {
             return 0;
         }
     }

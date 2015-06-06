@@ -268,7 +268,8 @@ public abstract class FileUtil {
         }
 
         // Try the Storage Access Framework if it is just a rename within the same parent folder.
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && source.getParent().equals(target.getParent())) {
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP
+                && source.getParent().equals(target.getParent()) && FileUtil.isOnExtSdCard(source, context)) {
             DocumentFile document = getDocumentFile(source, true,context);
             if (document.renameTo(target.getName())) {
                 return true;
@@ -336,7 +337,7 @@ public abstract class FileUtil {
         }
 
         // Try with Storage Access Framework.
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(file, context)) {
             DocumentFile document = getDocumentFile(file, true,context);
             // getDocumentFile implicitly creates the directory.
             return document.exists();
