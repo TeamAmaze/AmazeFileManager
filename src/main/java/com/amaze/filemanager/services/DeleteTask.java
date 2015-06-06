@@ -77,12 +77,23 @@ public class DeleteTask extends AsyncTask<ArrayList<File>, String, Boolean> {
         boolean b = true;
         int mode=checkFolder(files.get(0).getParentFile(),cd);
         if (mode==1) {
-            for(File f:files)
-                if(!FileUtil.deleteFile(f,cd))b=false;
+            for(File f:files) {
+                try {
+
+                    if(!FileUtil.deleteFile(f,cd))b=false;
+                } catch (Exception e) {
+                    b = false;
+                }
+            }
             }
          if ((!b || mode==0 || mode ==2) && rootMode)
              for (File f : files) {
-                b=RootTools.deleteFileOrDirectory(f.getPath(), true);
+                 try {
+
+                     b=RootTools.deleteFileOrDirectory(f.getPath(), true);
+                 } catch (Exception e) {
+                     b = false;
+                 }
                 return b;
             }
 
