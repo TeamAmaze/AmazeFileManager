@@ -22,6 +22,7 @@ package com.amaze.filemanager.activities;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -32,6 +33,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -57,7 +59,7 @@ import java.util.ArrayList;
 /**
  * Created by Vishal on 02-02-2015.
  */
-public class DbViewer extends ActionBarActivity {
+public class DbViewer extends AppCompatActivity {
 
     private SharedPreferences Sp;
     private String skin, path;
@@ -193,6 +195,11 @@ public class DbViewer extends ActionBarActivity {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
         toolbar.setTitle(pathFile.getName());
@@ -209,7 +216,18 @@ public class DbViewer extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        toolbar.setTitle(pathFile.getName());
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 }

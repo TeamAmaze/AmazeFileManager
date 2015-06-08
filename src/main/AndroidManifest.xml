@@ -89,7 +89,7 @@
             android:label="@string/databasereader"
             android:name=".activities.DbViewer"
             android:theme="@style/appCompatLight"
-            android:screenOrientation="portrait">
+            android:screenOrientation="locked">
             <intent-filter
                 android:label="Amaze Database Reader">
                 <action android:name="android.intent.action.VIEW"/>
