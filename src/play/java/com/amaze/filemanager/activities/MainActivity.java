@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements
     Futils utils;
     private boolean backPressedToExitOnce = false;
     private Toast toast = null;
-    private DrawerLayout mDrawerLayout;
+    public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
     SharedPreferences Sp;
     private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements
     MainActivity mainActivity=this;
     DrawerAdapter adapter;
     IconUtils util;
-    ScrimInsetsRelativeLayout mDrawerLinear;
+    public ScrimInsetsRelativeLayout mDrawerLinear;
     Shortcuts s;
     public String skin,path="", launchPath;
     public int theme;

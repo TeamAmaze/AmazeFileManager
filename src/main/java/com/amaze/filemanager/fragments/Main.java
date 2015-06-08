@@ -47,6 +47,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -165,6 +166,7 @@ public class Main extends android.support.v4.app.Fragment {
     boolean SmbAnonym=false;
     String smbUser,smbPass;
     public String smbPath;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -645,6 +647,10 @@ public class Main extends android.support.v4.app.Fragment {
                 if(mainActivity.colourednavigation)
                     window.setNavigationBarColor(res.getColor(android.R.color.black));
             }
+
+            if (!mainActivity.isDrawerLocked)
+                mainActivity.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+                        mainActivity.mDrawerLinear);
             return true;
         }
 
@@ -992,6 +998,10 @@ public class Main extends android.support.v4.app.Fragment {
                 Window window = getActivity().getWindow();
                 if(mainActivity.colourednavigation)window.setNavigationBarColor(mainActivity.skinStatusBar);
             }
+
+            if (!mainActivity.isDrawerLocked)
+                mainActivity.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED,
+                        mainActivity.mDrawerLinear);
         }
     };
 
