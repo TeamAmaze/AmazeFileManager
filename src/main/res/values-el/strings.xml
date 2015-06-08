@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014-2015 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+    This file is part of Amaze File Manager.
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">Amaze File Manager</string>
+    <string name="drawer_open">Άνοιγμα μενού πλοήγησης</string>
+    <string name="drawer_close">Κλείσιμο μενού πλοήγησης</string>
+    <string name="books">Σελιδοδείκτες</string>
+    <string name="icon">Εικονίδιο</string>
+    <string name="efn">Εισαγωγή ονόματος αρχείου</string>
+    <string name="storage">Αποθηκευτικός χώρος</string>
+    <string name="gallery">Έκθεση</string>
+    <string name="apps">Διαχειριστής εφαρμογών</string>
+    <string name="bookmanag">Διαχειριστής σελιδοδεικτών</string>
+    <string name="setting">Ρυθμίσεις</string>
+    <string name="select">Επιλογή αντικειμένου</string>
+    <string name="pressagain">Πατήστε ξανά για έξοδο</string>
+    <string name="open">Άνοιγμα</string>
+    <string name="backup">Αντίγραφο ασφαλείας</string>
+    <string name="uninstall">Απεγκατάσταση</string>
+    <string name="play">Play store</string>
+    <string name="properties">Ιδιότητες</string>
+    <string name="copyingapk">Αντιγραφή του apk σε </string>
+    <string name="addbook">Προσθήκη σελιδοδείκτη</string>
+    <string name="addtobook">Προσθήκη σε σελιδοδείκτη</string>
+    <string name="enterpath">Εισάγετε διαδρομή</string>
+    <string name="cancel">ΑΚΥΡΟ</string>
+    <string name="create">ΔΗΜΙΟΥΡΓΙΑ</string>
+    <string name="success">Επιτυχία</string>
+    <string name="filenotexists">Το αρχείο δεν υπάρχει</string>
+    <string name="error">Σφάλμα</string>
+    <string name="cantlistfiles">Αδύνατη η εμφάνιση αρχείων χωρίς root</string>
+    <string name="searchresults">Αποτελέσματα αναζήτησης</string>
+    <string name="itemsselected">Αντικείμενα επιλέχθηκαν</string>
+    <string name="newhomedirectory">Νέος αρχικός φάκελος εισόδου</string>
+    <string name="rename">Μετονομασία</string>
+    <string name="save">Αποθήκευση</string>
+    <string name="renameerror">Μετονομασία ανεπιτυχής</string>
+    <string name="renamed">Μετονομασία επιτυχής</string>
+    <string name="bookmarksadded">Οι σελιδοδείκτες προστέθηκαν</string>
+    <string name="fileexist">Υπάρχει ήδη αρχείο με το ίδιο όνομα </string>
+    <string name="filecreated">Το αρχείο δημιουργήθηκε</string>
+    <string name="searchpath">Διαδρομή αναζήτησης</string>
+    <string name="search">ΑΝΑΖΗΤΗΣΗ</string>
+    <string name="enterfile">Εισάγετε όνομα αρχείου</string>
+    <string name="name">Όνομα: </string>
+    <string name="date">Ημερομηνία: </string>
+    <string name="location">Βρίσκεται σε: </string>
+    <string name="size">Μέγεθος: </string>
+    <string name="totalitems">Συνολικά αντικείμενα: </string>
+    <string name="enterzipname">Εισάγετε το όνομα του Zip</string>
+    <string name="noappfound">Δε βρέθηκε εφαρμογή για το άνοιγμα αυτού του αρχείου</string>
+    <string name="copying">Αντιγραφή</string>
+    <string name="moving">Μετακίνηση</string>
+    <string name="add">Προσθήκη</string>
+    <string name="tab">Καρτέλα</string>
+    <string name="file">Αρχείο</string>
+    <string name="folder">Φάκελος</string>
+    <string name="newfolder">Νέος φάκελος</string>
+    <string name="entername">Εισάγετε όνομα</string>
+    <string name="extracting">Εξαγωγή</string>
+    <string name="zipping">Συμπίεση</string>
+    <string name="stopping">Παύση</string>
+    <string name="guide1">Καλώς ήρθατε στον Amaze File Manager</string>
+    <string name="guide2">Αγγίξτε την μπλε ταινία για εμφάνιση ή απόκρυψη της μπάρας διαδρομής</string>
+    <string name="guide3">Αγγίξτε παρατεταμένα ένα αρχείο για περισσότερες επιλογές</string>
+    <string name="guide4">Όπως αντιγραφή, μετακίνηση, ιδιότητες κλπ</string>
+    <string name="guide5">Χρησιμοποιήστε το Back Button για έξοδο από την εφαρμογή...</string>
+    <string name="guide6">...και το κουμπί αριστερού βέλους για πλοήγηση στο διαχειριστή αρχείων</string>
+    <string name="maintab">Η κύρια καρτέλα δεν μπορεί να διαγραφεί</string>
+    <string name="openparent">Άνοιγμα μητρικού φακέλου</string>
+    <string name="openwith">Άνοιγμα με</string>
+    <string name="share">Κοινή χρήση</string>
+    <string name="about">Περί</string>
+    <string name="extract">Εξαγωγή</string>
+    <string name="compress">Συμπίεση</string>
+    <string name="yes">Ναι</string>
+    <string name="no">Όχι</string>
+    <string name="confirm">Επιβεβαίωση</string>
+    <string name="deleting">Διαγραφή</string>
+    <string name="questiondelete">Θέλετε πραγματικά να διαγράψετε τα αρχεία;</string>
+    <string name="viewmode">Τρόπος απεικόνισης</string>
+    <string name="uimode">Κατάσταση διεπαφής χρήστη</string>
+    <string name="directorysort">Τρόπος ταξινόμησης φακέλων</string>
+    <string name="sortby">Ταξινόμηση κατά</string>
+    <string name="theme">Θέμα</string>
+    <string name="skin">Εμφάνιση</string>
+    <string name="random">Τυχαία εμφάνιση</string>
+    <string name="random_summary">Ορίζει τυχαίο κύριο χρώμα κατά την εκκίνηση</string>
+    <string name="colorize">Χρωματισμός εικονιδίων</string>
+    <string name="colorize_summary">Ορίζει στατικό χρώμα εικονιδίων. Δεν παρακάμπτει την επιλογή χρώματος των εικονιδίων φακέλων.</string>
+    <string name="back">Πίσω</string>
+    <string name="home">Αρχική σελίδα</string>
+    <string name="paste">Επικόλληση</string>
+    <string name="close">Κλείσιμο</string>
+    <string name="history">Ιστορικό</string>
+    <string name="refresh">Ανανέωση</string>
+    <string name="copy">Αντιγραφή</string>
+    <string name="rootmode">Διαχειριστής root</string>
+    <string name="rootmodesummary">Μόνο για rooted συσκευές. Επιλέξτε το μόνο αν είστε σίγουροι.</string>
+    <string name="mountsystemsummary">Ενεργοποιήστε το αν θέλετε να τροποποιήσετε αρχεία συστήματος</string>
+    <string name="mountsystem">Φόρτωση φακέλων συστήματος ως Εγγράψιμων</string>
+    <string name="rootfailure">Δεν επιτρέπεται η πρόσβαση root</string>
+    <string name="cut">Αποκοπή</string>
+    <string name="selectall">Επιλογή όλων</string>
+    <string name="delete">Διαγραφή</string>
+    <string name="setashome">Ορισμός ως αρχική σελίδα</string>
+    <string name="sethome">Ορισμός αρχικής σελίδας</string>
+    <string name="foldercolor">Χρώμα φακέλου</string>
+    <string name="imagegallery">Έκθεση εικόνων</string>
+    <string name="fileexplorer">Διαχειριστής αρχείων</string>
+    <string name="changegallerypath">Αλλαγή διαδρομής έκθεσης</string>
+    <string name="usedefaultgallerypath">Χρήση της εξ\' ορισμού Έκθεσης</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <string name="simple">Απλή διεπαφή</string>
+    <string name="card">Διεπαφή με κάρτες</string>
+    <!-- Theme -->
+    <string name="light">Φωτεινό Material</string>
+    <string name="dark">Σκοτεινό Material</string>
+    <string name="daytime">Σύμφωνα με την ώρα</string>
+    <!--Skin-->
+    <string name="red">Κόκκινο</string>
+    <string name="pink">Ροζ</string>
+    <string name="purple">Μωβ</string>
+    <string name="deep_purple">Βαθύ μωβ</string>
+    <string name="indigo">Λουλακί</string>
+    <string name="blue">Μπλε</string>
+    <string name="light_blue">Ανοικτό μπλε</string>
+    <string name="cyan">Κυανό</string>
+    <string name="teal">Πρασινομπλέ</string>
+    <string name="green">Πράσινο</string>
+    <string name="light_green">Ανοικτό πράσινο</string>
+    <string name="amber">Ανοικτό πορτοκαλί</string>
+    <string name="orange">Πορτοκαλί</string>
+    <string name="deep_orange">Σκούρο πορτοκαλί</string>
+    <string name="brown">Καφέ</string>
+    <string name="black">Μαύρο</string>
+    <string name="blue_grey">Μπλεγκρί</string>
+    <string name="supersu">SuperSU</string>
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">Οι φάκελοι στην κορυφή</string>
+    <string name="filesOnTop">Τα αρχεία στην κορυφή</string>
+    <string name="noneOnTop">Κανένα στην κορυφή</string>
+    <!--SortBy-->
+    <string name="sortName">Όνομα</string>
+    <string name="lastModified">Τροποποίηση</string>
+    <string name="sortSize">Μέγεθος</string>
+    <string name="sortNameDesc">Όνομα (Φθήν.)</string>
+    <string name="lastModifiedDesc">Τροποποίηση (Φθήν.)</string>
+    <string name="sortSizeDesc">Μέγεθος (Φθήν.)</string>
+    <!--ListMode-->
+    <string name="detailedView">Λεπτομερής εμφάνιση</string>
+    <string name="simpleView">Απλή εμφάνιση</string>
+    <!--Folder-->
+    <string name="Yellow">Κίτρινο</string>
+    <string name="pick_a_file">Επιλέξτε ένα αρχείο</string>
+    <string name="process_viewer">Επόπτης διεργασιών</string>
+    <string name="in_safe">Ανεπαρκής χώρος</string>
+    <string name="no_file_overwrite">Κανένα αρχείο δεν αντικαταστάθηκε</string>
+    <string name="skip">Παράβλεψη</string>
+    <string name="overwrite">Αντικατάσταση</string>
+    <string name="cant_read_file">Αδυναμία ανάγνωσης αρχείου</string>
+    <string name="not_allowed">Δεν επιτρέπεται</string>
+    <string name="processes">Διεργασίες</string>
+    <string name="searching">Αναζήτηση</string>
+    <string name="copying_fles">Αντιγραφή αρχείων</string>
+    <string name="done">Ολοκληρώθηκε</string>
+    <string name="Extracting_fles">Εξαγωγή αρχείων</string>
+    <string name="Zipping_fles">Συμπίεση αρχείων</string>
+    <string name="items">Αντικείμενα</string>
+    <string name="set">Ορισμός</string>
+    <string name="enablerootmde">Ενεργοποίηση κατάστασης root</string>
+    <string name="goback">Πίσω</string>
+    <string name="foldercreated">Ο φάκελος δημιουργήθηκε</string>
+    <string name="newfile">Νέο αρχείο</string>
+    <string name="nofiles">Δεν υπάρχουν αρχεία</string>
+    <string name="tapnhold">Αγγίξτε παρατεταμένα ένα αρχείο ή φάκελο για περισσότερες επιλογές</string>
+    <string name="pathcopied">Η διαδρομή αντιγράφτηκε</string>
+    <string name="used">Χρησιμοποιούνται:  </string>
+    <string name="free">Ελεύθερα:  </string>
+    <string name="atroot">Είστε στον root</string>
+    <string name="listview">Εμφάνιση σε λίστα</string>
+    <string name="gridview">Εμφάνιση σε πλέγμα</string>
+    <string name="setlistview">Ορισμός εμφάνισης λίστας</string>
+    <string name="setgridview">Ορισμός εμφάνισης πλέγματος</string>
+    <string name="permission">Άδειες</string>
+    <string name="hide">Απόκρυψη</string>
+    <string name="exit">Έξοδος</string>
+    <string name="enternewname">Εισάγετε νέο όνομα</string>
+    <string name="doforall">Εκτέλεση για όλα τα αντικείμενα</string>
+    <string name="gridcolumnno">Αριθμός στηλών στην εμφάνιση σε πλέγμα</string>
+    <string name="randomDialog">Τυχαίο</string>
+    <string name="setRandom">Οι αλλαγές θα εφαρμοστούν μετά την επανεκκίνηση της εφαρμογής</string>
+    <string name="authors">Δημιουργοί</string>
+    <string name="changelog">Αρχείο αλλαγών</string>
+    <string name="fullChangelog">Λεπτομερές αρχείο αλλαγών</string>
+    <string name="ok">OK</string>
+    <string name="chooseUI">Επιλέξτε αντικείμενο διεπαφής</string>
+    <string name="ui">Διεπαφή</string>
+    <string name="general">Γενικά</string>
+    <string name="thumbSummary">Εμφάνιση εικονιδίων εφαρμογών και εικόνων</string>
+    <string name="thumb">Εμφάνιση προεπισκοπήσεων</string>
+    <string name="hidden">Εμφάνιση κρυφών αρχείων και φακέλων</string>
+    <string name="lastModifiedSummary">Εμφάνιση ημερομηνίας τελευταίας τροποποίησης αρχείου</string>
+    <string name="lastModifiedPref">Εμφάνιση τελευταίας τροποποίησης</string>
+    <string name="sizePrefSummary">Εμφάνιση μεγέθους αρχείων και αριθμού αντικειμένων εντός των φακέλων</string>
+    <string name="sizePref">Εμφάνιση μεγεθών</string>
+    <string name="miscellaneous">Διάφορα</string>
+    <string name="rootPrefSummary">Εμφάνιση αδειών αρχείων και φακέλων</string>
+    <string name="rootPref">Εμφάνιση αδειών</string>
+    <string name="aboutFileManager">Περί του Amaze File Manager</string>
+    <string name="version">Έκδοση</string>
+    <string name="rate">Βαθμολογήστε την εφαρμογή</string>
+    <string name="license">Άδειες Ανοικτού Κώδικα</string>
+    <string name="feedback">Αποστολή εντυπώσεων</string>
+    <string name="hiddenfiles">Κρυφά αρχεία</string>
+    <string name="type">Τύπο</string>
+    <string name="typeDesc">Τύπο (Φθήν.)</string>
+    <string name="rootdirectory">Root</string>
+    <string name="new_string">Νέο</string>
+    <string name="setringtone">Ορισμός ήχου κλήσης</string>
+    <string name="copy_path">Αντιγραφή διαδρομής</string>
+    <string name="addshortcut">Προσθήκη συντόμευσης</string>
+    <string name="unsavedchanges">Μη αποθηκευμένες αλλαγές</string>
+    <string name="unsavedchangesdesc">Έχετε μη αποθηκευμένες αλλαγές. Θέλετε να τις αποθηκεύσετε πριν την έξοδο;</string>
+    <string name="saving">Αποθήκευση</string>
+    <string name="packageinstaller">Αρχείο εγκατάστασης</string>
+    <string name="view">Εμφάνιση</string>
+    <string name="install">Εγκατάσταση</string>
+    <string name="archive">Συμπιεσμένο αρχείο</string>
+    <string name="archtext">Αυτό είναι ένα συμπιεσμένο αρχείο. Τι ενέργεια θέλετε να κάνετε;</string>
+    <string name="pitext">Αυτό είναι ένα αρχείο εγκατάστασης. Τι ενέργεια θέλετε να κάνετε;</string>
+    <string name="xda_title">XDA</string>
+    <string name="xda_summary">Q&amp;A, Βοήθεια &amp; Επίλυση προβλημάτων</string>
+    <string name="invalid_dir">Μη έγκυρος φάκελος</string>
+    <string name="circularimages">Χρήση κυκλικών εικονιδίων για εικόνες και βίντεο</string>
+    <string name="circularicons">Χρήση κυκλικών εικονιδίων</string>
+    <string name="back_title">Πλοήγηση προς τα πίσω</string>
+    <string name="back_summary">Ενεργοποιεί κατ\' επιλογή πλοήγηση προς τα πίσω στην κορυφή της λίστας</string>
+    <string name="details">Λεπτομέρειες</string>
+    <string name="translators">Μεταφραστές</string>
+    <string name="german_translation_title">Γερμανικά</string>
+    <string name="italian_translation_title">Ιταλικά</string>
+    <string name="french_translation_title">Γαλλικά</string>
+    <string name="russian_translation_title">Ρωσικά</string>
+    <string name="spanish_translation_title">Ισπανικά</string>
+    <string name="basque_translation_title">Βασκικά</string>
+    <string name="chinese_translation_title">Κινέζικα</string>
+    <string name="serbian_translation_title">Σερβικά</string>
+    <string name="turkish_translation_title">Τουρκικά</string>
+    <string name="ukrainian_translation_title">Ουκρανικά</string>
+    <string name="portuguese_translation_title">Πορτογαλικά</string>
+    <string name="polish_translation_title">Πολωνέζικα</string>
+    <string name="korean_translation_title">Κορεάτικα</string>
+    <string name="greek_translation_title">Ελληνικά</string>
+    <string name="zip_viewer">Διαχειριστής Zip</string>
+    <string name="unin_system_apk">Αυτή είναι μια εφαρμογή συστήματος. Η διαγραφή της μπορεί να οδηγήσει σε αστάθεια του συστήματος!\nΣυνέχεια;</string>
+    <string name="warning">Προειδοποίηση</string>
+    <string name="donate">Δωρεά</string>
+    <string name="archive_preferences">Προτιμήσεις αρχείων συμπίεσης</string>
+    <string name="archive_extract_folder">Φάκελος εξαγωγής</string>
+    <string name="zip_create_folder">Φάκελος δημιουργίας Zip</string>
+    <string name="archive_summary">Τα συμπιεσμένα αρχεία θα αποσυμπιέζονται σε αυτόν το φάκελο. Η αρχική επιλογή είναι ο φάκελος στον οποίο βρίσκεται το αρχείο συμπίεσης.</string>
+    <string name="zip_summary">Τα νέα αρχεία Zip θα δημιουργούνται σε αυτόν το φάκελο. Η αρχική επιλογή είναι ο φάκελος στον οποίο βρίσκονται τα αρχεία προς συμπίεση.</string>
+    <string name="openas">Άνοιγμα ως</string>
+    <string name="text">Κείμενο</string>
+    <string name="audio">Ήχο</string>
+    <string name="video">Βίντεο</string>
+    <string name="other">Άλλο</string>
+    <string name="image">Εικόνα</string>
+    <string name="contributors">Συντελεστές</string>
+    <string name="savepaths">Απομνημόνευση διαδρομών</string>
+    <string name="savepathsummary">Κατά την εκκίνηση, οι πιο πρόσφατα προσπελασθέντες φάκελοι θα εμφανίζονται σε κάθε καρτέλα.</string>
+    <string name="select_intent">Επιλογή</string>
+    <string name="md5copied">Ο MD5 αντιγράφτηκε στο πρόχειρο</string>
+    <string name="generating">Δημιουργία...</string>
+    <string name="tables">Πίνακας</string>
+    <string name="database">Βάση δεδομένων</string>
+    <string name="colourednavigation">Έγχρωμη μπάρα πλοήγησης</string>
+    <string name="colourednavigationsum">Αν θα είναι η μπάρα πλοήγησης του συστήματος χρωματισμένη σύμφωνα με το θέμα.</string>
+
+    <string name="sd_card_grant_next">sd_card_grant_next</string>
+    <string name="sd_card_grant_first">sd_card_grant_first</string>
+    <string name="fab_skin">Θέμα επιπλέοντος κουμπιού +</string>
+    <string name="gplus_pic_title">Είσοδος με το G+</string>
+    <string name="gplus_pic_summary">Εμφάνιση της εικόνας του προφίλ σας G+ στο πτυσσόμενο μενού</string>
+    <string name="icon_credits">Γραφικά από τον &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
+
+    <string name="color_title">Χρώμα</string>
+    <string name="color_summary">Ορίστε το χρώμα διαφόρων στοιχείων της διεπαφής χρήστη</string>
+    <string name="primary_color_title">Κυρίως χρώμα</string>
+    <string name="primary_color_summary">Ορίστε το χρώμα των μεγάλων στοιχείων της διεπαφής</string>
+    <string name="accent_color_title">Δευτερεύον χρώμα</string>
+    <string name="accent_color_summary">Ορίστε το χρώμα του επιπλέοντος κουμπιού + και άλλων μικρών στοιχείων</string>
+    <string name="icon_color_title">Χρώμα εικονιδίων</string>
+    <string name="icon_color_summary">Ορίστε το χρώμα των εικονιδίων</string>
+    <string name="hide_mode_title">Κατάσταση απόκρυψης</string>
+    <string name="none">Καμία</string>
+    <string name="hide_toolbar">Απόκρυψη της μπάρας εργαλείων</string>
+    <string name="hide_appbar">Απόκρυψη ολόκληρης της μπάρας της εφαρμογής</string>
+    <string name="choose_color">Επιλέξτε χρώμα</string>
+    <string name="g_plus_community_title">Κοινότητα G+</string>
+    <string name="hide_mode_nothing">Η μπάρα της εφαρμογής παραμένει ανέπαφη</string>
+    <string name="hide_mode_toolbar">Η μπάρα εργαλείων θα κρύβεται κατά την κύλιση</string>
+    <string name="hide_mode_app_bar">Η μπάρα της εφαρμογής θα κρύβεται κατά την κύλιση</string>
+    <string name="no_cover_photo">Καμία φωτογραφία εξώφυλλου</string>
+    <string name="files">Αρχεία</string>
+    <string name="directories">Φάκελοι</string>
+    <string name="textreader">Αναγνώστης κειμένου</string>
+    <string name="databasereader">Αναγνώστης βάσεων δεδομένων</string>
+    <string name="showDividers">Εμφάνιση διαχωριστικών γραμμών</string>
+    <string name="topFab">Επιπλέον κουμπί στην μπάρα της εφαρμογής</string>
+    <string name="topFabS">Εμφανίζει το επιπλέον κουμπί + στην κορυφή ή κάτω. Εφαρμόζεται μόνο αν η μπάρα της εφαρμογής δεν αποκρύπτεται.</string>
+    <string name="needsaccess">Απαιτείται πρόσβαση εγγραφής</string>
+    <string name="needsaccesssummary">Παρακαλώ, επιλέξτε το φάκελο root του\t</string>
+    <string name="needsaccesssummary1">\tγια να δώσετε άδεια πρόσβασης εγγραφής</string>
+
+</resources>

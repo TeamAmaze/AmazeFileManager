@@ -204,6 +204,9 @@
                 <Preference
                     android:title="@string/korean_translation_title"
                     android:summary="@string/korean_translation_summary" />
+                <Preference
+                    android:title="@string/greek_translation_title"
+                    android:summary="@string/greek_translation_summary" />
 
                 </PreferenceScreen>
             <Preference

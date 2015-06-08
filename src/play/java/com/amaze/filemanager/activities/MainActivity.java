@@ -1731,8 +1731,10 @@ public class MainActivity extends AppCompatActivity implements
                     Main ma1=((Main) getFragment().getTab());
                     ma1.loadlist(new File(ma1.current), true);
                     break;
-                case 4:FileUtil.renameFolder(new File(oppathe),new File(oppathe1),mainActivity);
+                case 4:
+                    //FileUtil.renameFolder(new File(oppathe),new File(oppathe1),mainActivity);
 
+                    rename(new File(oppathe), new File(oppathe1));
                     Main ma2=((Main) getFragment().getTab());
                     ma2.loadlist(new File(ma2.current), true);
                     break;
@@ -1763,7 +1765,7 @@ public class MainActivity extends AppCompatActivity implements
         sendBroadcast(intent);
     }
     private int checkFolder(final File folder,Context context) {
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
             if (!folder.exists() || !folder.isDirectory()) {
                 return 0;
             }

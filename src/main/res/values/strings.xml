@@ -276,6 +276,8 @@
     <string name="portuguese_translation_title">Portuguese</string>
     <string name="polish_translation_title">Polish</string>
     <string name="korean_translation_title">Korean</string>
+    <string name="greek_translation_title">Greek</string>
+
     <string name="zip_viewer">Zip Viewer</string>
     <string name="unin_system_apk">This is a system app, deleting it might lead to system un-stability.\nProceed?</string>
     <string name="warning">Warning</string>
