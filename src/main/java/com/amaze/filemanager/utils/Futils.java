@@ -249,8 +249,6 @@ public class Futils {
         }
         c.content(getString(b.getActivity(), R.string.questiondelete) + names);
 
-        c.positiveColor(Color.parseColor(b.fabSkin));
-        c.negativeColor(Color.parseColor(b.fabSkin));
         if(b.theme1==1)
             c.theme(Theme.DARK);
         c.negativeText(getString(b.getActivity(), R.string.no));
@@ -344,7 +342,6 @@ public class Futils {
         a.positiveText(R.string.copy_path);
         a.negativeText(getString(c.getActivity(), R.string.copy) + " md5");
         a.neutralText(R.string.cancel);
-        a.positiveColor(Color.parseColor(fabskin)).negativeColor(Color.parseColor(fabskin)).neutralColor(Color.parseColor(fabskin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -376,7 +373,6 @@ public class Futils {
         a.positiveText(R.string.copy_path);
         a.negativeText(getString(c, R.string.copy) + " md5");
         a.neutralText(R.string.cancel);
-        a.positiveColor(Color.parseColor(fabskin)).negativeColor(Color.parseColor(fabskin)).neutralColor(Color.parseColor(fabskin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -561,9 +557,6 @@ public void showPackageDialog(final File f,final MainActivity m){
             m.openZip(f.getPath());
         }
     });
-    mat.positiveColor(Color.parseColor(m.fabskin));
-    mat.neutralColor(Color.parseColor(m.fabskin));
-    mat.negativeColor(Color.parseColor(m.fabskin));
     if(m.theme1==1)mat.theme(Theme.DARK);
     mat.build().show();
 
@@ -587,9 +580,6 @@ public void showPackageDialog(final File f,final MainActivity m){
                     m.openZip(f.getPath());
             }
         });
-        mat.positiveColor(Color.parseColor(m.fabskin));
-        mat.neutralColor(Color.parseColor(m.fabskin));
-        mat.negativeColor(Color.parseColor(m.fabskin));
         if(m.theme1==1)mat.theme(Theme.DARK);
         MaterialDialog b=mat.build();
 
@@ -646,8 +636,6 @@ public void showPackageDialog(final File f,final MainActivity m){
             }
         });
         a.negativeText(getString(m, R.string.cancel));
-        a.positiveColor(Color.parseColor(m.fabskin));
-        a.negativeColor(Color.parseColor(m.fabskin));
         a.build().show();
     }
 
@@ -693,7 +681,6 @@ public void showPackageDialog(final File f,final MainActivity m){
         final ArrayList<String> paths = m.history.readTable();
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
-        a.positiveColor(Color.parseColor(m.fabSkin));
         a.title(R.string.history);
         if(m.theme1==1)
             a.theme(Theme.DARK);
@@ -714,7 +701,6 @@ public void showPackageDialog(final File f,final MainActivity m){
           final ArrayList<String> paths = m.hidden.readTable();
             final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
-        a.positiveColor(Color.parseColor(m.fabSkin));
         a.title(R.string.hiddenfiles);
         if(m.theme1==1)
             a.theme(Theme.DARK);
@@ -763,7 +749,6 @@ public void showPackageDialog(final File f,final MainActivity m){
             exegroup.setChecked(exe[1]);
             exeother.setChecked(exe[2]);
             a.positiveText(R.string.set);
-            a.positiveColor(Color.parseColor(main.fabSkin));
             a.callback(new MaterialDialog.ButtonCallback() {
                 @Override
                 public void onPositive(MaterialDialog materialDialog) {

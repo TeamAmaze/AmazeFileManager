@@ -218,8 +218,144 @@ public class MainActivity extends AppCompatActivity implements
         theme1 = th==2 ? PreferenceUtils.hourOfDay() : th;
 
         fabskin = Sp.getString("fab_skin_color", "#e91e63");
-        if (theme1 == 1)
-            setTheme(R.style.appCompatDark);
+
+        // setting accent theme
+        if (Build.VERSION.SDK_INT >= 21) {
+
+            switch (fabskin) {
+                case "#F44336":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_red);
+                    else
+                        setTheme(R.style.pref_accent_dark_red);
+                    break;
+
+                case "#e91e63":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_pink);
+                    else
+                        setTheme(R.style.pref_accent_dark_pink);
+                    break;
+
+                case "#9c27b0":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_purple);
+                    else
+                        setTheme(R.style.pref_accent_dark_purple);
+                    break;
+
+                case "#673ab7":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_deep_purple);
+                    else
+                        setTheme(R.style.pref_accent_dark_deep_purple);
+                    break;
+
+                case "#3f51b5":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_indigo);
+                    else
+                        setTheme(R.style.pref_accent_dark_indigo);
+                    break;
+
+                case "#2196F3":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_blue);
+                    else
+                        setTheme(R.style.pref_accent_dark_blue);
+                    break;
+
+                case "#03A9F4":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_light_blue);
+                    else
+                        setTheme(R.style.pref_accent_dark_light_blue);
+                    break;
+
+                case "#00BCD4":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_cyan);
+                    else
+                        setTheme(R.style.pref_accent_dark_cyan);
+                    break;
+
+                case "#009688":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_teal);
+                    else
+                        setTheme(R.style.pref_accent_dark_teal);
+                    break;
+
+                case "#4CAF50":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_green);
+                    else
+                        setTheme(R.style.pref_accent_dark_green);
+                    break;
+
+                case "#8bc34a":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_light_green);
+                    else
+                        setTheme(R.style.pref_accent_dark_light_green);
+                    break;
+
+                case "#FFC107":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_amber);
+                    else
+                        setTheme(R.style.pref_accent_dark_amber);
+                    break;
+
+                case "#FF9800":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_orange);
+                    else
+                        setTheme(R.style.pref_accent_dark_orange);
+                    break;
+
+                case "#FF5722":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_deep_orange);
+                    else
+                        setTheme(R.style.pref_accent_dark_deep_orange);
+                    break;
+
+                case "#795548":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_brown);
+                    else
+                        setTheme(R.style.pref_accent_dark_brown);
+                    break;
+
+                case "#212121":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_black);
+                    else
+                        setTheme(R.style.pref_accent_dark_black);
+                    break;
+
+                case "#607d8b":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_blue_grey);
+                    else
+                        setTheme(R.style.pref_accent_dark_blue_grey);
+                    break;
+
+                case "#004d40":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_super_su);
+                    else
+                        setTheme(R.style.pref_accent_dark_super_su);
+                    break;
+            }
+        } else {
+            if (theme1==1) {
+                setTheme(R.style.appCompatDark);
+            } else {
+                setTheme(R.style.appCompatLight);
+            }
+        }
 
         setContentView(R.layout.main_toolbar);
         tabHandler=new TabHandler(this,null,null,1);
@@ -994,8 +1130,6 @@ public class MainActivity extends AppCompatActivity implements
                 if(theme1==1)ba1.theme(Theme.DARK);
                 ba1.positiveText(R.string.create);
                 ba1.negativeText(R.string.cancel);
-                ba1.positiveColor(Color.parseColor(fabskin));
-                ba1.negativeColor(Color.parseColor(fabskin));
                 ba1.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -1040,8 +1174,6 @@ public class MainActivity extends AppCompatActivity implements
                 if(theme1==1)ba2.theme(Theme.DARK);
                 ba2.negativeText(R.string.cancel);
                 ba2.positiveText(R.string.create);
-                ba2.positiveColor(Color.parseColor(fabskin));
-                ba2.negativeColor(Color.parseColor(fabskin));
                 ba2.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -1098,8 +1230,6 @@ public class MainActivity extends AppCompatActivity implements
         if(theme1==1)a.theme(Theme.DARK);
         a.negativeText(R.string.cancel);
         a.positiveText(R.string.search);
-        a.positiveColor(Color.parseColor(fabskin));
-        a.negativeColor(Color.parseColor(fabskin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -1337,9 +1467,6 @@ public class MainActivity extends AppCompatActivity implements
                 x.positiveText(R.string.skip);
                 x.negativeText(R.string.overwrite);
                 x.neutralText(R.string.cancel);
-                x.positiveColor(Color.parseColor(fabskin));
-                x.negativeColor(Color.parseColor(fabskin));
-                x.neutralColor(Color.parseColor(fabskin));
                 x.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -1655,8 +1782,6 @@ public class MainActivity extends AppCompatActivity implements
         ((ImageView)view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
         x.positiveText(R.string.open);
         x.negativeText(R.string.cancel);
-        x.positiveColor(Color.parseColor(fabskin));
-        x.negativeColor(Color.parseColor(fabskin));
         x.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {

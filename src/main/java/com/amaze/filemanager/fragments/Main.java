@@ -911,8 +911,6 @@ public class Main extends android.support.v4.app.Fragment {
                     });
                     a.positiveText(R.string.save);
                     a.negativeText(R.string.cancel);
-                    a.positiveColor(Color.parseColor(fabSkin));
-                    a.negativeColor(Color.parseColor(fabSkin));
                     a.build().show();
                     mode.finish();
                     return true;

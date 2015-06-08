@@ -254,7 +254,6 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                     a.theme(Theme.DARK);
 
                 a.positiveText(R.string.close);
-                a.positiveColor(Color.parseColor(fabSkin));
                 LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = layoutInflater.inflate(R.layout.authors, null);
                 a.customView(view, true);
@@ -353,9 +352,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                         getActivity().getString(R.string.changelog_version_1) +
                         getActivity().getString(R.string.changelog_change_1)));
                 a.negativeText(R.string.close);
-                a.negativeColor(Color.parseColor(fabSkin));
                 a.positiveText(R.string.fullChangelog);
-                a.positiveColor(Color.parseColor(fabSkin));
                 a.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -471,7 +468,6 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
 
         final MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
         a.positiveText(R.string.cancel);
-        a.positiveColor(Color.parseColor(fabSkin));
         a.title(R.string.choose_color);
         if(theme==1)
             a.theme(Theme.DARK);

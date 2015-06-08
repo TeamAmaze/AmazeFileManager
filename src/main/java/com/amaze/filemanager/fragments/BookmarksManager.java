@@ -131,8 +131,6 @@ public class BookmarksManager extends Fragment {
                 ba1.negativeText(R.string.cancel);
                 ba1.positiveText(R.string.create);
                 String fabskin = Sp.getString("fab_skin_color", "#e91e63");
-                ba1.positiveColor(Color.parseColor(fabskin));
-                ba1.negativeColor(Color.parseColor(fabskin));
                 ba1.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
