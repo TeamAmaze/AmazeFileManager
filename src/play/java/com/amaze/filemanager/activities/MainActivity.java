@@ -98,6 +98,7 @@ import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.SearchService;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
+import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
@@ -1234,10 +1235,8 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 String a = e.getText().toString();
-                Intent i=new Intent(con, SearchService.class);
-                i.putExtra("path",fpath);
-                i.putExtra("text",a);
-                startService(i);
+               SearchTask task= new SearchTask(ma.searchHelper,ma,a);
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fpath);
             }
 
             @Override

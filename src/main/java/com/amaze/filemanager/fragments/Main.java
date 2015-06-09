@@ -166,7 +166,7 @@ public class Main extends android.support.v4.app.Fragment {
     boolean SmbAnonym=false;
     String smbUser,smbPass;
     public String smbPath;
-
+    public ArrayList<String> searchHelper=new ArrayList<String>();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1122,9 +1122,11 @@ public class Main extends android.support.v4.app.Fragment {
     }
     public ArrayList<Layoutelements> addTo(ArrayList<String[]> mFile) {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
+        if(searchHelper.size()>500)searchHelper.clear();
         for (int i = 0; i < mFile.size(); i++) {
             String[] ele=mFile.get(i);
             File f=new File(ele[0]);
+            searchHelper.add(f.getPath());
             String size="";
             if(!hiddenfiles.contains(ele[0])){
                 if (isDirectory(ele)) {
@@ -1342,5 +1344,21 @@ public class Main extends android.support.v4.app.Fragment {
         addIntent
                 .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         getActivity().sendBroadcast(addIntent);
+    }
+    public void addSearchResult(String[] a){
+        boolean add=true;
+            for(Layoutelements layoutelements:list)
+                if(layoutelements.getDesc().equals(a[0]))add=false;
+
+        ArrayList<String[]> arrayList=new ArrayList<>();
+        arrayList.add(a);
+        if(!results)list.clear();
+        if(add)list.add(addTo(arrayList).get(0));
+        if(!results){
+             createViews(list,false,new File(current));
+            ((TextView)ma.pathbar.findViewById(R.id.pathname)).setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
+        }
+        results=true;
+        adapter.notifyDataSetChanged();
     }
 }
