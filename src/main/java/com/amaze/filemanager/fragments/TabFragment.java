@@ -41,9 +41,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
     public int currenttab;
     MainActivity mainActivity;
     TabSpinnerAdapter tabSpinnerAdapter;
-    public ArrayList<String> tabs=new ArrayList<String>();
     public int theme1;
-    private Animation hideAnimation, showAnimation;
     View buttons;
     View mToolBarContainer;
     @Override
@@ -81,7 +79,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 String name=fragments.get(p1).getClass().getName();
                 if(name.contains("Main")){
                     Main ma = ((Main) fragments.get(p1));
-                    tabHandler = new TabHandler(getActivity(), null, null, 1);
                     if (ma.current != null) {
                         try {
                             mainActivity.updateDrawer(ma.current);
@@ -139,13 +136,11 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
         } else {
             fragments.clear();
-            tabs= savedInstanceState.getStringArrayList("tabs");
-            for(int i=0;i<tabs.size();i++){
                 try {
-                    fragments.add(i, getActivity().getSupportFragmentManager().getFragment(savedInstanceState, "tab"+i));
+                    fragments.add(0, getActivity().getSupportFragmentManager().getFragment(savedInstanceState, "tab"+0));
+                    fragments.add(1, getActivity().getSupportFragmentManager().getFragment(savedInstanceState, "tab"+1));
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
             }
             mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
                     getActivity().getSupportFragmentManager());
@@ -176,6 +171,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         Sp.edit().putInt("currenttab",currenttab).apply();
         super.onDestroyView();
         try {
+            if(tabHandler!=null)
             tabHandler.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -184,7 +180,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
     TabHandler tabHandler;
 
     public void updatepaths() {
-
+        if(tabHandler==null)
         tabHandler = new TabHandler(getActivity(), null, null, 1);
         int i=1;
         ArrayList<String> items=new ArrayList<String>();
@@ -220,7 +216,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
                     getActivity().getSupportFragmentManager().putFragment(outState, "tab" + i, fragment);
                     i++;
                 }
-                outState.putStringArrayList("tabs", tabs);
                 outState.putInt("pos", mViewPager.getCurrentItem());
             }
             Sp.edit().putInt("currenttab",currenttab).commit();
@@ -300,16 +295,11 @@ public class TabFragment extends android.support.v4.app.Fragment {
         b.putInt("no", pos);
         main.setArguments(b);
         fragments.add(main);
-        tabs.add(main.getClass().getName());
         mSectionsPagerAdapter.notifyDataSetChanged();
         mViewPager.setOffscreenPageLimit(4);
     }
     public Fragment getTab() {
         return fragments.get(mViewPager.getCurrentItem());
-    }
-    public Fragment getTab1() {
-        Fragment man = ( fragments.get(mViewPager.getCurrentItem()));
-        return man;
     }
     public void updateSpinner(){
 

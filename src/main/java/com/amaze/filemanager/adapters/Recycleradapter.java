@@ -58,6 +58,11 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         item_count=items.size()+(main.islist?(topFab?1:2):column);
         rowHeight=main.dpToPx(72);
     }
+    public void addItem(Layoutelements layoutelements){
+        items.add(layoutelements);
+        notifyDataSetChanged();
+
+    }
     public void toggleChecked(int position) {
         if (myChecked.get(position)) {
             myChecked.put(position, false);
