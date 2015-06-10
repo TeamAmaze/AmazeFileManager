@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -50,9 +51,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -66,7 +68,6 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -88,7 +89,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.fragments.AppsList;
-import com.amaze.filemanager.fragments.BookmarksManager;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.fragments.RarViewer;
@@ -112,20 +112,18 @@ import com.stericson.RootTools.RootTools;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.Override;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
     public Integer select;
     Futils utils;
     private boolean backPressedToExitOnce = false;
     private Toast toast = null;
-    private DrawerLayout mDrawerLayout;
+    public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
     SharedPreferences Sp;
     private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
@@ -134,7 +132,7 @@ public class MainActivity extends ActionBarActivity {
     MainActivity mainActivity=this;
     DrawerAdapter adapter;
     IconUtils util;
-    ScrimInsetsRelativeLayout mDrawerLinear;
+    public ScrimInsetsRelativeLayout mDrawerLinear;
     Shortcuts s;
     public String skin,path="", launchPath;
     public int theme;
@@ -156,10 +154,13 @@ public class MainActivity extends ActionBarActivity {
     String pending_path;
     boolean openprocesses=false;
     public int storage_count=0;
+    private View drawerHeaderLayout;
     private View drawerHeaderView;
-    private RelativeLayout drawerHeaderLayout;
+    private RoundedImageView drawerProfilePic;
     private int sdk;
+    private TextView mGoogleName, mGoogleId;
     public FloatingActionButton floatingActionButton;
+    private boolean showButtonOnStart = false;
     public String fabskin, fabSkinPressed;
     private LinearLayout buttons;
     private HorizontalScrollView scroll, scroll1;
@@ -170,41 +171,191 @@ public class MainActivity extends ActionBarActivity {
     public LinearLayout pathbar;
     public Animation fabShowAnim, fabHideAnim;
     public FrameLayout buttonBarFrame;
-    private boolean topfab=false;
-    public boolean isDrawerLocked = false;
+    private RelativeLayout drawerHeaderParent;
     int operation;
     ArrayList<String> oparrayList;
-    String oppathe;
+    String oppathe,oppathe1;
+    // Check for user interaction for google+ api only once
+    private boolean mGoogleApiKey = false;
+
+    /* Request code used to invoke sign in user interactions. */
+    private static final int RC_SIGN_IN = 0;
+
+    /* A flag indicating that a PendingIntent is in progress and prevents
+   * us from starting further intents.
+   */
+    private boolean mIntentInProgress,topfab=false;
+    public boolean isDrawerLocked = false;
     /**
      * Called when the activity is first created.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         try {
             super.onCreate(savedInstanceState);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }System.out.println("onCreate");
 
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         int th = Integer.parseInt(Sp.getString("theme", "0"));
         theme1 = th==2 ? PreferenceUtils.hourOfDay() : th;
 
-        if (theme1 == 1) {
-            setTheme(R.style.appCompatDark);
+        fabskin = Sp.getString("fab_skin_color", "#e91e63");
+
+        // setting accent theme
+        if (Build.VERSION.SDK_INT >= 21) {
+
+            switch (fabskin) {
+                case "#F44336":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_red);
+                    else
+                        setTheme(R.style.pref_accent_dark_red);
+                    break;
+
+                case "#e91e63":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_pink);
+                    else
+                        setTheme(R.style.pref_accent_dark_pink);
+                    break;
+
+                case "#9c27b0":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_purple);
+                    else
+                        setTheme(R.style.pref_accent_dark_purple);
+                    break;
+
+                case "#673ab7":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_deep_purple);
+                    else
+                        setTheme(R.style.pref_accent_dark_deep_purple);
+                    break;
+
+                case "#3f51b5":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_indigo);
+                    else
+                        setTheme(R.style.pref_accent_dark_indigo);
+                    break;
+
+                case "#2196F3":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_blue);
+                    else
+                        setTheme(R.style.pref_accent_dark_blue);
+                    break;
+
+                case "#03A9F4":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_light_blue);
+                    else
+                        setTheme(R.style.pref_accent_dark_light_blue);
+                    break;
+
+                case "#00BCD4":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_cyan);
+                    else
+                        setTheme(R.style.pref_accent_dark_cyan);
+                    break;
+
+                case "#009688":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_teal);
+                    else
+                        setTheme(R.style.pref_accent_dark_teal);
+                    break;
+
+                case "#4CAF50":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_green);
+                    else
+                        setTheme(R.style.pref_accent_dark_green);
+                    break;
+
+                case "#8bc34a":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_light_green);
+                    else
+                        setTheme(R.style.pref_accent_dark_light_green);
+                    break;
+
+                case "#FFC107":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_amber);
+                    else
+                        setTheme(R.style.pref_accent_dark_amber);
+                    break;
+
+                case "#FF9800":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_orange);
+                    else
+                        setTheme(R.style.pref_accent_dark_orange);
+                    break;
+
+                case "#FF5722":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_deep_orange);
+                    else
+                        setTheme(R.style.pref_accent_dark_deep_orange);
+                    break;
+
+                case "#795548":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_brown);
+                    else
+                        setTheme(R.style.pref_accent_dark_brown);
+                    break;
+
+                case "#212121":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_black);
+                    else
+                        setTheme(R.style.pref_accent_dark_black);
+                    break;
+
+                case "#607d8b":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_blue_grey);
+                    else
+                        setTheme(R.style.pref_accent_dark_blue_grey);
+                    break;
+
+                case "#004d40":
+                    if (theme1==0)
+                        setTheme(R.style.pref_accent_light_super_su);
+                    else
+                        setTheme(R.style.pref_accent_dark_super_su);
+                    break;
+            }
+        } else {
+            if (theme1==1) {
+                setTheme(R.style.appCompatDark);
+            } else {
+                setTheme(R.style.appCompatLight);
+            }
         }
 
         setContentView(R.layout.main_toolbar);
-
         tabHandler=new TabHandler(this,null,null,1);
 
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
-        fabskin = Sp.getString("fab_skin_color", "#e91e63");
         fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
+
+        boolean random=Sp.getBoolean("random_checkbox",false);
+        if(random)
+            skin=PreferenceUtils.random(Sp);
+        else
+            skin = Sp.getString("skin_color", "#3f51b5");
+
         hidemode=Sp.getInt("hidemode", 0);
-        topfab = hidemode==0 ? true:false;
+        topfab = hidemode==0 ? Sp.getBoolean("topFab",true):false;
 
         floatingActionButton = !topfab ?
                 (FloatingActionButton) findViewById(R.id.fab) : (FloatingActionButton) findViewById(R.id.fab2);
@@ -217,30 +368,22 @@ public class MainActivity extends ActionBarActivity {
         floatingActionButton.setColorNormal(Color.parseColor(fabskin));
         floatingActionButton.setColorPressed(Color.parseColor(fabSkinPressed));
 
+        drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
+        drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
+        drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
+
         utils = new Futils();
         s = new Shortcuts(this);
         path = getIntent().getStringExtra("path");
         openprocesses=getIntent().getBooleanExtra("openprocesses", false);
         restart = getIntent().getBooleanExtra("restart", false);
+
+
         rootmode = Sp.getBoolean("rootmode", false);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         util = new IconUtils(Sp, this);
         icons = new IconUtils(Sp, this);
 
-        boolean v20 = Sp.getBoolean("v2.0", false);
-        if (!v20) {
-            try {
-                utils.deletedirectory(new File("/data/data/com.amaze.filemanager"));
-            } catch (Exception e) {
-                try {
-                    utils.deletedirectory(getCacheDir());
-                } catch (Exception e1) {
-
-                }
-
-            }
-            Sp.edit().putBoolean("v2.0", true).apply();
-        }
 
         pathbar = (LinearLayout) findViewById(R.id.pathbar);
         buttons = (LinearLayout) findViewById(R.id.buttons);
@@ -321,12 +464,7 @@ public class MainActivity extends ActionBarActivity {
         } catch (Exception e) {
 
         }
-
-        skin = PreferenceManager.getDefaultSharedPreferences(this).getString("skin_color", "#3f51b5");
         findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
-        drawerHeaderView = getLayoutInflater().inflate(R.layout.drawerheader, null);
-        drawerHeaderView.findViewById(R.id.drawer_header).setBackgroundResource(R.drawable.amaze_header);
-        drawerHeaderView.setBackgroundColor(Color.parseColor(skin));
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
 
@@ -396,16 +534,19 @@ public class MainActivity extends ActionBarActivity {
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                 transaction2.replace(R.id.content_frame, new AppsList());
 
-                pending_fragmentTransaction=transaction2;
+                pending_fragmentTransaction = transaction2;
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
-                select=list.size()+1;
+                select = list.size() + 1;
                 adapter.toggleChecked(false);
+
             }
         });
 
-        mDrawerList.addHeaderView(drawerHeaderView);
+        mDrawerList.addHeaderView(drawerHeaderLayout);
         updateDrawer();
+        drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
+        drawerHeaderParent.setBackgroundColor(Color.parseColor(skin));
         if (savedInstanceState == null) {
 
             if (openprocesses) {
@@ -422,13 +563,19 @@ public class MainActivity extends ActionBarActivity {
                 goToMain(path);
             }
         } else {
+            oppathe=savedInstanceState.getString("oppathe");
+            oppathe1=savedInstanceState.getString("oppathe1");
+            ArrayList<String> k=savedInstanceState.getStringArrayList("oparrayList");
+            if(k!=null) {
+                oparrayList = (k);
+                operation = savedInstanceState.getInt("operation");
+            }
             select = savedInstanceState.getInt("selectitem", 0);
             adapter.toggleChecked(select);
         }
         if (theme1 == 1) {
             mDrawerList.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         }
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerList.setDivider(null);
         if (select == 0) {
 
@@ -620,7 +767,6 @@ public class MainActivity extends ActionBarActivity {
     } catch (ClassCastException e) {
         goToMain("");
     }}
-
     public void invalidatePasteButton(MenuItem paste) {
         if (MOVE_PATH != null || COPY_PATH != null) {
             paste.setVisible(true);
@@ -649,28 +795,36 @@ public class MainActivity extends ActionBarActivity {
         val=getStorageDirectories();
         books=new ArrayList<>();
         storage_count=0;
-        for (String file:val) {
+        for (String file:val)
+        {
             File f=new File(file);
-            if(!f.isDirectory()){
+            if(!f.isDirectory())
+            {
                 storage_count++;
-                list.add(file);}
-            else if(f.canExecute()){
+                list.add(file);
+            }
+            else if(f.canExecute())
+            {
                 list.add(file);
                 storage_count++;
             }
         }
         try {
-            for(File file: s.readS()){
+            for(File file: s.readS())
+            {
                 books.add(file.getPath());
                 list.add(file.getPath());
             }
         } catch (Exception e) {
             try {
                 s.makeS();
-                for(File file: s.readS()){
+                for(File file: s.readS())
+                {
                     books.add(file.getPath());
                     list.add(file.getPath());
-                }} catch (Exception e1) {
+                }
+            } catch (Exception e1)
+            {
                 e1.printStackTrace();
             }
         }
@@ -710,7 +864,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
     public void selectItem(final int i, boolean removeBookmark) {
-        if (select == null || select >= list.size() -2 && !removeBookmark) {
+        if ((select == null || select >= list.size()) && !removeBookmark) {
 
             TabFragment tabFragment=new TabFragment();
             Bundle a = new Bundle();
@@ -726,7 +880,6 @@ public class MainActivity extends ActionBarActivity {
             adapter.toggleChecked(select);
             if(!isDrawerLocked)mDrawerLayout.closeDrawer(mDrawerLinear);
             else onDrawerClosed();
-
             fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
             tabsSpinner.setVisibility(View.VISIBLE);
             floatingActionButton.setAnimation(fabShowAnim);
@@ -734,25 +887,24 @@ public class MainActivity extends ActionBarActivity {
             floatingActionButton.setVisibility(View.VISIBLE);
 
         }  else if (removeBookmark) {
-
-            //adapter.notifyDataSetChanged();
             try {
                 s.removeS(new File(list.get(i)), MainActivity.this);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             list.remove(i);
+            select=0;
+            adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
+            mDrawerList.setAdapter(adapter);
         } else {
-
             pending_path=list.get(i);
             select = i;
             adapter.toggleChecked(select);
             if(!isDrawerLocked)mDrawerLayout.closeDrawer(mDrawerLinear);
             else onDrawerClosed();
+
         }
 
-        adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
-        mDrawerList.setAdapter(adapter);
     }
 
     @Override
@@ -805,7 +957,7 @@ public class MainActivity extends ActionBarActivity {
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
-            menu.findItem(R.id.item10).setVisible(false);
+            if(f.contains("ProcessViewer"))menu.findItem(R.id.item10).setVisible(false);
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
@@ -852,20 +1004,19 @@ public class MainActivity extends ActionBarActivity {
 
 
     //// called when the user exits the action mode
-//
+//	
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
         // ActionBarDrawerToggle will take care of this.
-        if(!isDrawerLocked) if (mDrawerToggle.onOptionsItemSelected(item)) {
+        if (mDrawerToggle!=null && mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         // Handle action buttons
         Main ma=null;
         try {
-            ma=(Main)((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+            ma=(Main)getFragment().getTab();
         } catch (ClassCastException e) {
-            e.printStackTrace();
         }
         switch (item.getItemId()) {
             case R.id.home:
@@ -878,7 +1029,11 @@ public class MainActivity extends ActionBarActivity {
                 finish();
                 break;
             case R.id.item10:
-                utils.showSortDialog(ma);
+                Fragment fragment=getDFragment();
+                if(fragment .getClass().getName().contains("TabFragment"))
+                    utils.showSortDialog(ma);
+                else
+                    utils.showSortDialog((AppsList)fragment);
                 break;
             case R.id.hiddenitems:
                 utils.showHiddenDialog(ma);
@@ -914,7 +1069,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-       if(!isDrawerLocked) mDrawerToggle.syncState();
+        if(mDrawerToggle!=null)mDrawerToggle.syncState();
     }
     public void add(int pos) {
         final MainActivity mainActivity=this;
@@ -932,8 +1087,6 @@ public class MainActivity extends ActionBarActivity {
                 if(theme1==1)ba1.theme(Theme.DARK);
                 ba1.positiveText(R.string.create);
                 ba1.negativeText(R.string.cancel);
-                ba1.positiveColor(Color.parseColor(fabskin));
-                ba1.negativeColor(Color.parseColor(fabskin));
                 ba1.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -978,8 +1131,6 @@ public class MainActivity extends ActionBarActivity {
                 if(theme1==1)ba2.theme(Theme.DARK);
                 ba2.negativeText(R.string.cancel);
                 ba2.positiveText(R.string.create);
-                ba2.positiveColor(Color.parseColor(fabskin));
-                ba2.negativeColor(Color.parseColor(fabskin));
                 ba2.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -1026,7 +1177,7 @@ public class MainActivity extends ActionBarActivity {
                 e.post(new Runnable() {
                     @Override
                     public void run() {
-                        InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager inputMethodManager= (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                         inputMethodManager.showSoftInput(e, InputMethodManager.SHOW_IMPLICIT);
                     }
                 });
@@ -1036,8 +1187,6 @@ public class MainActivity extends ActionBarActivity {
         if(theme1==1)a.theme(Theme.DARK);
         a.negativeText(R.string.cancel);
         a.positiveText(R.string.search);
-        a.positiveColor(Color.parseColor(fabskin));
-        a.negativeColor(Color.parseColor(fabskin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -1060,26 +1209,29 @@ public class MainActivity extends ActionBarActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
-        mDrawerToggle.onConfigurationChanged(newConfig);
+        if(mDrawerToggle!=null) mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position, false);
 
-        }
-    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("selectitem", select);
+        System.out.println("onSaved");
+        if(oppathe!=null){
+            outState.putString("oppathe", oppathe);
+            outState.putString("oppathe1",oppathe1);
+
+            outState.putStringArrayList("oparraylist",(oparrayList));
+            outState.putInt("operation", operation);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        System.out.println("onPause");
         killToast();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(SEARCHRECIEVER);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(LOADSEARCHRECIEVER);
@@ -1088,7 +1240,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onResume() {
         super.onResume();
-
+        System.out.println("onresume");
         LocalBroadcastManager.getInstance(this).registerReceiver(SEARCHRECIEVER, new IntentFilter("searchresults"));
         LocalBroadcastManager.getInstance(this).registerReceiver(LOADSEARCHRECIEVER, new IntentFilter("loadsearchresults"));
     }
@@ -1165,11 +1317,6 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        boolean check = Sp.getBoolean("random_checkbox", false);
-        if (check) {
-            PreferenceUtils.random(Sp);
-        }
         Sp.edit().putBoolean("remember", true).apply();
         unregisterReceiver(mNotificationReceiver);
     }
@@ -1277,9 +1424,6 @@ public class MainActivity extends ActionBarActivity {
                 x.positiveText(R.string.skip);
                 x.negativeText(R.string.overwrite);
                 x.neutralText(R.string.cancel);
-                x.positiveColor(Color.parseColor(fabskin));
-                x.negativeColor(Color.parseColor(fabskin));
-                x.neutralColor(Color.parseColor(fabskin));
                 x.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -1369,6 +1513,9 @@ public class MainActivity extends ActionBarActivity {
         TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
         return tabFragment;
     }
+    public Fragment getDFragment(){
+        return getSupportFragmentManager().findFragmentById(R.id.content_frame);
+    }
     public void setPagingEnabled(boolean b){
         getFragment().mViewPager.setPagingEnabled(b);
     }
@@ -1435,6 +1582,139 @@ public class MainActivity extends ActionBarActivity {
         mDrawerList.setAdapter(adapter);
 
     }
+
+    public void guideDialogForLEXA(String path){
+        final MaterialDialog.Builder x = new MaterialDialog.Builder(MainActivity.this);
+        if(theme1==1)x.theme(Theme.DARK);
+        x.title(R.string.needsaccess);
+        LayoutInflater layoutInflater = (LayoutInflater) MainActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+        View view = layoutInflater.inflate(R.layout.lexadrawer, null);
+        x.customView(view, true);
+        // textView
+        TextView textView = (TextView) view.findViewById(R.id.description);
+        textView.setText(utils.getString(con, R.string.needsaccesssummary)+path+utils.getString(con,R.string.needsaccesssummary1));
+        ((ImageView)view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
+        x.positiveText(R.string.open);
+        x.negativeText(R.string.cancel);
+        x.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onPositive(MaterialDialog materialDialog) {
+                triggerStorageAccessFramework();
+            }
+
+            @Override
+            public void onNegative(MaterialDialog materialDialog) {
+                Toast.makeText(mainActivity,R.string.error,Toast.LENGTH_SHORT).show();
+            }
+        });
+        final MaterialDialog y=x.build();
+        y.show();
+    }
+    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+        if (requestCode == 3) {
+            String p=Sp.getString("URI",null);
+            Uri oldUri =null;
+            if(p!=null)oldUri=Uri.parse(p);
+            Uri treeUri = null;
+            if (responseCode == Activity.RESULT_OK) {
+                // Get Uri from Storage Access Framework.
+                treeUri = intent.getData();
+                // Persist URI - this is required for verification of writability.
+                if(treeUri!=null)Sp.edit().putString("URI", treeUri.toString()).commit();
+            }
+
+            // If not confirmed SAF, or if still not writable, then revert settings.
+            if (responseCode != Activity.RESULT_OK  ) {
+               /* DialogUtil.displayError(getActivity(), R.string.message_dialog_cannot_write_to_folder_saf, false,
+                        currentFolder);||!FileUtil.isWritableNormalOrSaf(currentFolder)
+*/
+                Sp.edit().putString("URI", oldUri.toString()).commit();
+                return;
+            }
+
+            // After confirmation, update stored value of folder.
+            // Persist access permissions.
+            final int takeFlags = intent.getFlags()
+                    & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
+            switch (operation) {
+                case 0://deletion
+                    new DeleteTask(null,mainActivity).execute(utils.toFileArray(oparrayList));
+                    break;
+                case 1://copying
+                    Intent intent1 = new Intent(con, CopyService.class);
+                    intent1.putExtra("FILE_PATHS", (oparrayList));
+                    intent1.putExtra("COPY_DIRECTORY", oppathe);
+                    startService(intent1);
+                    break;
+                case 2://moving
+                    new MoveFiles(utils.toFileArray(oparrayList), ((Main)getFragment().getTab()),((Main)getFragment().getTab()).getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                    break;
+                case 3://mkdir
+                    FileUtil.mkdir(new File(oppathe),mainActivity);
+                    Main ma1=((Main) getFragment().getTab());
+                    ma1.loadlist(new File(ma1.current), true);
+                    break;
+                case 4:
+                    //FileUtil.renameFolder(new File(oppathe),new File(oppathe1),mainActivity);
+
+                    rename(new File(oppathe), new File(oppathe1));
+                    Main ma2=((Main) getFragment().getTab());
+                    ma2.loadlist(new File(ma2.current), true);
+                    break;
+
+            } }
+    }
+    public void rename(File file,File file1) {
+        int mode = checkFolder(file.getParentFile(), this);
+        if (mode == 2) {
+            oppathe=file.getPath();
+            oppathe1=file1.getPath();
+            operation = 4;
+        } else if (mode == 0) {
+            boolean b = FileUtil.renameFolder(file, file1, mainActivity);
+            if (b) {
+                Toast.makeText(mainActivity,
+                        utils.getString(mainActivity, R.string.renamed),
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(mainActivity,
+                        utils.getString(mainActivity, R.string.renameerror),
+                        Toast.LENGTH_LONG).show();
+
+            }
+        } else if(mode==1) utils.rename(file,file1.getName(),rootmode);
+
+        Intent intent = new Intent("loadlist");
+        sendBroadcast(intent);
+    }
+    private int checkFolder(final File folder,Context context) {
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+            if (!folder.exists() || !folder.isDirectory()) {
+                return 0;
+            }
+
+            // On Android 5, trigger storage access framework.
+            if (!FileUtil.isWritableNormalOrSaf(folder,context)) {
+                guideDialogForLEXA(folder.getPath());
+                return 2;
+            }
+            return 1;
+        } else if (Build.VERSION.SDK_INT==19 && FileUtil.isOnExtSdCard(folder,context)) {
+            // Assume that Kitkat workaround works
+            return 1;
+        } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+    private void triggerStorageAccessFramework() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        startActivityForResult(intent, 3);
+    }
+
 
     public void bbar(final Main main) {
         final String text = main.current;
@@ -1649,56 +1929,7 @@ public class MainActivity extends ActionBarActivity {
             }).start();
         }
     }
-    @Override
-    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-         if (requestCode == 3) {
-            String p=Sp.getString("URI",null);
-            Uri oldUri =null;
-            if(p!=null)oldUri=Uri.parse(p);
-            Uri treeUri = null;
-            if (responseCode == Activity.RESULT_OK) {
-                // Get Uri from Storage Access Framework.
-                treeUri = intent.getData();
-                // Persist URI - this is required for verification of writability.
-                if(treeUri!=null)Sp.edit().putString("URI", treeUri.toString()).commit();
-            }
 
-            // If not confirmed SAF, or if still not writable, then revert settings.
-            if (responseCode != Activity.RESULT_OK  ) {
-               /* DialogUtil.displayError(getActivity(), R.string.message_dialog_cannot_write_to_folder_saf, false,
-                        currentFolder);||!FileUtil.isWritableNormalOrSaf(currentFolder)
-*/
-                Sp.edit().putString("URI", oldUri.toString()).commit();
-                return;
-            }
-
-            // After confirmation, update stored value of folder.
-            // Persist access permissions.
-            final int takeFlags = intent.getFlags()
-                    & (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
-            switch (operation) {
-                case 0://deletion
-                    new DeleteTask(null,mainActivity).execute(utils.toFileArray(oparrayList));
-                    break;
-                case 1://copying
-                    Intent intent1 = new Intent(con, CopyService.class);
-                    intent1.putExtra("FILE_PATHS", (oparrayList));
-                    intent1.putExtra("COPY_DIRECTORY", oppathe);
-                    startService(intent1);
-                    break;
-                case 2://moving
-                    new MoveFiles(utils.toFileArray(oparrayList), ((Main)getFragment().getTab()),((Main)getFragment().getTab()).getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
-                    break;
-                case 3://mkdir
-                    FileUtil.mkdir(new File(oppathe),mainActivity);
-                    Main ma1=((Main) getFragment().getTab());
-                    ma1.loadlist(new File(ma1.current), true);
-                    break;
-
-            } }
-    }
     public void initiatebbar() {
         LinearLayout pathbar = (LinearLayout) findViewById(R.id.pathbar);
         TextView textView = (TextView) findViewById(R.id.fullpath);
@@ -1794,7 +2025,8 @@ public class MainActivity extends ActionBarActivity {
         } catch (Exception e) {
             return false;
         }
-    } private void onDrawerClosed(){
+    }
+    private void onDrawerClosed(){
         if(pending_fragmentTransaction!=null){
             pending_fragmentTransaction.commit();
             pending_fragmentTransaction=null;
@@ -1811,68 +2043,13 @@ public class MainActivity extends ActionBarActivity {
                 goToMain("");
             }pending_path=null;}
         supportInvalidateOptionsMenu();
-    }private int checkFolder(final File folder,Context context) {
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
-            if (!folder.exists() || !folder.isDirectory()) {
-                return 0;
-            }
-
-            // On Android 5, trigger storage access framework.
-            if (!FileUtil.isWritableNormalOrSaf(folder,context)) {
-                guideDialogForLEXA(folder.getPath());
-                return 2;
-            }
-            return 1;
-        }
-        else if (Build.VERSION.SDK_INT==19 && FileUtil.isOnExtSdCard(folder,context)) {
-            // Assume that Kitkat workaround works
-            return 1;
-        }
-        else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
-            return 1;
-        }
-        else {
-            return 0;
-        }
-    }public void guideDialogForLEXA(String path){
-        final MaterialDialog.Builder x = new MaterialDialog.Builder(MainActivity.this);
-        if(theme1==1)x.theme(Theme.DARK);
-        x.title(R.string.needsaccess);
-        LayoutInflater layoutInflater = (LayoutInflater) MainActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.lexadrawer, null);
-        x.customView(view, true);
-        // textView
-        TextView textView = (TextView) view.findViewById(R.id.description);
-        textView.setText(utils.getString(con, R.string.needsaccesssummary)+path+utils.getString(con,R.string.needsaccesssummary1));
-        ((ImageView)view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
-        x.positiveText(R.string.open);
-        x.negativeText(R.string.cancel);
-        x.positiveColor(Color.parseColor(fabskin));
-        x.negativeColor(Color.parseColor(fabskin));
-        x.callback(new MaterialDialog.ButtonCallback() {
-            @Override
-            public void onPositive(MaterialDialog materialDialog) {
-                triggerStorageAccessFramework();
-            }
-
-            @Override
-            public void onNegative(MaterialDialog materialDialog) {
-                Toast.makeText(mainActivity,R.string.error,Toast.LENGTH_SHORT).show();
-            }
-        });
-        final MaterialDialog y=x.build();
-        y.show();
-    }
-    private void triggerStorageAccessFramework() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        startActivityForResult(intent, 3);
     }
     public void deleteFiles(Main m,ArrayList<File> files){
         int mode=checkFolder( files.get(0).getParentFile(),this);
         if(mode==2){
             oparrayList=utils.toStringArray(files);
             operation=0;
-        }else if(mode==1 || mode==2)
+        }else if(mode==1 || mode==0)
             new DeleteTask(null,mainActivity).execute(files);
     }
     public void translateDrawerList(boolean down) {
