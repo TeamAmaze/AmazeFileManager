@@ -903,7 +903,7 @@ public class Main extends android.support.v4.app.Fragment {
                         @Override
                         public void onPositive(MaterialDialog materialDialog) {
                         m.finish();
-                            mainActivity.rename((f),new File(f.getPath()+"/"+edit.getText()));
+                            mainActivity.rename((f),new File(f.getParent()+"/"+edit.getText()));
 
                         }
 
