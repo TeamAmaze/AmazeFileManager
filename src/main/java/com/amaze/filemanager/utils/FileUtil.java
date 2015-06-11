@@ -260,7 +260,7 @@ public abstract class FileUtil {
      */
     public static final boolean renameFolder(final File source, final File target,Context context) {
         // First try the normal rename.
-        if (source.renameTo(target)) {
+        if (new Futils().rename(source,target.getName(),false)) {
             return true;
         }
         if (target.exists()) {

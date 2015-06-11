@@ -278,6 +278,10 @@ public class Main extends android.support.v4.app.Fragment {
         if(savepaths)
             f=new File(current);
         else f=new File(home);
+        if(!f.isDirectory()){
+            utils.openFile(f,mainActivity);
+            f=f.getParentFile();
+        }
         mainActivity.initiatebbar();
 
         // use a linear layout manager

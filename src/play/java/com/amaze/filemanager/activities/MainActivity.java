@@ -1871,7 +1871,7 @@ public class MainActivity extends AppCompatActivity implements
             oppathe=file.getPath();
             oppathe1=file1.getPath();
             operation = 4;
-        } else if (mode == 0) {
+        } else if (mode == 1) {
             boolean b = FileUtil.renameFolder(file, file1, mainActivity);
             if (b) {
                 Toast.makeText(mainActivity,
@@ -1883,7 +1883,7 @@ public class MainActivity extends AppCompatActivity implements
                         Toast.LENGTH_LONG).show();
 
             }
-        } else if(mode==1) utils.rename(file,file1.getName(),rootmode);
+        } else if(mode==0) utils.rename(file,file1.getName(),rootmode);
 
         Intent intent = new Intent("loadlist");
         sendBroadcast(intent);
