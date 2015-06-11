@@ -45,30 +45,6 @@ public abstract class FileUtil {
      *
      * @return the default camera folder.
      */
-    public static String getDefaultCameraFolder() {
-        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-        if (path.exists()) {
-            File test1 = new File(path, "Camera/");
-            if (test1.exists()) {
-                path = test1;
-            }
-            else {
-                File test2 = new File(path, "100ANDRO/");
-                if (test2.exists()) {
-                    path = test2;
-                }
-                else {
-                    File test3 = new File(path, "100MEDIA/");
-                    path = test3;
-                }
-            }
-        }
-        else {
-            File test3 = new File(path, "Camera/");
-            path = test3;
-        }
-        return path.getAbsolutePath();
-    }
 
     /**
      * Copy a file. The target file may even be on external SD card for Kitkat.
@@ -260,7 +236,7 @@ public abstract class FileUtil {
      */
     public static final boolean renameFolder(final File source, final File target,Context context) {
         // First try the normal rename.
-        if (new Futils().rename(source,target.getName(),false)) {
+        if (new Futils().rename(source, target.getName(), false)) {
             return true;
         }
         if (target.exists()) {
@@ -340,6 +316,7 @@ public abstract class FileUtil {
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(file, context)) {
             DocumentFile document = getDocumentFile(file, true,context);
             // getDocumentFile implicitly creates the directory.
+
             return document.exists();
         }
 
@@ -354,7 +331,37 @@ public abstract class FileUtil {
 
         return false;
     }
+    public static boolean mkfile(final File file,Context context) throws IOException {
+        if (file.exists()) {
+            // nothing to create.
+            return !file.isDirectory();
+        }
 
+        // Try the normal way
+        try {
+            if (file.createNewFile()) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        boolean b=true;
+        // Try with Storage Access Framework.
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(file, context)) {
+            DocumentFile document = getDocumentFile(file.getParentFile(), true,context);
+            // getDocumentFile implicitly creates the directory.
+            try {
+                b=document.createFile(MimeTypes.getMimeType(file),file.getName())!=null;
+                return b;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+
+        return false;
+    }
     /**
      * Delete a folder.
      *
@@ -633,7 +640,7 @@ public abstract class FileUtil {
      */
     public static DocumentFile getDocumentFile(final File file, final boolean isDirectory,Context context) {
         String baseFolder = getExtSdCardFolder(file,context);
-
+        boolean originalDirectory=false;
         if (baseFolder == null) {
             return null;
         }
@@ -641,10 +648,16 @@ public abstract class FileUtil {
         String relativePath = null;
         try {
             String fullPath = file.getCanonicalPath();
+            if(!baseFolder.equals(fullPath))
             relativePath = fullPath.substring(baseFolder.length() + 1);
+            else originalDirectory=true;
         }
         catch (IOException e) {
             return null;
+        }
+        catch (Exception f){
+            originalDirectory=true;
+            //continue
         }
         String as=PreferenceManager.getDefaultSharedPreferences(context).getString("URI",null);
 
@@ -656,7 +669,7 @@ public abstract class FileUtil {
 
         // start with root of SD card and then parse through document tree.
         DocumentFile document = DocumentFile.fromTreeUri(context, treeUri);
-
+        if(originalDirectory)return document;
         String[] parts = relativePath.split("\\/");
         for (int i = 0; i < parts.length; i++) {
             DocumentFile nextDocument = document.findFile(parts[i]);

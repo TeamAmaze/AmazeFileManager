@@ -1136,25 +1136,7 @@ public class MainActivity extends AppCompatActivity implements
                     public void onPositive(MaterialDialog materialDialog) {
                         String a = edir.getText().toString();
                         File f = new File(path + "/" + a);
-                        boolean b=false;
-                        if (!f.exists()) {
-                            int mode=checkFolder(new File(path),mainActivity);
-                            if(mode==1)b=FileUtil.mkdir(f,mainActivity);
-                            else if(mode==2){
-                                oppathe=f.getPath();
-                                operation=3;
-                            }
-                            ma.updateList();
-                            if(b)
-                                Toast.makeText(mainActivity, (R.string.foldercreated), Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(mainActivity, ( R.string.fileexist), Toast.LENGTH_LONG).show();
-                        }
-                        if(!b && rootmode){
-                            RootTools.remount(f.getParent(), "rw");
-                            RootHelper.runAndWait("mkdir "+f.getPath(),true);
-                            ma.updateList();
-                        }
+                        mkDir(f,ma);
                     }
 
                     @Override
@@ -1180,20 +1162,8 @@ public class MainActivity extends AppCompatActivity implements
                     public void onPositive(MaterialDialog materialDialog) {
                         String a = edir1.getText().toString();boolean b=false;
                         File f1 = new File(path1 + "/" + a);
-                        if (!f1.exists()) {
-                            try {
-                                b = f1.createNewFile();
-                                ma.updateList();
-                                Toast.makeText(mainActivity, ( R.string.filecreated), Toast.LENGTH_LONG).show();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            Toast.makeText(mainActivity,( R.string.fileexist), Toast.LENGTH_LONG).show();
-                        }if(!b && rootmode)RootTools.remount(f1.getParent(),"rw");
-                        RootHelper.runAndWait("touch "+f1.getPath(),true);
-                        ma.updateList();
-                    }
+                        mkFile(f1,ma);
+                       }
 
                     @Override
                     public void onNegative(MaterialDialog materialDialog) {
@@ -1851,18 +1821,19 @@ public class MainActivity extends AppCompatActivity implements
                     new MoveFiles(utils.toFileArray(oparrayList), ((Main)getFragment().getTab()),((Main)getFragment().getTab()).getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     break;
                 case 3://mkdir
-                    FileUtil.mkdir(new File(oppathe),mainActivity);
                     Main ma1=((Main) getFragment().getTab());
-                    ma1.loadlist(new File(ma1.current), true);
+                    mkDir(new File(oppathe),ma1);
                     break;
                 case 4:
-                    //FileUtil.renameFolder(new File(oppathe),new File(oppathe1),mainActivity);
-
                     rename(new File(oppathe), new File(oppathe1));
                     Main ma2=((Main) getFragment().getTab());
                     ma2.loadlist(new File(ma2.current), true);
                     break;
+                case 5:
+                    Main ma3=((Main) getFragment().getTab());
+                    mkDir(new File(oppathe),ma3);
 
+                    break;
             } }
     }
     public void rename(File file,File file1) {
@@ -2242,6 +2213,50 @@ public class MainActivity extends AppCompatActivity implements
                 goToMain("");
             }pending_path=null;}
         supportInvalidateOptionsMenu();
+    }
+    void mkFile(File f1,Main ma){
+        boolean b=false;
+        if (!f1.exists()) {
+            int mode=checkFolder(new File(f1.getParent()),mainActivity);
+            if(mode==1) try {
+                b=FileUtil.mkfile(f1, mainActivity);
+            } catch (IOException e) {
+                e.printStackTrace();
+                b=false;
+            }
+            else if(mode==2){
+                oppathe=f1.getPath();
+                operation=5;
+            }
+            ma.updateList();
+
+        } else {
+            Toast.makeText(mainActivity,( R.string.fileexist), Toast.LENGTH_LONG).show();
+        }if(!b && rootmode)RootTools.remount(f1.getParent(),"rw");
+        RootHelper.runAndWait("touch "+f1.getPath(),true);
+        ma.updateList();
+
+    }
+    void mkDir(File f,Main ma){
+        boolean b=false;
+        if (!f.exists()) {
+            int mode=checkFolder(f.getParentFile(),mainActivity);
+            if(mode==1)b=FileUtil.mkdir(f,mainActivity);
+            else if(mode==2){
+                oppathe=f.getPath();
+                operation=3;
+            }
+            ma.updateList();
+            if(b)
+                Toast.makeText(mainActivity, (R.string.foldercreated), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(mainActivity, ( R.string.fileexist), Toast.LENGTH_LONG).show();
+        }
+        if(!b && rootmode){
+            RootTools.remount(f.getParent(), "rw");
+            RootHelper.runAndWait("mkdir "+f.getPath(),true);
+            ma.updateList();
+        }
     }
     public void deleteFiles(Main m,ArrayList<File> files){
        int mode=checkFolder( files.get(0).getParentFile(),this);
