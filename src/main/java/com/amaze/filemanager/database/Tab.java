@@ -40,13 +40,6 @@ public class Tab {
         this._home=home;
 
     }
-    public void setID(int id) {
-        this._id = id;
-    }
-
-    public int getID() {
-        return this._id;
-    }
 
     public void setTab(int tab_no) {
         this._tab_no = tab_no;

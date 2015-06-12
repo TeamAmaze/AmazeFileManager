@@ -120,7 +120,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                     tab.setPath(path);
                     addTab(tab,l+1,"");
                     if(l==0)
-                        addTab(tabHandler.findTab(1),1,"");
+                        addTab(tabHandler.findTab(2),2,"");
                 }
                 else
                 {   addTab(tabHandler.findTab(1),1,"");

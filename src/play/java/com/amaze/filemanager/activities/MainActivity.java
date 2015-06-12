@@ -1242,10 +1242,8 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 String a = e.getText().toString();
-                Intent i=new Intent(con, SearchService.class);
-                i.putExtra("path",fpath);
-                i.putExtra("text",a);
-                startService(i);
+                SearchTask task= new SearchTask(ma.searchHelper,ma,a);
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fpath);
             }
 
             @Override

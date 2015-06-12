@@ -88,9 +88,9 @@ public class TabHandler extends SQLiteOpenHelper {
         Tab tab = new Tab();
         if (cursor.moveToFirst()) {
             cursor.moveToFirst();
-            tab.setTab(Integer.parseInt(cursor.getString(0)));
-            tab.setPath(cursor.getString(1));
-            tab.setHome(cursor.getString(2));
+            tab.setTab((cursor.getInt(cursor.getColumnIndex(COLUMN_TAB_NO))));
+            tab.setPath(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
+            tab.setHome(cursor.getString(cursor.getColumnIndex(COLUMN_HOME)));
             cursor.close();
         } else {
             tab = null;
