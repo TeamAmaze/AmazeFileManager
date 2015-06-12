@@ -89,12 +89,10 @@ public class DeleteTask extends AsyncTask<ArrayList<File>, String, Boolean> {
          if ((!b || mode==0 || mode ==2) && rootMode)
              for (File f : files) {
                  try {
-
                      b=RootTools.deleteFileOrDirectory(f.getPath(), true);
                  } catch (Exception e) {
                      b = false;
                  }
-                return b;
             }
 
         return b;
