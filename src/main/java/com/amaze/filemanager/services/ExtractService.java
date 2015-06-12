@@ -104,7 +104,8 @@ public class ExtractService extends Service {
     int lastpercent=0;
         private void publishResults(String a, int p1,  int id, long total, long done, boolean b) {
             if(hash.get(id)){
-            mBuilder.setProgress(100, p1, false);
+                mBuilder.setContentTitle(getResources().getString(R.string.extracting));
+                mBuilder.setProgress(100, p1, false);
                 mBuilder.setOngoing(true);
             mBuilder.setContentText(new File(a).getName()+" "+utils.readableFileSize(done)+"/"+utils.readableFileSize(total));
             int id1=Integer.parseInt("123"+id);

@@ -1141,6 +1141,18 @@ public class MainActivity extends AppCompatActivity implements
                 final EditText edir = (EditText) v.findViewById(R.id.newname);
                 edir.setHint(utils.getString(this, R.string.entername));
                 ba1.customView(v, true);
+                edir.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        edir.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                inputMethodManager.showSoftInput(edir, InputMethodManager.SHOW_IMPLICIT);
+                            }
+                        });
+                    }
+                });
                 if(theme1==1)ba1.theme(Theme.DARK);
                 ba1.positiveText(R.string.create);
                 ba1.negativeText(R.string.cancel);
@@ -1167,6 +1179,18 @@ public class MainActivity extends AppCompatActivity implements
                 final EditText edir1 = (EditText) v1.findViewById(R.id.newname);
                 edir1.setHint(utils.getString(this, R.string.entername));
                 ba2.customView(v1, true);
+                edir1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        edir1.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                inputMethodManager.showSoftInput(edir1, InputMethodManager.SHOW_IMPLICIT);
+                            }
+                        });
+                    }
+                });
                 if(theme1==1)ba2.theme(Theme.DARK);
                 ba2.negativeText(R.string.cancel);
                 ba2.positiveText(R.string.create);
@@ -1218,8 +1242,10 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 String a = e.getText().toString();
-               SearchTask task= new SearchTask(ma.searchHelper,ma,a);
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fpath);
+                Intent i=new Intent(con, SearchService.class);
+                i.putExtra("path",fpath);
+                i.putExtra("text",a);
+                startService(i);
             }
 
             @Override
