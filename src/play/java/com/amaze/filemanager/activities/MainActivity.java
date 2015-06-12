@@ -1197,7 +1197,7 @@ public class MainActivity extends AppCompatActivity implements
                 ba2.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
-                        String a = edir1.getText().toString();boolean b=false;
+                        String a = edir1.getText().toString();
                         File f1 = new File(path1 + "/" + a);
                         mkFile(f1,ma);
                        }

@@ -48,6 +48,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void onDraw(Canvas c, RecyclerView parent) {
         if(!show)return;
+        if(mDivider!=null)
         if (mOrientation == VERTICAL_LIST) {
             drawVertical(c, parent);
         } else {
@@ -89,6 +90,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
+        if(outRect!=null && mDivider!=null)
         if (mOrientation == VERTICAL_LIST) {
             outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
         } else {

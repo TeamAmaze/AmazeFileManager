@@ -22,8 +22,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.amaze.filemanager"
-    android:versionCode="18"
-    android:versionName="2.0.5">
+    android:versionCode="19"
+    android:versionName="2.0.6">
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER"/>
@@ -42,7 +42,6 @@
 
         <activity
             android:label="Amaze"
-            android:launchMode="singleTask"
             android:name=".activities.MainActivity"
             android:theme="@style/appCompatLight">
             <intent-filter >
