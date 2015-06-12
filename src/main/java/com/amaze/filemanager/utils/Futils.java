@@ -566,9 +566,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         mat.title(R.string.archive).content(R.string.archtext).positiveText(R.string.extract).negativeText(R.string.view).neutralText(R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-                Intent intent = new Intent(m, ExtractService.class);
-                intent.putExtra("zip",f.getPath());
-                m.startService(intent);
+                m.extractFile(f);
             }
 
             @Override
@@ -613,7 +611,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         View v = m.getLayoutInflater().inflate(R.layout.dialog, null);
         final EditText e = (EditText) v.findViewById(R.id.newname);
-        e.setText("Newzip.zip");
+        e.setText(new File(current).getName()+".zip");
         a.customView(v, true);
         if(m.theme1==1)
             a.theme(Theme.DARK);
@@ -623,11 +621,8 @@ public void showPackageDialog(final File f,final MainActivity m){
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-                Intent intent2 = new Intent(m, ZipTask.class);
                 String name = current + "/" + e.getText().toString();
-                intent2.putExtra("name", name);
-                intent2.putExtra("files", b);
-                m.startService(intent2);
+                m.compressFiles(new File(name),b);
             }
 
             @Override

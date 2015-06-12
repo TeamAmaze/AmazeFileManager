@@ -85,7 +85,7 @@ public class ExtractService extends Service {
         b.putString("file", file);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
-        notificationIntent.putExtra("openprocesses",true);
+        notificationIntent.putExtra("openprocesses", true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         mBuilder = new NotificationCompat.Builder(cd);
         mBuilder.setContentIntent(pendingIntent);
@@ -103,7 +103,7 @@ public class ExtractService extends Service {
     long copiedbytes=0,totalbytes=0;
     int lastpercent=0;
         private void publishResults(String a, int p1,  int id, long total, long done, boolean b) {
-            if(hash.get(id)){Intent intent = new Intent(EXTRACT_CONDITION);
+            if(hash.get(id)){
             mBuilder.setProgress(100, p1, false);
                 mBuilder.setOngoing(true);
             mBuilder.setContentText(new File(a).getName()+" "+utils.readableFileSize(done)+"/"+utils.readableFileSize(total));
@@ -116,13 +116,6 @@ public class ExtractService extends Service {
                 mNotifyManager.notify(id1,mBuilder.build());
             publishCompletedResult("",id1);
             }
-            intent.putExtra("name", a);
-            intent.putExtra("total", total);
-            intent.putExtra("done", done);
-            intent.putExtra("id", id);
-            intent.putExtra("p1", p1);
-            intent.putExtra("extract_completed", b);
-            sendBroadcast(intent);
 
         }else publishCompletedResult(a,Integer.parseInt("123"+id));}
        public void publishCompletedResult(String a,int id1){
@@ -133,13 +126,7 @@ public class ExtractService extends Service {
            }
        }
         private void createDir(File dir) {
-        if (dir.exists()) {
-            return;
-        }
-       // Log.i("Amaze", "Creating dir " + dir.getName());
-        if (!dir.mkdirs()) {
-            throw new RuntimeException("Can not create dir " + dir);
-        }
+            FileUtil.mkdir(dir,cd);
     }
 
     private void unzipEntry(int id, ZipFile zipfile, ZipEntry entry, String outputDir)
@@ -168,11 +155,11 @@ public class ExtractService extends Service {
                     int p=(int) ((copiedbytes / (float) totalbytes) * 100);
                     if(p!=lastpercent || lastpercent==0) {
                         publishResults(zipfile.getName(), p, id, totalbytes, copiedbytes, false);
-                        publishResults(true);
+                         
                     }
                     lastpercent=p;
                 } else {
-                    publishResults(false);
+                     
                     publishResults(zipfile.getName(), 100, id, totalbytes, copiedbytes, true);
                     stopSelf(id);
                 }
@@ -210,12 +197,12 @@ public class ExtractService extends Service {
                     int p=(int) ((copiedbytes / (float) totalbytes) * 100);
                     if(p!=lastpercent || lastpercent==0){
                         publishResults(a,p,id,totalbytes,copiedbytes,false);
-                        publishResults(true);
+                         
                     }
                     lastpercent=p;
                 } else {
                     publishResults(a,100,id,totalbytes,copiedbytes,true);
-                    publishResults(false);
+                     
                     stopSelf(id);
                 }
             }
@@ -250,11 +237,11 @@ public class ExtractService extends Service {
                     int p=(int) ((copiedbytes / (float) totalbytes) * 100);
                     if(p!=lastpercent || lastpercent==0){
                         publishResults(string,p,id,totalbytes,copiedbytes,false);
-                        publishResults(true);}
+                         }
                     lastpercent=p;
                 } else {
                     publishResults(string, 100, id, totalbytes, copiedbytes, true);
-                    publishResults(false);
+                     
                     stopSelf(id);
                 }
             }
@@ -272,7 +259,7 @@ public class ExtractService extends Service {
             for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
                 //Log.i("Amaze", id + " " + hash.get(id));
                 if (hash.get(id)) {
-                    publishResults(true);
+                     
                     ZipEntry entry = (ZipEntry) e.nextElement();
                     for(String y:x){
                         if(y.endsWith("/")){
@@ -282,7 +269,7 @@ public class ExtractService extends Service {
                     i++;
                 } else {
                     stopSelf(id);
-                    publishResults(false);
+                     
                 }
             }
             for (ZipEntry entry:entry1){totalbytes=totalbytes+entry.getSize();}
@@ -290,7 +277,7 @@ public class ExtractService extends Service {
                     unzipEntry(id, zipfile, entry, destinationPath);}
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
-            publishResults(archive.getName(),100,id,totalbytes,copiedbytes,true);
+            publishResults(archive.getName(), 100, id, totalbytes, copiedbytes, true);
             return true;
         } catch (Exception e) {
             Log.e("amaze", "Error while extracting file " + archive, e);
@@ -309,12 +296,12 @@ public class ExtractService extends Service {
             for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
                 //Log.i("Amaze", id + " " + hash.get(id));
                 if (hash.get(id)) {
-                    publishResults(true);
+                     
                     ZipEntry entry = (ZipEntry) e.nextElement();
                     arrayList.add(entry);
                 } else {
                     stopSelf(id);
-                    publishResults(false);
+                     
                 }
             }for(ZipEntry entry:arrayList){totalbytes=totalbytes+entry.getSize();}
             for (ZipEntry entry : arrayList) {
@@ -323,7 +310,7 @@ public class ExtractService extends Service {
 
                 } else {
                     stopSelf(id);
-                    publishResults(false);
+                     
                 }
             } Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
@@ -349,12 +336,12 @@ public class ExtractService extends Service {
             TarArchiveEntry tarArchiveEntry=inputStream.getNextTarEntry();
             while(tarArchiveEntry != null){
                 if (hash.get(id)) {
-                    publishResults(true);
+                     
                     archiveEntries.add(tarArchiveEntry);
                     tarArchiveEntry=inputStream.getNextTarEntry();
                 } else {
                     stopSelf(id);
-                    publishResults(false);
+                     
                 }
             }for(TarArchiveEntry entry:archiveEntries){totalbytes=totalbytes+entry.getSize();}
             for(TarArchiveEntry entry:archiveEntries){
@@ -362,7 +349,7 @@ public class ExtractService extends Service {
                     unzipTAREntry(id, inputStream, entry, destinationPath, archive.getName());
                 } else {
                     stopSelf(id);
-                    publishResults(false);
+                     
                 }}
 
             inputStream.close();
@@ -388,21 +375,21 @@ public class ExtractService extends Service {
             publishResults(archive.getName(),0,id,totalbytes,copiedbytes,false);
             while(fh != null){
                 if (hash.get(id)) {
-                    publishResults(true);
+                     
                     arrayList.add(fh);
                 fh=zipfile.nextFileHeader();
                 } else {
                     stopSelf(id);
-                    publishResults(false);
+                     
                 }
             }
             for (FileHeader header:arrayList){totalbytes=totalbytes+header.getFullUnpackSize();}
             for (FileHeader header:arrayList){
                 if (hash.get(id)) {
-                    unzipRAREntry(id,archive.getName(),zipfile,header,destinationPath);
+                    unzipRAREntry(id, archive.getName(), zipfile, header, destinationPath);
                 } else {
                     stopSelf(id);
-                    publishResults(false);
+                     
                 }
             }
             Intent intent = new Intent("loadlist");
@@ -445,17 +432,12 @@ public class ExtractService extends Service {
 
         @Override
         public void onPostExecute(Integer b) {
-            publishResults(false);
+             
             Log.i("Amaze", "Completed");
             stopSelf(b);
         }
 
-        private void publishResults(boolean b) {
-            Intent intent = new Intent("run");
-            intent.putExtra("run", b);
-            sendBroadcast(intent);
-
-        }
+       
     }
 
 

@@ -72,7 +72,6 @@ public class CopyService extends Service {
         b.putInt("id", startId);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
-        notificationIntent.putExtra("openprocesses",true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         mBuilder = new NotificationCompat.Builder(c);
         mBuilder.setContentIntent(pendingIntent);
@@ -122,7 +121,6 @@ public class CopyService extends Service {
 
         @Override
         public void onPostExecute(Integer b) {
-            publishResults(false);
             publishResults("", 0, 0, b, 0, 0, true,move);
             stopSelf(b);
 
@@ -151,16 +149,6 @@ public class CopyService extends Service {
                 mNotifyManager.notify(id1,mBuilder.build());
             publishCompletedResult(a,id1);
             }
-            Intent intent = new Intent("copy");
-            intent.putExtra("name", a);
-            intent.putExtra("total", total);
-            intent.putExtra("done", done);
-            intent.putExtra("id", id);
-            intent.putExtra("p1", p1);
-            intent.putExtra("p2", p2);
-            intent.putExtra("move", move);
-            intent.putExtra("COPY_COMPLETED", b);
-            sendBroadcast(intent);
         }else publishCompletedResult(a,Integer.parseInt("456"+id));}
     public void publishCompletedResult(String a,int id1){
         try {
@@ -174,12 +162,6 @@ public class CopyService extends Service {
 
     Context c = this;
 
-    private void publishResults(boolean b) {
-        Intent intent = new Intent("run");
-        intent.putExtra("run", b);
-        sendBroadcast(intent);
-
-    }
     private int checkFolder(final File folder,Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
             if (!folder.exists() || !folder.isDirectory()) {
@@ -294,7 +276,6 @@ public class CopyService extends Service {
                         int p=(int) ((copiedBytes / (float) totalBytes) * 100);
                         if(lastpercent!=p || lastpercent==0) {
                             publishResults(sourceFile.getName(), p, (int) ((fileBytes / (float) size) * 100), id, totalBytes, copiedBytes, false, move);
-                            publishResults(true);
                         }lastpercent=p;
                     }else {publishCompletedResult(sourceFile.getName(),Integer.parseInt("456"+id));
                         in.close();

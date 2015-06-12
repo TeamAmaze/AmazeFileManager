@@ -136,7 +136,6 @@ public abstract class FileUtil {
 
         OutputStream outStream = null;
         try {
-
             // First try the normal way
             if (isWritable(target)) {
                 // standard way
@@ -308,7 +307,7 @@ public abstract class FileUtil {
         }
 
         // Try the normal way
-        if (file.mkdir()) {
+        if (file.mkdirs()) {
             return true;
         }
 

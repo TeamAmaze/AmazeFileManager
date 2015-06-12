@@ -936,9 +936,7 @@ public class Main extends android.support.v4.app.Fragment {
                     mode.finish();
                     return true;
                 case R.id.ex:
-                    Intent intent = new Intent(getActivity(), ExtractService.class);
-                    intent.putExtra("zip", list.get((plist.get(0))).getDesc());
-                    getActivity().startService(intent);
+                    mainActivity.extractFile(new File(list.get(plist.get(0)).getDesc()));
                     mode.finish();
                     return true;
                 case R.id.cpy:

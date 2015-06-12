@@ -128,7 +128,7 @@ Context c=this;
         @Override
         public void onPostExecute(Integer b) {
             publishResults(b, name, 100, true,0,totalBytes);
-            publishResult(false);
+             
             stopSelf(b);
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
@@ -170,12 +170,7 @@ Context c=this;
             e.printStackTrace();
         }
     }
-    private void publishResult(boolean b) {
-        Intent intent = new Intent("run");
-        intent.putExtra("run", b);
-        sendBroadcast(intent);
-
-    }
+    
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -210,7 +205,7 @@ Context c=this;
             count = a.size();
             fileName = fileOut;
             File zipDirectory = new File(fileOut);
-            publishResult(true);
+             
             try {
                 out = FileUtil.getOutputStream(zipDirectory,c);
                 zos = new ZipOutputStream(new BufferedOutputStream(out));
@@ -218,7 +213,7 @@ Context c=this;
             }
             for (File file : a) {
                 try {
-                    publishResult(true);
+                     
                     compressFile(id, file, "");
                 } catch (Exception e) {
                 }
@@ -248,7 +243,7 @@ Context c=this;
                         int p=(int) ((size / (float) totalBytes) * 100);
                         if(p!=lastpercent || lastpercent==0) {
                             publishResults(id, fileName, p, false, size, totalBytes);
-                            publishResult(true);
+                             
                         }lastpercent=p;
                     }
                 }

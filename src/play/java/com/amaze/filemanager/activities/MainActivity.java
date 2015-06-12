@@ -96,7 +96,9 @@ import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
+import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.SearchService;
+import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.utils.FileUtil;
@@ -202,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements
    */
     private boolean mIntentInProgress,topfab=false;
     public boolean isDrawerLocked = false;
+    static final int DELETE=0,COPY=1,MOVE=2,NEW_FOLDER=3,RENAME=4,NEW_FILE=5,EXTRACT=6,COMPRESS=7;
     /**
      * Called when the activity is first created.
      */
@@ -993,6 +996,7 @@ public class MainActivity extends AppCompatActivity implements
             menu.findItem(R.id.item10).setVisible(true);
             menu.findItem(R.id.hiddenitems).setVisible(true);
             menu.findItem(R.id.view).setVisible(true);
+            menu.findItem(R.id.extract).setVisible(false);
             invalidatePasteButton(menu.findItem(R.id.paste));
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
         } else if(f.contains("AppsList") || f.contains("ProcessViewer")) {
@@ -1001,6 +1005,7 @@ public class MainActivity extends AppCompatActivity implements
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
+            menu.findItem(R.id.extract).setVisible(false);
             if(f.contains("ProcessViewer"))menu.findItem(R.id.item10).setVisible(false);
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
@@ -1014,6 +1019,7 @@ public class MainActivity extends AppCompatActivity implements
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
+            menu.findItem(R.id.extract).setVisible(true);
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -1104,6 +1110,13 @@ public class MainActivity extends AppCompatActivity implements
                 MOVE_PATH = null;
 
                 invalidatePasteButton(item);
+                break;
+            case R.id.extract:
+                Fragment fragment1=getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if(fragment1.getClass().getName().contains("ZipViewer"))
+                    extractFile(((ZipViewer)fragment1).f);
+                else if(fragment1.getClass().getName().contains("RarViewer"))
+                    extractFile(((RarViewer)fragment1).f);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -1401,7 +1414,7 @@ public class MainActivity extends AppCompatActivity implements
                     if(mode==2)
                     {
                         oparrayList=(ab);
-                        operation=move?2:1;
+                        operation=move?MOVE:COPY;
                         oppathe=path;
 
                     }
@@ -1808,32 +1821,37 @@ public class MainActivity extends AppCompatActivity implements
                     | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
             switch (operation) {
-                case 0://deletion
+                case DELETE://deletion
                     new DeleteTask(null,mainActivity).execute(utils.toFileArray(oparrayList));
                     break;
-                case 1://copying
+                case COPY://copying
                     Intent intent1 = new Intent(con, CopyService.class);
                     intent1.putExtra("FILE_PATHS", (oparrayList));
                     intent1.putExtra("COPY_DIRECTORY", oppathe);
                     startService(intent1);
                 break;
-                case 2://moving
+                case MOVE://moving
                     new MoveFiles(utils.toFileArray(oparrayList), ((Main)getFragment().getTab()),((Main)getFragment().getTab()).getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     break;
-                case 3://mkdir
+                case NEW_FOLDER://mkdir
                     Main ma1=((Main) getFragment().getTab());
                     mkDir(new File(oppathe),ma1);
                     break;
-                case 4:
+                case RENAME:
                     rename(new File(oppathe), new File(oppathe1));
                     Main ma2=((Main) getFragment().getTab());
                     ma2.loadlist(new File(ma2.current), true);
                     break;
-                case 5:
+                case NEW_FILE:
                     Main ma3=((Main) getFragment().getTab());
                     mkDir(new File(oppathe),ma3);
 
                     break;
+                case EXTRACT:
+                    extractFile(new File(oppathe));
+                    break;
+                case COMPRESS:
+                    compressFiles(new File(oppathe),oparrayList);
             } }
     }
     public void rename(File file,File file1) {
@@ -1841,7 +1859,7 @@ public class MainActivity extends AppCompatActivity implements
         if (mode == 2) {
             oppathe=file.getPath();
             oppathe1=file1.getPath();
-            operation = 4;
+            operation = RENAME;
         } else if (mode == 1) {
             boolean b = FileUtil.renameFolder(file, file1, mainActivity);
             if (b) {
@@ -2226,7 +2244,7 @@ public class MainActivity extends AppCompatActivity implements
             }
             else if(mode==2){
                 oppathe=f1.getPath();
-                operation=5;
+                operation=NEW_FILE;
             }
             ma.updateList();
 
@@ -2244,7 +2262,7 @@ public class MainActivity extends AppCompatActivity implements
             if(mode==1)b=FileUtil.mkdir(f,mainActivity);
             else if(mode==2){
                 oppathe=f.getPath();
-                operation=3;
+                operation=NEW_FOLDER;
             }
             ma.updateList();
             if(b)
@@ -2262,10 +2280,34 @@ public class MainActivity extends AppCompatActivity implements
        int mode=checkFolder( files.get(0).getParentFile(),this);
         if(mode==2){
             oparrayList=utils.toStringArray(files);
-            operation=0;
+            operation=DELETE;
         }else if(mode==1 || mode==0)
         new DeleteTask(null,mainActivity).execute(files);
       }
+    public void extractFile(File file){
+        int mode=checkFolder( file.getParentFile(),this);
+        if(mode==2){
+            oppathe=(file.getPath());
+            operation=EXTRACT;
+        }else if(mode==1 ) {
+            Intent intent = new Intent(this, ExtractService.class);
+            intent.putExtra("zip", file.getPath());
+            startService(intent);
+        }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
+    }
+    public void compressFiles(File file,ArrayList<String> b){
+        int mode=checkFolder( file.getParentFile(),this);
+        if(mode==2){
+            oppathe=(file.getPath());
+            operation=COMPRESS;
+            oparrayList=b;
+        }else if(mode==1 ) {
+            Intent intent2 = new Intent(this, ZipTask.class);
+            intent2.putExtra("name", file.getPath());
+            intent2.putExtra("files", b);
+            startService(intent2);
+        }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
+    }
     public void translateDrawerList(boolean down) {
         if (down)
             mDrawerList.animate().translationY(toolbar.getHeight());
