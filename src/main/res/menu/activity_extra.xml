@@ -50,6 +50,7 @@
         android:id="@+id/view" />
     <item
         android:id="@+id/hiddenitems"
+        android:visible="false"
         android:title="@string/hiddenfiles" />
     <item
         android:id="@+id/extract"

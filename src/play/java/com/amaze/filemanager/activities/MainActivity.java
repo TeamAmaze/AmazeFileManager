@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements
     /* A flag indicating that a PendingIntent is in progress and prevents
    * us from starting further intents.
    */
-    private boolean mIntentInProgress,topfab=false;
+    private boolean mIntentInProgress,topfab=false,showHidden=false;
     public boolean isDrawerLocked = false;
     static final int DELETE=0,COPY=1,MOVE=2,NEW_FOLDER=3,RENAME=4,NEW_FILE=5,EXTRACT=6,COMPRESS=7;
     /**
@@ -375,7 +375,7 @@ public class MainActivity extends AppCompatActivity implements
 
         hidemode=Sp.getInt("hidemode", 0);
         topfab = hidemode==0 ? Sp.getBoolean("topFab",true):false;
-
+        showHidden=Sp.getBoolean("showHidden",false);
         floatingActionButton = !topfab ?
                 (FloatingActionButton) findViewById(R.id.fab) : (FloatingActionButton) findViewById(R.id.fab2);
         fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
@@ -994,7 +994,7 @@ public class MainActivity extends AppCompatActivity implements
             menu.findItem(R.id.home).setVisible(true);
             menu.findItem(R.id.history).setVisible(true);
             menu.findItem(R.id.item10).setVisible(true);
-            menu.findItem(R.id.hiddenitems).setVisible(true);
+            if(showHidden)menu.findItem(R.id.hiddenitems).setVisible(true);
             menu.findItem(R.id.view).setVisible(true);
             menu.findItem(R.id.extract).setVisible(false);
             invalidatePasteButton(menu.findItem(R.id.paste));

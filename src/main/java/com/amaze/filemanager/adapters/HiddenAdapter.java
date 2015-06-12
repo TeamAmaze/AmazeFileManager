@@ -105,4 +105,7 @@ public class HiddenAdapter extends ArrayAdapter<File> {
         });
         return view;
     }
+    public void updateDialog(MaterialDialog dialog){
+        materialDialog=dialog;
+    }
 }

@@ -471,7 +471,6 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
         a.title(R.string.choose_color);
         if(theme==1)
             a.theme(Theme.DARK);
-        LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         a.autoDismiss(true);
         ColorAdapter adapter = null;

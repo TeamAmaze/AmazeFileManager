@@ -21,11 +21,21 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:minHeight="60dp">
+    <ImageButton
+        android:id="@+id/delete_button"
+        android:layout_width="48dp"
+        android:gravity="center_vertical"
+        android:layout_alignParentRight="true"
+        android:layout_height="fill_parent"
+        android:src="@drawable/ic_action_cancel_light"
+        android:background="?android:selectableItemBackground"
+        android:contentDescription="Delete Bookmark" />
 
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
         android:id="@+id/bookmarkrow"
+        android:layout_toLeftOf="@id/delete_button"
         android:orientation="vertical"
         android:paddingLeft="10dip">
         <TextView
@@ -45,14 +55,5 @@
             android:paddingLeft="?android:listPreferredItemPaddingLeft" />
     </LinearLayout>
     <!-- A button that, when pressed, will delete this list item row from its container. -->
-    <ImageButton
-        android:id="@+id/delete_button"
-        android:layout_width="48dp"
-        android:gravity="center_vertical"
-        android:layout_alignParentRight="true"
-        android:layout_height="fill_parent"
-        android:src="@drawable/ic_action_cancel_light"
-        android:background="?android:selectableItemBackground"
-        android:contentDescription="Delete Bookmark" />
 
 </RelativeLayout>

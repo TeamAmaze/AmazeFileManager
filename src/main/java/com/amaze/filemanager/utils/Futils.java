@@ -679,15 +679,18 @@ public void showPackageDialog(final File f,final MainActivity m){
         a.title(R.string.history);
         if(m.theme1==1)
             a.theme(Theme.DARK);
-        LayoutInflater layoutInflater = (LayoutInflater) m.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.list_dialog, null);
-        ListView listView = (ListView) view.findViewById(R.id.listView);
-        listView.setDivider(null);
-        a.customView(view, true);
+
         a.autoDismiss(true);
-        MaterialDialog x=a.build();
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.hidden,x,true);
-        listView.setAdapter(adapter);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.hidden,null,true);
+        a.adapter(adapter, new MaterialDialog.ListCallback() {
+            @Override
+            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+
+            }
+        });
+
+        MaterialDialog x= a.build();
+        adapter.updateDialog(x);
         x.show();
 
     }
@@ -699,15 +702,16 @@ public void showPackageDialog(final File f,final MainActivity m){
         a.title(R.string.hiddenfiles);
         if(m.theme1==1)
             a.theme(Theme.DARK);
-        LayoutInflater layoutInflater = (LayoutInflater) m.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.list_dialog, null);
-        ListView listView = (ListView) view.findViewById(R.id.listView);
-        a.customView(view, true);
         a.autoDismiss(true);
-        listView.setDivider(null);
-        MaterialDialog x=a.build();
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.hidden,x,false);
-        listView.setAdapter(adapter);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.hidden,null,false);
+        a.adapter(adapter, new MaterialDialog.ListCallback() {
+            @Override
+            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+
+            }
+        });
+        MaterialDialog x= a.build();
+        adapter.updateDialog(x);
         x.show();
 
     }
