@@ -48,6 +48,8 @@
     <string name="create">CREATE</string>
     <string name="success">Success</string>
     <string name="filenotexists">File Not Exists</string>
+    <string name="loading">Loading...</string>
+    <string name="file_empty">File is empty</string>
     <string name="error">Error</string>
     <string name="cantlistfiles">Can\'t list files without root</string>
     <string name="searchresults">Search Results</string>

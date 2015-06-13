@@ -361,12 +361,10 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
     private void load(final File mFile) {
         setProgress(true);
         this.mFile = mFile;
-        mInput.setHint("Loading...");
+        mInput.setHint(R.string.loading);
         new Thread(new Runnable() {
             @Override
             public void run() {
-
-
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -374,33 +372,37 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
                     }
                 });
                 try {
-                    if(mFile.canRead())
-                    {try {
-                        mOriginal = FileUtils.fileRead(mFile);
-                    } catch (final Exception e) {
-                        e.printStackTrace();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mInput.setHint(R.string.error);
-                            }
-                        });
-                    }}else{
-                        mOriginal="";
-                    ArrayList<String> arrayList=    RootHelper.runAndWait1("cat "+mFile.getPath(),true);
-                        for(String x:arrayList){
-                            if(mOriginal.equals(""))mOriginal=x;
-                            else mOriginal=mOriginal+"\n"+x;
+                    if (mFile.canRead()) {
+                        try {
+                            mOriginal = FileUtils.fileRead(mFile);
+                        } catch (final Exception e) {
+                            e.printStackTrace();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mInput.setHint(R.string.error);
+                                }
+                            });
+                        }
+                    } else {
+                        mOriginal = "";
+                        ArrayList<String> arrayList = RootHelper
+                                .runAndWait1("cat " + mFile.getPath(), true);
+                        for (String x : arrayList) {
+                            if (mOriginal.equals("")) mOriginal = x;
+                            else mOriginal = mOriginal + "\n" + x;
 
                         }
-
-
                     }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
                                 mInput.setText(mOriginal);
+                                if (mOriginal.isEmpty())
+                                    mInput.setHint(R.string.file_empty);
+                                else
+                                    mInput.setHint(null);
                             } catch (OutOfMemoryError e) {
                                 mInput.setHint(R.string.error);
                             }
