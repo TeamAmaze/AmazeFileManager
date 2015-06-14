@@ -78,9 +78,9 @@
     <string name="folder">폴더</string>
     <string name="newfolder">새 폴더</string>
     <string name="entername">이름을 입력해 주세요</string>
-    <string name="extracting">압축 해제되었습니다</string>
-    <string name="zipping">압축되었습니다</string>
-    <string name="stopping">취소되었습니다</string>
+    <string name="extracting">압축을 해제하는 중입니다</string>
+    <string name="zipping">압축하는 중입니다</string>
+    <string name="stopping">취소하는 중입니다</string>
     <string name="guide1">Amaze File Manager에 오신 것을 환영합니다</string>
     <string name="guide2">푸른 띠를 누르면 상단바를 숨기거나 나타나게 할 수 있습니다</string>
     <string name="guide3">아무 파일이나 길게 눌러보세요...</string>
@@ -256,7 +256,7 @@
     <string name="pitext">이 파일은 설치가 가능한 파일입니다. 무엇을 하시겠습니까?</string>
     <string name="xda_title">XDA</string>
     <string name="xda_summary">질문과 답변, 문제 해결 방법</string>
-    <string name="invalid_dir">잘못된 디렉토리</string>
+    <string name="invalid_dir">잘못된 디렉토리입니다</string>
     <string name="circularimages">파일의 아이콘을 동그랗게 설정합니다.</string>
     <string name="circularicons">동그란 아이콘 사용</string>
     <string name="back_title">상위 폴더로 이동</string>
@@ -276,6 +276,8 @@
     <string name="portuguese_translation_title">포르투갈어</string>
     <string name="polish_translation_title">폴란드어</string>
     <string name="korean_translation_title">한국어</string>
+     <string name="greek_translation_title">그리스어</string>
+     
     <string name="zip_viewer">압축 파일 뷰어</string>
     <string name="unin_system_apk">시스템 파일을 삭제하면 시스템이 불안정해질 수도 있습니다 / 삭제 하시겠습니까?</string>
     <string name="warning">경고</string>
@@ -304,8 +306,8 @@
 
     <string name="sd_card_grant_next">sd_card_grant_next</string>
     <string name="sd_card_grant_first">sd_card_grant_first</string>
-    <string name="fab_skin">FAB 스킨</string>
-    <string name="gplus_pic_title">G+ API</string>
+    <string name="fab_skin">플로팅 버튼 스킨</string>
+    <string name="gplus_pic_title">구글 플러스 API</string>
     <string name="gplus_pic_summary">구글 플러스 커버 사진을 보여줍니다.</string>
     <string name="icon_credits">Graphics by &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
 
@@ -314,17 +316,28 @@
     <string name="primary_color_title">대표 색상</string>
     <string name="primary_color_summary">대표적인 UI의 색상을 설정합니다.</string>
     <string name="accent_color_title">강조 색상</string>
-    <string name="accent_color_summary">FAB또는 기타 작은 항목의 색상을 설정합니다.</string>
+    <string name="accent_color_summary">플로팅 버튼 또는 기타 작은 항목의 색상을 설정합니다.</string>
     <string name="icon_color_title">아이콘 색상</string>
     <string name="icon_color_summary">아이콘의 색상을 설정합니다.</string>
-    <string name="hide_mode_title">숨김 모드</string>
+    <string name="hide_mode_title">바 숨김 모드</string>
     <string name="none">사용 안 함</string>
     <string name="hide_toolbar">툴바 숨김</string>
     <string name="hide_appbar">애플리케이션바 숨김</string>
     <string name="choose_color">색상을 선택해 주세요</string>
     <string name="g_plus_community_title">구글 플러스 커뮤니티</string>
-    <string name="hide_mode_nothing">아무것도 숨겨지지 않습니다.</string>
-    <string name="hide_mode_toolbar">스크롤 시 툴바가 숨겨집니다.</string>
-    <string name="hide_mode_app_bar">스크롤 시 애플리케이션바바가 숨겨집니다.</string>
+    <string name="hide_mode_nothing">아무것도 숨겨지지 않습니다</string>
+    <string name="hide_mode_toolbar">스크롤 시 툴바가 숨겨집니다</string>
+    <string name="hide_mode_app_bar">스크롤 시 애플리케이션바가 숨겨집니다</string>
     <string name="no_cover_photo">커버 사진이 없습니다</string>
+    <string name="files">파일</string>
+    <string name="directories">폴더</string>
+    <string name="textreader">텍스트 리더</string>
+    <string name="databasereader">데이터베이스 리더</string>
+    <string name="showDividers">항목 사이에 칸막이 사용</string>
+    <string name="topFab">애플리케이션바바 위에 플로팅 버튼 표시r</string>
+    <string name="topFabS">+ 버튼이 앱바 위에 표시됩니다. '애플리케이션바 숨김 모드'가 아닐 때 사용해주세요.</string>
+    <string name="needsaccess">쓰기 권한이 플요합니다</string>
+    <string name="needsaccesssummary">쓰기 권한을 얻으려면</string>
+    <string name="needsaccesssummary1"> /tto 폴더를 선택해 주세요 </string>
+
 </resources>
