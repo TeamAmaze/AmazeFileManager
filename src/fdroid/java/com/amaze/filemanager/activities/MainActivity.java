@@ -30,10 +30,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -54,7 +52,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -96,8 +93,10 @@ import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
-import com.amaze.filemanager.services.SearchService;
+import com.amaze.filemanager.services.ExtractService;
+import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
+import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
@@ -184,8 +183,9 @@ public class MainActivity extends AppCompatActivity {
     /* A flag indicating that a PendingIntent is in progress and prevents
    * us from starting further intents.
    */
-    private boolean mIntentInProgress,topfab=false;
+    private boolean mIntentInProgress,topfab=false,showHidden=false;
     public boolean isDrawerLocked = false;
+    static final int DELETE=0,COPY=1,MOVE=2,NEW_FOLDER=3,RENAME=4,NEW_FILE=5,EXTRACT=6,COMPRESS=7;
     /**
      * Called when the activity is first created.
      */
@@ -356,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
 
         hidemode=Sp.getInt("hidemode", 0);
         topfab = hidemode==0 ? Sp.getBoolean("topFab",true):false;
-
+        showHidden=Sp.getBoolean("showHidden",false);
         floatingActionButton = !topfab ?
                 (FloatingActionButton) findViewById(R.id.fab) : (FloatingActionButton) findViewById(R.id.fab2);
         fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
@@ -371,6 +371,9 @@ public class MainActivity extends AppCompatActivity {
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
+        drawerProfilePic = (RoundedImageView) drawerHeaderLayout.findViewById(R.id.profile_pic);
+        mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
+        mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
 
         utils = new Futils();
         s = new Shortcuts(this);
@@ -947,8 +950,9 @@ public class MainActivity extends AppCompatActivity {
             menu.findItem(R.id.home).setVisible(true);
             menu.findItem(R.id.history).setVisible(true);
             menu.findItem(R.id.item10).setVisible(true);
-            menu.findItem(R.id.hiddenitems).setVisible(true);
+            if(showHidden)menu.findItem(R.id.hiddenitems).setVisible(true);
             menu.findItem(R.id.view).setVisible(true);
+            menu.findItem(R.id.extract).setVisible(false);
             invalidatePasteButton(menu.findItem(R.id.paste));
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
         } else if(f.contains("AppsList") || f.contains("ProcessViewer")) {
@@ -957,6 +961,7 @@ public class MainActivity extends AppCompatActivity {
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
+            menu.findItem(R.id.extract).setVisible(false);
             if(f.contains("ProcessViewer"))menu.findItem(R.id.item10).setVisible(false);
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
@@ -970,6 +975,7 @@ public class MainActivity extends AppCompatActivity {
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
+            menu.findItem(R.id.extract).setVisible(true);
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -1061,6 +1067,13 @@ public class MainActivity extends AppCompatActivity {
 
                 invalidatePasteButton(item);
                 break;
+            case R.id.extract:
+                Fragment fragment1=getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if(fragment1.getClass().getName().contains("ZipViewer"))
+                    extractFile(((ZipViewer)fragment1).f);
+                else if(fragment1.getClass().getName().contains("RarViewer"))
+                    extractFile(((RarViewer)fragment1).f);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -1084,6 +1097,18 @@ public class MainActivity extends AppCompatActivity {
                 final EditText edir = (EditText) v.findViewById(R.id.newname);
                 edir.setHint(utils.getString(this, R.string.entername));
                 ba1.customView(v, true);
+                edir.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        edir.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                inputMethodManager.showSoftInput(edir, InputMethodManager.SHOW_IMPLICIT);
+                            }
+                        });
+                    }
+                });
                 if(theme1==1)ba1.theme(Theme.DARK);
                 ba1.positiveText(R.string.create);
                 ba1.negativeText(R.string.cancel);
@@ -1092,25 +1117,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onPositive(MaterialDialog materialDialog) {
                         String a = edir.getText().toString();
                         File f = new File(path + "/" + a);
-                        boolean b=false;
-                        if (!f.exists()) {
-                            int mode=checkFolder(new File(path),mainActivity);
-                            if(mode==1)b=FileUtil.mkdir(f,mainActivity);
-                            else if(mode==2){
-                                oppathe=f.getPath();
-                                operation=3;
-                            }
-                            ma.updateList();
-                            if(b)
-                                Toast.makeText(mainActivity, (R.string.foldercreated), Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(mainActivity, ( R.string.fileexist), Toast.LENGTH_LONG).show();
-                        }
-                        if(!b && rootmode){
-                            RootTools.remount(f.getParent(), "rw");
-                            RootHelper.runAndWait("mkdir "+f.getPath(),true);
-                            ma.updateList();
-                        }
+                        mkDir(f,ma);
                     }
 
                     @Override
@@ -1128,27 +1135,27 @@ public class MainActivity extends AppCompatActivity {
                 final EditText edir1 = (EditText) v1.findViewById(R.id.newname);
                 edir1.setHint(utils.getString(this, R.string.entername));
                 ba2.customView(v1, true);
+                edir1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        edir1.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                inputMethodManager.showSoftInput(edir1, InputMethodManager.SHOW_IMPLICIT);
+                            }
+                        });
+                    }
+                });
                 if(theme1==1)ba2.theme(Theme.DARK);
                 ba2.negativeText(R.string.cancel);
                 ba2.positiveText(R.string.create);
                 ba2.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
-                        String a = edir1.getText().toString();boolean b=false;
+                        String a = edir1.getText().toString();
                         File f1 = new File(path1 + "/" + a);
-                        if (!f1.exists()) {
-                            try {
-                                b = f1.createNewFile();
-                                ma.updateList();
-                                Toast.makeText(mainActivity, ( R.string.filecreated), Toast.LENGTH_LONG).show();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            Toast.makeText(mainActivity,( R.string.fileexist), Toast.LENGTH_LONG).show();
-                        }if(!b && rootmode)RootTools.remount(f1.getParent(),"rw");
-                        RootHelper.runAndWait("touch "+f1.getPath(),true);
-                        ma.updateList();
+                        mkFile(f1,ma);
                     }
 
                     @Override
@@ -1191,10 +1198,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 String a = e.getText().toString();
-                Intent i=new Intent(con, SearchService.class);
-                i.putExtra("path",fpath);
-                i.putExtra("text",a);
-                startService(i);
+                SearchTask task= new SearchTask(ma.searchHelper,ma,a);
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fpath);
             }
 
             @Override
@@ -1389,7 +1394,7 @@ public class MainActivity extends AppCompatActivity {
                     if(mode==2)
                     {
                         oparrayList=(ab);
-                        operation=move?2:1;
+                        operation=move?MOVE:COPY;
                         oppathe=path;
 
                     }
@@ -1639,31 +1644,37 @@ public class MainActivity extends AppCompatActivity {
                     | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
             switch (operation) {
-                case 0://deletion
+                case DELETE://deletion
                     new DeleteTask(null,mainActivity).execute(utils.toFileArray(oparrayList));
                     break;
-                case 1://copying
+                case COPY://copying
                     Intent intent1 = new Intent(con, CopyService.class);
                     intent1.putExtra("FILE_PATHS", (oparrayList));
                     intent1.putExtra("COPY_DIRECTORY", oppathe);
                     startService(intent1);
                     break;
-                case 2://moving
+                case MOVE://moving
                     new MoveFiles(utils.toFileArray(oparrayList), ((Main)getFragment().getTab()),((Main)getFragment().getTab()).getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     break;
-                case 3://mkdir
-                    FileUtil.mkdir(new File(oppathe),mainActivity);
+                case NEW_FOLDER://mkdir
                     Main ma1=((Main) getFragment().getTab());
-                    ma1.loadlist(new File(ma1.current), true);
+                    mkDir(new File(oppathe),ma1);
                     break;
-                case 4:
-                    //FileUtil.renameFolder(new File(oppathe),new File(oppathe1),mainActivity);
-
+                case RENAME:
                     rename(new File(oppathe), new File(oppathe1));
                     Main ma2=((Main) getFragment().getTab());
                     ma2.loadlist(new File(ma2.current), true);
                     break;
+                case NEW_FILE:
+                    Main ma3=((Main) getFragment().getTab());
+                    mkDir(new File(oppathe),ma3);
 
+                    break;
+                case EXTRACT:
+                    extractFile(new File(oppathe));
+                    break;
+                case COMPRESS:
+                    compressFiles(new File(oppathe),oparrayList);
             } }
     }
     public void rename(File file,File file1) {
@@ -1671,8 +1682,8 @@ public class MainActivity extends AppCompatActivity {
         if (mode == 2) {
             oppathe=file.getPath();
             oppathe1=file1.getPath();
-            operation = 4;
-        } else if (mode == 0) {
+            operation = RENAME;
+        } else if (mode == 1) {
             boolean b = FileUtil.renameFolder(file, file1, mainActivity);
             if (b) {
                 Toast.makeText(mainActivity,
@@ -1684,19 +1695,19 @@ public class MainActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG).show();
 
             }
-        } else if(mode==1) utils.rename(file,file1.getName(),rootmode);
+        } else if(mode==0) utils.rename(file,file1.getName(),rootmode);
 
         Intent intent = new Intent("loadlist");
         sendBroadcast(intent);
     }
     private int checkFolder(final File folder,Context context) {
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder,context)) {
             if (!folder.exists() || !folder.isDirectory()) {
                 return 0;
             }
 
             // On Android 5, trigger storage access framework.
-            if (!FileUtil.isWritableNormalOrSaf(folder,context)) {
+            if (!FileUtil.isWritableNormalOrSaf(folder,context) ) {
                 guideDialogForLEXA(folder.getPath());
                 return 2;
             }
@@ -2044,13 +2055,81 @@ public class MainActivity extends AppCompatActivity {
             }pending_path=null;}
         supportInvalidateOptionsMenu();
     }
+    void mkFile(File f1,Main ma){
+        boolean b=false;
+        if (!f1.exists()) {
+            int mode=checkFolder(new File(f1.getParent()),mainActivity);
+            if(mode==1) try {
+                b=FileUtil.mkfile(f1, mainActivity);
+            } catch (IOException e) {
+                e.printStackTrace();
+                b=false;
+            }
+            else if(mode==2){
+                oppathe=f1.getPath();
+                operation=NEW_FILE;
+            }
+            ma.updateList();
+
+        } else {
+            Toast.makeText(mainActivity,( R.string.fileexist), Toast.LENGTH_LONG).show();
+        }if(!b && rootmode)RootTools.remount(f1.getParent(),"rw");
+        RootHelper.runAndWait("touch "+f1.getPath(),true);
+        ma.updateList();
+
+    }
+    void mkDir(File f,Main ma){
+        boolean b=false;
+        if (!f.exists()) {
+            int mode=checkFolder(f.getParentFile(),mainActivity);
+            if(mode==1)b=FileUtil.mkdir(f,mainActivity);
+            else if(mode==2){
+                oppathe=f.getPath();
+                operation=NEW_FOLDER;
+            }
+            ma.updateList();
+            if(b)
+                Toast.makeText(mainActivity, (R.string.foldercreated), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(mainActivity, ( R.string.fileexist), Toast.LENGTH_LONG).show();
+        }
+        if(!b && rootmode){
+            RootTools.remount(f.getParent(), "rw");
+            RootHelper.runAndWait("mkdir "+f.getPath(),true);
+            ma.updateList();
+        }
+    }
     public void deleteFiles(Main m,ArrayList<File> files){
         int mode=checkFolder( files.get(0).getParentFile(),this);
         if(mode==2){
             oparrayList=utils.toStringArray(files);
-            operation=0;
+            operation=DELETE;
         }else if(mode==1 || mode==0)
             new DeleteTask(null,mainActivity).execute(files);
+    }
+    public void extractFile(File file){
+        int mode=checkFolder( file.getParentFile(),this);
+        if(mode==2){
+            oppathe=(file.getPath());
+            operation=EXTRACT;
+        }else if(mode==1 ) {
+            Intent intent = new Intent(this, ExtractService.class);
+            intent.putExtra("zip", file.getPath());
+            startService(intent);
+        }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
+    }
+    public void compressFiles(File file,ArrayList<String> b){
+        int mode=checkFolder( file.getParentFile(),this);
+        if(mode==2){
+            oppathe=(file.getPath());
+            operation=COMPRESS;
+            oparrayList=b;
+        }else if(mode==1 ) {
+            Intent intent2 = new Intent(this, ZipTask.class);
+            intent2.putExtra("name", file.getPath());
+            intent2.putExtra("files", b);
+            startService(intent2);
+        }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
     }
     public void translateDrawerList(boolean down) {
         if (down)
