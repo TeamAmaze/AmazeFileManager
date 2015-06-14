@@ -46,7 +46,9 @@
     <string name="create">Erstellen</string>
     <string name="success">Erfolgreich</string>
     <string name="filenotexists">Datei existiert nicht</string>
-    <string name="error">Error</string>
+    <string name="loading">Wird geladen...</string>
+    <string name="file_empty">Datei ist leer</string>
+    <string name="error">Fehler</string>
     <string name="cantlistfiles">Kann Dateien ohne Root-Rechte nicht auflisten</string>
     <string name="searchresults">Suchergebnisse</string>
     <string name="itemsselected">Elemente ausgewählt</string>
@@ -104,7 +106,7 @@
     <string name="theme">Thema</string>
     <string name="skin">Skin</string>
     <string name="random">Zufälliger Skin</string>
-    <string name="random_summary">Nimm zufälliges Thema beimStarten</string>
+    <string name="random_summary">Nimm zufälliges Thema beim Starten</string>
     <string name="colorize">Symbole einfärben</string>
     <string name="colorize_summary">Setzt ein paar andere Symbolfarben als das Farbthema.</string>
     <string name="back">Zurück</string>
@@ -261,5 +263,16 @@
     <string name="archive_preferences">Archiv-Einstellungen</string>
     <string name="audio">Audio</string>
     <string name="contributors">Mitwirkende</string>
+    <string name="accent_color_title">Akzentfarbe</string>
+    <string name="color_title">Farbe</string>
+    <string name="directories">Ordner</string>
+    <string name="files">Dateien</string>
+    <string name="video">Video</string>
+    <string name="ukrainian_translation_title">Ukrainisch</string>
+    <string name="saving">Speichere</string>
+    <string name="none">Keine</string>
+    <string name="gplus_pic_title">Mit G+ anmelden</string>
+    <string name="install">Installieren</string>
+    <string name="md5copied">MD5 in Zwischenablage kopiert</string>
 </resources>
 	
