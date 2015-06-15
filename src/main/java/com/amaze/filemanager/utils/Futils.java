@@ -112,7 +112,7 @@ public class Futils {
                 }
             }
 
-        if (!b || mime.equals(null) || mime.equals("application/vnd.android.package-archive"))
+        if (!b || mime==(null))
             mime = "*/*";
         try {
             onShareClick(c,mime,uris);
@@ -123,7 +123,7 @@ public class Futils {
     public void onShareClick(Context contextc,String mime,ArrayList<Uri> arrayList){
         List<Intent> targetShareIntents=new ArrayList<Intent>();
         Intent shareIntent=new Intent();
-       // boolean bluetooth_present=false;
+        boolean bluetooth_present=false;
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.setType(mime);
         List<ResolveInfo> resInfos=contextc.getPackageManager().queryIntentActivities(shareIntent, 0);
@@ -131,8 +131,9 @@ public class Futils {
             System.out.println("Have package");
             for (ResolveInfo resInfo : resInfos) {
                 String packageName = resInfo.activityInfo.packageName;
-             //   if(packageName.contains("android.bluetooth"))bluetooth_present=true;
+               if(packageName.contains("android.bluetooth"))bluetooth_present=true;
                 Intent intent = new Intent();
+                System.out.println(resInfo.activityInfo.packageName+"\t"+resInfo.activityInfo.name);
                 intent.setComponent(new ComponentName(packageName, resInfo.activityInfo.name));
                 intent.setAction(Intent.ACTION_SEND_MULTIPLE);
                 intent.setType(mime);
@@ -141,6 +142,16 @@ public class Futils {
                 targetShareIntents.add(intent);
 
             }   }
+            if(!bluetooth_present){
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName("com.android.bluetooth", "com.android.bluetooth.opp.BluetoothOppLauncherActivity"));
+                intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                intent.setType(mime);
+                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayList);
+                intent.setPackage("com.android.bluetooth");
+                targetShareIntents.add(intent);
+
+            }
             if (!targetShareIntents.isEmpty()) {
                 System.out.println("Have Intent");
                 Intent chooserIntent = Intent.createChooser(targetShareIntents.remove(0), "Choose app to share");
