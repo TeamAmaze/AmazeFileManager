@@ -20,6 +20,7 @@
 package com.amaze.filemanager.utils;
 
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +36,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,8 +99,6 @@ public class Futils {
     }
 
     public void shareFiles(ArrayList<File> a, Context c) {
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
         ArrayList<Uri> uris = new ArrayList<Uri>();
         boolean b = true;
         for (File f : a) {
@@ -111,21 +111,45 @@ public class Futils {
                     b = false;
                 }
             }
-        if (mime.equals(null) || mime.equals("application/vnd.android.package-archive"))
-            mime = "*/*";
-        if (b) sendIntent.setType(mime);
-        else sendIntent.setType("*/*");
 
-        sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        if (!b || mime.equals(null) || mime.equals("application/vnd.android.package-archive"))
+            mime = "*/*";
         try {
-            c.startActivity(sendIntent);
+            onShareClick(c,mime,uris);
         } catch (Exception e) {
-            sendIntent.setType("*/*");
-            c.startActivity(sendIntent);
             e.printStackTrace();
         }
     }
+    public void onShareClick(Context contextc,String mime,ArrayList<Uri> arrayList){
+        List<Intent> targetShareIntents=new ArrayList<Intent>();
+        Intent shareIntent=new Intent();
+       // boolean bluetooth_present=false;
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.setType(mime);
+        List<ResolveInfo> resInfos=contextc.getPackageManager().queryIntentActivities(shareIntent, 0);
+        if(!resInfos.isEmpty()) {
+            System.out.println("Have package");
+            for (ResolveInfo resInfo : resInfos) {
+                String packageName = resInfo.activityInfo.packageName;
+             //   if(packageName.contains("android.bluetooth"))bluetooth_present=true;
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName(packageName, resInfo.activityInfo.name));
+                intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                intent.setType(mime);
+                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayList);
+                intent.setPackage(packageName);
+                targetShareIntents.add(intent);
 
+            }   }
+            if (!targetShareIntents.isEmpty()) {
+                System.out.println("Have Intent");
+                Intent chooserIntent = Intent.createChooser(targetShareIntents.remove(0), "Choose app to share");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetShareIntents.toArray(new Parcelable[]{}));
+                contextc.startActivity(chooserIntent);
+            } else {
+                Toast.makeText(contextc,R.string.noappfound,Toast.LENGTH_SHORT).show();
+            }
+        }
     public String readableFileSize(long size) {
         if (size <= 0)
             return "0 B";

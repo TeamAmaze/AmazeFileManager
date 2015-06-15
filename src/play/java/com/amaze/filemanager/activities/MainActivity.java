@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements
             super.onCreate(savedInstanceState);
         } catch (Exception e) {
             e.printStackTrace();
-        }System.out.println("onCreate");
+        }
 
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -1267,7 +1267,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("selectitem", select);
-        System.out.println("onSaved");
+
         if(oppathe!=null){
             outState.putString("oppathe", oppathe);
             outState.putString("oppathe1",oppathe1);
@@ -1280,7 +1280,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        System.out.println("onPause");
+
         killToast();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(SEARCHRECIEVER);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(LOADSEARCHRECIEVER);
@@ -1289,7 +1289,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onResume() {
         super.onResume();
-        System.out.println("onresume");
         LocalBroadcastManager.getInstance(this).registerReceiver(SEARCHRECIEVER, new IntentFilter("searchresults"));
         LocalBroadcastManager.getInstance(this).registerReceiver(LOADSEARCHRECIEVER, new IntentFilter("loadsearchresults"));
     }
