@@ -152,7 +152,6 @@ public class Main extends android.support.v4.app.Fragment {
     String Intentpath,itemsstring;
     int no;
     TabHandler tabHandler;
-    boolean savepaths;
     LinearLayoutManager mLayoutManager;
     GridLayoutManager mLayoutManagerGrid;
     public SwipeRefreshLayout mSwipeRefreshLayout;
@@ -177,7 +176,6 @@ public class Main extends android.support.v4.app.Fragment {
         current=getArguments().getString("lastpath");
         tabHandler=new TabHandler(getActivity(),null,null,1);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        savepaths=Sp.getBoolean("savepaths", true);
         skin = Sp.getString("skin_color", "#3f51b5");
         fabSkin = Sp.getString("fab_skin_color", "#e91e63");
         iconskin=Sp.getString("icon_skin_color", skin);
@@ -204,8 +202,6 @@ public class Main extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
-        if(getArguments()!=null)
-        Intentpath=getArguments().getString("path");
         animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
         animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
         mToolbarContainer=getActivity().findViewById(R.id.lin);
@@ -274,10 +270,7 @@ public class Main extends android.support.v4.app.Fragment {
         darkimage=res.getDrawable(R.drawable.ic_doc_image_dark);
         darkvideo=res.getDrawable(R.drawable.ic_doc_video_dark);
         this.setRetainInstance(false);
-        File f;
-        if(savepaths)
-            f=new File(current);
-        else f=new File(home);
+        File f=new File(current);
         if(!f.isDirectory()){
             utils.openFile(f,mainActivity);
             f=f.getParentFile();
@@ -319,20 +312,9 @@ public class Main extends android.support.v4.app.Fragment {
         mSwipeRefreshLayout.setProgressViewOffset(true, paddingTop, paddingTop + dpToPx(72));
 
         if (savedInstanceState == null){
-            if(Intentpath!=null) {
-                File file1=new File(Intentpath);
-                if(file1.isDirectory()) {
-
-                    loadlist(file1,false);
-                }
-                else {
-                    utils.openFile(file1, mainActivity);
-                    loadlist(f,false);
-                }
-            } else {
 
                 loadlist(f, false);
-            }
+
         } else {
             Bundle b = new Bundle();
             String cur = savedInstanceState.getString("current");

@@ -44,6 +44,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
     public int theme1;
     View buttons;
     View mToolBarContainer;
+    boolean savepaths;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,6 +52,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 container, false);
         mToolBarContainer=getActivity().findViewById(R.id.lin);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        savepaths=Sp.getBoolean("savepaths", true);
         int theme=Integer.parseInt(Sp.getString("theme","0"));
         theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
         mViewPager = (CustomViewPager) rootView.findViewById(R.id.pager);
@@ -116,14 +118,12 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 if(path!=null && path.length()!=0){
                     if(l==1)
                         addTab(tabHandler.findTab(1),1,"");
-                    Tab tab=tabHandler.findTab(l+1);
-                    tab.setPath(path);
-                    addTab(tab,l+1,"");
+                    addTab(tabHandler.findTab(l+1),l+1,path);
                     if(l==0)
                         addTab(tabHandler.findTab(2),2,"");
                 }
                 else
-                {   addTab(tabHandler.findTab(1),1,"");
+                {addTab(tabHandler.findTab(1),1,"");
                  addTab(tabHandler.findTab(2),2,"");
             }}
 
@@ -289,11 +289,10 @@ public class TabFragment extends android.support.v4.app.Fragment {
     public void addTab(Tab text,int pos,String path) {
         android.support.v4.app.Fragment main = new Main();
         Bundle b = new Bundle();
-        if (path != null && path.trim().length() != 0) {
-            b.putString("path", path);
-
-        }
-        b.putString("lastpath",text.getPath());
+        if(path!=null && path.length()!=0)
+            b.putString("lastpath",path);
+        else
+            b.putString("lastpath",text.getOriginalPath(savepaths));
         b.putString("home", text.getHome());
         b.putInt("no", pos);
         main.setArguments(b);

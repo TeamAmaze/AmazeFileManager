@@ -71,4 +71,8 @@ public class Tab {
     public String getPath() {
         return this._path;
     }
+    public String getOriginalPath(boolean savePaths){
+        if(savePaths)return getPath();
+        else return getHome();
+    }
 }
