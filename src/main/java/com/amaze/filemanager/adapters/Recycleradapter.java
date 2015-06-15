@@ -59,8 +59,9 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         rowHeight=main.dpToPx(72);
     }
     public void addItem(Layoutelements layoutelements){
-        items.add(layoutelements);
         notifyDataSetChanged();
+        items.add(layoutelements);
+        item_count++;
 
     }
     public void toggleChecked(int position) {
