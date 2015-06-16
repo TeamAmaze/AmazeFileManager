@@ -48,6 +48,8 @@
     <string name="create">생성</string>
     <string name="success">성공하였습니다</string>
     <string name="filenotexists">파일이 존재하지 않습니다</string>
+    <string name="loading">로딩 중입니다...</string>
+    <string name="file_empty">파일이 비어있습니다</string>
     <string name="error">오류</string>
     <string name="cantlistfiles">파일 목록을 보려면 루트 권한이 필요합니다</string>
     <string name="searchresults">검색 결과</string>
@@ -276,8 +278,8 @@
     <string name="portuguese_translation_title">포르투갈어</string>
     <string name="polish_translation_title">폴란드어</string>
     <string name="korean_translation_title">한국어</string>
-     <string name="greek_translation_title">그리스어</string>
-     
+    <string name="greek_translation_title">그리스어</string>
+ 
     <string name="zip_viewer">압축 파일 뷰어</string>
     <string name="unin_system_apk">시스템 파일을 삭제하면 시스템이 불안정해질 수도 있습니다 / 삭제 하시겠습니까?</string>
     <string name="warning">경고</string>
