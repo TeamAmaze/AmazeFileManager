@@ -40,6 +40,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -489,12 +490,9 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                 adapter = new ColorAdapter(getActivity(), arrayList, "icon_skin_color","skin");
                 break;
         }
-        a.adapter(adapter, new MaterialDialog.ListCallback() {
-            @Override
-            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-
-            }
-        });
+        GridView v=(GridView)getActivity().getLayoutInflater().inflate(R.layout.dialog_grid,null);
+        v.setAdapter(adapter);
+        a.customView(v,false);
         MaterialDialog x=a.build();
 
         x.show();
@@ -519,12 +517,8 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
 
             LayoutInflater inflater = (LayoutInflater)getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.rowlayout, parent, false);
-            TextView a=(TextView)rowView.findViewById(R.id.firstline);
-            a.setText(strings[position]);
-            if(theme==1)a.setTextColor(Color.parseColor("#ffffff"));
-            ImageView imageView=(ImageView)rowView.findViewById(R.id.icon);
-            GradientDrawable gradientDrawable = (GradientDrawable) imageView.getBackground();
+            ImageView rowView =(ImageView) inflater.inflate(R.layout.dialog_grid_item, parent, false);
+            GradientDrawable gradientDrawable = (GradientDrawable) rowView.getBackground();
             gradientDrawable.setColor(Color.parseColor(colors[position]));
             rowView.setOnClickListener(new View.OnClickListener() {
                 @Override
