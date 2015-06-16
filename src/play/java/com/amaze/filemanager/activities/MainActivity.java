@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity implements
     private int sdk;
     private TextView mGoogleName, mGoogleId;
     public FloatingActionButton floatingActionButton;
-    private boolean showButtonOnStart = false;
     public String fabskin, fabSkinPressed;
     private LinearLayout buttons;
     private HorizontalScrollView scroll, scroll1;
@@ -1284,15 +1283,11 @@ public class MainActivity extends AppCompatActivity implements
         super.onPause();
 
         killToast();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(SEARCHRECIEVER);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(LOADSEARCHRECIEVER);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(SEARCHRECIEVER, new IntentFilter("searchresults"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(LOADSEARCHRECIEVER, new IntentFilter("loadsearchresults"));
     }
 
     @Override
@@ -1311,58 +1306,6 @@ public class MainActivity extends AppCompatActivity implements
         // let the system handle all other key events
         return super.onKeyDown(keyCode, event);
     }
-    ProgressDialog p;
-    private BroadcastReceiver SEARCHRECIEVER = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(final Context context, Intent intent) {
-            Bundle b = intent.getExtras();
-            if (b != null) {
-                int  paths=intent.getIntExtra("paths", 0);
-                if(p==null ) {
-                    p = new ProgressDialog(con);
-                    p.setMessage("Found " +paths);
-                    p.setIndeterminate(true);
-                    p.setTitle(R.string.searching);
-                    p.setCancelable(false);
-                    p.setButton(DialogInterface.BUTTON_POSITIVE,utils.getString(con,R.string.cancel),new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            System.out.println("Broadcast sent");
-                            LocalBroadcastManager.getInstance(con).sendBroadcast(new Intent("searchcancel"));
-                            dialog.cancel();
-                        }
-                    });
-                }else{
-                    p.setMessage("Found " +paths);
-                }p.show();
-
-            }
-        }
-    };
-    private BroadcastReceiver LOADSEARCHRECIEVER = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle e = intent.getExtras();
-            System.out.println("GOT IT");
-            if(p!=null && p.isShowing())p.cancel();
-            if (e != null) {
-                ArrayList<String[]> arrayList=new ArrayList<String[]>();
-                ArrayList<String> b=e.getStringArrayList("b");
-                ArrayList<String> c=e.getStringArrayList("c");
-                ArrayList<String> d=e.getStringArrayList("d");
-                ArrayList<String> f=e.getStringArrayList("f");
-                for(int i=0;i<b.size();i++){
-                    arrayList.add(new String[]{b.get(i),c.get(i),d.get(i),f.get(i)});
-                }
-                Fragment fragment=getFragment().getTab();
-                if(fragment.getClass().getName().contains("Main")){
-                    ((Main)fragment).loadsearchlist(arrayList);
-                }
-            }
-        }
-    };
 
     @Override
     protected void onDestroy() {

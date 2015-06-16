@@ -154,8 +154,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
             mSectionsPagerAdapter.notifyDataSetChanged();
 
         }
-        Main main = ((Main) fragments.get(currenttab));
-        main.showButtonOnStart=true;
 
         return rootView;
     }

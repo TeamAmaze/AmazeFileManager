@@ -134,7 +134,6 @@ public class Main extends android.support.v4.app.Fragment {
     public boolean gobackitem,islist,showThumbs,coloriseIcons,showDividers,topFab;
     public IconHolder ic;
     public MainActivity mainActivity;
-    public boolean showButtonOnStart = false;
     public String skin, fabSkin,iconskin;
     public int skinselection;
     public int theme;
@@ -584,24 +583,10 @@ public class Main extends android.support.v4.app.Fragment {
             menu.findItem(R.id.delete).setIcon(icons.getDeleteDrawable());
             menu.findItem(R.id.all).setIcon(icons.getAllDrawable());*/
         }
-        View v;
         // called when the action mode is created; startActionMode() was called
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
-            v=getActivity().getLayoutInflater().inflate(R.layout.actionmode,null);
-            try {
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
-            //    v.setMinimumWidth(getActivity().findViewById(R.id.tab_spinner).getWidth());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            mode.setCustomView(v);
             mainActivity.setPagingEnabled(false);
             if(mainActivity.isDrawerLocked)mainActivity.translateDrawerList(true);
             // assumes that you have "contexual.xml" menu resources
@@ -644,9 +629,7 @@ public class Main extends android.support.v4.app.Fragment {
         // may be called multiple times if the mode is invalidated.
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             ArrayList<Integer> positions = adapter.getCheckedItemPositions();
-            TextView textView1 = (TextView) v.findViewById(R.id.item_count);
-            textView1.setText(positions.size() + "");
-            textView1.setOnClickListener(null);
+            mode.setTitle(positions.size()+"");
             hideOption(R.id.openmulti,menu);
             if(mainActivity.mReturnIntent)
                 if(Build.VERSION.SDK_INT>=16)
