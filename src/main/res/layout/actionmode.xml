@@ -9,5 +9,6 @@
         android:textSize="20sp"
         android:gravity="start|center_vertical"
         android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
         android:id="@+id/item_count"/>
 </RelativeLayout>

@@ -54,7 +54,7 @@
                 android:id="@+id/tab_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingLeft="12dp"
+                android:paddingLeft="16dp"
                 android:gravity="center_vertical"
                 android:background="@null"
                 android:minHeight="?android:attr/listPreferredItemHeightSmall"
