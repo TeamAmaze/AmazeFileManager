@@ -27,7 +27,7 @@
     <string name="drawer_close">Fechar menu de navegação</string>
     <string name="books">Marcadores</string>
     <string name="icon">ícone</string>
-    <string name="efn">Escreva o nome de ficheiro</string>
+    <string name="efn">Introduza o nome de ficheiro</string>
     <string name="storage">Armazenamento</string>
     <string name="gallery">Galeria</string>
     <string name="apps">Gestor de aplicações</string>
@@ -40,14 +40,16 @@
     <string name="uninstall">Desinstalar</string>
     <string name="play">Google Play</string>
     <string name="properties">Propriedades</string>
-    <string name="copyingapk">Copiar apk para </string>
+    <string name="copyingapk">A copiar apk para </string>
     <string name="addbook">Adicionar marcador</string>
     <string name="addtobook">Adicionar aos marcadores</string>
-    <string name="enterpath">Escreva o caminho</string>
+    <string name="enterpath">Introduza o caminho</string>
     <string name="cancel">Cancelar</string>
     <string name="create">Criar</string>
     <string name="success">Sucesso</string>
     <string name="filenotexists">O ficheiro não existe</string>
+	<string name="loading">A carregar...</string>
+    <string name="file_empty">O ficheiro está vazio</string>
     <string name="error">Erro</string>
     <string name="cantlistfiles">Não é possível listar ficheiros sem root</string>
     <string name="searchresults">Resultados da procura</string>
@@ -62,13 +64,13 @@
     <string name="filecreated">Ficheiro criado</string>
     <string name="searchpath">Caminho de procura</string>
     <string name="search">Procura</string>
-    <string name="enterfile">Escreva o nome do ficheiro</string>
+    <string name="enterfile">Introduza o nome do ficheiro</string>
     <string name="name">Nome: </string>
     <string name="date">Data: </string>
     <string name="location">Localizado em: </string>
     <string name="size">Tamanho: </string>
     <string name="totalitems">N.º de itens: </string>
-    <string name="enterzipname">Escreva o nome do .zip</string>
+    <string name="enterzipname">Introduza o nome do .zip</string>
     <string name="noappfound">Não existem aplicações para abrir este ficheiro</string>
     <string name="copying">A copiar</string>
     <string name="moving">A mover</string>
@@ -77,7 +79,7 @@
     <string name="file">Ficheiro</string>
     <string name="folder">Pasta</string>
     <string name="newfolder">Nova pasta</string>
-    <string name="entername">Escreva o nome</string>
+    <string name="entername">Introduza o nome</string>
     <string name="extracting">A extrair</string>
     <string name="zipping">A comprimir</string>
     <string name="stopping">A parar</string>
@@ -210,7 +212,7 @@
     <string name="permission">Permissões</string>
     <string name="hide">Ocultar</string>
     <string name="exit">Sair</string>
-    <string name="enternewname">Escreva o novo nome</string>
+    <string name="enternewname">Introduza o novo nome</string>
     <string name="doforall">Aplicar a todos os itens</string>
     <string name="gridcolumnno">N.º de colunas na vista em grelha</string>
     <string name="randomDialog">Aleatório</string>
@@ -309,7 +311,7 @@
     <string name="fab_skin">Cor do FAB</string>
     <string name="gplus_pic_title">Iniciar sessão com G+</string>
     <string name="gplus_pic_summary">Mostrar imagem do G+ no menu de navegação</string>
-    <string name="icon_credits">Criado por &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
+    <string name="icon_credits">Imagens criadas por &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
 
 	<string name="color_title">Cor</string>
     <string name="color_summary">Definir a cor de diversos itens da interface</string>
