@@ -398,7 +398,7 @@ String path;
         new RarHelperTask(this,current).execute(f);
     }
     public void bbar(){
-        mainActivity.updatePath(current,false);
+        mainActivity.updatePath(current,false,false);
     }
     public void createviews(ArrayList<FileHeader> zipEntries,String dir){
         zipViewer.zipAdapter = new RarAdapter(zipViewer.getActivity(), zipEntries, zipViewer);

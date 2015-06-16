@@ -324,7 +324,7 @@ public class Main extends android.support.v4.app.Fragment {
                 if (savedInstanceState.getBoolean("results")) {
                     try {
                         createViews(list, true, new File(current));
-                        ((TextView) ma.pathbar.findViewById(R.id.pathname)).setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
+                        pathname.setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
                         results = true;
                     } catch (Exception e) {
                     }
@@ -1343,7 +1343,7 @@ public class Main extends android.support.v4.app.Fragment {
             @Override
             public void onPostExecute(Void c){
                 createViews(list,true,new File(current));
-                ((TextView) ma.pathbar.findViewById(R.id.pathname)).setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
+                pathname.setText( R.string.searchresults);
                 results=true;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

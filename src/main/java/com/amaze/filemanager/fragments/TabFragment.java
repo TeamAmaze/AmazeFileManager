@@ -84,7 +84,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                     if (ma.current != null) {
                         try {
                             mainActivity.updateDrawer(ma.current);
-                            mainActivity.updatePath(ma.current,true);
+                            mainActivity.updatePath(ma.current,true,ma.results);
                         if(buttons.getVisibility()==View.VISIBLE){
                             mainActivity.bbar(ma);
                         }
@@ -204,7 +204,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mainActivity.updatePath(tabHandler.findTab(currenttab+1).getPath(),true);
+        mainActivity.updatePath(tabHandler.findTab(currenttab+1).getPath(),true,((Main)getTab()).results);
     }
 
     @Override

@@ -976,7 +976,8 @@ public class MainActivity extends AppCompatActivity implements
 
             try {
                 TabFragment tabFragment = (TabFragment) fragment;
-                updatePath(((Main) tabFragment.getTab()).current, true);
+                Main ma=((Main) tabFragment.getTab());
+                updatePath(ma.current, true,ma.results);
             } catch (Exception e) {
             }
             tabsSpinner.setVisibility(View.VISIBLE);
@@ -2001,19 +2002,19 @@ public class MainActivity extends AppCompatActivity implements
             }
         }).start();
     }
-    public void updatePath(final String newPath,boolean calcsize){
+    public void updatePath(final String newPath,boolean calcsize,boolean results){
         File f= null;
         try {
             f = new File(newPath);
         } catch (Exception e) {
             return;
-        }   TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
+        }  if(!results){ TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
         textView.setText("");
         if(calcsize) {
             String used = utils.readableFileSize(f.getTotalSpace() - f.getFreeSpace());
             String free = utils.readableFileSize(f.getFreeSpace());
             textView.setText(getResources().getString(R.string.used) + " " + used + " " + getResources().getString(R.string.free) + " " + free);
-        }final TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
+        }}final TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
         final TextView animPath = (TextView) pathbar.findViewById(R.id.fullpath_anim);
         final String oldPath=bapath.getText().toString();
         // implement animation while setting text
