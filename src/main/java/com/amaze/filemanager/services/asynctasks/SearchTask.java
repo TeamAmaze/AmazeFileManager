@@ -27,7 +27,10 @@ public class SearchTask extends AsyncTask<String, String[], Void> {
         this.main = main;
         this.key = key;
     }
-
+    @Override
+    public void onPostExecute(Void c){
+    main.onSearchCompleted();
+    }
     @Override
     public void onProgressUpdate(String[]... val) {
         if (!isCancelled()) {
@@ -36,9 +39,7 @@ public class SearchTask extends AsyncTask<String, String[], Void> {
     }
 boolean isPresentInList(String p){
     boolean add=false;
-    for (String strings : lis) {
-        if (strings.equals(p)) add = true;
-    }
+    if(lis.contains(p)){add=true;}
     return add;
 }
     @Override
@@ -67,9 +68,7 @@ boolean isPresentInList(String p){
         getSearchResult(new File(path), key);
         return null;
     }
-
     public void getSearchResult(File f, String text) {
-        lis.clear();
         search(f, text);
     }
 

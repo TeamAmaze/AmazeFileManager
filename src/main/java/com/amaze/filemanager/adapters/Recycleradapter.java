@@ -60,7 +60,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
     public void addItem(Layoutelements layoutelements){
         notifyDataSetChanged();
-        items.add(layoutelements);
         item_count++;
 
     }

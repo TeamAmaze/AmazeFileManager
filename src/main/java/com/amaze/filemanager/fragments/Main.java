@@ -79,11 +79,12 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.Recycleradapter;
 import com.amaze.filemanager.database.TabHandler;
-import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.services.asynctasks.LoadSearchList;
 import com.amaze.filemanager.services.asynctasks.LoadSmbList;
+import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.utils.DividerItemDecoration;
+import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HidingScrollListener;
 import com.amaze.filemanager.utils.HistoryManager;
@@ -102,6 +103,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 
 import jcifs.smb.NtlmPasswordAuthentication;
@@ -166,6 +168,7 @@ public class Main extends android.support.v4.app.Fragment {
     String smbUser,smbPass;
     public String smbPath;
     public ArrayList<String> searchHelper=new ArrayList<String>();
+    public SearchTask searchTask;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1012,6 +1015,10 @@ public class Main extends android.support.v4.app.Fragment {
                 loadlist(f.getParentFile(), true);
             }else mainActivity.exit();}
         } else {
+            if(searchTask!=null)
+            {if(searchTask.getStatus()== AsyncTask.Status.RUNNING)
+                searchTask.cancel(true);
+            searchTask=null;}
             loadlist(f, true);
         }
     }
@@ -1338,11 +1345,26 @@ public class Main extends android.support.v4.app.Fragment {
         list.add(layoutelements);
         if (!results) {
             createViews(list, false, new File(current));
-            ((TextView) ma.pathbar.findViewById(R.id.pathname)).setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
+            ((TextView) ma.pathbar.findViewById(R.id.pathname)).setText(ma.utils.getString(ma.getActivity(), R.string.searching));
         }
         if (results) {
             adapter.addItem(layoutelements);
         }
         results = true;
+    }
+    public void onSearchCompleted(){
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                Collections.sort(list,new FileListSorter(dsort,sortby,asc,rootMode));
+                return null;
+            }
+            @Override
+            public void onPostExecute(Void c){
+                createViews(list,true,new File(current));
+                ((TextView) ma.pathbar.findViewById(R.id.pathname)).setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
+                results=true;
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 }

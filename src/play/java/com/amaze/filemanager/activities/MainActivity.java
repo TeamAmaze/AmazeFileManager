@@ -1241,9 +1241,11 @@ public class MainActivity extends AppCompatActivity implements
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
+                materialDialog.dismiss();
                 String a = e.getText().toString();
                 SearchTask task= new SearchTask(ma.searchHelper,ma,a);
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fpath);
+                ma.searchTask=task;
             }
 
             @Override
