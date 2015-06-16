@@ -26,6 +26,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
@@ -73,7 +74,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 
 public class RarViewer extends Fragment {
-
+    public Resources res;
     String s;
     public File f;
     public ArrayList<File> files;
@@ -138,7 +139,7 @@ public class RarViewer extends Fragment {
         f = new File(s);
         listView.setVisibility(View.VISIBLE);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
+        res=getResources();
 
         listView.setVisibility(View.VISIBLE);
         mLayoutManager=new LinearLayoutManager(getActivity());

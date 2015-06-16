@@ -263,8 +263,7 @@ if(resId==null){return true;}
 
 
     return false;}
-    public static Drawable loadMimeIcon(Context context, String path,boolean grid) {
-        final Resources res = context.getResources();
+    public static Drawable loadMimeIcon(Context context, String path,boolean grid,final Resources res) {
         String mimeType = MimeTypes.getMimeType(new File(path));
         if (mimeType == null) {
             /* if(grid)

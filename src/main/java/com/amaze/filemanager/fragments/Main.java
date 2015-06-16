@@ -34,7 +34,6 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -43,15 +42,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ActionMode;
@@ -68,7 +64,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,7 +75,6 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.Recycleradapter;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.services.asynctasks.LoadList;
-import com.amaze.filemanager.services.asynctasks.LoadSearchList;
 import com.amaze.filemanager.services.asynctasks.LoadSmbList;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.utils.DividerItemDecoration;
@@ -94,7 +88,6 @@ import com.amaze.filemanager.utils.Icons;
 import com.amaze.filemanager.utils.Layoutelements;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Shortcuts;
-import com.amaze.filemanager.utils.SpacesItemDecoration;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
@@ -169,6 +162,7 @@ public class Main extends android.support.v4.app.Fragment {
     public String smbPath;
     public ArrayList<String> searchHelper=new ArrayList<String>();
     public SearchTask searchTask;
+    TextView pathname;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -213,6 +207,7 @@ public class Main extends android.support.v4.app.Fragment {
         showThumbs=Sp.getBoolean("showThumbs", true);
         ic=new IconHolder(getActivity(),showThumbs,!islist);
         res = getResources();
+        pathname=(TextView)getActivity().findViewById(R.id.pathname);
         goback=res.getString(R.string.goback);
         itemsstring=res.getString(R.string.items);
         apk=res.getDrawable(R.drawable.ic_doc_apk_grid);
@@ -386,6 +381,10 @@ public class Main extends android.support.v4.app.Fragment {
 
     public void onListItemClicked(int position, View v) {
         if (results) {
+            if(searchTask!=null)
+            {if(searchTask.getStatus()== AsyncTask.Status.RUNNING)
+                searchTask.cancel(true);
+                searchTask=null;}
             String path = list.get(position).getDesc();
             if(selection)adapter.toggleChecked(position);
             else{
@@ -498,11 +497,7 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
     @SuppressWarnings("unchecked")
-    public void loadsearchlist(ArrayList<String[]> f) {
 
-        new LoadSearchList(ma).execute(f);
-
-    }
 
 
     public void createViews(ArrayList<Layoutelements> bitmap, boolean back, File f) {
@@ -1103,7 +1098,7 @@ public class Main extends android.support.v4.app.Fragment {
                     a.add(new Layoutelements(folder,mFile[i].getName(), mFile[i].getPath(),"","","",false,"",true));
                 } else {
                     try {
-                        a.add(new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(),!islist),mFile[i].getName(), mFile[i].getPath(),"","",utils.readableFileSize(mFile[i].length()), false, "",false));
+                        a.add(new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(),!islist,res),mFile[i].getName(), mFile[i].getPath(),"","",utils.readableFileSize(mFile[i].length()), false, "",false));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }}
@@ -1134,7 +1129,7 @@ public class Main extends android.support.v4.app.Fragment {
                         //e.printStackTrace();
                     }
                     try {
-                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!islist), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,false,false,ele[4]));
+                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!islist,res), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,false,false,ele[4]));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }}
@@ -1338,19 +1333,22 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
     public void addSearchResult(String[] a) {
-        if (!results) list.clear();
-        ArrayList<String[]> arrayList = new ArrayList<>();
-        arrayList.add(a);
-        Layoutelements layoutelements = addTo(arrayList).get(0);
-        list.add(layoutelements);
-        if (!results) {
-            createViews(list, false, new File(current));
-            ((TextView) ma.pathbar.findViewById(R.id.pathname)).setText(ma.utils.getString(ma.getActivity(), R.string.searching));
+        if (listView != null) {
+            if (!results) list.clear();
+            ArrayList<String[]> arrayList = new ArrayList<>();
+            arrayList.add(a);
+            ArrayList<Layoutelements> arrayList1 = addTo(arrayList);
+            if (arrayList1.size() > 0)
+                list.add(arrayList1.get(0));
+            if (!results) {
+                createViews(list, false, new File(current));
+            }
+            pathname.setText(R.string.searching);
+            if (results) {
+                adapter.addItem();
+            }
+            results = true;
         }
-        if (results) {
-            adapter.addItem(layoutelements);
-        }
-        results = true;
     }
     public void onSearchCompleted(){
         new AsyncTask<Void, Void, Void>() {

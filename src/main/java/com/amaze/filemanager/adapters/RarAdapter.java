@@ -145,8 +145,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
         if(i!=0){
         HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
-        if(enter.get(i-1)!=null && enter.get(i-1).isDirectory())holder.ext.setText("Directories");
-        else holder.ext.setText("Files");
+        if(enter.get(i-1)!=null && enter.get(i-1).isDirectory())holder.ext.setText(R.string.directories);
+        else holder.ext.setText(R.string.files);
     }}
 
 
@@ -179,7 +179,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
         GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
 
-        holder.imageView.setImageDrawable(Icons.loadMimeIcon(zipViewer.getActivity(), rowItem.getFileNameString(), false));
+        holder.imageView.setImageDrawable(Icons.loadMimeIcon(zipViewer.getActivity(), rowItem.getFileNameString(), false,zipViewer.res));
         holder.txtTitle.setText(rowItem.getFileNameString().substring(rowItem.getFileNameString().lastIndexOf("\\") + 1));
         if (rowItem.isDirectory()) {
             holder.imageView.setImageDrawable(folder);

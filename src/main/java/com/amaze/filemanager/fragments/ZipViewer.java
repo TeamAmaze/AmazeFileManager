@@ -24,6 +24,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
@@ -94,6 +95,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     public int paddingTop;
     int mToolbarHeight,hidemode;
     View mToolbarContainer;
+    public Resources res;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
@@ -135,7 +137,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         listView.setVisibility(View.VISIBLE);
         mLayoutManager=new LinearLayoutManager(getActivity());
         listView.setLayoutManager(mLayoutManager);
-
+        res=getResources();
         mainActivity.supportInvalidateOptionsMenu();
         if (mainActivity.theme1 == 1)
             rootView.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));

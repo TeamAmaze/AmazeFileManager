@@ -40,7 +40,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     ColorMatrixColorFilter colorMatrixColorFilter;
     LayoutInflater mInflater;
     int filetype=-1;
-    int item_count,column,rowHeight;
+    int item_count,column,count_factor,rowHeight;
     boolean topFab;
     public Recycleradapter(Main m,ArrayList<Layoutelements> items,Context context){
         this.main=m;
@@ -55,13 +55,13 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
         column=main.columns;
         topFab=main.topFab;
-        item_count=items.size()+(main.islist?(topFab?1:2):column);
+        count_factor=(main.islist?(topFab?1:2):column);
+        item_count=items.size()+count_factor;
         rowHeight=main.dpToPx(72);
     }
-    public void addItem(Layoutelements layoutelements){
+    public void addItem(){
         notifyDataSetChanged();
-        item_count++;
-
+        item_count=items.size()+count_factor;
     }
     public void toggleChecked(int position) {
         if (myChecked.get(position)) {
