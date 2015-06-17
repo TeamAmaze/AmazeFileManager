@@ -99,7 +99,7 @@
     <string name="yes">예</string>
     <string name="no">아니오</string>
     <string name="confirm">확인</string>
-    <string name="deleting">삭제되었습니다</string>
+    <string name="deleting">삭제하는 중입니다</string>
     <string name="questiondelete">다음의 파일을 정말로 삭제하시겠습니까?</string>
     <string name="viewmode">보기 형식</string>
     <string name="uimode">UI</string>
@@ -336,8 +336,8 @@
     <string name="textreader">텍스트 리더</string>
     <string name="databasereader">데이터베이스 리더</string>
     <string name="showDividers">항목 사이에 칸막이 사용</string>
-    <string name="topFab">애플리케이션바바 위에 플로팅 버튼 표시r</string>
-    <string name="topFabS">+ 버튼이 앱바 위에 표시됩니다. \'애플리케이션바 숨김 모드\'가 아닐 때 사용해주세요.</string>
+    <string name="topFab">애플리케이션바 위에 플로팅 버튼 표시</string>
+    <string name="topFabS">플로팅 버튼이 애플리케이션바 위에 표시됩니다. \'애플리케이션바 숨김 \'모드가 아닐 때만 사용해주세요.</string>
     <string name="needsaccess">쓰기 권한이 플요합니다</string>
     <string name="needsaccesssummary">쓰기 권한을 얻으려면</string>
     <string name="needsaccesssummary1"> /tto 폴더를 선택해 주세요 </string>
