@@ -300,5 +300,41 @@
     <string name="database">Baza danych</string>
     <string name="colourednavigation">Kolorowy pasek nawigacji</string>
     <string name="colourednavigationsum">Kolorowanie paska nawigacji zgodnie z kolorystyką aplikacji</string>
+
+    <string name="sd_card_grant_next">sd_card_grant_next</string>
+    <string name="sd_card_grant_first">sd_card_grant_first</string>
+    <string name="fab_skin">Skórka FAB</string>
+    <string name="gplus_pic_title">Zaloguj z G+</string>
+    <string name="gplus_pic_summary">Wyświetlaj okładkę G+ w szufladzie</string>
+    <string name="icon_credits">Grafika z &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
+
+    <string name="color_title">Kolor</string>
+    <string name="color_summary">Ustaw kolor różnych elementów interfejsu</string>
+    <string name="primary_color_title">Kolor główny</string>
+    <string name="primary_color_summary">Ustaw kolor dla dużych elementów interfesju</string>
+    <string name="accent_color_title">Kolor akcentów</string>
+    <string name="accent_color_summary">Ustaw kolor dla FAB i małych elementów interfesju</string>
+    <string name="icon_color_title">Kolor ikon</string>
+    <string name="icon_color_summary">Ustaw kolor dla ikon</string>
+    <string name="hide_mode_title">Tryb ukrywania</string>
+    <string name="none">Nic</string>
+    <string name="hide_toolbar">Ukryj pasek narzedzi</string>
+    <string name="hide_appbar">Ukryj cały pasek aplikacji</string>
+    <string name="choose_color">Wybierz kolor</string>
+    <string name="g_plus_community_title">Społeczność G+</string>
+    <string name="hide_mode_nothing">Pasek aplikacji pozostaje nienaruszony</string>
+    <string name="hide_mode_toolbar">Pasek narzędzi ukrywany przy przewijaniu</string>
+    <string name="hide_mode_app_bar">Pasek aplikacji ukrywany przy przewijaniu</string>
+    <string name="no_cover_photo">Brak zdjęcia okładki</string>
+    <string name="files">Pliki</string>
+    <string name="directories">Katalogi</string>
+    <string name="textreader">Czytnik tekstu</string>
+    <string name="databasereader">Czytnik plików baz</string>
+    <string name="showDividers">Pokazuj podziałki</string>
+    <string name="topFab">FAB w pasku aplikacji</string>
+    <string name="topFabS">Określa czy przycisk + powinien być na górze czy na dole. Stosowane jeżeli pasek aplikacji nie jest ukryty.</string>
+    <string name="needsaccess">Wymagany dostęp zapisu</string>
+    <string name="needsaccesssummary">Prosze wybrać główny katalog dla \t</string>
+    <string name="needsaccesssummary1">\taby przyznać dostęp zapisu dla operacji.</string>
 </resources>
 
