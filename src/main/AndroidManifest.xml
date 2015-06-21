@@ -98,12 +98,8 @@
             </intent-filter>
 
         </activity>
+
         <service
-            android:name = ".services.SearchService"
-            android:label = "Searching"
-            >
-        </service>
-         <service
 			android:name = ".services.ExtractService"
 			android:label = "Extracting"
             android:process=":amaze"

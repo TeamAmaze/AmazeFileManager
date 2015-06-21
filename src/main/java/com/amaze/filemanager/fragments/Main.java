@@ -1065,11 +1065,6 @@ public class Main extends android.support.v4.app.Fragment {
         if(hidden!=null)
             hidden.end();
     }
-    @Override
-    public void onStart() {
-        super.onStart();
-        history = new HistoryManager(getActivity(), "Table1");
-    }
 
     public ArrayList<Layoutelements> addToSmb(SmbFile[] mFile) throws SmbException {
         Log.e("Connected",mFile.length+"");

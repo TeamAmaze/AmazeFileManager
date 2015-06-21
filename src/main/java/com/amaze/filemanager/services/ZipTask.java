@@ -60,9 +60,11 @@ public class ZipTask extends Service {
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
     String zpath;
+    Context c;
     @SuppressWarnings("deprecation")
     @Override
     public void onCreate() {
+        c=getApplicationContext();
         registerReceiver(receiver1, new IntentFilter("zipcancel"));
     }
 boolean foreground=true;
@@ -106,7 +108,7 @@ boolean foreground=true;
         // If we get killed, after returning from here, restart
         return START_REDELIVER_INTENT;
     }
-Context c=this;
+
     public class Doback extends AsyncTask<Bundle, Void, Integer> {
         ArrayList<String> files;
 

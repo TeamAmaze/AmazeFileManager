@@ -58,6 +58,8 @@ import java.util.zip.ZipFile;
 public class ExtractService extends Service {
     public final String EXTRACT_CONDITION = "EXTRACT_CONDITION";
     Futils utils = new Futils();
+
+    Context cd;
     // Binder given to clients
     HashMap<Integer, Boolean> hash = new HashMap<Integer, Boolean>();
     NotificationManager mNotifyManager;
@@ -68,8 +70,10 @@ public class ExtractService extends Service {
     @Override
     public void onCreate() {
         registerReceiver(receiver1, new IntentFilter("excancel"));
+        cd=getApplicationContext();
     }
     boolean foreground=true;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle b = new Bundle();
@@ -451,7 +455,6 @@ public class ExtractService extends Service {
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
-    Context cd = this;
     private BroadcastReceiver receiver1 = new BroadcastReceiver() {
 
         @Override

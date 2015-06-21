@@ -55,8 +55,10 @@ public class CopyService extends Service {
     boolean rootmode;
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
+    Context c;
     @Override
     public void onCreate() {
+        c = getApplicationContext();
         SharedPreferences Sp=PreferenceManager.getDefaultSharedPreferences(this);
         rootmode=Sp.getBoolean("rootmode",false);
         registerReceiver(receiver3, new IntentFilter("copycancel"));
@@ -160,7 +162,6 @@ public class CopyService extends Service {
 
 
 
-    Context c = this;
 
     private int checkFolder(final File folder,Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
