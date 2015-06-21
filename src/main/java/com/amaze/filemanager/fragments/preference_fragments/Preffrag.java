@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.fragments;
+package com.amaze.filemanager.fragments.preference_fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -52,7 +52,6 @@ import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.stericson.RootTools.RootTools;
-
 import java.util.ArrayList;
 
 public class Preffrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
@@ -134,16 +133,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                 hideModePreference.setSummary(getResources().getString(R.string.hide_mode_app_bar));
                 break;
         }
-
-        if(Build.VERSION.SDK_INT>=21)
-        findPreference("colorednavigation").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                restartPC(getActivity());
-                return false;
-            }
-        });
-        findPreference("dirontop").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+   findPreference("dirontop").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 String[] sort = getResources().getStringArray(R.array.directorysortmode);
@@ -185,6 +175,13 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                 return true;
             }
         });
+        findPreference("colors").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                ((com.amaze.filemanager.activities.Preferences) getActivity()).selectItem(1);
+                return true;
+            }
+        });
         findPreference("sortby").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -207,18 +204,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
             }
         });
 
-        findPreference("skin").setOnPreferenceClickListener(this);
-        findPreference("fab_skin").setOnPreferenceClickListener(this);
-        findPreference("icon_skin").setOnPreferenceClickListener(this);
 
-        final SwitchPreference checkBoxPreference = (SwitchPreference) findPreference("random_checkbox");
-        checkBoxPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Toast.makeText(getActivity(), R.string.setRandom, Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });
 
         final SwitchPreference rootmode = (SwitchPreference) findPreference("rootmode");
         rootmode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -448,9 +434,6 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
             preference7.setEnabled(false);
 
         // Colored navigation bar
-        SwitchPreference preference8 = (SwitchPreference) findPreference("colorednavigation");
-        if (Build.VERSION.SDK_INT >= 21)
-            preference8.setEnabled(true);
     }
 
     public static void restartPC(final Activity activity) {

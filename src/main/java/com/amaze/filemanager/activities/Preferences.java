@@ -22,6 +22,7 @@ package com.amaze.filemanager.activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -40,6 +41,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
+import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -49,7 +52,8 @@ import java.util.Calendar;
 public class Preferences extends AppCompatActivity {
     int theme, skinStatusBar;
     String skin, fabSkin;
-
+    int select=0;
+    public int changed=0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -230,38 +234,74 @@ public class Preferences extends AppCompatActivity {
                 window.setNavigationBarColor(Color.parseColor(PreferenceUtils.getStatusColor(skin)));
 
         }
+        selectItem(0);
     }
 
     @Override
     public void onBackPressed() {
-        Intent in = new Intent(Preferences.this, MainActivity.class);
-        in.setAction(Intent.ACTION_MAIN);
-        final int enter_anim = android.R.anim.fade_in;
-        final int exit_anim = android.R.anim.fade_out;
-        Activity activity=this;
-        activity.overridePendingTransition(enter_anim, exit_anim);
-        activity.finish();
-        activity.overridePendingTransition(enter_anim, exit_anim);
-        activity.startActivity(in);
-
+        if(select==1 && changed==1)
+            restartPC(this);
+        else if(select==1){selectItem(0);}
+        else{
+            Intent in = new Intent(Preferences.this, MainActivity.class);
+            in.setAction(Intent.ACTION_MAIN);
+            final int enter_anim = android.R.anim.fade_in;
+            final int exit_anim = android.R.anim.fade_out;
+            Activity activity = this;
+            activity.overridePendingTransition(enter_anim, exit_anim);
+            activity.finish();
+            activity.overridePendingTransition(enter_anim, exit_anim);
+            activity.startActivity(in);
+        }
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // Navigate "up" the demo structure to the launchpad activity.
+                if(select==1 && changed==1)
+                    restartPC(this);
+                else if(select==1){selectItem(0);}
+                else{
                 Intent in = new Intent(Preferences.this, MainActivity.class);
                 in.setAction(Intent.ACTION_MAIN);
                 final int enter_anim = android.R.anim.fade_in;
                 final int exit_anim = android.R.anim.fade_out;
-                Activity activity=this;
+                Activity activity = this;
                 activity.overridePendingTransition(enter_anim, exit_anim);
-                activity.finish();
+                    activity.finish();
                 activity.overridePendingTransition(enter_anim, exit_anim);
                 activity.startActivity(in);
-                return true;
+            }return true;
 
         }
         return true;
+    }public  void restartPC(final Activity activity) {
+        if (activity == null)
+            return;
+        final int enter_anim = android.R.anim.fade_in;
+        final int exit_anim = android.R.anim.fade_out;
+        activity.overridePendingTransition(enter_anim, exit_anim);
+        activity.finish();
+        activity.overridePendingTransition(enter_anim, exit_anim);
+        activity.startActivity(activity.getIntent());
+    }
+    public void selectItem(int i){
+        switch (i){
+            case 0:
+                FragmentTransaction transaction =getFragmentManager().beginTransaction();
+                transaction.replace(R.id.prefsfragment, new Preffrag());
+                transaction.commit();
+                select=0;
+                getSupportActionBar().setTitle(R.string.setting);
+                break;
+            case 1:
+                FragmentTransaction transaction1 =getFragmentManager().beginTransaction();
+                transaction1.replace(R.id.prefsfragment, new ColorPref());
+                transaction1.commit();
+                select=1;
+                getSupportActionBar().setTitle(R.string.color_title);
+                break;
+        }
     }
 }

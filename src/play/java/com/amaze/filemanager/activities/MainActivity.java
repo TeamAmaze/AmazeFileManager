@@ -94,7 +94,6 @@ import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
-import com.amaze.filemanager.services.SearchService;
 import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.services.asynctasks.SearchTask;

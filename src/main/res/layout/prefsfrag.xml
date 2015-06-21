@@ -35,8 +35,7 @@
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         />
-    <fragment
-        class="com.amaze.filemanager.fragments.Preffrag"
+    <FrameLayout
         android:id="@+id/prefsfragment"
         android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
