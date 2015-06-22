@@ -112,7 +112,6 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         sharedPref.edit().putInt("hidemode", which).commit();
-                        restartPC(getActivity());
                         dialog.dismiss();
                         return true;
                     }

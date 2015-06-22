@@ -92,6 +92,7 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.junrar:junrar:0.7'
     compile 'org.apache.commons:commons-compress:1.8.1'
+    compile 'com.android.support:design:22.2.0'
     // Google Play Services
     playCompile 'com.google.android.gms:play-services-plus:6.5.87'
     playCompile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
