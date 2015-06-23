@@ -401,8 +401,13 @@ public class Main extends android.support.v4.app.Fragment {
             }}
         }else if(smbMode){
             if(selection)adapter.toggleChecked(position);
-            else{Toast.makeText(getActivity(),"Go",Toast.LENGTH_LONG).show();
-                    loadSmblist(smbFiles.get(position), false);}
+            else{
+                try {
+                    loadSmblist(new SmbFile(list.get(position).getDesc()), false);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
         } else if (selection == true) {
             if(!list.get(position).getSize().equals(goback)){
                 adapter.toggleChecked(position);
@@ -987,6 +992,13 @@ public class Main extends android.support.v4.app.Fragment {
             System.out.println("adapter checked false");
                 adapter.toggleChecked(false);}
             else{
+            if(smbMode)
+                try {
+                    loadSmblist(new SmbFile(new File(list.get(0).getDesc()).getParent()),true);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            else
             if(current.equals("/") || current.equals(home))
                 mainActivity.exit();
                 else if (utils.canGoBack(f) ) {
@@ -1171,24 +1183,13 @@ public class Main extends android.support.v4.app.Fragment {
        public SmbFile connectingWithSmbServer(String[] auth,boolean anonym) {
         try {
             String yourPeerIP=auth[0];
-            String path = "smb://" + yourPeerIP;
+            String path = "smb://"+Uri.encode(auth[1]+":"+auth[2])+"@" + yourPeerIP+"/";
             smbPath=path;
-            SmbFile smbFile;
-            if(anonym){
-                SmbAnonym=true;
-               smbFile = new SmbFile(path,NtlmPasswordAuthentication.ANONYMOUS);
-            }
-            else {
-                SmbAnonym=false;
-                smbUser=auth[1];
-                smbPass=auth[2];
-                NtlmPasswordAuthentication auth1 = new NtlmPasswordAuthentication(
-                        null, auth[1], auth[2]);
-                 smbFile = new SmbFile(path, auth1);
-            }return smbFile;
+            SmbFile smbFile=new SmbFile(path);
+            return smbFile;
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("Connected", e.getMessage());
+            Log.e("Connected1", e.getMessage());
             return null;
         }
     }
