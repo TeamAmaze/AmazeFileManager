@@ -1152,33 +1152,14 @@ public class Main extends android.support.v4.app.Fragment {
             savedInstance.putString("SmbPass", pass);
             savedInstance.putBoolean("SmbAnonym", false);
         } else savedInstance.putBoolean("SmbAnonym", true);
-        ArrayList<String> stringArrayList = new ArrayList<>();
-        for (SmbFile smbFile : list) {
-            stringArrayList.add(smbFile.getPath());
-        }
-        savedInstance.putStringArrayList("SmbFileList", stringArrayList);
-    }
+      }
 
     void retreiveSmbFromSavedInstance(Bundle savedInstance) {
         smbMode = savedInstance.getBoolean("SmbMode");
         if (!smbMode) return;
         smbPath=savedInstance.getString("SmbPath");
         SmbAnonym = savedInstance.getBoolean("SmbAnonym");
-        ArrayList<String> stringArrayList = savedInstance.getStringArrayList("SmbFileList");
-        smbFiles=new ArrayList<SmbFile>();
-        try {
-            if(SmbAnonym) {
-             for(String a:stringArrayList)
-                 smbFiles.add( new SmbFile(a,NtlmPasswordAuthentication.ANONYMOUS));
-            }else{
-                NtlmPasswordAuthentication auth1 = new NtlmPasswordAuthentication(
-                        null,smbUser= savedInstance.getString("SmbUser"),smbPass=savedInstance.getString("SmbPass"));
-                for(String a:stringArrayList)
-                    smbFiles.add( new SmbFile(a,auth1));
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+
     }
        public SmbFile connectingWithSmbServer(String[] auth,boolean anonym) {
         try {

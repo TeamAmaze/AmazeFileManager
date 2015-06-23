@@ -51,6 +51,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -1889,6 +1890,11 @@ public class MainActivity extends AppCompatActivity implements
             for (int i = paths.size() - 1; i >= 0; i--) {
                 rpaths.add(paths.get(i));
             }
+            View view=new View(this);
+            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
+                    dpToPx(42), LinearLayout.LayoutParams.WRAP_CONTENT);
+            view.setLayoutParams(params1);
+            buttons.addView(view);
             for (int i = 0; i < names.size(); i++) {
                 final int k=i;
                 ImageView v=new ImageView(this);
@@ -2082,7 +2088,11 @@ public class MainActivity extends AppCompatActivity implements
             }).start();
         }
     }
-
+    int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
+    }
     public void initiatebbar() {
         LinearLayout pathbar = (LinearLayout) findViewById(R.id.pathbar);
         TextView textView = (TextView) findViewById(R.id.fullpath);

@@ -64,15 +64,13 @@
         <FrameLayout
             android:paddingRight="16dp"
             android:id="@+id/buttonbarframe"
-            android:layout_height="wrap_content"
+            android:layout_height="72dp"
             android:layout_width="match_parent"
-            android:layout_below="@id/action_bar"
-            android:minHeight="72dp">
+            android:layout_below="@id/action_bar">
 
             <HorizontalScrollView
                 android:scrollbars="none"
                 android:id="@+id/scroll"
-                android:paddingLeft="72dp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
