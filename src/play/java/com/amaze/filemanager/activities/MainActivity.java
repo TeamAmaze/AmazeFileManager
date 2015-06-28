@@ -456,12 +456,14 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 add(0);
+                floatingActionButton.collapse();
             }
         });
         floatingActionButton.getButtonAt(1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 add(1);
+                floatingActionButton.collapse();
             }
         });
         IntentFilter newFilter = new IntentFilter();

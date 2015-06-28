@@ -19,6 +19,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -141,30 +142,84 @@
             </FrameLayout>
         </RelativeLayout>
 
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/fab2"
-            android:layout_width="wrap_content"
-            app:fab_colorRipple="#77777777"
-            app:fab_type="mini"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="116dp"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/fab_bg"
+            android:elevation="5dp"
             android:visibility="gone"
-            android:src="@drawable/ic_action_new" />
+            android:clickable="true"
+            android:background="#3f000000"/>
 
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            app:fab_colorRipple="#77777777"
-            app:fab_shadow="false"
-            android:layout_gravity="bottom|right"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginRight="16dp"
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/right_top_labels"
             android:visibility="gone"
-            android:src="@drawable/ic_action_new" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|start|top"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:elevation="6dp"
+            android:layout_marginTop="108dp"
+            fab:fab_addButtonColorNormal="@android:color/white"
+            fab:fab_addButtonColorPressed="#9f9f9f"
+            fab:fab_addButtonPlusIconColor="@android:color/white"
+            fab:fab_labelStyle="@style/menu_labels_style_light"
+            fab:fab_addButtonSize="mini"
+            fab:fab_expandDirection="down"
+            fab:fab_labelsPosition="right">
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_size="mini"
+                fab:fab_icon="@drawable/folder"
+                fab:fab_colorNormal="@android:color/white"
+                fab:fab_title="@string/folder"
+                fab:fab_colorPressed="#9f9f9f"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@android:color/white"
+                fab:fab_icon="@drawable/file"
+                fab:fab_size="mini"
+                fab:fab_title="@string/file"
+                fab:fab_colorPressed="#9f9f9f"/>
+
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/right_labels"
+            android:visibility="gone"
+            android:elevation="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|end|bottom"
+            fab:fab_labelStyle="@style/menu_labels_style_light"
+            android:layout_marginBottom="4dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginEnd="7dp"
+            fab:fab_labelsPosition="left">
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_size="mini"
+                fab:fab_icon="@drawable/folder"
+                fab:fab_colorNormal="@android:color/white"
+                fab:fab_title="@string/folder"
+                fab:fab_colorPressed="#9f9f9f"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@android:color/white"
+                fab:fab_icon="@drawable/file"
+                fab:fab_size="mini"
+                fab:fab_title="@string/file"
+                fab:fab_colorPressed="#9f9f9f"/>
+
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
     </FrameLayout>
     <View

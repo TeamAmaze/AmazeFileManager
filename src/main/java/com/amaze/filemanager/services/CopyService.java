@@ -265,7 +265,11 @@ public class CopyService extends Service {
         private void copyFiles(File sourceFile, File targetFile, int id,boolean move) throws IOException {
             if (sourceFile.isDirectory()) {
                 if (!targetFile.exists()) FileUtil.mkdir(targetFile,c);
-
+                try {
+                    targetFile.setLastModified(sourceFile.lastModified());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 String[] filePaths = sourceFile.list();
 
                 for (String filePath : filePaths) {
@@ -306,8 +310,13 @@ public class CopyService extends Service {
 
                 in.close();
                 out.close();
+                        try {
+                            targetFile.setLastModified(sourceFile.lastModified());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
-                utils.scanFile(targetFile.getPath(), c);
+                        utils.scanFile(targetFile.getPath(), c);
             }}}
         private void copyFiles(SmbFile sourceFile, File targetFile, int id,boolean move) throws IOException {
             if (sourceFile.isDirectory()) {
