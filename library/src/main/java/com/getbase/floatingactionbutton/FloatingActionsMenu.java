@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -114,7 +115,16 @@ public class FloatingActionsMenu extends ViewGroup {
   private boolean expandsHorizontally() {
     return mExpandDirection == EXPAND_LEFT || mExpandDirection == EXPAND_RIGHT;
   }
-
+    public void setLabelsStyle(int id){
+        mLabelsStyle=id;
+        for(int i=0;i<getChildCount();i++){
+            if(getChildAt(i) instanceof TextView){
+                TextView textView=((TextView)getChildAt(i));
+                textView.setBackgroundResource(id);
+                textView.setTextColor(Color.WHITE);
+            }
+        }
+    }
   private static class RotatingDrawable extends LayerDrawable {
     public RotatingDrawable(Drawable drawable) {
       super(new Drawable[] { drawable });
@@ -327,8 +337,8 @@ public class FloatingActionsMenu extends ViewGroup {
         params.setAnimationsTarget(child);
 
         View label = (View) child.getTag(R.id.fab_label);
-        if (label != null) {
-          int labelXAwayFromButton = mLabelsPosition == LABELS_ON_LEFT_SIDE
+          if (label != null) {
+              int labelXAwayFromButton = mLabelsPosition == LABELS_ON_LEFT_SIDE
               ? labelsXNearButton - label.getMeasuredWidth()
               : labelsXNearButton + label.getMeasuredWidth();
 
@@ -554,31 +564,6 @@ public class FloatingActionsMenu extends ViewGroup {
     return mExpanded;
   }
 
-  @Override
-  public Parcelable onSaveInstanceState() {
-    Parcelable superState = super.onSaveInstanceState();
-    SavedState savedState = new SavedState(superState);
-    savedState.mExpanded = mExpanded;
-
-    return savedState;
-  }
-
-  @Override
-  public void onRestoreInstanceState(Parcelable state) {
-    if (state instanceof SavedState) {
-      SavedState savedState = (SavedState) state;
-      mExpanded = savedState.mExpanded;
-      mTouchDelegateGroup.setEnabled(mExpanded);
-
-      if (mRotatingDrawable != null) {
-        mRotatingDrawable.setRotation(mExpanded ? EXPANDED_PLUS_ROTATION : COLLAPSED_PLUS_ROTATION);
-      }
-
-      super.onRestoreInstanceState(savedState.getSuperState());
-    } else {
-      super.onRestoreInstanceState(state);
-    }
-  }
   public AddFloatingActionButton getButton(){
   return mAddButton;
   }

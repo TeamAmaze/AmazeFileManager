@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements
     private IconUtils icons;
     private TabHandler tabHandler;
     int hidemode;
-    FloatingActionsMenu floatingActionButton;
+    public FloatingActionsMenu floatingActionButton;
     public LinearLayout pathbar;
     public Animation fabShowAnim, fabHideAnim;
     public FrameLayout buttonBarFrame;
@@ -381,6 +381,7 @@ public class MainActivity extends AppCompatActivity implements
         floatingActionButton.animate();
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.setColors(Color.parseColor(fabskin), Color.parseColor(fabSkinPressed));
+        if(theme1==1)floatingActionButton.setLabelsStyle(R.drawable.fab_label_background);
         floatingActionButton.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -391,6 +392,8 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
         View v= findViewById(R.id.fab_bg);
+        if(theme1==1)
+            v.setBackgroundColor(Color.parseColor("#7fffffff"));
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -751,11 +754,14 @@ public class MainActivity extends AppCompatActivity implements
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
         String name = fragment.getClass().getName();
         if (name.contains("TabFragment")) {
-            TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
+            if(floatingActionButton.isExpanded()){
+           floatingActionButton.collapse();
+            findViewById(R.id.fab_bg).setVisibility(View.GONE);}
+            else{TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
             Fragment fragment1 = tabFragment.getTab();
             Main main = (Main) fragment1;
             main.goBack();
-        } else if (name.contains("ZipViewer")){
+        } }else if (name.contains("ZipViewer")){
             ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
             if(zipViewer.mActionMode==null) {
                 if (zipViewer.cangoBack()) {
