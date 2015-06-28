@@ -88,7 +88,6 @@ public class AppsList extends ListFragment {
         mainActivity=(MainActivity)getActivity();
         mainActivity.toolbar.setTitle(utils.getString(getActivity(), R.string.apps));
         mainActivity.tabsSpinner.setVisibility(View.GONE);
-        mainActivity.floatingActionButton.setVisibility(View.GONE);
         mainActivity.buttonBarFrame.setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
         fabSkin = mainActivity.fabskin;

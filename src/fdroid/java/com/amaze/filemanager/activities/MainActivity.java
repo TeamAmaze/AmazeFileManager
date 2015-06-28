@@ -52,6 +52,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -933,8 +934,8 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 TabFragment tabFragment = (TabFragment) fragment;
-                updatePath(((Main) tabFragment.getTab()).current, true);
-            } catch (Exception e) {
+                Main ma=((Main) tabFragment.getTab());
+                updatePath(ma.current, true,ma.results); } catch (Exception e) {
             }
             tabsSpinner.setVisibility(View.VISIBLE);
             getSupportActionBar().setTitle("");
@@ -1117,7 +1118,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onPositive(MaterialDialog materialDialog) {
                         String a = edir.getText().toString();
                         File f = new File(path + "/" + a);
-                        mkDir(f,ma);
+                        mkDir(f, ma);
                     }
 
                     @Override
@@ -1236,18 +1237,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        System.out.println("onPause");
         killToast();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(SEARCHRECIEVER);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(LOADSEARCHRECIEVER);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        System.out.println("onresume");
-        LocalBroadcastManager.getInstance(this).registerReceiver(SEARCHRECIEVER, new IntentFilter("searchresults"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(LOADSEARCHRECIEVER, new IntentFilter("loadsearchresults"));
     }
 
     @Override
@@ -1266,59 +1261,6 @@ public class MainActivity extends AppCompatActivity {
         // let the system handle all other key events
         return super.onKeyDown(keyCode, event);
     }
-    ProgressDialog p;
-    private BroadcastReceiver SEARCHRECIEVER = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(final Context context, Intent intent) {
-            Bundle b = intent.getExtras();
-            if (b != null) {
-                int  paths=intent.getIntExtra("paths", 0);
-                if(p==null ) {
-                    p = new ProgressDialog(con);
-                    p.setMessage("Found " +paths);
-                    p.setIndeterminate(true);
-                    p.setTitle(R.string.searching);
-                    p.setCancelable(false);
-                    p.setButton(DialogInterface.BUTTON_POSITIVE,utils.getString(con,R.string.cancel),new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            System.out.println("Broadcast sent");
-                            LocalBroadcastManager.getInstance(con).sendBroadcast(new Intent("searchcancel"));
-                            dialog.cancel();
-                        }
-                    });
-                }else{
-                    p.setMessage("Found " +paths);
-                }p.show();
-
-            }
-        }
-    };
-    private BroadcastReceiver LOADSEARCHRECIEVER = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle e = intent.getExtras();
-            System.out.println("GOT IT");
-            if(p!=null && p.isShowing())p.cancel();
-            if (e != null) {
-                ArrayList<String[]> arrayList=new ArrayList<String[]>();
-                ArrayList<String> b=e.getStringArrayList("b");
-                ArrayList<String> c=e.getStringArrayList("c");
-                ArrayList<String> d=e.getStringArrayList("d");
-                ArrayList<String> f=e.getStringArrayList("f");
-                for(int i=0;i<b.size();i++){
-                    arrayList.add(new String[]{b.get(i),c.get(i),d.get(i),f.get(i)});
-                }
-                Fragment fragment=getFragment().getTab();
-                if(fragment.getClass().getName().contains("Main")){
-                    ((Main)fragment).loadsearchlist(arrayList);
-                }
-            }
-        }
-    };
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -1747,6 +1689,11 @@ public class MainActivity extends AppCompatActivity {
             for (int i = paths.size() - 1; i >= 0; i--) {
                 rpaths.add(paths.get(i));
             }
+            View view=new View(this);
+            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
+                    dpToPx(42), LinearLayout.LayoutParams.WRAP_CONTENT);
+            view.setLayoutParams(params1);
+            buttons.addView(view);
             for (int i = 0; i < names.size(); i++) {
                 final int k=i;
                 ImageView v=new ImageView(this);
@@ -1840,6 +1787,10 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             System.out.println("button view not available");
         }
+    }  int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
     }
     private void sendScroll(final HorizontalScrollView scrollView){
         final Handler handler = new Handler();
@@ -1855,20 +1806,28 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }).start();
+    }String newPath=null;
+    String parseSmbPath(String a){
+        return   a.substring(a.indexOf("@")+1,a.length());
     }
-    public void updatePath(final String newPath,boolean calcsize){
+
+    public void updatePath(final String news,boolean calcsize,boolean results){
         File f= null;
+        if(news.startsWith("smb:/"))
+            newPath=parseSmbPath(news);
+        else newPath=news;
+
         try {
             f = new File(newPath);
         } catch (Exception e) {
             return;
-        }   TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
-        textView.setText("");
-        if(calcsize) {
-            String used = utils.readableFileSize(f.getTotalSpace() - f.getFreeSpace());
-            String free = utils.readableFileSize(f.getFreeSpace());
-            textView.setText(getResources().getString(R.string.used) + " " + used + " " + getResources().getString(R.string.free) + " " + free);
-        }final TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
+        }  if(!results){ TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
+            textView.setText("");
+            if(calcsize) {
+                String used = utils.readableFileSize(f.getTotalSpace() - f.getFreeSpace());
+                String free = utils.readableFileSize(f.getFreeSpace());
+                textView.setText(getResources().getString(R.string.used) + " " + used + " " + getResources().getString(R.string.free) + " " + free);
+            }}final TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
         final TextView animPath = (TextView) pathbar.findViewById(R.id.fullpath_anim);
         final String oldPath=bapath.getText().toString();
         // implement animation while setting text
@@ -2055,7 +2014,7 @@ public class MainActivity extends AppCompatActivity {
             }pending_path=null;}
         supportInvalidateOptionsMenu();
     }
-    void mkFile(File f1,Main ma){
+    public void mkFile(File f1,Main ma){
         boolean b=false;
         if (!f1.exists()) {
             int mode=checkFolder(new File(f1.getParent()),mainActivity);

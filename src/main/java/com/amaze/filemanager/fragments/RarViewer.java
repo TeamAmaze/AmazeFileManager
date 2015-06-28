@@ -169,11 +169,6 @@ public class RarViewer extends Fragment {
         mainActivity.toolbar.setTitle(getResources().getString(R.string.zip_viewer));}
         mainActivity.tabsSpinner.setVisibility(View.GONE);
 
-        mainActivity.fabHideAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_hide);
-        mainActivity.floatingActionButton.setAnimation(mainActivity.fabHideAnim);
-        mainActivity.floatingActionButton.animate();
-        mainActivity.floatingActionButton.setVisibility(View.GONE);
-
         mainActivity.supportInvalidateOptionsMenu();
         mToolbarHeight=getToolbarHeight(getActivity());
         paddingTop = (mToolbarHeight) + dpToPx(72);

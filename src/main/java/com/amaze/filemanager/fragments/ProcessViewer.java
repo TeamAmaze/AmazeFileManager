@@ -75,8 +75,6 @@ public class ProcessViewer extends Fragment {
         //((MainActivity)getActivity()).getSupportActionBar().setTitle(utils.getString(getActivity(),R.string.processes));
         mainActivity.toolbar.setTitle(utils.getString(getActivity(), R.string.processes));
         mainActivity.tabsSpinner.setVisibility(View.GONE);
-        mainActivity.floatingActionButton.setVisibility(View.GONE);
-
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         icons = new IconUtils(Sp, getActivity());
         mainActivity.supportInvalidateOptionsMenu();

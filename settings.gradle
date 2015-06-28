@@ -1,1 +1,1 @@
-include ':libs:StickyHeadersRecyclerView'
+include ':libs:StickyHeadersRecyclerView', ':library', ':'

@@ -75,7 +75,6 @@ public class BookmarksManager extends Fragment {
         mainActivity.toolbar.setTitle(utils.getString(getActivity(),R.string.bookmanag));
 
         mainActivity.tabsSpinner.setVisibility(View.GONE);
-        mainActivity.floatingActionButton.setVisibility(View.GONE);
         mainActivity.buttonBarFrame.setVisibility(View.GONE);
 
         listview=(RecyclerView)rootView.findViewById(R.id.listView);
@@ -107,7 +106,6 @@ public class BookmarksManager extends Fragment {
         }
         m=(MainActivity)getActivity();
         m.supportInvalidateOptionsMenu();
-        m.floatingActionButton.setVisibility(View.GONE);
         Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
         FloatingActionButton floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab1);
         //floatingActionButton.show(true);
