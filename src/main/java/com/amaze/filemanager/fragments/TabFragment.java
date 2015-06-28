@@ -193,7 +193,11 @@ public class TabFragment extends android.support.v4.app.Fragment {
             if(fragment.getClass().getName().contains("Main")){
                 Main m=(Main)fragment;
                 items.add(m.current);
-                tabHandler.addTab(new Tab(i,m.current,m.current,m.home));
+                if(!m.smbMode) {
+                    tabHandler.addTab(new Tab(i, m.current, m.current, m.home));
+                }else
+                    tabHandler.addTab(new Tab(i, m.home, m.home, m.home));
+
                 i++;
             }
         }

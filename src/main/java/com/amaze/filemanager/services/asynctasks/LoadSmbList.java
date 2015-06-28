@@ -51,7 +51,6 @@ public class LoadSmbList extends AsyncTask<SmbFile, String, ArrayList<Layoutelem
     protected void onPreExecute() {
 
         Log.e("Connected","onPreExecute");
-        ma.history.addPath(ma.current);
     }
 
     @Override
@@ -89,8 +88,7 @@ public class LoadSmbList extends AsyncTask<SmbFile, String, ArrayList<Layoutelem
 
         }
         Log.e("Connected","onPost");
-        ma.createViews(bitmap, back, new File(f.getPath()));
-        ma.smbPath=f.getPath();
+        ma.createSMBViews(bitmap, back, (f));
         ma.smbMode=true;
         //ListView lv = (ListView) ma.listView.findViewById(R.id.listView);
         ma.listView.setVisibility(View.VISIBLE);

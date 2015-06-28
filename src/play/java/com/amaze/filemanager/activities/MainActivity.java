@@ -1469,9 +1469,6 @@ public class MainActivity extends AppCompatActivity implements
             showDialog();
         }
     }
-    public void updatepager() {
-        getFragment().mSectionsPagerAdapter.notifyDataSetChanged();
-    }
     public void updatepaths(){
         try {
             getFragment().updatepaths();
@@ -2004,8 +2001,18 @@ public class MainActivity extends AppCompatActivity implements
             }
         }).start();
     }
-    public void updatePath(final String newPath,boolean calcsize,boolean results){
+    String newPath=null;
+    String parseSmbPath(String a){
+      return   a.substring(a.indexOf("@")+1,a.length());
+    }
+    public void updatePath(final String news,boolean calcsize,boolean results){
         File f= null;
+        System.out.println(news);
+        if(news.startsWith("smb:/"))
+            newPath=parseSmbPath(news);
+        else newPath=news;
+
+        System.out.println(newPath);
         try {
             f = new File(newPath);
         } catch (Exception e) {
@@ -2207,7 +2214,7 @@ public class MainActivity extends AppCompatActivity implements
             }pending_path=null;}
         supportInvalidateOptionsMenu();
     }
-    void mkFile(File f1,Main ma){
+    public void mkFile(File f1,Main ma){
         boolean b=false;
         if (!f1.exists()) {
             int mode=checkFolder(new File(f1.getParent()),mainActivity);

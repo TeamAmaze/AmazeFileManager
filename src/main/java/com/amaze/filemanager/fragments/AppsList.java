@@ -265,7 +265,7 @@ public class AppsList extends ListFragment {
 
                 }
                 for (ApplicationInfo object : c)
-                    a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk_grid), object.loadLabel(getActivity().getPackageManager()).toString(), object.publicSourceDir, object.packageName, "", utils.readableFileSize(new File(object.publicSourceDir).length()), false, new File(object.publicSourceDir).lastModified()+"", false));
+                    a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk_grid), object.loadLabel(getActivity().getPackageManager()).toString(), object.publicSourceDir, object.packageName, "", utils.readableFileSize(new File(object.publicSourceDir).length()),new File(object.publicSourceDir).length(), false, new File(object.publicSourceDir).lastModified()+"", false));
                 Collections.sort(a, new FileListSorter(0, sortby, asc, false));
             } catch (Exception e) {
                 //Toast.makeText(getActivity(), "" + e, Toast.LENGTH_LONG).show();

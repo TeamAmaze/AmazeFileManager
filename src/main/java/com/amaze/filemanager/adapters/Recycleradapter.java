@@ -266,13 +266,13 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         holder.viewmageV.setVisibility(View.VISIBLE);
                         holder.viewmageV.setImageDrawable(main.darkimage);
                         main.ic.cancelLoad(holder.viewmageV);
-                        main.ic.loadDrawable(holder.viewmageV, new File(rowItem.getDesc()), null);
+                        main.ic.loadDrawable(holder.viewmageV, (rowItem.getDesc()), null);
                     } else {
                         holder.imageView.setVisibility(View.GONE);
                         holder.apk.setVisibility(View.VISIBLE);
                         holder.apk.setImageDrawable(main.darkimage);
                         main.ic.cancelLoad(holder.apk);
-                        main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);
+                        main.ic.loadDrawable(holder.apk, (rowItem.getDesc()), null);
                     }
                 }
             } else if (filetype == 1) {
@@ -282,7 +282,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     holder.apk.setVisibility(View.VISIBLE);
                     holder.apk.setImageDrawable(main.apk);
                     main.ic.cancelLoad(holder.apk);
-                    main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);
+                    main.ic.loadDrawable(holder.apk, (rowItem.getDesc()), null);
                 }
 
             } else if (filetype == 2) {
@@ -292,13 +292,13 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         holder.viewmageV.setVisibility(View.VISIBLE);
                         holder.viewmageV.setImageDrawable(main.darkvideo);
                         main.ic.cancelLoad(holder.viewmageV);
-                        main.ic.loadDrawable(holder.viewmageV, new File(rowItem.getDesc()), null);
+                        main.ic.loadDrawable(holder.viewmageV,(rowItem.getDesc()), null);
                     } else {
                         holder.imageView.setVisibility(View.GONE);
                         holder.apk.setVisibility(View.VISIBLE);
                         holder.apk.setImageDrawable(main.darkvideo);
                         main.ic.cancelLoad(holder.apk);
-                        main.ic.loadDrawable(holder.apk, new File(rowItem.getDesc()), null);
+                        main.ic.loadDrawable(holder.apk, (rowItem.getDesc()), null);
                     }
                 }
             } else {
@@ -412,11 +412,11 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 if (main.theme == 1)
                     holder.imageView1.setBackgroundColor(Color.parseColor("#000000"));
                 main.ic.cancelLoad(holder.imageView1);
-                main.ic.loadDrawable(holder.imageView1, new File(rowItem.getDesc()), null);
+                main.ic.loadDrawable(holder.imageView1, (rowItem.getDesc()), null);
             } else if (Icons.isApk((rowItem.getDesc()))) {
                 holder.imageView.setColorFilter(null);
                 main.ic.cancelLoad(holder.imageView);
-                main.ic.loadDrawable(holder.imageView, new File(rowItem.getDesc()), null);
+                main.ic.loadDrawable(holder.imageView, (rowItem.getDesc()), null);
             }
             if (Icons.isVideo(rowItem.getDesc())) {
                 holder.imageView.setColorFilter(null);
@@ -425,7 +425,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 if (main.theme == 1)
                     holder.imageView1.setBackgroundColor(Color.parseColor("#000000"));
                 main.ic.cancelLoad(holder.imageView1);
-                main.ic.loadDrawable(holder.imageView1, new File(rowItem.getDesc()), null);
+                main.ic.loadDrawable(holder.imageView1, (rowItem.getDesc()), null);
 
             }
             if (main.coloriseIcons) {

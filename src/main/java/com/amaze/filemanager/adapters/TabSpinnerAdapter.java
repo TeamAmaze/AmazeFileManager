@@ -85,7 +85,10 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         putColor("#607d8b",0.37647059f,0.49019608f,0.54509804f);
         putColor("#004d40",0.0f, 0.301960f, 0.250980f);
 
+    }   String parseSmbPath(String a){
+        return   a.substring(a.indexOf("@")+1,a.length());
     }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -96,6 +99,8 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         try {
             if(items.get(position).equals("/"))
                 textView.setText(R.string.rootdirectory);
+            else if(items.get(position).startsWith("smb:/"))
+                textView.setText(new File(parseSmbPath(items.get(position))).getName());
             else
                 textView.setText(new File(items.get(position)).getName());
         } catch (Exception e) {

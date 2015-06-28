@@ -51,7 +51,7 @@ public class IconHolder {
 
     private Map<String, Long> mAlbums;      // Media albums
 
-    private Map<ImageView, File> mRequests;
+    private Map<ImageView, String> mRequests;
 
     private final Context mContext;
     private final boolean mUseThumbs; 
@@ -59,7 +59,7 @@ public class IconHolder {
     private Handler mWorkerHandler;
     boolean grid;
     private static class LoadResult {
-        File fso;
+        String fso;
         Bitmap result;
     }
 
@@ -79,13 +79,13 @@ public class IconHolder {
 
         private void processResult(LoadResult result) {
             // Cache the new drawable
-            final String filePath =(result.fso.getPath());
+            final String filePath =(result.fso);
             mAppIcons.put(filePath, result.result);
 
             // find the request for it
-            for (Map.Entry<ImageView, File> entry : mRequests.entrySet()) {
+            for (Map.Entry<ImageView, String> entry : mRequests.entrySet()) {
                 final ImageView imageView = entry.getKey();
-                final File fso = entry.getValue();
+                final String fso = entry.getValue();
                 if (fso == result.fso) {
                     imageView.setImageBitmap(result.result);
                     mRequests.remove(imageView);
@@ -105,7 +105,7 @@ public class IconHolder {
         super();
         this.mContext = context;
         this.mUseThumbs = useThumbs;
-        this.mRequests = new HashMap<ImageView, File>();
+        this.mRequests = new HashMap<ImageView, String>();
         this.mIcons = new HashMap<String,Bitmap>();
         this.mAppIcons = new LinkedHashMap<String, Bitmap>(MAX_CACHE, .75F, true) {
             private static final long serialVersionUID = 1L;
@@ -133,13 +133,13 @@ public class IconHolder {
      * @param defaultIcon Drawable to be used in case no specific one could be found
      * @return Drawable The drawable reference
      */
-    public void loadDrawable(ImageView iconView, File fso, Drawable defaultIcon) {
+    public void loadDrawable(ImageView iconView, String fso, Drawable defaultIcon) {
         if (!mUseThumbs) {
             return;
         }
 
         // Is cached?
-        final String filePath = fso.getPath();
+        final String filePath = fso;
         if (this.mAppIcons.containsKey(filePath)) {
             iconView.setImageBitmap(this.mAppIcons.get(filePath));
             return;
@@ -160,7 +160,7 @@ public class IconHolder {
      * Cancel loading of a drawable for a certain ImageView.
      */
     public void cancelLoad(ImageView view) {
-        File fso = mRequests.get(view);
+        String fso = mRequests.get(view);
         if (fso != null && mWorkerHandler != null) {
             mWorkerHandler.removeMessages(MSG_LOAD, fso);
         }
@@ -176,7 +176,7 @@ public class IconHolder {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_LOAD:
-                    File fso = (File) msg.obj;
+                    String fso = (String) msg.obj;
                     Bitmap d = loadDrawable(fso);
                     if (d != null) {
                         LoadResult result = new LoadResult();
@@ -188,14 +188,14 @@ public class IconHolder {
             }
         }
 }
-        private Bitmap loadDrawable(File fso) {
-            final String filePath = (fso.getPath());
+        private Bitmap loadDrawable(String fso) {
+            final String filePath = (fso);
 
             try {
                 if (Icons.isApk(filePath)) {
                     return getAppDrawable(fso);
                 }else if(Icons.isPicture(filePath)){
-                return	loadImage(fso.getPath());
+                return	loadImage(fso);
                 }else if(Icons.isVideo(filePath))
                     return getVideoDrawable(fso);
             } catch (OutOfMemoryError outOfMemoryError) {
@@ -205,8 +205,8 @@ public class IconHolder {
 
             return null;
         }
-    private Bitmap getVideoDrawable(File fso) throws OutOfMemoryError{
-        String path = fso.getPath();
+    private Bitmap getVideoDrawable(String path) throws OutOfMemoryError{
+
         try {
             Bitmap thumb = ThumbnailUtils.createVideoThumbnail(path,
                     MediaStore.Images.Thumbnails.MINI_KIND);
@@ -215,14 +215,8 @@ public class IconHolder {
             e.printStackTrace();
             return null;
         }
-    }/**
-         * Method that returns the main icon of the app
-         *
-         * @param fso The FileSystemObject
-         * @return Drawable The drawable or null if cannot be extracted
-         */
-        private Bitmap getAppDrawable(File fso) throws OutOfMemoryError{
-            String path=fso.getPath();
+    }
+        private Bitmap getAppDrawable(String path) throws OutOfMemoryError{
             Bitmap bitsat;
             try {
                 PackageManager pm = mContext.getPackageManager();

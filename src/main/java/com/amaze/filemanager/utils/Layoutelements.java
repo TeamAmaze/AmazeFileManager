@@ -56,6 +56,7 @@ public class Layoutelements implements Parcelable {
             e.printStackTrace();
         }
         date1 = im.readString();
+        longSize=im.readLong();
     }
 
 
@@ -74,6 +75,7 @@ public class Layoutelements implements Parcelable {
         p1.writeInt(header ? 1 : 0);
         p1.writeParcelable(((BitmapDrawable) imageId).getBitmap(), p2);
         p1.writeString(date1);
+        p1.writeLong(longSize);
         // TODO: Implement this method
     }
 
@@ -84,11 +86,11 @@ public class Layoutelements implements Parcelable {
     private String symlink;
     private String size;
     private boolean isDirectory;
-    private long date = 0;
+    private long date = 0,longSize=0;
     private String date1 = "";
     private boolean header;
 
-    public Layoutelements(Drawable imageId, String title, String desc, String permissions, String symlink, String size,  boolean header, String date,boolean isDirectory) {
+    public Layoutelements(Drawable imageId, String title, String desc, String permissions, String symlink, String size,long longSize,  boolean header, String date,boolean isDirectory) {
         this.imageId = imageId;
         this.title = title;
         this.desc = desc;
@@ -96,6 +98,7 @@ public class Layoutelements implements Parcelable {
         this.symlink = symlink.trim();
         this.size = size;
         this.header = header;
+        this.longSize=longSize;
         this.isDirectory = isDirectory;
         if (!date.trim().equals("")) {
             this.date = Long.parseLong(date);
@@ -134,6 +137,9 @@ public class Layoutelements implements Parcelable {
 
     public String getSize() {
         return size;
+    }
+    public long getlongSize() {
+        return longSize;
     }
 
     public String getDate() {

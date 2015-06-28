@@ -477,7 +477,7 @@ public class Main extends android.support.v4.app.Fragment {
 
     public void loadlist(final File f, boolean back) {
         if(mActionMode!=null){mActionMode.finish();}
-        new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, f);
+         new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, f);
 
         try {
             animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
@@ -510,7 +510,7 @@ public class Main extends android.support.v4.app.Fragment {
                 if(gobackitem)
                 if (!f.getPath().equals("/")) {
                     if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))
-                        bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "..", "", "", goback,false, true,""));
+                        bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "..", "", "", goback,0,false, true,""));
                 }
                 adapter = new Recycleradapter(ma,
                         bitmap, ma.getActivity());
@@ -538,7 +538,7 @@ public class Main extends android.support.v4.app.Fragment {
                     }
                     //floatingActionButton.show();
                     mainActivity.updatepaths();
-                    listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight,hidemode) {
+                    listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight, hidemode) {
 
                         @Override
                         public void onMoved(int distance) {
@@ -559,7 +559,6 @@ public class Main extends android.support.v4.app.Fragment {
                     if (buttons.getVisibility() == View.VISIBLE) mainActivity.bbar(this);
 
                     mainActivity.updateDrawer(current);
-                    mainActivity.updatepager();
 
                     } catch (Exception e) {
                 }
@@ -571,6 +570,70 @@ public class Main extends android.support.v4.app.Fragment {
 
     }
 
+    public void createSMBViews(ArrayList<Layoutelements> bitmap, boolean back, SmbFile f) {
+        try {
+            if (bitmap != null) {
+                if(gobackitem)
+                    if (!f.getPath().equals("/")) {
+                        if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))
+                            bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "..", "", "", goback,0,false, true,""));
+                    }
+                adapter = new Recycleradapter(ma,
+                        bitmap, ma.getActivity());
+                current=f.getPath();
+                mSwipeRefreshLayout.setRefreshing(false);
+                try {    listView.setAdapter(adapter);
+                    if(!addheader && islist){
+                        listView.removeItemDecoration(dividerItemDecoration);
+                        listView.removeItemDecoration(headersDecor);
+                        addheader=true;}
+                    if(addheader && islist){
+                        dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST,false,showDividers);
+                        listView.addItemDecoration(dividerItemDecoration);
+
+                        headersDecor = new StickyRecyclerHeadersDecoration(adapter);
+                        listView.addItemDecoration(headersDecor);addheader=false;}
+                    results = false;
+                    if (back) {
+                        if (scrolls.containsKey(smbPath)) {
+                            Bundle b = scrolls.get(smbPath);
+                            if(islist)
+                                mLayoutManager.scrollToPositionWithOffset(b.getInt("index"),b.getInt("top"));
+                            else    mLayoutManagerGrid.scrollToPositionWithOffset(b.getInt("index"),b.getInt("top"));
+                        }
+                    }
+                    //floatingActionButton.show();
+                    mainActivity.updatepaths();
+                    listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight, hidemode) {
+
+                        @Override
+                        public void onMoved(int distance) {
+                            mToolbarContainer.setTranslationY(-distance);
+                        }
+
+                        @Override
+                        public void onShow() {
+                            mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                        }
+
+                        @Override
+                        public void onHide() {
+                            mToolbarContainer.findViewById(R.id.lin).animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(2)).start();
+                        }
+
+                    });
+                    if (buttons.getVisibility() == View.VISIBLE) mainActivity.bbar(this);
+
+                mainActivity.updatePath(current,false,false);
+                } catch (Exception e) {
+                }
+            } else {//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
+                loadlist(new File(current), true);
+            }
+        } catch (Exception e) {
+        }
+
+    }
 
     public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
         private void hideOption(int id, Menu menu) {
@@ -836,6 +899,9 @@ public class Main extends android.support.v4.app.Fragment {
                         for(int i:plist){
                             arrayList.add(new File(list.get(i).getDesc()));
                         }
+                    if(arrayList.size()>100)
+                    Toast.makeText(getActivity(),"Can't share more than 100 files",Toast.LENGTH_SHORT).show();
+                    else
                     utils.shareFiles(arrayList,getActivity());
                     return true;
                 case R.id.openparent:
@@ -989,13 +1055,14 @@ public class Main extends android.support.v4.app.Fragment {
         File f = new File(current);
         if (!results) {
             if(selection){
-            System.out.println("adapter checked false");
                 adapter.toggleChecked(false);}
             else{
             if(smbMode)
                 try {
-                    loadSmblist(new SmbFile(new File(list.get(0).getDesc()).getParent()),true);
-                } catch (MalformedURLException e) {
+                    if (!current.equals(smbPath))
+                    {String path=new SmbFile(new SmbFile(list.get(0).getDesc()).getParent()).getParent();
+                    loadSmblist(new SmbFile(path), true);
+                }else mainActivity.exit();} catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
             else
@@ -1079,21 +1146,19 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
     public ArrayList<Layoutelements> addToSmb(SmbFile[] mFile) throws SmbException {
-        Log.e("Connected",mFile.length+"");
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         smbFiles=new ArrayList<SmbFile>();
         for (int i = 0; i < mFile.length; i++) {
             smbFiles.add(mFile[i]);
                 if (mFile[i].isDirectory()) {
-                    a.add(new Layoutelements(folder,mFile[i].getName(), mFile[i].getPath(),"","","",false,"",true));
+                    a.add(new Layoutelements(folder,mFile[i].getName(), mFile[i].getPath(),"","","",0,false,mFile[i].lastModified()+"",true));
                 } else {
                     try {
-                        a.add(new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(),!islist,res),mFile[i].getName(), mFile[i].getPath(),"","",utils.readableFileSize(mFile[i].length()), false, "",false));
+                        a.add(new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(),!islist,res),mFile[i].getName(), mFile[i].getPath(),"","",utils.readableFileSize(mFile[i].length()),mFile[1].length(), false, mFile[i].lastModified()+"",false));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }}
             }
-        Log.e("Connected",a.size()+"Size");
         return a;
     }
     public ArrayList<Layoutelements> addTo(ArrayList<String[]> mFile) {
@@ -1108,18 +1173,21 @@ public class Main extends android.support.v4.app.Fragment {
                 if (isDirectory(ele)) {
                     if(!ele[5].trim().equals("") && !ele[5].toLowerCase().trim().equals("null"))size=ele[5]+" "+itemsstring;
                     else size="";
-                    a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,true,false,ele[4]));
+                    a.add(utils.newElement(folder, f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,0,true,false,ele[4]));
 
                 } else {
-
+                    long longSize=0;
                     try {
-                        if(!ele[5].trim().equals("") && !ele[5].toLowerCase().trim().equals("null"))size=utils.readableFileSize(Long.parseLong(ele[5]));
-                        else size="";
+                        if(!ele[5].trim().equals("") && !ele[5].toLowerCase().trim().equals("null")) {
+                            size = utils.readableFileSize(Long.parseLong(ele[5]));
+                            longSize=Long.parseLong(ele[5]);
+                        }else {size="";
+                        longSize=0;}
                     } catch (NumberFormatException e) {
                         //e.printStackTrace();
                     }
                     try {
-                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!islist,res), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,false,false,ele[4]));
+                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(),!islist,res), f.getPath(),mFile.get(i)[2],mFile.get(i)[1],size,longSize,false,false,ele[4]));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }}
@@ -1161,11 +1229,14 @@ public class Main extends android.support.v4.app.Fragment {
         SmbAnonym = savedInstance.getBoolean("SmbAnonym");
 
     }
+
        public SmbFile connectingWithSmbServer(String[] auth,boolean anonym) {
         try {
             String yourPeerIP=auth[0];
             String path = "smb://"+Uri.encode(auth[1]+":"+auth[2])+"@" + yourPeerIP+"/";
             smbPath=path;
+            smbUser=auth[1];
+            smbPass=auth[2];
             SmbFile smbFile=new SmbFile(path);
             return smbFile;
         } catch (Exception e) {
@@ -1207,8 +1278,8 @@ public class Main extends android.support.v4.app.Fragment {
             File f1 = new File(path + "/" + ".nomedia");
             if (!f1.exists()) {
                 try {
-                    boolean b = f1.createNewFile();
-                } catch (IOException e) {
+                    mainActivity.mkFile(f1,this);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }    }
             utils.scanFile(path,getActivity());}

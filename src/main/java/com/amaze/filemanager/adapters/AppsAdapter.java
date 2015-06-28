@@ -138,7 +138,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
         final ViewHolder holder = (ViewHolder) view.getTag();
         holder.imageView.setImageDrawable(rowItem.getImageId());
         app.ic.cancelLoad(holder.imageView);
-        app.ic.loadDrawable(holder.imageView,new File(rowItem.getDesc()),null);
+        app.ic.loadDrawable(holder.imageView,(rowItem.getDesc()),null);
 
         holder.txtTitle.setText(rowItem.getTitle());
         //	File f = new File(rowItem.getDesc());

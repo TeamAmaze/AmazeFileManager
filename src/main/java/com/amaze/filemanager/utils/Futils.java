@@ -69,13 +69,35 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import jcifs.smb.SmbFile;
+
 public class Futils {
 
     private Toast studioCount;
 
     public Futils() {
     }
+    public int checkFolder(final File folder,Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
+            if (!folder.exists() || !folder.isDirectory()) {
+                return 0;
+            }
 
+            // On Android 5, trigger storage access framework.
+            if (FileUtil.isWritableNormalOrSaf(folder, context)) {
+                return 1;
+
+            }
+        } else if (Build.VERSION.SDK_INT == 19 && FileUtil.isOnExtSdCard(folder, context)) {
+            // Assume that Kitkat workaround works
+            return 1;
+        } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+            return 1;
+        } else {
+            return 0;
+        }
+        return 0;
+    }
     public void scanFile(String path, Context c) {
         System.out.println(path + " " + Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT >= 19) {
@@ -453,7 +475,21 @@ public class Futils {
         }
         return length;
     }
+    public static long folderSize(SmbFile directory) {
+        long length = 0;
+        try {
+            for (SmbFile file:directory.listFiles()) {
 
+                if (file.isFile())
+                    length += file.length();
+                else
+                    length += folderSize(file);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return length;
+    }
     public Bundle getPaths(String path, Context c) {
         ArrayList<String> names = new ArrayList<String>();
         ArrayList<String> paths = new ArrayList<String>();
@@ -621,8 +657,8 @@ public void showPackageDialog(final File f,final MainActivity m){
                 b.show();
 
     }
-    public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size,boolean directorybool,boolean b,String date) {
-        Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size,b,date,directorybool);
+    public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size,long longSize,boolean directorybool,boolean b,String date) {
+        Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size,longSize,b,date,directorybool);
         return item;
     }
 
