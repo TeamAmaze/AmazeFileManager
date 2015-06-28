@@ -60,6 +60,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -106,13 +107,13 @@ import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.RoundedImageView;
 import com.amaze.filemanager.utils.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.Shortcuts;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
-import com.melnykov.fab.FloatingActionButton;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -174,7 +175,6 @@ public class MainActivity extends AppCompatActivity implements
     private DisplayImageOptions displayImageOptions;
     private int sdk;
     private TextView mGoogleName, mGoogleId;
-    public FloatingActionButton floatingActionButton;
     public String fabskin, fabSkinPressed;
     private LinearLayout buttons;
     private HorizontalScrollView scroll, scroll1;
@@ -182,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements
     private IconUtils icons;
     private TabHandler tabHandler;
     int hidemode;
+    FloatingActionsMenu floatingActionButton;
     public LinearLayout pathbar;
     public Animation fabShowAnim, fabHideAnim;
     public FrameLayout buttonBarFrame;
@@ -371,18 +372,32 @@ public class MainActivity extends AppCompatActivity implements
 
         hidemode=Sp.getInt("hidemode", 0);
         topfab = hidemode==0 ? Sp.getBoolean("topFab",true):false;
-        showHidden=Sp.getBoolean("showHidden",false);
-        floatingActionButton = !topfab ?
-                (FloatingActionButton) findViewById(R.id.fab) : (FloatingActionButton) findViewById(R.id.fab2);
+        showHidden=Sp.getBoolean("showHidden", false);
+       floatingActionButton = !topfab ?
+                (FloatingActionsMenu) findViewById(R.id.right_labels) : (FloatingActionsMenu) findViewById(R.id.right_top_labels);
         fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
         fabHideAnim = AnimationUtils.loadAnimation(this, R.anim.fab_hide);
         floatingActionButton.setAnimation(fabShowAnim);
         floatingActionButton.animate();
         floatingActionButton.setVisibility(View.VISIBLE);
-        floatingActionButton.setShadow(true);
-        floatingActionButton.setColorNormal(Color.parseColor(fabskin));
-        floatingActionButton.setColorPressed(Color.parseColor(fabSkinPressed));
-
+        floatingActionButton.setColors(Color.parseColor(fabskin), Color.parseColor(fabSkinPressed));
+        floatingActionButton.getButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                floatingActionButton.toggle();
+                View v= findViewById(R.id.fab_bg);
+                if(floatingActionButton.isExpanded())v.setVisibility(View.VISIBLE);
+                else v.setVisibility(View.GONE);
+            }
+        });
+        View v= findViewById(R.id.fab_bg);
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                floatingActionButton.collapse();
+                view.setVisibility(View.GONE);
+            }
+        });
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
@@ -434,29 +449,18 @@ public class MainActivity extends AppCompatActivity implements
         scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
         scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
-
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        floatingActionButton.getButtonAt(0).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(MainActivity.this);
-                builder.items(new String[]{
-                        getResources().getString(R.string.folder),
-                        getResources().getString(R.string.file)
-
-                });
-                builder.itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence s) {
-                        add(i);
-                    }
-                });
-                builder.title(getResources().getString(R.string.new_string));
-                if (theme1 == 1)
-                    builder.theme(Theme.DARK);
-                builder.build().show();
+                add(0);
             }
         });
-
+        floatingActionButton.getButtonAt(1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                add(1);
+            }
+        });
         IntentFilter newFilter = new IntentFilter();
         newFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
         newFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
@@ -2007,12 +2011,10 @@ public class MainActivity extends AppCompatActivity implements
     }
     public void updatePath(final String news,boolean calcsize,boolean results){
         File f= null;
-        System.out.println(news);
         if(news.startsWith("smb:/"))
             newPath=parseSmbPath(news);
         else newPath=news;
 
-        System.out.println(newPath);
         try {
             f = new File(newPath);
         } catch (Exception e) {
@@ -2195,6 +2197,37 @@ public class MainActivity extends AppCompatActivity implements
         } catch (Exception e) {
             return false;
         }
+    }
+    private void revealShow(final View view, boolean reveal){
+        int w = view.getWidth();
+        int h = view.getHeight();
+        float maxRadius = (float) Math.sqrt(w * w / 4 + h * h / 4);
+
+        if(reveal){
+            Animator revealAnimator = ViewAnimationUtils.createCircularReveal(view,
+                    w / 2, h / 2, 0, maxRadius);
+
+            view.setVisibility(View.VISIBLE);
+            revealAnimator.start();
+
+        } else {
+
+            Animator anim =
+                    ViewAnimationUtils.createCircularReveal(view, w / 2, h / 2, maxRadius, 0);
+
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+
+                    view.setVisibility(View.INVISIBLE);
+
+                }
+            });
+
+            anim.start();
+        }
+
     }
     private void onDrawerClosed(){
         if(pending_fragmentTransaction!=null){
