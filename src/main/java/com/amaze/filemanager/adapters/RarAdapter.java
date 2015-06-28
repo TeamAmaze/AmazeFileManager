@@ -44,8 +44,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         this.enter = enter;
         for (int i = 0; i < enter.size(); i++) {
             myChecked.put(i, false);
-        }  mInflater = (LayoutInflater) c
-                .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        }
+        mInflater = (LayoutInflater) c.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         this.c = c;
         folder = c.getResources().getDrawable(R.drawable.ic_grid_folder_new);
         unknown = c.getResources().getDrawable(R.drawable.ic_doc_generic_am);

@@ -301,6 +301,8 @@ public abstract class FileUtil {
      * @return True if creation was successful.
      */
     public static boolean mkdir(final File file,Context context) {
+        if(file==null)
+            return false;
         if (file.exists()) {
             // nothing to create.
             return file.isDirectory();
@@ -331,6 +333,8 @@ public abstract class FileUtil {
         return false;
     }
     public static boolean mkfile(final File file,Context context) throws IOException {
+        if(file==null)
+            return false;
         if (file.exists()) {
             // nothing to create.
             return !file.isDirectory();
@@ -370,6 +374,8 @@ public abstract class FileUtil {
      * @return true if successful.
      */
     public static boolean rmdir1(final File file,Context context){
+        if(file==null)
+            return false;
         boolean b = true;
         for (File file1 : file.listFiles()) {
             if (file1.isDirectory()) {
@@ -381,6 +387,8 @@ public abstract class FileUtil {
         return b;
     }
     public static boolean rmdir(final File file,Context context) {
+        if(file==null)
+            return false;
         if (!file.exists()) {
             return true;
         }
@@ -432,7 +440,8 @@ public abstract class FileUtil {
      */
     public static final boolean deleteFilesInFolder(final File folder,Context context) {
         boolean totalSuccess = true;
-
+        if(folder==null)
+            return false;
         if (folder.isDirectory()) {
             for (File child : folder.listFiles()) {
                 deleteFilesInFolder(child, context);
@@ -459,6 +468,8 @@ public abstract class FileUtil {
      *            Commands to be executed after success.
      */
     public static void rmdirAsynchronously(final Activity activity, final File file, final Runnable postActions, final Context context) {
+        if(file==null)
+            return;
         new Thread() {
             @Override
             public void run() {
@@ -492,6 +503,8 @@ public abstract class FileUtil {
      * @return true if the file is writable.
      */
     public static final boolean isWritable(final File file) {
+        if(file==null)
+            return false;
         boolean isExisting = file.exists();
 
         try {
@@ -528,6 +541,8 @@ public abstract class FileUtil {
      */
     public static final boolean isWritableNormalOrSaf(final File folder,Context c) {
         // Verify that this is a directory.
+        if(folder==null)
+            return false;
         if (!folder.exists() || !folder.isDirectory()) {
             return false;
         }

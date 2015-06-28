@@ -39,6 +39,8 @@
 
     <!-- dark -->
     <style name="appCompatDark" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionBarTheme">@style/custom_action_mode_dark</item>

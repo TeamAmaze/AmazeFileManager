@@ -272,7 +272,11 @@ public class Futils {
                 }
             }
         });
-        a.build().show();
+        try {
+            a.build().show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }public String getSize(File f) {
         long i =f.length();
 

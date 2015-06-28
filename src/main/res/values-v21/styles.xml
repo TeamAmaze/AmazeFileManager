@@ -20,6 +20,8 @@
     <!-- appCompat -->
     <!-- light -->
     <style name="appCompatLight" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="actionBarTheme">@style/custom_action_mode_light</item>
@@ -39,7 +41,8 @@
 
     <!-- dark -->
     <style name="appCompatDark" parent="Theme.AppCompat.NoActionBar">
-
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_36dp</item>

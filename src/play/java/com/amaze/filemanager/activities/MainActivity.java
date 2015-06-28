@@ -1785,7 +1785,7 @@ public class MainActivity extends AppCompatActivity implements
                /* DialogUtil.displayError(getActivity(), R.string.message_dialog_cannot_write_to_folder_saf, false,
                         currentFolder);||!FileUtil.isWritableNormalOrSaf(currentFolder)
 */
-                Sp.edit().putString("URI", oldUri.toString()).commit();
+                if(treeUri!=null)Sp.edit().putString("URI", oldUri.toString()).commit();
                 return;
             }
 
