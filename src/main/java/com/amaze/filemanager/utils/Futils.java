@@ -62,6 +62,7 @@ import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -302,10 +303,17 @@ public class Futils {
         c.title(getString(b.getActivity(), R.string.confirm));
         final ContentResolver contentResolver=b.getActivity().getContentResolver();
         String names = "";
-        final ArrayList<File> todelete = new ArrayList<File>();
+        final ArrayList<String> todelete = new ArrayList<>();
         for (int i = 0; i < pos.size(); i++) {
             String path = a.get(pos.get(i)).getDesc();
-            todelete.add(new File(path));
+            todelete.add((path));
+            if(path.startsWith("smb://"))
+                try {
+                    names = names + "\n" + (i + 1) + ". " + new SmbFile(path).getName();
+                } catch (MalformedURLException e) {
+
+                }
+            else
             names = names + "\n" + (i + 1) + ". " + new File(path).getName();
         }
         c.content(getString(b.getActivity(), R.string.questiondelete) + names);
@@ -319,7 +327,7 @@ public class Futils {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_SHORT).show();
-            b.mainActivity.deleteFiles(b,todelete);
+            b.mainActivity.deleteFiles(todelete);
             }
 
             @Override
@@ -720,7 +728,7 @@ public void showPackageDialog(final File f,final MainActivity m){
 
                 m.Sp.edit().putString("sortby", "" + which).commit();
                 m.getSortModes();
-                m.loadlist(new File(m.current), false);
+                m.loadlist((m.current), false);
                 dialog.dismiss();
                 return true;
             }

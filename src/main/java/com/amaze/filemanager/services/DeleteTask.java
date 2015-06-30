@@ -36,12 +36,16 @@ import com.amaze.filemanager.utils.Futils;
 import com.stericson.RootTools.RootTools;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
-public class DeleteTask extends AsyncTask<ArrayList<File>, String, Boolean> {
+import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
+
+public class DeleteTask extends AsyncTask<ArrayList<String>, String, Boolean> {
 
 
-    ArrayList<File> files;
+    ArrayList<String> files;
     ContentResolver contentResolver;
     Context cd;
     Futils utils = new Futils();
@@ -72,24 +76,34 @@ public class DeleteTask extends AsyncTask<ArrayList<File>, String, Boolean> {
         Toast.makeText(cd, values[0], Toast.LENGTH_LONG).show();
     }
 
-    protected Boolean doInBackground(ArrayList<File>... p1) {
+    protected Boolean doInBackground(ArrayList<String>... p1) {
         files = p1[0];
         boolean b = true;
-        int mode=checkFolder(files.get(0).getParentFile(),cd);
+        if(files.get(0).startsWith("smb:/")){
+            for(String a:files)
+                try {
+                    new SmbFile(a).delete();
+                } catch (SmbException e) {
+                    b=false;
+                } catch (MalformedURLException e) {
+                b=false;
+                }
+        }
+        int mode=checkFolder(new File(files.get(0)).getParentFile(),cd);
         if (mode==1) {
-            for(File f:files) {
+            for(String f:files) {
                 try {
 
-                    if(!FileUtil.deleteFile(f,cd))b=false;
+                    if(!FileUtil.deleteFile(new File(f),cd))b=false;
                 } catch (Exception e) {
                     b = false;
                 }
             }
             }
          if ((!b || mode==0 || mode ==2) && rootMode)
-             for (File f : files) {
+             for (String f : files) {
                  try {
-                     b=RootTools.deleteFileOrDirectory(f.getPath(), true);
+                     b=RootTools.deleteFileOrDirectory(f, true);
                  } catch (Exception e) {
                      b = false;
                  }
@@ -124,8 +138,8 @@ public class DeleteTask extends AsyncTask<ArrayList<File>, String, Boolean> {
     public void onPostExecute(Boolean b) {
         Intent intent = new Intent("loadlist");
         cd.sendBroadcast(intent);
-        for(File file:files)
-        utils.scanFile(file.getPath(), cd);
+        for(String  file:files)
+        utils.scanFile(file, cd);
         if (!b) {
             Toast.makeText(cd, utils.getString(cd, R.string.error), Toast.LENGTH_LONG).show();
         } else if (zipViewer==null && rarViewer ==null) {

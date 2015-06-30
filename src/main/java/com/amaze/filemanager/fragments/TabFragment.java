@@ -208,7 +208,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mainActivity.updatePath(tabHandler.findTab(currenttab+1).getPath(),true,((Main)getTab()).results);
+        mainActivity.updatePath(items.get(currenttab),true,((Main)getTab()).results);
     }
 
     @Override

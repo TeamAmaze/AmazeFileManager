@@ -354,7 +354,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         // bug : only deletes most recent openUnknown file from cache
         if (files.size()==1) {
 
-            new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(files);
+            new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(utils.toStringArray(files));
         }
     }
         @Override
@@ -362,7 +362,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         super.onResume();
         if (files.size()==1) {
 
-            new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(files);
+            new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(utils.toStringArray(files));
         }
     }
 
@@ -379,6 +379,7 @@ public boolean cangoBack(){
         new ZipHelperTask(this, current).execute(f);
     }
     public void bbar(){
+        if(current!=null)
         mainActivity.updatePath(current,false,false);
 
     }

@@ -221,7 +221,7 @@ public class RarViewer extends Fragment {
         // bug : only deletes most recent openUnknown file from cache
         if (files.size()==1) {
 
-            new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(files);
+            new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(utils.toStringArray(files));
         }
     }
     public String getSelectionColor(){
@@ -376,7 +376,7 @@ public class RarViewer extends Fragment {
         super.onResume();
         if (files.size()==1) {
 
-            new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(files);
+            new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(utils.toStringArray(files));
         }
     }
     public boolean cangoBack(){

@@ -35,6 +35,8 @@ import com.amaze.filemanager.R;
 import java.io.*;
 import java.util.*;
 
+import jcifs.smb.SmbFileInputStream;
+
 /**
  * A class that holds icons for a more efficient access.
  */
@@ -231,7 +233,7 @@ public class IconHolder {
                 d1 = ((BitmapDrawable) d).getBitmap();
                 bitsat = d1;
             } catch (Exception e) {
-                Drawable apk =mContext. getResources().getDrawable(R.drawable.ic_doc_apk);
+                Drawable apk =mContext. getResources().getDrawable(R.drawable.ic_doc_apk_grid);
                 Bitmap apk1 = ((BitmapDrawable) apk).getBitmap();
                 bitsat = apk1;
             }
@@ -255,8 +257,10 @@ public class IconHolder {
 				// Decode bitmap with inSampleSize set
 				options.inJustDecodeBounds = false;
 
-				Bitmap bit = BitmapFactory.decodeFile(path, options);
-				
+				Bitmap bit;
+                if(path.startsWith("smb:/"))bit= BitmapFactory.decodeStream(new SmbFileInputStream(path));
+                else bit= BitmapFactory.decodeFile(path, options);
+
 				bitsat = bit;// decodeFile(path);//.createScaledBitmap(bits,imageViewReference.get().getHeight(),imageViewReference.get().getWidth(),true);
 			} catch (Exception e) {
 				Drawable img = mContext.getResources().getDrawable(R.drawable.ic_doc_image);

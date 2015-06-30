@@ -30,6 +30,7 @@ import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Layoutelements;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -49,7 +50,7 @@ public class LoadSmbList extends AsyncTask<SmbFile, String, ArrayList<Layoutelem
 
     @Override
     protected void onPreExecute() {
-
+        ma.mSwipeRefreshLayout.setRefreshing(true);
         Log.e("Connected","onPreExecute");
     }
 
@@ -64,7 +65,7 @@ public class LoadSmbList extends AsyncTask<SmbFile, String, ArrayList<Layoutelem
         // params comes from the execute() call: params[0] is the url.
         Log.e("Connected","doinbackground");
         f = params[0];
-       // Log.e("Connected",f.getPath());
+        // Log.e("Connected",f.getPath());
         ma.list=new ArrayList<Layoutelements>();
         try {
             SmbFile[] smbFile =f.listFiles();

@@ -268,7 +268,7 @@ public class Main extends android.support.v4.app.Fragment {
         darkvideo=res.getDrawable(R.drawable.ic_doc_video_dark);
         this.setRetainInstance(false);
         File f=new File(current);
-        if(!f.isDirectory()){
+        if(!current.startsWith("smb:/") && !f.isDirectory()){
             utils.openFile(f,mainActivity);
             f=f.getParentFile();
         }
@@ -281,7 +281,7 @@ public class Main extends android.support.v4.app.Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadlist(new File(current),false);
+                loadlist((current),false);
             }
         });
         mToolbarHeight=getToolbarHeight(getActivity());
@@ -309,8 +309,7 @@ public class Main extends android.support.v4.app.Fragment {
         mSwipeRefreshLayout.setProgressViewOffset(true, paddingTop, paddingTop + dpToPx(72));
 
         if (savedInstanceState == null){
-
-                loadlist(f, false);
+            loadlist(f.getPath(), false);
 
         } else {
             Bundle b = new Bundle();
@@ -373,7 +372,7 @@ public class Main extends android.support.v4.app.Fragment {
         }}
 
     public void home() {
-        ma.loadlist(new File(ma.home), false);
+        ma.loadlist((ma.home), false);
     }
 
 
@@ -391,7 +390,7 @@ public class Main extends android.support.v4.app.Fragment {
             final File f = new File(path);
             if (list.get(position).isDirectory()) {
 
-                loadlist(f, false);
+                loadlist(f.getPath(), false);
                 results = false;
             } else {
                 if (mainActivity.mReturnIntent) {
@@ -436,7 +435,7 @@ public class Main extends android.support.v4.app.Fragment {
                 if (l.isDirectory()) {
 
                     computeScroll();
-                    loadlist(f, false);
+                    loadlist(f.getPath(), false);
                 } else {
                     if (mainActivity.mReturnIntent) {
                         returnIntentResults(f);
@@ -475,9 +474,16 @@ public class Main extends android.support.v4.app.Fragment {
         }
     }
 
-    public void loadlist(final File f, boolean back) {
+    public void loadlist(String path, boolean back) {
         if(mActionMode!=null){mActionMode.finish();}
-         new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, f);
+        if(current.startsWith("smb:/"))
+            try {
+                loadSmblist(new SmbFile(current),false);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        else
+        new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new File(path));
 
         try {
             animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
@@ -563,7 +569,7 @@ public class Main extends android.support.v4.app.Fragment {
                     } catch (Exception e) {
                 }
             } else {//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
-                loadlist(new File(current), true);
+                loadlist((current), true);
             }
         } catch (Exception e) {
         }
@@ -624,11 +630,10 @@ public class Main extends android.support.v4.app.Fragment {
                     });
                     if (buttons.getVisibility() == View.VISIBLE) mainActivity.bbar(this);
 
-                mainActivity.updatePath(current,false,false);
                 } catch (Exception e) {
                 }
             } else {//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
-                loadlist(new File(current), true);
+                loadlist((current), true);
             }
         } catch (Exception e) {
         }
@@ -905,7 +910,7 @@ public class Main extends android.support.v4.app.Fragment {
                     utils.shareFiles(arrayList,getActivity());
                     return true;
                 case R.id.openparent:
-                    loadlist(new File(list.get(plist.get(0)).getDesc()).getParentFile(),false);
+                    loadlist(new File(list.get(plist.get(0)).getDesc()).getParent(),false);
                     return true;
                 case R.id.all:
                     if (adapter.areAllChecked(current)) {
@@ -1060,7 +1065,7 @@ public class Main extends android.support.v4.app.Fragment {
             if(smbMode)
                 try {
                     if (!current.equals(smbPath))
-                    {String path=new SmbFile(new SmbFile(list.get(0).getDesc()).getParent()).getParent();
+                    {String path=(new SmbFile(current).getParent());
                     loadSmblist(new SmbFile(path), true);
                 }else mainActivity.exit();} catch (MalformedURLException e) {
                     e.printStackTrace();
@@ -1069,14 +1074,14 @@ public class Main extends android.support.v4.app.Fragment {
             if(current.equals("/") || current.equals(home))
                 mainActivity.exit();
                 else if (utils.canGoBack(f) ) {
-                loadlist(f.getParentFile(), true);
+                loadlist(f.getParent(), true);
             }else mainActivity.exit();}
         } else {
             if(searchTask!=null)
             {if(searchTask.getStatus()== AsyncTask.Status.RUNNING)
                 searchTask.cancel(true);
             searchTask=null;}
-            loadlist(f, true);
+            loadlist(f.getPath(), true);
         }
     }
     public void goBackItemClick() {
@@ -1088,10 +1093,10 @@ public class Main extends android.support.v4.app.Fragment {
                 if(current.equals("/"))
                     mainActivity.exit();
                 else if (utils.canGoBack(f) ) {
-                    loadlist(f.getParentFile(), true);
+                    loadlist(f.getParent(), true);
                 }else mainActivity.exit();}
         } else {
-            loadlist(f, true);
+            loadlist(f.getPath(), true);
         }
     }
     private BroadcastReceiver receiver2 = new BroadcastReceiver() {
@@ -1104,7 +1109,7 @@ public class Main extends android.support.v4.app.Fragment {
     public void updateList(){
         computeScroll();
         ic.cleanup();
-        loadlist(new File(current), true);}
+        loadlist((current), true);}
 
     public void getSortModes() {
         int t = Integer.parseInt(Sp.getString("sortby", "0"));
@@ -1278,7 +1283,7 @@ public class Main extends android.support.v4.app.Fragment {
             File f1 = new File(path + "/" + ".nomedia");
             if (!f1.exists()) {
                 try {
-                    mainActivity.mkFile(f1,this);
+                    mainActivity.mkFile(f1.getPath(),this);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }    }

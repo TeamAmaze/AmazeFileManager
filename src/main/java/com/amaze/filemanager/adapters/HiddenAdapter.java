@@ -15,6 +15,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.DeleteTask;
+import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.Shortcuts;
 
@@ -84,7 +85,7 @@ public class HiddenAdapter extends ArrayAdapter<File> {
             public void onClick(View view) {
             hidden.removePath(items.get(p).getPath());
             if(items.get(p).isDirectory()){ArrayList<File> a=new ArrayList<File>();a.add(new File(items.get(p).getPath()+"/.nomedia"));
-                new DeleteTask(context.getActivity().getContentResolver(),c).execute(a);}
+                new DeleteTask(context.getActivity().getContentResolver(),c).execute(new Futils().toStringArray(a));}
                 items.remove(items.get(p));
                 context.updatehiddenfiles();
                 notifyDataSetChanged();
@@ -97,7 +98,7 @@ public class HiddenAdapter extends ArrayAdapter<File> {
                 final File f = (items.get(p));
                 if (f.isDirectory()) {
 
-                    context.loadlist(f,false);
+                    context.loadlist(f.getPath(),false);
                 } else {
                    context.utils. openFile(f, (MainActivity) context.getActivity());
                 }

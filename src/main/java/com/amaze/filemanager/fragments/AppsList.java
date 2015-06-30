@@ -204,7 +204,7 @@ public class AppsList extends ListFragment {
                                                         } else {
                                                             files.add(f1);
                                                         }
-                                                        new DeleteTask(getActivity().getContentResolver(), getActivity()).execute(files);
+                                                        new DeleteTask(getActivity().getContentResolver(), getActivity()).execute(utils.toStringArray(files));
                                                     }
                                                 }).build().show();
                                     } else {

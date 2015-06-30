@@ -192,7 +192,7 @@ boolean foreground=true;
         }
 
         int count,lastpercent=0;
-        long size, totalBytes;
+        long size, totalBytes=0;
         String fileName;
 
         public void execute(int id, ArrayList<File> a, String fileOut) {
@@ -209,7 +209,7 @@ boolean foreground=true;
             File zipDirectory = new File(fileOut);
              
             try {
-                out = FileUtil.getOutputStream(zipDirectory,c);
+                out = FileUtil.getOutputStream(zipDirectory,c,totalBytes);
                 zos = new ZipOutputStream(new BufferedOutputStream(out));
             } catch (Exception e) {
             }

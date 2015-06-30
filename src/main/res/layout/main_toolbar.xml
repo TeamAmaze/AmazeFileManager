@@ -185,6 +185,15 @@
             fab:fab_title="@string/file"
             fab:fab_colorPressed="#9f9f9f"/>
 
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@android:color/white"
+            fab:fab_icon="@drawable/ic_settings_remote_black_48dp"
+            fab:fab_size="mini"
+            fab:fab_title="@string/smb_con"
+            fab:fab_colorPressed="#9f9f9f"/>
+
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/right_labels"
@@ -215,6 +224,15 @@
             fab:fab_icon="@drawable/file"
             fab:fab_size="mini"
             fab:fab_title="@string/file"
+            fab:fab_colorPressed="#9f9f9f"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@android:color/white"
+            fab:fab_icon="@drawable/ic_settings_remote_black_48dp"
+            fab:fab_size="mini"
+            fab:fab_title="@string/smb_con"
             fab:fab_colorPressed="#9f9f9f"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>

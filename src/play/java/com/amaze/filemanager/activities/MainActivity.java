@@ -45,6 +45,7 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -109,8 +110,6 @@ import com.amaze.filemanager.utils.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
@@ -124,14 +123,20 @@ import com.stericson.RootTools.RootTools;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
+
 
 public class MainActivity extends AppCompatActivity implements
-        ConnectionCallbacks, OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
     public Integer select;
     Futils utils;
@@ -456,6 +461,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 add(0);
+                findViewById(R.id.fab_bg).setVisibility(View.GONE);
                 floatingActionButton.collapse();
             }
         });
@@ -463,6 +469,15 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 add(1);
+                findViewById(R.id.fab_bg).setVisibility(View.GONE);
+                floatingActionButton.collapse();
+            }
+        });
+        floatingActionButton.getButtonAt(2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                add(2);
+                findViewById(R.id.fab_bg).setVisibility(View.GONE);
                 floatingActionButton.collapse();
             }
         });
@@ -531,7 +546,7 @@ public class MainActivity extends AppCompatActivity implements
             mDrawerLayout.setScrimColor(Color.TRANSPARENT);
             isDrawerLocked = true;
         }
-        // status bar
+        // status bar0
         sdk = Build.VERSION.SDK_INT;
 
         if (sdk == 20 || sdk == 19) {
@@ -1169,8 +1184,7 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
                         String a = edir.getText().toString();
-                        File f = new File(path + "/" + a);
-                        mkDir(f,ma);
+                        mkDir(path + "/" + a,ma);
                     }
 
                     @Override
@@ -1207,8 +1221,8 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
                         String a = edir1.getText().toString();
-                        File f1 = new File(path1 + "/" + a);
-                        mkFile(f1,ma);
+
+                        mkFile(path1 + "/" + a,ma);
                        }
 
                     @Override
@@ -1217,6 +1231,8 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 });
                 ba2.build().show();
+                break;
+            case 2:
                 break;
         }
     }
@@ -1350,11 +1366,53 @@ public class MainActivity extends AppCompatActivity implements
         protected ArrayList<String> doInBackground(ArrayList<String>... params) {
 
             ab = params[0];
+            if(ab.get(0).startsWith("smb:/"))
+                try {
+                    return checkSmbFiles();
+                } catch (MalformedURLException e) {
+                    return new ArrayList<>();
+                } catch (SmbException e) {
+                    return new ArrayList<>();
+                }
             long totalBytes = 0;
 
             for (int i = 0; i < params[0].size(); i++) {
 
                 File f1 = new File(params[0].get(i));
+
+                if (f1.isDirectory()) {
+
+                    totalBytes = totalBytes + new Futils().folderSize(f1);
+                } else {
+
+                    totalBytes = totalBytes + f1.length();
+                }
+            }
+
+            if (new File(path).getUsableSpace() > totalBytes) {
+
+                File f = new File(path);
+
+                for (String k1[] : RootHelper.getFilesList(f.getPath(), rootmode, true, false)) {
+                    File k=new File(k1[0]);
+                    for (String j : ab) {
+
+                        if (k.getName().equals(new File(j).getName())) {
+
+                            a.add(j);}
+                    }
+                }
+            } else publishProgress(utils.getString(con,R.string.in_safe));
+
+            return a;
+        }
+        ArrayList<String> checkSmbFiles() throws MalformedURLException, SmbException {
+            ArrayList<String> arrayList=new ArrayList<>();
+            long totalBytes = 0;
+
+            for (int i = 0; i < ab.size(); i++) {
+
+                SmbFile f1 = new SmbFile(ab.get(i));
 
                 if (f1.isDirectory()) {
 
@@ -1380,9 +1438,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
             } else publishProgress(utils.getString(con,R.string.in_safe));
 
-            return a;
-        }
-
+            return arrayList;}
         public void showDialog() {
 
             if (counter == a.size() || a.size()==0) {
@@ -1697,11 +1753,7 @@ public class MainActivity extends AppCompatActivity implements
         }).run();
     }
 
-    @Override
-    public void onDisconnected() {
 
-        Log.d("G+", "Disconnected");
-    }
 
     public void onConnectionFailed(final ConnectionResult result) {
         Log.d("G+", "Connection failed");
@@ -1797,7 +1849,7 @@ public class MainActivity extends AppCompatActivity implements
             getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
             switch (operation) {
                 case DELETE://deletion
-                    new DeleteTask(null,mainActivity).execute(utils.toFileArray(oparrayList));
+                    new DeleteTask(null,mainActivity).execute((oparrayList));
                     break;
                 case COPY://copying
                     Intent intent1 = new Intent(con, CopyService.class);
@@ -1810,16 +1862,16 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case NEW_FOLDER://mkdir
                     Main ma1=((Main) getFragment().getTab());
-                    mkDir(new File(oppathe),ma1);
+                    mkDir((oppathe),ma1);
                     break;
                 case RENAME:
                     rename(new File(oppathe), new File(oppathe1));
                     Main ma2=((Main) getFragment().getTab());
-                    ma2.loadlist(new File(ma2.current), true);
+                    ma2.loadlist((ma2.current), true);
                     break;
                 case NEW_FILE:
                     Main ma3=((Main) getFragment().getTab());
-                    mkDir(new File(oppathe),ma3);
+                    mkFile((oppathe), ma3);
 
                     break;
                 case EXTRACT:
@@ -1920,7 +1972,7 @@ public class MainActivity extends AppCompatActivity implements
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            main.loadlist(new File("/"), false);
+                            main.loadlist(("/"), false);
                             timer.cancel();
                             timer.start();
                         }
@@ -1936,7 +1988,7 @@ public class MainActivity extends AppCompatActivity implements
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            main.loadlist(new File(rpaths.get(k)), false);
+                            main.loadlist((rpaths.get(k)), false);
                             timer.cancel();
                             timer.start();
                         }
@@ -1955,7 +2007,7 @@ public class MainActivity extends AppCompatActivity implements
                     button.setOnClickListener(new Button.OnClickListener() {
 
                         public void onClick(View p1) {
-                            main.loadlist(new File(rpaths.get(k)), false);
+                            main.loadlist((rpaths.get(k)), false);
                             timer.cancel();
                             timer.start();
                         }
@@ -2015,10 +2067,11 @@ public class MainActivity extends AppCompatActivity implements
     }
     String newPath=null;
     String parseSmbPath(String a){
-      return   a.substring(a.indexOf("@")+1,a.length());
+      return   "smb://"+a.substring(a.indexOf("@")+1,a.length());
     }
-    public void updatePath(final String news,boolean calcsize,boolean results){
+    public void updatePath(@NonNull final String news,boolean calcsize,boolean results){
         File f= null;
+        if(news==null)return;
         if(news.startsWith("smb:/"))
             newPath=parseSmbPath(news);
         else newPath=news;
@@ -2246,7 +2299,7 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 TabFragment m=getFragment();
                 if(new File(pending_path).isDirectory()) {
-                    ((Main) m.getTab()).loadlist(new File(pending_path), false);
+                    ((Main) m.getTab()).loadlist((pending_path), false);
                 }   else utils.openFile(new File(pending_path),mainActivity);
 
             } catch (ClassCastException e) {
@@ -2254,9 +2307,42 @@ public class MainActivity extends AppCompatActivity implements
                 goToMain("");
             }pending_path=null;}
         supportInvalidateOptionsMenu();
+    }public ArrayList<String> scanSubNet(String subnet){
+        ArrayList<String> hosts = new ArrayList<String>();
+
+        InetAddress inetAddress = null;
+        for(int i=1; i<10; i++){
+            Log.d("Connected", "Trying: " + subnet + String.valueOf(i));
+            try {
+                inetAddress = InetAddress.getByName(subnet + String.valueOf(i));
+                if(inetAddress.isReachable(1000)){
+                    hosts.add(inetAddress.getHostName());
+                    Log.d("Connected", inetAddress.getHostName());
+                }
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return hosts;
     }
-    public void mkFile(File f1,Main ma){
+    public void mkFile(String path,Main ma){
         boolean b=false;
+        if(path==null)
+            return;
+        if(path.startsWith("smb:/")) {
+            try {
+                new SmbFile(path).createNewFile();
+            } catch (SmbException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            ma.updateList();
+            return;}
+        File f1=new File(path);
         if (!f1.exists()) {
             int mode=checkFolder(new File(f1.getParent()),mainActivity);
             if(mode==1) try {
@@ -2278,8 +2364,21 @@ public class MainActivity extends AppCompatActivity implements
         ma.updateList();
 
     }
-    void mkDir(File f,Main ma){
+    void mkDir(String path,Main ma){
         boolean b=false;
+        if(path==null)
+            return;
+        if(path.startsWith("smb:/")) {
+            try {
+                new SmbFile(path).mkdirs();
+            } catch (SmbException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            ma.updateList();
+        return;}
+        File f=new File(path);
         if (!f.exists()) {
             int mode=checkFolder(f.getParentFile(),mainActivity);
             if(mode==1)b=FileUtil.mkdir(f,mainActivity);
@@ -2299,13 +2398,18 @@ public class MainActivity extends AppCompatActivity implements
             ma.updateList();
         }
     }
-    public void deleteFiles(Main m,ArrayList<File> files){
-       int mode=checkFolder( files.get(0).getParentFile(),this);
+    public void deleteFiles(ArrayList<String> files){
+        if(files==null)return;
+        if(files.get(0).startsWith("smb://")) {
+            new DeleteTask(null, mainActivity).execute((files));
+        return;
+        }
+        int mode=checkFolder(new File( files.get(0)).getParentFile(),this);
         if(mode==2){
-            oparrayList=utils.toStringArray(files);
+            oparrayList=(files);
             operation=DELETE;
         }else if(mode==1 || mode==0)
-        new DeleteTask(null,mainActivity).execute(files);
+        new DeleteTask(null,mainActivity).execute((files));
       }
     public void extractFile(File file){
         int mode=checkFolder( file.getParentFile(),this);

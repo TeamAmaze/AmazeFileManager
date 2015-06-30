@@ -173,11 +173,12 @@ public class CopyService extends Service {
 
         long totalBytes = 0L, copiedBytes = 0L;
         int lastpercent=0;
+        int threshold_bytes=1024*1024;
         public void execute(int id, final ArrayList<String> files,final String FILE2,final boolean move) {
             if(files.get(0).startsWith("smb:/")){
                 System.out.println("0");
                 if (utils.checkFolder(new File(FILE2), c)==1) {
-                    /*try{
+                    try{
                         for (int i = 0; i < files.size(); i++) {
                             SmbFile f1 = new SmbFile(files.get(i));
                             if (f1.isDirectory()) {
@@ -185,12 +186,13 @@ public class CopyService extends Service {
                             } else {
                                 totalBytes = totalBytes + f1.length();
                             }
-                        }}catch(Exception e){}*/
+                        }}catch(Exception e){}
+
                     for (int i = 0; i < files.size(); i++) {
                         try {
                             System.out.println("i");
                             SmbFile f1 = new SmbFile(files.get(i));
-                            if(hash.get(id)) copyFiles((f1), new File(FILE2, f1.getName().substring(0, f1.getName().lastIndexOf("/"))), id, move);
+                            if(hash.get(id)) copyFiles((f1), new File(FILE2, f1.getName()), id, move);
                             else {stopSelf(id);}
                         } catch (Exception e) {
                             System.out.println("amaze " + e);
@@ -247,7 +249,7 @@ public class CopyService extends Service {
                     if(!b)m=false;
                     utils.scanFile(FILE2+"/"+new File(files.get(i)).getName(), c);
                 }
-                if(move  && m){new DeleteTask(getContentResolver(),c).execute(utils.toFileArray(files));}
+                if(move  && m){new DeleteTask(getContentResolver(),c).execute((files));}
 
                 Intent intent = new Intent("loadlist");
                 sendBroadcast(intent);
@@ -283,9 +285,9 @@ public class CopyService extends Service {
                 // txtDetails.append("Copying " + sourceFile.getAbsolutePath() + " ... ");
                 BufferedInputStream in = new BufferedInputStream(new FileInputStream(sourceFile));
                 OutputStream out;
-                out= FileUtil.getOutputStream(targetFile,c);
+                out= FileUtil.getOutputStream(targetFile,c,size);
                     if(out!=null){
-                byte[] buffer = new byte[20480];
+                byte[] buffer = new byte[32768];
 
                 int length;
                 //copy the file content in bytes
@@ -295,10 +297,11 @@ public class CopyService extends Service {
                         out.write(buffer, 0, length);
                         copiedBytes += length;
                         fileBytes += length;
-                        int p=(int) ((copiedBytes / (float) totalBytes) * 100);
-                        if(lastpercent!=p || lastpercent==0) {
+                        int p = (int) ((copiedBytes / (float) totalBytes) * 100);
+                        if (copiedBytes>lastpercent+threshold_bytes || lastpercent == 0) {
                             publishResults(sourceFile.getName(), p, (int) ((fileBytes / (float) size) * 100), id, totalBytes, copiedBytes, false, move);
-                        }lastpercent=p;
+                            lastpercent = (int)copiedBytes;
+                        }
                     }else {publishCompletedResult(sourceFile.getName(),Integer.parseInt("456"+id));
                         in.close();
                         out.close();
@@ -326,16 +329,16 @@ public class CopyService extends Service {
 
                 for (SmbFile filePath : filePaths) {
 
-                    copyFiles(filePath, new File(targetFile.getPath()+"/"+filePath.getName().substring(0,filePath.getName().lastIndexOf("/"))), id, move);
+                    copyFiles(filePath, new File(targetFile.getPath()+"/"+filePath.getName()), id, move);
                 }
             } else {
                 long size = sourceFile.length(), fileBytes = 0l;
                 // txtDetails.append("Copying " + sourceFile.getAbsolutePath() + " ... ");
                 BufferedInputStream in = new BufferedInputStream((sourceFile.getInputStream()));
                 OutputStream out;
-                out = FileUtil.getOutputStream(targetFile, c);
+                out = FileUtil.getOutputStream(targetFile, c,size);
                 if (out != null) {
-                    byte[] buffer = new byte[20480];
+                    byte[] buffer = new byte[32768];
 
                     int length;
                     //copy the file content in bytes
@@ -346,10 +349,10 @@ public class CopyService extends Service {
                             copiedBytes += length;
                             fileBytes += length;
                             int p = (int) ((copiedBytes / (float) totalBytes) * 100);
-                            if (lastpercent != p || lastpercent == 0) {
+                            if (copiedBytes>lastpercent+threshold_bytes || lastpercent == 0) {
                                 publishResults(sourceFile.getName(), p, (int) ((fileBytes / (float) size) * 100), id, totalBytes, copiedBytes, false, move);
+                                lastpercent = (int)copiedBytes;
                             }
-                            lastpercent = p;
                         } else {
                             publishCompletedResult(sourceFile.getName(), Integer.parseInt("456" + id));
                             in.close();

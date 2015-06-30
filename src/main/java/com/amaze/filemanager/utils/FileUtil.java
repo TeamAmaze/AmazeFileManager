@@ -31,6 +31,7 @@ import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
@@ -132,7 +133,7 @@ public abstract class FileUtil {
         }
         return true;
     }
-    public static OutputStream getOutputStream(final File target,Context context) {
+    public static OutputStream getOutputStream(@NonNull final File target,Context context,long s) {
 
         OutputStream outStream = null;
         try {
@@ -150,8 +151,7 @@ public abstract class FileUtil {
                 }
                 else if (Build.VERSION.SDK_INT==Build.VERSION_CODES.KITKAT) {
                     // Workaround for Kitkat ext SD card
-                    Uri uri = MediaStoreUtil.getUriFromFile(target.getAbsolutePath(),context);
-                    outStream = context.getContentResolver().openOutputStream(uri);
+                return MediaStoreHack.getOutputStream(context,target,s);
                 }
 
 
@@ -171,7 +171,7 @@ public abstract class FileUtil {
      *            the file to be deleted.
      * @return True if successfully deleted.
      */
-    public static final boolean deleteFile(final File file,Context context) {
+    public static final boolean deleteFile(@NonNull final File file,Context context) {
         // First try the normal deletion.
         boolean fileDelete = deleteFilesInFolder(file, context);
         if (file.delete() || fileDelete)
@@ -211,7 +211,7 @@ public abstract class FileUtil {
      *            The target file
      * @return true if the copying was successful.
      */
-    public static final boolean moveFile(final File source, final File target,Context context) {
+    public static final boolean moveFile(@NonNull final File source,@NonNull final File target,Context context) {
         // First try the normal rename.
         if (source.renameTo(target)) {
             return true;
@@ -233,7 +233,7 @@ public abstract class FileUtil {
      *            The target folder.
      * @return true if the renaming was successful.
      */
-    public static final boolean renameFolder(final File source, final File target,Context context) {
+    public static final boolean renameFolder(@NonNull final File source,@NonNull final File target,Context context) {
         // First try the normal rename.
         if (new Futils().rename(source, target.getName(), false)) {
             return true;
@@ -287,7 +287,7 @@ public abstract class FileUtil {
      *            The base file for which to create a temp file.
      * @return The temp file.
      */
-    public static final File getTempFile(final File file,Context context) {
+    public static final File getTempFile(@NonNull final File file,Context context) {
         File extDir = context.getExternalFilesDir(null);
         File tempFile = new File(extDir, file.getName());
         return tempFile;
@@ -324,7 +324,7 @@ public abstract class FileUtil {
         // Try the Kitkat workaround.
         if (Build.VERSION.SDK_INT==Build.VERSION_CODES.KITKAT) {
             try {
-                return new MediaFile(context,file).mkdir();
+            return    MediaStoreHack.mkdir(context,file);
             } catch (IOException e) {
                 return false;
             }
@@ -362,7 +362,13 @@ public abstract class FileUtil {
             }
         }
 
-
+        if (Build.VERSION.SDK_INT==Build.VERSION_CODES.KITKAT) {
+            try {
+                return    MediaStoreHack.mkfile(context, file);
+            } catch (Exception e) {
+                return false;
+            }
+        }
         return false;
     }
     /**
