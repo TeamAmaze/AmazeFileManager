@@ -100,7 +100,7 @@
     <string name="no">Não</string>
     <string name="confirm">Confirmação</string>
     <string name="deleting">A eliminar</string>
-    <string name="questiondelete">Que mesmo eliminar estes ficheiros?</string>
+    <string name="questiondelete">Quer mesmo eliminar estes ficheiros?</string>
     <string name="viewmode">Modo de visualização</string>
     <string name="uimode">Interface</string>
     <string name="directorysort">Organização de diretórios</string>
@@ -248,8 +248,8 @@
     <string name="copy_path">Copiar caminho</string>
     <string name="addshortcut">Adicionar atalho</string>
     <string name="unsavedchanges">Alterações não gravadas</string>
-    <string name="unsavedchangesdesc">Possui alterações por gravar. Quer gravar as alterações antes de sair?</string>
-    <string name="saving">A gravar</string>
+    <string name="unsavedchangesdesc">Possui alterações por guardar. Quer guardar as alterações antes de sair?</string>
+    <string name="saving">A guardar</string>
     <string name="packageinstaller">Instalador de pacotes</string>
     <string name="view">Ver</string>
     <string name="install">Instalar</string>
@@ -281,7 +281,7 @@
 	<string name="greek_translation_title">Grego</string>
 
 	<string name="zip_viewer">Visualizador zip</string>
-    <string name="unin_system_apk">Esta aplicação é do sistema. Se a eliminar pode afetar a estabilidade do sistema.\nContinuar?</string>
+    <string name="unin_system_apk">Esta é uma aplicação do sistema. Se a eliminar, pode afetar a estabilidade do sistema.\nContinuar?</string>
     <string name="warning">Aviso</string>
     <string name="donate">Donativos</string>
     <string name="archive_preferences">Preferências do arquivador</string>
@@ -314,7 +314,7 @@
     <string name="icon_credits">Imagens criadas por &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
 
 	<string name="color_title">Cor</string>
-    <string name="color_summary">Definir a cor de diversos itens da interface</string>
+    <string name="color_summary">Define a cor dos diversos itens da interface</string>
     <string name="primary_color_title">Cor primária</string>
     <string name="primary_color_summary">Define a cor dos principais itens</string>
     <string name="accent_color_title">Cor secundária</string>
@@ -337,8 +337,9 @@
     <string name="databasereader">Leitor de bases de dados</string>
     <string name="showDividers">Mostrar linhas divisórias</string>
     <string name="topFab">FAB na barra da aplicação</string>
-    <string name="topFabS">Se o botão + deve aparecer em cima ou em baixo. Apenas aplicável se a barra da aplicação estiver visível</string>
+    <string name="topFabS">Se o botão + deve aparecer em cima ou em baixo. Apenas aplicável se a barra da aplicação estiver visível.</string>
 	<string name="needsaccess">Requer acesso de escrita</string>
     <string name="needsaccesssummary">Por favor escolha o diretório raiz do \t</string>
     <string name="needsaccesssummary1">\tpara poder ter acesso de escrita </string>
+	<string name="smb_con">Ligação SMB</string>
 </resources>
