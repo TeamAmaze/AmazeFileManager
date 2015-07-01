@@ -1233,6 +1233,31 @@ public class MainActivity extends AppCompatActivity implements
                 ba2.build().show();
                 break;
             case 2:
+                final MaterialDialog.Builder ba3 = new MaterialDialog.Builder(this);
+                ba3.title((R.string.smb_con));
+                View v2 = getLayoutInflater().inflate(R.layout.smb_dialog, null);
+                final EditText ip = (EditText) v2.findViewById(R.id.editText);
+                final EditText user = (EditText) v2.findViewById(R.id.editText3);
+                final EditText pass = (EditText) v2.findViewById(R.id.editText2);
+                ba3.customView(v2, true);
+                if(theme1==1)ba3.theme(Theme.DARK);
+                ba3.negativeText(R.string.cancel);
+                ba3.positiveText(R.string.create);
+                ba3.callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog materialDialog) {
+                        String ipa = ip.getText().toString();
+                        String useru = user.getText().toString();
+                        String passp = pass.getText().toString();
+                        ma.loadSmblist(ma.connectingWithSmbServer(new String[]{ipa, useru, passp}, false), false);
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog materialDialog) {
+
+                    }
+                });
+                ba3.build().show();
                 break;
         }
     }

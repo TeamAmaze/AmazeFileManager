@@ -520,6 +520,7 @@ public class Main extends android.support.v4.app.Fragment {
                 }
                 adapter = new Recycleradapter(ma,
                         bitmap, ma.getActivity());
+                smbMode=false;
                 mSwipeRefreshLayout.setRefreshing(false);
                 try {    listView.setAdapter(adapter);
                     if(!addheader && islist){
@@ -1067,7 +1068,7 @@ public class Main extends android.support.v4.app.Fragment {
                     if (!current.equals(smbPath))
                     {String path=(new SmbFile(current).getParent());
                     loadSmblist(new SmbFile(path), true);
-                }else mainActivity.exit();} catch (MalformedURLException e) {
+                }else loadlist(home,false);} catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
             else
@@ -1090,6 +1091,15 @@ public class Main extends android.support.v4.app.Fragment {
             if(selection){
                 adapter.toggleChecked(false);}
             else{
+                if(smbMode)
+                    try {
+                        if (!current.equals(smbPath))
+                        {String path=(new SmbFile(current).getParent());
+                            loadSmblist(new SmbFile(path), true);
+                        }else loadlist(home,false);} catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                else
                 if(current.equals("/"))
                     mainActivity.exit();
                 else if (utils.canGoBack(f) ) {
@@ -1238,7 +1248,8 @@ public class Main extends android.support.v4.app.Fragment {
        public SmbFile connectingWithSmbServer(String[] auth,boolean anonym) {
         try {
             String yourPeerIP=auth[0];
-            String path = "smb://"+Uri.encode(auth[1]+":"+auth[2])+"@" + yourPeerIP+"/";
+            String path = "smb://"+(anonym?"":(Uri.encode(auth[1]+":"+auth[2])+"@") )+ yourPeerIP+"/";
+            System.out.println(path);
             smbPath=path;
             smbUser=auth[1];
             smbPass=auth[2];

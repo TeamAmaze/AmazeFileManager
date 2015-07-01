@@ -131,9 +131,10 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
             LayoutInflater inflater = (LayoutInflater)getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            ImageView rowView =(ImageView) inflater.inflate(R.layout.dialog_grid_item, parent, false);
-            if(position==p)rowView.setImageDrawable(getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
-            GradientDrawable gradientDrawable = (GradientDrawable) rowView.getBackground();
+            View rowView = inflater.inflate(R.layout.dialog_grid_item, parent, false);
+            ImageView imageView=(ImageView)rowView.findViewById(R.id.icon);
+            if(position==p)imageView.setImageDrawable(getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+            GradientDrawable gradientDrawable = (GradientDrawable) imageView.getBackground();
             gradientDrawable.setColor(Color.parseColor(colors[position]));
             rowView.setOnClickListener(new View.OnClickListener() {
                 @Override
