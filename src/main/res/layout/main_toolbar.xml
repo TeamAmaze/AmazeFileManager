@@ -147,7 +147,7 @@
         android:elevation="5dp"
         android:visibility="gone"
         android:clickable="true"
-        android:background="#70000000"/>
+        android:background="#7fffffff"/>
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/right_top_labels"
@@ -162,7 +162,7 @@
         fab:fab_addButtonColorNormal="@android:color/white"
         fab:fab_addButtonColorPressed="#9f9f9f"
         fab:fab_addButtonPlusIconColor="@android:color/white"
-        fab:fab_labelStyle="@style/menu_labels_style"
+        fab:fab_labelStyle="@style/menu_labels_style_light"
         fab:fab_addButtonSize="mini"
         fab:fab_expandDirection="down"
         fab:fab_labelsPosition="right">
@@ -202,7 +202,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|end|bottom"
-        fab:fab_labelStyle="@style/menu_labels_style"
+        fab:fab_labelStyle="@style/menu_labels_style_light"
         android:layout_marginBottom="4dp"
         android:layout_marginRight="7dp"
         android:layout_marginEnd="7dp"

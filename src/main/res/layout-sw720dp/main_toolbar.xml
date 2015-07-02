@@ -149,7 +149,7 @@
             android:elevation="5dp"
             android:visibility="gone"
             android:clickable="true"
-            android:background="#3f000000"/>
+            android:background="#7fffffff"/>
 
         <com.getbase.floatingactionbutton.FloatingActionsMenu
             android:id="@+id/right_top_labels"

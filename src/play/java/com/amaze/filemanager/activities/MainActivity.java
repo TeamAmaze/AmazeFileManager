@@ -111,6 +111,7 @@ import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.utils.RoundedImageView;
 import com.amaze.filemanager.utils.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.Shortcuts;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -401,7 +402,7 @@ public class MainActivity extends AppCompatActivity implements
         });
         View v= findViewById(R.id.fab_bg);
         if(theme1==1)
-            v.setBackgroundColor(Color.parseColor("#7fffffff"));
+            v.setBackgroundColor(Color.parseColor("#73000000"));
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -460,7 +461,13 @@ public class MainActivity extends AppCompatActivity implements
         scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
         scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
-        floatingActionButton.getButtonAt(0).setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton floatingActionButton1=floatingActionButton.getButtonAt(0);
+        String folder_skin=Sp.getString("icon_skin", "#3f51b5");
+        int folderskin=  Color.parseColor(folder_skin);
+        int fabskinpressed=Color.parseColor(PreferenceUtils.getStatusColor(folder_skin));
+        floatingActionButton1.setColorNormal(folderskin);
+        floatingActionButton1.setColorPressed(fabskinpressed);
+        floatingActionButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 add(0);
@@ -468,15 +475,20 @@ public class MainActivity extends AppCompatActivity implements
                 floatingActionButton.collapse();
             }
         });
-        floatingActionButton.getButtonAt(1).setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton floatingActionButton2=floatingActionButton.getButtonAt(1);
+        floatingActionButton2.setColorNormal(folderskin);
+        floatingActionButton2.setColorPressed(fabskinpressed);
+        floatingActionButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 add(1);
                 findViewById(R.id.fab_bg).setVisibility(View.GONE);
                 floatingActionButton.collapse();
             }
-        });
-        floatingActionButton.getButtonAt(2).setOnClickListener(new View.OnClickListener() {
+        });FloatingActionButton floatingActionButton3=floatingActionButton.getButtonAt(2);
+        floatingActionButton3.setColorNormal(folderskin);
+        floatingActionButton3.setColorPressed(fabskinpressed);
+        floatingActionButton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 add(2);

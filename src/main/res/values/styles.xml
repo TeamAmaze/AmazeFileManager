@@ -15,13 +15,10 @@
   -->
 
 <resources>
-    <style name="menu_labels_style">
-        <item name="android:background">@drawable/fab_label_background</item>
-        <item name="android:textColor">@android:color/white</item>
-    </style>
     <style name="menu_labels_style_light">
-        <item name="android:background">@drawable/fab_label_background_light</item>
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="android:textColor">#757575</item>
     </style>
 
     <!-- appCompat -->
