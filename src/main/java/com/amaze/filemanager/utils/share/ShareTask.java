@@ -9,10 +9,14 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 
 import java.util.ArrayList;
@@ -23,13 +27,15 @@ import java.util.List;
  */
 public class ShareTask extends AsyncTask<String,String,Void> {
     Activity contextc;
+    int theme;
     ArrayList<Uri> arrayList;
     ArrayList<Intent> targetShareIntents=new ArrayList<Intent>();
     ArrayList<String> arrayList1=new ArrayList<>();
     ArrayList<Drawable> arrayList2=new ArrayList<>();
-    public ShareTask(Activity context,ArrayList<Uri> arrayList){
+    public ShareTask(Activity context,ArrayList<Uri> arrayList,int theme){
         this.contextc=context;
         this.arrayList=arrayList;
+        this.theme=theme;
     }
     @Override
     protected Void doInBackground(String... strings) {
@@ -65,12 +71,8 @@ public class ShareTask extends AsyncTask<String,String,Void> {
             intent.setPackage("com.android.bluetooth");
             targetShareIntents.add(intent);
             arrayList1.add("Bluetooth");
-            arrayList2.add(contextc.getResources().getDrawable(R.drawable.ic_settings_bluetooth_white_36dp));
+            arrayList2.add(contextc.getResources().getDrawable(theme==1?R.drawable.ic_settings_bluetooth_white_36dp:R.drawable.ic_settings_bluetooth_black_24dp));
         }     return null;
-    }public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = contextc.getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
     }
     @Override
     public void onPostExecute(Void v){
@@ -78,12 +80,15 @@ public class ShareTask extends AsyncTask<String,String,Void> {
 
             MaterialDialog.Builder builder=new MaterialDialog.Builder(contextc);
             builder.title(R.string.share);
-            GridView view=(GridView)contextc.getLayoutInflater().inflate(R.layout.dialog_grid,null);
-            view.setColumnWidth(dpToPx(72));
-            view.setVerticalSpacing(dpToPx(20));
-            ShareAdapter shareAdapter=new ShareAdapter(contextc,targetShareIntents,arrayList1,arrayList2);
-            view.setAdapter(shareAdapter);
-            builder.customView(view,false);
+            if(theme==1)builder.theme(Theme.DARK);
+            ShareAdapter shareAdapter=new ShareAdapter(contextc,targetShareIntents,arrayList1,arrayList2,theme);
+            builder.adapter(shareAdapter, new MaterialDialog.ListCallback() {
+                @Override
+                public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+
+                }
+            });
+            builder.negativeText(R.string.cancel);
             MaterialDialog b=builder.build();
             shareAdapter.updateMatDialog(b);
             b.show();

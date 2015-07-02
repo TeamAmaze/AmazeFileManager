@@ -227,7 +227,7 @@ public class AppsList extends ListFragment {
                             case 5:
                                 ArrayList<File> arrayList2=new ArrayList<File>();
                                 arrayList2.add(new File(a.get(position).getDesc()));
-                                utils.shareFiles(arrayList2,getActivity());
+                                utils.shareFiles(arrayList2,getActivity(),theme1);
                         }
                     }
                 }).title(a.get(position).getTitle()).build()

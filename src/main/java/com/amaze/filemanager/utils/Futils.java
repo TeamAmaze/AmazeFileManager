@@ -115,7 +115,7 @@ public class Futils {
         return c.getResources().getString(a);
     }
 
-    public void shareFiles(ArrayList<File> a, Activity c) {
+    public void shareFiles(ArrayList<File> a, Activity c,int theme) {
         System.out.println("start");
         ArrayList<Uri> uris = new ArrayList<Uri>();
         boolean b = true;
@@ -135,15 +135,12 @@ public class Futils {
             mime = "*/*";
         System.out.println("mime done");
         try {
-            onShareClick(c,mime,uris);
+
+            new ShareTask(c,uris,theme).execute(mime);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public void onShareClick(Activity contextc,String mime,ArrayList<Uri> arrayList){
-
-    new ShareTask(contextc,arrayList).execute(mime);
-        }
     public String readableFileSize(long size) {
         if (size <= 0)
             return "0 B";

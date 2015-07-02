@@ -27,12 +27,14 @@ public class ShareAdapter extends ArrayAdapter<Intent> {
     ArrayList<String> labels;
     IconHolder iconHolder;
     ArrayList<Drawable> arrayList;
+    int theme;
     public void updateMatDialog(MaterialDialog b){this.b=b;}
-    public ShareAdapter(Context context, ArrayList<Intent> arrayList,ArrayList<String> labels,ArrayList<Drawable>  arrayList1) {
-        super(context, R.layout.dialog_grid_item, arrayList);
+    public ShareAdapter(Context context, ArrayList<Intent> arrayList,ArrayList<String> labels,ArrayList<Drawable>  arrayList1,int theme) {
+        super(context, R.layout.rowlayout, arrayList);
         this.labels=labels;
         iconHolder=new IconHolder(context,true,true);
         this.arrayList=arrayList1;
+        this.theme=theme;
     }
 
     @Override
@@ -40,11 +42,9 @@ public class ShareAdapter extends ArrayAdapter<Intent> {
 
         LayoutInflater inflater = (LayoutInflater)getContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView =(View) inflater.inflate(R.layout.dialog_grid_item, parent, false);
-        TextView a=((TextView) rowView.findViewById(R.id.label));
+        View rowView =(View) inflater.inflate(R.layout.simplerow, parent, false);
+        TextView a=((TextView) rowView.findViewById(R.id.firstline));
         ImageView v=(ImageView)rowView.findViewById(R.id.icon);
-        v.setPadding(0,0,0,0);
-        v.setBackgroundColor(Color.TRANSPARENT);
         if(arrayList.get(position)!=null)
             v.setImageDrawable(arrayList.get(position));
         a.setVisibility(View.VISIBLE);

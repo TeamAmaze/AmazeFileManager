@@ -739,6 +739,7 @@ public class Main extends android.support.v4.app.Fragment {
                 }
             } else {
                 try {
+                    showOption(R.id.share, menu);
                     if(mainActivity.mReturnIntent)
                         if(Build.VERSION.SDK_INT>=16)showOption(R.id.openmulti,menu);
                     for (int c : adapter.getCheckedItemPositions()) {
@@ -908,7 +909,7 @@ public class Main extends android.support.v4.app.Fragment {
                     if(arrayList.size()>100)
                     Toast.makeText(getActivity(),"Can't share more than 100 files",Toast.LENGTH_SHORT).show();
                     else
-                    utils.shareFiles(arrayList,getActivity());
+                    utils.shareFiles(arrayList,getActivity(),theme1);
                     return true;
                 case R.id.openparent:
                     loadlist(new File(list.get(plist.get(0)).getDesc()).getParent(),false);
