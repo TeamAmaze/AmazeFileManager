@@ -81,7 +81,7 @@
     <string name="guide2">Tocca la striscia blu per mostrare o nascondere la barra delle scorciatoie</string>
     <string name="guide3">Tocca e tieni premuto qualsiasi file per più opzioni</string>
     <string name="guide4">Come copiare,spostare,proprietà etc</string>
-    <string name="guide5">Usa il tasto indietro del tuo dispositivo per uscire dallapp quando vuoi</string>
+    <string name="guide5">Usa il tasto indietro del tuo dispositivo per uscire dall\'app quando vuoi</string>
     <string name="guide6">..E usa il tasto freccia sinistra per la navigazione in questo file manager</string>
     <string name="maintab">La scheda principale non può essere rimossa</string>
     <string name="openparent">Apri la cartella principale</string>
@@ -102,7 +102,7 @@
     <string name="theme">Tema</string>
     <string name="skin">Schemi</string>
     <string name="random">Schema Casuale</string>
-    <string name="random_summary">Imposta un tema casuale allavvio</string>
+    <string name="random_summary">Imposta un tema casuale all\'avvio</string>
     <string name="colorize">Colora le icone</string>
     <string name="colorize_summary">Imposta un colore per le icone differente dal tema</string>
     <string name="back">Indietro</string>
@@ -201,7 +201,7 @@
     <string name="setlistview">Impostazioni Visualizzazione Lista</string>
     <string name="setgridview">Impostazioni Visualizzazione Griglia </string>
     <string name="randomDialog">Casuale</string>
-    <string name="setRandom">Le modifiche verranno applicate dopo il riavvio dellapplicazione</string>
+    <string name="setRandom">Le modifiche verranno applicate dopo il riavvio dell\'applicazione</string>
     <string name="authors">Autori</string>
     <string name="changelog">Changelog</string>
     <string name="fullChangelog">Changelog completo</string>
@@ -212,7 +212,7 @@
     <string name="thumbSummary">Mostra miniature delle apps e immagini</string>
     <string name="thumb">Mostra miniature</string>
     <string name="hidden">Mostra file e cartelle nascoste</string>
-    <string name="lastModifiedSummary">Mostra la data e lora in cui il file è stato modificato lultima volta</string>
+    <string name="lastModifiedSummary">Mostra la data e l\'ora in cui il file è stato modificato l\'ultima volta</string>
     <string name="lastModifiedPref">Mostra le ultime modifiche</string>
     <string name="sizePrefSummary">Mostra la dimensioni dei files e il numero degli elementi nelle cartelle</string>
     <string name="sizePref">Mostra dimensioni</string>
@@ -221,7 +221,7 @@
     <string name="rootPref">Mostra permessi</string>
     <string name="aboutFileManager">Info su Amaze File Manager</string>
     <string name="version">Versione</string>
-    <string name="rate">Vota lapp</string>
+    <string name="rate">Vota l\'app</string>
     <string name="license">Licenza Open Source</string>
     <string name="feedback">Invia Feedback</string>
     <string name="hiddenfiles">File Nascosti</string>
