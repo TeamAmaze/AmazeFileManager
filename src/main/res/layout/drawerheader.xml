@@ -1,5 +1,10 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_header_parent"
+<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:paddingBottom="8dp"
+    android:layout_height="@dimen/drawer_header_height_with_padding"
+    android:minHeight="@dimen/drawer_header_height_with_padding"
+    android:clickable="false">
+<RelativeLayout android:id="@+id/drawer_header_parent"
     android:layout_width="fill_parent"
     android:layout_height="@dimen/drawer_header_height"
     android:minHeight="@dimen/drawer_header_height"
@@ -57,3 +62,4 @@
     </LinearLayout>
 
 </RelativeLayout>
+</FrameLayout>

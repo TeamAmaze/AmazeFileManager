@@ -36,6 +36,8 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.ui.drawer.EntryItem;
+import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
 
@@ -43,9 +45,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DrawerAdapter extends ArrayAdapter<String> {
+public class DrawerAdapter extends ArrayAdapter<Item> {
     private final Context context;
-    private final ArrayList<String> values;
+    private final ArrayList<Item> values;
     private RelativeLayout l;
     MainActivity m;
     Futils futils=new Futils();
@@ -88,8 +90,8 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         putColor("#607d8b",0.37647059f,0.49019608f,0.54509804f);
         putColor("#004d40",0.0f, 0.301960f, 0.250980f);
 
-    }
-    public DrawerAdapter(Context context, ArrayList<String> values, MainActivity m, SharedPreferences Sp) {
+    }LayoutInflater inflater;
+    public DrawerAdapter(Context context, ArrayList<Item> values, MainActivity m, SharedPreferences Sp) {
         super(context, R.layout.rowlayout, values);
 
         this.context = context;
@@ -104,12 +106,19 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         color=colors.get(m.fabskin);
         if(color==null) {
             color=colors.get("#e91e63");
-        }
+        }inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if(values.get(position).isSection()){
+            ImageView view=new ImageView(context);
+            view.setImageResource(R.color.divider);
+            view.setBackgroundColor(Color.TRANSPARENT);
+            view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, m.dpToPx(17)));
+            view.setPadding(0,m.dpToPx(8),0,m.dpToPx(8));
+            return view;
+        }else{
         View rowView = inflater.inflate(R.layout.drawerrow, parent, false);
         TextView textView = (TextView) rowView.findViewById(R.id.firstline);
         final ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
@@ -132,7 +141,7 @@ public class DrawerAdapter extends ArrayAdapter<String> {
             public boolean onLongClick(View v) {
 
                 // not to remove the first bookmark (storage)
-                if (position>=m.storage_count) {
+                if (position>m.storage_count) {
 
                     if (m.theme1 == 0)
                         imageView.setImageResource(R.drawable.ic_action_cancel_light);
@@ -162,14 +171,7 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         };
         ColorMatrix colorMatrix = new ColorMatrix(src);
         ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
-        if(values.get(position).equals("/storage/emulated/0"))
-            textView.setText(futils.getString(context,R.string.storage));
-        else if(values.get(position).equals("/")){
-            textView.setText(R.string.rootdirectory);
-        }
-        else {
-            textView.setText(new File(values.get(position)).getName());
-        }
+        textView.setText(((EntryItem)(values.get(position))).title);
 
         if(myChecked.get(position)){
             if(m.theme1==0)
@@ -196,5 +198,5 @@ public class DrawerAdapter extends ArrayAdapter<String> {
         }
 
         return rowView;
-    }
+    }}
 }

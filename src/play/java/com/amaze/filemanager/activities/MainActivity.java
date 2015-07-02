@@ -100,6 +100,9 @@ import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
+import com.amaze.filemanager.ui.drawer.EntryItem;
+import com.amaze.filemanager.ui.drawer.Item;
+import com.amaze.filemanager.ui.drawer.SectionItem;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.IconUtils;
@@ -161,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean mReturnIntent = false;
     private Intent intent;
     private static final Pattern DIR_SEPARATOR = Pattern.compile("/");
-    public ArrayList<String> list;
+    public ArrayList<Item> list;
     public int theme1;
     public boolean rootmode,aBoolean,openzip=false;
     String zippath;
@@ -538,6 +541,8 @@ public class MainActivity extends AppCompatActivity implements
         skinStatusBar = Color.parseColor(PreferenceUtils.getStatusColor(skin));
 
         mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
+        if(theme1==1)mDrawerLinear.setBackgroundColor(Color.parseColor("#303030"));
+        else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
@@ -868,30 +873,34 @@ public class MainActivity extends AppCompatActivity implements
         for (String file:val)
         {
             File f=new File(file);
-            if(!f.isDirectory())
+            String name;
+            if("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file))
+                name=getResources().getString(R.string.storage);
+            else if("/".equals(file))
+                name=getResources().getString(R.string.rootdirectory);
+            else name=f.getName();
+            if(!f.isDirectory() || f.canExecute())
             {
                 storage_count++;
-                list.add(file);
-            }
-            else if(f.canExecute())
-            {
-                list.add(file);
-                storage_count++;
+                list.add(new EntryItem(name,file));
             }
         }
+        list.add(new SectionItem());
         try {
             for(File file: s.readS())
             {
+                String name=(file).getName();
                 books.add(file.getPath());
-                list.add(file.getPath());
+                list.add(new EntryItem(name,file.getPath()));
             }
         } catch (Exception e) {
             try {
                 s.makeS();
                 for(File file: s.readS())
                 {
+                    String name=(file).getName();
                     books.add(file.getPath());
-                    list.add(file.getPath());
+                    list.add(new EntryItem(name,file.getPath()));
                 }
                 } catch (Exception e1)
             {
@@ -901,13 +910,29 @@ public class MainActivity extends AppCompatActivity implements
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
     }
-    public void updateDrawer(String path){
+    public void updateDrawer(String path) {
+        new AsyncTask<String,Void,Integer>(){
+            @Override
+            protected Integer doInBackground(String... strings) {
+                String path=strings[0];
+                int k=0,i=0;
+                for (Item item : list) {
+                    if (!item.isSection()) {
+                        if(((EntryItem)item).subtitle.equals(path))
+                           k=i;
+                    }
+                    i++;
+                }
+                return k;
+            }
+            @Override
+            public void onPostExecute(Integer integers){
+                if(adapter!=null)
+                    adapter.toggleChecked(integers);
+            }
+        }.executeOnExecutor( AsyncTask.THREAD_POOL_EXECUTOR,path);
 
-        if(list.contains(path))
-        {
-            select= list.indexOf(path);
-            adapter.toggleChecked(select);
-        }}
+    }
     public void goToMain(String path){
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         //title.setText(R.string.app_name);
@@ -934,11 +959,12 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
     public void selectItem(final int i, boolean removeBookmark) {
-        if ((select == null || select >= list.size()) && !removeBookmark) {
+        if(!list.get(i).isSection())
+            if ((select == null || select >= list.size()) && !removeBookmark) {
 
             TabFragment tabFragment=new TabFragment();
             Bundle a = new Bundle();
-            a.putString("path", list.get(i));
+            a.putString("path", ((EntryItem)list.get(i)).subtitle);
             tabFragment.setArguments(a);
 
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -958,7 +984,7 @@ public class MainActivity extends AppCompatActivity implements
 
         }  else if (removeBookmark) {
             try {
-                s.removeS(new File(list.get(i)), MainActivity.this);
+                s.removeS(new File(((EntryItem)list.get(i)).subtitle), MainActivity.this);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -967,7 +993,7 @@ public class MainActivity extends AppCompatActivity implements
             adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
             mDrawerList.setAdapter(adapter);
         } else {
-            pending_path=list.get(i);
+            pending_path=((EntryItem)list.get(i)).subtitle;
             select = i;
             adapter.toggleChecked(select);
             if(!isDrawerLocked)mDrawerLayout.closeDrawer(mDrawerLinear);
@@ -1619,7 +1645,6 @@ public class MainActivity extends AppCompatActivity implements
 
         return null;
     }
-
     private final BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1628,7 +1653,7 @@ public class MainActivity extends AppCompatActivity implements
                     Toast.makeText(con,"Media Mounted",Toast.LENGTH_SHORT).show();
                     String a=intent.getData().getPath();
                     if(a!=null && a.trim().length()!=0 && new File(a).exists() && new File(a).canExecute()){
-                        list.add(0,a);
+                        list.add(new EntryItem(new File(a).getName(),a));
 
                         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
                         mDrawerList.setAdapter(adapter);
@@ -1643,21 +1668,33 @@ public class MainActivity extends AppCompatActivity implements
     };
     public void refreshDrawer(){
         val=getStorageDirectories();
-        list = new ArrayList<String>();
+        list = new ArrayList<>();
         storage_count=0;
-        for (int i = 0; i < val.size(); i++) {
-            File file = new File(val.get(i));
-            if(!file.isDirectory()){
-                list.add(val.get(i));
-            storage_count++;}
-            else if(file.canExecute()) {
-                list.add(val.get(i));
+        for (String file:val)
+        {
+            File f=new File(file);
+            String name;
+            if("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file))
+                name=getResources().getString(R.string.storage);
+            else if("/".equals(file))
+                name=getResources().getString(R.string.rootdirectory);
+            else name=f.getName();
+            if(!f.isDirectory() || f.canExecute())
+            {
                 storage_count++;
+                list.add(new EntryItem(name,file));
             }
         }
-        for(String a:books){
-            list.add(a);
+        list.add(new SectionItem());
+        try {
+            for(String file: books)
+            {
+                String name=new File(file).getName();
+                list.add(new EntryItem(name,file));
+            }
+        } catch (Exception e) {
         }
+
 
         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
@@ -2183,9 +2220,9 @@ public class MainActivity extends AppCompatActivity implements
             }).start();
         }
     }
-    int dpToPx(int dp) {
+    public int dpToPx(double dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        int px = Math.round(Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)));
         return px;
     }
     public void initiatebbar() {
