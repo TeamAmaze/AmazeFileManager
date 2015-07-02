@@ -267,8 +267,7 @@
             android:dividerHeight="0dip" />
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="17dp"
-            android:paddingTop="8dp"
+            android:layout_height="9dp"
             android:paddingBottom="8dp"
             android:src="@color/divider"
             android:background="@android:color/transparent"
