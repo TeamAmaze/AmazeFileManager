@@ -149,7 +149,7 @@
             android:elevation="5dp"
             android:visibility="gone"
             android:clickable="true"
-            android:background="#7fffffff"/>
+            android:background="#e6ffffff"/>
 
         <com.getbase.floatingactionbutton.FloatingActionsMenu
             android:id="@+id/right_top_labels"
@@ -173,7 +173,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 fab:fab_size="mini"
-                fab:fab_icon="@drawable/folder"
+                fab:fab_icon="@drawable/folder_drawer_white"
                 fab:fab_colorNormal="@android:color/white"
                 fab:fab_title="@string/folder"
                 fab:fab_colorPressed="#9f9f9f"/>
@@ -182,7 +182,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="@android:color/white"
-                fab:fab_icon="@drawable/file"
+                fab:fab_icon="@drawable/ic_insert_drive_file_white_48dp"
                 fab:fab_size="mini"
                 fab:fab_title="@string/file"
                 fab:fab_colorPressed="#9f9f9f"/>
@@ -191,7 +191,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="@android:color/white"
-                fab:fab_icon="@drawable/ic_settings_remote_black_48dp"
+                fab:fab_icon="@drawable/ic_settings_remote_white_48dp"
                 fab:fab_size="mini"
                 fab:fab_title="@string/smb_con"
                 fab:fab_colorPressed="#9f9f9f"/>
@@ -214,7 +214,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 fab:fab_size="mini"
-                fab:fab_icon="@drawable/folder"
+                fab:fab_icon="@drawable/folder_drawer_white"
                 fab:fab_colorNormal="@android:color/white"
                 fab:fab_title="@string/folder"
                 fab:fab_colorPressed="#9f9f9f"/>
@@ -223,7 +223,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="@android:color/white"
-                fab:fab_icon="@drawable/file"
+                fab:fab_icon="@drawable/ic_insert_drive_file_white_48dp"
                 fab:fab_size="mini"
                 fab:fab_title="@string/file"
                 fab:fab_colorPressed="#9f9f9f"/>
@@ -232,7 +232,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="@android:color/white"
-                fab:fab_icon="@drawable/ic_settings_remote_black_48dp"
+                fab:fab_icon="@drawable/ic_settings_remote_white_48dp"
                 fab:fab_size="mini"
                 fab:fab_title="@string/smb_con"
                 fab:fab_colorPressed="#9f9f9f"/>
@@ -282,8 +282,8 @@
                 android:dividerHeight="0dip" />
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:paddingTop="8dp"
+                android:layout_height="9dp"
+                android:paddingTop="0dp"
                 android:paddingBottom="8dp"
                 android:src="@color/divider"
                 android:background="@android:color/transparent"

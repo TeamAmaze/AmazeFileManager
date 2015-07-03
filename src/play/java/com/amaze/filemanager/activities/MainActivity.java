@@ -21,6 +21,8 @@ package com.amaze.filemanager.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -65,6 +67,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -396,8 +399,8 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 floatingActionButton.toggle();
                 View v= findViewById(R.id.fab_bg);
-                if(floatingActionButton.isExpanded())v.setVisibility(View.VISIBLE);
-                else v.setVisibility(View.GONE);
+                if(floatingActionButton.isExpanded())revealShow(v,true);
+                else revealShow(v,false);
             }
         });
         View v= findViewById(R.id.fab_bg);
@@ -407,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 floatingActionButton.collapse();
-                view.setVisibility(View.GONE);
+                revealShow(view,false);
             }
         });
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
@@ -471,7 +474,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 add(0);
-                findViewById(R.id.fab_bg).setVisibility(View.GONE);
+                revealShow(findViewById(R.id.fab_bg), false);
                 floatingActionButton.collapse();
             }
         });
@@ -482,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 add(1);
-                findViewById(R.id.fab_bg).setVisibility(View.GONE);
+                revealShow(findViewById(R.id.fab_bg), false);
                 floatingActionButton.collapse();
             }
         });FloatingActionButton floatingActionButton3=floatingActionButton.getButtonAt(2);
@@ -492,7 +495,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 add(2);
-                findViewById(R.id.fab_bg).setVisibility(View.GONE);
+                revealShow(findViewById(R.id.fab_bg),false);
                 floatingActionButton.collapse();
             }
         });
@@ -789,8 +792,9 @@ public class MainActivity extends AppCompatActivity implements
         String name = fragment.getClass().getName();
         if (name.contains("TabFragment")) {
             if(floatingActionButton.isExpanded()){
-           floatingActionButton.collapse();
-            findViewById(R.id.fab_bg).setVisibility(View.GONE);}
+                floatingActionButton.collapse();
+                revealShow(findViewById(R.id.fab_bg), false);
+            }
             else{TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
             Fragment fragment1 = tabFragment.getTab();
             Main main = (Main) fragment1;
@@ -888,6 +892,8 @@ public class MainActivity extends AppCompatActivity implements
             String name;
             if("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file))
                 name=getResources().getString(R.string.storage);
+            else if("/storage/sdcard1".equals(file))
+                name=getResources().getString(R.string.extstorage);
             else if("/".equals(file))
                 name=getResources().getString(R.string.rootdirectory);
             else name=f.getName();
@@ -2334,33 +2340,29 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
     private void revealShow(final View view, boolean reveal){
-        int w = view.getWidth();
-        int h = view.getHeight();
-        float maxRadius = (float) Math.sqrt(w * w / 4 + h * h / 4);
 
         if(reveal){
-            Animator revealAnimator = ViewAnimationUtils.createCircularReveal(view,
-                    w / 2, h / 2, 0, maxRadius);
-
-            view.setVisibility(View.VISIBLE);
-            revealAnimator.start();
-
-        } else {
-
-            Animator anim =
-                    ViewAnimationUtils.createCircularReveal(view, w / 2, h / 2, maxRadius, 0);
-
-            anim.addListener(new AnimatorListenerAdapter() {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 0f, 1f);
+            animator.setDuration(100); //ms
+            animator.addListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-
-                    view.setVisibility(View.INVISIBLE);
-
+                public void onAnimationStart(Animator animation) {
+                    view.setVisibility(View.VISIBLE);
                 }
             });
+            animator.start();
+        } else {
 
-            anim.start();
+            ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0f);
+            animator.setDuration(100); //ms
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    view.setVisibility(View.GONE);
+                }
+            });
+            animator.start();
+
         }
 
     }
@@ -2381,26 +2383,6 @@ public class MainActivity extends AppCompatActivity implements
                 goToMain("");
             }pending_path=null;}
         supportInvalidateOptionsMenu();
-    }public ArrayList<String> scanSubNet(String subnet){
-        ArrayList<String> hosts = new ArrayList<String>();
-
-        InetAddress inetAddress = null;
-        for(int i=1; i<10; i++){
-            Log.d("Connected", "Trying: " + subnet + String.valueOf(i));
-            try {
-                inetAddress = InetAddress.getByName(subnet + String.valueOf(i));
-                if(inetAddress.isReachable(1000)){
-                    hosts.add(inetAddress.getHostName());
-                    Log.d("Connected", inetAddress.getHostName());
-                }
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return hosts;
     }
     public void mkFile(String path,Main ma){
         boolean b=false;

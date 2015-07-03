@@ -62,7 +62,7 @@ public class ShareTask extends AsyncTask<String,String,Void> {
                 targetShareIntents.add(intent);
 
             }   }
-        if(!bluetooth_present){
+        if(!bluetooth_present && appInstalledOrNot("com.android.bluetooth",packageManager)){
             Intent intent = new Intent();
             intent.setComponent(new ComponentName("com.android.bluetooth", "com.android.bluetooth.opp.BluetoothOppLauncherActivity"));
             intent.setAction(Intent.ACTION_SEND_MULTIPLE);
@@ -70,9 +70,20 @@ public class ShareTask extends AsyncTask<String,String,Void> {
             intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayList);
             intent.setPackage("com.android.bluetooth");
             targetShareIntents.add(intent);
-            arrayList1.add("Bluetooth");
+            arrayList1.add(contextc.getResources().getString(R.string.bluetooth));
             arrayList2.add(contextc.getResources().getDrawable(theme==1?R.drawable.ic_settings_bluetooth_white_36dp:R.drawable.ic_settings_bluetooth_black_24dp));
         }     return null;
+    }
+    private boolean appInstalledOrNot(String uri,PackageManager pm) {
+        boolean app_installed;
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            app_installed = true;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            app_installed = false;
+        }
+        return app_installed;
     }
     @Override
     public void onPostExecute(Void v){

@@ -97,10 +97,12 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
 
         TextView textView = (TextView) row.findViewById(R.id.spinnerText);
         try {
-            if(items.get(position).equals("/"))
+            if("/".equals(items.get(position)))
                 textView.setText(R.string.rootdirectory);
             else if(items.get(position).startsWith("smb:/"))
                 textView.setText(new File(parseSmbPath(items.get(position))).getName());
+            else if("/storage/emulated/0".equals(items.get(position)))
+                textView.setText(R.string.storage);
             else
                 textView.setText(new File(items.get(position)).getName());
         } catch (Exception e) {
