@@ -19,6 +19,7 @@
 
 package com.amaze.filemanager.utils;
 
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
@@ -50,8 +51,11 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.Main;
-import com.amaze.filemanager.utils.share.ShareTask;
 import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
+import com.amaze.filemanager.ui.Layoutelements;
+import com.amaze.filemanager.ui.icons.Icons;
+import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.share.ShareTask;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
 
@@ -68,10 +72,46 @@ import jcifs.smb.SmbFile;
 
 public class Futils {
 
+public  final int READ = 4;
+    public  final int WRITE = 2;
+    public  final int EXECUTE = 1;
     private Toast studioCount;
 
     public Futils() {
     }
+
+    public static long folderSize(File directory) {
+        long length = 0;
+        try {
+            for (File file:directory.listFiles()) {
+
+                if (file.isFile())
+                    length += file.length();
+                else
+                    length += folderSize(file);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return length;
+    }
+
+    public static long folderSize(SmbFile directory) {
+        long length = 0;
+        try {
+            for (SmbFile file:directory.listFiles()) {
+
+                if (file.isFile())
+                    length += file.length();
+                else
+                    length += folderSize(file);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return length;
+    }
+
     public int checkFolder(final File folder,Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
             if (!folder.exists() || !folder.isDirectory()) {
@@ -93,6 +133,7 @@ public class Futils {
         }
         return 0;
     }
+
     public void scanFile(String path, Context c) {
         System.out.println(path + " " + Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT >= 19) {
@@ -114,6 +155,7 @@ public class Futils {
     public String getString(Context c, int a) {
         return c.getResources().getString(a);
     }
+
 
     public void shareFiles(ArrayList<File> a, Activity c,int theme) {
         System.out.println("start");
@@ -140,8 +182,7 @@ public class Futils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-    public String readableFileSize(long size) {
+    }    public String readableFileSize(long size) {
         if (size <= 0)
             return "0 B";
         final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
@@ -193,7 +234,7 @@ public class Futils {
 
     }
 
-    public void openWith(final File f,final Context c) {
+public void openWith(final File f,final Context c) {
         MaterialDialog.Builder a=new MaterialDialog.Builder(c);
         a.title(getString(c, R.string.openas));
         String[] items=new String[]{getString(c,R.string.text),getString(c,R.string.image),getString(c,R.string.video),getString(c,R.string.audio),getString(c,R.string.database),getString(c,R.string.other)};
@@ -235,7 +276,9 @@ public class Futils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }public String getSize(File f) {
+    }
+
+public String getSize(File f) {
         long i =f.length();
 
         return readableFileSize(i);
@@ -306,6 +349,7 @@ public class Futils {
             return "";
         }else{return "";}
     }
+
     public boolean canGoBack(File f) {
         try {
             f.getParentFile().listFiles();
@@ -315,12 +359,12 @@ public class Futils {
         }
     }
 
-
     public String getdate(File f) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
         return (sdf.format(f.lastModified())).toString();
     }
+
     public String getdate(long f,String form,String year) {
 
         SimpleDateFormat sdf = new SimpleDateFormat(form);
@@ -416,6 +460,7 @@ public class Futils {
         materialDialog.show();
         new GenerateMD5Task(materialDialog, f, name, parent, size, items, date,c).execute(f.getPath());
     }
+
     public boolean copyToClipboard(Context context, String text) {
         try {
             android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context
@@ -429,36 +474,6 @@ public class Futils {
         }
     }
 
-    public static long folderSize(File directory) {
-        long length = 0;
-        try {
-            for (File file:directory.listFiles()) {
-
-                if (file.isFile())
-                    length += file.length();
-                else
-                    length += folderSize(file);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return length;
-    }
-    public static long folderSize(SmbFile directory) {
-        long length = 0;
-        try {
-            for (SmbFile file:directory.listFiles()) {
-
-                if (file.isFile())
-                    length += file.length();
-                else
-                    length += folderSize(file);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return length;
-    }
     public Bundle getPaths(String path, Context c) {
         ArrayList<String> names = new ArrayList<String>();
         ArrayList<String> paths = new ArrayList<String>();
@@ -478,6 +493,7 @@ public class Futils {
         b.putStringArrayList("paths", paths);
         return b;
     }
+
     public boolean deletedirectory(File f){
         boolean b=true;
         for(File file:f.listFiles()){
@@ -489,6 +505,7 @@ public class Futils {
         }if(b)b=f.delete();
         return b;
     }
+
     public boolean deletefiles(File f) {
 
         // make sure directory exists
@@ -584,6 +601,7 @@ public class Futils {
             }
         }
     }
+
 public void showPackageDialog(final File f,final MainActivity m){
     MaterialDialog.Builder mat=new MaterialDialog.Builder(m);
     mat.title(R.string.packageinstaller).content(R.string.pitext).positiveText(R.string.install).negativeText(R.string.view).neutralText(R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
@@ -601,6 +619,7 @@ public void showPackageDialog(final File f,final MainActivity m){
     mat.build().show();
 
 }
+
     public void showArchiveDialog(final File f,final MainActivity m){
         MaterialDialog.Builder mat=new MaterialDialog.Builder(m);
         mat.title(R.string.archive).content(R.string.archtext).positiveText(R.string.extract).negativeText(R.string.view).neutralText(R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
@@ -626,6 +645,7 @@ public void showPackageDialog(final File f,final MainActivity m){
                 b.show();
 
     }
+
     public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size,long longSize,boolean directorybool,boolean b,String date) {
         Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size,longSize,b,date,directorybool);
         return item;
@@ -662,7 +682,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 String name = current + "/" + e.getText().toString();
-                m.compressFiles(new File(name),b);
+                m.compressFiles(new File(name), b);
             }
 
             @Override
@@ -693,6 +713,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         a.title(R.string.sortby);
         a.build().show();
     }
+
     public void showSortDialog(final AppsList m) {
         String[] sort = m.getResources().getStringArray(R.array.sortbyApps);
         int current = Integer.parseInt(m.Sp.getString("sortbyApps", "0"));
@@ -712,6 +733,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         a.title(R.string.sortby);
         a.build().show();
     }
+
     public void showHistoryDialog(final Main m) {
         final ArrayList<String> paths = m.history.readTable();
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
@@ -755,6 +777,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         x.show();
 
     }
+
     public void setPermissionsDialog(final Layoutelements f, final Main main){
         if(main.rootMode){
             final File file=new File(f.getDesc());
@@ -872,20 +895,21 @@ public void showPackageDialog(final File f,final MainActivity m){
         Date stringDate = simpledateformat.parse(date, pos);
         return new String[]{name,link,array[0],size,stringDate.getTime()+"",size1};
     }
+
     public int getLinkPosition(String[] array){
         for(int i=0;i<array.length;i++){
             if(array[i].contains("->"))return i;
         }
         return  0;
     }
-    public int getColonPosition(String[] array){
+
+public int getColonPosition(String[] array){
         for(int i=0;i<array.length;i++){
             if(array[i].contains(":"))return i;
         }
         return  0;
-    }  public  final int READ = 4;
-    public  final int WRITE = 2;
-    public  final int EXECUTE = 1;
+    }
+
     public ArrayList<Boolean[]> parse(String permLine) {
         ArrayList<Boolean[]> arrayList=new ArrayList<Boolean[]>();
         Boolean[] read=new Boolean[]{false,false,false};

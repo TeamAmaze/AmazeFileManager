@@ -39,7 +39,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.IconUtils;
+import com.amaze.filemanager.ui.icons.IconUtils;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.ui.icons;
 
 
 import android.content.*;
@@ -31,6 +31,7 @@ import android.provider.MediaStore;
 import android.widget.*;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.Futils;
 
 import java.io.*;
 import java.util.*;

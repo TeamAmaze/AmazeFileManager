@@ -48,12 +48,12 @@ import javax.xml.transform.stream.StreamResult;
 public class Shortcuts {
     Context context;
     String path;
-    public Shortcuts(Context context) {
+    public Shortcuts(Context context,String name) {
         this.context=context;
-        path=context.getFilesDir()+"/shortcut.xml";
+        path=context.getFilesDir()+"/"+name;
     }
 
-    public void makeS() throws ParserConfigurationException, TransformerException {
+    public void makeS(boolean add) throws ParserConfigurationException, TransformerException {
         String sd = Environment.getExternalStorageDirectory() + "/";
         String[] a = new String[]{sd + Environment.DIRECTORY_DCIM, sd + Environment.DIRECTORY_DOWNLOADS, sd + Environment.DIRECTORY_MOVIES, sd + Environment.DIRECTORY_MUSIC, sd + Environment.DIRECTORY_PICTURES};
         File g = new File(path);
@@ -65,6 +65,7 @@ public class Shortcuts {
             Document doc = docBuilder.newDocument();
             Element rootElement = doc.createElement("shortcut");
             doc.appendChild(rootElement);
+            if(add)
             for (int i = 0; i < a.length; i++) {
                 Element staff = doc.createElement("path");
                 staff.appendChild(doc.createTextNode(a[i]));
@@ -78,7 +79,7 @@ public class Shortcuts {
         }
     }
 
-    public void addS(File f) throws Exception {
+    public void addS(String f) throws Exception {
         File g = new File(path);
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -92,7 +93,7 @@ public class Shortcuts {
 
 // f elements
         Element staff = doc.createElement("path");
-        staff.appendChild(doc.createTextNode(f.getPath()));
+        staff.appendChild(doc.createTextNode(f));
         eElement.appendChild(staff);
 
 
@@ -104,8 +105,8 @@ public class Shortcuts {
 
     }
 
-    public ArrayList<File> readS() throws FileNotFoundException, IOException, SAXException, ParserConfigurationException {
-        ArrayList<File> f = new ArrayList<File>();
+    public ArrayList<String> readS() throws FileNotFoundException, IOException, SAXException, ParserConfigurationException {
+        ArrayList<String> f = new ArrayList <String>();
         File g = new File(path);
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -117,15 +118,16 @@ public class Shortcuts {
             Node nNode = nList.item(temp);
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
-                f.add(new File(nNode.getTextContent()));
+                f.add((nNode.getTextContent()));
             }
         }
         return f;
     }
 
-    public boolean isShortcut(File f) throws IOException, ParserConfigurationException, SAXException {
+
+    public boolean isShortcut(String f) throws IOException, ParserConfigurationException, SAXException {
         boolean b = false;
-        ArrayList<File> x = readS();
+        ArrayList<String> x = readS();
         for (int i = 0; i < x.size(); i++) {
             if (x.get(i) == f) {
                 b = true;
@@ -136,7 +138,7 @@ public class Shortcuts {
         return b;
     }
 
-    public void removeS(File f1, Context s) throws IOException, SAXException, ParserConfigurationException, TransformerException {
+    public void removeS(String f1, Context s) throws IOException, SAXException, ParserConfigurationException, TransformerException {
         //	ArrayList<File> f=new ArrayList<File>();
         File g = new File(path);
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -152,7 +154,7 @@ public class Shortcuts {
         for (int temp = 0; temp < nList.getLength(); temp++) {
             Node nNode = nList.item(temp);
 
-            if (nNode.getTextContent().equals(f1.getPath())) {
+            if (nNode.getTextContent().equals(f1)) {
                 //Element e=(Element)nNode;
                 n.removeChild(nNode);
 

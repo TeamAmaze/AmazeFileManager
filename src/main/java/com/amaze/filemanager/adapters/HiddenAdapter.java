@@ -27,7 +27,7 @@ import java.util.ArrayList;
  * Created by Arpit on 16-11-2014.
  */
 public class HiddenAdapter extends ArrayAdapter<File> {
-    Shortcuts s;
+    /*Shortcuts s;*/
     Main context;Context c;
     public ArrayList<File> items;
     HistoryManager hidden;
@@ -43,8 +43,8 @@ public class HiddenAdapter extends ArrayAdapter<File> {
         this.hidden=hidden;
         this.hide=hide;
         this.materialDialog=materialDialog;
-        s = new Shortcuts(c);
-    }
+    /*    s = new Shortcuts(c,"shortcut.xml");
+    */}
 
 
     private class ViewHolder {

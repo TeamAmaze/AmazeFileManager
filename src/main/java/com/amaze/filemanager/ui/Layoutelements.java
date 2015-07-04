@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.ui;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -25,9 +25,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.File;
-
-import jcifs.smb.SmbFile;
+import com.amaze.filemanager.utils.Futils;
 
 public class Layoutelements implements Parcelable {
     public Layoutelements(Parcel im) {

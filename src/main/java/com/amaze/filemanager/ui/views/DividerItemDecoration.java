@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.ui.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;

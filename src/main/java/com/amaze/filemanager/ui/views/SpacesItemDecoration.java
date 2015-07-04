@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.ui.views;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

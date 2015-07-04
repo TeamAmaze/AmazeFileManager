@@ -20,7 +20,7 @@ import com.amaze.filemanager.adapters.TabSpinnerAdapter;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.ui.drawer.EntryItem;
-import com.amaze.filemanager.utils.CustomViewPager;
+import com.amaze.filemanager.ui.views.CustomViewPager;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 

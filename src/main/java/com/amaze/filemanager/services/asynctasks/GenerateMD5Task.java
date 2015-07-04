@@ -22,7 +22,6 @@ import java.security.MessageDigest;
 public class GenerateMD5Task extends AsyncTask<String, String, String> {
 
     private MaterialDialog a;
-    private MaterialDialog b;
     private String name, parent, size, items, date;
     private File f;
     Context c;

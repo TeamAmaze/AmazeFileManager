@@ -36,6 +36,7 @@ import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.ui.icons.MimeTypes;
 
 /**
  * Utility class for helping parsing file systems.

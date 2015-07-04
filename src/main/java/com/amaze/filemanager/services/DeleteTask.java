@@ -141,9 +141,9 @@ public class DeleteTask extends AsyncTask<ArrayList<String>, String, Boolean> {
         for(String  file:files)
         utils.scanFile(file, cd);
         if (!b) {
-            Toast.makeText(cd, utils.getString(cd, R.string.error), Toast.LENGTH_LONG).show();
+            Toast.makeText(cd, utils.getString(cd, R.string.error), Toast.LENGTH_SHORT).show();
         } else if (zipViewer==null && rarViewer ==null) {
-            Toast.makeText(cd, utils.getString(cd, R.string.done), Toast.LENGTH_LONG).show();
+            Toast.makeText(cd, utils.getString(cd, R.string.done), Toast.LENGTH_SHORT).show();
         }
         if (zipViewer!=null) {
             zipViewer.files.clear();

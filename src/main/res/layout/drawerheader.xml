@@ -18,7 +18,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"/>
 
-    <com.amaze.filemanager.utils.RoundedImageView
+    <com.amaze.filemanager.ui.views.RoundedImageView
         android:id="@+id/profile_pic"
         android:layout_width="66dp"
         android:layout_height="66dp"

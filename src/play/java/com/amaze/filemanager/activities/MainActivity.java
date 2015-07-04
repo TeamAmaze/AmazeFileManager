@@ -22,7 +22,6 @@ package com.amaze.filemanager.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -63,11 +62,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -108,11 +105,11 @@ import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.IconUtils;
+import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootHelper;
-import com.amaze.filemanager.utils.RoundedImageView;
-import com.amaze.filemanager.utils.ScrimInsetsRelativeLayout;
+import com.amaze.filemanager.ui.views.RoundedImageView;
+import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
@@ -128,15 +125,17 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
+import org.xml.sax.SAXException;
+
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -155,11 +154,12 @@ public class MainActivity extends AppCompatActivity implements
     private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
     public List<String> val;
     ArrayList<String> books;
+    public ArrayList<String> Servers;
     MainActivity mainActivity=this;
     DrawerAdapter adapter;
     IconUtils util;
     public ScrimInsetsRelativeLayout mDrawerLinear;
-    Shortcuts s;
+    Shortcuts s,servers;
     public String skin,path="", launchPath;
     public int theme;
     public ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
@@ -446,7 +446,8 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         utils = new Futils();
-        s = new Shortcuts(this);
+        s = new Shortcuts(this,"shortcut.xml");
+        servers=new Shortcuts(this,"servers.xml");
         path = getIntent().getStringExtra("path");
         openprocesses=getIntent().getBooleanExtra("openprocesses", false);
         restart = getIntent().getBooleanExtra("restart", false);
@@ -885,6 +886,7 @@ public class MainActivity extends AppCompatActivity implements
         list=new ArrayList<>();
         val=getStorageDirectories();
         books=new ArrayList<>();
+        Servers=new ArrayList<String>();
         storage_count=0;
         for (String file:val)
         {
@@ -904,26 +906,34 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
         list.add(new SectionItem());
+        File f=new File(getFilesDir()+"/servers.xml");
+        if(f.exists()){
+            try {
+                for(String s:servers.readS()){
+                    Servers.add(s);
+                    list.add(new EntryItem(parseSmbPath(s),s));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SAXException e) {
+                e.printStackTrace();
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            }
+            list.add(new SectionItem());
+        }
+
         try {
-            for(File file: s.readS())
+            File f1=new File(getFilesDir()+"/shortcut.xml");
+            if(!f1.exists())s.makeS(true);
+            for(String file: s.readS())
             {
-                String name=(file).getName();
-                books.add(file.getPath());
-                list.add(new EntryItem(name,file.getPath()));
+                String name=new File(file).getName();
+                books.add(file);
+                list.add(new EntryItem(name,file));
             }
         } catch (Exception e) {
-            try {
-                s.makeS();
-                for(File file: s.readS())
-                {
-                    String name=(file).getName();
-                    books.add(file.getPath());
-                    list.add(new EntryItem(name,file.getPath()));
-                }
-                } catch (Exception e1)
-            {
-                e1.printStackTrace();
-            }
+
         }
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
@@ -1001,15 +1011,20 @@ public class MainActivity extends AppCompatActivity implements
             floatingActionButton.setVisibility(View.VISIBLE);
 
         }  else if (removeBookmark) {
-            try {
-                s.removeS(new File(((EntryItem)list.get(i)).subtitle), MainActivity.this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            list.remove(i);
+                try {
+                    String path = ((EntryItem) list.get(i)).subtitle;
+                    if (path.startsWith("smb:/")) {
+                        servers.removeS(path, MainActivity.this);
+                        Servers.remove(path);
+                    } else {
+                        s.removeS(path, MainActivity.this);
+                        books.remove(path);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                refreshDrawer();
             select=0;
-            adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
-            mDrawerList.setAdapter(adapter);
         } else {
             pending_path=((EntryItem)list.get(i)).subtitle;
             select = i;
@@ -1197,7 +1212,6 @@ public class MainActivity extends AppCompatActivity implements
         if(mDrawerToggle!=null)mDrawerToggle.syncState();
     }
     public void add(int pos) {
-        final MainActivity mainActivity=this;
         final Main ma=(Main)((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
         switch (pos) {
 
@@ -1279,7 +1293,7 @@ public class MainActivity extends AppCompatActivity implements
             case 2:
                 final MaterialDialog.Builder ba3 = new MaterialDialog.Builder(this);
                 ba3.title((R.string.smb_con));
-                View v2 = getLayoutInflater().inflate(R.layout.smb_dialog, null);
+                final View v2 = getLayoutInflater().inflate(R.layout.smb_dialog, null);
                 final EditText ip = (EditText) v2.findViewById(R.id.editText);
                 final EditText user = (EditText) v2.findViewById(R.id.editText3);
                 final EditText pass = (EditText) v2.findViewById(R.id.editText2);
@@ -1291,10 +1305,29 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
                         String ipa = ip.getText().toString();
-                        String useru = user.getText().toString();
-                        String passp = pass.getText().toString();
-                        ma.loadSmblist(ma.connectingWithSmbServer(new String[]{ipa, useru, passp}, false), false);
+                        SmbFile smbFile;
+                        if (((CheckBox) v2.findViewById(R.id.checkBox2)).isChecked())
+                            smbFile = ma.connectingWithSmbServer(new String[]{ipa, "", ""}, true);
+                        else {
+                            String useru = user.getText().toString();
+                            String passp = pass.getText().toString();
+                            smbFile = ma.connectingWithSmbServer(new String[]{ipa,useru,passp},false);
+                        }
+                        if (smbFile == null) return;
+                        try {
+                            ma.loadSmblist(smbFile, false);
+                            if (Servers == null) Servers = new ArrayList<String>();
+                            Servers.add(smbFile.getPath());
+                            refreshDrawer();
+                            if (!new File(getFilesDir() + "/" + "servers.xml").exists())
+                                servers.makeS(false);
+                            servers.addS(smbFile.getPath());
+                        } catch (Exception e) {
+                            Toast.makeText(mainActivity, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        }
                     }
+
 
                     @Override
                     public void onNegative(MaterialDialog materialDialog) {
@@ -1704,6 +1737,16 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
         list.add(new SectionItem());
+           if(Servers!=null && Servers.size()>0){
+               for(String file: Servers)
+               {
+                   String name = parseSmbPath(file);
+                   list.add(new EntryItem(name,file));
+               }
+
+               list.add(new SectionItem());
+           }
+
         try {
             for(String file: books)
             {
@@ -1945,7 +1988,7 @@ public class MainActivity extends AppCompatActivity implements
                     mkDir((oppathe),ma1);
                     break;
                 case RENAME:
-                    rename(new File(oppathe), new File(oppathe1));
+                    rename((oppathe), (oppathe1));
                     Main ma2=((Main) getFragment().getTab());
                     ma2.loadlist((ma2.current), true);
                     break;
@@ -1961,7 +2004,23 @@ public class MainActivity extends AppCompatActivity implements
                     compressFiles(new File(oppathe),oparrayList);
             } }
     }
-    public void rename(File file,File file1) {
+    public void rename(String f,String f1) {
+        if(f.startsWith("smb:/")){
+            try {
+                SmbFile smbFile=new SmbFile(f);
+
+                smbFile.renameTo(new SmbFile(f1));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (SmbException e) {
+                e.printStackTrace();
+            }
+            Intent intent = new Intent("loadlist");
+            sendBroadcast(intent);
+            return;
+        }
+        File file=new File(f);
+        File file1=new File(f1);
         int mode = checkFolder(file.getParentFile(), this);
         if (mode == 2) {
             oppathe=file.getPath();
@@ -2147,7 +2206,10 @@ public class MainActivity extends AppCompatActivity implements
     }
     String newPath=null;
     String parseSmbPath(String a){
-      return   "smb://"+a.substring(a.indexOf("@")+1,a.length());
+      int k=a.indexOf(".");
+        if(a.substring(0,k).contains("@"))
+        return "smb://"+a.substring(a.indexOf("@")+1,a.length());
+        else return a;
     }
     public void updatePath(@NonNull final String news,boolean calcsize,boolean results){
         File f= null;
@@ -2374,7 +2436,9 @@ public class MainActivity extends AppCompatActivity implements
         if(pending_path!=null){
             try {
                 TabFragment m=getFragment();
-                if(new File(pending_path).isDirectory()) {
+                if(pending_path.startsWith("smb:/"))
+                    ((Main) m.getTab()).loadlist((pending_path), false);
+                else   if(new File(pending_path).isDirectory()) {
                     ((Main) m.getTab()).loadlist((pending_path), false);
                 }   else utils.openFile(new File(pending_path),mainActivity);
 

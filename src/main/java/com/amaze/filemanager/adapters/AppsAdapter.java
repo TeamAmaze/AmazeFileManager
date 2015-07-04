@@ -33,7 +33,7 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.AppsList;
-import com.amaze.filemanager.utils.Layoutelements;
+import com.amaze.filemanager.ui.Layoutelements;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -40,9 +40,9 @@ import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.asynctasks.ZipExtractTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.Icons;
-import com.amaze.filemanager.utils.RoundedImageView;
-import com.amaze.filemanager.utils.ZipObj;
+import com.amaze.filemanager.ui.icons.Icons;
+import com.amaze.filemanager.ui.views.RoundedImageView;
+import com.amaze.filemanager.ui.ZipObj;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.io.File;

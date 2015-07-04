@@ -77,15 +77,15 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.services.asynctasks.LoadSmbList;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
-import com.amaze.filemanager.utils.DividerItemDecoration;
+import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HidingScrollListener;
 import com.amaze.filemanager.utils.HistoryManager;
-import com.amaze.filemanager.utils.IconHolder;
-import com.amaze.filemanager.utils.IconUtils;
-import com.amaze.filemanager.utils.Icons;
-import com.amaze.filemanager.utils.Layoutelements;
+import com.amaze.filemanager.ui.icons.IconHolder;
+import com.amaze.filemanager.ui.icons.IconUtils;
+import com.amaze.filemanager.ui.icons.Icons;
+import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
@@ -177,7 +177,7 @@ public class Main extends android.support.v4.app.Fragment {
         iconskin=Sp.getString("icon_skin_color", skin);
         skin_color=Color.parseColor(skin);
         icon_skin_color=Color.parseColor(iconskin);
-        sh = new Shortcuts(getActivity());
+        sh = new Shortcuts(getActivity(),"shortcut.xml");
         islist = Sp.getBoolean("view", true);
         Calendar calendar = Calendar.getInstance();
         year=(""+calendar.get(Calendar.YEAR)).substring(2, 4);
@@ -476,9 +476,9 @@ public class Main extends android.support.v4.app.Fragment {
 
     public void loadlist(String path, boolean back) {
         if(mActionMode!=null){mActionMode.finish();}
-        if(current.startsWith("smb:/"))
+        if(path.startsWith("smb:/"))
             try {
-                loadSmblist(new SmbFile(current),false);
+                loadSmblist(new SmbFile(path),false);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -662,6 +662,8 @@ public class Main extends android.support.v4.app.Fragment {
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
             mainActivity.setPagingEnabled(false);
+            mainActivity.floatingActionButton.animate();
+            mainActivity.floatingActionButton.setVisibility(View.GONE);
             if(mainActivity.isDrawerLocked)mainActivity.translateDrawerList(true);
             // assumes that you have "contexual.xml" menu resources
             inflater.inflate(R.menu.contextual, menu);
@@ -926,15 +928,23 @@ public class Main extends android.support.v4.app.Fragment {
                 case R.id.rename:
 
                     final ActionMode m = mode;
-                    final File f;
-                      f= new File(list.get(
+                    final String f;
+                      f= (list.get(
                             (plist.get(0))).getDesc());
                     View dialog = getActivity().getLayoutInflater().inflate(
                             R.layout.dialog, null);
                     MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
                     final EditText edit = (EditText) dialog
                             .findViewById(R.id.newname);
-                    edit.setText(f.getName());
+                    String name="";
+                    if(smbMode) {
+                        try {
+                            name = new SmbFile(f).getName();
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                    }else new File(f).getName();
+                    edit.setText(name);
                     a.customView(dialog, true);
                     if(theme1==1)
                         a.theme(Theme.DARK);
@@ -944,7 +954,18 @@ public class Main extends android.support.v4.app.Fragment {
                         @Override
                         public void onPositive(MaterialDialog materialDialog) {
                         m.finish();
-                            mainActivity.rename((f),new File(f.getParent()+"/"+edit.getText()));
+                            String name=edit.getText().toString();
+                            try {
+                                if(new SmbFile(f).isDirectory() && !name.endsWith("/"))name=name+"/";
+                            } catch (SmbException e) {
+                                e.printStackTrace();
+                            } catch (MalformedURLException e) {
+                                e.printStackTrace();
+                            }
+                            if(smbMode)
+                                mainActivity.rename(f,current+edit.getText());
+                            else
+                            mainActivity.rename((f),(current+"/"+edit.getText()));
 
                         }
 
@@ -968,7 +989,7 @@ public class Main extends android.support.v4.app.Fragment {
                 case R.id.book:
                       for (int i1 = 0; i1 < plist.size(); i1++) {
                             try {
-                                sh.addS(new File(list.get(plist.get(i1)).getDesc()));
+                                sh.addS((list.get(plist.get(i1)).getDesc()));
                             } catch (Exception e) {
                             }
                         }
@@ -1027,6 +1048,8 @@ public class Main extends android.support.v4.app.Fragment {
             mActionMode = null;
             selection = false;
             if(mainActivity.isDrawerLocked)mainActivity.translateDrawerList(false);
+
+            mainActivity.floatingActionButton.setVisibility(View.VISIBLE);
             if(!results)adapter.toggleChecked(false, current);
             else adapter.toggleChecked(false);
             mainActivity.setPagingEnabled(true);
@@ -1066,7 +1089,7 @@ public class Main extends android.support.v4.app.Fragment {
             else{
             if(smbMode)
                 try {
-                    if (!current.equals(smbPath))
+                    if (!mainActivity.Servers.contains(current))
                     {String path=(new SmbFile(current).getParent());
                     loadSmblist(new SmbFile(path), true);
                 }else loadlist(home,false);} catch (MalformedURLException e) {
@@ -1250,15 +1273,14 @@ public class Main extends android.support.v4.app.Fragment {
         try {
             String yourPeerIP=auth[0];
             String path = "smb://"+(anonym?"":(Uri.encode(auth[1]+":"+auth[2])+"@") )+ yourPeerIP+"/";
-            System.out.println(path);
             smbPath=path;
             smbUser=auth[1];
             smbPass=auth[2];
             SmbFile smbFile=new SmbFile(path);
+            System.out.println(smbFile.getPath());
             return smbFile;
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("Connected1", e.getMessage());
             return null;
         }
     }

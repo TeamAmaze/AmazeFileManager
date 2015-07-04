@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.ZipViewer;
-import com.amaze.filemanager.utils.ZipObj;
+import com.amaze.filemanager.ui.ZipObj;
 
 import java.io.File;
 import java.util.ArrayList;

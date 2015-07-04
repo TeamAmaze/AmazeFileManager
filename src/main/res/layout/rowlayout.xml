@@ -45,7 +45,7 @@
             android:scaleType="centerCrop"
             android:layout_gravity="center"
             android:id="@+id/bicon"/>
-        <com.amaze.filemanager.utils.RoundedImageView
+        <com.amaze.filemanager.ui.views.RoundedImageView
             android:id="@+id/cicon"
             android:layout_width="40dp"
             android:layout_height="40dp"

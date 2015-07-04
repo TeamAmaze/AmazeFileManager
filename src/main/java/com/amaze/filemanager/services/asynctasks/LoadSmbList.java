@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.FileListSorter;
-import com.amaze.filemanager.utils.Layoutelements;
+import com.amaze.filemanager.ui.Layoutelements;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +56,11 @@ public class LoadSmbList extends AsyncTask<SmbFile, String, ArrayList<Layoutelem
 
     @Override
     public void onProgressUpdate(String... message) {
-        Toast.makeText(ma.getActivity(), message[0], Toast.LENGTH_LONG).show();
+        try {
+            Toast.makeText(ma.getActivity(), message[0], Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -69,7 +73,6 @@ public class LoadSmbList extends AsyncTask<SmbFile, String, ArrayList<Layoutelem
         ma.list=new ArrayList<Layoutelements>();
         try {
             SmbFile[] smbFile =f.listFiles();
-           Log.e("Connected","arpit"+smbFile.length);
             ma.list=ma.addToSmb(smbFile);
             Collections.sort(ma.list,new FileListSorter(ma.dsort,ma.sortby,ma.asc,ma.rootMode));
             return ma.list;

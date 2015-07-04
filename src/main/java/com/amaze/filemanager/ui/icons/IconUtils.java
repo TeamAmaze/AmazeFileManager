@@ -17,13 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.ui.icons;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.PreferenceUtils;
 
 public class IconUtils {
     int LIGHT = 0, DARK = 1, CURRENT, rand;

@@ -42,7 +42,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.IconUtils;
+import com.amaze.filemanager.ui.icons.IconUtils;
 
 import java.util.ArrayList;
 

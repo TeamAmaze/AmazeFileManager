@@ -47,8 +47,8 @@ import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.IconHolder;
-import com.amaze.filemanager.utils.Layoutelements;
+import com.amaze.filemanager.ui.icons.IconHolder;
+import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.utils.PreferenceUtils;
 
 import java.io.File;

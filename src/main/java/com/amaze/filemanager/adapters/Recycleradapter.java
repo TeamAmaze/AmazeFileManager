@@ -19,10 +19,10 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.Main;
-import com.amaze.filemanager.utils.Icons;
-import com.amaze.filemanager.utils.Layoutelements;
-import com.amaze.filemanager.utils.MimeTypes;
-import com.amaze.filemanager.utils.RoundedImageView;
+import com.amaze.filemanager.ui.icons.Icons;
+import com.amaze.filemanager.ui.Layoutelements;
+import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.io.File;

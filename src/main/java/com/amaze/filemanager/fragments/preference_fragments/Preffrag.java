@@ -385,12 +385,10 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
         preference3.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setType("plain/text");
-                intent.setData(Uri.parse("arpitkh96@gmail.com"));
-                intent.setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
-                startActivity(intent);
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto","arpitkh96@gmail.com", null));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
+                startActivity(Intent.createChooser(emailIntent,getResources().getString(R.string.feedback)));
                 return false;
             }
         });

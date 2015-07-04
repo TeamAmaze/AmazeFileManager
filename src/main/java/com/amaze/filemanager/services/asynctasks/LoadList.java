@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.FileListSorter;
-import com.amaze.filemanager.utils.Layoutelements;
+import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.utils.RootHelper;
 
 import java.io.File;

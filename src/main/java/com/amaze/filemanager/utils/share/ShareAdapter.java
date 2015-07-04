@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.utils.IconHolder;
+import com.amaze.filemanager.ui.icons.IconHolder;
 
 import java.util.ArrayList;
 

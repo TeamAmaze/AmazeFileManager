@@ -56,11 +56,11 @@ import com.amaze.filemanager.adapters.ZipAdapter;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
-import com.amaze.filemanager.utils.DividerItemDecoration;
+import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HidingScrollListener;
-import com.amaze.filemanager.utils.SpacesItemDecoration;
-import com.amaze.filemanager.utils.ZipObj;
+import com.amaze.filemanager.ui.views.SpacesItemDecoration;
+import com.amaze.filemanager.ui.ZipObj;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
