@@ -6,6 +6,7 @@ package com.amaze.filemanager.services.asynctasks;
 import android.os.AsyncTask;
 
 import com.amaze.filemanager.fragments.RarViewer;
+import com.amaze.filemanager.utils.Futils;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
 
@@ -31,7 +32,6 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
     @Override
     protected ArrayList<FileHeader> doInBackground(File... params) {
         ArrayList<FileHeader> elements = new ArrayList<FileHeader>();
-
         try {
             Archive zipfile = new Archive(params[0]);
             zipViewer.archive=zipfile;

@@ -404,7 +404,7 @@ public String getSize(File f) {
         name = getString(c.getActivity(), R.string.name) + f.getName();
         parent = getString(c.getActivity(), R.string.location) + f.getParent();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c.getActivity());
-        String fabskin = sp.getString("fab_skin_color", "#e91e63");
+        String fabskin = PreferenceUtils.getColor(sp.getInt("fab_skin_color_position", 1));
         MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
         a.title(getString(c.getActivity(), R.string.properties));
         if(c.theme1==1)
@@ -435,7 +435,7 @@ public String getSize(File f) {
         name = getString(c, R.string.name) + f.getName();
         parent = getString(c, R.string.location) + f.getParent();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
-        String fabskin = sp.getString("fab_skin_color", "#e91e63");
+        String fabskin = PreferenceUtils.getColor(sp.getInt("fab_skin_color_position", 1));
         MaterialDialog.Builder a = new MaterialDialog.Builder(c);
         a.title(getString(c, R.string.properties));
         if(theme1==1)
@@ -725,7 +725,7 @@ public void showPackageDialog(final File f,final MainActivity m){
 
                 m.Sp.edit().putString("sortbyApps", "" + which).commit();
                 m.getSortModes();
-                m.loadlist();
+                m.loadlist(false);
                 dialog.dismiss();
                 return true;
             }

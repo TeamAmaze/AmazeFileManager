@@ -54,14 +54,13 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import com.stericson.RootTools.RootTools;
 import java.util.ArrayList;
 
-public class Preffrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+public class Preffrag extends PreferenceFragment  {
     int theme;
     SharedPreferences sharedPref;
     String skin;
     private int COUNT = 0;
     private Toast toast;
     private final String TAG = getClass().getName();
-    private String fabSkin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,8 +70,6 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
         addPreferencesFromResource(R.xml.preferences);
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        skin = sharedPref.getString("skin_color", "#3f51b5");
-        fabSkin = sharedPref.getString("fab_skin_color", "#e91e63");
 
         final int th1 = Integer.parseInt(sharedPref.getString("theme", "0"));
         theme = th1==2 ? PreferenceUtils.hourOfDay() : th1;
@@ -235,7 +232,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
             public boolean onPreferenceClick(Preference preference) {
 
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                skin = sharedPref.getString("skin_color", "#03A9F4");
+                skin = PreferenceUtils.getColor(sharedPref.getInt("skin_color_position", 4));
                 if(theme==1)
                     a.theme(Theme.DARK);
 
@@ -444,71 +441,4 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
         activity.startActivity(activity.getIntent());
     }
 
-    @Override
-    public boolean onPreferenceClick(Preference preference) {
-
-        final MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-        a.positiveText(R.string.cancel);
-        a.title(R.string.choose_color);
-        if(theme==1)
-            a.theme(Theme.DARK);
-
-        a.autoDismiss(true);
-        ColorAdapter adapter = null;
-        ArrayList<String> arrayList = new ArrayList<>();
-        for(String c : getResources().getStringArray(R.array.material_primary_color_codes)) {
-            arrayList.add(c);
-        }
-        switch (preference.getKey()) {
-            case "skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "skin_color","skin");
-                break;
-            case "fab_skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "fab_skin_color","skin");
-                break;
-            case "icon_skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "icon_skin_color","skin");
-                break;
-        }
-        GridView v=(GridView)getActivity().getLayoutInflater().inflate(R.layout.dialog_grid,null);
-        v.setAdapter(adapter);
-        a.customView(v,false);
-        MaterialDialog x=a.build();
-
-        x.show();
-        return false;
-    }
-
-    class ColorAdapter extends ArrayAdapter<String> {
-
-        String pref,pref1;
-        String[] strings;
-        final String[] colors;
-        public ColorAdapter(Context context, ArrayList<String> arrayList, String pref, String pref1) {
-            super(context, R.layout.rowlayout, arrayList);
-            strings = getResources().getStringArray(R.array.skin);
-            this.pref = pref;
-            this.pref1 = pref1;
-            colors= getResources().getStringArray(R.array.material_primary_color_codes);
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-
-            LayoutInflater inflater = (LayoutInflater)getContext()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            ImageView rowView =(ImageView) inflater.inflate(R.layout.dialog_grid_item, parent, false);
-            GradientDrawable gradientDrawable = (GradientDrawable) rowView.getBackground();
-            gradientDrawable.setColor(Color.parseColor(colors[position]));
-            rowView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    sharedPref.edit().putString(pref,colors[position]).apply();
-                    sharedPref.edit().putString(pref1,""+position).apply();
-                    restartPC(getActivity());
-                }
-            });
-            return rowView;
-        }
-    }
 }

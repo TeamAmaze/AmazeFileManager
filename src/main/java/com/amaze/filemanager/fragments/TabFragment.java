@@ -79,22 +79,24 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 } catch (Exception e) {
                    // e.printStackTrace();
                 }
-                String name=fragments.get(p1).getClass().getName();
-                if(name.contains("Main")){
-                    Main ma = ((Main) fragments.get(p1));
-                    if (ma.current != null) {
-                        try {
-                            mainActivity.updateDrawer(ma.current);
-                            mainActivity.updatePath(ma.current,true,ma.results);
-                        if(buttons.getVisibility()==View.VISIBLE){
-                            mainActivity.bbar(ma);
-                        }
-                        } catch (Exception e) {
-                            //       e.printStackTrace();5
+                Fragment fragment=fragments.get(p1);
+                if(fragment!=null) {
+                    String name = fragments.get(p1).getClass().getName();
+                    if (name!=null && name.contains("Main")) {
+                        Main ma = ((Main) fragments.get(p1));
+                        if (ma.current != null) {
+                            try {
+                                mainActivity.updateDrawer(ma.current);
+                                mainActivity.updatePath(ma.current, true, ma.results);
+                                if (buttons.getVisibility() == View.VISIBLE) {
+                                    mainActivity.bbar(ma);
+                                }
+                            } catch (Exception e) {
+                                //       e.printStackTrace();5
+                            }
                         }
                     }
                 }
-
             }
 
             public void onPageScrollStateChanged(int p1) {
@@ -241,38 +243,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 return index;
         }
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            try {
-                String name=fragments.get(position).getClass().getName();
-                if(name.contains("Main")){
-                Main ma = ((Main) fragments.get(position));
-                if (ma.results) {
-                    return utils.getString(getActivity(), R.string.searchresults);
-                } else {
-                    if (ma.current.equals("/")) {
-                        return "Root";
-                    } else {
-                        return new File(ma.current).getName();
-                    }
-                }}else if(name.contains("ZipViewer")) {
-                    ZipViewer ma = ((ZipViewer) fragments.get(position));
-
-                    try {
-                        return ma.f.getName();
-                    } catch (Exception e) {
-                        return "ZipViewer";
-                      //  e.printStackTrace();
-                    }
-
-                }
-                return fragments.get(position).getClass().getName();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "";
-            }
-        }
-
         public int getCount() {
             // TODO: Implement this method
             return fragments.size();
@@ -291,6 +261,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
     }
 
     public void addTab(Tab text,int pos,String path) {
+        if(text==null)return;
         android.support.v4.app.Fragment main = new Main();
         Bundle b = new Bundle();
         if(path!=null && path.length()!=0)

@@ -104,6 +104,7 @@ public class IconHolder {
      * @param useThumbs If thumbs of images, videos, apps, ... should be returned
      * instead of the default icon.
      */
+    int px;
     public IconHolder(Context context, boolean useThumbs,boolean grid) {
         super();
         this.mContext = context;
@@ -119,6 +120,11 @@ public class IconHolder {
         };
         this.mAlbums = new HashMap<String, Long>();
         this.grid=grid;
+        Resources res=mContext.getResources();
+        int dp=50;
+        if(grid){dp=150;}
+        px = (int)(dp * (res.getDisplayMetrics().densityDpi / 160));
+
     }
 
     /**
@@ -241,19 +247,17 @@ public class IconHolder {
         return bitsat;
         }
 
-
+    Futils futils=new Futils();
 		public Bitmap loadImage(String path) throws OutOfMemoryError{
 			Bitmap bitsat;
-            Resources res=mContext.getResources();
-            int dp=50;
-            if(grid){dp=150;}
-            int px = (int)(dp * (res.getDisplayMetrics().densityDpi / 160));
-			try {
+
+            try {
 				BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig= Bitmap.Config.ARGB_8888;
 				options.inJustDecodeBounds = true;
 				Bitmap b = BitmapFactory.decodeFile(path, options);
 				
-				options.inSampleSize = new Futils().calculateInSampleSize(options, px, px);
+				options.inSampleSize =futils .calculateInSampleSize(options, px, px);
 
 				// Decode bitmap with inSampleSize set
 				options.inJustDecodeBounds = false;

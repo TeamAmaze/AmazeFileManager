@@ -129,13 +129,17 @@ import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -155,12 +159,12 @@ public class MainActivity extends AppCompatActivity implements
     public List<String> val;
     ArrayList<String> books;
     public ArrayList<String> Servers;
-    MainActivity mainActivity=this;
+    MainActivity mainActivity = this;
     DrawerAdapter adapter;
     IconUtils util;
     public ScrimInsetsRelativeLayout mDrawerLinear;
-    Shortcuts s,servers;
-    public String skin,path="", launchPath;
+    Shortcuts s, servers;
+    public String skin, path = "", launchPath;
     public int theme;
     public ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
     Context con = this;
@@ -170,16 +174,16 @@ public class MainActivity extends AppCompatActivity implements
     private static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     public ArrayList<Item> list;
     public int theme1;
-    public boolean rootmode,aBoolean,openzip=false;
+    public boolean rootmode, aBoolean, openzip = false;
     String zippath;
     public Spinner tabsSpinner;
-    public boolean mRingtonePickerIntent = false,restart=false,colourednavigation=false;
+    public boolean mRingtonePickerIntent = false, restart = false, colourednavigation = false;
     public Toolbar toolbar;
     public int skinStatusBar;
     FragmentTransaction pending_fragmentTransaction;
     String pending_path;
-    boolean openprocesses=false;
-    public int storage_count=0;
+    boolean openprocesses = false;
+    public int storage_count = 0;
     private GoogleApiClient mGoogleApiClient;
     private View drawerHeaderLayout;
     private View drawerHeaderView;
@@ -201,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements
     private RelativeLayout drawerHeaderParent;
     int operation;
     ArrayList<String> oparrayList;
-    String oppathe,oppathe1;
+    String oppathe, oppathe1;
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
 
@@ -211,9 +215,10 @@ public class MainActivity extends AppCompatActivity implements
     /* A flag indicating that a PendingIntent is in progress and prevents
    * us from starting further intents.
    */
-    private boolean mIntentInProgress,topfab=false,showHidden=false;
+    private boolean mIntentInProgress, topfab = false, showHidden = false;
     public boolean isDrawerLocked = false;
-    static final int DELETE=0,COPY=1,MOVE=2,NEW_FOLDER=3,RENAME=4,NEW_FILE=5,EXTRACT=6,COMPRESS=7;
+    static final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3, RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
+
     /**
      * Called when the activity is first created.
      */
@@ -228,142 +233,142 @@ public class MainActivity extends AppCompatActivity implements
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         int th = Integer.parseInt(Sp.getString("theme", "0"));
-        theme1 = th==2 ? PreferenceUtils.hourOfDay() : th;
+        theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
 
-        fabskin = Sp.getString("fab_skin_color", "#e91e63");
+        fabskin = PreferenceUtils.getColor(Sp.getInt("fab_skin_color_position", 1));
 
         // setting accent theme
         if (Build.VERSION.SDK_INT >= 21) {
 
             switch (fabskin) {
                 case "#F44336":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_red);
                     else
                         setTheme(R.style.pref_accent_dark_red);
                     break;
 
                 case "#e91e63":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_pink);
                     else
                         setTheme(R.style.pref_accent_dark_pink);
                     break;
 
                 case "#9c27b0":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_purple);
                     else
                         setTheme(R.style.pref_accent_dark_purple);
                     break;
 
                 case "#673ab7":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_deep_purple);
                     else
                         setTheme(R.style.pref_accent_dark_deep_purple);
                     break;
 
                 case "#3f51b5":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_indigo);
                     else
                         setTheme(R.style.pref_accent_dark_indigo);
                     break;
 
                 case "#2196F3":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_blue);
                     else
                         setTheme(R.style.pref_accent_dark_blue);
                     break;
 
                 case "#03A9F4":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_light_blue);
                     else
                         setTheme(R.style.pref_accent_dark_light_blue);
                     break;
 
                 case "#00BCD4":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_cyan);
                     else
                         setTheme(R.style.pref_accent_dark_cyan);
                     break;
 
                 case "#009688":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_teal);
                     else
                         setTheme(R.style.pref_accent_dark_teal);
                     break;
 
                 case "#4CAF50":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_green);
                     else
                         setTheme(R.style.pref_accent_dark_green);
                     break;
 
                 case "#8bc34a":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_light_green);
                     else
                         setTheme(R.style.pref_accent_dark_light_green);
                     break;
 
                 case "#FFC107":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_amber);
                     else
                         setTheme(R.style.pref_accent_dark_amber);
                     break;
 
                 case "#FF9800":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_orange);
                     else
                         setTheme(R.style.pref_accent_dark_orange);
                     break;
 
                 case "#FF5722":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_deep_orange);
                     else
                         setTheme(R.style.pref_accent_dark_deep_orange);
                     break;
 
                 case "#795548":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_brown);
                     else
                         setTheme(R.style.pref_accent_dark_brown);
                     break;
 
                 case "#212121":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_black);
                     else
                         setTheme(R.style.pref_accent_dark_black);
                     break;
 
                 case "#607d8b":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_blue_grey);
                     else
                         setTheme(R.style.pref_accent_dark_blue_grey);
                     break;
 
                 case "#004d40":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_super_su);
                     else
                         setTheme(R.style.pref_accent_dark_super_su);
                     break;
             }
         } else {
-            if (theme1==1) {
+            if (theme1 == 1) {
                 setTheme(R.style.appCompatDark);
             } else {
                 setTheme(R.style.appCompatLight);
@@ -371,21 +376,21 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         setContentView(R.layout.main_toolbar);
-        tabHandler=new TabHandler(this,null,null,1);
+        tabHandler = new TabHandler(this, null, null, 1);
 
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
         fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
 
-        boolean random=Sp.getBoolean("random_checkbox",false);
-        if(random)
-            skin=PreferenceUtils.random(Sp);
+        boolean random = Sp.getBoolean("random_checkbox", false);
+        if (random)
+            skin = PreferenceUtils.random(Sp);
         else
-            skin = Sp.getString("skin_color", "#3f51b5");
+            skin = PreferenceUtils.getColor(Sp.getInt("skin_color_position", 4));
 
-        hidemode=Sp.getInt("hidemode", 0);
-        topfab = hidemode==0 ? Sp.getBoolean("topFab",true):false;
-        showHidden=Sp.getBoolean("showHidden", false);
-       floatingActionButton = !topfab ?
+        hidemode = Sp.getInt("hidemode", 0);
+        topfab = hidemode == 0 ? Sp.getBoolean("topFab", true) : false;
+        showHidden = Sp.getBoolean("showHidden", false);
+        floatingActionButton = !topfab ?
                 (FloatingActionsMenu) findViewById(R.id.right_labels) : (FloatingActionsMenu) findViewById(R.id.right_top_labels);
         fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
         fabHideAnim = AnimationUtils.loadAnimation(this, R.anim.fab_hide);
@@ -393,24 +398,24 @@ public class MainActivity extends AppCompatActivity implements
         floatingActionButton.animate();
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.setColors(Color.parseColor(fabskin), Color.parseColor(fabSkinPressed));
-        if(theme1==1)floatingActionButton.setLabelsStyle(R.drawable.fab_label_background);
+        if (theme1 == 1) floatingActionButton.setLabelsStyle(R.drawable.fab_label_background);
         floatingActionButton.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 floatingActionButton.toggle();
-                View v= findViewById(R.id.fab_bg);
-                if(floatingActionButton.isExpanded())revealShow(v,true);
-                else revealShow(v,false);
+                View v = findViewById(R.id.fab_bg);
+                if (floatingActionButton.isExpanded()) revealShow(v, true);
+                else revealShow(v, false);
             }
         });
-        View v= findViewById(R.id.fab_bg);
-        if(theme1==1)
+        View v = findViewById(R.id.fab_bg);
+        if (theme1 == 1)
             v.setBackgroundColor(Color.parseColor("#73000000"));
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 floatingActionButton.collapse();
-                revealShow(view,false);
+                revealShow(view, false);
             }
         });
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
@@ -446,10 +451,10 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         utils = new Futils();
-        s = new Shortcuts(this,"shortcut.xml");
-        servers=new Shortcuts(this,"servers.xml");
+        s = new Shortcuts(this, "shortcut.xml");
+        servers = new Shortcuts(this, "servers.xml");
         path = getIntent().getStringExtra("path");
-        openprocesses=getIntent().getBooleanExtra("openprocesses", false);
+        openprocesses = getIntent().getBooleanExtra("openprocesses", false);
         restart = getIntent().getBooleanExtra("restart", false);
 
 
@@ -465,10 +470,10 @@ public class MainActivity extends AppCompatActivity implements
         scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
         scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
-        FloatingActionButton floatingActionButton1=floatingActionButton.getButtonAt(0);
-        String folder_skin=Sp.getString("icon_skin", "#3f51b5");
-        int folderskin=  Color.parseColor(folder_skin);
-        int fabskinpressed=Color.parseColor(PreferenceUtils.getStatusColor(folder_skin));
+        FloatingActionButton floatingActionButton1 = floatingActionButton.getButtonAt(0);
+        String folder_skin = PreferenceUtils.getColor(Sp.getInt("icon_skin_position", 4));
+        int folderskin = Color.parseColor(folder_skin);
+        int fabskinpressed = Color.parseColor(PreferenceUtils.getStatusColor(folder_skin));
         floatingActionButton1.setColorNormal(folderskin);
         floatingActionButton1.setColorPressed(fabskinpressed);
         floatingActionButton1.setOnClickListener(new View.OnClickListener() {
@@ -479,7 +484,7 @@ public class MainActivity extends AppCompatActivity implements
                 floatingActionButton.collapse();
             }
         });
-        FloatingActionButton floatingActionButton2=floatingActionButton.getButtonAt(1);
+        FloatingActionButton floatingActionButton2 = floatingActionButton.getButtonAt(1);
         floatingActionButton2.setColorNormal(folderskin);
         floatingActionButton2.setColorPressed(fabskinpressed);
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
@@ -489,14 +494,15 @@ public class MainActivity extends AppCompatActivity implements
                 revealShow(findViewById(R.id.fab_bg), false);
                 floatingActionButton.collapse();
             }
-        });FloatingActionButton floatingActionButton3=floatingActionButton.getButtonAt(2);
+        });
+        FloatingActionButton floatingActionButton3 = floatingActionButton.getButtonAt(2);
         floatingActionButton3.setColorNormal(folderskin);
         floatingActionButton3.setColorPressed(fabskinpressed);
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 add(2);
-                revealShow(findViewById(R.id.fab_bg),false);
+                revealShow(findViewById(R.id.fab_bg), false);
                 floatingActionButton.collapse();
             }
         });
@@ -517,10 +523,11 @@ public class MainActivity extends AppCompatActivity implements
         //title = (TextView) findViewById(R.id.title);
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
 
-        timer=new CountDownTimer(5000,1000) {
+        timer = new CountDownTimer(5000, 1000) {
             @Override
             public void onTick(long l) {
             }
+
             @Override
             public void onFinish() {
                 crossfadeInverse();
@@ -557,12 +564,12 @@ public class MainActivity extends AppCompatActivity implements
         skinStatusBar = Color.parseColor(PreferenceUtils.getStatusColor(skin));
 
         mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
-        if(theme1==1)mDrawerLinear.setBackgroundColor(Color.parseColor("#303030"));
+        if (theme1 == 1) mDrawerLinear.setBackgroundColor(Color.parseColor("#303030"));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
-        if(((ViewGroup.MarginLayoutParams)findViewById(R.id.main_frame).getLayoutParams()).leftMargin == (int)getResources().getDimension(R.dimen.drawer_width)) {
+        if (((ViewGroup.MarginLayoutParams) findViewById(R.id.main_frame).getLayoutParams()).leftMargin == (int) getResources().getDimension(R.dimen.drawer_width)) {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, mDrawerLinear);
             mDrawerLayout.setScrimColor(Color.TRANSPARENT);
             isDrawerLocked = true;
@@ -576,16 +583,16 @@ public class MainActivity extends AppCompatActivity implements
             tintManager.setStatusBarTintColor(Color.parseColor(skin));
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
-            if(!isDrawerLocked)p.setMargins(0, config.getStatusBarHeight(), 0, 0);
+            if (!isDrawerLocked) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (Build.VERSION.SDK_INT >= 21) {
             colourednavigation = Sp.getBoolean("colorednavigation", true);
 
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             //window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            if(isDrawerLocked) {
+            if (isDrawerLocked) {
                 window.setStatusBarColor((skinStatusBar));
-            }else window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            } else window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             if (colourednavigation)
                 window.setNavigationBarColor(skinStatusBar);
 
@@ -595,26 +602,28 @@ public class MainActivity extends AppCompatActivity implements
         if (theme1 == 1) {
             settingsbutton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) settingsbutton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
-            ((TextView)settingsbutton.findViewById(R.id.settingtext)).setTextColor(getResources().getColor(android.R.color.white));
+            ((TextView) settingsbutton.findViewById(R.id.settingtext)).setTextColor(getResources().getColor(android.R.color.white));
         }
         settingsbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent in = new Intent(MainActivity.this, Preferences.class);
-                finish(); final int enter_anim = android.R.anim.fade_in;
+                finish();
+                final int enter_anim = android.R.anim.fade_in;
                 final int exit_anim = android.R.anim.fade_out;
-                Activity s=MainActivity.this;
-                s.overridePendingTransition( exit_anim,enter_anim);
+                Activity s = MainActivity.this;
+                s.overridePendingTransition(exit_anim, enter_anim);
                 s.finish();
                 s.overridePendingTransition(enter_anim, exit_anim);
-                s.startActivity(in); }
+                s.startActivity(in);
+            }
 
         });
         View appbutton = findViewById(R.id.appbutton);
         if (theme1 == 1) {
             appbutton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_action_view_as_grid);
-            ((TextView)appbutton.findViewById(R.id.apptext)).setTextColor(getResources().getColor(android.R.color.white));
+            ((TextView) appbutton.findViewById(R.id.apptext)).setTextColor(getResources().getColor(android.R.color.white));
         }
         appbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -642,7 +651,7 @@ public class MainActivity extends AppCompatActivity implements
                 transaction.replace(R.id.content_frame, new ProcessViewer());
                 //   transaction.addToBackStack(null);
                 select = 102;
-                openprocesses=false;
+                openprocesses = false;
                 //title.setText(utils.getString(con, R.string.process_viewer));
                 //Commit the transaction
                 transaction.commit();
@@ -651,10 +660,10 @@ public class MainActivity extends AppCompatActivity implements
                 goToMain(path);
             }
         } else {
-            oppathe=savedInstanceState.getString("oppathe");
-            oppathe1=savedInstanceState.getString("oppathe1");
-            ArrayList<String> k=savedInstanceState.getStringArrayList("oparrayList");
-            if(k!=null) {
+            oppathe = savedInstanceState.getString("oppathe");
+            oppathe1 = savedInstanceState.getString("oppathe1");
+            ArrayList<String> k = savedInstanceState.getStringArrayList("oparrayList");
+            if (k != null) {
                 oparrayList = (k);
                 operation = savedInstanceState.getInt("operation");
             }
@@ -674,24 +683,24 @@ public class MainActivity extends AppCompatActivity implements
             //title.setVisibility(View.VISIBLE);
             tabsSpinner.setVisibility(View.GONE);
         }
-        if(!isDrawerLocked) {
+        if (!isDrawerLocked) {
             mDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                toolbar,  /* nav drawer image to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description for accessibility */
-                R.string.drawer_close  /* "close drawer" description for accessibility */
-        ) {
-            public void onDrawerClosed(View view) {
-              mainActivity.onDrawerClosed();
-            }
+                    this,                  /* host Activity */
+                    mDrawerLayout,         /* DrawerLayout object */
+                    toolbar,  /* nav drawer image to replace 'Up' caret */
+                    R.string.drawer_open,  /* "open drawer" description for accessibility */
+                    R.string.drawer_close  /* "close drawer" description for accessibility */
+            ) {
+                public void onDrawerClosed(View view) {
+                    mainActivity.onDrawerClosed();
+                }
 
-            public void onDrawerOpened(View drawerView) {
-                //title.setText("Amaze File Manager");
-                // creates call to onPrepareOptionsMenu()
-                supportInvalidateOptionsMenu();
-            }
-        };
+                public void onDrawerOpened(View drawerView) {
+                    //title.setText("Amaze File Manager");
+                    // creates call to onPrepareOptionsMenu()
+                    supportInvalidateOptionsMenu();
+                }
+            };
             mDrawerLayout.setDrawerListener(mDrawerToggle);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -705,9 +714,9 @@ public class MainActivity extends AppCompatActivity implements
             }
         });*/
         //recents header color implementation
-        if (Build.VERSION.SDK_INT>=21) {
-            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
-            ((Activity)this).setTaskDescription(taskDescription);
+        if (Build.VERSION.SDK_INT >= 21) {
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
+            ((Activity) this).setTaskDescription(taskDescription);
         }
     }
 
@@ -720,9 +729,9 @@ public class MainActivity extends AppCompatActivity implements
      *
      * @return paths to all available SD-Cards in the system (include emulated)
      */
-    public  List<String> getStorageDirectories() {
+    public List<String> getStorageDirectories() {
         // Final set of paths
-        final ArrayList<String> rv=new ArrayList<String>();
+        final ArrayList<String> rv = new ArrayList<String>();
         // Primary physical SD-CARD (not emulated)
         final String rawExternalStorage = System.getenv("EXTERNAL_STORAGE");
         // All Secondary SD-CARDs (all exclude primary) separated by ":"
@@ -767,11 +776,12 @@ public class MainActivity extends AppCompatActivity implements
             // All Secondary SD-CARDs splited into array
             final String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
             Collections.addAll(rv, rawSecondaryStorages);
-        }rootmode = Sp.getBoolean("rootmode", false);
-        if(rootmode)
+        }
+        rootmode = Sp.getBoolean("rootmode", false);
+        if (rootmode)
             rv.add("/");
-        File usb=getUsbDrive();
-        if(usb!=null && !rv.contains(usb.getPath()))rv.add(usb.getPath());
+        File usb = getUsbDrive();
+        if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
 
         return rv;
     }
@@ -787,78 +797,84 @@ public class MainActivity extends AppCompatActivity implements
             }
         } else onbackpressed();
     }
-    void onbackpressed(){try {
 
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-        String name = fragment.getClass().getName();
-        if (name.contains("TabFragment")) {
-            if(floatingActionButton.isExpanded()){
-                floatingActionButton.collapse();
-                revealShow(findViewById(R.id.fab_bg), false);
-            }
-            else{TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
-            Fragment fragment1 = tabFragment.getTab();
-            Main main = (Main) fragment1;
-            main.goBack();
-        } }else if (name.contains("ZipViewer")){
-            ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-            if(zipViewer.mActionMode==null) {
-                if (zipViewer.cangoBack()) {
+    void onbackpressed() {
+        try {
 
-                    zipViewer.goBack();
-                } else if(openzip) {
-                    openzip=false;
-                    finish();
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+            String name = fragment.getClass().getName();
+            if (name.contains("TabFragment")) {
+                if (floatingActionButton.isExpanded()) {
+                    floatingActionButton.collapse();
+                    revealShow(findViewById(R.id.fab_bg), false);
                 } else {
-
-                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
-                    fragmentTransaction.remove(zipViewer);
-                    fragmentTransaction.commit();
-                    supportInvalidateOptionsMenu();
-
-                    fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
-                    floatingActionButton.setAnimation(fabShowAnim);
-                    floatingActionButton.animate();
-                    floatingActionButton.setVisibility(View.VISIBLE);
+                    TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
+                    Fragment fragment1 = tabFragment.getTab();
+                    Main main = (Main) fragment1;
+                    main.goBack();
                 }
-            } else {
-                zipViewer.mActionMode.finish();
-            }
-        }else if (name.contains("RarViewer")) {
+            } else if (name.contains("ZipViewer")) {
+                ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if (zipViewer.mActionMode == null) {
+                    if (zipViewer.cangoBack()) {
 
-            RarViewer zipViewer = (RarViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-            if(zipViewer.mActionMode==null) {
-                if (zipViewer.cangoBack()) {
+                        zipViewer.goBack();
+                    } else if (openzip) {
+                        openzip = false;
+                        finish();
+                    } else {
 
-                    zipViewer.elements.clear();
-                    zipViewer.goBack();
-                } else if(openzip) {
+                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
+                        fragmentTransaction.remove(zipViewer);
+                        fragmentTransaction.commit();
+                        supportInvalidateOptionsMenu();
 
-                    openzip=false;finish();
+                        fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
+                        floatingActionButton.setAnimation(fabShowAnim);
+                        floatingActionButton.animate();
+                        floatingActionButton.setVisibility(View.VISIBLE);
+                    }
                 } else {
-
-                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
-                    fragmentTransaction.remove(zipViewer);
-                    fragmentTransaction.commit();
-                    supportInvalidateOptionsMenu();
-
-                    fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
-                    floatingActionButton.setAnimation(fabShowAnim);
-                    floatingActionButton.animate();
-                    floatingActionButton.setVisibility(View.VISIBLE);
+                    zipViewer.mActionMode.finish();
                 }
-            } else {
-                zipViewer.mActionMode.finish();
-            }
-        } else if(name.contains("Process")) {
-            finish();
-        } else
+            } else if (name.contains("RarViewer")) {
+
+                RarViewer zipViewer = (RarViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if (zipViewer.mActionMode == null) {
+                    if (zipViewer.cangoBack()) {
+
+                        zipViewer.elements.clear();
+                        zipViewer.goBack();
+                    } else if (openzip) {
+
+                        openzip = false;
+                        finish();
+                    } else {
+
+                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
+                        fragmentTransaction.remove(zipViewer);
+                        fragmentTransaction.commit();
+                        supportInvalidateOptionsMenu();
+
+                        fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
+                        floatingActionButton.setAnimation(fabShowAnim);
+                        floatingActionButton.animate();
+                        floatingActionButton.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    zipViewer.mActionMode.finish();
+                }
+            } else if (name.contains("Process")) {
+                finish();
+            } else
+                goToMain("");
+        } catch (ClassCastException e) {
             goToMain("");
-    } catch (ClassCastException e) {
-        goToMain("");
-    }}
+        }
+    }
+
     public void invalidatePasteButton(MenuItem paste) {
         if (MOVE_PATH != null || COPY_PATH != null) {
             paste.setVisible(true);
@@ -882,36 +898,35 @@ public class MainActivity extends AppCompatActivity implements
             }, 2000);
         }
     }
-    public void updateDrawer(){
-        list=new ArrayList<>();
-        val=getStorageDirectories();
-        books=new ArrayList<>();
-        Servers=new ArrayList<String>();
-        storage_count=0;
-        for (String file:val)
-        {
-            File f=new File(file);
+
+    public void updateDrawer() {
+        list = new ArrayList<>();
+        val = getStorageDirectories();
+        books = new ArrayList<>();
+        Servers = new ArrayList<String>();
+        storage_count = 0;
+        for (String file : val) {
+            File f = new File(file);
             String name;
-            if("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file))
-                name=getResources().getString(R.string.storage);
-            else if("/storage/sdcard1".equals(file))
-                name=getResources().getString(R.string.extstorage);
-            else if("/".equals(file))
-                name=getResources().getString(R.string.rootdirectory);
-            else name=f.getName();
-            if(!f.isDirectory() || f.canExecute())
-            {
+            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file))
+                name = getResources().getString(R.string.storage);
+            else if ("/storage/sdcard1".equals(file))
+                name = getResources().getString(R.string.extstorage);
+            else if ("/".equals(file))
+                name = getResources().getString(R.string.rootdirectory);
+            else name = f.getName();
+            if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                list.add(new EntryItem(name,file));
+                list.add(new EntryItem(name, file));
             }
         }
         list.add(new SectionItem());
-        File f=new File(getFilesDir()+"/servers.xml");
-        if(f.exists()){
+        File f = new File(getFilesDir() + "/servers.xml");
+        if (f.exists()) {
             try {
-                for(String s:servers.readS()){
+                for (String s : servers.readS()) {
                     Servers.add(s);
-                    list.add(new EntryItem(parseSmbPath(s),s));
+                    list.add(new EntryItem(parseSmbPath(s), s));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -920,17 +935,17 @@ public class MainActivity extends AppCompatActivity implements
             } catch (ParserConfigurationException e) {
                 e.printStackTrace();
             }
-            list.add(new SectionItem());
+            if (Servers.size() > 0)
+                list.add(new SectionItem());
         }
 
         try {
-            File f1=new File(getFilesDir()+"/shortcut.xml");
-            if(!f1.exists())s.makeS(true);
-            for(String file: s.readS())
-            {
-                String name=new File(file).getName();
+            File f1 = new File(getFilesDir() + "/shortcut.xml");
+            if (!f1.exists()) s.makeS(true);
+            for (String file : s.readS()) {
+                String name = new File(file).getName();
                 books.add(file);
-                list.add(new EntryItem(name,file));
+                list.add(new EntryItem(name, file));
             }
         } catch (Exception e) {
 
@@ -938,41 +953,44 @@ public class MainActivity extends AppCompatActivity implements
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
     }
+
     public void updateDrawer(String path) {
-        new AsyncTask<String,Void,Integer>(){
+        new AsyncTask<String, Void, Integer>() {
             @Override
             protected Integer doInBackground(String... strings) {
-                String path=strings[0];
-                int k=0,i=0;
+                String path = strings[0];
+                int k = 0, i = 0;
                 for (Item item : list) {
                     if (!item.isSection()) {
-                        if(((EntryItem)item).subtitle.equals(path))
-                           k=i;
+                        if (((EntryItem) item).subtitle.equals(path))
+                            k = i;
                     }
                     i++;
                 }
                 return k;
             }
+
             @Override
-            public void onPostExecute(Integer integers){
-                if(adapter!=null)
+            public void onPostExecute(Integer integers) {
+                if (adapter != null)
                     adapter.toggleChecked(integers);
             }
-        }.executeOnExecutor( AsyncTask.THREAD_POOL_EXECUTOR,path);
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
 
     }
-    public void goToMain(String path){
+
+    public void goToMain(String path) {
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         //title.setText(R.string.app_name);
-        TabFragment tabFragment=new TabFragment();
-        if(path!=null && path.length()>0){
-            Bundle b=new Bundle();
-            b.putString("path",path);
+        TabFragment tabFragment = new TabFragment();
+        if (path != null && path.length() > 0) {
+            Bundle b = new Bundle();
+            b.putString("path", path);
             tabFragment.setArguments(b);
         }
         transaction.replace(R.id.content_frame, tabFragment);
         // Commit the transaction
-        select=0;
+        select = 0;
         transaction.addToBackStack("tabt" + 1);
         transaction.commit();
         toolbar.setTitle(null);
@@ -982,57 +1000,58 @@ public class MainActivity extends AppCompatActivity implements
         floatingActionButton.setAnimation(fabShowAnim);
         floatingActionButton.animate();
         floatingActionButton.setVisibility(View.VISIBLE);
-        if(openzip && zippath!=null) {
-            if(zippath.endsWith(".zip") || zippath.endsWith(".apk"))openZip(zippath);else{openRar(zippath);}zippath=null;
+        if (openzip && zippath != null) {
+            if (zippath.endsWith(".zip") || zippath.endsWith(".apk")) openZip(zippath);
+            else {
+                openRar(zippath);
+            }
+            zippath = null;
         }
     }
+
     public void selectItem(final int i, boolean removeBookmark) {
-        if(!list.get(i).isSection())
+        if (!list.get(i).isSection())
             if ((select == null || select >= list.size()) && !removeBookmark) {
 
-            TabFragment tabFragment=new TabFragment();
-            Bundle a = new Bundle();
-            a.putString("path", ((EntryItem)list.get(i)).subtitle);
-            tabFragment.setArguments(a);
+                TabFragment tabFragment = new TabFragment();
+                Bundle a = new Bundle();
+                a.putString("path", ((EntryItem) list.get(i)).subtitle);
+                tabFragment.setArguments(a);
 
-            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.content_frame, tabFragment);
+                android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.content_frame, tabFragment);
 
-            transaction.addToBackStack("tabt1" + 1);
-            pending_fragmentTransaction=transaction;
-            select = i;
-            adapter.toggleChecked(select);
-            if(!isDrawerLocked)mDrawerLayout.closeDrawer(mDrawerLinear);
-            else onDrawerClosed();
-            fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
-            tabsSpinner.setVisibility(View.VISIBLE);
-            floatingActionButton.setAnimation(fabShowAnim);
-            floatingActionButton.animate();
-            floatingActionButton.setVisibility(View.VISIBLE);
+                transaction.addToBackStack("tabt1" + 1);
+                pending_fragmentTransaction = transaction;
+                select = i;
+                adapter.toggleChecked(select);
+                if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
+                else onDrawerClosed();
+                fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
+                tabsSpinner.setVisibility(View.VISIBLE);
+                floatingActionButton.setAnimation(fabShowAnim);
+                floatingActionButton.animate();
+                floatingActionButton.setVisibility(View.VISIBLE);
 
-        }  else if (removeBookmark) {
+            } else if (removeBookmark) {
                 try {
                     String path = ((EntryItem) list.get(i)).subtitle;
-                    if (path.startsWith("smb:/")) {
-                        servers.removeS(path, MainActivity.this);
-                        Servers.remove(path);
-                    } else {
-                        s.removeS(path, MainActivity.this);
-                        books.remove(path);
-                    }
+                    s.removeS(path, MainActivity.this);
+                    books.remove(path);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 refreshDrawer();
-            select=0;
-        } else {
-            pending_path=((EntryItem)list.get(i)).subtitle;
-            select = i;
-            adapter.toggleChecked(select);
-            if(!isDrawerLocked)mDrawerLayout.closeDrawer(mDrawerLinear);
-            else onDrawerClosed();
+                select = 0;
+            } else {
+                pending_path = ((EntryItem) list.get(i)).subtitle;
+                select = i;
+                adapter.toggleChecked(select);
+                if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
+                else onDrawerClosed();
 
-        }
+            }
 
     }
 
@@ -1048,19 +1067,20 @@ public class MainActivity extends AppCompatActivity implements
         MenuItem s = menu.findItem(R.id.view);
         MenuItem search = menu.findItem(R.id.search);
         MenuItem paste = menu.findItem(R.id.paste);
-        String f= null;
+        String f = null;
         Fragment fragment;
-        try { fragment=getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        try {
+            fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
             f = fragment.getClass().getName();
         } catch (Exception e1) {
             return true;
         }
-        if(f.contains("TabFragment")) {
+        if (f.contains("TabFragment")) {
 
             try {
                 TabFragment tabFragment = (TabFragment) fragment;
-                Main ma=((Main) tabFragment.getTab());
-                updatePath(ma.current, true,ma.results);
+                Main ma = ((Main) tabFragment.getTab());
+                updatePath(ma.current, true, ma.results);
             } catch (Exception e) {
             }
             tabsSpinner.setVisibility(View.VISIBLE);
@@ -1077,23 +1097,23 @@ public class MainActivity extends AppCompatActivity implements
             menu.findItem(R.id.home).setVisible(true);
             menu.findItem(R.id.history).setVisible(true);
             menu.findItem(R.id.item10).setVisible(true);
-            if(showHidden)menu.findItem(R.id.hiddenitems).setVisible(true);
+            if (showHidden) menu.findItem(R.id.hiddenitems).setVisible(true);
             menu.findItem(R.id.view).setVisible(true);
             menu.findItem(R.id.extract).setVisible(false);
             invalidatePasteButton(menu.findItem(R.id.paste));
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
-        } else if(f.contains("AppsList") || f.contains("ProcessViewer")) {
+        } else if (f.contains("AppsList") || f.contains("ProcessViewer")) {
             tabsSpinner.setVisibility(View.GONE);
             findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
             menu.findItem(R.id.extract).setVisible(false);
-            if(f.contains("ProcessViewer"))menu.findItem(R.id.item10).setVisible(false);
+            if (f.contains("ProcessViewer")) menu.findItem(R.id.item10).setVisible(false);
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
-        } else if(f.contains("ZipViewer") || f.contains("RarViewer")) {
+        } else if (f.contains("ZipViewer") || f.contains("RarViewer")) {
             tabsSpinner.setVisibility(View.GONE);
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
@@ -1142,13 +1162,13 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
         // ActionBarDrawerToggle will take care of this.
-        if (mDrawerToggle!=null && mDrawerToggle.onOptionsItemSelected(item)) {
+        if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         // Handle action buttons
-        Main ma=null;
+        Main ma = null;
         try {
-       ma=(Main)getFragment().getTab();
+            ma = (Main) getFragment().getTab();
         } catch (ClassCastException e) {
         }
         switch (item.getItemId()) {
@@ -1162,11 +1182,11 @@ public class MainActivity extends AppCompatActivity implements
                 finish();
                 break;
             case R.id.item10:
-                Fragment fragment=getDFragment();
-                if(fragment .getClass().getName().contains("TabFragment"))
-                utils.showSortDialog(ma);
+                Fragment fragment = getDFragment();
+                if (fragment.getClass().getName().contains("TabFragment"))
+                    utils.showSortDialog(ma);
                 else
-                utils.showSortDialog((AppsList)fragment);
+                    utils.showSortDialog((AppsList) fragment);
                 break;
             case R.id.hiddenitems:
                 utils.showHiddenDialog(ma);
@@ -1195,11 +1215,11 @@ public class MainActivity extends AppCompatActivity implements
                 invalidatePasteButton(item);
                 break;
             case R.id.extract:
-                Fragment fragment1=getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                if(fragment1.getClass().getName().contains("ZipViewer"))
-                    extractFile(((ZipViewer)fragment1).f);
-                else if(fragment1.getClass().getName().contains("RarViewer"))
-                    extractFile(((RarViewer)fragment1).f);
+                Fragment fragment1 = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if (fragment1.getClass().getName().contains("ZipViewer"))
+                    extractFile(((ZipViewer) fragment1).f);
+                else if (fragment1.getClass().getName().contains("RarViewer"))
+                    extractFile(((RarViewer) fragment1).f);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -1209,10 +1229,11 @@ public class MainActivity extends AppCompatActivity implements
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        if(mDrawerToggle!=null)mDrawerToggle.syncState();
+        if (mDrawerToggle != null) mDrawerToggle.syncState();
     }
+
     public void add(int pos) {
-        final Main ma=(Main)((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+        final Main ma = (Main) ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
         switch (pos) {
 
             case 0:
@@ -1235,14 +1256,14 @@ public class MainActivity extends AppCompatActivity implements
                         });
                     }
                 });
-                if(theme1==1)ba1.theme(Theme.DARK);
+                if (theme1 == 1) ba1.theme(Theme.DARK);
                 ba1.positiveText(R.string.create);
                 ba1.negativeText(R.string.cancel);
                 ba1.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
                         String a = edir.getText().toString();
-                        mkDir(path + "/" + a,ma);
+                        mkDir(path + "/" + a, ma);
                     }
 
                     @Override
@@ -1272,7 +1293,7 @@ public class MainActivity extends AppCompatActivity implements
                         });
                     }
                 });
-                if(theme1==1)ba2.theme(Theme.DARK);
+                if (theme1 == 1) ba2.theme(Theme.DARK);
                 ba2.negativeText(R.string.cancel);
                 ba2.positiveText(R.string.create);
                 ba2.callback(new MaterialDialog.ButtonCallback() {
@@ -1280,8 +1301,8 @@ public class MainActivity extends AppCompatActivity implements
                     public void onPositive(MaterialDialog materialDialog) {
                         String a = edir1.getText().toString();
 
-                        mkFile(path1 + "/" + a,ma);
-                       }
+                        mkFile(path1 + "/" + a, ma);
+                    }
 
                     @Override
                     public void onNegative(MaterialDialog materialDialog) {
@@ -1291,61 +1312,18 @@ public class MainActivity extends AppCompatActivity implements
                 ba2.build().show();
                 break;
             case 2:
-                final MaterialDialog.Builder ba3 = new MaterialDialog.Builder(this);
-                ba3.title((R.string.smb_con));
-                final View v2 = getLayoutInflater().inflate(R.layout.smb_dialog, null);
-                final EditText ip = (EditText) v2.findViewById(R.id.editText);
-                final EditText user = (EditText) v2.findViewById(R.id.editText3);
-                final EditText pass = (EditText) v2.findViewById(R.id.editText2);
-                ba3.customView(v2, true);
-                if(theme1==1)ba3.theme(Theme.DARK);
-                ba3.negativeText(R.string.cancel);
-                ba3.positiveText(R.string.create);
-                ba3.callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog materialDialog) {
-                        String ipa = ip.getText().toString();
-                        SmbFile smbFile;
-                        if (((CheckBox) v2.findViewById(R.id.checkBox2)).isChecked())
-                            smbFile = ma.connectingWithSmbServer(new String[]{ipa, "", ""}, true);
-                        else {
-                            String useru = user.getText().toString();
-                            String passp = pass.getText().toString();
-                            smbFile = ma.connectingWithSmbServer(new String[]{ipa,useru,passp},false);
-                        }
-                        if (smbFile == null) return;
-                        try {
-                            ma.loadSmblist(smbFile, false);
-                            if (Servers == null) Servers = new ArrayList<String>();
-                            Servers.add(smbFile.getPath());
-                            refreshDrawer();
-                            if (!new File(getFilesDir() + "/" + "servers.xml").exists())
-                                servers.makeS(false);
-                            servers.addS(smbFile.getPath());
-                        } catch (Exception e) {
-                            Toast.makeText(mainActivity, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                            e.printStackTrace();
-                        }
-                    }
-
-
-                    @Override
-                    public void onNegative(MaterialDialog materialDialog) {
-
-                    }
-                });
-                ba3.build().show();
+                createSmbDialog("", false, ma);
                 break;
         }
     }
 
 
     public void search() {
-        final Main ma=(Main)((TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+        final Main ma = (Main) ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
         final String fpath = ma.current;
         final MaterialDialog.Builder a = new MaterialDialog.Builder(this);
         a.title(R.string.search);
-        View v =getLayoutInflater().inflate(R.layout.dialog, null);
+        View v = getLayoutInflater().inflate(R.layout.dialog, null);
         final EditText e = (EditText) v.findViewById(R.id.newname);
         e.setHint(utils.getString(this, R.string.enterfile));
         a.customView(v, true);
@@ -1355,14 +1333,14 @@ public class MainActivity extends AppCompatActivity implements
                 e.post(new Runnable() {
                     @Override
                     public void run() {
-                        InputMethodManager inputMethodManager= (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                         inputMethodManager.showSoftInput(e, InputMethodManager.SHOW_IMPLICIT);
                     }
                 });
             }
         });
         e.requestFocus();
-        if(theme1==1)a.theme(Theme.DARK);
+        if (theme1 == 1) a.theme(Theme.DARK);
         a.negativeText(R.string.cancel);
         a.positiveText(R.string.search);
         a.callback(new MaterialDialog.ButtonCallback() {
@@ -1370,9 +1348,9 @@ public class MainActivity extends AppCompatActivity implements
             public void onPositive(MaterialDialog materialDialog) {
                 materialDialog.dismiss();
                 String a = e.getText().toString();
-                SearchTask task= new SearchTask(ma.searchHelper,ma,a);
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fpath);
-                ma.searchTask=task;
+                SearchTask task = new SearchTask(ma.searchHelper, ma, a);
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);
+                ma.searchTask = task;
             }
 
             @Override
@@ -1387,9 +1365,8 @@ public class MainActivity extends AppCompatActivity implements
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
-       if(mDrawerToggle!=null) mDrawerToggle.onConfigurationChanged(newConfig);
+        if (mDrawerToggle != null) mDrawerToggle.onConfigurationChanged(newConfig);
     }
-
 
 
     @Override
@@ -1397,11 +1374,11 @@ public class MainActivity extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
         outState.putInt("selectitem", select);
 
-        if(oppathe!=null){
+        if (oppathe != null) {
             outState.putString("oppathe", oppathe);
-            outState.putString("oppathe1",oppathe1);
+            outState.putString("oppathe1", oppathe1);
 
-            outState.putStringArrayList("oparraylist",(oparrayList));
+            outState.putStringArrayList("oparraylist", (oparrayList));
             outState.putInt("operation", operation);
         }
     }
@@ -1468,7 +1445,7 @@ public class MainActivity extends AppCompatActivity implements
         protected ArrayList<String> doInBackground(ArrayList<String>... params) {
 
             ab = params[0];
-            if(ab.get(0).startsWith("smb:/"))
+            if (ab.get(0).startsWith("smb:/"))
                 try {
                     return checkSmbFiles();
                 } catch (MalformedURLException e) {
@@ -1496,20 +1473,22 @@ public class MainActivity extends AppCompatActivity implements
                 File f = new File(path);
 
                 for (String k1[] : RootHelper.getFilesList(f.getPath(), rootmode, true, false)) {
-                    File k=new File(k1[0]);
+                    File k = new File(k1[0]);
                     for (String j : ab) {
 
                         if (k.getName().equals(new File(j).getName())) {
 
-                            a.add(j);}
+                            a.add(j);
+                        }
                     }
                 }
-            } else publishProgress(utils.getString(con,R.string.in_safe));
+            } else publishProgress(utils.getString(con, R.string.in_safe));
 
             return a;
         }
+
         ArrayList<String> checkSmbFiles() throws MalformedURLException, SmbException {
-            ArrayList<String> arrayList=new ArrayList<>();
+            ArrayList<String> arrayList = new ArrayList<>();
             long totalBytes = 0;
 
             for (int i = 0; i < ab.size(); i++) {
@@ -1529,45 +1508,47 @@ public class MainActivity extends AppCompatActivity implements
 
                 File f = new File(path);
 
-                for (String k1[] : RootHelper.getFilesList(f.getPath(),rootmode,true,false)) {
-                    File k=new File(k1[0]);
+                for (String k1[] : RootHelper.getFilesList(f.getPath(), rootmode, true, false)) {
+                    File k = new File(k1[0]);
                     for (String j : ab) {
 
                         if (k.getName().equals(new File(j).getName())) {
 
-                            a.add(j);}
+                            a.add(j);
+                        }
                     }
                 }
-            } else publishProgress(utils.getString(con,R.string.in_safe));
+            } else publishProgress(utils.getString(con, R.string.in_safe));
 
-            return arrayList;}
+            return arrayList;
+        }
+
         public void showDialog() {
 
-            if (counter == a.size() || a.size()==0) {
+            if (counter == a.size() || a.size() == 0) {
 
-                if (ab != null && ab.size()!=0) {
-                    int mode=checkFolder(new File(path),mainActivity);
-                    if(mode==2)
-                    {
-                        oparrayList=(ab);
-                        operation=move?MOVE:COPY;
-                        oppathe=path;
+                if (ab != null && ab.size() != 0) {
+                    int mode = checkFolder(new File(path), mainActivity);
+                    if (mode == 2) {
+                        oparrayList = (ab);
+                        operation = move ? MOVE : COPY;
+                        oppathe = path;
 
+                    } else if (mode == 1 || mode == 0) {
+                        if (!move) {
+
+                            Intent intent = new Intent(con, CopyService.class);
+                            intent.putExtra("FILE_PATHS", ab);
+                            intent.putExtra("COPY_DIRECTORY", path);
+                            startService(intent);
+                        } else {
+
+                            new MoveFiles(utils.toFileArray(ab), ma, ma.getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                        }
                     }
-                    else if(mode==1 || mode==0){
-                    if(!move){
-
-                        Intent intent = new Intent(con, CopyService.class);
-                        intent.putExtra("FILE_PATHS", ab);
-                        intent.putExtra("COPY_DIRECTORY", path);
-                        startService(intent);
-                    } else{
-
-                        new MoveFiles(utils.toFileArray(ab), ma,ma.getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
-                    }}
                 } else {
 
-                    Toast.makeText(MainActivity.this, utils.getString(con,R.string.no_file_overwrite), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, utils.getString(con, R.string.no_file_overwrite), Toast.LENGTH_SHORT).show();
                 }
             } else {
 
@@ -1577,10 +1558,10 @@ public class MainActivity extends AppCompatActivity implements
                 x.customView(view, true);
                 // textView
                 TextView textView = (TextView) view.findViewById(R.id.textView);
-                textView.setText(utils.getString(con,R.string.fileexist) + "\n" + new File(a.get(counter)).getName());
+                textView.setText(utils.getString(con, R.string.fileexist) + "\n" + new File(a.get(counter)).getName());
                 // checkBox
                 final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
-                if(theme1==1)x.theme(Theme.DARK);
+                if (theme1 == 1) x.theme(Theme.DARK);
                 x.title(utils.getString(con, R.string.paste));
                 x.positiveText(R.string.skip);
                 x.negativeText(R.string.overwrite);
@@ -1624,7 +1605,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     }
                 });
-                final MaterialDialog y=x.build();
+                final MaterialDialog y = x.build();
                 y.show();
                 if (new File(ab.get(0)).getParent().equals(path)) {
                     View negative = y.getActionButton(DialogAction.NEGATIVE);
@@ -1639,7 +1620,8 @@ public class MainActivity extends AppCompatActivity implements
             showDialog();
         }
     }
-    public void updatepaths(){
+
+    public void updatepaths() {
         try {
             getFragment().updatepaths();
         } catch (Exception e) {
@@ -1657,6 +1639,7 @@ public class MainActivity extends AppCompatActivity implements
         fragmentTransaction.add(R.id.content_frame, zipFragment);
         fragmentTransaction.commit();
     }
+
     public void openRar(String path) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
@@ -1667,26 +1650,32 @@ public class MainActivity extends AppCompatActivity implements
         fragmentTransaction.add(R.id.content_frame, zipFragment);
         fragmentTransaction.commit();
     }
-    public TabFragment getFragment(){
-        TabFragment tabFragment=(TabFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+    public TabFragment getFragment() {
+        TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
         return tabFragment;
     }
-    public Fragment getDFragment(){
+
+    public Fragment getDFragment() {
         return getSupportFragmentManager().findFragmentById(R.id.content_frame);
     }
-    public void setPagingEnabled(boolean b){
+
+    public void setPagingEnabled(boolean b) {
         getFragment().mViewPager.setPagingEnabled(b);
     }
 
-    public  File getUsbDrive() {
-        File parent ;
-        parent=new File("/storage");
+    public File getUsbDrive() {
+        File parent;
+        parent = new File("/storage");
 
-        try{
-            for(File f:parent.listFiles())
-            {if(f.exists() && f.getName().toLowerCase().contains("usb") && f.canExecute()){
-                return f;
-            }}}catch (Exception e){}
+        try {
+            for (File f : parent.listFiles()) {
+                if (f.exists() && f.getName().toLowerCase().contains("usb") && f.canExecute()) {
+                    return f;
+                }
+            }
+        } catch (Exception e) {
+        }
         parent = new File("/mnt/sdcard/usbStorage");
         if (parent.exists() && parent.canExecute())
             return (parent);
@@ -1696,62 +1685,61 @@ public class MainActivity extends AppCompatActivity implements
 
         return null;
     }
+
     private final BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
                 if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                    Toast.makeText(con,"Media Mounted",Toast.LENGTH_SHORT).show();
-                    String a=intent.getData().getPath();
-                    if(a!=null && a.trim().length()!=0 && new File(a).exists() && new File(a).canExecute()){
-                        list.add(new EntryItem(new File(a).getName(),a));
+                    Toast.makeText(con, "Media Mounted", Toast.LENGTH_SHORT).show();
+                    String a = intent.getData().getPath();
+                    if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
+                        list.add(new EntryItem(new File(a).getName(), a));
 
                         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
                         mDrawerList.setAdapter(adapter);
-                    }else {refreshDrawer();
+                    } else {
+                        refreshDrawer();
                     }
-                }else if(intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)){
+                } else if (intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
 
                     refreshDrawer();
                 }
             }
         }
     };
-    public void refreshDrawer(){
-        val=getStorageDirectories();
+
+    public void refreshDrawer() {
+        val = getStorageDirectories();
         list = new ArrayList<>();
-        storage_count=0;
-        for (String file:val)
-        {
-            File f=new File(file);
+        storage_count = 0;
+        for (String file : val) {
+            File f = new File(file);
             String name;
-            if("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file))
-                name=getResources().getString(R.string.storage);
-            else if("/".equals(file))
-                name=getResources().getString(R.string.rootdirectory);
-            else name=f.getName();
-            if(!f.isDirectory() || f.canExecute())
-            {
+            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file))
+                name = getResources().getString(R.string.storage);
+            else if ("/".equals(file))
+                name = getResources().getString(R.string.rootdirectory);
+            else name = f.getName();
+            if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                list.add(new EntryItem(name,file));
+                list.add(new EntryItem(name, file));
             }
         }
         list.add(new SectionItem());
-           if(Servers!=null && Servers.size()>0){
-               for(String file: Servers)
-               {
-                   String name = parseSmbPath(file);
-                   list.add(new EntryItem(name,file));
-               }
+        if (Servers != null && Servers.size() > 0) {
+            for (String file : Servers) {
+                String name = parseSmbPath(file);
+                list.add(new EntryItem(name, file));
+            }
 
-               list.add(new SectionItem());
-           }
+            list.add(new SectionItem());
+        }
 
         try {
-            for(String file: books)
-            {
-                String name=new File(file).getName();
-                list.add(new EntryItem(name,file));
+            for (String file : books) {
+                String name = new File(file).getName();
+                list.add(new EntryItem(name, file));
             }
         } catch (Exception e) {
         }
@@ -1767,7 +1755,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onStart();
 
         // check if user enabled g+ api from preferences
-        if (mGoogleApiClient!=null) {
+        if (mGoogleApiClient != null) {
 
             mGoogleApiClient.connect();
         }
@@ -1777,7 +1765,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStop() {
         super.onStop();
 
-        if (mGoogleApiClient!=null && mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
     }
@@ -1868,14 +1856,13 @@ public class MainActivity extends AppCompatActivity implements
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (mGoogleApiClient!=null) {
+                if (mGoogleApiClient != null) {
 
                     mGoogleApiClient.connect();
                 }
             }
         }).run();
     }
-
 
 
     public void onConnectionFailed(final ConnectionResult result) {
@@ -1901,35 +1888,37 @@ public class MainActivity extends AppCompatActivity implements
             }).run();
         }
     }
-    public void guideDialogForLEXA(String path){
+
+    public void guideDialogForLEXA(String path) {
         final MaterialDialog.Builder x = new MaterialDialog.Builder(MainActivity.this);
-        if(theme1==1)x.theme(Theme.DARK);
+        if (theme1 == 1) x.theme(Theme.DARK);
         x.title(R.string.needsaccess);
         LayoutInflater layoutInflater = (LayoutInflater) MainActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.lexadrawer, null);
         x.customView(view, true);
         // textView
         TextView textView = (TextView) view.findViewById(R.id.description);
-        textView.setText(utils.getString(con, R.string.needsaccesssummary)+path+utils.getString(con,R.string.needsaccesssummary1));
-        ((ImageView)view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
+        textView.setText(utils.getString(con, R.string.needsaccesssummary) + path + utils.getString(con, R.string.needsaccesssummary1));
+        ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
         x.positiveText(R.string.open);
         x.negativeText(R.string.cancel);
         x.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-            triggerStorageAccessFramework();
+                triggerStorageAccessFramework();
             }
 
             @Override
             public void onNegative(MaterialDialog materialDialog) {
-                Toast.makeText(mainActivity,R.string.error,Toast.LENGTH_SHORT).show();
+                Toast.makeText(mainActivity, R.string.error, Toast.LENGTH_SHORT).show();
             }
         });
-        final MaterialDialog y=x.build();
+        final MaterialDialog y = x.build();
         y.show();
     }
+
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-        if (requestCode == RC_SIGN_IN && !mGoogleApiKey && mGoogleApiClient!=null) {
+        if (requestCode == RC_SIGN_IN && !mGoogleApiKey && mGoogleApiClient != null) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -1943,24 +1932,24 @@ public class MainActivity extends AppCompatActivity implements
 
                 }
             }).run();
-        }else if (requestCode == 3) {
-            String p=Sp.getString("URI",null);
-            Uri oldUri =null;
-            if(p!=null)oldUri=Uri.parse(p);
+        } else if (requestCode == 3) {
+            String p = Sp.getString("URI", null);
+            Uri oldUri = null;
+            if (p != null) oldUri = Uri.parse(p);
             Uri treeUri = null;
             if (responseCode == Activity.RESULT_OK) {
                 // Get Uri from Storage Access Framework.
                 treeUri = intent.getData();
                 // Persist URI - this is required for verification of writability.
-                if(treeUri!=null)Sp.edit().putString("URI", treeUri.toString()).commit();
+                if (treeUri != null) Sp.edit().putString("URI", treeUri.toString()).commit();
             }
 
             // If not confirmed SAF, or if still not writable, then revert settings.
-            if (responseCode != Activity.RESULT_OK  ) {
+            if (responseCode != Activity.RESULT_OK) {
                /* DialogUtil.displayError(getActivity(), R.string.message_dialog_cannot_write_to_folder_saf, false,
                         currentFolder);||!FileUtil.isWritableNormalOrSaf(currentFolder)
 */
-                if(treeUri!=null)Sp.edit().putString("URI", oldUri.toString()).commit();
+                if (treeUri != null) Sp.edit().putString("URI", oldUri.toString()).commit();
                 return;
             }
 
@@ -1972,28 +1961,28 @@ public class MainActivity extends AppCompatActivity implements
             getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
             switch (operation) {
                 case DELETE://deletion
-                    new DeleteTask(null,mainActivity).execute((oparrayList));
+                    new DeleteTask(null, mainActivity).execute((oparrayList));
                     break;
                 case COPY://copying
                     Intent intent1 = new Intent(con, CopyService.class);
                     intent1.putExtra("FILE_PATHS", (oparrayList));
                     intent1.putExtra("COPY_DIRECTORY", oppathe);
                     startService(intent1);
-                break;
+                    break;
                 case MOVE://moving
-                    new MoveFiles(utils.toFileArray(oparrayList), ((Main)getFragment().getTab()),((Main)getFragment().getTab()).getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                    new MoveFiles(utils.toFileArray(oparrayList), ((Main) getFragment().getTab()), ((Main) getFragment().getTab()).getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     break;
                 case NEW_FOLDER://mkdir
-                    Main ma1=((Main) getFragment().getTab());
-                    mkDir((oppathe),ma1);
+                    Main ma1 = ((Main) getFragment().getTab());
+                    mkDir((oppathe), ma1);
                     break;
                 case RENAME:
                     rename((oppathe), (oppathe1));
-                    Main ma2=((Main) getFragment().getTab());
+                    Main ma2 = ((Main) getFragment().getTab());
                     ma2.loadlist((ma2.current), true);
                     break;
                 case NEW_FILE:
-                    Main ma3=((Main) getFragment().getTab());
+                    Main ma3 = ((Main) getFragment().getTab());
                     mkFile((oppathe), ma3);
 
                     break;
@@ -2001,13 +1990,15 @@ public class MainActivity extends AppCompatActivity implements
                     extractFile(new File(oppathe));
                     break;
                 case COMPRESS:
-                    compressFiles(new File(oppathe),oparrayList);
-            } }
+                    compressFiles(new File(oppathe), oparrayList);
+            }
+        }
     }
-    public void rename(String f,String f1) {
-        if(f.startsWith("smb:/")){
+
+    public void rename(String f, String f1) {
+        if (f.startsWith("smb:/")) {
             try {
-                SmbFile smbFile=new SmbFile(f);
+                SmbFile smbFile = new SmbFile(f);
 
                 smbFile.renameTo(new SmbFile(f1));
             } catch (MalformedURLException e) {
@@ -2019,12 +2010,12 @@ public class MainActivity extends AppCompatActivity implements
             sendBroadcast(intent);
             return;
         }
-        File file=new File(f);
-        File file1=new File(f1);
+        File file = new File(f);
+        File file1 = new File(f1);
         int mode = checkFolder(file.getParentFile(), this);
         if (mode == 2) {
-            oppathe=file.getPath();
-            oppathe1=file1.getPath();
+            oppathe = file.getPath();
+            oppathe1 = file1.getPath();
             operation = RENAME;
         } else if (mode == 1) {
             boolean b = FileUtil.renameFolder(file, file1, mainActivity);
@@ -2038,24 +2029,25 @@ public class MainActivity extends AppCompatActivity implements
                         Toast.LENGTH_LONG).show();
 
             }
-        } else if(mode==0) utils.rename(file,file1.getName(),rootmode);
+        } else if (mode == 0) utils.rename(file, file1.getName(), rootmode);
 
         Intent intent = new Intent("loadlist");
         sendBroadcast(intent);
     }
-    private int checkFolder(final File folder,Context context) {
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder,context)) {
+
+    private int checkFolder(final File folder, Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
             if (!folder.exists() || !folder.isDirectory()) {
                 return 0;
             }
 
             // On Android 5, trigger storage access framework.
-            if (!FileUtil.isWritableNormalOrSaf(folder,context) ) {
+            if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
                 guideDialogForLEXA(folder.getPath());
                 return 2;
             }
             return 1;
-        } else if (Build.VERSION.SDK_INT==19 && FileUtil.isOnExtSdCard(folder,context)) {
+        } else if (Build.VERSION.SDK_INT == 19 && FileUtil.isOnExtSdCard(folder, context)) {
             // Assume that Kitkat workaround works
             return 1;
         } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
@@ -2064,6 +2056,7 @@ public class MainActivity extends AppCompatActivity implements
             return 0;
         }
     }
+
     private void triggerStorageAccessFramework() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         startActivityForResult(intent, 3);
@@ -2075,7 +2068,7 @@ public class MainActivity extends AppCompatActivity implements
         try {
             buttons.removeAllViews();
             buttons.setMinimumHeight(pathbar.getHeight());
-            Drawable arrow=getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
+            Drawable arrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
             Bundle b = utils.getPaths(text, this);
             ArrayList<String> names = b.getStringArrayList("names");
             ArrayList<String> rnames = new ArrayList<String>();
@@ -2090,18 +2083,18 @@ public class MainActivity extends AppCompatActivity implements
             for (int i = paths.size() - 1; i >= 0; i--) {
                 rpaths.add(paths.get(i));
             }
-            View view=new View(this);
+            View view = new View(this);
             LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
                     dpToPx(42), LinearLayout.LayoutParams.WRAP_CONTENT);
             view.setLayoutParams(params1);
             buttons.addView(view);
             for (int i = 0; i < names.size(); i++) {
-                final int k=i;
-                ImageView v=new ImageView(this);
+                final int k = i;
+                ImageView v = new ImageView(this);
                 v.setImageDrawable(arrow);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                params.gravity= Gravity.CENTER_VERTICAL;
+                params.gravity = Gravity.CENTER_VERTICAL;
                 v.setLayoutParams(params);
                 final int index = i;
                 if (rpaths.get(i).equals("/")) {
@@ -2118,7 +2111,7 @@ public class MainActivity extends AppCompatActivity implements
                     });
                     ib.setLayoutParams(params);
                     buttons.addView(ib);
-                    if(names.size()-i!=1)
+                    if (names.size() - i != 1)
                         buttons.addView(v);
                 } else if (rpaths.get(i).equals(Environment.getExternalStorageDirectory().getPath())) {
                     ImageButton ib = new ImageButton(this);
@@ -2134,7 +2127,7 @@ public class MainActivity extends AppCompatActivity implements
                     });
                     ib.setLayoutParams(params);
                     buttons.addView(ib);
-                    if(names.size()-i!=1)
+                    if (names.size() - i != 1)
                         buttons.addView(v);
                 } else {
                     Button button = new Button(this);
@@ -2163,38 +2156,46 @@ public class MainActivity extends AppCompatActivity implements
                     });
 
                     buttons.addView(button);
-                    if(names.size()-i!=1)
+                    if (names.size() - i != 1)
                         buttons.addView(v);
                 }
             }
-            File f=new File(text);
+            File f = new File(text);
 
-            TextView textView = (TextView)pathbar.findViewById(R.id.pathname);
-            String used = utils.readableFileSize(f.getTotalSpace()-f.getFreeSpace());
+            TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
+            String used = utils.readableFileSize(f.getTotalSpace() - f.getFreeSpace());
             String free = utils.readableFileSize(f.getFreeSpace());
-            textView.setText(getResources().getString(R.string.used)+" " + used +" "+ getResources().getString(R.string.free)+" " + free);
+            textView.setText(getResources().getString(R.string.used) + " " + used + " " + getResources().getString(R.string.free) + " " + free);
 
-            TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
+            TextView bapath = (TextView) pathbar.findViewById(R.id.fullpath);
             bapath.setText(f.getPath());
             scroll.post(new Runnable() {
                 @Override
                 public void run() {
-                   sendScroll(scroll);
-                    sendScroll(scroll1);}
+                    sendScroll(scroll);
+                    sendScroll(scroll1);
+                }
             });
 
-            if(buttons.getVisibility()==View.VISIBLE){timer.cancel();timer.start();}
+            if (buttons.getVisibility() == View.VISIBLE) {
+                timer.cancel();
+                timer.start();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("button view not available");
         }
     }
-    private void sendScroll(final HorizontalScrollView scrollView){
+
+    private void sendScroll(final HorizontalScrollView scrollView) {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {Thread.sleep(100);} catch (InterruptedException e) {}
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                }
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -2204,33 +2205,39 @@ public class MainActivity extends AppCompatActivity implements
             }
         }).start();
     }
-    String newPath=null;
-    String parseSmbPath(String a){
-      int k=a.indexOf(".");
-        if(a.substring(0,k).contains("@"))
-        return "smb://"+a.substring(a.indexOf("@")+1,a.length());
+
+    String newPath = null;
+
+    String parseSmbPath(String a) {
+        if (a.contains("@"))
+            return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
         else return a;
     }
-    public void updatePath(@NonNull final String news,boolean calcsize,boolean results){
-        File f= null;
-        if(news==null)return;
-        if(news.startsWith("smb:/"))
-            newPath=parseSmbPath(news);
-        else newPath=news;
+
+    public void updatePath(@NonNull final String news, boolean calcsize, boolean results) {
+        File f = null;
+        if (news == null) return;
+        if (news.startsWith("smb:/"))
+            newPath = parseSmbPath(news);
+        else newPath = news;
 
         try {
             f = new File(newPath);
         } catch (Exception e) {
             return;
-        }  if(!results){ TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
-        textView.setText("");
-        if(calcsize) {
-            String used = utils.readableFileSize(f.getTotalSpace() - f.getFreeSpace());
-            String free = utils.readableFileSize(f.getFreeSpace());
-            textView.setText(getResources().getString(R.string.used) + " " + used + " " + getResources().getString(R.string.free) + " " + free);
-        }}final TextView bapath=(TextView)pathbar.findViewById(R.id.fullpath);
+        }
+        if (!results) {
+            TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
+            textView.setText("");
+            if (calcsize) {
+                String used = utils.readableFileSize(f.getTotalSpace() - f.getFreeSpace());
+                String free = utils.readableFileSize(f.getFreeSpace());
+                textView.setText(getResources().getString(R.string.used) + " " + used + " " + getResources().getString(R.string.free) + " " + free);
+            }
+        }
+        final TextView bapath = (TextView) pathbar.findViewById(R.id.fullpath);
         final TextView animPath = (TextView) pathbar.findViewById(R.id.fullpath_anim);
-        final String oldPath=bapath.getText().toString();
+        final String oldPath = bapath.getText().toString();
         // implement animation while setting text
         final StringBuilder stringBuilder = new StringBuilder();
         if (newPath.length() >= oldPath.length()) {
@@ -2300,11 +2307,13 @@ public class MainActivity extends AppCompatActivity implements
             }).start();
         }
     }
+
     public int dpToPx(double dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         int px = Math.round(Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)));
         return px;
     }
+
     public void initiatebbar() {
         LinearLayout pathbar = (LinearLayout) findViewById(R.id.pathbar);
         TextView textView = (TextView) findViewById(R.id.fullpath);
@@ -2312,7 +2321,7 @@ public class MainActivity extends AppCompatActivity implements
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bbar(((Main)getFragment().getTab()));
+                bbar(((Main) getFragment().getTab()));
                 crossfade();
                 timer.cancel();
                 timer.start();
@@ -2321,7 +2330,7 @@ public class MainActivity extends AppCompatActivity implements
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bbar(((Main)getFragment().getTab()));
+                bbar(((Main) getFragment().getTab()));
                 crossfade();
                 timer.cancel();
                 timer.start();
@@ -2336,7 +2345,6 @@ public class MainActivity extends AppCompatActivity implements
         // (but fully transparent) during the animation.
         buttons.setAlpha(0f);
         buttons.setVisibility(View.VISIBLE);
-
 
 
         // Animate the content view to 100% opacity, and clear any animation
@@ -2401,9 +2409,10 @@ public class MainActivity extends AppCompatActivity implements
             return false;
         }
     }
-    private void revealShow(final View view, boolean reveal){
 
-        if(reveal){
+    private void revealShow(final View view, boolean reveal) {
+
+        if (reveal) {
             ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 0f, 1f);
             animator.setDuration(100); //ms
             animator.addListener(new AnimatorListenerAdapter() {
@@ -2428,31 +2437,35 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
-    private void onDrawerClosed(){
-        if(pending_fragmentTransaction!=null){
+
+    private void onDrawerClosed() {
+        if (pending_fragmentTransaction != null) {
             pending_fragmentTransaction.commit();
-            pending_fragmentTransaction=null;
+            pending_fragmentTransaction = null;
         }
-        if(pending_path!=null){
+        if (pending_path != null) {
             try {
-                TabFragment m=getFragment();
-                if(pending_path.startsWith("smb:/"))
+                TabFragment m = getFragment();
+                if (pending_path.startsWith("smb:/"))
                     ((Main) m.getTab()).loadlist((pending_path), false);
-                else   if(new File(pending_path).isDirectory()) {
+                else if (new File(pending_path).isDirectory()) {
                     ((Main) m.getTab()).loadlist((pending_path), false);
-                }   else utils.openFile(new File(pending_path),mainActivity);
+                } else utils.openFile(new File(pending_path), mainActivity);
 
             } catch (ClassCastException e) {
-                select=null;
+                select = null;
                 goToMain("");
-            }pending_path=null;}
+            }
+            pending_path = null;
+        }
         supportInvalidateOptionsMenu();
     }
-    public void mkFile(String path,Main ma){
-        boolean b=false;
-        if(path==null)
+
+    public void mkFile(String path, Main ma) {
+        boolean b = false;
+        if (path == null)
             return;
-        if(path.startsWith("smb:/")) {
+        if (path.startsWith("smb:/")) {
             try {
                 new SmbFile(path).createNewFile();
             } catch (SmbException e) {
@@ -2461,34 +2474,37 @@ public class MainActivity extends AppCompatActivity implements
                 e.printStackTrace();
             }
             ma.updateList();
-            return;}
-        File f1=new File(path);
+            return;
+        }
+        File f1 = new File(path);
         if (!f1.exists()) {
-            int mode=checkFolder(new File(f1.getParent()),mainActivity);
-            if(mode==1) try {
-                b=FileUtil.mkfile(f1, mainActivity);
+            int mode = checkFolder(new File(f1.getParent()), mainActivity);
+            if (mode == 1) try {
+                b = FileUtil.mkfile(f1, mainActivity);
             } catch (IOException e) {
                 e.printStackTrace();
-                b=false;
+                b = false;
             }
-            else if(mode==2){
-                oppathe=f1.getPath();
-                operation=NEW_FILE;
+            else if (mode == 2) {
+                oppathe = f1.getPath();
+                operation = NEW_FILE;
             }
             ma.updateList();
 
         } else {
-            Toast.makeText(mainActivity,( R.string.fileexist), Toast.LENGTH_LONG).show();
-        }if(!b && rootmode)RootTools.remount(f1.getParent(),"rw");
-        RootHelper.runAndWait("touch "+f1.getPath(),true);
+            Toast.makeText(mainActivity, (R.string.fileexist), Toast.LENGTH_LONG).show();
+        }
+        if (!b && rootmode) RootTools.remount(f1.getParent(), "rw");
+        RootHelper.runAndWait("touch " + f1.getPath(), true);
         ma.updateList();
 
     }
-    void mkDir(String path,Main ma){
-        boolean b=false;
-        if(path==null)
+
+    void mkDir(String path, Main ma) {
+        boolean b = false;
+        if (path == null)
             return;
-        if(path.startsWith("smb:/")) {
+        if (path.startsWith("smb:/")) {
             try {
                 new SmbFile(path).mkdirs();
             } catch (SmbException e) {
@@ -2497,64 +2513,167 @@ public class MainActivity extends AppCompatActivity implements
                 e.printStackTrace();
             }
             ma.updateList();
-        return;}
-        File f=new File(path);
+            return;
+        }
+        File f = new File(path);
         if (!f.exists()) {
-            int mode=checkFolder(f.getParentFile(),mainActivity);
-            if(mode==1)b=FileUtil.mkdir(f,mainActivity);
-            else if(mode==2){
-                oppathe=f.getPath();
-                operation=NEW_FOLDER;
+            int mode = checkFolder(f.getParentFile(), mainActivity);
+            if (mode == 1) b = FileUtil.mkdir(f, mainActivity);
+            else if (mode == 2) {
+                oppathe = f.getPath();
+                operation = NEW_FOLDER;
             }
             ma.updateList();
-            if(b)
+            if (b)
                 Toast.makeText(mainActivity, (R.string.foldercreated), Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(mainActivity, ( R.string.fileexist), Toast.LENGTH_LONG).show();
+            Toast.makeText(mainActivity, (R.string.fileexist), Toast.LENGTH_LONG).show();
         }
-        if(!b && rootmode){
+        if (!b && rootmode) {
             RootTools.remount(f.getParent(), "rw");
-            RootHelper.runAndWait("mkdir "+f.getPath(),true);
+            RootHelper.runAndWait("mkdir " + f.getPath(), true);
             ma.updateList();
         }
     }
-    public void deleteFiles(ArrayList<String> files){
-        if(files==null)return;
-        if(files.get(0).startsWith("smb://")) {
+
+    public void deleteFiles(ArrayList<String> files) {
+        if (files == null) return;
+        if (files.get(0).startsWith("smb://")) {
             new DeleteTask(null, mainActivity).execute((files));
-        return;
+            return;
         }
-        int mode=checkFolder(new File( files.get(0)).getParentFile(),this);
-        if(mode==2){
-            oparrayList=(files);
-            operation=DELETE;
-        }else if(mode==1 || mode==0)
-        new DeleteTask(null,mainActivity).execute((files));
-      }
-    public void extractFile(File file){
-        int mode=checkFolder( file.getParentFile(),this);
-        if(mode==2){
-            oppathe=(file.getPath());
-            operation=EXTRACT;
-        }else if(mode==1 ) {
+        int mode = checkFolder(new File(files.get(0)).getParentFile(), this);
+        if (mode == 2) {
+            oparrayList = (files);
+            operation = DELETE;
+        } else if (mode == 1 || mode == 0)
+            new DeleteTask(null, mainActivity).execute((files));
+    }
+
+    public void extractFile(File file) {
+        int mode = checkFolder(file.getParentFile(), this);
+        if (mode == 2) {
+            oppathe = (file.getPath());
+            operation = EXTRACT;
+        } else if (mode == 1) {
             Intent intent = new Intent(this, ExtractService.class);
             intent.putExtra("zip", file.getPath());
             startService(intent);
-        }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
-    public void compressFiles(File file,ArrayList<String> b){
-        int mode=checkFolder( file.getParentFile(),this);
-        if(mode==2){
-            oppathe=(file.getPath());
-            operation=COMPRESS;
-            oparrayList=b;
-        }else if(mode==1 ) {
+
+    public void compressFiles(File file, ArrayList<String> b) {
+        int mode = checkFolder(file.getParentFile(), this);
+        if (mode == 2) {
+            oppathe = (file.getPath());
+            operation = COMPRESS;
+            oparrayList = b;
+        } else if (mode == 1) {
             Intent intent2 = new Intent(this, ZipTask.class);
             intent2.putExtra("name", file.getPath());
             intent2.putExtra("files", b);
             startService(intent2);
-        }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
+
+    public void createSmbDialog(final String path, final boolean edit, final Main ma1) {
+        final MaterialDialog.Builder ba3 = new MaterialDialog.Builder(this);
+        ba3.title((R.string.smb_con));
+        final View v2 = getLayoutInflater().inflate(R.layout.smb_dialog, null);
+        final EditText ip = (EditText) v2.findViewById(R.id.editText);
+        final EditText user = (EditText) v2.findViewById(R.id.editText3);
+        final EditText pass = (EditText) v2.findViewById(R.id.editText2);
+        final CheckBox ch = (CheckBox) v2.findViewById(R.id.checkBox2);
+        if (edit) {
+            String userp = "", passp = "", ipp = "";
+            try {
+                jcifs.Config.registerSmbURLHandler();
+                URL a = new URL(path);
+                String userinfo = a.getUserInfo();
+                if (userinfo != null) {
+                    String inf = URLDecoder.decode(userinfo, "UTF-8");
+                    userp = inf.substring(0, inf.indexOf(":"));
+                    passp = inf.substring(inf.indexOf(":") + 1, inf.length());
+                    user.setText(userp);
+                    pass.setText(passp);
+                } else ch.setChecked(true);
+                ipp = a.getHost();
+                ip.setText(ipp);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+
+        }
+        ba3.customView(v2, true);
+        if (theme1 == 1) ba3.theme(Theme.DARK);
+        ba3.neutralText(R.string.cancel);
+        ba3.positiveText(R.string.create);
+        if (edit) ba3.negativeText(R.string.delete);
+        ba3.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onPositive(MaterialDialog materialDialog) {
+                Main ma = ma1;
+                if (ma == null) ma = ((Main) getFragment().getTab());
+                String ipa = ip.getText().toString();
+                SmbFile smbFile;
+                if (ch.isChecked())
+                    smbFile = ma.connectingWithSmbServer(new String[]{ipa, "", ""}, true);
+                else {
+                    String useru = user.getText().toString();
+                    String passp = pass.getText().toString();
+                    smbFile = ma.connectingWithSmbServer(new String[]{ipa, useru, passp}, false);
+                }
+                if (smbFile == null) return;
+                try {
+                    if (!edit) {
+                        ma.loadSmblist(smbFile, false);
+                        if (Servers == null) Servers = new ArrayList<String>();
+                        Servers.add(smbFile.getPath());
+                        refreshDrawer();
+                        if (!new File(getFilesDir() + "/" + "servers.xml").exists())
+                            servers.makeS(false);
+                        servers.addS(smbFile.getPath());
+                    } else {
+                        if (Servers == null) Servers = new ArrayList<String>();
+                        if (Servers.contains(path)) Servers.remove(path);
+                        Servers.add(smbFile.getPath());
+                        refreshDrawer();
+                        if (!new File(getFilesDir() + "/" + "servers.xml").exists())
+                            servers.makeS(false);
+                        servers.addS(smbFile.getPath());
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(mainActivity, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+
+
+            @Override
+            public void onNegative(MaterialDialog materialDialog) {
+                if (Servers.contains(path)) {
+                    Servers.remove(path);
+                    refreshDrawer();
+                    try {
+                        servers.removeS(path, mainActivity);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (SAXException e) {
+                        e.printStackTrace();
+                    } catch (ParserConfigurationException e) {
+                        e.printStackTrace();
+                    } catch (TransformerException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        ba3.build().show();
+
+    }
+
     public void translateDrawerList(boolean down) {
         if (down)
             mDrawerList.animate().translationY(toolbar.getHeight());

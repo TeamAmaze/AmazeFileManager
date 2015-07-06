@@ -241,21 +241,10 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                 holder.imageView.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                 gradientDrawable.setColor(Color.parseColor("#757575"));
 
-                if (Build.VERSION.SDK_INT >= 21) {
-
-                    holder.rl.setElevation(6f);
-                } else {
-                    if (zipViewer.mainActivity.theme1 == 0) {
-                        holder.rl.setBackgroundColor(c.getResources().getColor(R.color.safr_pressed));
-                    } else {
-                        holder.rl.setBackgroundColor(c.getResources().getColor(R.color.safr_pressed_dark));
-                    }
+                if (zipViewer.mainActivity.theme1 == 0) {
+                    holder.rl.setBackgroundColor(Color.parseColor("#ffeeeeee"));
                 }
-            } else {
-
-                if (Build.VERSION.SDK_INT >= 21) {
-                    holder.rl.setElevation(0f);
-                }
+                else holder.rl.setBackgroundColor(Color.parseColor("#ff424242"));
             }
         }
         holder.rl.setOnClickListener(new View.OnClickListener() {

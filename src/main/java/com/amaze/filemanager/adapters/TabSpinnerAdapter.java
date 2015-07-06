@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.TabFragment;
+import com.amaze.filemanager.utils.PreferenceUtils;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -60,7 +61,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         this.tabFragment=tabFragment;
         putColors();
         final SharedPreferences sharedPreferences1 = PreferenceManager.getDefaultSharedPreferences(context);
-        fabSkin = sharedPreferences1.getString("fab_skin_color", "#e91e63");
+        fabSkin = PreferenceUtils.getColor(sharedPreferences1.getInt("fab_skin_color_position", 1));
         color=colors.get(fabSkin);
         if(color==null){color=colors.get("#3f51b5");}
     }

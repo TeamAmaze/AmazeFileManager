@@ -90,13 +90,13 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         }
         switch (preference.getKey()) {
             case "skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "skin_color",sharedPref.getString("skin_color","#3f51b5"));
+                adapter = new ColorAdapter(getActivity(), arrayList, "skin_color_position",sharedPref.getInt("skin_color_position",4));
                 break;
             case "fab_skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "fab_skin_color",sharedPref.getString("fab_skin_color","#e91e63"));
+                adapter = new ColorAdapter(getActivity(), arrayList, "fab_skin_color_position",sharedPref.getInt("fab_skin_color_position",1));
                 break;
             case "icon_skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "icon_skin_color",sharedPref.getString("icon_skin_color","#3f51b5"));
+                adapter = new ColorAdapter(getActivity(), arrayList, "icon_skin_color_position",sharedPref.getInt("icon_skin_color_position",4));
                 break;
         }
         GridView v=(GridView)getActivity().getLayoutInflater().inflate(R.layout.dialog_grid,null);
@@ -110,20 +110,18 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
     class ColorAdapter extends ArrayAdapter<String> {
 
-        String pref,pref1;
+        String pref;
         String[] strings;
         final String[] colors;
         int p;
         MaterialDialog b;
         public void updateMatDialog(MaterialDialog b){this.b=b;}
-        public ColorAdapter(Context context, ArrayList<String> arrayList, String pref, String pref1) {
+        public ColorAdapter(Context context, ArrayList<String> arrayList, String pref, int pref1) {
             super(context, R.layout.rowlayout, arrayList);
             strings = getResources().getStringArray(R.array.skin);
             this.pref = pref;
-            this.pref1 = pref1;
             colors= getResources().getStringArray(R.array.material_primary_color_codes);
-            List<String> z=Arrays.asList(colors);
-            if(z.contains(pref1))p=z.indexOf(pref1);
+            this.p=pref1;
         }
 
         @Override
@@ -141,7 +139,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                 public void onClick(View v) {
                     p=position;
                     notifyDataSetChanged();
-                    sharedPref.edit().putString(pref, colors[position]).apply();
+                    sharedPref.edit().putInt(pref, position).apply();
                     if (b != null) b.dismiss();
                 }
             });

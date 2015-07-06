@@ -61,6 +61,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HidingScrollListener;
 import com.amaze.filemanager.ui.views.SpacesItemDecoration;
 import com.amaze.filemanager.ui.ZipObj;
+import com.amaze.filemanager.utils.PreferenceUtils;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
@@ -152,8 +153,8 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         showLastModified = Sp.getBoolean("showLastModified", true);
         showDividers=Sp.getBoolean("showDividers",true);
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
-        skin = Sp.getString("skin_color", "#3f51b5");
-        iconskin=Sp.getString("icon_skin_color",skin);
+        skin = PreferenceUtils.getColor(Sp.getInt("skin_color_position", 4));
+        iconskin=PreferenceUtils.getColor(Sp.getInt("icon_skin_color_position", 4));
         mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
         String x = getSelectionColor();

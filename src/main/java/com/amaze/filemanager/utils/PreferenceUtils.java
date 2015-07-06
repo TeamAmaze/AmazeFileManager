@@ -36,7 +36,31 @@ public class PreferenceUtils {
         return colors[ Arrays.asList(colors).indexOf(skin)+1];
     }
 
+        public static String getColor(int i) {
 
+                String[] colors = new String[]{
+                        "#F44336",
+                        "#e91e63",
+                        "#9c27b0",
+                        "#673ab7",
+                        "#3f51b5",
+                        "#2196F3",
+                        "#03A9F4",
+                        "#00BCD4",
+                        "#009688",
+                        "#4CAF50",
+                        "#8bc34a",
+                        "#FFC107",
+                        "#FF9800",
+                        "#FF5722",
+                        "#795548",
+                        "#212121",
+                        "#607d8b",
+                        "#004d40"
+                };
+
+                return colors[i];
+        }
     public static String random(SharedPreferences Sp) {
 
         String[] colors = new String[]{
@@ -62,7 +86,7 @@ public class PreferenceUtils {
 
         Random random = new Random();
         int pos = random.nextInt(colors.length - 1);
-        Sp.edit().putString("skin_color", colors[pos]).commit();
+        Sp.edit().putInt("skin_color_position", pos).commit();
         return colors[pos];
     }
 

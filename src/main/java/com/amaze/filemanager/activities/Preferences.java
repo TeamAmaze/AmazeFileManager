@@ -57,7 +57,7 @@ public class Preferences extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(this);
-        fabSkin = Sp.getString("fab_skin_color", "#e91e63");
+        fabSkin = PreferenceUtils.getColor(Sp.getInt("fab_skin_color_position", 1));
 
         int th = Integer.parseInt(Sp.getString("theme", "0"));
 
@@ -204,7 +204,7 @@ public class Preferences extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prefsfrag);
         Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
-        skin = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("skin_color", "#3f51b5");
+        skin = PreferenceUtils.getColor(Sp.getInt("skin_color_position", 4));
         if (Build.VERSION.SDK_INT>=21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
             ((Activity)this).setTaskDescription(taskDescription);

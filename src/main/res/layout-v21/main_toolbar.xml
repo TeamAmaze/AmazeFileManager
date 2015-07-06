@@ -172,8 +172,7 @@
             fab:fab_size="mini"
             fab:fab_icon="@drawable/folder_drawer_white"
             fab:fab_colorNormal="@android:color/white"
-            fab:fab_title="@string/folder"
-            fab:fab_colorPressed="#9f9f9f"/>
+            fab:fab_title="@string/folder"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
@@ -181,8 +180,7 @@
             fab:fab_colorNormal="@android:color/white"
             fab:fab_icon="@drawable/ic_insert_drive_file_white_48dp"
             fab:fab_size="mini"
-            fab:fab_title="@string/file"
-            fab:fab_colorPressed="#9f9f9f"/>
+            fab:fab_title="@string/file"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
@@ -190,8 +188,7 @@
             fab:fab_colorNormal="@android:color/white"
             fab:fab_icon="@drawable/ic_settings_remote_white_48dp"
             fab:fab_size="mini"
-            fab:fab_title="@string/smb_con"
-            fab:fab_colorPressed="#9f9f9f"/>
+            fab:fab_title="@string/smb_con"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
     <com.getbase.floatingactionbutton.FloatingActionsMenu
@@ -213,8 +210,7 @@
             fab:fab_size="mini"
             fab:fab_icon="@drawable/folder_drawer_white"
             fab:fab_colorNormal="@android:color/white"
-            fab:fab_title="@string/folder"
-            fab:fab_colorPressed="#9f9f9f"/>
+            fab:fab_title="@string/folder"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
@@ -222,8 +218,7 @@
             fab:fab_colorNormal="@android:color/white"
             fab:fab_icon="@drawable/ic_insert_drive_file_white_48dp"
             fab:fab_size="mini"
-            fab:fab_title="@string/file"
-            fab:fab_colorPressed="#9f9f9f"/>
+            fab:fab_title="@string/file"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
@@ -231,8 +226,7 @@
             fab:fab_colorNormal="@android:color/white"
             fab:fab_icon="@drawable/ic_settings_remote_white_48dp"
             fab:fab_size="mini"
-            fab:fab_title="@string/smb_con"
-            fab:fab_colorPressed="#9f9f9f"/>
+            fab:fab_title="@string/smb_con"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 

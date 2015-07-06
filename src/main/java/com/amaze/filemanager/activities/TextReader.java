@@ -81,7 +81,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
-        fabSkin = Sp.getString("fab_skin_color", "#e91e63");
+        fabSkin =PreferenceUtils.getColor( Sp.getInt("fab_skin_color_position", 1));
 
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
@@ -230,7 +230,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
         setContentView(R.layout.search);
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        skin = Sp.getString("skin_color", "#3f51b5");
+        skin = PreferenceUtils.getColor(Sp.getInt("skin_color_position", 4));
         if (Build.VERSION.SDK_INT>=21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
             ((Activity)this).setTaskDescription(taskDescription);

@@ -19,8 +19,10 @@
 
 package com.amaze.filemanager.fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -77,6 +79,12 @@ public class AppsList extends ListFragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
         ic=new IconHolder(getActivity(),true,true);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        intentFilter.addDataScheme("package");
+        getActivity().registerReceiver(br, intentFilter);
+
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -102,7 +110,7 @@ public class AppsList extends ListFragment {
             vl.requestLayout();
         }
         if(theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
-         if(savedInstanceState==null)loadlist();
+         if(savedInstanceState==null)loadlist(false);
         else{
         c=savedInstanceState.getParcelableArrayList("c");
         a=savedInstanceState.getParcelableArrayList("list");
@@ -112,8 +120,17 @@ public class AppsList extends ListFragment {
 
         }
     }
-    public void loadlist(){
-        new LoadListTask().execute();
+    @Override
+    public  void onDestroy(){
+        getActivity().unregisterReceiver(br);
+    }
+    int index=0,top=0;
+    public void loadlist(boolean save){
+        if(save) {
+            index = vl.getFirstVisiblePosition();
+            View vi = vl.getChildAt(0);
+            top = (vi == null) ? 0 : vi.getTop();
+        } new LoadListTask(save,top,index).execute();
     }
     public static int getToolbarHeight(Context context) {
         final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
@@ -126,8 +143,17 @@ public class AppsList extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-    }
 
+    }
+    BroadcastReceiver br = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TODO Auto-generated method stub
+            if (intent != null) {
+            loadlist(true);
+            }}
+    };
     public void onLongItemClick(final int position) {
         final MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         if(theme1==1)
@@ -272,9 +298,12 @@ public class AppsList extends ListFragment {
             return a;
         }
 
-
-        public LoadListTask() {
-
+        int index,top;
+        boolean save;
+        public LoadListTask(boolean save,int top,int index) {
+            this.save=save;
+            this.index=index;
+            this.top=top;
         }
 
         @Override
@@ -296,7 +325,8 @@ public class AppsList extends ListFragment {
 
                     adapter = new AppsAdapter(getActivity(), R.layout.rowlayout, bitmap, app, c);
                     setListAdapter(adapter);
-
+                    if(save && getListView()!=null)
+                        getListView().setSelectionFromTop(index,top);
                 }
             } catch (Exception e) {
             }
