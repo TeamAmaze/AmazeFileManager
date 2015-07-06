@@ -870,30 +870,43 @@ public void showPackageDialog(final File f,final MainActivity m){
             if(main.theme1==1)a.theme(Theme.DARK);
             a.build().show();}else{Toast.makeText(main.getActivity(),main.getResources().getString(R.string.enablerootmde),Toast.LENGTH_LONG).show();}
     }
-    public String[] parseName(String line){
-        boolean linked=false;String name="",link="",size="-1",date="";
-        String[] array=line.split(" ");
-        for(int i=0;i<array.length;i++){
-            if(array[i].contains("->")){linked=true;}
-        }int p=getColonPosition(array);
-        date=array[p-1] +" | "+array[p];
-        size=array[p-2];
-        if(!linked){
-            for(int i=p+1;i<array.length;i++){name=name+" "+array[i];}
-            name=name.trim();
+
+    public String[] parseName(String line) {
+        boolean linked = false;
+        String name = "", link = "", size = "-1", date = "";
+        String[] array = line.split(" ");
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].contains("->")) {
+                linked = true;
+            }
         }
-        else if(linked){
-            int q=getLinkPosition(array);
-            for(int i=p+1;i<q;i++){name=name+" "+array[i];}
-            name=name.trim();
-            for(int i=q+1;i<array.length;i++){link=link+" "+array[i];}
+        int p = getColonPosition(array);
+        date = array[p - 1] + " | " + array[p];
+        size = array[p - 2];
+        if (!linked) {
+            for (int i = p + 1; i < array.length; i++) {
+                name = name + " " + array[i];
+            }
+            name = name.trim();
+        } else {
+            int q = getLinkPosition(array);
+            for (int i = p + 1; i < q; i++) {
+                name = name + " " + array[i];
+            }
+            name = name.trim();
+            for (int i = q + 1; i < array.length; i++) {
+                link = link + " " + array[i];
+            }
         }
-        String size1=size;
-        if(size.equals("")){size="-1";size1="";}
+        String size1 = size;
+        if (size.equals("")) {
+            size = "-1";
+            size1 = "";
+        }
         ParsePosition pos = new ParsePosition(0);
-        SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-mm-dd | HH:mm");
+        SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
         Date stringDate = simpledateformat.parse(date, pos);
-        return new String[]{name,link,array[0],size,stringDate.getTime()+"",size1};
+        return new String[]{name, link, array[0], size, stringDate.getTime() + "", size1};
     }
 
     public int getLinkPosition(String[] array){
