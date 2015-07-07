@@ -112,7 +112,9 @@ public  final int READ = 4;
         return length;
     }
 
-    public int checkFolder(final File folder,Context context) {
+    public int checkFolder(final String f,Context context) {
+        if(f.startsWith("smb://"))return 1;
+        File folder=new File(f);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
             if (!folder.exists() || !folder.isDirectory()) {
                 return 0;

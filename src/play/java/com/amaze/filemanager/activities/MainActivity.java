@@ -106,6 +106,7 @@ import com.amaze.filemanager.ui.drawer.SectionItem;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.ui.icons.IconUtils;
+import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.ui.views.RoundedImageView;
@@ -1445,38 +1446,28 @@ public class MainActivity extends AppCompatActivity implements
         protected ArrayList<String> doInBackground(ArrayList<String>... params) {
 
             ab = params[0];
-            if (ab.get(0).startsWith("smb:/"))
-                try {
-                    return checkSmbFiles();
-                } catch (MalformedURLException e) {
-                    return new ArrayList<>();
-                } catch (SmbException e) {
-                    return new ArrayList<>();
-                }
             long totalBytes = 0;
 
             for (int i = 0; i < params[0].size(); i++) {
 
-                File f1 = new File(params[0].get(i));
+                HFile f1 = new HFile(params[0].get(i));
 
                 if (f1.isDirectory()) {
 
-                    totalBytes = totalBytes + new Futils().folderSize(f1);
+                    totalBytes = totalBytes + f1.folderSize();
                 } else {
 
                     totalBytes = totalBytes + f1.length();
                 }
             }
+            HFile f = new HFile(path);
+            if (f.getUsableSpace() > totalBytes) {
 
-            if (new File(path).getUsableSpace() > totalBytes) {
-
-                File f = new File(path);
-
-                for (String k1[] : RootHelper.getFilesList(f.getPath(), rootmode, true, false)) {
-                    File k = new File(k1[0]);
+                for (String k1[] : f.listFiles(rootmode)) {
+                    HFile k = new HFile(k1[0]);
                     for (String j : ab) {
 
-                        if (k.getName().equals(new File(j).getName())) {
+                        if (k.getName().equals(new HFile(j).getName())) {
 
                             a.add(j);
                         }
@@ -1485,42 +1476,6 @@ public class MainActivity extends AppCompatActivity implements
             } else publishProgress(utils.getString(con, R.string.in_safe));
 
             return a;
-        }
-
-        ArrayList<String> checkSmbFiles() throws MalformedURLException, SmbException {
-            ArrayList<String> arrayList = new ArrayList<>();
-            long totalBytes = 0;
-
-            for (int i = 0; i < ab.size(); i++) {
-
-                SmbFile f1 = new SmbFile(ab.get(i));
-
-                if (f1.isDirectory()) {
-
-                    totalBytes = totalBytes + new Futils().folderSize(f1);
-                } else {
-
-                    totalBytes = totalBytes + f1.length();
-                }
-            }
-
-            if (new File(path).getUsableSpace() > totalBytes) {
-
-                File f = new File(path);
-
-                for (String k1[] : RootHelper.getFilesList(f.getPath(), rootmode, true, false)) {
-                    File k = new File(k1[0]);
-                    for (String j : ab) {
-
-                        if (k.getName().equals(new File(j).getName())) {
-
-                            a.add(j);
-                        }
-                    }
-                }
-            } else publishProgress(utils.getString(con, R.string.in_safe));
-
-            return arrayList;
         }
 
         public void showDialog() {
@@ -2446,9 +2401,7 @@ public class MainActivity extends AppCompatActivity implements
         if (pending_path != null) {
             try {
                 TabFragment m = getFragment();
-                if (pending_path.startsWith("smb:/"))
-                    ((Main) m.getTab()).loadlist((pending_path), false);
-                else if (new File(pending_path).isDirectory()) {
+                 if (new HFile(pending_path).isDirectory()) {
                     ((Main) m.getTab()).loadlist((pending_path), false);
                 } else utils.openFile(new File(pending_path), mainActivity);
 
@@ -2642,6 +2595,17 @@ public class MainActivity extends AppCompatActivity implements
                         refreshDrawer();
                         if (!new File(getFilesDir() + "/" + "servers.xml").exists())
                             servers.makeS(false);
+                        try {
+                            servers.removeS(path, mainActivity);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (SAXException e) {
+                            e.printStackTrace();
+                        } catch (ParserConfigurationException e) {
+                            e.printStackTrace();
+                        } catch (TransformerException e) {
+                            e.printStackTrace();
+                        }
                         servers.addS(smbFile.getPath());
                     }
                 } catch (Exception e) {

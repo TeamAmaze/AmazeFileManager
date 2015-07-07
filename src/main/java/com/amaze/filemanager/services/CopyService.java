@@ -39,16 +39,21 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.HFile;
 import com.stericson.RootTools.RootTools;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 public class CopyService extends Service {
@@ -171,61 +176,39 @@ public class CopyService extends Service {
         public copy() {
         }
 
+        long getTotalBytes(ArrayList<String> files, boolean smb) {
+            long totalBytes = 0l;
+
+            try {
+                for (int i = 0; i < files.size(); i++) {
+                    HFile f1 = new HFile(files.get(i));
+                    if (f1.isDirectory()) {
+                        totalBytes = totalBytes + f1.folderSize();
+                    } else {
+                        totalBytes = totalBytes + f1.length();
+                    }
+                }
+            } catch (Exception e) {
+            }
+
+            return totalBytes;
+        }
         long totalBytes = 0L, copiedBytes = 0L;
         int lastpercent=0;
         int threshold_bytes=1024*1024;
-        public void execute(int id, final ArrayList<String> files,final String FILE2,final boolean move) {
-            if(files.get(0).startsWith("smb:/")){
-                System.out.println("0");
-                if (utils.checkFolder(new File(FILE2), c)==1) {
-                    try{
-                        for (int i = 0; i < files.size(); i++) {
-                            SmbFile f1 = new SmbFile(files.get(i));
-                            if (f1.isDirectory()) {
-                                totalBytes = totalBytes + new Futils().folderSize(f1);
-                            } else {
-                                totalBytes = totalBytes + f1.length();
-                            }
-                        }}catch(Exception e){}
 
-                    for (int i = 0; i < files.size(); i++) {
-                        try {
-                            System.out.println("i");
-                            SmbFile f1 = new SmbFile(files.get(i));
-                            if(hash.get(id)) copyFiles((f1), new File(FILE2, f1.getName()), id, move);
-                            else {stopSelf(id);}
-                        } catch (Exception e) {
-                            System.out.println("amaze " + e);
-                            publishResults("" + e, 0, 0, id, 0, 0, false, move);
-                            stopSelf(id);
-                        }
-                    }
-                    /*if (move) {
-                        boolean b = hash.get(id);
-                        if (b)
-                            for(String a:files){FileUtil.deleteFile(new File(a),c);}
-                    }*/
-                    Intent intent = new Intent("loadlist");
-                    sendBroadcast(intent);
-
-                }}
-            else
-            if (utils.checkFolder(new File(FILE2), c)==1) {
-                try{
-                    for (int i = 0; i < files.size(); i++) {
-                        File f1 = new File(files.get(i));
-                        if (f1.isDirectory()) {
-                            totalBytes = totalBytes + new Futils().folderSize(f1);
-                        } else {
-                            totalBytes = totalBytes + f1.length();
-                        }
-                    }}catch(Exception e){}
+        public void execute(int id, final ArrayList<String> files, final String FILE2, final boolean move) {
+            if (utils.checkFolder((FILE2), c) == 1) {
+                totalBytes = getTotalBytes(files, false);
                 for (int i = 0; i < files.size(); i++) {
-                    File f1 = new File(files.get(i));
+                    HFile f1 = new HFile(files.get(i));
+
                     try {
 
-                        if(hash.get(id)) copyFiles((f1), new File(FILE2, f1.getName()), id, move);
-                        else {stopSelf(id);}
+                        if (hash.get(id)) copyFiles((f1), new HFile(FILE2, f1.getName(),f1.isDirectory()), id, move);
+                        else {
+                            stopSelf(id);
+                        }
                     } catch (Exception e) {
                         System.out.println("amaze " + e);
                         publishResults("" + e, 0, 0, id, 0, 0, false, move);
@@ -237,57 +220,75 @@ public class CopyService extends Service {
                 if (move) {
                     boolean b = hash.get(id);
                     if (b)
-                        for(String a:files){FileUtil.deleteFile(new File(a),c);}
+                        for (String a : files) {
+                            new HFile(a).delete(c);
+                        }
                 }
                 Intent intent = new Intent("loadlist");
                 sendBroadcast(intent);
             } else if (rootmode) {
-                boolean m=true;
+                boolean m = true;
                 for (int i = 0; i < files.size(); i++) {
-                    boolean b=RootTools.copyFile(getCommandLineString(files.get(i)),getCommandLineString(FILE2),true,true);
-                    if(!b && files.get(i).contains("/0/"))b=RootTools.copyFile(getCommandLineString(files.get(i).replace("/0/","/legacy/")),getCommandLineString(FILE2),true,true);
-                    if(!b)m=false;
-                    utils.scanFile(FILE2+"/"+new File(files.get(i)).getName(), c);
+                    boolean b = RootTools.copyFile(getCommandLineString(files.get(i)), getCommandLineString(FILE2), true, true);
+                    if (!b && files.get(i).contains("/0/"))
+                        b = RootTools.copyFile(getCommandLineString(files.get(i).replace("/0/", "/legacy/")), getCommandLineString(FILE2), true, true);
+                    if (!b) m = false;
+                    utils.scanFile(FILE2 + "/" + new File(files.get(i)).getName(), c);
                 }
-                if(move  && m){new DeleteTask(getContentResolver(),c).execute((files));}
+                if (move && m) {
+                    new DeleteTask(getContentResolver(), c).execute((files));
+                }
 
                 Intent intent = new Intent("loadlist");
                 sendBroadcast(intent);
 
-            }else {
-                    System.out.println("Not Allowed");
-                }
+            } else {
+                System.out.println("Not Allowed");
             }
+        }
         private static final String UNIX_ESCAPE_EXPRESSION = "(\\(|\\)|\\[|\\]|\\s|\'|\"|`|\\{|\\}|&|\\\\|\\?)";
 
         private  String getCommandLineString(String input) {
             return input.replaceAll(UNIX_ESCAPE_EXPRESSION, "\\\\$1");
         }
 
-        private void copyFiles(File sourceFile, File targetFile, int id,boolean move) throws IOException {
+        private void copyFiles(HFile sourceFile, HFile targetFile, int id,boolean move) throws IOException {
             if (sourceFile.isDirectory()) {
-                if (!targetFile.exists()) FileUtil.mkdir(targetFile,c);
-                try {
+                if (!targetFile.exists()) targetFile.mkdir(c);
+                /*try {
                     targetFile.setLastModified(sourceFile.lastModified());
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
-                String[] filePaths = sourceFile.list();
-
-                for (String filePath : filePaths) {
-                    File srcFile = new File(sourceFile, filePath);
-                    File destFile = new File(targetFile, filePath);
-
-                    copyFiles(srcFile, destFile, id,move);
+                }*/
+                ArrayList<String[]> filePaths = sourceFile.listFiles(false);
+                for (String[] filePath : filePaths) {
+                    HFile file=new HFile((filePath[0]));
+                    HFile destFile = new HFile(targetFile.getPath(), file.getName(),file.isDirectory());
+                    copyFiles(file, destFile, id, move);
                 }
             } else {
-                long size = sourceFile.length(), fileBytes = 0l;
-                // txtDetails.append("Copying " + sourceFile.getAbsolutePath() + " ... ");
-                BufferedInputStream in = new BufferedInputStream(new FileInputStream(sourceFile));
-                OutputStream out;
-                out= FileUtil.getOutputStream(targetFile,c,size);
-                    if(out!=null){
-                byte[] buffer = new byte[32768];
+                long size = sourceFile.length();
+                InputStream in = sourceFile.getInputStream();
+                OutputStream out= targetFile.getOutputStream(c);
+                copy(in,out,size,id,sourceFile.getName(),move);
+                in.close();
+                out.close();/*
+                        try {
+                            targetFile.setLastModified(sourceFile.lastModified());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }*/
+                        if(!targetFile.isSmb())
+                        utils.scanFile(targetFile.getPath(), c);
+            }}
+        long time=System.nanoTime()/1000000000;
+        void copy(InputStream stream,OutputStream outputStream,long size,int id,String name,boolean move) throws IOException {
+            long  fileBytes = 0l;
+            // txtDetails.append("Copying " + sourceFile.getAbsolutePath() + " ... ");
+            BufferedInputStream in = new BufferedInputStream(stream);
+            BufferedOutputStream out=new BufferedOutputStream(outputStream);
+            if (outputStream != null) {
+                byte[] buffer = new byte[1024*60];
 
                 int length;
                 //copy the file content in bytes
@@ -297,79 +298,24 @@ public class CopyService extends Service {
                         out.write(buffer, 0, length);
                         copiedBytes += length;
                         fileBytes += length;
-                        int p = (int) ((copiedBytes / (float) totalBytes) * 100);
-                        if (copiedBytes>lastpercent+threshold_bytes || lastpercent == 0) {
-                            publishResults(sourceFile.getName(), p, (int) ((fileBytes / (float) size) * 100), id, totalBytes, copiedBytes, false, move);
+                        long time1=System.nanoTime()/1000000000;
+
+                        if((int)time1>(int)time){
+                            int p = (int) ((copiedBytes / (float) totalBytes) * 100);
+                            publishResults(name, p, (int) ((fileBytes / (float) size) * 100), id, totalBytes, copiedBytes, false, move);
                             lastpercent = (int)copiedBytes;
+                            time=System.nanoTime()/1000000000;
                         }
-                    }else {publishCompletedResult(sourceFile.getName(),Integer.parseInt("456"+id));
+
+                    } else {
+                        publishCompletedResult(name, Integer.parseInt("456" + id));
                         in.close();
                         out.close();
                         stopSelf(id);
                     }
-                    //	System.out.println(sourceFile.getName()+" "+id+" " +Math.round(copiedBytes*100/totalBytes)+"  "+Math.round(fileBytes*100/size));
-                }
 
-
-                in.close();
-                out.close();
-                        try {
-                            targetFile.setLastModified(sourceFile.lastModified());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        utils.scanFile(targetFile.getPath(), c);
-            }}}
-        private void copyFiles(SmbFile sourceFile, File targetFile, int id,boolean move) throws IOException {
-            if (sourceFile.isDirectory()) {
-                if (!targetFile.exists()) FileUtil.mkdir(targetFile, c);
-
-                SmbFile[] filePaths = sourceFile.listFiles();
-
-                for (SmbFile filePath : filePaths) {
-
-                    copyFiles(filePath, new File(targetFile.getPath()+"/"+filePath.getName()), id, move);
-                }
-            } else {
-                long size = sourceFile.length(), fileBytes = 0l;
-                // txtDetails.append("Copying " + sourceFile.getAbsolutePath() + " ... ");
-                BufferedInputStream in = new BufferedInputStream((sourceFile.getInputStream()));
-                OutputStream out;
-                out = FileUtil.getOutputStream(targetFile, c,size);
-                if (out != null) {
-                    byte[] buffer = new byte[32768];
-
-                    int length;
-                    //copy the file content in bytes
-                    while ((length = in.read(buffer)) > 0) {
-                        boolean b = hash.get(id);
-                        if (b) {
-                            out.write(buffer, 0, length);
-                            copiedBytes += length;
-                            fileBytes += length;
-                            int p = (int) ((copiedBytes / (float) totalBytes) * 100);
-                            if (copiedBytes>lastpercent+threshold_bytes || lastpercent == 0) {
-                                publishResults(sourceFile.getName(), p, (int) ((fileBytes / (float) size) * 100), id, totalBytes, copiedBytes, false, move);
-                                lastpercent = (int)copiedBytes;
-                            }
-                        } else {
-                            publishCompletedResult(sourceFile.getName(), Integer.parseInt("456" + id));
-                            in.close();
-                            out.close();
-                            stopSelf(id);
-                        }
-                        //	System.out.println(sourceFile.getName()+" "+id+" " +Math.round(copiedBytes*100/totalBytes)+"  "+Math.round(fileBytes*100/size));
-                    }
-
-
-                    in.close();
-                    out.close();
-
-                    utils.scanFile(targetFile.getPath(), c);
-                }
-            }
-        }}
+                }}}
+           }
 
     Futils utils = new Futils();
     private BroadcastReceiver receiver3 = new BroadcastReceiver() {
