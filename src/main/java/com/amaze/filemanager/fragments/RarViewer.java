@@ -65,7 +65,6 @@ import com.amaze.filemanager.ui.views.SpacesItemDecoration;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
-import com.melnykov.fab.FloatingActionButton;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;

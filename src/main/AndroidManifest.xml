@@ -24,7 +24,6 @@
     package="com.amaze.filemanager"
     android:versionCode="26"
     android:versionName="2.0.9a">
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER"/>
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />

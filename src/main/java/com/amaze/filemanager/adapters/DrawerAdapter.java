@@ -21,9 +21,11 @@ package com.amaze.filemanager.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -97,7 +99,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
     }
 
     LayoutInflater inflater;
-
+    Drawable sd,sd1,folder,folder1,root,root1;
     public DrawerAdapter(Context context, ArrayList<Item> values, MainActivity m, SharedPreferences Sp) {
         super(context, R.layout.rowlayout, values);
 
@@ -114,6 +116,13 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
         if (color == null) {
             color = colors.get("#e91e63");
         }
+        Resources resources=m.getResources();
+        sd=resources.getDrawable(R.drawable.ic_action_sd_storage_light);
+        sd1=resources.getDrawable(R.drawable.ic_action_sd_storage);
+        folder=resources.getDrawable(R.drawable.folder_drawer);
+        folder1=resources.getDrawable(R.drawable.folder_drawer_white);
+        root=resources.getDrawable(R.drawable.ic_drawer_root);
+        root1=resources.getDrawable(R.drawable.ic_drawer_root_white);
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -188,6 +197,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
             textView.setText(((EntryItem) (values.get(position))).title);
 
+            imageView.setImageDrawable(getDrawable(position, myChecked.get(position)));
             if (myChecked.get(position)) {
                 if (m.theme1 == 0)
                     rowView.setBackgroundColor(Color.parseColor("#ffeeeeee"));
@@ -196,7 +206,6 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 //textView.setTypeface(Typeface.DEFAULT_BOLD);
                 textView.setTextColor(Color.parseColor(m.fabskin));
 
-                imageView.setImageResource(R.drawable.folder_drawer_white);
                 //if(m.theme1==0)
                 imageView.setColorFilter(colorMatrixColorFilter);
             } else {
@@ -205,10 +214,28 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 } else {
                     textView.setTextColor(m.getResources().getColor(android.R.color.white));
                 }
-                imageView.setImageResource(R.drawable.folder_drawer);
             }
 
             return rowView;
+        }
+    }
+
+    Drawable getDrawable(int position,boolean isChecked){
+        if(position<m.storage_count) {
+            if(((EntryItem)getItem(position)).subtitle.equals("/"))
+            {
+                if(m.theme1==1)return root1;
+                if (isChecked) return root1;
+                else return root;
+            }
+          if(m.theme1==1)return sd1;
+            if (isChecked) return sd1;
+            else return sd;
+        }else {
+            if(m.theme1==1)return folder1;
+            if (isChecked) return folder1;
+            else return folder;
+
         }
     }
 }
