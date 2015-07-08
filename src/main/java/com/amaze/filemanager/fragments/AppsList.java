@@ -122,6 +122,7 @@ public class AppsList extends ListFragment {
     }
     @Override
     public  void onDestroy(){
+        super.onDestroy();
         getActivity().unregisterReceiver(br);
     }
     int index=0,top=0;

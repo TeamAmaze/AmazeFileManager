@@ -180,9 +180,9 @@ public class Main extends android.support.v4.app.Fragment {
         current = getArguments().getString("lastpath");
         tabHandler = new TabHandler(getActivity(), null, null, 1);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        skin = PreferenceUtils.getColor(Sp.getInt("skin_color_position", 4));
-        fabSkin = PreferenceUtils.getColor(Sp.getInt("fab_skin_color_position", 2));
-        iconskin = PreferenceUtils.getColor(Sp.getInt("icon_skin_color_position", 4));
+        skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 31));
+        fabSkin = PreferenceUtils.getFabColor(Sp.getInt("fab_skin_color_position", 1));
+        iconskin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 31));
         skin_color = Color.parseColor(skin);
         icon_skin_color = Color.parseColor(iconskin);
         sh = new Shortcuts(getActivity(), "shortcut.xml");

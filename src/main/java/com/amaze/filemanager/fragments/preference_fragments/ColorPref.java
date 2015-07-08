@@ -84,19 +84,23 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
         a.autoDismiss(true);
         ColorAdapter adapter = null;
-        ArrayList<String> arrayList = new ArrayList<>();
-        for(String c : getResources().getStringArray(R.array.material_primary_color_codes)) {
-            arrayList.add(c);
-        }
         switch (preference.getKey()) {
             case "skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "skin_color_position",sharedPref.getInt("skin_color_position",4));
+                String[] colors=PreferenceUtils.colors;
+                List<String> arrayList = Arrays.asList(colors);
+                adapter = new ColorAdapter(getActivity(), arrayList, "skin_color_position",sharedPref.getInt("skin_color_position",31));
                 break;
             case "fab_skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "fab_skin_color_position",sharedPref.getInt("fab_skin_color_position",1));
+                ArrayList<String> arrayList2 = new ArrayList<>();
+                for(String c : getResources().getStringArray(R.array.material_primary_color_codes)) {
+                    arrayList2.add(c);
+                }
+                adapter = new ColorAdapter(getActivity(), arrayList2, "fab_skin_color_position",sharedPref.getInt("fab_skin_color_position",1));
                 break;
             case "icon_skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "icon_skin_color_position",sharedPref.getInt("icon_skin_color_position",4));
+                String[] colors1=PreferenceUtils.colors;
+                List<String> arrayList1 = Arrays.asList(colors1);
+                adapter = new ColorAdapter(getActivity(), arrayList1, "icon_skin_color_position",sharedPref.getInt("icon_skin_color_position",31));
                 break;
         }
         GridView v=(GridView)getActivity().getLayoutInflater().inflate(R.layout.dialog_grid,null);
@@ -116,7 +120,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         int p;
         MaterialDialog b;
         public void updateMatDialog(MaterialDialog b){this.b=b;}
-        public ColorAdapter(Context context, ArrayList<String> arrayList, String pref, int pref1) {
+        public ColorAdapter(Context context, List<String> arrayList, String pref, int pref1) {
             super(context, R.layout.rowlayout, arrayList);
             strings = getResources().getStringArray(R.array.skin);
             this.pref = pref;
@@ -133,7 +137,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             ImageView imageView=(ImageView)rowView.findViewById(R.id.icon);
             if(position==p)imageView.setImageDrawable(getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
             GradientDrawable gradientDrawable = (GradientDrawable) imageView.getBackground();
-            gradientDrawable.setColor(Color.parseColor(colors[position]));
+            gradientDrawable.setColor(Color.parseColor(getItem(position)));
             rowView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

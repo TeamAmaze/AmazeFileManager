@@ -57,7 +57,7 @@ public class Preferences extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(this);
-        fabSkin = PreferenceUtils.getColor(Sp.getInt("fab_skin_color_position", 1));
+        fabSkin = PreferenceUtils.getFabColor(Sp.getInt("fab_skin_color_position", 1));
 
         int th = Integer.parseInt(Sp.getString("theme", "0"));
 
@@ -204,13 +204,12 @@ public class Preferences extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prefsfrag);
         Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
-        skin = PreferenceUtils.getColor(Sp.getInt("skin_color_position", 4));
+        skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 31));
         if (Build.VERSION.SDK_INT>=21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
             ((Activity)this).setTaskDescription(taskDescription);
         }
-        String x = PreferenceUtils.getStatusColor(skin);
-        skinStatusBar = Color.parseColor(x);
+        skinStatusBar = PreferenceUtils.getStatusColor(skin);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
@@ -229,9 +228,9 @@ public class Preferences extends AppCompatActivity {
             Window window =getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(Color.parseColor(PreferenceUtils.getStatusColor(skin)));
+            window.setStatusBarColor((PreferenceUtils.getStatusColor(skin)));
             if(colourednavigation)
-                window.setNavigationBarColor(Color.parseColor(PreferenceUtils.getStatusColor(skin)));
+                window.setNavigationBarColor((PreferenceUtils.getStatusColor(skin)));
 
         }
         selectItem(0);

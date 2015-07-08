@@ -90,13 +90,12 @@ public class DbViewer extends AppCompatActivity {
         setContentView(R.layout.activity_db_viewer);
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        skin =PreferenceUtils.getColor( Sp.getInt("skin_color_position", 4));
+        skin =PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 31));
         if (Build.VERSION.SDK_INT>=21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
             ((Activity)this).setTaskDescription(taskDescription);
         }
-        String x = PreferenceUtils.getStatusColor(skin);
-        skinStatusBar = Color.parseColor(x);
+        skinStatusBar = PreferenceUtils.getStatusColor(skin);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         rootMode = PreferenceManager.getDefaultSharedPreferences(this)
@@ -114,9 +113,9 @@ public class DbViewer extends AppCompatActivity {
             Window window =getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(Color.parseColor(PreferenceUtils.getStatusColor(skin)));
+            window.setStatusBarColor((PreferenceUtils.getStatusColor(skin)));
             if(colourednavigation)
-                window.setNavigationBarColor(Color.parseColor(PreferenceUtils.getStatusColor(skin)));
+                window.setNavigationBarColor((PreferenceUtils.getStatusColor(skin)));
 
         }
 

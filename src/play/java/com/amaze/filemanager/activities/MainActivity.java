@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements
     private DisplayImageOptions displayImageOptions;
     private int sdk;
     private TextView mGoogleName, mGoogleId;
-    public String fabskin, fabSkinPressed;
+    public String fabskin;
     private LinearLayout buttons;
     private HorizontalScrollView scroll, scroll1;
     private CountDownTimer timer;
@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements
         int th = Integer.parseInt(Sp.getString("theme", "0"));
         theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
 
-        fabskin = PreferenceUtils.getColor(Sp.getInt("fab_skin_color_position", 1));
+        fabskin = PreferenceUtils.getFabColor(Sp.getInt("fab_skin_color_position", 1));
 
         // setting accent theme
         if (Build.VERSION.SDK_INT >= 21) {
@@ -380,13 +380,13 @@ public class MainActivity extends AppCompatActivity implements
         tabHandler = new TabHandler(this, null, null, 1);
 
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
-        fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
+        int fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
 
         boolean random = Sp.getBoolean("random_checkbox", false);
         if (random)
             skin = PreferenceUtils.random(Sp);
         else
-            skin = PreferenceUtils.getColor(Sp.getInt("skin_color_position", 4));
+            skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 31));
 
         hidemode = Sp.getInt("hidemode", 0);
         topfab = hidemode == 0 ? Sp.getBoolean("topFab", true) : false;
@@ -398,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements
         floatingActionButton.setAnimation(fabShowAnim);
         floatingActionButton.animate();
         floatingActionButton.setVisibility(View.VISIBLE);
-        floatingActionButton.setColors(Color.parseColor(fabskin), Color.parseColor(fabSkinPressed));
+        floatingActionButton.setColors(Color.parseColor(fabskin), (fabSkinPressed));
         if (theme1 == 1) floatingActionButton.setLabelsStyle(R.drawable.fab_label_background);
         floatingActionButton.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -472,9 +472,9 @@ public class MainActivity extends AppCompatActivity implements
         scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
         FloatingActionButton floatingActionButton1 = floatingActionButton.getButtonAt(0);
-        String folder_skin = PreferenceUtils.getColor(Sp.getInt("icon_skin_position", 4));
+        String folder_skin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 31));
         int folderskin = Color.parseColor(folder_skin);
-        int fabskinpressed = Color.parseColor(PreferenceUtils.getStatusColor(folder_skin));
+        int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
         floatingActionButton1.setColorNormal(folderskin);
         floatingActionButton1.setColorPressed(fabskinpressed);
         floatingActionButton1.setOnClickListener(new View.OnClickListener() {
@@ -562,7 +562,7 @@ public class MainActivity extends AppCompatActivity implements
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
 
-        skinStatusBar = Color.parseColor(PreferenceUtils.getStatusColor(skin));
+        skinStatusBar = (PreferenceUtils.getStatusColor(skin));
 
         mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
         if (theme1 == 1) mDrawerLinear.setBackgroundColor(Color.parseColor("#303030"));
