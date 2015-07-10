@@ -1,0 +1,148 @@
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/second"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="72dp"
+    android:clickable="true"
+    android:gravity="center_vertical"
+    android:paddingLeft="16dp">
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/properties"
+        android:background="@drawable/listitem1"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:src="@drawable/ic_action_about_dark"/>
+
+    <ImageButton
+        android:id="@+id/rename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@drawable/listitem1"
+        android:gravity="center_vertical"
+        android:layout_toLeftOf="@id/properties"
+        android:src="@drawable/ic_edit_black_48dp" />
+
+    <FrameLayout
+        android:id="@+id/iconframe"
+        android:layout_centerVertical="true"
+        android:foregroundGravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp">
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:paddingLeft="16dp"
+            android:padding="8dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/circle_shape"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/icon"/>
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            android:padding="16dp"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
+            android:id="@+id/bicon"/>
+        <com.amaze.filemanager.ui.views.RoundedImageView
+            android:id="@+id/cicon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/icon" />
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:textSize="12dp"
+            android:singleLine="true"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/generictext"
+            android:textColor="@android:color/white"
+            />
+    </FrameLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:foregroundGravity="center_vertical"
+        android:layout_toRightOf="@+id/iconframe"
+        android:layout_toLeftOf="@+id/rename"
+        android:layout_toStartOf="@+id/rename">
+
+        <TextView
+            android:id="@+id/firstline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:ellipsize="middle"
+            android:clickable="false"
+            android:textColor="@android:color/black"
+            android:textSize="17sp" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/firstline"
+            android:paddingTop="5dp">
+
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_alignParentLeft="true"
+                android:textColor="?android:attr/textColorTertiary"
+                />
+            <TextView
+                android:id="@+id/secondLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/date"
+                android:layout_marginLeft="10dip"
+                android:textSize="13sp"
+                android:textColor="?android:attr/textColorTertiary"
+                />
+
+            <TextView
+                android:id="@+id/permis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textColor="?android:attr/textColorTertiary"
+                android:textSize="13sp"
+                />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -232,7 +232,7 @@ public class Preffrag extends PreferenceFragment  {
             public boolean onPreferenceClick(Preference preference) {
 
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                skin = PreferenceUtils.getSkinColor(sharedPref.getInt("skin_color_position", 31));
+                skin = PreferenceUtils.getSkinColor(sharedPref.getInt("skin_color_position", 4));
                 if(theme==1)
                     a.theme(Theme.DARK);
 

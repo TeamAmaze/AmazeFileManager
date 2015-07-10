@@ -48,27 +48,6 @@
         <item>6</item>
     </string-array>
 
-    <string-array name="skin">
-        <item>@string/red</item>
-        <item>@string/pink</item>
-        <item>@string/purple</item>
-        <item>@string/deep_purple</item>
-        <item>@string/indigo</item>
-        <item>@string/blue</item>
-        <item>@string/light_blue</item>
-        <item>@string/cyan</item>
-        <item>@string/teal</item>
-        <item>@string/green</item>
-        <item>@string/light_green</item>
-        <item>@string/amber</item>
-        <item>@string/orange</item>
-        <item>@string/deep_orange</item>
-        <item>@string/brown</item>
-        <item>@string/black</item>
-        <item>@string/blue_grey</item>
-        <item>@string/supersu</item>
-
-    </string-array>
     <string-array name="directorysortmode">
         <item>@string/foldersOnTop</item>
         <item>@string/filesOnTop</item>
@@ -124,24 +103,4 @@
         <item>1</item>
     </string-array>
 
-    <string-array name="material_primary_color_codes">
-        <item>#F44336</item>
-        <item>#e91e63</item>
-        <item>#9c27b0</item>
-        <item>#673ab7</item>
-        <item>#3f51b5</item>
-        <item>#2196F3</item>
-        <item>#03A9F4</item>
-        <item>#00BCD4</item>
-        <item>#009688</item>
-        <item>#4CAF50</item>
-        <item>#8bc34a</item>
-        <item>#FFC107</item>
-        <item>#FF9800</item>
-        <item>#FF5722</item>
-        <item>#795548</item>
-        <item>#212121</item>
-        <item>#607d8b</item>
-        <item>#004d40</item>
-    </string-array>
 </resources>

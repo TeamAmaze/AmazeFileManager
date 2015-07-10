@@ -386,7 +386,7 @@ public class MainActivity extends AppCompatActivity implements
         if (random)
             skin = PreferenceUtils.random(Sp);
         else
-            skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 31));
+            skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
 
         hidemode = Sp.getInt("hidemode", 0);
         topfab = hidemode == 0 ? Sp.getBoolean("topFab", true) : false;
@@ -472,7 +472,7 @@ public class MainActivity extends AppCompatActivity implements
         scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
         FloatingActionButton floatingActionButton1 = floatingActionButton.getButtonAt(0);
-        String folder_skin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 31));
+        String folder_skin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
         int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
         floatingActionButton1.setColorNormal(folderskin);

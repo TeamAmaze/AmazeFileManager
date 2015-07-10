@@ -84,23 +84,17 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
         a.autoDismiss(true);
         ColorAdapter adapter = null;
+        String[] colors=PreferenceUtils.colors;
+        List<String> arrayList = Arrays.asList(colors);
         switch (preference.getKey()) {
             case "skin":
-                String[] colors=PreferenceUtils.colors;
-                List<String> arrayList = Arrays.asList(colors);
-                adapter = new ColorAdapter(getActivity(), arrayList, "skin_color_position",sharedPref.getInt("skin_color_position",31));
+                adapter = new ColorAdapter(getActivity(), arrayList, "skin_color_position",sharedPref.getInt("skin_color_position",4));
                 break;
             case "fab_skin":
-                ArrayList<String> arrayList2 = new ArrayList<>();
-                for(String c : getResources().getStringArray(R.array.material_primary_color_codes)) {
-                    arrayList2.add(c);
-                }
-                adapter = new ColorAdapter(getActivity(), arrayList2, "fab_skin_color_position",sharedPref.getInt("fab_skin_color_position",1));
+                adapter = new ColorAdapter(getActivity(), arrayList, "fab_skin_color_position",sharedPref.getInt("fab_skin_color_position",1));
                 break;
             case "icon_skin":
-                String[] colors1=PreferenceUtils.colors;
-                List<String> arrayList1 = Arrays.asList(colors1);
-                adapter = new ColorAdapter(getActivity(), arrayList1, "icon_skin_color_position",sharedPref.getInt("icon_skin_color_position",31));
+                adapter = new ColorAdapter(getActivity(), arrayList, "icon_skin_color_position",sharedPref.getInt("icon_skin_color_position",4));
                 break;
         }
         GridView v=(GridView)getActivity().getLayoutInflater().inflate(R.layout.dialog_grid,null);
@@ -115,16 +109,12 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
     class ColorAdapter extends ArrayAdapter<String> {
 
         String pref;
-        String[] strings;
-        final String[] colors;
         int p;
         MaterialDialog b;
         public void updateMatDialog(MaterialDialog b){this.b=b;}
         public ColorAdapter(Context context, List<String> arrayList, String pref, int pref1) {
             super(context, R.layout.rowlayout, arrayList);
-            strings = getResources().getStringArray(R.array.skin);
             this.pref = pref;
-            colors= getResources().getStringArray(R.array.material_primary_color_codes);
             this.p=pref1;
         }
 

@@ -157,8 +157,8 @@ public class RarViewer extends Fragment {
         showLastModified = Sp.getBoolean("showLastModified", true);
         showDividers=Sp.getBoolean("showDividers", true);
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
-        skin = PreferenceUtils.getSkinColor( Sp.getInt("skin_color_position", 31));
-        iconskin=PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 31));
+        skin = PreferenceUtils.getSkinColor( Sp.getInt("skin_color_position", 4));
+        iconskin=PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
         String x = getSelectionColor();
         skinselection = Color.parseColor(x);
         files = new ArrayList<File>();

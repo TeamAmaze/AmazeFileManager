@@ -84,6 +84,7 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.HidingScrollListener;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.ui.icons.IconHolder;
@@ -180,9 +181,9 @@ public class Main extends android.support.v4.app.Fragment {
         current = getArguments().getString("lastpath");
         tabHandler = new TabHandler(getActivity(), null, null, 1);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 31));
+        skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position",4));
         fabSkin = PreferenceUtils.getFabColor(Sp.getInt("fab_skin_color_position", 1));
-        iconskin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 31));
+        iconskin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
         skin_color = Color.parseColor(skin);
         icon_skin_color = Color.parseColor(iconskin);
         sh = new Shortcuts(getActivity(), "shortcut.xml");
@@ -987,54 +988,7 @@ public class Main extends android.support.v4.app.Fragment {
                     final String f;
                     f = (list.get(
                             (plist.get(0))).getDesc());
-                    View dialog = getActivity().getLayoutInflater().inflate(
-                            R.layout.dialog, null);
-                    MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                    final EditText edit = (EditText) dialog
-                            .findViewById(R.id.newname);
-                    String name = "";
-                    if (smbMode) {
-                        try {
-                            name = new SmbFile(f).getName();
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        }
-                    } else new File(f).getName();
-                    edit.setText(name);
-                    a.customView(dialog, true);
-                    if (theme1 == 1)
-                        a.theme(Theme.DARK);
-                    a.title(utils.getString(getActivity(), R.string.rename));
-
-                    a.callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog materialDialog) {
-                            m.finish();
-                            String name = edit.getText().toString();
-                            try {
-                                if (new SmbFile(f).isDirectory() && !name.endsWith("/"))
-                                    name = name + "/";
-                            } catch (SmbException e) {
-                                e.printStackTrace();
-                            } catch (MalformedURLException e) {
-                                e.printStackTrace();
-                            }
-                            if (smbMode)
-                                mainActivity.rename(f, current + edit.getText());
-                            else
-                                mainActivity.rename((f), (current + "/" + edit.getText()));
-
-                        }
-
-                        @Override
-                        public void onNegative(MaterialDialog materialDialog) {
-
-                            materialDialog.cancel();
-                        }
-                    });
-                    a.positiveText(R.string.save);
-                    a.negativeText(R.string.cancel);
-                    a.build().show();
+                    rename(f);
                     mode.finish();
                     return true;
                 case R.id.hide:
@@ -1129,7 +1083,49 @@ public class Main extends android.support.v4.app.Fragment {
                         mainActivity.mDrawerLinear);
         }
     };
+    public void rename(final String f){
 
+        View dialog = getActivity().getLayoutInflater().inflate(
+                R.layout.dialog, null);
+        MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+        final EditText edit = (EditText) dialog
+                .findViewById(R.id.newname);
+        String name =new HFile(f).getName();
+        edit.setText(name);
+        a.customView(dialog, true);
+        if (theme1 == 1)
+            a.theme(Theme.DARK);
+        a.title(utils.getString(getActivity(), R.string.rename));
+
+        a.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onPositive(MaterialDialog materialDialog) {
+                String name = edit.getText().toString();
+                if(smbMode) try {
+                    if (new SmbFile(f).isDirectory() && !name.endsWith("/"))
+                        name = name + "/";
+                } catch (SmbException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                if (smbMode)
+                    mainActivity.rename(f, current + name);
+                else
+                    mainActivity.rename((f), (current + "/" + name));
+
+            }
+
+            @Override
+            public void onNegative(MaterialDialog materialDialog) {
+
+                materialDialog.cancel();
+            }
+        });
+        a.positiveText(R.string.save);
+        a.negativeText(R.string.cancel);
+        a.build().show();
+    }
     public void computeScroll() {
         View vi = listView.getChildAt(0);
         int top = (vi == null) ? 0 : vi.getTop();

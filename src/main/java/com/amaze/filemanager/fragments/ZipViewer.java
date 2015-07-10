@@ -153,8 +153,8 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         showLastModified = Sp.getBoolean("showLastModified", true);
         showDividers=Sp.getBoolean("showDividers",true);
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
-        skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 31));
-        iconskin=PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 31));
+        skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
+        iconskin=PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
         mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
         String x = getSelectionColor();
