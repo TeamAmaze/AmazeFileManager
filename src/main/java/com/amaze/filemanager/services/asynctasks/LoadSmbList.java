@@ -70,12 +70,12 @@ public class LoadSmbList extends AsyncTask<SmbFile, String, ArrayList<Layoutelem
         Log.e("Connected","doinbackground");
         f = params[0];
         // Log.e("Connected",f.getPath());
-        ma.list=new ArrayList<Layoutelements>();
+        ArrayList<Layoutelements> list=new ArrayList<Layoutelements>();
         try {
             SmbFile[] smbFile =f.listFiles();
-            ma.list=ma.addToSmb(smbFile);
-            Collections.sort(ma.list,new FileListSorter(ma.dsort,ma.sortby,ma.asc,ma.rootMode));
-            return ma.list;
+            list=ma.addToSmb(smbFile);
+            Collections.sort(list,new FileListSorter(ma.dsort,ma.sortby,ma.asc,ma.rootMode));
+            return list;
         } catch (Exception e) {
             publishProgress(e.getMessage());
             e.printStackTrace();
@@ -91,10 +91,8 @@ public class LoadSmbList extends AsyncTask<SmbFile, String, ArrayList<Layoutelem
             bitmap = null;
 
         }
-        Log.e("Connected","onPost");
-        ma.createSMBViews(bitmap, back, (f));
-        ma.smbMode=true;
-        //ListView lv = (ListView) ma.listView.findViewById(R.id.listView);
+        Log.e("Connected", "onPost");
+        ma.createViews(bitmap, back, (f.getPath()),true);
         ma.listView.setVisibility(View.VISIBLE);
     }
 

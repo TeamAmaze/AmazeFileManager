@@ -10,6 +10,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.HFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,10 +24,10 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
 
     private MaterialDialog a;
     private String name, parent, size, items, date;
-    private File f;
+    private HFile f;
     Context c;
     String md5="";
-    public GenerateMD5Task(MaterialDialog a, File f, String name, String parent,
+    public GenerateMD5Task(MaterialDialog a, HFile f, String name, String parent,
                            String size, String items, String date,Context c) {
 
         this.a = a;
@@ -60,11 +61,11 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
         String param = params[0];
         Futils futils=new Futils();
         if (f.isDirectory()) {
-            size = futils.getString(c, R.string.size) + futils.readableFileSize(futils.folderSize(f));
-            items = futils.getString(c, R.string.totalitems) + futils.count(f,c.getResources(),true);
-        } else if (f.isFile()) {
+            size = futils.getString(c, R.string.size) + futils.readableFileSize((f.folderSize()));
+            items = futils.getString(c, R.string.totalitems) + f.listFiles(false).size();
+        } else  {
             items = "";
-            size =futils. getString(c, R.string.size) + futils.getSize(f);
+            size =futils. getString(c, R.string.size) + futils.readableFileSize(f.length());
         }publishProgress("");
         String md5 = "";
         try {

@@ -35,7 +35,10 @@ public class HFile {
     public boolean isSmb() {
         return path.startsWith("smb:/");
     }
-
+    public long lastModified() throws MalformedURLException, SmbException {
+        if(isSmb())return new SmbFile(path).lastModified();
+        else return new File(path).lastModified();
+    }
     public long length() {
         long s = 0l;
         if (isSmb()) {
@@ -69,7 +72,19 @@ public class HFile {
             name = new File(path).getName();
         return name;
     }
-
+    public String getParent() {
+        String name = "";
+        if (isSmb()) {
+            try {
+                name = new SmbFile(path).getParent();
+            } catch (MalformedURLException e) {
+                name = "";
+                e.printStackTrace();
+            }
+        } else
+            name = new File(path).getParent();
+        return name;
+    }
     public boolean isDirectory() {
         boolean isDirectory = false;
         if (isSmb()) {

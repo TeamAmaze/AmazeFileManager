@@ -242,7 +242,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 else holder.about.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        main. utils.showProps(new File(rowItem.getDesc()), main, main.rootMode);
+                        main. utils.showProps((rowItem.getDesc()), main, main.rootMode);
 
                     }
                 });

@@ -68,6 +68,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 public class Futils {
@@ -366,6 +367,11 @@ public String getSize(File f) {
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
         return (sdf.format(f.lastModified())).toString();
     }
+    public String getdate(long f) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
+        return (sdf.format(f)).toString();
+    }
 
     public String getdate(long f,String form,String year) {
 
@@ -400,11 +406,20 @@ public String getSize(File f) {
         return inSampleSize;
     }
 
-    public void showProps(final File f, final Main c,boolean root) {
-        String date = getString(c.getActivity(), R.string.date) + getdate(f);
+    public void showProps(final String f, final Main c,boolean root) {
+        HFile hFile=new HFile(f);
+        long last=0;
+        try {
+            last=hFile.lastModified();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SmbException e) {
+            e.printStackTrace();
+        }
+        String date = getString(c.getActivity(), R.string.date) + getdate(last);
         String items = getString(c.getActivity(), R.string.totalitems)+" calculating", size = getString(c.getActivity(), R.string.size)+" calculating", name, parent;
-        name = getString(c.getActivity(), R.string.name) + f.getName();
-        parent = getString(c.getActivity(), R.string.location) + f.getParent();
+        name = getString(c.getActivity(), R.string.name) + hFile.getName();
+        parent = getString(c.getActivity(), R.string.location) + hFile.getParent();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c.getActivity());
         String fabskin = PreferenceUtils.getFabColor(sp.getInt("fab_skin_color_position", 1));
         MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
@@ -418,7 +433,7 @@ public String getSize(File f) {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
 
-                c.mainActivity.copyToClipboard(c.getActivity(), f.getPath());
+                c.mainActivity.copyToClipboard(c.getActivity(), f);
                 Toast.makeText(c.getActivity(), c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
             }
 
@@ -428,7 +443,7 @@ public String getSize(File f) {
         });
         MaterialDialog materialDialog=a.build();
         materialDialog.show();
-        new GenerateMD5Task(materialDialog, f, name, parent, size, items, date,c.getActivity()).execute(f.getPath());
+        new GenerateMD5Task(materialDialog, hFile, name, parent, size, items, date,c.getActivity()).execute(f);
     }
 
     public void showProps(final File f, final Context c,int theme1) {
@@ -460,7 +475,7 @@ public String getSize(File f) {
 
         MaterialDialog materialDialog=a.build();
         materialDialog.show();
-        new GenerateMD5Task(materialDialog, f, name, parent, size, items, date,c).execute(f.getPath());
+        new GenerateMD5Task(materialDialog,new HFile( f.getPath()), name, parent, size, items, date,c).execute(f.getPath());
     }
 
     public boolean copyToClipboard(Context context, String text) {

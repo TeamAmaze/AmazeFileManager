@@ -44,10 +44,6 @@ public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>>
         this.ma = ma;
     }
 
-    @Override
-    protected void onPreExecute() {
-        ma.history.addPath(ma.current);
-    }
 
     @Override
     public void onProgressUpdate(String... message) {
@@ -58,7 +54,7 @@ public class LoadList extends AsyncTask<File, String, ArrayList<Layoutelements>>
     // Actual download method, run in the task thread
     protected ArrayList<Layoutelements> doInBackground(File... params) {
         // params comes from the execute() call: params[0] is the url.
-
+        ArrayList<Layoutelements> list=new ArrayList<>();
         f = params[0];
         try {
 ArrayList<String[]> arrayList;
@@ -67,11 +63,11 @@ if(ma.rootMode)
 
 else
     arrayList=(RootHelper.getFilesList(ma.showSize,f.getPath(),ma.showHidden));
-            ma.list = ma.addTo(arrayList);
-            Collections.sort(ma.list,
+            list = ma.addTo(arrayList);
+            Collections.sort(list,
                     new FileListSorter(ma.dsort, ma.sortby, ma.asc,ma.rootMode));
 
-            return ma.list;
+            return list;
 
         } catch (Exception e) {
             return null;
@@ -86,8 +82,7 @@ else
             bitmap = null;
 
         }
-        ma.createViews(bitmap, back, f);
-
+        ma.createViews(bitmap, back, f.getPath(),false);
         //ListView lv = (ListView) ma.listView.findViewById(R.id.listView);
         ma.listView.setVisibility(View.VISIBLE);
     }
