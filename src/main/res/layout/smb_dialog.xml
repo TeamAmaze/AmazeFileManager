@@ -8,10 +8,9 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textUri"
-        android:hint="IP address"
+        android:hint="Server: IP Addr. or IP Addr./SharedFolder"
         android:id="@+id/editText"
         android:layout_gravity="center_horizontal" />
-
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

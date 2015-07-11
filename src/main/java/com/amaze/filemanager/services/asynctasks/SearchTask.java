@@ -7,15 +7,19 @@ import android.os.AsyncTask;
 
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.RootHelper;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
+
+import jcifs.smb.SmbException;
 
 /**
  * Created by chinmay on 6/9/2015.
  */
-public class SearchTask extends AsyncTask<String, String[], Void> {
+public class SearchTask extends AsyncTask<String, ArrayList<String[]>, Void> {
     ArrayList<String> searchHelper;
     ArrayList<String> lis = new ArrayList<>();
     Main main;
@@ -32,7 +36,7 @@ public class SearchTask extends AsyncTask<String, String[], Void> {
     main.onSearchCompleted();
     }
     @Override
-    public void onProgressUpdate(String[]... val) {
+    public void onProgressUpdate(ArrayList<String[]>... val) {
         if (!isCancelled()) {
                 main.addSearchResult(val[0]);
         }
@@ -46,33 +50,47 @@ boolean isPresentInList(String p){
     protected Void doInBackground(String... params) {
         int i = 0;
         String path = params[0];
+        ArrayList<String[]> arrayList=new ArrayList<>();
         while (!isCancelled() && i < searchHelper.size()) {
             if (searchHelper.get(0).contains(path))
-                if (new File(searchHelper.get(i)).getName().toLowerCase()
+                if (new HFile(searchHelper.get(i)).getName().toLowerCase()
                         .contains(key.toLowerCase()) && !isPresentInList(searchHelper.get(i)) ) {
-                    File x = new File(searchHelper.get(i));
+                    HFile x = new HFile(searchHelper.get(i));
                     String k = "", size = "";
                     if (x.isDirectory()) {
                         k = "-1";
-                        if (main.showSize) size = "" + RootHelper.getCount(x);
+                        if (main.showSize) size = "";
                     } else if (main.showSize) size = "" + x.length();
-                    String[] string = new String[]{x.getPath(), "", RootHelper.parseFilePermission(x), k, x.lastModified() + "", size};
+                    String[] string = new String[0];
+                    try {
+                        string = new String[]{x.getPath(), "", "", k, x.lastModified() + "", size};
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (SmbException e) {
+                        e.printStackTrace();
+                    }
                     lis.add(string[0]);
-                    publishProgress(string);
+                    arrayList.add(string);
 
 
                 }
+            publishProgress(arrayList);
             i++;
 
         }
         getSearchResult(new File(path), key);
+        if(arrayList1.size()>0)publishProgress(arrayList1);
         return null;
     }
     public void getSearchResult(File f, String text) {
         search(f, text);
     }
-
+    ArrayList<String[]> arrayList1=new ArrayList<>();
     public void search(File file, String text) {
+     if(arrayList1.size()>5){
+         publishProgress(arrayList1);
+         arrayList1.clear();
+     }
         if (file.isDirectory()) {
             ArrayList<String[]> f = RootHelper.getFilesList(file.getPath(), main.rootMode, main.showHidden, false);
             // do you have permission to read this directory?
@@ -84,7 +102,7 @@ boolean isPresentInList(String p){
                             if (temp.getName().toLowerCase()
                                     .contains(text.toLowerCase()) && !isPresentInList(x[0])) {
                                 lis.add(x[0]);
-                                publishProgress(x);
+                                arrayList1.add(x);
                             }
                             if (!isCancelled()) search(temp, text);
 
@@ -92,7 +110,7 @@ boolean isPresentInList(String p){
                             if (temp.getName().toLowerCase()
                                     .contains(text.toLowerCase())&& !isPresentInList(x[0])) {
                                 lis.add(x[0]);
-                                publishProgress(x);
+                                arrayList1.add(x);
                             }
                         }
                     }

@@ -270,9 +270,8 @@ public class CopyService extends Service {
                 long size = sourceFile.length();
                 InputStream in = sourceFile.getInputStream();
                 OutputStream out= targetFile.getOutputStream(c);
-                copy(in,out,size,id,sourceFile.getName(),move);
-                in.close();
-                out.close();/*
+                copy(in, out, size, id, sourceFile.getName(), move);
+                /*
                         try {
                             targetFile.setLastModified(sourceFile.lastModified());
                         } catch (Exception e) {
@@ -287,7 +286,7 @@ public class CopyService extends Service {
             // txtDetails.append("Copying " + sourceFile.getAbsolutePath() + " ... ");
             BufferedInputStream in = new BufferedInputStream(stream);
             BufferedOutputStream out=new BufferedOutputStream(outputStream);
-            if (outputStream != null) {
+            if (outputStream == null)return;
                 byte[] buffer = new byte[1024*60];
 
                 int length;
@@ -312,9 +311,13 @@ public class CopyService extends Service {
                         in.close();
                         out.close();
                         stopSelf(id);
-                    }
-
-                }}}
+                        return;
+                    }}
+            in.close();
+            out.close();
+            stream.close();
+            outputStream.close();
+        }
            }
 
     Futils utils = new Futils();

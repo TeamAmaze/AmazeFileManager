@@ -115,7 +115,6 @@ import jcifs.smb.SmbFile;
 public class Main extends android.support.v4.app.Fragment {
     public File[] file;
     public ArrayList<Layoutelements> list;
-    public ArrayList<SmbFile> smbFiles;
     public Recycleradapter adapter;
     public Futils utils;
     public boolean selection;
@@ -334,7 +333,10 @@ public class Main extends android.support.v4.app.Fragment {
                 b.putInt("index", savedInstanceState.getInt("index"));
                 b.putInt("top", savedInstanceState.getInt("top"));
                 scrolls.put(cur, b);
-                retreiveSmbFromSavedInstance(savedInstanceState);
+
+                smbMode = savedInstanceState.getBoolean("SmbMode");
+                if (smbMode)
+                smbPath = savedInstanceState.getString("SmbPath");
                 list = savedInstanceState.getParcelableArrayList("list");
                 if (savedInstanceState.getBoolean("results")) {
                     try {
@@ -384,8 +386,10 @@ public class Main extends android.support.v4.app.Fragment {
                 outState.putBoolean("results", results);
             }
             if (smbMode)
-                addSmbToSavedInstance(outState, smbUser, smbPass, smbFiles, SmbAnonym);
-        }
+            {
+                outState.putBoolean("SmbMode", smbMode);
+                outState.putString("SmbPath", smbPath);
+            }}
     }
 
     public void home() {
@@ -551,7 +555,10 @@ public class Main extends android.support.v4.app.Fragment {
                         bitmap, ma.getActivity());
                 list=bitmap;
                 this.smbMode = smbMode;
-                if(!smbMode)history.addPath(f);
+                if(!smbMode){
+                    history.addPath(f);
+                    Toast.makeText(getActivity(),"adding",Toast.LENGTH_SHORT).show();
+                }
                 mSwipeRefreshLayout.setRefreshing(false);
                 try {
                     listView.setAdapter(adapter);
@@ -1016,7 +1023,8 @@ public class Main extends android.support.v4.app.Fragment {
                         mainActivity.mDrawerLinear);
         }
     };
-    public void rename(final String f){
+
+    public void rename(final String f) {
 
         View dialog = getActivity().getLayoutInflater().inflate(
                 R.layout.dialog, null);
@@ -1185,9 +1193,7 @@ public class Main extends android.support.v4.app.Fragment {
 
     public ArrayList<Layoutelements> addToSmb(SmbFile[] mFile) throws SmbException {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
-        smbFiles = new ArrayList<SmbFile>();
         for (int i = 0; i < mFile.length; i++) {
-            smbFiles.add(mFile[i]);
             if (mFile[i].isDirectory()) {
                 a.add(new Layoutelements(folder, mFile[i].getName(), mFile[i].getPath(), "", "", "", 0, false, mFile[i].lastModified() + "", true));
             } else {
@@ -1256,25 +1262,10 @@ public class Main extends android.support.v4.app.Fragment {
 
     }
 
-    void addSmbToSavedInstance(Bundle savedInstance, String user, String pass, ArrayList<SmbFile> list, boolean anonym) {
-        savedInstance.putBoolean("SmbMode", smbMode);
-        savedInstance.putString("SmbPath", smbPath);
-        if (!anonym) {
-            savedInstance.putBoolean("SmbAnonym", false);
-        } else savedInstance.putBoolean("SmbAnonym", true);
-    }
-
-    void retreiveSmbFromSavedInstance(Bundle savedInstance) {
-        smbMode = savedInstance.getBoolean("SmbMode");
-        if (!smbMode) return;
-        smbPath = savedInstance.getString("SmbPath");
-        SmbAnonym = savedInstance.getBoolean("SmbAnonym");
-
-    }
 
     public SmbFile connectingWithSmbServer(String[] auth, boolean anonym) {
         try {
-            String yourPeerIP = auth[0];
+            String yourPeerIP = auth[0],domain="";
             String path = "smb://" + (anonym ? "" : (URLEncoder.encode(auth[1] + ":" + auth[2], "UTF-8") + "@")) + yourPeerIP + "/";
             smbPath = path;
             smbUser = auth[1];
@@ -1430,7 +1421,24 @@ public class Main extends android.support.v4.app.Fragment {
             results = true;
         }
     }
-
+    public void addSearchResult(ArrayList<String[]> a) {
+        if (listView != null) {
+            if (!results) list.clear();
+            ArrayList<Layoutelements> arrayList1 = addTo(a);
+            if (arrayList1.size() > 0)
+            for(Layoutelements layoutelements:arrayList1)
+            list.add(layoutelements);
+            adapter.addItem();
+            if (!results) {
+                createViews(list, false, (current),false);
+            }
+            pathname.setText(R.string.searching);
+            if (results) {
+                adapter.addItem();
+            }
+            results = true;
+        }
+    }
     public void onSearchCompleted() {
         new AsyncTask<Void, Void, Void>() {
             @Override

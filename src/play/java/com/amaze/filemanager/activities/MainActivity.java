@@ -2537,6 +2537,18 @@ public class MainActivity extends AppCompatActivity implements
         final EditText user = (EditText) v2.findViewById(R.id.editText3);
         final EditText pass = (EditText) v2.findViewById(R.id.editText2);
         final CheckBox ch = (CheckBox) v2.findViewById(R.id.checkBox2);
+        ch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(ch.isChecked()){
+                    user.setEnabled(false);
+                    pass.setEnabled(false);
+                }else{
+                    user.setEnabled(true);
+                    pass.setEnabled(true);
+
+                }}
+        });
         if (edit) {
             String userp = "", passp = "", ipp = "";
             try {
