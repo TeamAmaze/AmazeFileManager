@@ -94,7 +94,7 @@ dependencies {
     playCompile 'com.google.android.gms:play-services-plus:6.5.87'
     playCompile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile project(':libs:StickyHeadersRecyclerView')
-    compile project(':libs:FloatingActionButton')
+    compile 'com.github.clans:fab:1.5.4'
 }
 
 def Properties props = new Properties()

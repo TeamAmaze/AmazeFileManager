@@ -31,6 +31,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -52,7 +53,6 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
     private final ArrayList<Item> values;
     private RelativeLayout l;
     MainActivity m;
-    Futils futils = new Futils();
     IconUtils icons;
     Float[] color;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
@@ -135,7 +135,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             view.setClickable(false);
             view.setFocusable(false);
             view.setBackgroundColor(Color.TRANSPARENT);
-            view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, m.dpToPx(17)));
+            view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, m.dpToPx(17)));
             view.setPadding(0, m.dpToPx(8), 0, m.dpToPx(8));
             return view;
         } else {
@@ -186,19 +186,20 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 }
             });
 
-            float[] src = {
-
-                    color[0], 0, 0, 0, 0,
-                    0, color[1], 0, 0, 0,
-                    0, 0, color[2], 0, 0,
-                    0, 0, 0, 1, 0
-            };
-            ColorMatrix colorMatrix = new ColorMatrix(src);
-            ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
             textView.setText(((EntryItem) (values.get(position))).title);
 
+            imageView.clearColorFilter();
             imageView.setImageDrawable(getDrawable(position, myChecked.get(position)));
             if (myChecked.get(position)) {
+                float[] src = {
+
+                        color[0], 0, 0, 0, 0,
+                        0, color[1], 0, 0, 0,
+                        0, 0, color[2], 0, 0,
+                        0, 0, 0, 1, 0
+                };
+                ColorMatrix colorMatrix = new ColorMatrix(src);
+                ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
                 if (m.theme1 == 0)
                     rowView.setBackgroundColor(Color.parseColor("#ffeeeeee"));
                 else rowView.setBackgroundColor(Color.parseColor("#ff424242"));
@@ -207,8 +208,8 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 textView.setTextColor(Color.parseColor(m.fabskin));
 
                 //if(m.theme1==0)
-                imageView.setColorFilter(colorMatrixColorFilter);
             } else {
+                imageView.clearColorFilter();
                 if (m.theme1 == 0) {
                     textView.setTextColor(m.getResources().getColor(android.R.color.black));
                 } else {

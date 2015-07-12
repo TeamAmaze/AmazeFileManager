@@ -49,6 +49,7 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.DisplayMetrics;
@@ -107,7 +108,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
@@ -322,7 +322,8 @@ public class Main extends android.support.v4.app.Fragment {
         });
         mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor(fabSkin));
         mSwipeRefreshLayout.setProgressViewOffset(true, paddingTop, paddingTop + dpToPx(72));
-
+        DefaultItemAnimator animator=new DefaultItemAnimator();
+        listView.setItemAnimator(animator);
         if (savedInstanceState == null) {
             loadlist(f.getPath(), false);
 
@@ -516,13 +517,6 @@ public class Main extends android.support.v4.app.Fragment {
         else
             new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new File(path));
 
-        try {
-            animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        listView.setAnimation(animation);
     }
 
     public void loadSmblist(final SmbFile f, boolean back) {
@@ -530,14 +524,6 @@ public class Main extends android.support.v4.app.Fragment {
             mActionMode.finish();
         }
         new LoadSmbList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, f);
-
-        try {
-            animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        listView.setAnimation(animation);
     }
 
     @SuppressWarnings("unchecked")
@@ -557,7 +543,6 @@ public class Main extends android.support.v4.app.Fragment {
                 this.smbMode = smbMode;
                 if(!smbMode){
                     history.addPath(f);
-                    Toast.makeText(getActivity(),"adding",Toast.LENGTH_SHORT).show();
                 }
                 mSwipeRefreshLayout.setRefreshing(false);
                 try {
@@ -643,8 +628,7 @@ public class Main extends android.support.v4.app.Fragment {
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
             mainActivity.setPagingEnabled(false);
-            mainActivity.floatingActionButton.animate();
-            mainActivity.floatingActionButton.setVisibility(View.GONE);
+            mainActivity.floatingActionButton.hideMenuButton(true);
             if (mainActivity.isDrawerLocked) mainActivity.translateDrawerList(true);
             // assumes that you have "contexual.xml" menu resources
             inflater.inflate(R.menu.contextual, menu);
@@ -1003,7 +987,7 @@ public class Main extends android.support.v4.app.Fragment {
             selection = false;
             if (mainActivity.isDrawerLocked) mainActivity.translateDrawerList(false);
 
-            mainActivity.floatingActionButton.setVisibility(View.VISIBLE);
+            mainActivity.floatingActionButton.showMenuButton(true);
             if (!results) adapter.toggleChecked(false, current);
             else adapter.toggleChecked(false);
             mainActivity.setPagingEnabled(true);
@@ -1193,7 +1177,9 @@ public class Main extends android.support.v4.app.Fragment {
 
     public ArrayList<Layoutelements> addToSmb(SmbFile[] mFile) throws SmbException {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
+        if (searchHelper.size() > 500) searchHelper.clear();
         for (int i = 0; i < mFile.length; i++) {
+            searchHelper.add(mFile[i].getPath());
             if (mFile[i].isDirectory()) {
                 a.add(new Layoutelements(folder, mFile[i].getName(), mFile[i].getPath(), "", "", "", 0, false, mFile[i].lastModified() + "", true));
             } else {
@@ -1271,7 +1257,6 @@ public class Main extends android.support.v4.app.Fragment {
             smbUser = auth[1];
             smbPass = auth[2];
             SmbFile smbFile = new SmbFile(path);
-            System.out.println(smbFile.getPath());
             return smbFile;
         } catch (Exception e) {
             e.printStackTrace();
@@ -1283,28 +1268,6 @@ public class Main extends android.support.v4.app.Fragment {
         hiddenfiles = hidden.readTable();
     }
 
-    public void initPoppyViewListeners(View poppy) {
-/*
-        ImageView imageView = ((ImageView)poppy.findViewById(R.id.overflow));
-        showPopup(imageView);
-        final ImageView homebutton=(ImageView)poppy.findViewById(R.id.home);
-        homebutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                home();if(mActionMode!=null){mActionMode.finish();}
-            }
-        });
-        ImageView imageView1 = ((ImageView)poppy.findViewById(R.id.search));
-        imageView1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                search();
-                if (mActionMode != null) {
-                    mActionMode.finish();
-                }
-            }
-        });*/
-    }
 
     public void hide(String path) {
         hidden.addPath(path);
@@ -1403,28 +1366,10 @@ public class Main extends android.support.v4.app.Fragment {
         getActivity().sendBroadcast(addIntent);
     }
 
-    public void addSearchResult(String[] a) {
-        if (listView != null) {
-            if (!results) list.clear();
-            ArrayList<String[]> arrayList = new ArrayList<>();
-            arrayList.add(a);
-            ArrayList<Layoutelements> arrayList1 = addTo(arrayList);
-            if (arrayList1.size() > 0)
-                list.add(arrayList1.get(0));
-            if (!results) {
-                createViews(list, false, (current),false);
-            }
-            pathname.setText(R.string.searching);
-            if (results) {
-                adapter.addItem();
-            }
-            results = true;
-        }
-    }
     public void addSearchResult(ArrayList<String[]> a) {
         if (listView != null) {
             if (!results) list.clear();
-            ArrayList<Layoutelements> arrayList1 = addTo(a);
+            ArrayList<Layoutelements>  arrayList1= addTo(a);
             if (arrayList1.size() > 0)
             for(Layoutelements layoutelements:arrayList1)
             list.add(layoutelements);

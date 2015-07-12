@@ -1,2 +1,2 @@
 include ':libs:StickyHeadersRecyclerView', ':'
-include ':libs:FloatingActionButton', ':'
+include ':'

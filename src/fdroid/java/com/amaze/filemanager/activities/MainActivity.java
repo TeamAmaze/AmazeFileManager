@@ -112,8 +112,8 @@ import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.Shortcuts;
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity{
     private IconUtils icons;
     private TabHandler tabHandler;
     int hidemode;
-    public FloatingActionsMenu floatingActionButton;
+    public FloatingActionMenu floatingActionButton;
     public LinearLayout pathbar;
     public Animation fabShowAnim, fabHideAnim;
     public FrameLayout buttonBarFrame;
@@ -379,20 +379,17 @@ public class MainActivity extends AppCompatActivity{
         topfab = hidemode == 0 ? Sp.getBoolean("topFab", true) : false;
         showHidden = Sp.getBoolean("showHidden", false);
         floatingActionButton = !topfab ?
-                (FloatingActionsMenu) findViewById(R.id.right_labels) : (FloatingActionsMenu) findViewById(R.id.right_top_labels);
-        fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
-        fabHideAnim = AnimationUtils.loadAnimation(this, R.anim.fab_hide);
-        floatingActionButton.setAnimation(fabShowAnim);
-        floatingActionButton.animate();
+                (FloatingActionMenu) findViewById(R.id.menu) : (FloatingActionMenu) findViewById(R.id.menu_top);
         floatingActionButton.setVisibility(View.VISIBLE);
-        floatingActionButton.setColors(Color.parseColor(fabskin), (fabSkinPressed));
-        if (theme1 == 1) floatingActionButton.setLabelsStyle(R.drawable.fab_label_background);
-        floatingActionButton.getButton().setOnClickListener(new View.OnClickListener() {
+        floatingActionButton.showMenuButton(true);
+        floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
+        floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
+        //if (theme1 == 1) floatingActionButton.setMen
+        floatingActionButton.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
-            public void onClick(View view) {
-                floatingActionButton.toggle();
+            public void onMenuToggle(boolean b) {
                 View v = findViewById(R.id.fab_bg);
-                if (floatingActionButton.isExpanded()) revealShow(v, true);
+                if (b) revealShow(v, true);
                 else revealShow(v, false);
             }
         });
@@ -402,7 +399,7 @@ public class MainActivity extends AppCompatActivity{
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                floatingActionButton.collapse();
+                floatingActionButton.close(true);
                 revealShow(view, false);
             }
         });
@@ -435,7 +432,7 @@ public class MainActivity extends AppCompatActivity{
         scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
         scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
-        FloatingActionButton floatingActionButton1 = floatingActionButton.getButtonAt(0);
+        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item_top : R.id.menu_item);
         String folder_skin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
         int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
@@ -446,10 +443,10 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View view) {
                 add(0);
                 revealShow(findViewById(R.id.fab_bg), false);
-                floatingActionButton.collapse();
+                floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton2 = floatingActionButton.getButtonAt(1);
+        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item1_top : R.id.menu_item1);
         floatingActionButton2.setColorNormal(folderskin);
         floatingActionButton2.setColorPressed(fabskinpressed);
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
@@ -457,10 +454,10 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View view) {
                 add(1);
                 revealShow(findViewById(R.id.fab_bg), false);
-                floatingActionButton.collapse();
+                floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton3 = floatingActionButton.getButtonAt(2);
+        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item2_top : R.id.menu_item2);
         floatingActionButton3.setColorNormal(folderskin);
         floatingActionButton3.setColorPressed(fabskinpressed);
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
@@ -468,7 +465,7 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View view) {
                 add(2);
                 revealShow(findViewById(R.id.fab_bg), false);
-                floatingActionButton.collapse();
+                floatingActionButton.close(true);
             }
         });
         IntentFilter newFilter = new IntentFilter();
@@ -769,8 +766,8 @@ public class MainActivity extends AppCompatActivity{
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
             String name = fragment.getClass().getName();
             if (name.contains("TabFragment")) {
-                if (floatingActionButton.isExpanded()) {
-                    floatingActionButton.collapse();
+                if (floatingActionButton.isOpened()) {
+                    floatingActionButton.close(true);
                     revealShow(findViewById(R.id.fab_bg), false);
                 } else {
                     TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
@@ -1323,7 +1320,10 @@ public class MainActivity extends AppCompatActivity{
 
             }
         });
-        a.build().show();
+
+        MaterialDialog b=a.build();
+        if(fpath.startsWith("smb:"))b.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+        b.show();
     }
 
     @Override

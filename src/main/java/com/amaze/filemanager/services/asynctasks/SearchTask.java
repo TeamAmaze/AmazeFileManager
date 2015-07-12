@@ -52,18 +52,18 @@ boolean isPresentInList(String p){
         String path = params[0];
         ArrayList<String[]> arrayList=new ArrayList<>();
         while (!isCancelled() && i < searchHelper.size()) {
-            if (searchHelper.get(0).contains(path))
-                if (new HFile(searchHelper.get(i)).getName().toLowerCase()
+            if (searchHelper.get(i).contains(path)){
+                HFile file=new HFile(searchHelper.get(i));
+                if (file.getName().toLowerCase()
                         .contains(key.toLowerCase()) && !isPresentInList(searchHelper.get(i)) ) {
-                    HFile x = new HFile(searchHelper.get(i));
                     String k = "", size = "";
-                    if (x.isDirectory()) {
+                    if (file.isDirectory()) {
                         k = "-1";
                         if (main.showSize) size = "";
-                    } else if (main.showSize) size = "" + x.length();
+                    } else if (main.showSize) size = "" + file.length();
                     String[] string = new String[0];
                     try {
-                        string = new String[]{x.getPath(), "", "", k, x.lastModified() + "", size};
+                        string = new String[]{file.getPath(), "", "", k, file.lastModified() + "", size};
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     } catch (SmbException e) {
@@ -71,32 +71,31 @@ boolean isPresentInList(String p){
                     }
                     lis.add(string[0]);
                     arrayList.add(string);
-
-
                 }
-            publishProgress(arrayList);
+            }
             i++;
-
         }
-        getSearchResult(new File(path), key);
+        publishProgress(arrayList);
+        if(new HFile(path).isSmb())return null;
+        getSearchResult(new HFile(path), key);
         if(arrayList1.size()>0)publishProgress(arrayList1);
         return null;
     }
-    public void getSearchResult(File f, String text) {
+    public void getSearchResult(HFile f, String text) {
         search(f, text);
     }
     ArrayList<String[]> arrayList1=new ArrayList<>();
-    public void search(File file, String text) {
+    public void search(HFile file, String text) {
      if(arrayList1.size()>5){
          publishProgress(arrayList1);
-         arrayList1.clear();
+         arrayList1=new ArrayList<>();
      }
         if (file.isDirectory()) {
-            ArrayList<String[]> f = RootHelper.getFilesList(file.getPath(), main.rootMode, main.showHidden, false);
+            ArrayList<String[]> f = file.listFiles(main.rootMode);
             // do you have permission to read this directory?
             if (!isCancelled())
                 for (String[] x : f) {
-                    File temp = new File(x[0]);
+                    HFile temp = new HFile(x[0]);
                     if (!isCancelled()) {
                         if (temp.isDirectory()) {
                             if (temp.getName().toLowerCase()
@@ -117,7 +116,7 @@ boolean isPresentInList(String p){
                 }
         } else {
             System.out
-                    .println(file.getAbsoluteFile() + "Permission Denied");
+                    .println(file.getPath() + "Permission Denied");
         }
     }
 }

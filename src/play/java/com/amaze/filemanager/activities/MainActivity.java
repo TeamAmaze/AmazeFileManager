@@ -32,6 +32,7 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -63,6 +64,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -112,8 +114,8 @@ import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.Shortcuts;
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
@@ -199,9 +201,8 @@ public class MainActivity extends AppCompatActivity implements
     private IconUtils icons;
     private TabHandler tabHandler;
     int hidemode;
-    public FloatingActionsMenu floatingActionButton;
+    public FloatingActionMenu floatingActionButton;
     public LinearLayout pathbar;
-    public Animation fabShowAnim, fabHideAnim;
     public FrameLayout buttonBarFrame;
     private RelativeLayout drawerHeaderParent;
     int operation;
@@ -392,20 +393,17 @@ public class MainActivity extends AppCompatActivity implements
         topfab = hidemode == 0 ? Sp.getBoolean("topFab", true) : false;
         showHidden = Sp.getBoolean("showHidden", false);
         floatingActionButton = !topfab ?
-                (FloatingActionsMenu) findViewById(R.id.right_labels) : (FloatingActionsMenu) findViewById(R.id.right_top_labels);
-        fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
-        fabHideAnim = AnimationUtils.loadAnimation(this, R.anim.fab_hide);
-        floatingActionButton.setAnimation(fabShowAnim);
-        floatingActionButton.animate();
+                (FloatingActionMenu) findViewById(R.id.menu) : (FloatingActionMenu) findViewById(R.id.menu_top);
         floatingActionButton.setVisibility(View.VISIBLE);
-        floatingActionButton.setColors(Color.parseColor(fabskin), (fabSkinPressed));
-        if (theme1 == 1) floatingActionButton.setLabelsStyle(R.drawable.fab_label_background);
-        floatingActionButton.getButton().setOnClickListener(new View.OnClickListener() {
+        floatingActionButton.showMenuButton(true);
+        floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
+        floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
+        //if (theme1 == 1) floatingActionButton.setMen
+        floatingActionButton.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
-            public void onClick(View view) {
-                floatingActionButton.toggle();
+            public void onMenuToggle(boolean b) {
                 View v = findViewById(R.id.fab_bg);
-                if (floatingActionButton.isExpanded()) revealShow(v, true);
+                if (b) revealShow(v, true);
                 else revealShow(v, false);
             }
         });
@@ -415,7 +413,7 @@ public class MainActivity extends AppCompatActivity implements
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                floatingActionButton.collapse();
+                floatingActionButton.close(true);
                 revealShow(view, false);
             }
         });
@@ -471,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements
         scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
         scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
-        FloatingActionButton floatingActionButton1 = floatingActionButton.getButtonAt(0);
+        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item_top : R.id.menu_item);
         String folder_skin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
         int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
@@ -482,10 +480,10 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 add(0);
                 revealShow(findViewById(R.id.fab_bg), false);
-                floatingActionButton.collapse();
+                floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton2 = floatingActionButton.getButtonAt(1);
+        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item1_top : R.id.menu_item1);
         floatingActionButton2.setColorNormal(folderskin);
         floatingActionButton2.setColorPressed(fabskinpressed);
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
@@ -493,10 +491,10 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 add(1);
                 revealShow(findViewById(R.id.fab_bg), false);
-                floatingActionButton.collapse();
+                floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton3 = floatingActionButton.getButtonAt(2);
+        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item2_top : R.id.menu_item2);
         floatingActionButton3.setColorNormal(folderskin);
         floatingActionButton3.setColorPressed(fabskinpressed);
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
@@ -504,7 +502,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 add(2);
                 revealShow(findViewById(R.id.fab_bg), false);
-                floatingActionButton.collapse();
+                floatingActionButton.close(true);
             }
         });
         IntentFilter newFilter = new IntentFilter();
@@ -516,6 +514,23 @@ public class MainActivity extends AppCompatActivity implements
         toolbar = (Toolbar) findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if (topfab) {
+            buttonBarFrame.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) floatingActionButton.getLayoutParams();
+                    layoutParams.setMargins(layoutParams.leftMargin, getToolbarHeight(mainActivity) + dpToPx(Build.VERSION.SDK_INT > 21 ? 48 : 52), layoutParams.rightMargin, layoutParams.bottomMargin);
+                    floatingActionButton.setLayoutParams(layoutParams);
+
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                        buttonBarFrame.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        buttonBarFrame.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+
+            });
+        }
         aBoolean = Sp.getBoolean("view", true);
         //ImageView overflow = ((ImageView)findViewById(R.id.action_overflow));
 
@@ -730,6 +745,16 @@ public class MainActivity extends AppCompatActivity implements
      *
      * @return paths to all available SD-Cards in the system (include emulated)
      */
+
+    public static int getToolbarHeight(Context context) {
+        final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
+                new int[]{android.R.attr.actionBarSize});
+        int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
+        styledAttributes.recycle();
+
+        return toolbarHeight;
+    }
+
     public List<String> getStorageDirectories() {
         // Final set of paths
         final ArrayList<String> rv = new ArrayList<String>();
@@ -805,8 +830,8 @@ public class MainActivity extends AppCompatActivity implements
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
             String name = fragment.getClass().getName();
             if (name.contains("TabFragment")) {
-                if (floatingActionButton.isExpanded()) {
-                    floatingActionButton.collapse();
+                if (floatingActionButton.isOpened()) {
+                    floatingActionButton.close(true);
                     revealShow(findViewById(R.id.fab_bg), false);
                 } else {
                     TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
@@ -830,11 +855,8 @@ public class MainActivity extends AppCompatActivity implements
                         fragmentTransaction.remove(zipViewer);
                         fragmentTransaction.commit();
                         supportInvalidateOptionsMenu();
+                        floatingActionButton.showMenuButton(true);
 
-                        fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
-                        floatingActionButton.setAnimation(fabShowAnim);
-                        floatingActionButton.animate();
-                        floatingActionButton.setVisibility(View.VISIBLE);
                     }
                 } else {
                     zipViewer.mActionMode.finish();
@@ -858,11 +880,8 @@ public class MainActivity extends AppCompatActivity implements
                         fragmentTransaction.remove(zipViewer);
                         fragmentTransaction.commit();
                         supportInvalidateOptionsMenu();
+                        floatingActionButton.showMenuButton(true);
 
-                        fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
-                        floatingActionButton.setAnimation(fabShowAnim);
-                        floatingActionButton.animate();
-                        floatingActionButton.setVisibility(View.VISIBLE);
                     }
                 } else {
                     zipViewer.mActionMode.finish();
@@ -995,12 +1014,8 @@ public class MainActivity extends AppCompatActivity implements
         transaction.addToBackStack("tabt" + 1);
         transaction.commit();
         toolbar.setTitle(null);
-
-        fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
         tabsSpinner.setVisibility(View.VISIBLE);
-        floatingActionButton.setAnimation(fabShowAnim);
-        floatingActionButton.animate();
-        floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.showMenuButton(true);
         if (openzip && zippath != null) {
             if (zippath.endsWith(".zip") || zippath.endsWith(".apk")) openZip(zippath);
             else {
@@ -1028,11 +1043,9 @@ public class MainActivity extends AppCompatActivity implements
                 adapter.toggleChecked(select);
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
-                fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
                 tabsSpinner.setVisibility(View.VISIBLE);
-                floatingActionButton.setAnimation(fabShowAnim);
-                floatingActionButton.animate();
-                floatingActionButton.setVisibility(View.VISIBLE);
+                floatingActionButton.showMenuButton(true);
+
 
             } else if (removeBookmark) {
                 try {
@@ -1359,7 +1372,9 @@ public class MainActivity extends AppCompatActivity implements
 
             }
         });
-        a.build().show();
+        MaterialDialog b = a.build();
+        if (fpath.startsWith("smb:")) b.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+        b.show();
     }
 
     @Override
@@ -2369,7 +2384,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if (reveal) {
             ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 0f, 1f);
-            animator.setDuration(100); //ms
+            animator.setDuration(300); //ms
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -2380,7 +2395,7 @@ public class MainActivity extends AppCompatActivity implements
         } else {
 
             ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0f);
-            animator.setDuration(100); //ms
+            animator.setDuration(300); //ms
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -2401,7 +2416,7 @@ public class MainActivity extends AppCompatActivity implements
         if (pending_path != null) {
             try {
                 TabFragment m = getFragment();
-                 if (new HFile(pending_path).isDirectory()) {
+                if (new HFile(pending_path).isDirectory()) {
                     ((Main) m.getTab()).loadlist((pending_path), false);
                 } else utils.openFile(new File(pending_path), mainActivity);
 
@@ -2540,14 +2555,15 @@ public class MainActivity extends AppCompatActivity implements
         ch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(ch.isChecked()){
+                if (ch.isChecked()) {
                     user.setEnabled(false);
                     pass.setEnabled(false);
-                }else{
+                } else {
                     user.setEnabled(true);
                     pass.setEnabled(true);
 
-                }}
+                }
+            }
         });
         if (edit) {
             String userp = "", passp = "", ipp = "";

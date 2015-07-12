@@ -151,94 +151,145 @@
             android:clickable="true"
             android:background="#e6ffffff"/>
 
-        <com.getbase.floatingactionbutton.FloatingActionsMenu
-            android:id="@+id/right_top_labels"
+
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/menu_top"
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left|start|top"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:elevation="6dp"
+            android:layout_gravity="left|top"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="108dp"
-            fab:fab_addButtonColorNormal="@android:color/white"
-            fab:fab_addButtonColorPressed="#9f9f9f"
-            fab:fab_addButtonPlusIconColor="@android:color/white"
-            fab:fab_labelStyle="@style/menu_labels_style_light"
-            fab:fab_addButtonSize="mini"
-            fab:fab_expandDirection="down"
-            fab:fab_labelsPosition="right">
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                fab:fab_size="mini"
-                fab:fab_icon="@drawable/folder_drawer_white"
-                fab:fab_colorNormal="@android:color/white"
-                fab:fab_title="@string/folder"
-                fab:fab_colorPressed="#9f9f9f"/>
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                fab:fab_colorNormal="@android:color/white"
-                fab:fab_icon="@drawable/ic_insert_drive_file_white_48dp"
-                fab:fab_size="mini"
-                fab:fab_title="@string/file"
-                fab:fab_colorPressed="#9f9f9f"/>
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                fab:fab_colorNormal="@android:color/white"
-                fab:fab_icon="@drawable/ic_settings_remote_white_48dp"
-                fab:fab_size="mini"
-                fab:fab_title="@string/smb_con"
-                fab:fab_colorPressed="#9f9f9f"/>
-
-        </com.getbase.floatingactionbutton.FloatingActionsMenu>
-        <com.getbase.floatingactionbutton.FloatingActionsMenu
-            android:id="@+id/right_labels"
-            android:visibility="gone"
+            android:layout_marginLeft="11dp"
+            fab:menu_fab_size="mini"
             android:elevation="6dp"
+            fab:menu_showShadow="true"
+            fab:menu_shadowColor="#66000000"
+            fab:menu_shadowRadius="2dp"
+            fab:menu_shadowXOffset="0dp"
+            fab:menu_shadowYOffset="1dp"
+            fab:menu_colorNormal="#DA4336"
+            fab:menu_colorPressed="#E75043"
+            fab:menu_colorRipple="#99FFFFFF"
+            fab:menu_animationDelayPerItem="50"
+            fab:menu_icon="@drawable/fab_add"
+            fab:menu_buttonSpacing="5dp"
+            fab:menu_labels_margin="10dp"
+            fab:menu_labels_showAnimation="@anim/fab_slide_in_from_right"
+            fab:menu_labels_hideAnimation="@anim/fab_slide_out_to_right"
+            fab:menu_labels_paddingTop="4dp"
+            fab:menu_labels_paddingRight="8dp"
+            fab:menu_labels_paddingBottom="4dp"
+            fab:menu_labels_paddingLeft="8dp"
+            fab:menu_labels_padding="8dp"
+            fab:menu_labels_textSize="14sp"
+            fab:menu_labels_cornerRadius="3dp"
+            fab:menu_labels_colorNormal="#333333"
+            fab:menu_labels_colorPressed="#444444"
+            fab:menu_labels_colorRipple="#66FFFFFF"
+            fab:menu_labels_showShadow="true"
+            fab:menu_labels_singleLine="true"
+            fab:menu_labels_ellipsize="none"
+            fab:menu_labels_maxLines="-1"
+            fab:menu_labels_style="@style/menu_labels_style_light"
+            fab:menu_labels_position="right"
+            fab:menu_openDirection="down"
+            fab:menu_backgroundColor="@android:color/transparent">
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/menu_item_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/folder_drawer_white"
+                fab:fab_size="mini"
+                fab:fab_label="@string/folder" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/menu_item1_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_insert_drive_file_white_48dp"
+                fab:fab_size="mini"
+                fab:fab_label="@string/file" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/menu_item2_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_settings_remote_white_48dp"
+                fab:fab_size="mini"
+                fab:fab_label="@string/smb_con" />
+
+        </com.github.clans.fab.FloatingActionMenu>
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right|end|bottom"
-            fab:fab_labelStyle="@style/menu_labels_style_light"
-            android:layout_marginBottom="4dp"
-            android:layout_marginRight="7dp"
-            android:layout_marginEnd="7dp"
-            fab:fab_labelsPosition="left">
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="6dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="10dp"
+            fab:menu_fab_size="normal"
+            android:visibility="gone"
+            fab:menu_showShadow="true"
+            fab:menu_shadowColor="#66000000"
+            fab:menu_shadowRadius="4dp"
+            fab:menu_shadowXOffset="1dp"
+            fab:menu_shadowYOffset="3dp"
+            fab:menu_colorNormal="#DA4336"
+            fab:menu_colorPressed="#E75043"
+            fab:menu_colorRipple="#99FFFFFF"
+            fab:menu_animationDelayPerItem="50"
+            fab:menu_icon="@drawable/fab_add"
+            fab:menu_buttonSpacing="5dp"
+            fab:menu_labels_margin="10dp"
+            fab:menu_labels_showAnimation="@anim/fab_slide_in_from_right"
+            fab:menu_labels_hideAnimation="@anim/fab_slide_out_to_right"
+            fab:menu_labels_paddingTop="4dp"
+            fab:menu_labels_paddingRight="8dp"
+            fab:menu_labels_paddingBottom="4dp"
+            fab:menu_labels_paddingLeft="8dp"
+            fab:menu_labels_padding="8dp"
+            fab:menu_labels_textSize="14sp"
+            fab:menu_labels_cornerRadius="3dp"
+            fab:menu_labels_colorNormal="#333333"
+            fab:menu_labels_colorPressed="#444444"
+            fab:menu_labels_colorRipple="#66FFFFFF"
+            fab:menu_labels_showShadow="true"
+            fab:menu_labels_singleLine="true"
+            fab:menu_labels_ellipsize="none"
+            fab:menu_labels_maxLines="-1"
+            fab:menu_labels_style="@style/menu_labels_style_light"
+            fab:menu_labels_position="left"
+            fab:menu_openDirection="up"
+            android:elevation="6dp"
+            fab:menu_backgroundColor="@android:color/transparent">
 
-            <com.getbase.floatingactionbutton.FloatingActionButton
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/menu_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/folder_drawer_white"
                 fab:fab_size="mini"
-                fab:fab_icon="@drawable/folder_drawer_white"
-                fab:fab_colorNormal="@android:color/white"
-                fab:fab_title="@string/folder"
-                fab:fab_colorPressed="#9f9f9f"/>
+                fab:fab_label="@string/folder" />
 
-            <com.getbase.floatingactionbutton.FloatingActionButton
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/menu_item1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                fab:fab_colorNormal="@android:color/white"
-                fab:fab_icon="@drawable/ic_insert_drive_file_white_48dp"
+                android:src="@drawable/ic_insert_drive_file_white_48dp"
                 fab:fab_size="mini"
-                fab:fab_title="@string/file"
-                fab:fab_colorPressed="#9f9f9f"/>
+                fab:fab_label="@string/file" />
 
-            <com.getbase.floatingactionbutton.FloatingActionButton
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/menu_item2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                fab:fab_colorNormal="@android:color/white"
-                fab:fab_icon="@drawable/ic_settings_remote_white_48dp"
+                android:src="@drawable/ic_settings_remote_white_48dp"
                 fab:fab_size="mini"
-                fab:fab_title="@string/smb_con"
-                fab:fab_colorPressed="#9f9f9f"/>
+                fab:fab_label="@string/smb_con" />
 
-        </com.getbase.floatingactionbutton.FloatingActionsMenu>
-
+        </com.github.clans.fab.FloatingActionMenu>
     </FrameLayout>
     <View
         android:layout_width="1dp"
