@@ -342,4 +342,7 @@
     <string name="needsaccesssummary">Por favor escolha o diretório raiz do \t</string>
     <string name="needsaccesssummary1">\tpara poder ter acesso de escrita </string>
 	<string name="smb_con">Ligação SMB</string>
+	<string name="bluetooth">Bluetooth</string>
+    <string name="extstorage">Armazenamento externo</string>
 </resources>
+
