@@ -32,6 +32,7 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -208,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements
     int operation;
     ArrayList<String> oparrayList;
     String oppathe, oppathe1;
+    Drawable sd,sd1,folder,folder1,root,root1,smb,smb1;
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
 
@@ -455,7 +457,15 @@ public class MainActivity extends AppCompatActivity implements
         path = getIntent().getStringExtra("path");
         openprocesses = getIntent().getBooleanExtra("openprocesses", false);
         restart = getIntent().getBooleanExtra("restart", false);
-
+        Resources resources=getResources();
+        smb=resources.getDrawable(R.drawable.ic_settings_remote_black_48dp);
+        smb1=resources.getDrawable(R.drawable.ic_settings_remote_white_48dp);
+        sd=resources.getDrawable(R.drawable.ic_sd_storage_grey600_48dp);
+        sd1=resources.getDrawable(R.drawable.ic_sd_storage_white_48dp);
+        folder=resources.getDrawable(R.drawable.folder_drawer);
+        folder1=resources.getDrawable(R.drawable.folder_drawer_white);
+        root=resources.getDrawable(R.drawable.ic_drawer_root);
+        root1=resources.getDrawable(R.drawable.ic_drawer_root_white);
 
         rootmode = Sp.getBoolean("rootmode", false);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
@@ -928,16 +938,25 @@ public class MainActivity extends AppCompatActivity implements
         for (String file : val) {
             File f = new File(file);
             String name;
+            Drawable  icon=sd,icon1=sd1;
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file))
+            {
                 name = getResources().getString(R.string.storage);
+
+            }
             else if ("/storage/sdcard1".equals(file))
+            {
                 name = getResources().getString(R.string.extstorage);
+            }
             else if ("/".equals(file))
+            {
                 name = getResources().getString(R.string.rootdirectory);
+                icon=root;icon1=root1;
+            }
             else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                list.add(new EntryItem(name, file));
+                list.add(new EntryItem(name, file,icon,icon1));
             }
         }
         list.add(new SectionItem());
@@ -946,7 +965,7 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 for (String s : servers.readS()) {
                     Servers.add(s);
-                    list.add(new EntryItem(parseSmbPath(s), s));
+                    list.add(new EntryItem(parseSmbPath(s), s,smb,smb1));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -965,7 +984,7 @@ public class MainActivity extends AppCompatActivity implements
             for (String file : s.readS()) {
                 String name = new File(file).getName();
                 books.add(file);
-                list.add(new EntryItem(name, file));
+                list.add(new EntryItem(name, file,folder,folder1));
             }
         } catch (Exception e) {
 
@@ -982,7 +1001,7 @@ public class MainActivity extends AppCompatActivity implements
                 int k = 0, i = 0;
                 for (Item item : list) {
                     if (!item.isSection()) {
-                        if (((EntryItem) item).subtitle.equals(path))
+                        if (((EntryItem) item).getPath().equals(path))
                             k = i;
                     }
                     i++;
@@ -1031,7 +1050,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 TabFragment tabFragment = new TabFragment();
                 Bundle a = new Bundle();
-                a.putString("path", ((EntryItem) list.get(i)).subtitle);
+                a.putString("path", ((EntryItem) list.get(i)).getPath());
                 tabFragment.setArguments(a);
 
                 android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -1049,7 +1068,7 @@ public class MainActivity extends AppCompatActivity implements
 
             } else if (removeBookmark) {
                 try {
-                    String path = ((EntryItem) list.get(i)).subtitle;
+                    String path = ((EntryItem) list.get(i)).getPath();
                     s.removeS(path, MainActivity.this);
                     books.remove(path);
 
@@ -1059,7 +1078,7 @@ public class MainActivity extends AppCompatActivity implements
                 refreshDrawer();
                 select = 0;
             } else {
-                pending_path = ((EntryItem) list.get(i)).subtitle;
+                pending_path = ((EntryItem) list.get(i)).getPath();
                 select = i;
                 adapter.toggleChecked(select);
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
@@ -1664,7 +1683,7 @@ public class MainActivity extends AppCompatActivity implements
                     Toast.makeText(con, "Media Mounted", Toast.LENGTH_SHORT).show();
                     String a = intent.getData().getPath();
                     if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
-                        list.add(new EntryItem(new File(a).getName(), a));
+                        list.add(new EntryItem(new File(a).getName(), a,sd,sd1));
 
                         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
                         mDrawerList.setAdapter(adapter);
@@ -1686,21 +1705,24 @@ public class MainActivity extends AppCompatActivity implements
         for (String file : val) {
             File f = new File(file);
             String name;
+            Drawable icon=sd,icon1=sd1;
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file))
                 name = getResources().getString(R.string.storage);
-            else if ("/".equals(file))
+            else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
+                icon=root;icon1=root1;
+            }
             else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                list.add(new EntryItem(name, file));
+                list.add(new EntryItem(name, file,icon,icon1));
             }
         }
         list.add(new SectionItem());
         if (Servers != null && Servers.size() > 0) {
             for (String file : Servers) {
                 String name = parseSmbPath(file);
-                list.add(new EntryItem(name, file));
+                list.add(new EntryItem(name, file,smb,smb1));
             }
 
             list.add(new SectionItem());
@@ -1709,7 +1731,7 @@ public class MainActivity extends AppCompatActivity implements
         try {
             for (String file : books) {
                 String name = new File(file).getName();
-                list.add(new EntryItem(name, file));
+                list.add(new EntryItem(name, file,folder,folder1));
             }
         } catch (Exception e) {
         }

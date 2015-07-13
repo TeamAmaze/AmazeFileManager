@@ -112,10 +112,10 @@ public class TabFragment extends android.support.v4.app.Fragment {
             int i=tabs1.size();
             if(i==0) {
                 if (mainActivity.storage_count>1)
-                    addTab(new Tab(1,"",((EntryItem)mainActivity.list.get(1)).subtitle,"/"),1,"");
+                    addTab(new Tab(1,"",((EntryItem)mainActivity.list.get(1)).getPath(),"/"),1,"");
                 else
                 addTab(new Tab(1,"","/","/"),1,"");
-                String pa=((EntryItem)mainActivity.list.get(0)).subtitle;
+                String pa=((EntryItem)mainActivity.list.get(0)).getPath();
                 addTab(new Tab(2,"",pa,pa),2,"");
             }
             else{
