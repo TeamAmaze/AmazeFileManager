@@ -400,6 +400,7 @@ public class MainActivity extends AppCompatActivity implements
         floatingActionButton.showMenuButton(true);
         floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
         floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
+
         //if (theme1 == 1) floatingActionButton.setMen
         floatingActionButton.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
@@ -411,7 +412,7 @@ public class MainActivity extends AppCompatActivity implements
         });
         View v = findViewById(R.id.fab_bg);
         if (theme1 == 1)
-            v.setBackgroundColor(Color.parseColor("#73000000"));
+            v.setBackgroundColor(Color.parseColor("#80ffffff"));
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -648,7 +649,7 @@ public class MainActivity extends AppCompatActivity implements
         View appbutton = findViewById(R.id.appbutton);
         if (theme1 == 1) {
             appbutton.setBackgroundResource(R.drawable.safr_ripple_black);
-            ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_action_view_as_grid);
+            ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_doc_apk_white);
             ((TextView) appbutton.findViewById(R.id.apptext)).setTextColor(getResources().getColor(android.R.color.white));
         }
         appbutton.setOnClickListener(new View.OnClickListener() {

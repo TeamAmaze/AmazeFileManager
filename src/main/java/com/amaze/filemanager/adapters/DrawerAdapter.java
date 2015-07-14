@@ -19,14 +19,14 @@
 
 package com.amaze.filemanager.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,10 +41,8 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.ui.icons.IconUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -98,9 +96,15 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
 
     }
 
+
+    private class ViewHolder {
+        ImageView imageView;
+        TextView txtTitle;
+        RelativeLayout rl;
+    }
     LayoutInflater inflater;
     public DrawerAdapter(Context context, ArrayList<Item> values, MainActivity m, SharedPreferences Sp) {
-        super(context, R.layout.rowlayout, values);
+        super(context, R.layout.drawerrow, values);
 
         this.context = context;
         this.values = values;
@@ -126,21 +130,22 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             view.setImageResource(R.color.divider);
             view.setClickable(false);
             view.setFocusable(false);
-            view.setBackgroundColor(Color.TRANSPARENT);
+            if(m.theme1==0)
+            view.setBackgroundColor(Color.WHITE);
+            else view.setBackgroundResource(R.color.background_material_dark);
             view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, m.dpToPx(17)));
             view.setPadding(0, m.dpToPx(8), 0, m.dpToPx(8));
             return view;
         } else {
-            View rowView = inflater.inflate(R.layout.drawerrow, parent, false);
-            TextView textView = (TextView) rowView.findViewById(R.id.firstline);
-            final ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-            l = (RelativeLayout) rowView.findViewById(R.id.second);
+            View  view = inflater.inflate(R.layout.drawerrow, parent, false);
+            final TextView txtTitle=(TextView) view.findViewById(R.id.firstline);
+            final ImageView imageView=(ImageView) view.findViewById(R.id.icon);
             if (m.theme1 == 0) {
-                l.setBackgroundResource(R.drawable.safr_ripple_white);
+                view.setBackgroundResource(R.drawable.safr_ripple_white);
             } else {
-                l.setBackgroundResource(R.drawable.safr_ripple_black);
+                view.setBackgroundResource(R.drawable.safr_ripple_black);
             }
-            l.setOnClickListener(new View.OnClickListener() {
+            view.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View p1) {
                     m.selectItem(position, false);
@@ -148,7 +153,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 // TODO: Implement this method
 
             });
-            l.setOnLongClickListener(new View.OnLongClickListener() {
+            view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
 
@@ -162,10 +167,10 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                         if (m.theme1 == 0)
                             imageView.setImageResource(R.drawable.ic_action_cancel_light);
                         else
-                            imageView.setImageResource(R.drawable.ic_action_cancel);
-                        imageView.setClickable(true);
+                             imageView.setImageResource(R.drawable.ic_action_cancel);
+                         imageView.setClickable(true);
 
-                        imageView.setOnClickListener(new View.OnClickListener() {
+                         imageView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 m.selectItem(position, true);
@@ -178,10 +183,10 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 }
             });
 
-            textView.setText(((EntryItem) (values.get(position))).getTitle());
+             txtTitle.setText(((EntryItem) (values.get(position))).getTitle());
 
-            imageView.clearColorFilter();
-            imageView.setImageDrawable(getDrawable(position, myChecked.get(position)));
+             imageView.clearColorFilter();
+             imageView.setImageDrawable(getDrawable(position, myChecked.get(position)));
             if (myChecked.get(position)) {
                 float[] src = {
 
@@ -193,23 +198,23 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 ColorMatrix colorMatrix = new ColorMatrix(src);
                 ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
                 if (m.theme1 == 0)
-                    rowView.setBackgroundColor(Color.parseColor("#ffeeeeee"));
-                else rowView.setBackgroundColor(Color.parseColor("#ff424242"));
-                imageView.setColorFilter(colorMatrixColorFilter);
+                   view.setBackgroundColor(Color.parseColor("#ffeeeeee"));
+                else view.setBackgroundColor(Color.parseColor("#ff424242"));
+                 imageView.setColorFilter(colorMatrixColorFilter);
                 //textView.setTypeface(Typeface.DEFAULT_BOLD);
-                textView.setTextColor(Color.parseColor(m.fabskin));
+                 txtTitle.setTextColor(Color.parseColor(m.fabskin));
 
                 //if(m.theme1==0)
             } else {
-                imageView.clearColorFilter();
+                 imageView.clearColorFilter();
                 if (m.theme1 == 0) {
-                    textView.setTextColor(m.getResources().getColor(android.R.color.black));
+                     txtTitle.setTextColor(m.getResources().getColor(android.R.color.black));
                 } else {
-                    textView.setTextColor(m.getResources().getColor(android.R.color.white));
+                     txtTitle.setTextColor(m.getResources().getColor(android.R.color.white));
                 }
             }
 
-            return rowView;
+            return view;
         }
     }
 

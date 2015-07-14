@@ -146,7 +146,7 @@
         android:elevation="5dp"
         android:visibility="gone"
         android:clickable="true"
-        android:background="#e6ffffff"/>
+        android:background="#73000000"/>
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/menu_top"
         android:visibility="gone"
@@ -195,7 +195,7 @@
             android:id="@+id/menu_item_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/folder_drawer_white"
+            android:src="@drawable/folder_fab"
             fab:fab_size="mini"
             fab:fab_label="@string/folder" />
 
@@ -264,7 +264,7 @@
             android:id="@+id/menu_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/folder_drawer_white"
+            android:src="@drawable/folder_fab"
             fab:fab_size="mini"
             fab:fab_label="@string/folder" />
 
@@ -286,90 +286,6 @@
 
     </com.github.clans.fab.FloatingActionMenu>
 
-    <!--
-
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
-        android:id="@+id/right_top_labels"
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left|start|top"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:elevation="6dp"
-        android:layout_marginTop="102dp"
-        fab:fab_addButtonColorNormal="@android:color/white"
-        fab:fab_addButtonColorPressed="#9f9f9f"
-        fab:fab_addButtonPlusIconColor="@android:color/white"
-        fab:fab_labelStyle="@style/menu_labels_style_light"
-        fab:fab_addButtonSize="mini"
-        fab:fab_expandDirection="down"
-        fab:fab_labelsPosition="right">
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_size="mini"
-            fab:fab_icon="@drawable/folder_drawer_white"
-            fab:fab_colorNormal="@android:color/white"
-            fab:fab_title="@string/folder"/>
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@android:color/white"
-            fab:fab_icon="@drawable/ic_insert_drive_file_white_48dp"
-            fab:fab_size="mini"
-            fab:fab_title="@string/file"/>
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@android:color/white"
-            fab:fab_icon="@drawable/ic_settings_remote_white_48dp"
-            fab:fab_size="mini"
-            fab:fab_title="@string/smb_con"/>
-
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
-        android:id="@+id/right_labels"
-        android:visibility="gone"
-        android:elevation="6dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|end|bottom"
-        fab:fab_labelStyle="@style/menu_labels_style_light"
-        android:layout_marginBottom="4dp"
-        android:layout_marginRight="7dp"
-        android:layout_marginEnd="7dp"
-        fab:fab_labelsPosition="left">
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_size="mini"
-            fab:fab_icon="@drawable/folder_drawer_white"
-            fab:fab_colorNormal="@android:color/white"
-            fab:fab_title="@string/folder"/>
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@android:color/white"
-            fab:fab_icon="@drawable/ic_insert_drive_file_white_48dp"
-            fab:fab_size="mini"
-            fab:fab_title="@string/file"/>
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@android:color/white"
-            fab:fab_icon="@drawable/ic_settings_remote_white_48dp"
-            fab:fab_size="mini"
-            fab:fab_title="@string/smb_con"/>
-
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
--->
 
 </FrameLayout>    <!--
          android:layout_gravity="start" tells DrawerLayout to treat
@@ -412,25 +328,35 @@
             android:id="@+id/appbutton"
             android:layout_width="fill_parent"
             android:layout_height="48dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingStart="16dp"
             android:layout_above="@+id/settingsbutton"
             android:background="@drawable/safr_ripple_white"
             android:clickable="true">
 
             <ImageView
                 android:id="@+id/appicon"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="16dp"
-                android:clickable="false"
-                android:gravity="center_vertical"
-                android:src="@drawable/ic_action_view_as_grid_light"
+                android:layout_width="24dp"
+                android:layout_height="48dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="32dp"
+                android:layout_marginRight="32dp"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp"
+                android:src="@drawable/ic_doc_apk"
                 android:contentDescription="@string/icon" />
 
             <TextView
                 android:id="@+id/apptext"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="72dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_toEndOf="@+id/appicon"
+                android:layout_toRightOf="@+id/appicon"
                 android:textSize="14sp"
                 android:fontFamily="sans-serif-medium"
                 android:singleLine="true"
@@ -444,25 +370,35 @@
             android:id="@+id/settingsbutton"
             android:layout_width="fill_parent"
             android:layout_height="48dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingStart="16dp"
             android:layout_alignParentBottom="true"
             android:background="@drawable/safr_ripple_white"
             android:clickable="true">
 
             <ImageView
                 android:id="@+id/settingicon"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="16dp"
-                android:clickable="false"
-                android:gravity="center_vertical"
-                android:src="@drawable/ic_action_settings"
+                android:layout_width="24dp"
+                android:layout_height="48dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="32dp"
+                android:layout_marginRight="32dp"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp"
+                android:src="@drawable/ic_settings_grey600_48dp"
                 android:contentDescription="@string/icon" />
 
             <TextView
                 android:id="@+id/settingtext"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="72dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_toEndOf="@+id/settingicon"
+                android:layout_toRightOf="@+id/settingicon"
                 android:textSize="14sp"
                 android:fontFamily="sans-serif-medium"
                 android:singleLine="true"

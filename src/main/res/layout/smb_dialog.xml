@@ -8,14 +8,14 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textUri"
-        android:hint="Server: IP Addr. or IP Addr./SharedFolder"
+        android:hint="@string/smb_server"
         android:id="@+id/editText"
         android:layout_gravity="center_horizontal" />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:hint="Username"
+        android:hint="@string/username"
         android:ems="10"
         android:id="@+id/editText3" />
     <EditText
@@ -23,14 +23,14 @@
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
-        android:hint="Password"
+        android:hint="@string/password"
         android:id="@+id/editText2"
         android:layout_gravity="center_horizontal" />
 
     <CheckBox
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Anonymous"
+        android:text="@string/anonymous"
         android:id="@+id/checkBox2"
         android:layout_gravity="center_horizontal" />
 

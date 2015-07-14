@@ -327,25 +327,35 @@
             android:id="@+id/appbutton"
             android:layout_width="fill_parent"
             android:layout_height="48dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingStart="16dp"
             android:layout_above="@+id/settingsbutton"
             android:background="@drawable/safr_ripple_white"
             android:clickable="true">
 
             <ImageView
                 android:id="@+id/appicon"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="16dp"
-                android:clickable="false"
-                android:gravity="center_vertical"
-                android:src="@drawable/ic_action_view_as_grid_light"
+                android:layout_width="24dp"
+                android:layout_height="48dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="32dp"
+                android:layout_marginRight="32dp"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp"
+                android:src="@drawable/ic_doc_apk"
                 android:contentDescription="@string/icon" />
 
             <TextView
                 android:id="@+id/apptext"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="72dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_toEndOf="@+id/appicon"
+                android:layout_toRightOf="@+id/appicon"
                 android:textSize="14sp"
                 android:fontFamily="sans-serif-medium"
                 android:singleLine="true"
@@ -355,30 +365,39 @@
                 android:textColor="@android:color/black"
                 android:gravity="center_vertical" />
         </RelativeLayout>
-
         <RelativeLayout
             android:id="@+id/settingsbutton"
             android:layout_width="fill_parent"
             android:layout_height="48dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingStart="16dp"
             android:layout_alignParentBottom="true"
             android:background="@drawable/safr_ripple_white"
             android:clickable="true">
 
             <ImageView
                 android:id="@+id/settingicon"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="16dp"
-                android:clickable="false"
-                android:gravity="center_vertical"
-                android:src="@drawable/ic_action_settings"
+                android:layout_width="24dp"
+                android:layout_height="48dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="32dp"
+                android:layout_marginRight="32dp"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp"
+                android:src="@drawable/ic_settings_grey600_48dp"
                 android:contentDescription="@string/icon" />
 
             <TextView
                 android:id="@+id/settingtext"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="72dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_toEndOf="@+id/settingicon"
+                android:layout_toRightOf="@+id/settingicon"
                 android:textSize="14sp"
                 android:fontFamily="sans-serif-medium"
                 android:singleLine="true"
@@ -388,6 +407,7 @@
                 android:textColor="@android:color/black"
                 android:gravity="center_vertical" />
         </RelativeLayout>
+
 
     </com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout>
     <!--
