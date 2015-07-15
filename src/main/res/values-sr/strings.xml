@@ -341,6 +341,12 @@
     <string name="needsaccess">Потребна дозвола уписа</string>
     <string name="needsaccesssummary">Одредите корени директоријум од \t</string>
     <string name="needsaccesssummary1">\tда бисте одобрили дозволу уписа за радњу </string>
-
+    <string name="smb_con">СМБ веза</string>
+    <string name="smb_server">Сервер: ИП адреса или ИП адреса/дељена_фасцикла</string>
+    <string name="username">Корисничко име</string>
+    <string name="password">Лозинка</string>
+    <string name="anonymous">Анонимно</string>
+    <string name="bluetooth">Блутут</string>
+    <string name="extstorage">Спољашње складиште</string>
 </resources>
 
