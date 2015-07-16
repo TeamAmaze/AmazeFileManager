@@ -272,7 +272,7 @@ public class Main extends android.support.v4.app.Fragment {
         hiddenfiles = hidden.readTable();
         rootMode = Sp.getBoolean("rootmode", false);
         showHidden = Sp.getBoolean("showHidden", false);
-        coloriseIcons = Sp.getBoolean("coloriseIcons", false);
+        coloriseIcons = Sp.getBoolean("coloriseIcons", true);
         if (islist) {
             folder = res.getDrawable(R.drawable.ic_grid_folder_new);
         } else {

@@ -16,7 +16,7 @@
             android:summary="@string/icon_color_summary"/>
         <SwitchPreference
             android:key="coloriseIcons"
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:title="@string/colorize"
             android:summary="@string/colorize_summary" />
         <SwitchPreference

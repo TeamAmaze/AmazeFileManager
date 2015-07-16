@@ -94,7 +94,6 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
-import com.amaze.filemanager.fragments.RarViewer;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
@@ -209,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements
     int operation;
     ArrayList<String> oparrayList;
     String oppathe, oppathe1;
-    Drawable sd,sd1,folder,folder1,root,root1,smb,smb1;
+    Drawable sd, sd1, folder, folder1, root, root1, smb, smb1;
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
 
@@ -392,10 +391,8 @@ public class MainActivity extends AppCompatActivity implements
             skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
 
         hidemode = Sp.getInt("hidemode", 0);
-        topfab = hidemode == 0 ? Sp.getBoolean("topFab", true) : false;
         showHidden = Sp.getBoolean("showHidden", false);
-        floatingActionButton = !topfab ?
-                (FloatingActionMenu) findViewById(R.id.menu) : (FloatingActionMenu) findViewById(R.id.menu_top);
+        floatingActionButton =(FloatingActionMenu) findViewById(R.id.menu);
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.showMenuButton(true);
         floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
@@ -458,15 +455,15 @@ public class MainActivity extends AppCompatActivity implements
         path = getIntent().getStringExtra("path");
         openprocesses = getIntent().getBooleanExtra("openprocesses", false);
         restart = getIntent().getBooleanExtra("restart", false);
-        Resources resources=getResources();
-        smb=resources.getDrawable(R.drawable.ic_settings_remote_black_48dp);
-        smb1=resources.getDrawable(R.drawable.ic_settings_remote_white_48dp);
-        sd=resources.getDrawable(R.drawable.ic_sd_storage_grey600_48dp);
-        sd1=resources.getDrawable(R.drawable.ic_sd_storage_white_48dp);
-        folder=resources.getDrawable(R.drawable.folder_drawer);
-        folder1=resources.getDrawable(R.drawable.folder_drawer_white);
-        root=resources.getDrawable(R.drawable.ic_drawer_root);
-        root1=resources.getDrawable(R.drawable.ic_drawer_root_white);
+        Resources resources = getResources();
+        smb = resources.getDrawable(R.drawable.ic_settings_remote_black_48dp);
+        smb1 = resources.getDrawable(R.drawable.ic_settings_remote_white_48dp);
+        sd = resources.getDrawable(R.drawable.ic_sd_storage_grey600_48dp);
+        sd1 = resources.getDrawable(R.drawable.ic_sd_storage_white_48dp);
+        folder = resources.getDrawable(R.drawable.folder_drawer);
+        folder1 = resources.getDrawable(R.drawable.folder_drawer_white);
+        root = resources.getDrawable(R.drawable.ic_drawer_root);
+        root1 = resources.getDrawable(R.drawable.ic_drawer_root_white);
 
         rootmode = Sp.getBoolean("rootmode", false);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
@@ -480,7 +477,7 @@ public class MainActivity extends AppCompatActivity implements
         scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
         scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
-        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item_top : R.id.menu_item);
+        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById( R.id.menu_item);
         String folder_skin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
         int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
@@ -494,7 +491,7 @@ public class MainActivity extends AppCompatActivity implements
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item1_top : R.id.menu_item1);
+        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById( R.id.menu_item1);
         floatingActionButton2.setColorNormal(folderskin);
         floatingActionButton2.setColorPressed(fabskinpressed);
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
@@ -505,7 +502,7 @@ public class MainActivity extends AppCompatActivity implements
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item2_top : R.id.menu_item2);
+        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById( R.id.menu_item2);
         floatingActionButton3.setColorNormal(folderskin);
         floatingActionButton3.setColorPressed(fabskinpressed);
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
@@ -525,23 +522,6 @@ public class MainActivity extends AppCompatActivity implements
         toolbar = (Toolbar) findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        if (topfab) {
-            buttonBarFrame.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) floatingActionButton.getLayoutParams();
-                    layoutParams.setMargins(layoutParams.leftMargin, getToolbarHeight(mainActivity) + dpToPx(Build.VERSION.SDK_INT > 21 ? 48 : 52), layoutParams.rightMargin, layoutParams.bottomMargin);
-                    floatingActionButton.setLayoutParams(layoutParams);
-
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                        buttonBarFrame.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    } else {
-                        buttonBarFrame.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    }
-                }
-
-            });
-        }
         aBoolean = Sp.getBoolean("view", true);
         //ImageView overflow = ((ImageView)findViewById(R.id.action_overflow));
 
@@ -872,31 +852,6 @@ public class MainActivity extends AppCompatActivity implements
                 } else {
                     zipViewer.mActionMode.finish();
                 }
-            } else if (name.contains("RarViewer")) {
-
-                RarViewer zipViewer = (RarViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                if (zipViewer.mActionMode == null) {
-                    if (zipViewer.cangoBack()) {
-
-                        zipViewer.elements.clear();
-                        zipViewer.goBack();
-                    } else if (openzip) {
-
-                        openzip = false;
-                        finish();
-                    } else {
-
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
-                        fragmentTransaction.remove(zipViewer);
-                        fragmentTransaction.commit();
-                        supportInvalidateOptionsMenu();
-                        floatingActionButton.showMenuButton(true);
-
-                    }
-                } else {
-                    zipViewer.mActionMode.finish();
-                }
             } else if (name.contains("Process")) {
                 finish();
             } else
@@ -939,25 +894,20 @@ public class MainActivity extends AppCompatActivity implements
         for (String file : val) {
             File f = new File(file);
             String name;
-            Drawable  icon=sd,icon1=sd1;
-            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file))
-            {
+            Drawable icon = sd, icon1 = sd1;
+            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
 
-            }
-            else if ("/storage/sdcard1".equals(file))
-            {
+            } else if ("/storage/sdcard1".equals(file)) {
                 name = getResources().getString(R.string.extstorage);
-            }
-            else if ("/".equals(file))
-            {
+            } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
-                icon=root;icon1=root1;
-            }
-            else name = f.getName();
+                icon = root;
+                icon1 = root1;
+            } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                list.add(new EntryItem(name, file,icon,icon1));
+                list.add(new EntryItem(name, file, icon, icon1));
             }
         }
         list.add(new SectionItem());
@@ -966,7 +916,7 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 for (String s : servers.readS()) {
                     Servers.add(s);
-                    list.add(new EntryItem(parseSmbPath(s), s,smb,smb1));
+                    list.add(new EntryItem(parseSmbPath(s), s, smb, smb1));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -985,7 +935,7 @@ public class MainActivity extends AppCompatActivity implements
             for (String file : s.readS()) {
                 String name = new File(file).getName();
                 books.add(file);
-                list.add(new EntryItem(name, file,folder,folder1));
+                list.add(new EntryItem(name, file, folder, folder1));
             }
         } catch (Exception e) {
 
@@ -1147,7 +1097,7 @@ public class MainActivity extends AppCompatActivity implements
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
-        } else if (f.contains("ZipViewer") || f.contains("RarViewer")) {
+        } else if (f.contains("ZipViewer")) {
             tabsSpinner.setVisibility(View.GONE);
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
@@ -1252,8 +1202,6 @@ public class MainActivity extends AppCompatActivity implements
                 Fragment fragment1 = getSupportFragmentManager().findFragmentById(R.id.content_frame);
                 if (fragment1.getClass().getName().contains("ZipViewer"))
                     extractFile(((ZipViewer) fragment1).f);
-                else if (fragment1.getClass().getName().contains("RarViewer"))
-                    extractFile(((RarViewer) fragment1).f);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -1631,14 +1579,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void openRar(String path) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
-        Fragment zipFragment = new RarViewer();
-        Bundle bundle = new Bundle();
-        bundle.putString("path", path);
-        zipFragment.setArguments(bundle);
-        fragmentTransaction.add(R.id.content_frame, zipFragment);
-        fragmentTransaction.commit();
+        openZip(path);
     }
 
     public TabFragment getFragment() {
@@ -1684,7 +1625,7 @@ public class MainActivity extends AppCompatActivity implements
                     Toast.makeText(con, "Media Mounted", Toast.LENGTH_SHORT).show();
                     String a = intent.getData().getPath();
                     if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
-                        list.add(new EntryItem(new File(a).getName(), a,sd,sd1));
+                        list.add(new EntryItem(new File(a).getName(), a, sd, sd1));
 
                         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
                         mDrawerList.setAdapter(adapter);
@@ -1706,24 +1647,27 @@ public class MainActivity extends AppCompatActivity implements
         for (String file : val) {
             File f = new File(file);
             String name;
-            Drawable icon=sd,icon1=sd1;
-            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file))
+            Drawable icon = sd, icon1 = sd1;
+            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
-            else if ("/".equals(file)) {
+
+            } else if ("/storage/sdcard1".equals(file)) {
+                name = getResources().getString(R.string.extstorage);
+            } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
-                icon=root;icon1=root1;
-            }
-            else name = f.getName();
+                icon = root;
+                icon1 = root1;
+            } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                list.add(new EntryItem(name, file,icon,icon1));
+                list.add(new EntryItem(name, file, icon, icon1));
             }
         }
         list.add(new SectionItem());
         if (Servers != null && Servers.size() > 0) {
             for (String file : Servers) {
                 String name = parseSmbPath(file);
-                list.add(new EntryItem(name, file,smb,smb1));
+                list.add(new EntryItem(name, file, smb, smb1));
             }
 
             list.add(new SectionItem());
@@ -1732,7 +1676,7 @@ public class MainActivity extends AppCompatActivity implements
         try {
             for (String file : books) {
                 String name = new File(file).getName();
-                list.add(new EntryItem(name, file,folder,folder1));
+                list.add(new EntryItem(name, file, folder, folder1));
             }
         } catch (Exception e) {
         }

@@ -5,7 +5,7 @@ package com.amaze.filemanager.services.asynctasks;
  */
 import android.os.AsyncTask;
 
-import com.amaze.filemanager.fragments.RarViewer;
+import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.utils.Futils;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
@@ -20,10 +20,10 @@ import java.util.Comparator;
  */
 public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> {
 
-    RarViewer zipViewer;
+    ZipViewer zipViewer;
     String dir;
 
-    public RarHelperTask(RarViewer zipViewer, String dir) {
+    public RarHelperTask(ZipViewer zipViewer, String dir) {
 
         this.zipViewer = zipViewer;
         this.dir = dir;
@@ -35,17 +35,17 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
         try {
             Archive zipfile = new Archive(params[0]);
             zipViewer.archive=zipfile;
-            if (zipViewer.wholelist.size() == 0) {
+            if (zipViewer.wholelistRar.size() == 0) {
 
                 FileHeader fh = zipfile.nextFileHeader();
                 while (fh != null) {
-                    zipViewer.wholelist.add(fh);
+                    zipViewer.wholelistRar.add(fh);
                     fh = zipfile.nextFileHeader();
                 }
             }
             if(dir==null || dir.trim().length()==0 || dir.equals("")){
 
-            for(FileHeader header:zipViewer.wholelist){
+            for(FileHeader header:zipViewer.wholelistRar){
                 String name=header.getFileNameString();
 
                 if(!name.contains("\\")){
@@ -53,7 +53,7 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
 
                 }
             }}else{
-                for(FileHeader header:zipViewer.wholelist){
+                for(FileHeader header:zipViewer.wholelistRar){
                     String name=header.getFileNameString();
                     if(name.substring(0,name.lastIndexOf("\\")).equals(dir)){
                         elements.add(header);
@@ -67,8 +67,8 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
     protected void onPostExecute (ArrayList < FileHeader > zipEntries) {
         super.onPostExecute(zipEntries);
         //zipViewer.elements=zipEntries;
-        Collections.sort(zipViewer.elements,new FileListSorter());
-    zipViewer.createviews(zipEntries,dir);}
+        Collections.sort(zipViewer.elementsRar,new FileListSorter());
+    zipViewer.createRarviews(zipEntries,dir);}
     class FileListSorter implements Comparator<FileHeader> {
 
 

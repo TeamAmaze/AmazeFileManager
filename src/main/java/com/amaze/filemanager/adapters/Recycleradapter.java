@@ -238,7 +238,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 }
             });}
             if(holder.about!=null){
-                if(main.smbMode)holder.about.setVisibility(View.GONE);
+                if(!main.smbMode)holder.about.setVisibility(View.VISIBLE);
                 else holder.about.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -351,7 +351,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     if (main.coloriseIcons) {
                         if (rowItem.isDirectory())
                             gradientDrawable.setColor(main.icon_skin_color);
-                        else if (Icons.isVideo(rowItem.getDesc()))
+                        else if (Icons.isVideo(rowItem.getDesc()) || Icons.isPicture(rowItem
+                                .getDesc()))
                             gradientDrawable.setColor(Color.parseColor("#f06292"));
                         else if (Icons.isAudio(rowItem.getDesc()))
                             gradientDrawable.setColor(Color.parseColor("#9575cd"));
@@ -363,6 +364,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                             gradientDrawable.setColor(Color.parseColor("#e06055"));
                         else if (Icons.isArchive(rowItem.getDesc()))
                             gradientDrawable.setColor(Color.parseColor("#f9a825"));
+                        else if(Icons.isApk(rowItem.getDesc()))
+                            gradientDrawable.setColor(Color.parseColor("#a4c439"));
                         else if (Icons.isgeneric(rowItem.getDesc())) {
                             gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
                             String ext = MimeTypes.getExtension(new File(rowItem.getDesc()).getName());

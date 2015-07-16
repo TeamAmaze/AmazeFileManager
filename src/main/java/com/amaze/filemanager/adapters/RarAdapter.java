@@ -20,7 +20,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.fragments.RarViewer;
+import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.asynctasks.RarHelperTask;
 import com.amaze.filemanager.services.asynctasks.ZipExtractTask;
 import com.amaze.filemanager.ui.icons.Icons;
@@ -36,11 +36,10 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     Context c;
     Drawable folder, unknown;
     ArrayList<FileHeader> enter;
-    RarViewer zipViewer;
+    ZipViewer zipViewer;
     LayoutInflater mInflater;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
-    public RarAdapter(Context c,ArrayList<FileHeader> enter, RarViewer zipViewer) {
-        System.out.println(enter.size()+"");
+    public RarAdapter(Context c,ArrayList<FileHeader> enter, ZipViewer zipViewer) {
         this.enter = enter;
         for (int i = 0; i < enter.size(); i++) {
             myChecked.put(i, false);
@@ -174,7 +173,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             return;
         }
         final FileHeader rowItem = enter.get(position1-1);
-        zipViewer.elements.add(position1-1, headerRequired(rowItem));
+        zipViewer.elementsRar.add(position1-1, headerRequired(rowItem));
         final int p = position1-1;
 
         GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
@@ -185,7 +184,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             holder.imageView.setImageDrawable(folder);
             gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));} else {
             if (zipViewer.coloriseIcons) {
-                if (Icons.isVideo(rowItem.getFileNameString()))
+                if (Icons.isVideo(rowItem.getFileNameString()) || Icons.isPicture(rowItem.getFileNameString()))
                     gradientDrawable.setColor(Color.parseColor("#f06292"));
                 else if (Icons.isAudio(rowItem.getFileNameString()))
                     gradientDrawable.setColor(Color.parseColor("#9575cd"));
@@ -197,6 +196,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                     gradientDrawable.setColor(Color.parseColor("#e06055"));
                 else if (Icons.isArchive(rowItem.getFileNameString()))
                     gradientDrawable.setColor(Color.parseColor("#f9a825"));
+                else if(Icons.isApk(rowItem.getFileNameString()))
+                    gradientDrawable.setColor(Color.parseColor("#a4c439"));
                 else if (Icons.isgeneric(rowItem.getFileNameString()))
                     gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
                 else gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
@@ -250,8 +251,9 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
                     if (rowItem.isDirectory()) {
 
-                        zipViewer.elements.clear();
-                        new RarHelperTask(zipViewer,  rowItem.getFileNameString()).execute(zipViewer.f);
+                        zipViewer.elementsRar.clear();
+                        new RarHelperTask(zipViewer,  rowItem.getFileNameString()).execute
+                                (zipViewer.f);
 
                     }else {
                         if (headerRequired(rowItem)!=null) {

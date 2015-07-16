@@ -109,7 +109,6 @@ public class Preffrag extends PreferenceFragment  {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         sharedPref.edit().putInt("hidemode", which).commit();
-                        restartPC(getActivity());
                         return true;
                     }
                 });
@@ -119,7 +118,6 @@ public class Preffrag extends PreferenceFragment  {
         });
         switch (sharedPref.getInt("hidemode", 0)) {
             case 0:
-                findPreference("topFab").setEnabled(true);
                 hideModePreference.setSummary(getResources().getString(R.string.hide_mode_nothing));
                 break;
             case 1:

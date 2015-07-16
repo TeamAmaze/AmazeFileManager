@@ -39,7 +39,7 @@ static {
         int icon;
 
         // Package
-        icon = R.drawable.ic_doc_apk;
+        icon = R.drawable.ic_doc_apk_white;
         add("application/vnd.android.package-archive", icon);
 
         // Audio
@@ -239,7 +239,7 @@ static {
 
     public static boolean isApk(String name) {
         Integer res = sMimeIcons.get(MimeTypes.getMimeType(new File(name)));
-        if (res != null && res == R.drawable.ic_doc_apk) return true;
+        if (res != null && res == R.drawable.ic_doc_apk_white) return true;
         return false;
     }
     public static boolean isPdf(String name) {
@@ -277,7 +277,7 @@ if(resId==null){return true;}
         Integer resId = sMimeIcons.get(mimeType);
 
         if (resId != null) {switch (resId){
-            case R.drawable.ic_doc_apk: if(grid)resId=R.drawable.ic_doc_apk_grid;
+            case R.drawable.ic_doc_apk_white: if(grid)resId=R.drawable.ic_doc_apk_grid;
        break;/*
             case R.drawable.ic_doc_audio_am: if(grid)resId=R.drawable.ic_doc_audio_am_grid;
                 break;

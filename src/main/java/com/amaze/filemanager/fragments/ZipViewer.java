@@ -52,9 +52,11 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.adapters.RarAdapter;
 import com.amaze.filemanager.adapters.ZipAdapter;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
+import com.amaze.filemanager.services.asynctasks.RarHelperTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.utils.Futils;
@@ -62,9 +64,12 @@ import com.amaze.filemanager.utils.HidingScrollListener;
 import com.amaze.filemanager.ui.views.SpacesItemDecoration;
 import com.amaze.filemanager.ui.ZipObj;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.github.junrar.Archive;
+import com.github.junrar.rarfile.FileHeader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -74,35 +79,44 @@ public class ZipViewer extends Fragment {
     String s;
     public File f;
     public ArrayList<File> files;
-    public Boolean results,selection=false;
+    public Boolean selection = false;
     public String current;
-    public Futils utils=new Futils();
-    public String skin,iconskin,year;public ZipAdapter zipAdapter;
-    public ActionMode mActionMode;public int skinselection;
-    public boolean coloriseIcons,showSize,showLastModified,gobackitem;
-SharedPreferences Sp;
-    ZipViewer zipViewer=this;
-    public ArrayList<ZipObj> wholelist=new ArrayList<ZipObj>();
-public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
+    public Futils utils = new Futils();
+    public String skin, iconskin, year;
+    public ZipAdapter zipAdapter;
+    public RarAdapter rarAdapter;
+    public ActionMode mActionMode;
+    public int skinselection;
+    public boolean coloriseIcons, showSize, showLastModified, gobackitem;
+    SharedPreferences Sp;
+    ZipViewer zipViewer = this;
+    public Archive archive;
+    public ArrayList<FileHeader> wholelistRar = new ArrayList<FileHeader>();
+    public ArrayList<FileHeader> elementsRar = new ArrayList<FileHeader>();
+    public ArrayList<ZipObj> wholelist = new ArrayList<ZipObj>();
+    public ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
     public MainActivity mainActivity;
     public RecyclerView listView;
     View rootView;
-    boolean addheader=true;
+    boolean addheader = true;
     public SwipeRefreshLayout swipeRefreshLayout;
     StickyRecyclerHeadersDecoration headersDecor;
     LinearLayoutManager mLayoutManager;
     DividerItemDecoration dividerItemDecoration;
     boolean showDividers;
     public int paddingTop;
-    int mToolbarHeight,hidemode;
+    int mToolbarHeight, hidemode;
     View mToolbarContainer;
     public Resources res;
+    int openmode;
+
+    //0 for zip 1 for rar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         mainActivity = (MainActivity) getActivity();
         listView = (RecyclerView) rootView.findViewById(R.id.listView);
-        swipeRefreshLayout=(SwipeRefreshLayout)rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -133,12 +147,12 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         s = getArguments().getString("path");
         f = new File(s);
 
-        mToolbarContainer=getActivity().findViewById(R.id.lin);
-        hidemode=Sp.getInt("hidemode", 0);
+        mToolbarContainer = getActivity().findViewById(R.id.lin);
+        hidemode = Sp.getInt("hidemode", 0);
         listView.setVisibility(View.VISIBLE);
-        mLayoutManager=new LinearLayoutManager(getActivity());
+        mLayoutManager = new LinearLayoutManager(getActivity());
         listView.setLayoutManager(mLayoutManager);
-        res=getResources();
+        res = getResources();
         mainActivity.supportInvalidateOptionsMenu();
         if (mainActivity.theme1 == 1)
             rootView.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
@@ -147,52 +161,62 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             listView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
 
         gobackitem = Sp.getBoolean("goBack_checkbox", true);
-        coloriseIcons = Sp.getBoolean("coloriseIcons", false);
+        coloriseIcons = Sp.getBoolean("coloriseIcons", true);
         Calendar calendar = Calendar.getInstance();
         showSize = Sp.getBoolean("showFileSize", false);
         showLastModified = Sp.getBoolean("showLastModified", true);
-        showDividers=Sp.getBoolean("showDividers",true);
+        showDividers = Sp.getBoolean("showDividers", true);
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
         skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
-        iconskin=PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
+        iconskin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
         mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
-        String x = getSelectionColor();
-        skinselection = Color.parseColor(x);
         files = new ArrayList<File>();
-        if (savedInstanceState == null)
-            loadlist(f.getPath());
-        else {
-            wholelist = savedInstanceState.getParcelableArrayList("wholelist");
-            elements = savedInstanceState.getParcelableArrayList("elements");
-            current = savedInstanceState.getString("path");
+        if (savedInstanceState == null && f != null) {
+            if (f.getPath().endsWith(".rar")) {
+                openmode = 1;
+                SetupRar(null);
+            } else {
+                openmode = 0;
+                SetupZip(null);
+            }
+        } else {
             f = new File(savedInstanceState.getString("file"));
-            createviews(elements, current);
+            if (f.getPath().endsWith(".rar")) {
+                openmode = 1;
+                SetupRar(savedInstanceState);
+            } else {
+                openmode = 0;
+                SetupZip(savedInstanceState);
+            }
+
         }
         mainActivity.tabsSpinner.setVisibility(View.GONE);
 
 
         mainActivity.floatingActionButton.hideMenuButton(true);
-        try{mainActivity.toolbar.setTitle(f.getName());}catch (Exception e){
-            mainActivity.toolbar.setTitle(getResources().getString(R.string.zip_viewer));}
+        try {
+            mainActivity.toolbar.setTitle(f.getName());
+        } catch (Exception e) {
+            mainActivity.toolbar.setTitle(getResources().getString(R.string.zip_viewer));
+        }
         mainActivity.supportInvalidateOptionsMenu();
-        mToolbarHeight=getToolbarHeight(getActivity());
+        mToolbarHeight = getToolbarHeight(getActivity());
         paddingTop = (mToolbarHeight) + dpToPx(72);
-        if(hidemode==2)mToolbarHeight=paddingTop;
+        if (hidemode == 2) mToolbarHeight = paddingTop;
         mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
 
-                paddingTop=mToolbarContainer.getHeight();
-                if(hidemode!=2)
-                    mToolbarHeight=mainActivity.toolbar.getHeight();
+                paddingTop = mToolbarContainer.getHeight();
+                if (hidemode != 2)
+                    mToolbarHeight = mainActivity.toolbar.getHeight();
                 else
-                    mToolbarHeight=paddingTop;
+                    mToolbarHeight = paddingTop;
 
-                if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
                     mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                }
-                else {
+                } else {
                     mToolbarContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
             }
@@ -206,6 +230,7 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return px;
     }
+
     public static int getToolbarHeight(Context context) {
         final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
                 new int[]{android.R.attr.actionBarSize});
@@ -214,39 +239,13 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
 
         return toolbarHeight;
     }
-    public String getSelectionColor(){
-
-        String[] colors = new String[]{
-                "#F44336","#74e84e40",
-                "#e91e63","#74ec407a",
-                "#9c27b0","#74ab47bc",
-                "#673ab7","#747e57c2",
-                "#3f51b5","#745c6bc0",
-                "#2196F3","#74738ffe",
-                "#03A9F4","#7429b6f6",
-                "#00BCD4","#7426c6da",
-                "#009688","#7426a69a",
-                "#4CAF50","#742baf2b",
-                "#8bc34a","#749ccc65",
-                "#FFC107","#74ffca28",
-                "#FF9800","#74ffa726",
-                "#FF5722","#74ff7043",
-                "#795548","#748d6e63",
-                "#212121","#79bdbdbd",
-                "#607d8b","#7478909c",
-                "#004d40","#740E5D50"
-        };
-        return colors[ Arrays.asList(colors).indexOf(skin)+1];
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("wholelist",wholelist);
-        outState.putParcelableArrayList("elements",elements);
-        outState.putString("path",current);
-        outState.putString("file",f.getPath());
+        putDatatoSavedInstance(outState);
     }
+
     public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
         private void hideOption(int id, Menu menu) {
             MenuItem item = menu.findItem(id);
@@ -257,25 +256,27 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             MenuItem item = menu.findItem(id);
             item.setVisible(true);
         }
+
         View v;
+
         // called when the action mode is created; startActionMode() was called
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
-            v=getActivity().getLayoutInflater().inflate(R.layout.actionmode,null);
+            v = getActivity().getLayoutInflater().inflate(R.layout.actionmode, null);
             mode.setCustomView(v);
             // assumes that you have "contexual.xml" menu resources
             inflater.inflate(R.menu.contextual, menu);
             hideOption(R.id.cpy, menu);
-            hideOption(R.id.cut,menu);
-            hideOption(R.id.delete,menu);
-            hideOption(R.id.addshortcut,menu);
+            hideOption(R.id.cut, menu);
+            hideOption(R.id.delete, menu);
+            hideOption(R.id.addshortcut, menu);
             hideOption(R.id.sethome, menu);
             hideOption(R.id.rename, menu);
             hideOption(R.id.share, menu);
             hideOption(R.id.about, menu);
             hideOption(R.id.openwith, menu);
-            showOption(R.id.all,menu);
+            showOption(R.id.all, menu);
             hideOption(R.id.book, menu);
             hideOption(R.id.compress, menu);
             hideOption(R.id.permissions, menu);
@@ -288,9 +289,10 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
-                if(mainActivity.colourednavigation)window.setNavigationBarColor(getResources().getColor(android.R.color.black));
+                if (mainActivity.colourednavigation)
+                    window.setNavigationBarColor(getResources().getColor(android.R.color.black));
             }
-            if(Build.VERSION.SDK_INT<19)
+            if (Build.VERSION.SDK_INT < 19)
                 getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
             return true;
         }
@@ -309,95 +311,233 @@ public     ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         // called when the user selects a contextual menu item
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.all:zipAdapter.toggleChecked(true,"");
-         mode.invalidate();
+                case R.id.all:
+                    if(openmode==0)
+                    zipAdapter.toggleChecked(true, "");
+                    else rarAdapter.toggleChecked(true,"");
+                    mode.invalidate();
                     return true;
                 case R.id.ex:
-                    try {Toast.makeText(getActivity(), new Futils().getString(getActivity(),R.string.extracting),Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getActivity(), ExtractService.class);
-                        ArrayList<String> a=new ArrayList<String>();
-                        for(int i:zipAdapter.getCheckedItemPositions()){
-                            a.add(elements.get(i).getName());
-                        }
-                       intent.putExtra("zip",f.getPath());
-                        intent.putExtra("entries1",true);
-                        intent.putExtra("entries",a);
-                        getActivity().startService(intent);
-                    } catch (Exception e) {
-                        e.printStackTrace();}
+                    if(openmode==0)exZip();
+                    else exRar();
                     mode.finish();
-                    return true;}return false;}
+                    return true;
+            }
+            return false;
+        }
 
+        void exRar() {
+            try {
+                Toast.makeText(getActivity(), new Futils().getString(getActivity(), R.string.extracting), Toast.LENGTH_SHORT).show();
+                FileOutputStream fileOutputStream;
+                for (int i : zipAdapter.getCheckedItemPositions()) {
+                    if (!elements.get(i).isDirectory()) {
+                        File f1 = new File(f.getParent() +
+                                "/" + elementsRar.get(i).getFileNameString().trim().replaceAll("\\\\",
+                                "/"));
+                        if (!f1.getParentFile().exists()) f1.getParentFile().mkdirs();
+                        fileOutputStream = new FileOutputStream(f1);
+                        archive.extractFile(elementsRar.get(i), fileOutputStream);
+                    } else {
+                        String name = elementsRar.get(i).getFileNameString().trim();
+                        for (FileHeader v : archive.getFileHeaders()) {
+                            if (v.getFileNameString().trim().contains(name + "\\") ||
+                                    v.getFileNameString().trim().equals(name)) {
+                                File f2 = new File(f.getParent() +
+                                        "/" + v.getFileNameString().trim().replaceAll("\\\\", "/"));
+                                if (v.isDirectory()) f2.mkdirs();
+                                else {
+                                    if (!f2.getParentFile().exists())
+                                        f2.getParentFile().mkdirs();
+                                    fileOutputStream = new FileOutputStream(f2);
+                                    archive.extractFile(v, fileOutputStream);
+                                }
+                            }
+
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        void exZip(){
+
+            try {
+                Toast.makeText(getActivity(), new Futils().getString(getActivity(), R.string.extracting), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), ExtractService.class);
+                ArrayList<String> a = new ArrayList<String>();
+                for (int i : zipAdapter.getCheckedItemPositions()) {
+                    a.add(elements.get(i).getName());
+                }
+                intent.putExtra("zip", f.getPath());
+                intent.putExtra("entries1", true);
+                intent.putExtra("entries", a);
+                getActivity().startService(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {
-        if(zipAdapter!=null)zipAdapter.toggleChecked(false,"");
-            selection=false;
-        ObjectAnimator anim = ObjectAnimator.ofInt(mainActivity.findViewById(R.id.buttonbarframe), "backgroundColor", getResources().getColor(R.color.holo_dark_action_mode), Color.parseColor(skin));
-        anim.setDuration(0);
-        anim.setEvaluator(new ArgbEvaluator());
-        anim.start();
-        if (Build.VERSION.SDK_INT >= 21) {
+            if (zipAdapter != null) zipAdapter.toggleChecked(false, "");
+            selection = false;
+            ObjectAnimator anim = ObjectAnimator.ofInt(mainActivity.findViewById(R.id.buttonbarframe), "backgroundColor", getResources().getColor(R.color.holo_dark_action_mode), Color.parseColor(skin));
+            anim.setDuration(0);
+            anim.setEvaluator(new ArgbEvaluator());
+            anim.start();
+            if (Build.VERSION.SDK_INT >= 21) {
 
-            Window window = getActivity().getWindow();
-            if(mainActivity.colourednavigation)window.setNavigationBarColor(mainActivity.skinStatusBar);
-        }mActionMode=null;}
+                Window window = getActivity().getWindow();
+                if (mainActivity.colourednavigation)
+                    window.setNavigationBarColor(mainActivity.skinStatusBar);
+            }
+            mActionMode = null;
+        }
     };
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-    mainActivity.supportInvalidateOptionsMenu();
+        mainActivity.supportInvalidateOptionsMenu();
 
         // needed to remove any extracted file from cache, when onResume was not called
         // in case of opening any unknown file inside the zip
         // bug : only deletes most recent openUnknown file from cache
-        if (files.size()==1) {
+        if (files.size() == 1) {
 
-            new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(utils.toStringArray(files));
+            new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute(utils.toStringArray(files));
         }
     }
-        @Override
+
+    @Override
     public void onResume() {
         super.onResume();
-        if (files.size()==1) {
+        if (files.size() == 1) {
 
-            new DeleteTask(getActivity().getContentResolver(),  getActivity(), this).execute(utils.toStringArray(files));
+            new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute(utils.toStringArray(files));
         }
     }
 
-public boolean cangoBack(){
-    if(current==null || current.trim().length()==0)
-    return false;
-    else return true;
-}
-    public void goBack() {
+    void putDatatoSavedInstance(Bundle outState) {
+        if (openmode == 0) {
 
+            outState.putParcelableArrayList("wholelist", wholelist);
+            outState.putParcelableArrayList("elements", elements);
+        }
+        outState.putInt("openmode", openmode);
+        outState.putString("path", current);
+        outState.putString("file", f.getPath());
+
+    }
+
+    void SetupRar(Bundle savedInstanceState) {
+
+        if (savedInstanceState == null)
+            loadRarlist(f.getPath());
+        else {
+            String path = savedInstanceState.getString("file");
+            if (path != null && path.length() > 0) {
+                f = new File(path);
+                current = savedInstanceState.getString("path");
+                new RarHelperTask(this, current).execute(f);
+            } else loadRarlist(f.getPath());
+        }
+    }
+
+    void SetupZip(Bundle savedInstanceState) {
+        if (savedInstanceState == null)
+            loadlist(f.getPath());
+        else {
+            wholelist = savedInstanceState.getParcelableArrayList("wholelist");
+            elements = savedInstanceState.getParcelableArrayList("elements");
+            current = savedInstanceState.getString("path");
+            f = new File(savedInstanceState.getString("file"));
+            createviews(elements, current);
+        }
+    }
+
+    public void loadRarlist(String path) {
+        File f = new File(path);
+        new RarHelperTask(this, "").execute(f);
+
+    }
+
+    public boolean cangoBackRar() {
+        if (current == null || current.trim().length() == 0)
+            return false;
+        else return true;
+    }
+
+    public void goBackRar() {
+        String path;
+        try {
+            path = current.substring(0, current.lastIndexOf("\\"));
+        } catch (Exception e) {
+            path = "";
+        }
+        new RarHelperTask(this, path).execute(f);
+    }
+
+    public boolean cangoBack() {
+        if (openmode == 1) return cangoBackRar();
+        if (current == null || current.trim().length() == 0)
+            return false;
+        else return true;
+    }
+
+    public void goBack() {
+        if (openmode == 1) {
+            goBackRar();
+            return;
+        }
         new ZipHelperTask(this, new File(current).getParent()).execute(f);
     }
-    void refresh(){
-        new ZipHelperTask(this, current).execute(f);
+
+    void refresh() {
+        switch (openmode) {
+            case 0:
+                new ZipHelperTask(this, current).execute(f);
+                break;
+            case 1:
+                new RarHelperTask(this, current).execute(f);
+                break;
+        }
     }
-    public void bbar(){
-        if(current!=null)
-        mainActivity.updatePath(current,false,false);
+
+
+    public void bbar() {
+        if (current != null)
+            mainActivity.updatePath(current, false, false);
 
     }
-    public void createviews(ArrayList<ZipObj> zipEntries,String dir){
+
+    public void createviews(ArrayList<ZipObj> zipEntries, String dir) {
         zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), zipEntries, zipViewer);
         zipViewer.listView.setAdapter(zipViewer.zipAdapter);
-        if(!addheader ){
-            listView.removeItemDecoration(dividerItemDecoration);
-            listView.removeItemDecoration(headersDecor);
-            addheader=true;
-        }
-        if(addheader ) {
-            dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST,false,showDividers);
-            listView.addItemDecoration(dividerItemDecoration);
+        createViews(dir);
+        openmode = 0;
+    }
 
-            headersDecor = new StickyRecyclerHeadersDecoration(zipAdapter);
-            listView.addItemDecoration(headersDecor);
-            addheader=false;
+    public void createRarviews(ArrayList<FileHeader> zipEntries, String dir) {
+        zipViewer.rarAdapter = new RarAdapter(zipViewer.getActivity(), zipEntries, zipViewer);
+        zipViewer.listView.setAdapter(zipViewer.rarAdapter);
+        openmode = 1;
+        createViews(dir);
+    }
+
+    void createViews(String dir) {
+
+        if (!addheader) {
+            listView.removeItemDecoration(dividerItemDecoration);
+            addheader = true;
         }
-        listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight,hidemode) {
+        if (addheader) {
+            dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, false, showDividers);
+            listView.addItemDecoration(dividerItemDecoration);
+            addheader = false;
+        }
+        listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight, hidemode) {
 
             @Override
             public void onMoved(int distance) {
@@ -419,9 +559,10 @@ public boolean cangoBack(){
         zipViewer.bbar();
         swipeRefreshLayout.setRefreshing(false);
     }
-    public void loadlist(String path){
-        File f=new File(path);
-        new ZipHelperTask(this,"").execute(f);
+
+    public void loadlist(String path) {
+        File f = new File(path);
+        new ZipHelperTask(this, "").execute(f);
 
     }
 }

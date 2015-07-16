@@ -65,6 +65,7 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             myChecked.put(i, false);
         }
         this.c = c;
+        if(c==null)return;
         folder = c.getResources().getDrawable(R.drawable.ic_grid_folder_new);
         unknown = c.getResources().getDrawable(R.drawable.ic_doc_generic_am);
         this.zipViewer = zipViewer;
@@ -186,7 +187,7 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                     holder.txtDesc.setText(new Futils().readableFileSize(rowItem.getSize()));
                 holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/") + 1));
                 if (zipViewer.coloriseIcons) {
-                    if (Icons.isVideo(rowItem.getName()))
+                    if (Icons.isVideo(rowItem.getName()) || Icons.isPicture(rowItem.getName()))
                         gradientDrawable.setColor(Color.parseColor("#f06292"));
                     else if (Icons.isAudio(rowItem.getName()))
                         gradientDrawable.setColor(Color.parseColor("#9575cd"));
@@ -198,6 +199,8 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                         gradientDrawable.setColor(Color.parseColor("#e06055"));
                     else if (Icons.isArchive(rowItem.getName()))
                         gradientDrawable.setColor(Color.parseColor("#f9a825"));
+                    else if(Icons.isApk(rowItem.getName()))
+                        gradientDrawable.setColor(Color.parseColor("#a4c439"));
                     else if (Icons.isgeneric(rowItem.getName()))
                         gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
                     else gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));

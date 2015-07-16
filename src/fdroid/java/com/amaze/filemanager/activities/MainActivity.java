@@ -32,6 +32,7 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -91,7 +92,6 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
-import com.amaze.filemanager.fragments.RarViewer;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
@@ -176,9 +176,7 @@ public class MainActivity extends AppCompatActivity{
     public int storage_count = 0;
     private View drawerHeaderLayout;
     private View drawerHeaderView;
-    private RoundedImageView drawerProfilePic;
     private int sdk;
-    private TextView mGoogleName, mGoogleId;
     public String fabskin;
     private LinearLayout buttons;
     private HorizontalScrollView scroll, scroll1;
@@ -188,24 +186,15 @@ public class MainActivity extends AppCompatActivity{
     int hidemode;
     public FloatingActionMenu floatingActionButton;
     public LinearLayout pathbar;
-    public Animation fabShowAnim, fabHideAnim;
     public FrameLayout buttonBarFrame;
     private RelativeLayout drawerHeaderParent;
     int operation;
     ArrayList<String> oparrayList;
     String oppathe, oppathe1;
-    // Check for user interaction for google+ api only once
-    private boolean mGoogleApiKey = false;
-
-    /* Request code used to invoke sign in user interactions. */
-    private static final int RC_SIGN_IN = 0;
-
-    /* A flag indicating that a PendingIntent is in progress and prevents
-   * us from starting further intents.
-   */
-    private boolean mIntentInProgress, topfab = false, showHidden = false;
+    private boolean  showHidden = false;
     public boolean isDrawerLocked = false;
     static final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3, RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
+    Drawable sd, sd1, folder, folder1, root, root1, smb, smb1;
 
     /**
      * Called when the activity is first created.
@@ -376,10 +365,18 @@ public class MainActivity extends AppCompatActivity{
             skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
 
         hidemode = Sp.getInt("hidemode", 0);
-        topfab = hidemode == 0 ? Sp.getBoolean("topFab", true) : false;
         showHidden = Sp.getBoolean("showHidden", false);
-        floatingActionButton = !topfab ?
-                (FloatingActionMenu) findViewById(R.id.menu) : (FloatingActionMenu) findViewById(R.id.menu_top);
+        Resources resources = getResources();
+        smb = resources.getDrawable(R.drawable.ic_settings_remote_black_48dp);
+        smb1 = resources.getDrawable(R.drawable.ic_settings_remote_white_48dp);
+        sd = resources.getDrawable(R.drawable.ic_sd_storage_grey600_48dp);
+        sd1 = resources.getDrawable(R.drawable.ic_sd_storage_white_48dp);
+        folder = resources.getDrawable(R.drawable.folder_drawer);
+        folder1 = resources.getDrawable(R.drawable.folder_drawer_white);
+        root = resources.getDrawable(R.drawable.ic_drawer_root);
+        root1 = resources.getDrawable(R.drawable.ic_drawer_root_white);
+
+        floatingActionButton = (FloatingActionMenu) findViewById(R.id.menu);
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.showMenuButton(true);
         floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
@@ -395,7 +392,7 @@ public class MainActivity extends AppCompatActivity{
         });
         View v = findViewById(R.id.fab_bg);
         if (theme1 == 1)
-            v.setBackgroundColor(Color.parseColor("#73000000"));
+            v.setBackgroundColor(Color.parseColor("#80ffffff"));
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -406,9 +403,6 @@ public class MainActivity extends AppCompatActivity{
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
-        drawerProfilePic = (RoundedImageView) drawerHeaderLayout.findViewById(R.id.profile_pic);
-        mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
-        mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
 
         // initialize g+ api client as per preferences
 
@@ -432,7 +426,7 @@ public class MainActivity extends AppCompatActivity{
         scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
         scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
-        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item_top : R.id.menu_item);
+        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(R.id.menu_item);
         String folder_skin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
         int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
@@ -446,7 +440,7 @@ public class MainActivity extends AppCompatActivity{
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item1_top : R.id.menu_item1);
+        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById( R.id.menu_item1);
         floatingActionButton2.setColorNormal(folderskin);
         floatingActionButton2.setColorPressed(fabskinpressed);
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
@@ -457,7 +451,7 @@ public class MainActivity extends AppCompatActivity{
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item2_top : R.id.menu_item2);
+        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(R.id.menu_item2);
         floatingActionButton3.setColorNormal(folderskin);
         floatingActionButton3.setColorPressed(fabskinpressed);
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
@@ -584,7 +578,7 @@ public class MainActivity extends AppCompatActivity{
         View appbutton = findViewById(R.id.appbutton);
         if (theme1 == 1) {
             appbutton.setBackgroundResource(R.drawable.safr_ripple_black);
-            ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_action_view_as_grid);
+            ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_doc_apk_white);
             ((TextView) appbutton.findViewById(R.id.apptext)).setTextColor(getResources().getColor(android.R.color.white));
         }
         appbutton.setOnClickListener(new View.OnClickListener() {
@@ -791,39 +785,7 @@ public class MainActivity extends AppCompatActivity{
                         fragmentTransaction.remove(zipViewer);
                         fragmentTransaction.commit();
                         supportInvalidateOptionsMenu();
-
-                        fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
-                        floatingActionButton.setAnimation(fabShowAnim);
-                        floatingActionButton.animate();
-                        floatingActionButton.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    zipViewer.mActionMode.finish();
-                }
-            } else if (name.contains("RarViewer")) {
-
-                RarViewer zipViewer = (RarViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                if (zipViewer.mActionMode == null) {
-                    if (zipViewer.cangoBack()) {
-
-                        zipViewer.elements.clear();
-                        zipViewer.goBack();
-                    } else if (openzip) {
-
-                        openzip = false;
-                        finish();
-                    } else {
-
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
-                        fragmentTransaction.remove(zipViewer);
-                        fragmentTransaction.commit();
-                        supportInvalidateOptionsMenu();
-
-                        fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
-                        floatingActionButton.setAnimation(fabShowAnim);
-                        floatingActionButton.animate();
-                        floatingActionButton.setVisibility(View.VISIBLE);
+                        floatingActionButton.showMenuButton(true);
                     }
                 } else {
                     zipViewer.mActionMode.finish();
@@ -870,16 +832,20 @@ public class MainActivity extends AppCompatActivity{
         for (String file : val) {
             File f = new File(file);
             String name;
-            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file))
+            Drawable icon = sd, icon1 = sd1;
+            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
-            else if ("/storage/sdcard1".equals(file))
+
+            } else if ("/storage/sdcard1".equals(file)) {
                 name = getResources().getString(R.string.extstorage);
-            else if ("/".equals(file))
+            } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
-            else name = f.getName();
+                icon = root;
+                icon1 = root1;
+            } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                list.add(new EntryItem(name, file));
+                list.add(new EntryItem(name, file, icon, icon1));
             }
         }
         list.add(new SectionItem());
@@ -888,7 +854,7 @@ public class MainActivity extends AppCompatActivity{
             try {
                 for (String s : servers.readS()) {
                     Servers.add(s);
-                    list.add(new EntryItem(parseSmbPath(s), s));
+                    list.add(new EntryItem(parseSmbPath(s), s, smb, smb1));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -907,7 +873,7 @@ public class MainActivity extends AppCompatActivity{
             for (String file : s.readS()) {
                 String name = new File(file).getName();
                 books.add(file);
-                list.add(new EntryItem(name, file));
+                list.add(new EntryItem(name, file, folder, folder1));
             }
         } catch (Exception e) {
 
@@ -924,7 +890,7 @@ public class MainActivity extends AppCompatActivity{
                 int k = 0, i = 0;
                 for (Item item : list) {
                     if (!item.isSection()) {
-                        if (((EntryItem) item).subtitle.equals(path))
+                        if (((EntryItem) item).getPath().equals(path))
                             k = i;
                     }
                     i++;
@@ -956,12 +922,7 @@ public class MainActivity extends AppCompatActivity{
         transaction.addToBackStack("tabt" + 1);
         transaction.commit();
         toolbar.setTitle(null);
-
-        fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
-        tabsSpinner.setVisibility(View.VISIBLE);
-        floatingActionButton.setAnimation(fabShowAnim);
-        floatingActionButton.animate();
-        floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.showMenuButton(true);
         if (openzip && zippath != null) {
             if (zippath.endsWith(".zip") || zippath.endsWith(".apk")) openZip(zippath);
             else {
@@ -977,7 +938,7 @@ public class MainActivity extends AppCompatActivity{
 
                 TabFragment tabFragment = new TabFragment();
                 Bundle a = new Bundle();
-                a.putString("path", ((EntryItem) list.get(i)).subtitle);
+                a.putString("path", ((EntryItem) list.get(i)).getPath());
                 tabFragment.setArguments(a);
 
                 android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -989,15 +950,10 @@ public class MainActivity extends AppCompatActivity{
                 adapter.toggleChecked(select);
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
-                fabShowAnim = AnimationUtils.loadAnimation(this, R.anim.fab_newtab);
-                tabsSpinner.setVisibility(View.VISIBLE);
-                floatingActionButton.setAnimation(fabShowAnim);
-                floatingActionButton.animate();
-                floatingActionButton.setVisibility(View.VISIBLE);
-
+                floatingActionButton.showMenuButton(true);
             } else if (removeBookmark) {
                 try {
-                    String path = ((EntryItem) list.get(i)).subtitle;
+                    String path = ((EntryItem) list.get(i)).getPath();
                     s.removeS(path, MainActivity.this);
                     books.remove(path);
 
@@ -1007,7 +963,7 @@ public class MainActivity extends AppCompatActivity{
                 refreshDrawer();
                 select = 0;
             } else {
-                pending_path = ((EntryItem) list.get(i)).subtitle;
+                pending_path = ((EntryItem) list.get(i)).getPath();
                 select = i;
                 adapter.toggleChecked(select);
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
@@ -1075,7 +1031,7 @@ public class MainActivity extends AppCompatActivity{
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
-        } else if (f.contains("ZipViewer") || f.contains("RarViewer")) {
+        } else if (f.contains("ZipViewer") ) {
             tabsSpinner.setVisibility(View.GONE);
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
@@ -1180,8 +1136,6 @@ public class MainActivity extends AppCompatActivity{
                 Fragment fragment1 = getSupportFragmentManager().findFragmentById(R.id.content_frame);
                 if (fragment1.getClass().getName().contains("ZipViewer"))
                     extractFile(((ZipViewer) fragment1).f);
-                else if (fragment1.getClass().getName().contains("RarViewer"))
-                    extractFile(((RarViewer) fragment1).f);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -1560,14 +1514,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void openRar(String path) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
-        Fragment zipFragment = new RarViewer();
-        Bundle bundle = new Bundle();
-        bundle.putString("path", path);
-        zipFragment.setArguments(bundle);
-        fragmentTransaction.add(R.id.content_frame, zipFragment);
-        fragmentTransaction.commit();
+        openZip(path);
     }
 
     public TabFragment getFragment() {
@@ -1613,7 +1560,7 @@ public class MainActivity extends AppCompatActivity{
                     Toast.makeText(con, "Media Mounted", Toast.LENGTH_SHORT).show();
                     String a = intent.getData().getPath();
                     if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
-                        list.add(new EntryItem(new File(a).getName(), a));
+                        list.add(new EntryItem(new File(a).getName(), a,sd,sd1));
 
                         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
                         mDrawerList.setAdapter(adapter);
@@ -1635,21 +1582,27 @@ public class MainActivity extends AppCompatActivity{
         for (String file : val) {
             File f = new File(file);
             String name;
-            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file))
+            Drawable icon = sd, icon1 = sd1;
+            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
-            else if ("/".equals(file))
+
+            } else if ("/storage/sdcard1".equals(file)) {
+                name = getResources().getString(R.string.extstorage);
+            } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
-            else name = f.getName();
+                icon = root;
+                icon1 = root1;
+            } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                list.add(new EntryItem(name, file));
+                list.add(new EntryItem(name, file, icon, icon1));
             }
         }
         list.add(new SectionItem());
         if (Servers != null && Servers.size() > 0) {
             for (String file : Servers) {
                 String name = parseSmbPath(file);
-                list.add(new EntryItem(name, file));
+                list.add(new EntryItem(name, file, smb, smb1));
             }
 
             list.add(new SectionItem());
@@ -1658,7 +1611,7 @@ public class MainActivity extends AppCompatActivity{
         try {
             for (String file : books) {
                 String name = new File(file).getName();
-                list.add(new EntryItem(name, file));
+                list.add(new EntryItem(name, file, folder, folder1));
             }
         } catch (Exception e) {
         }
