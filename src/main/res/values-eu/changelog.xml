@@ -64,7 +64,7 @@
                                       - gehiago...&lt;br>&lt;br></string>
     <string name="changelog_version_6">&lt;font color="#524ef8">&lt;b>v2.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Mai 25, 2015&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_6">- Material design gida-lerroen araberako erabiltzaile interfazearen diseinu berria&lt;br>
-                                      - Ikono eta grafico berriak CookIcons.co egindakoak&lt;br>
+                                      - Ikono eta grafiko berriak CookIcons.co egindakoak&lt;br>
                                       - Animazio hobetuak esperientzi leunagoa izateko&lt;br>
                                       - Lehen, azentu eta ikono kolore pertsonalizatuak gehitu dira erabiltzaile interfazea dinamikoa bihurtzeko&lt;br>
                                       - Zerrendetan goiburuak eta banatzaileak gehitu dira&lt;br>
@@ -75,4 +75,9 @@
                                       - Errendimendu eta akatsen konponketa anitz&lt;br>
                                       - Itzulpenen konponketa ugari&lt;br>
                                       - gehiago...&lt;br>&lt;br></string>
+	<string name="changelog_version_7">&lt;font color="#524ef8">&lt;b>v2.0.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Eka 5, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_7">- Ordenatzeko aukerak aplikazioen zerrendan&lt;br>
+                                      - Fitxen UIa eta tiraderaren goiburua hobetuak&lt;br>
+                                      - Lollipopen kanpoko biltegian idazteko baimenak gehitu dira&lt;br>&lt;br>
+                                    </string>
 </resources>
