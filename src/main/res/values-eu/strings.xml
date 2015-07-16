@@ -48,6 +48,8 @@
     <string name="create">SORTU</string>
     <string name="success">Ondo burutu da</string>
     <string name="filenotexists">Fitxategia ez da existitzen</string>
+    <string name="loading">Kargatzen...</string>
+    <string name="file_empty">Fitxategia hutsik dago</string>
     <string name="error">Akatsa</string>
     <string name="cantlistfiles">root izan gabe ezin dira fitxategiak zerrendatu</string>
     <string name="searchresults">Bilaketaren emaitzak</string>
@@ -274,8 +276,10 @@
     <string name="turkish_translation_title">Turkiera</string>
     <string name="ukrainian_translation_title">Ukrainiera</string>
     <string name="portuguese_translation_title">Portugesa</string>
-	<string name="polish_translation_title">Poloniera</string>
-	<string name="korean_translation_title">Koreera</string>
+    <string name="polish_translation_title">Poloniera</string>
+    <string name="korean_translation_title">Koreera</string>
+    <string name="greek_translation_title">Greziera</string>
+	
     <string name="zip_viewer">Zip bisorea</string>
     <string name="unin_system_apk">Sistemaren aplikazio bat da hau, ezabatzeak sistemaren ezegonkortasuna ekar lezake.\nJarraitu?</string>
     <string name="warning">Abisua</string>
@@ -334,4 +338,14 @@
 	<string name="showDividers">Banatzaileak erakutsi</string>
 	<string name="topFab">FAB aplikazioa barran</string>
 	<string name="topFabS">+ botoia goian edo behean egon behar den. Aplikazioaren barra ezkutatzen ez bada izango du eragina soilik.</string>
+	<string name="needsaccess">Idazteko baimena behar da</string>
+	<string name="needsaccesssummary">Mesedez aukera ezazu root direktorioa \t</string>
+	<string name="needsaccesssummary1">\tidazteko baimena lortzeko </string>
+	<string name="smb_con">SMB konexioa</string>
+	<string name="smb_server">Zerbitzaria: IP helb. edo IP helb./PartekatutakoKarpeta</string>
+	<string name="username">Erabiltzaile izena</string>
+	<string name="password">Pasahitza</string>
+	<string name="anonymous">Anonimoa</string>
+	<string name="bluetooth">Bluetootha</string>
+	<string name="extstorage">Kanpoko biltegia</string>
 </resources>
