@@ -123,7 +123,7 @@
     <string name="mountsystemsummary">Ative esta opção para editar os ficheiros do sistema</string>
     <string name="mountsystem">Permitir escrita nas pastas do sistema</string>
     <string name="rootfailure">Acesso root não concedido</string>
-    <string name="cut">Cortar</string>
+    <string name="cut">Mover</string>
     <string name="selectall">Selecionar tudo</string>
     <string name="delete">Eliminar</string>
     <string name="setashome"> Definir como pasta pessoal</string>
@@ -344,5 +344,10 @@
 	<string name="smb_con">Ligação SMB</string>
 	<string name="bluetooth">Bluetooth</string>
     <string name="extstorage">Armazenamento externo</string>
+	<string name="smb_server">Servidor: Endereço IP ou endereço IP/Pasta_Partilhada</string>
+    <string name="username">Utilizador</string>
+    <string name="password">Palavra-passe</string>
+    <string name="anonymous">Anónimo</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="extstorage">Armazenamento externo</string>
 </resources>
-
