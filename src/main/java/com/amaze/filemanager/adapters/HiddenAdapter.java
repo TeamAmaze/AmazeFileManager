@@ -98,7 +98,7 @@ public class HiddenAdapter extends ArrayAdapter<File> {
                 final File f = (items.get(p));
                 if (f.isDirectory()) {
 
-                    context.loadlist(f.getPath(),false);
+                    context.loadlist(f.getPath(),false,false);
                 } else {
                    context.utils. openFile(f, (MainActivity) context.getActivity());
                 }

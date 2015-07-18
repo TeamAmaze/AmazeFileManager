@@ -392,8 +392,9 @@ public class MainActivity extends AppCompatActivity implements
 
         hidemode = Sp.getInt("hidemode", 0);
         showHidden = Sp.getBoolean("showHidden", false);
-        floatingActionButton =(FloatingActionMenu) findViewById(R.id.menu);
-        floatingActionButton.setVisibility(View.VISIBLE);
+        topfab = hidemode == 0 ? Sp.getBoolean("topFab", false) : false;
+        floatingActionButton = !topfab ?
+                (FloatingActionMenu) findViewById(R.id.menu) : (FloatingActionMenu) findViewById(R.id.menu_top);        floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.showMenuButton(true);
         floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
         floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
@@ -409,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements
         });
         View v = findViewById(R.id.fab_bg);
         if (theme1 == 1)
-            v.setBackgroundColor(Color.parseColor("#80ffffff"));
+            v.setBackgroundColor(Color.parseColor("#a6ffffff"));
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -477,7 +478,7 @@ public class MainActivity extends AppCompatActivity implements
         scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
         scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
-        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById( R.id.menu_item);
+        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item_top : R.id.menu_item);
         String folder_skin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
         int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
@@ -491,7 +492,7 @@ public class MainActivity extends AppCompatActivity implements
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById( R.id.menu_item1);
+        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item1_top : R.id.menu_item1);
         floatingActionButton2.setColorNormal(folderskin);
         floatingActionButton2.setColorPressed(fabskinpressed);
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
@@ -502,7 +503,7 @@ public class MainActivity extends AppCompatActivity implements
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById( R.id.menu_item2);
+        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item2_top : R.id.menu_item2);
         floatingActionButton3.setColorNormal(folderskin);
         floatingActionButton3.setColorPressed(fabskinpressed);
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
@@ -513,6 +514,27 @@ public class MainActivity extends AppCompatActivity implements
                 floatingActionButton.close(true);
             }
         });
+        if (topfab) {
+            buttonBarFrame.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) floatingActionButton.getLayoutParams();
+                    layoutParams.setMargins(layoutParams.leftMargin, findViewById(R.id.lin)
+                                    .getBottom()-(floatingActionButton.getMenuIconView().getHeight
+                                    ()),
+                            layoutParams.rightMargin,
+                            layoutParams.bottomMargin);
+                    floatingActionButton.setLayoutParams(layoutParams);
+
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                        buttonBarFrame.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        buttonBarFrame.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+
+            });
+        }
         IntentFilter newFilter = new IntentFilter();
         newFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
         newFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
@@ -894,7 +916,7 @@ public class MainActivity extends AppCompatActivity implements
         for (String file : val) {
             File f = new File(file);
             String name;
-            Drawable icon = sd, icon1 = sd1;
+            Drawable icon =theme1==1?sd1: sd, icon1 = sd1;
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
 
@@ -902,7 +924,7 @@ public class MainActivity extends AppCompatActivity implements
                 name = getResources().getString(R.string.extstorage);
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
-                icon = root;
+                icon = theme1==1?root1:root;
                 icon1 = root1;
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
@@ -916,7 +938,7 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 for (String s : servers.readS()) {
                     Servers.add(s);
-                    list.add(new EntryItem(parseSmbPath(s), s, smb, smb1));
+                    list.add(new EntryItem(parseSmbPath(s), s, theme1==1?smb1:smb, smb1));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -928,14 +950,20 @@ public class MainActivity extends AppCompatActivity implements
             if (Servers.size() > 0)
                 list.add(new SectionItem());
         }
-
+        Drawable icon=theme1==1?sd1:sd,icon1=sd1;
+        list.add(new EntryItem("Images","0",icon,icon1));
+        list.add(new EntryItem("Videos","1",icon,icon1));
+        list.add(new EntryItem("Audio","2",icon,icon1));
+        list.add(new EntryItem("Documents","3",icon,icon1));
+        list.add(new EntryItem("Apks","4",icon,icon1));
+        list.add(new SectionItem());
         try {
             File f1 = new File(getFilesDir() + "/shortcut.xml");
             if (!f1.exists()) s.makeS(true);
             for (String file : s.readS()) {
                 String name = new File(file).getName();
                 books.add(file);
-                list.add(new EntryItem(name, file, folder, folder1));
+                list.add(new EntryItem(name, file,theme1==1?folder1: folder, folder1));
             }
         } catch (Exception e) {
 
@@ -1061,12 +1089,6 @@ public class MainActivity extends AppCompatActivity implements
         }
         if (f.contains("TabFragment")) {
 
-            try {
-                TabFragment tabFragment = (TabFragment) fragment;
-                Main ma = ((Main) tabFragment.getTab());
-                updatePath(ma.current, true, ma.results);
-            } catch (Exception e) {
-            }
             tabsSpinner.setVisibility(View.VISIBLE);
             getSupportActionBar().setTitle("");
             if (aBoolean) {
@@ -1647,7 +1669,7 @@ public class MainActivity extends AppCompatActivity implements
         for (String file : val) {
             File f = new File(file);
             String name;
-            Drawable icon = sd, icon1 = sd1;
+            Drawable icon = theme1==1?sd1:sd, icon1 = sd1;
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
 
@@ -1655,7 +1677,7 @@ public class MainActivity extends AppCompatActivity implements
                 name = getResources().getString(R.string.extstorage);
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
-                icon = root;
+                icon = theme1==1?root1:root;
                 icon1 = root1;
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
@@ -1667,16 +1689,23 @@ public class MainActivity extends AppCompatActivity implements
         if (Servers != null && Servers.size() > 0) {
             for (String file : Servers) {
                 String name = parseSmbPath(file);
-                list.add(new EntryItem(name, file, smb, smb1));
+                list.add(new EntryItem(name, file,theme1==1?smb1: smb, smb1));
             }
 
             list.add(new SectionItem());
         }
 
+        Drawable icon=theme1==1?sd1:sd,icon1=sd1;
+        list.add(new EntryItem("Images","0",icon,icon1));
+        list.add(new EntryItem("Videos","1",icon,icon1));
+        list.add(new EntryItem("Audio","2",icon,icon1));
+        list.add(new EntryItem("Documents","3",icon,icon1));
+        list.add(new EntryItem("Apks","4",icon,icon1));
+        list.add(new SectionItem());
         try {
             for (String file : books) {
                 String name = new File(file).getName();
-                list.add(new EntryItem(name, file, folder, folder1));
+                list.add(new EntryItem(name, file,theme1==1?folder1: folder, folder1));
             }
         } catch (Exception e) {
         }
@@ -1916,7 +1945,7 @@ public class MainActivity extends AppCompatActivity implements
                 case RENAME:
                     rename((oppathe), (oppathe1));
                     Main ma2 = ((Main) getFragment().getTab());
-                    ma2.loadlist((ma2.current), true);
+                    ma2.updateList();
                     break;
                 case NEW_FILE:
                     Main ma3 = ((Main) getFragment().getTab());
@@ -2041,7 +2070,7 @@ public class MainActivity extends AppCompatActivity implements
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            main.loadlist(("/"), false);
+                            main.loadlist(("/"), false,false);
                             timer.cancel();
                             timer.start();
                         }
@@ -2057,7 +2086,7 @@ public class MainActivity extends AppCompatActivity implements
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            main.loadlist((rpaths.get(k)), false);
+                            main.loadlist((rpaths.get(k)), false,true);
                             timer.cancel();
                             timer.start();
                         }
@@ -2076,7 +2105,8 @@ public class MainActivity extends AppCompatActivity implements
                     button.setOnClickListener(new Button.OnClickListener() {
 
                         public void onClick(View p1) {
-                            main.loadlist((rpaths.get(k)), false);
+                            main.loadlist((rpaths.get(k)), false,true);
+                            main.loadlist((rpaths.get(k)), false,true);
                             timer.cancel();
                             timer.start();
                         }
@@ -2151,11 +2181,30 @@ public class MainActivity extends AppCompatActivity implements
         else return a;
     }
 
-    public void updatePath(@NonNull final String news, boolean calcsize, boolean results) {
+    public void updatePath(@NonNull final String news, boolean calcsize, boolean results,int
+            openmode) {
         File f = null;
         if (news == null) return;
-        if (news.startsWith("smb:/"))
+        if (openmode==1 && news.startsWith("smb:/"))
             newPath = parseSmbPath(news);
+        else if(openmode==2)
+            switch (Integer.parseInt(news)){
+                case 0:
+                    newPath="Images";
+                    break;
+                case 1:
+                    newPath="Videos";
+                    break;
+                case 2:
+                    newPath="Audio";
+                    break;
+                case 3:
+                    newPath="Documents";
+                    break;
+                case 4:
+                    newPath="Apks";
+                    break;
+            }
         else newPath = news;
 
         try {
@@ -2383,9 +2432,12 @@ public class MainActivity extends AppCompatActivity implements
         if (pending_path != null) {
             try {
                 TabFragment m = getFragment();
-                if (new HFile(pending_path).isDirectory()) {
-                    ((Main) m.getTab()).loadlist((pending_path), false);
-                } else utils.openFile(new File(pending_path), mainActivity);
+                HFile hFile=new HFile(pending_path);
+                if (hFile.isDirectory() && !hFile.isSmb()) {
+                    ((Main) m.getTab()).loadlist((pending_path), false,false);
+                }else if(hFile.isSmb() || hFile.isCustomPath())
+                    ((Main) m.getTab()).loadCustomList((pending_path),false);
+                else utils.openFile(new File(pending_path), mainActivity);
 
             } catch (ClassCastException e) {
                 select = null;
@@ -2576,7 +2628,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (smbFile == null) return;
                 try {
                     if (!edit) {
-                        ma.loadSmblist(smbFile, false);
+                        ma.loadCustomList(smbFile.getPath(), false);
                         if (Servers == null) Servers = new ArrayList<String>();
                         Servers.add(smbFile.getPath());
                         refreshDrawer();

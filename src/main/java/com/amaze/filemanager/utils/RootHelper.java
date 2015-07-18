@@ -156,6 +156,27 @@ e.printStackTrace();
 
 
         return files;}
+    public static String[] addFile(File x,boolean showSize,boolean showHidden){
+        String k="",size="";
+        if(x.isDirectory())
+        {
+            k="-1";
+            if(showSize)size=""+getCount(x);
+        }else if(showSize)
+            size=""+x.length();
+        if(showHidden){
+            return (new String[]{x.getPath(),"",parseFilePermission(x),k,x.lastModified()+"",
+                    size});
+        }
+        else
+        {
+            if(!x.isHidden())
+            {return (new String[]{x.getPath(),"",parseFilePermission(x),k,x
+                .lastModified()+"",size});
+            }
+        }
+        return null;
+    }
     public static String parseFilePermission(File f){
         String per="";
         if(f.canRead()){per=per+"r";}

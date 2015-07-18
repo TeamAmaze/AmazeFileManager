@@ -21,6 +21,7 @@ package com.amaze.filemanager.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -35,6 +36,7 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.TabFragment;
+import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.PreferenceUtils;
 
 import java.io.File;
@@ -59,35 +61,10 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         this.context = context;
         this.spinner=spin;
         this.tabFragment=tabFragment;
-        putColors();
         final SharedPreferences sharedPreferences1 = PreferenceManager.getDefaultSharedPreferences(context);
         fabSkin = PreferenceUtils.getFabColor(sharedPreferences1.getInt("fab_skin_color_position", 1));
         color=colors.get(fabSkin);
         if(color==null){color=colors.get("#3f51b5");}
-    }
-
-    void putColor(String x,float a,float b,float c){colors.put(x,new Float[]{a,b,c});}
-    void putColors(){putColor("#F44336",0.956862f,0.2627450f,0.21176470f);
-        putColor("#e91e63",0.91372549f,0.11764706f,0.38823529f);
-        putColor("#9c27b0",0.61176471f,0.15294118f,0.69019608f);
-        putColor("#673ab7",0.40392157f,0.22745098f,0.71764706f);
-        putColor("#3f51b5",0.24705882f,0.31764706f,0.70980392f);
-        putColor("#2196F3",0.12941176f,0.58823529f,0.952941176470f);
-        putColor("#03A9F4",0.01176470f,0.66274509f,0.9568627450f);
-        putColor("#00BCD4",0.0f,0.73725490f,0.831372549f);
-        putColor("#009688",0.0f,0.58823529f,0.53333f);
-        putColor("#4CAF50",0.298039f,0.68627450f,0.31372549f);
-        putColor("#8bc34a",0.54509804f,0.76470588f,0.29019608f);
-        putColor("#FFC107",1.0f,0.7568627450f,0.0274509f);
-        putColor("#FF9800",1.0f,0.596078f,0.0f);
-        putColor("#FF5722",1.0f,0.341176470f,0.1333333f);
-        putColor("#795548",0.4745098f,0.3333f,0.28235294f);
-        putColor("#212121",0.12941176f,0.12941176f,0.12941176f);
-        putColor("#607d8b",0.37647059f,0.49019608f,0.54509804f);
-        putColor("#004d40",0.0f, 0.301960f, 0.250980f);
-
-    }   String parseSmbPath(String a){
-        return   a.substring(a.indexOf("@")+1,a.length());
     }
 
     @Override
@@ -97,18 +74,7 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
         View row = inflater.inflate(R.layout.spinner_layout, parent, false);
 
         TextView textView = (TextView) row.findViewById(R.id.spinnerText);
-        try {
-            if("/".equals(items.get(position)))
-                textView.setText(R.string.rootdirectory);
-            else if(items.get(position).startsWith("smb:/"))
-                textView.setText(new File(parseSmbPath(items.get(position))).getName());
-            else if("/storage/emulated/0".equals(items.get(position)))
-                textView.setText(R.string.storage);
-            else
-                textView.setText(new File(items.get(position)).getName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        textView.setText(items.get(position));
 
         return row;
     }
@@ -123,15 +89,9 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
             row.setBackgroundResource(R.color.holo_dark_background);
             textView.setTextColor(Color.parseColor("#ffffff"));
         }
-        if(items.get(position).equals("/"))
-            textView.setText(R.string.rootdirectory);
-        else
-        textView.setText(new File(items.get(position)).getName());
+        textView.setText((items.get(position)));
         if (position == tabFragment.mViewPager.getCurrentItem()) {
-
             textView.setTextColor(Color.parseColor(fabSkin));
-       //     textView.setTypeface(null, Typeface.BOLD);
-
         }        row.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -158,4 +118,5 @@ public class TabSpinnerAdapter extends ArrayAdapter<String> {
             e.printStackTrace();
         }
     }
+
 }

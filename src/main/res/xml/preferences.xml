@@ -45,7 +45,12 @@
             android:defaultValue="true"
             android:key="showDividers"
             android:title="@string/showDividers" />
-
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="topFab"
+            android:enabled="false"
+            android:summary="@string/topFabS"
+            android:title="@string/topFab" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/general">

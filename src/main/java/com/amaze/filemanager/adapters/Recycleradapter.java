@@ -149,7 +149,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         public TextView perm;
         public View rl;
         public TextView ext;
-        public ImageButton about,edit;
+        public ImageButton about;
         public ViewHolder(View view) {
             super(view);
 
@@ -164,8 +164,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             ext = (TextView) view.findViewById(R.id.generictext);
             imageView1 = (ImageView) view.findViewById(R.id.icon_thumb);
             about=(ImageButton) view.findViewById(R.id.properties);
-            edit=(ImageButton)view.findViewById(R.id.rename);
-        }
+           }
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -231,21 +230,18 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.txtTitle.setText(rowItem.getTitle());
             holder.imageView.setImageDrawable(rowItem.getImageId());
             holder.ext.setText("");
-            if(holder.edit!=null){holder.edit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    main.rename(rowItem.getDesc());
-                }
-            });}
-            if(holder.about!=null){
-                if(!main.smbMode)holder.about.setVisibility(View.VISIBLE);
-                else holder.about.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        main. utils.showProps((rowItem.getDesc()), main, main.rootMode);
 
-                    }
-                });
+            if (holder.about != null) {
+                if (main.openMode!=1) {
+                    holder.about.setVisibility(View.VISIBLE);
+                    holder.about.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            main.utils.showProps((rowItem.getDesc()), main, main.rootMode);
+
+                        }
+                    });
+                }
             }
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override

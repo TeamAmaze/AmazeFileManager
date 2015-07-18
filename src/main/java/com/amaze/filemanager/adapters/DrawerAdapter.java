@@ -69,40 +69,8 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
         }
         notifyDataSetChanged();
     }
-
-    void putColor(String x, float a, float b, float c) {
-        colors.put(x, new Float[]{a, b, c});
-    }
-
-    void putColors() {
-        putColor("#F44336", 0.956862f, 0.2627450f, 0.21176470f);
-        putColor("#e91e63", 0.91372549f, 0.11764706f, 0.38823529f);
-        putColor("#9c27b0", 0.61176471f, 0.15294118f, 0.69019608f);
-        putColor("#673ab7", 0.40392157f, 0.22745098f, 0.71764706f);
-        putColor("#3f51b5", 0.24705882f, 0.31764706f, 0.70980392f);
-        putColor("#2196F3", 0.12941176f, 0.58823529f, 0.952941176470f);
-        putColor("#03A9F4", 0.01176470f, 0.66274509f, 0.9568627450f);
-        putColor("#00BCD4", 0.0f, 0.73725490f, 0.831372549f);
-        putColor("#009688", 0.0f, 0.58823529f, 0.53333f);
-        putColor("#4CAF50", 0.298039f, 0.68627450f, 0.31372549f);
-        putColor("#8bc34a", 0.54509804f, 0.76470588f, 0.29019608f);
-        putColor("#FFC107", 1.0f, 0.7568627450f, 0.0274509f);
-        putColor("#FF9800", 1.0f, 0.596078f, 0.0f);
-        putColor("#FF5722", 1.0f, 0.341176470f, 0.1333333f);
-        putColor("#795548", 0.4745098f, 0.3333f, 0.28235294f);
-        putColor("#212121", 0.12941176f, 0.12941176f, 0.12941176f);
-        putColor("#607d8b", 0.37647059f, 0.49019608f, 0.54509804f);
-        putColor("#004d40", 0.0f, 0.301960f, 0.250980f);
-
-    }
-
-
-    private class ViewHolder {
-        ImageView imageView;
-        TextView txtTitle;
-        RelativeLayout rl;
-    }
     LayoutInflater inflater;
+    int fabskin;
     public DrawerAdapter(Context context, ArrayList<Item> values, MainActivity m, SharedPreferences Sp) {
         super(context, R.layout.drawerrow, values);
 
@@ -114,7 +82,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
         }
         icons = new IconUtils(Sp, m);
         this.m = m;
-        putColors();
+        fabskin=Color.parseColor(m.fabskin);
         color = colors.get(m.fabskin);
         if (color == null) {
             color = colors.get("#e91e63");
@@ -159,7 +127,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
 
                     // not to remove the first bookmark (storage)
                     if (position > m.storage_count) {
-                        String path=((EntryItem)getItem(position)).getPath();
+                        String path = ((EntryItem) getItem(position)).getPath();
                         if (!getItem(position).isSection() && path.startsWith("smb:/")) {
                             m.createSmbDialog(path, true, null);
                             return true;
@@ -167,10 +135,10 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                         if (m.theme1 == 0)
                             imageView.setImageResource(R.drawable.ic_action_cancel_light);
                         else
-                             imageView.setImageResource(R.drawable.ic_action_cancel);
-                         imageView.setClickable(true);
+                            imageView.setImageResource(R.drawable.ic_action_cancel);
+                        imageView.setClickable(true);
 
-                         imageView.setOnClickListener(new View.OnClickListener() {
+                        imageView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 m.selectItem(position, true);
@@ -183,34 +151,21 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 }
             });
 
-             txtTitle.setText(((EntryItem) (values.get(position))).getTitle());
+            txtTitle.setText(((EntryItem) (values.get(position))).getTitle());
 
-             imageView.clearColorFilter();
-             imageView.setImageDrawable(getDrawable(position, myChecked.get(position)));
+            imageView.setImageDrawable(getDrawable(position, myChecked.get(position)));
+            imageView.setColorFilter(null);
             if (myChecked.get(position)) {
-                float[] src = {
-
-                        color[0], 0, 0, 0, 0,
-                        0, color[1], 0, 0, 0,
-                        0, 0, color[2], 0, 0,
-                        0, 0, 0, 1, 0
-                };
-                ColorMatrix colorMatrix = new ColorMatrix(src);
-                ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
                 if (m.theme1 == 0)
-                   view.setBackgroundColor(Color.parseColor("#ffeeeeee"));
+                    view.setBackgroundColor(Color.parseColor("#ffeeeeee"));
                 else view.setBackgroundColor(Color.parseColor("#ff424242"));
-                 imageView.setColorFilter(colorMatrixColorFilter);
-                //textView.setTypeface(Typeface.DEFAULT_BOLD);
-                 txtTitle.setTextColor(Color.parseColor(m.fabskin));
-
-                //if(m.theme1==0)
+                imageView.setColorFilter(fabskin);
+                txtTitle.setTextColor(Color.parseColor(m.fabskin));
             } else {
-                 imageView.clearColorFilter();
                 if (m.theme1 == 0) {
-                     txtTitle.setTextColor(m.getResources().getColor(android.R.color.black));
+                    txtTitle.setTextColor(m.getResources().getColor(android.R.color.black));
                 } else {
-                     txtTitle.setTextColor(m.getResources().getColor(android.R.color.white));
+                    txtTitle.setTextColor(m.getResources().getColor(android.R.color.white));
                 }
             }
 
@@ -219,6 +174,6 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
     }
 
     Drawable getDrawable(int position,boolean isChecked){
-      return   ((EntryItem)getItem(position)).getIcon(m.theme1,isChecked);
-    }
+        Drawable drawable=((EntryItem)getItem(position)).getIcon(isChecked);
+        return drawable;  }
 }

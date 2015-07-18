@@ -18,9 +18,9 @@ public class EntryItem implements Item{
 	public boolean isSection() {
 		return false;
 	}
-	public Drawable getIcon(int theme,boolean checked){
-	if(!checked && theme==0)	return icon;
-		else return icon1;
+	public Drawable getIcon(boolean checked){
+        if(checked)return icon1;
+		else return icon;
 	}
 	public String getPath(){return subtitle;}
 	public String getTitle(){return title;}

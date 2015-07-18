@@ -722,7 +722,7 @@ public void showPackageDialog(final File f,final MainActivity m){
 
                 m.Sp.edit().putString("sortby", "" + which).commit();
                 m.getSortModes();
-                m.loadlist((m.current), false);
+                m.updateList();
                 dialog.dismiss();
                 return true;
             }

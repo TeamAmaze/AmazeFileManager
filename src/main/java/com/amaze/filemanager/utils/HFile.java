@@ -72,6 +72,18 @@ public class HFile {
             name = new File(path).getName();
         return name;
     }
+    public SmbFile getSmbFile(){
+        try {
+            return new SmbFile(path);
+        } catch (MalformedURLException e) {
+            return null;
+        }
+    }
+    public boolean isCustomPath(){
+        if(path.equals("0") || path.equals("1") || path.equals("2") || path.equals("3") || path
+                .equals("4"))return true;
+        return false;
+    }
     public String getParent() {
         String name = "";
         if (isSmb()) {

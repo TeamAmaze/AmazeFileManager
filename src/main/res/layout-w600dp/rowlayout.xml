@@ -72,6 +72,7 @@
         android:background="@drawable/listitem1"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:clickable="true"
         android:layout_marginLeft="16dp"
         android:visibility="gone"
         android:src="@drawable/ic_action_about_dark"/>

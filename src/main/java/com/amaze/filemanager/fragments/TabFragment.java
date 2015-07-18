@@ -1,6 +1,7 @@
 package com.amaze.filemanager.fragments;
 
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -73,7 +74,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
                mToolBarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 
                 currenttab=p1;
-                mainActivity.supportInvalidateOptionsMenu();
                 try {
                     updateSpinner();
                 } catch (Exception e) {
@@ -87,7 +87,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                         if (ma.current != null) {
                             try {
                                 mainActivity.updateDrawer(ma.current);
-                                mainActivity.updatePath(ma.current, true, ma.results);
+                                mainActivity.updatePath(ma.current, true, ma.results,ma.openMode);
                                 if (buttons.getVisibility() == View.VISIBLE) {
                                     mainActivity.bbar(ma);
                                 }
@@ -114,7 +114,8 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 if (mainActivity.storage_count>1)
                     addTab(new Tab(1,"",((EntryItem)mainActivity.list.get(1)).getPath(),"/"),1,"");
                 else
-                addTab(new Tab(1,"","/","/"),1,"");
+                addTab(new Tab(1,"","/","/"
+                ),1,"");
                 String pa=((EntryItem)mainActivity.list.get(0)).getPath();
                 addTab(new Tab(2,"",pa,pa),2,"");
             }
@@ -196,8 +197,12 @@ public class TabFragment extends android.support.v4.app.Fragment {
         for(Fragment fragment:fragments) {
             if(fragment.getClass().getName().contains("Main")){
                 Main m=(Main)fragment;
-                items.add(m.current);
-                if(!m.smbMode && !m.current.startsWith("smb")) {
+                items.add(parsePathForName(m.current,m.openMode));
+                if(i-1==currenttab){
+                    mainActivity.updatePath(m.current,m.openMode==0,m.results,m.openMode);
+                    mainActivity.updateDrawer(m.current);
+                }
+                if(m.openMode==0) {
                     tabHandler.addTab(new Tab(i, m.current, m.current, m.home));
                 }else
                     tabHandler.addTab(new Tab(i, m.home, m.home, m.home));
@@ -212,9 +217,46 @@ public class TabFragment extends android.support.v4.app.Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mainActivity.updatePath(items.get(currenttab),true,((Main)getTab()).results);
     }
-
+    String parseSmbPath(String a) {
+        if (a.contains("@"))
+            return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
+        else return a;
+    }
+    String parsePathForName(String path,int openmode){
+        Resources resources=getActivity().getResources();
+        if("/".equals(path))
+            return resources.getString(R.string.rootdirectory);
+        else if(openmode==1 && path.startsWith("smb:/"))
+            return (new File(parseSmbPath(path)).getName());
+        else if("/storage/emulated/0".equals(path))
+            return resources.getString(R.string.storage);
+        else if(openmode==2)
+            return getIntegralNames(path);
+        else
+            return new File(path).getName();
+    }
+    String getIntegralNames(String path){
+        String newPath="";
+        switch (Integer.parseInt(path)){
+            case 0:
+                newPath="Images";
+                break;
+            case 1:
+                newPath="Videos";
+                break;
+            case 2:
+                newPath="Audio";
+                break;
+            case 3:
+                newPath="Documents";
+                break;
+            case 4:
+                newPath="Apks";
+                break;
+        }
+        return newPath;
+    }
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -278,13 +320,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
     public Fragment getTab() {
         return fragments.get(mViewPager.getCurrentItem());
     }
-    public void updateSpinner(){
-
-        ArrayList<String> items=new ArrayList<String>();
-        items.add(((Main)fragments.get(0)).current);
-        items.add(((Main)fragments.get(1)).current);
-        tabSpinnerAdapter=new TabSpinnerAdapter(mainActivity.getSupportActionBar().getThemedContext(), R.layout.rowlayout,items,mainActivity.tabsSpinner,this);
-        mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
+     void updateSpinner(){
         mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
     }
 }
