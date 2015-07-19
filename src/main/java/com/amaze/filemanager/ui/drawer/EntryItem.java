@@ -6,11 +6,10 @@ public class EntryItem implements Item{
 
 	final String title;
 	final String subtitle;
-	Drawable icon,icon1;
-	public EntryItem(String title, String path,Drawable icon,Drawable icon1) {
+	Drawable icon1;
+	public EntryItem(String title, String path,Drawable icon1) {
 		this.title = title;
 		this.subtitle = path;
-		this.icon=icon;
 		this.icon1=icon1;
 	}
 
@@ -18,9 +17,8 @@ public class EntryItem implements Item{
 	public boolean isSection() {
 		return false;
 	}
-	public Drawable getIcon(boolean checked){
-        if(checked)return icon1;
-		else return icon;
+	public Drawable getIcon(){
+        return icon1;
 	}
 	public String getPath(){return subtitle;}
 	public String getTitle(){return title;}

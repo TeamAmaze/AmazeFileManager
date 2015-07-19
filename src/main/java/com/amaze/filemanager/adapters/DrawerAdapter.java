@@ -152,9 +152,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             });
 
             txtTitle.setText(((EntryItem) (values.get(position))).getTitle());
-
-            imageView.setImageDrawable(getDrawable(position, myChecked.get(position)));
-            imageView.setColorFilter(null);
+            imageView.setImageDrawable(getDrawable(position));
             if (myChecked.get(position)) {
                 if (m.theme1 == 0)
                     view.setBackgroundColor(Color.parseColor("#ffeeeeee"));
@@ -163,8 +161,10 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 txtTitle.setTextColor(Color.parseColor(m.fabskin));
             } else {
                 if (m.theme1 == 0) {
+                    imageView.setColorFilter(Color.parseColor("#666666"));
                     txtTitle.setTextColor(m.getResources().getColor(android.R.color.black));
                 } else {
+                    imageView.setColorFilter(Color.WHITE);
                     txtTitle.setTextColor(m.getResources().getColor(android.R.color.white));
                 }
             }
@@ -173,7 +173,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
         }
     }
 
-    Drawable getDrawable(int position,boolean isChecked){
-        Drawable drawable=((EntryItem)getItem(position)).getIcon(isChecked);
+    Drawable getDrawable(int position){
+        Drawable drawable=((EntryItem)getItem(position)).getIcon();
         return drawable;  }
 }

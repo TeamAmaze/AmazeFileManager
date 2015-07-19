@@ -51,6 +51,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -456,15 +457,10 @@ public class MainActivity extends AppCompatActivity implements
         path = getIntent().getStringExtra("path");
         openprocesses = getIntent().getBooleanExtra("openprocesses", false);
         restart = getIntent().getBooleanExtra("restart", false);
-        Resources resources = getResources();
-        smb = resources.getDrawable(R.drawable.ic_settings_remote_black_48dp);
-        smb1 = resources.getDrawable(R.drawable.ic_settings_remote_white_48dp);
-        sd = resources.getDrawable(R.drawable.ic_sd_storage_grey600_48dp);
-        sd1 = resources.getDrawable(R.drawable.ic_sd_storage_white_48dp);
-        folder = resources.getDrawable(R.drawable.folder_drawer);
-        folder1 = resources.getDrawable(R.drawable.folder_drawer_white);
-        root = resources.getDrawable(R.drawable.ic_drawer_root);
-        root1 = resources.getDrawable(R.drawable.ic_drawer_root_white);
+        smb1 = ContextCompat.getDrawable(this,R.drawable.ic_settings_remote_white_48dp);
+        sd1 = ContextCompat.getDrawable(this,R.drawable.ic_sd_storage_white_48dp);
+        folder1 = ContextCompat.getDrawable(this,R.drawable.folder_drawer_white);
+        root1 = ContextCompat.getDrawable(this,R.drawable.ic_drawer_root_white);
 
         rootmode = Sp.getBoolean("rootmode", false);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
@@ -916,7 +912,7 @@ public class MainActivity extends AppCompatActivity implements
         for (String file : val) {
             File f = new File(file);
             String name;
-            Drawable icon =theme1==1?sd1: sd, icon1 = sd1;
+            Drawable  icon1 = sd1;
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
 
@@ -924,12 +920,11 @@ public class MainActivity extends AppCompatActivity implements
                 name = getResources().getString(R.string.extstorage);
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
-                icon = theme1==1?root1:root;
                 icon1 = root1;
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                list.add(new EntryItem(name, file, icon, icon1));
+                list.add(new EntryItem(name, file,  icon1));
             }
         }
         list.add(new SectionItem());
@@ -938,7 +933,7 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 for (String s : servers.readS()) {
                     Servers.add(s);
-                    list.add(new EntryItem(parseSmbPath(s), s, theme1==1?smb1:smb, smb1));
+                    list.add(new EntryItem(parseSmbPath(s), s,smb1));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -950,12 +945,12 @@ public class MainActivity extends AppCompatActivity implements
             if (Servers.size() > 0)
                 list.add(new SectionItem());
         }
-        Drawable icon=theme1==1?sd1:sd,icon1=sd1;
-        list.add(new EntryItem("Images","0",icon,icon1));
-        list.add(new EntryItem("Videos","1",icon,icon1));
-        list.add(new EntryItem("Audio","2",icon,icon1));
-        list.add(new EntryItem("Documents","3",icon,icon1));
-        list.add(new EntryItem("Apks","4",icon,icon1));
+        list.add(new EntryItem("Images","0", ContextCompat.getDrawable(this,R.drawable.ic_doc_image)));
+        list.add(new EntryItem("Videos","1",ContextCompat.getDrawable(this,R.drawable.ic_doc_video_am)));
+        list.add(new EntryItem("Audio","2",ContextCompat.getDrawable(this,R.drawable.ic_doc_audio_am)));
+        list.add(new EntryItem("Documents","3",ContextCompat.getDrawable(this,R.drawable
+                .ic_doc_doc_am)));
+        list.add(new EntryItem("Apks","4",ContextCompat.getDrawable(this,R.drawable.ic_doc_apk_grid)));
         list.add(new SectionItem());
         try {
             File f1 = new File(getFilesDir() + "/shortcut.xml");
@@ -963,7 +958,7 @@ public class MainActivity extends AppCompatActivity implements
             for (String file : s.readS()) {
                 String name = new File(file).getName();
                 books.add(file);
-                list.add(new EntryItem(name, file,theme1==1?folder1: folder, folder1));
+                list.add(new EntryItem(name, file, folder1));
             }
         } catch (Exception e) {
 
@@ -1647,8 +1642,7 @@ public class MainActivity extends AppCompatActivity implements
                     Toast.makeText(con, "Media Mounted", Toast.LENGTH_SHORT).show();
                     String a = intent.getData().getPath();
                     if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
-                        list.add(new EntryItem(new File(a).getName(), a, sd, sd1));
-
+                        list.add(new EntryItem(new File(a).getName(), a, sd1));
                         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
                         mDrawerList.setAdapter(adapter);
                     } else {
@@ -1669,7 +1663,7 @@ public class MainActivity extends AppCompatActivity implements
         for (String file : val) {
             File f = new File(file);
             String name;
-            Drawable icon = theme1==1?sd1:sd, icon1 = sd1;
+            Drawable  icon1 = sd1;
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
 
@@ -1677,35 +1671,34 @@ public class MainActivity extends AppCompatActivity implements
                 name = getResources().getString(R.string.extstorage);
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
-                icon = theme1==1?root1:root;
                 icon1 = root1;
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                list.add(new EntryItem(name, file, icon, icon1));
+                list.add(new EntryItem(name, file,  icon1));
             }
         }
         list.add(new SectionItem());
         if (Servers != null && Servers.size() > 0) {
             for (String file : Servers) {
                 String name = parseSmbPath(file);
-                list.add(new EntryItem(name, file,theme1==1?smb1: smb, smb1));
+                list.add(new EntryItem(name, file, smb1));
             }
 
             list.add(new SectionItem());
         }
 
-        Drawable icon=theme1==1?sd1:sd,icon1=sd1;
-        list.add(new EntryItem("Images","0",icon,icon1));
-        list.add(new EntryItem("Videos","1",icon,icon1));
-        list.add(new EntryItem("Audio","2",icon,icon1));
-        list.add(new EntryItem("Documents","3",icon,icon1));
-        list.add(new EntryItem("Apks","4",icon,icon1));
+        list.add(new EntryItem("Images","0", ContextCompat.getDrawable(this,R.drawable.ic_doc_image)));
+        list.add(new EntryItem("Videos","1",ContextCompat.getDrawable(this,R.drawable.ic_doc_video_am)));
+        list.add(new EntryItem("Audio","2",ContextCompat.getDrawable(this,R.drawable.ic_doc_audio_am)));
+        list.add(new EntryItem("Documents","3",ContextCompat.getDrawable(this,R.drawable
+                .ic_doc_doc_am)));
+        list.add(new EntryItem("Apks","4",ContextCompat.getDrawable(this,R.drawable.ic_doc_apk_grid)));
         list.add(new SectionItem());
         try {
             for (String file : books) {
                 String name = new File(file).getName();
-                list.add(new EntryItem(name, file,theme1==1?folder1: folder, folder1));
+                list.add(new EntryItem(name, file,  folder1));
             }
         } catch (Exception e) {
         }
@@ -2219,7 +2212,9 @@ public class MainActivity extends AppCompatActivity implements
                 String used = utils.readableFileSize(f.getTotalSpace() - f.getFreeSpace());
                 String free = utils.readableFileSize(f.getFreeSpace());
                 textView.setText(getResources().getString(R.string.used) + " " + used + " " + getResources().getString(R.string.free) + " " + free);
+                textView.setVisibility(View.VISIBLE);
             }
+            else textView.setVisibility(View.GONE);
         }
         final TextView bapath = (TextView) pathbar.findViewById(R.id.fullpath);
         final TextView animPath = (TextView) pathbar.findViewById(R.id.fullpath_anim);
