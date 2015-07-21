@@ -17,11 +17,11 @@ public abstract class HidingScrollListener extends RecyclerView.OnScrollListener
     private boolean mControlsVisible = true;
     private int mToolbarHeight;
     private int mTotalScrolledDistance;
-
+    int mode=0;
     public HidingScrollListener(int mToolbarHeight,int mode){
         this.mToolbarHeight=mToolbarHeight;
         if(mode==0)this.mToolbarHeight=0;
-
+        this.mode=mode;
     }
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -54,8 +54,9 @@ public abstract class HidingScrollListener extends RecyclerView.OnScrollListener
         super.onScrolled(recyclerView, dx, dy);
 
         clipToolbarOffset();
-        onMoved(mToolbarOffset);
-
+        if(mode==1)
+        onMoved(mToolbarOffset/2);
+        else onMoved(mToolbarOffset);
         if((mToolbarOffset <mToolbarHeight && dy>0) || (mToolbarOffset >0 && dy<0)) {
             mToolbarOffset += dy;
         }

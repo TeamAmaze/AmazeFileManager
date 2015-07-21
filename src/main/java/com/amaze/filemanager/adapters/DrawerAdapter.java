@@ -153,6 +153,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
 
             txtTitle.setText(((EntryItem) (values.get(position))).getTitle());
             imageView.setImageDrawable(getDrawable(position));
+            imageView.clearColorFilter();
             if (myChecked.get(position)) {
                 if (m.theme1 == 0)
                     view.setBackgroundColor(Color.parseColor("#ffeeeeee"));

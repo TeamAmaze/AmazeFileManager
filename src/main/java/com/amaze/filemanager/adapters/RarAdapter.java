@@ -9,7 +9,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -164,10 +164,44 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         return vh;
     }
 
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder vholder, int position1) {
-        final RarAdapter.ViewHolder holder=(RarAdapter.ViewHolder)vholder;
+    int offset=0;
+    public boolean stoppedAnimation=false;
+    Animation localAnimation;
 
+    @Override
+    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        ((ViewHolder)holder).rl.clearAnimation();
+    }
+
+    @Override
+    public boolean onFailedToRecycleView(RecyclerView.ViewHolder holder) {
+        ((ViewHolder)holder).rl.clearAnimation();
+        return super.onFailedToRecycleView(holder);
+    }
+
+    void animate(RarAdapter.ViewHolder holder){
+        holder.rl.clearAnimation();
+        if (localAnimation == null) {
+            localAnimation = AnimationUtils.loadAnimation(zipViewer.getActivity(), android.R.anim.fade_in);
+            localAnimation.setInterpolator(new LinearOutSlowInInterpolator());
+            localAnimation.setStartOffset(this.offset);
+        } else localAnimation.reset();
+        holder.rl.startAnimation(localAnimation);
+        this.offset = (20 + this.offset);
+    }
+    public void generate(ArrayList<FileHeader> arrayList){
+        stoppedAnimation=false;
+        notifyDataSetChanged();
+        enter=arrayList;
+    }
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder vholder,final int position1) {
+        final RarAdapter.ViewHolder holder = ((RarAdapter.ViewHolder)vholder);
+        if (!this.stoppedAnimation)
+        {
+            animate(holder);
+        }
         if(position1==0){
             holder.rl.setMinimumHeight(zipViewer.paddingTop);
             return;

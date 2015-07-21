@@ -7,6 +7,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -58,13 +59,14 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         topFab=main.topFab;
         count_factor=(main.islist?(topFab?1:2):column);
         item_count=items.size()+count_factor;
-        rowHeight=main.dpToPx(72);
+        rowHeight=main.dpToPx(100);
     }
     public void addItem(){
         notifyDataSetChanged();
         item_count=items.size()+count_factor;
     }
     public void toggleChecked(int position) {
+        if(!stoppedAnimation)main.stopAnimation();
         if (myChecked.get(position)) {
             myChecked.put(position, false);
         } else {
@@ -166,6 +168,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             about=(ImageButton) view.findViewById(R.id.properties);
            }
     }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType==0){
@@ -180,10 +183,49 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         vh.txtTitle.setTextColor(main.getActivity().getResources().getColor(android.R.color.white));
         return vh;
     }
+    int offset=0;
+    public boolean stoppedAnimation=false;
+    Animation localAnimation;
 
     @Override
+    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        ((ViewHolder)holder).rl.clearAnimation();
+    }
+
+    @Override
+    public boolean onFailedToRecycleView(RecyclerView.ViewHolder holder) {
+        ((ViewHolder)holder).rl.clearAnimation();
+        return super.onFailedToRecycleView(holder);
+    }
+
+    void animate(Recycleradapter.ViewHolder holder){
+        holder.rl.clearAnimation();
+        if (localAnimation == null) {
+            localAnimation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
+            localAnimation.setInterpolator(new LinearOutSlowInInterpolator());
+            localAnimation.setStartOffset(this.offset);
+        } else localAnimation.reset();
+        holder.rl.startAnimation(localAnimation);
+        this.offset = (20 + this.offset);
+    }
+    public void generate(ArrayList<Layoutelements> arrayList){
+        stoppedAnimation=false;
+        notifyDataSetChanged();
+        column=main.columns;
+        topFab=main.topFab;
+        count_factor=(main.islist?(topFab?1:2):column);
+        System.out.println(count_factor);
+        item_count=arrayList.size()+count_factor;
+        items=arrayList;
+    }
+    @Override
     public void onBindViewHolder(RecyclerView.ViewHolder vholder,final int p1) {
-        final Recycleradapter.ViewHolder holder=((Recycleradapter.ViewHolder)vholder);
+        final Recycleradapter.ViewHolder holder = ((Recycleradapter.ViewHolder)vholder);
+        if (!this.stoppedAnimation)
+        {
+            animate(holder);
+        }
         int i=0;
         if(main.islist){
             i=1;
@@ -196,7 +238,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.rl.setMinimumHeight(main.paddingTop);
             return;}}
         else{
-            i=column;
+            i=main.columns;
             if(p1>=0 && p1<i){
                 holder.rl.setMinimumHeight(main.paddingTop);
                 return;}

@@ -89,7 +89,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:clickable="false"
-                android:paddingBottom="2dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <HorizontalScrollView
@@ -127,7 +128,7 @@
                     android:clickable="false"
                     android:layout_width="wrap_content"
                     android:textSize="12sp"
-                    android:paddingBottom="10dp"
+                    android:paddingBottom="8dp"
                     android:paddingTop="5dp"
                     android:paddingLeft="72dp"
                     android:textColor="@android:color/white"

@@ -40,12 +40,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,7 +61,6 @@ import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HidingScrollListener;
-import com.amaze.filemanager.ui.views.SpacesItemDecoration;
 import com.amaze.filemanager.ui.ZipObj;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.github.junrar.Archive;
@@ -71,7 +70,6 @@ import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 
 public class ZipViewer extends Fragment {
@@ -109,13 +107,40 @@ public class ZipViewer extends Fragment {
     View mToolbarContainer;
     public Resources res;
     int openmode;
-
     //0 for zip 1 for rar
+    boolean stopAnims=true;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         mainActivity = (MainActivity) getActivity();
         listView = (RecyclerView) rootView.findViewById(R.id.listView);
+        listView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(stopAnims)
+                if(openmode==0 && zipAdapter!=null){
+
+                    if ((!zipAdapter.stoppedAnimation) )
+                    {
+                        for (int j = 0; j < listView.getChildCount(); j++)
+                        {    View v=listView.getChildAt(j);
+                            if(v!=null)v.clearAnimation();
+                        }}
+                    zipAdapter.stoppedAnimation = true;
+                }
+                else {
+                    if ((!rarAdapter.stoppedAnimation) )
+                    {
+                        for (int j = 0; j < listView.getChildCount(); j++)
+                        {    View v=listView.getChildAt(j);
+                            if(v!=null)v.clearAnimation();
+                        }}
+                    rarAdapter.stoppedAnimation = true;
+
+                }stopAnims=false;
+                return false;
+            }
+        });
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -124,29 +149,15 @@ public class ZipViewer extends Fragment {
             }
         });
 
-        TextView textView = (TextView) mainActivity.pathbar.findViewById(R.id.fullpath);
-        mainActivity.pathbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
-
         return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-
         super.onActivityCreated(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         s = getArguments().getString("path");
         f = new File(s);
-
         mToolbarContainer = getActivity().findViewById(R.id.lin);
         hidemode = Sp.getInt("hidemode", 0);
         listView.setVisibility(View.VISIBLE);
@@ -157,7 +168,6 @@ public class ZipViewer extends Fragment {
         if (mainActivity.theme1 == 1)
             rootView.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         else
-
             listView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
 
         gobackitem = Sp.getBoolean("goBack_checkbox", true);
@@ -192,8 +202,6 @@ public class ZipViewer extends Fragment {
 
         }
         mainActivity.tabsSpinner.setVisibility(View.GONE);
-
-
         mainActivity.floatingActionButton.hideMenuButton(true);
         try {
             mainActivity.toolbar.setTitle(f.getName());
@@ -203,16 +211,11 @@ public class ZipViewer extends Fragment {
         mainActivity.supportInvalidateOptionsMenu();
         mToolbarHeight = getToolbarHeight(getActivity());
         paddingTop = (mToolbarHeight) + dpToPx(72);
-        if (hidemode == 2) mToolbarHeight = paddingTop;
         mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-
                 paddingTop = mToolbarContainer.getHeight();
-                if (hidemode != 2)
-                    mToolbarHeight = mainActivity.toolbar.getHeight();
-                else
-                    mToolbarHeight = paddingTop;
+                mToolbarHeight = mainActivity.toolbar.getHeight();
 
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
                     mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -508,26 +511,45 @@ public class ZipViewer extends Fragment {
 
     public void bbar() {
         if (current != null)
-            mainActivity.updatePath(current, false, false,0);
+            mainActivity.updatePath(current,  false,0,folder,file);
+        else     mainActivity.updatePath("", false,0,folder,file);
+
 
     }
-
+    int file=0,folder=0;
     public void createviews(ArrayList<ZipObj> zipEntries, String dir) {
-        zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), zipEntries, zipViewer);
-        zipViewer.listView.setAdapter(zipViewer.zipAdapter);
+        if(zipAdapter==null) {
+            zipViewer.zipAdapter = new ZipAdapter(zipViewer.getActivity(), zipEntries, zipViewer);
+            zipViewer.listView.setAdapter(zipViewer.zipAdapter);
+        }
+        else zipAdapter.generate(zipEntries);
+        folder=0;
+        file=0;
+        for (ZipObj zipEntry:zipEntries)
+        if(zipEntry.isDirectory())folder++;
+        else file++;
         createViews(dir);
         openmode = 0;
     }
 
     public void createRarviews(ArrayList<FileHeader> zipEntries, String dir) {
-        zipViewer.rarAdapter = new RarAdapter(zipViewer.getActivity(), zipEntries, zipViewer);
-        zipViewer.listView.setAdapter(zipViewer.rarAdapter);
+        if(rarAdapter==null){
+            zipViewer.rarAdapter = new RarAdapter(zipViewer.getActivity(),
+                    zipEntries, zipViewer);
+            zipViewer.listView.setAdapter(zipViewer.rarAdapter);
+        }else
+        rarAdapter.generate(zipEntries);
+        folder=0;
+        file=0;
+        for (FileHeader zipEntry:zipEntries)
+            if(zipEntry.isDirectory())folder++;
+            else file++;
         openmode = 1;
         createViews(dir);
     }
 
     void createViews(String dir) {
-
+        stopAnims=true;
         if (!addheader) {
             listView.removeItemDecoration(dividerItemDecoration);
             addheader = true;
@@ -537,7 +559,7 @@ public class ZipViewer extends Fragment {
             listView.addItemDecoration(dividerItemDecoration);
             addheader = false;
         }
-        listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight, hidemode) {
+        listView.setOnScrollListener(new HidingScrollListener(paddingTop, hidemode) {
 
             @Override
             public void onMoved(int distance) {
@@ -555,6 +577,7 @@ public class ZipViewer extends Fragment {
             }
 
         });
+        listView.stopScroll();
         zipViewer.current = dir;
         zipViewer.bbar();
         swipeRefreshLayout.setRefreshing(false);

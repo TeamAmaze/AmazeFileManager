@@ -89,6 +89,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:clickable="false"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:paddingBottom="2dp"
                 android:orientation="vertical">
 

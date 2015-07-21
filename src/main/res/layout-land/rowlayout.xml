@@ -69,10 +69,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/properties"
-        android:background="@drawable/listitem1"
+        android:background="@drawable/ripple"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
+        android:padding="8dp"
         android:visibility="gone"
         android:clickable="true"
         android:src="@drawable/ic_action_about_dark"/>

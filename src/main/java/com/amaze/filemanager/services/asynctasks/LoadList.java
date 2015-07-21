@@ -60,6 +60,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     }
     @Override
     protected void onPreExecute() {
+        if(customPath)
         ma.mSwipeRefreshLayout.setRefreshing(true);
     }
 
@@ -72,8 +73,10 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     // Actual download method, run in the task thread
     protected ArrayList<Layoutelements> doInBackground(String... params) {
         // params comes from the execute() call: params[0] is the url.
-        ArrayList<Layoutelements> list=new ArrayList<>();
+        ArrayList<Layoutelements> list=null;
         path=params[0];
+        ma.folder_count=0;
+        ma.file_count=0;
         if(customPath){
             HFile hFile=new HFile(path);
             if(hFile.isSmb()){
@@ -127,6 +130,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                 return null;
             }
         }
+        if(list!=null)
         Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, ma.rootMode));
         return list;
 

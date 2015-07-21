@@ -67,7 +67,7 @@
                 android:paddingRight="16dp"
                 android:id="@+id/buttonbarframe"
                 android:layout_height="72dp"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_below="@id/action_bar">
 
                 <HorizontalScrollView
@@ -87,8 +87,10 @@
                 </HorizontalScrollView>
                 <LinearLayout
                     android:id="@+id/pathbar"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
                     android:clickable="false"
                     android:paddingBottom="2dp"
                     android:orientation="vertical">
