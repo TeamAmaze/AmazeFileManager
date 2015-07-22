@@ -655,6 +655,11 @@ public class MainActivity extends AppCompatActivity implements
 
             }
         });
+        ImageView divider = (ImageView) findViewById(R.id.divider1);
+        if (theme1==0)
+            divider.setImageResource(R.color.divider);
+        else
+            divider.setImageResource(R.color.divider_dark);
 
         mDrawerList.addHeaderView(drawerHeaderLayout);
         updateDrawer();
@@ -729,6 +734,10 @@ public class MainActivity extends AppCompatActivity implements
                 } else mDrawerLayout.openDrawer(mDrawerLinear);
             }
         });*/
+
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer_l);
+
         //recents header color implementation
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));

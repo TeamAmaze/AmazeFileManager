@@ -95,7 +95,10 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (values.get(position).isSection()) {
             ImageView view = new ImageView(context);
-            view.setImageResource(R.color.divider);
+            if (m.theme1==0)
+                view.setImageResource(R.color.divider);
+            else
+                view.setImageResource(R.color.divider_dark);
             view.setClickable(false);
             view.setFocusable(false);
             if(m.theme1==0)
@@ -125,8 +128,8 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 @Override
                 public boolean onLongClick(View v) {
 
-                    // not to remove the first bookmark (storage)
-                    if (position > m.storage_count) {
+                    // not to remove the first bookmark (storage) and permanent bookmarks
+                    if (position > m.storage_count && position < values.size()-5) {
                         String path = ((EntryItem) getItem(position)).getPath();
                         if (!getItem(position).isSection() && path.startsWith("smb:/")) {
                             m.createSmbDialog(path, true, null);
