@@ -122,19 +122,15 @@ public class ZipViewer extends Fragment {
 
                     if ((!zipAdapter.stoppedAnimation) )
                     {
-                        for (int j = 0; j < listView.getChildCount(); j++)
-                        {    View v=listView.getChildAt(j);
-                            if(v!=null)v.clearAnimation();
-                        }}
+                        stopAnim();
+                    }
                     zipAdapter.stoppedAnimation = true;
                 }
                 else {
                     if ((!rarAdapter.stoppedAnimation) )
                     {
-                        for (int j = 0; j < listView.getChildCount(); j++)
-                        {    View v=listView.getChildAt(j);
-                            if(v!=null)v.clearAnimation();
-                        }}
+                        stopAnim();
+                    }
                     rarAdapter.stoppedAnimation = true;
 
                 }stopAnims=false;
@@ -151,7 +147,12 @@ public class ZipViewer extends Fragment {
 
         return rootView;
     }
-
+    public void stopAnim(){
+        for (int j = 0; j < listView.getChildCount(); j++)
+        {    View v=listView.getChildAt(j);
+            if(v!=null)v.clearAnimation();
+        }
+    }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

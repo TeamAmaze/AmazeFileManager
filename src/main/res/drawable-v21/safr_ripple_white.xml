@@ -19,6 +19,21 @@
     -->
 
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/safr">
-    <item android:drawable="@android:color/white"/>
+    android:color="#DDDDDD">
+
+    <item>
+        <selector>
+            <item android:state_selected="true">
+                <color android:color="#EEEEEE" />
+            </item>
+
+            <item android:state_activated="true">
+                <color android:color="#EEEEEE" />
+            </item>
+
+            <item>
+                <color android:color="#FFFFFF" />
+            </item>
+        </selector>
+    </item>
 </ripple>

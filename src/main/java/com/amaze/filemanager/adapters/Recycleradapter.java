@@ -13,6 +13,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
@@ -201,15 +202,13 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     void animate(Recycleradapter.ViewHolder holder){
         holder.rl.clearAnimation();
-        if (localAnimation == null) {
-            localAnimation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
-            localAnimation.setInterpolator(new LinearOutSlowInInterpolator());
-            localAnimation.setStartOffset(this.offset);
-        } else localAnimation.reset();
+        localAnimation = AnimationUtils.loadAnimation(context, R.anim.fade_in_top);
+        localAnimation.setStartOffset(this.offset);
         holder.rl.startAnimation(localAnimation);
-        this.offset = (20 + this.offset);
+        this.offset+=30;
     }
     public void generate(ArrayList<Layoutelements> arrayList){
+        offset=0;
         stoppedAnimation=false;
         notifyDataSetChanged();
         column=main.columns;
@@ -371,7 +370,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                         holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
                     }
-
+                holder.rl.setSelected(false);
                 if (checked) {
                     holder.apk.setVisibility(View.GONE);
                     holder.viewmageV.setVisibility(View.GONE);
@@ -379,11 +378,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
                     gradientDrawable.setColor(Color.parseColor("#757575"));
+                    holder.rl.setSelected(true);
                     holder.ext.setText("");
-                    if (main.theme1 == 0)
-                        holder.rl.setBackgroundColor(Color.parseColor("#ffeeeeee"));
-                    else holder.rl.setBackgroundColor(Color.parseColor("#ff424242"));
-
                 } else {
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
                     if (main.coloriseIcons) {
