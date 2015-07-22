@@ -306,7 +306,8 @@ public class ZipViewer extends Fragment {
         // onCreateActionMode, but
         // may be called multiple times if the mode is invalidated.
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            ArrayList<Integer> positions = zipAdapter.getCheckedItemPositions();
+            ArrayList<Integer> positions =
+                    openmode==0 ? zipAdapter.getCheckedItemPositions() : rarAdapter.getCheckedItemPositions();
             ((TextView) v.findViewById(R.id.item_count)).setText(positions.size() + "");
 
             return false; // Return false if nothing is done
