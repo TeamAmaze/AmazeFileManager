@@ -722,7 +722,8 @@ public class MainActivity extends AppCompatActivity implements
                     supportInvalidateOptionsMenu();
                 }
             };
-            mDrawerLayout.setDrawerListener(mDrawerToggle);
+            // not to animate the sandwich toggle as per guidelines
+            //mDrawerLayout.setDrawerListener(mDrawerToggle);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
             mDrawerToggle.syncState();
