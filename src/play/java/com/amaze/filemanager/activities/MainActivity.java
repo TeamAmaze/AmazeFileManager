@@ -49,6 +49,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -159,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
     SharedPreferences Sp;
-    private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
+    private ActionBarDrawerToggle mDrawerToggle;
     public List<String> val;
     ArrayList<String> books;
     public ArrayList<String> Servers;
@@ -705,10 +706,10 @@ public class MainActivity extends AppCompatActivity implements
             tabsSpinner.setVisibility(View.GONE);
         }
         if (!isDrawerLocked) {
-            mDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(
+            mDrawerToggle = new ActionBarDrawerToggle(
                     this,                  /* host Activity */
                     mDrawerLayout,         /* DrawerLayout object */
-                    toolbar,  /* nav drawer image to replace 'Up' caret */
+                    R.drawable.ic_drawer_l,  /* nav drawer image to replace 'Up' caret */
                     R.string.drawer_open,  /* "open drawer" description for accessibility */
                     R.string.drawer_close  /* "close drawer" description for accessibility */
             ) {
@@ -722,8 +723,8 @@ public class MainActivity extends AppCompatActivity implements
                     supportInvalidateOptionsMenu();
                 }
             };
-            // not to animate the sandwich toggle as per guidelines
-            //mDrawerLayout.setDrawerListener(mDrawerToggle);
+            mDrawerLayout.setDrawerListener(mDrawerToggle);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer_l);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
             mDrawerToggle.syncState();
