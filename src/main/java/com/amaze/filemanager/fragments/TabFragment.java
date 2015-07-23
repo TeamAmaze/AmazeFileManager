@@ -86,6 +86,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                         Main ma = ((Main) fragments.get(p1));
                         if (ma.current != null) {
                             try {
+                                System.out.println("hi called from onSelected");
                                 mainActivity.updateDrawer(ma.current);
                                 mainActivity.updatePath(ma.current,  ma.results,ma.openMode,
                                         ma.folder_count, ma.file_count);
@@ -186,7 +187,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
     }
     TabHandler tabHandler;
 
-    public void updatepaths() {
+    public void updatepaths(int pos) {
         if(tabHandler==null)
         tabHandler = new TabHandler(getActivity(), null, null, 1);
         int i=1;
@@ -199,7 +200,8 @@ public class TabFragment extends android.support.v4.app.Fragment {
             if(fragment.getClass().getName().contains("Main")){
                 Main m=(Main)fragment;
                 items.add(parsePathForName(m.current,m.openMode));
-                if(i-1==currenttab){
+                if(i-1==currenttab && i==pos){
+                    System.out.println("hi called from update");
                     mainActivity.updatePath(m.current,m.results,m.openMode,m
                             .folder_count,m.file_count);
                     mainActivity.updateDrawer(m.current);

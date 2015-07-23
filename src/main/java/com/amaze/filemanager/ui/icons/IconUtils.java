@@ -52,9 +52,9 @@ public class IconUtils {
     }
     public Drawable getSdDrawable() {
         if (CURRENT == LIGHT)
-            return c.getResources().getDrawable(R.drawable.ic_action_sd_storage);
+            return c.getResources().getDrawable(R.drawable.ic_sd_storage_white_56dp);
         else
-            return c.getResources().getDrawable(R.drawable.ic_action_sd_storage);
+            return c.getResources().getDrawable(R.drawable.ic_sd_storage_white_56dp);
     }
 
 }

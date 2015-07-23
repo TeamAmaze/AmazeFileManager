@@ -757,14 +757,6 @@ public class MainActivity extends AppCompatActivity implements
      * @return paths to all available SD-Cards in the system (include emulated)
      */
 
-    public static int getToolbarHeight(Context context) {
-        final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
-                new int[]{android.R.attr.actionBarSize});
-        int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
-        styledAttributes.recycle();
-
-        return toolbarHeight;
-    }
 
     public List<String> getStorageDirectories() {
         // Final set of paths
@@ -1089,6 +1081,7 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 TabFragment tabFragment = (TabFragment) fragment;
                 Main ma = ((Main) tabFragment.getTab());
+                System.out.println("hi called from onPrepare");
                 updatePath(ma.current, ma.results, ma.openMode,ma.folder_count,ma.file_count);
             } catch (Exception e) {
             }
@@ -1600,9 +1593,9 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public void updatepaths() {
+    public void updatepaths(int pos) {
         try {
-            getFragment().updatepaths();
+            getFragment().updatepaths(pos);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2076,7 +2069,7 @@ public class MainActivity extends AppCompatActivity implements
                 ImageView v = new ImageView(this);
                 v.setImageDrawable(arrow);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 params.gravity = Gravity.CENTER_VERTICAL;
                 v.setLayoutParams(params);
                 final int index = i;
@@ -2096,14 +2089,14 @@ public class MainActivity extends AppCompatActivity implements
                     buttons.addView(ib);
                     if (names.size() - i != 1)
                         buttons.addView(v);
-                } else if (rpaths.get(i).equals(Environment.getExternalStorageDirectory().getPath())) {
+                } else if (isStorage(rpaths.get(i))) {
                     ImageButton ib = new ImageButton(this);
                     ib.setImageDrawable(icons.getSdDrawable());
                     ib.setBackgroundColor(Color.parseColor("#00ffffff"));
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            main.loadlist((rpaths.get(k)), false,true);
+                            main.loadlist((rpaths.get(k)), false, true);
                             timer.cancel();
                             timer.start();
                         }
@@ -2162,7 +2155,11 @@ public class MainActivity extends AppCompatActivity implements
             System.out.println("button view not available");
         }
     }
-
+    boolean isStorage(String path){
+        for(int i=0;i<storage_count;i++)
+            if(((EntryItem)list.get(i)).getPath().equals(path))return true;
+        return false;
+    }
     private void sendScroll(final HorizontalScrollView scrollView) {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
@@ -2192,6 +2189,9 @@ public class MainActivity extends AppCompatActivity implements
 
     public void updatePath(@NonNull final String news,  boolean results,int
             openmode,int folder_count,int file_count) {
+        final String oldPath = newPath;
+        if(news.length()==0)return;
+        if(news.equals(oldPath))return;
         File f = null;
         if (news == null) return;
         if (openmode==1 && news.startsWith("smb:/"))
@@ -2228,7 +2228,6 @@ public class MainActivity extends AppCompatActivity implements
             textView.setText(folder_count + " " + getResources().getString(R.string.folders)+"" +
                     " " +file_count + " " + getResources().getString(R.string.files));
          }
-        final String oldPath = bapath.getText().toString();
         // implement animation while setting text
         newPathBuilder = new StringBuilder().append(newPath);
         oldPathBuilder = new StringBuilder().append(oldPath);

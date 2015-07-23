@@ -129,7 +129,7 @@ public class Main extends android.support.v4.app.Fragment {
     public LinearLayout buttons;
     public int sortby, dsort, asc;
 
-    public String home, current = Environment.getExternalStorageDirectory().getPath();
+    public String home, current = "";
     Shortcuts sh;
     HashMap<String, Bundle> scrolls = new HashMap<String, Bundle>();
     Main ma = this;
@@ -615,7 +615,7 @@ public class Main extends android.support.v4.app.Fragment {
                         }
                     }
                     //floatingActionButton.show();
-                    mainActivity.updatepaths();
+                    mainActivity.updatepaths(no);
                     listView.setOnScrollListener(new HidingScrollListener(paddingTop, hidemode) {
 
                         @Override
@@ -884,7 +884,7 @@ public class Main extends android.support.v4.app.Fragment {
                     Toast.makeText(getActivity(),
                             utils.getString(getActivity(), R.string.newhomedirectory) + " " + list.get(pos).getTitle(),
                             Toast.LENGTH_LONG).show();
-                    mainActivity.updatepaths();
+                    mainActivity.updatepaths(no);
                     mode.finish();
                     return true;
                 case R.id.about:

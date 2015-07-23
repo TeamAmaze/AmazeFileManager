@@ -45,6 +45,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     int filetype=-1;
     int item_count,column,count_factor,rowHeight;
     boolean topFab;
+    int grey_color;
     public Recycleradapter(Main m,ArrayList<Layoutelements> items,Context context){
         this.main=m;
         this.items=items;
@@ -61,6 +62,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         count_factor=(main.islist?(topFab?1:2):column);
         item_count=items.size()+count_factor;
         rowHeight=main.dpToPx(100);
+        grey_color=Color.parseColor("#666666");
     }
     public void addItem(){
         notifyDataSetChanged();
@@ -274,6 +276,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
             if (holder.about != null) {
                 if (main.openMode!=1) {
+                    if(main.theme1==0)holder.about.setColorFilter(grey_color);
                     holder.about.setVisibility(View.VISIBLE);
                     holder.about.setOnClickListener(new View.OnClickListener() {
                         @Override
