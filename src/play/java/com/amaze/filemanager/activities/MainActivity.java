@@ -1081,7 +1081,6 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 TabFragment tabFragment = (TabFragment) fragment;
                 Main ma = ((Main) tabFragment.getTab());
-                System.out.println("hi called from onPrepare");
                 updatePath(ma.current, ma.results, ma.openMode,ma.folder_count,ma.file_count);
             } catch (Exception e) {
             }
@@ -2189,9 +2188,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public void updatePath(@NonNull final String news,  boolean results,int
             openmode,int folder_count,int file_count) {
-        final String oldPath = newPath;
         if(news.length()==0)return;
-        if(news.equals(oldPath))return;
         File f = null;
         if (news == null) return;
         if (openmode==1 && news.startsWith("smb:/"))
@@ -2228,6 +2225,9 @@ public class MainActivity extends AppCompatActivity implements
             textView.setText(folder_count + " " + getResources().getString(R.string.folders)+"" +
                     " " +file_count + " " + getResources().getString(R.string.files));
          }
+        final String oldPath = bapath.getText().toString();
+        if(oldPath!=null && oldPath.equals(newPath))return;
+
         // implement animation while setting text
         newPathBuilder = new StringBuilder().append(newPath);
         oldPathBuilder = new StringBuilder().append(oldPath);
