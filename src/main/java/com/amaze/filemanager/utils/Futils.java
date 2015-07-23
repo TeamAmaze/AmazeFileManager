@@ -28,8 +28,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -37,6 +39,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.AppCompatEditText;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -112,6 +117,44 @@ public  final int READ = 4;
         }
         return length;
     }
+    private  ColorStateList createEditTextColorStateList(int color) {
+        int[][] states = new int[3][];
+        int[] colors = new int[3];
+        int i = 0;
+        states[i] = new int[]{-android.R.attr.state_enabled};
+        colors[i] = Color.parseColor("#f6f6f6");
+        i++;
+        states[i] = new int[]{-android.R.attr.state_pressed, -android.R.attr.state_focused};
+        colors[i] = Color.parseColor("#666666");
+        i++;
+        states[i] = new int[]{};
+        colors[i] =color ;
+        return new ColorStateList(states, colors);
+    }
+    public  void setTint(CheckBox box, int color) {
+        ColorStateList sl = new ColorStateList(new int[][]{
+                new int[]{-android.R.attr.state_checked},
+                new int[]{android.R.attr.state_checked}
+        }, new int[]{
+                Color.parseColor("#666666"),
+                color
+        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            box.setButtonTintList(sl);
+        } else {
+            Drawable drawable = DrawableCompat.wrap(ContextCompat.getDrawable(box.getContext(), R.drawable.abc_btn_check_material));
+            DrawableCompat.setTintList(drawable, sl);
+            box.setButtonDrawable(drawable);
+        }
+    }
+    public void setTint(EditText editText, int color) {
+        ColorStateList editTextColorStateList = createEditTextColorStateList(color);
+        if (editText instanceof AppCompatEditText) {
+            ((AppCompatEditText) editText).setSupportBackgroundTintList(editTextColorStateList);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            editText.setBackgroundTintList(editTextColorStateList);
+        }
+    }
 
     public int checkFolder(final String f,Context context) {
         if(f.startsWith("smb://"))return 1;
@@ -160,8 +203,7 @@ public  final int READ = 4;
     }
 
 
-    public void shareFiles(ArrayList<File> a, Activity c,int theme) {
-        System.out.println("start");
+    public void shareFiles(ArrayList<File> a, Activity c,int theme,int fab_skin) {
         ArrayList<Uri> uris = new ArrayList<Uri>();
         boolean b = true;
         for (File f : a) {
@@ -178,10 +220,9 @@ public  final int READ = 4;
 
         if (!b || mime==(null))
             mime = "*/*";
-        System.out.println("mime done");
         try {
 
-            new ShareTask(c,uris,theme).execute(mime);
+            new ShareTask(c,uris,theme,fab_skin).execute(mime);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -259,7 +300,8 @@ public void openWith(final File f,final Context c) {
                     case 3:
                         intent.setDataAndType(Uri.fromFile(f), "audio/*");
                         break;
-                    case 4: intent = new Intent(c, DbViewer.class);
+                    case 4:
+                        intent = new Intent(c, DbViewer.class);
                         intent.putExtra("path", f.getPath());
                         break;
                     case 5:
@@ -269,8 +311,8 @@ public void openWith(final File f,final Context c) {
                 try {
                     c.startActivity(intent);
                 } catch (Exception e) {
-                    Toast.makeText(c,R.string.noappfound,Toast.LENGTH_SHORT).show();
-                    openWith(f,c);
+                    Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
+                    openWith(f, c);
                 }
             }
         });
@@ -279,26 +321,6 @@ public void openWith(final File f,final Context c) {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-public String getSize(File f) {
-        long i =f.length();
-
-        return readableFileSize(i);
-
-    }
-
-    public String getSize(String[] array,boolean showsize) {
-        if(showsize) {
-            String sym = array[1];
-            long i;
-            if (sym != null && sym.length() != 0) {
-                i = new File(array[1]).length();
-            } else
-                i = new File(array[0]).length();
-
-            return readableFileSize(i);
-        }else return "";
     }
 
     public void deleteFiles(ArrayList<Layoutelements> a, final Main b, List<Integer> pos) {
@@ -325,11 +347,12 @@ public String getSize(File f) {
             c.theme(Theme.DARK);
         c.negativeText(getString(b.getActivity(), R.string.no));
         c.positiveText(getString(b.getActivity(), R.string.yes));
-
+        c.positiveColor(Color.parseColor(b.fabSkin));
+        c.negativeColor(Color.parseColor(b.fabSkin));
         c.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-                Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_SHORT).show();
+            Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_SHORT).show();
             b.mainActivity.deleteFiles(todelete);
             }
 
@@ -340,17 +363,6 @@ public String getSize(File f) {
             }
         });
         c.build().show();
-    }
-
-    public String count(File f,Resources root,boolean showSize) {
-        if(showSize)try {
-            Integer i=RootHelper.getCount(f);
-            if(i!=null){return i+" "+root.getString(R.string.items);}
-            else{return "";}
-
-        } catch (Exception e) {
-            return "";
-        }else{return "";}
     }
 
     public boolean canGoBack(File f) {
@@ -428,7 +440,10 @@ public String getSize(File f) {
             a.theme(Theme.DARK);
         a.positiveText(R.string.copy_path);
         a.negativeText(getString(c.getActivity(), R.string.copy) + " md5");
+        a.positiveColor(Color.parseColor(fabskin));
+        a.negativeColor(Color.parseColor(fabskin));
         a.neutralText(R.string.cancel);
+        a.neutralColor(Color.parseColor(fabskin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -460,6 +475,9 @@ public String getSize(File f) {
         a.positiveText(R.string.copy_path);
         a.negativeText(getString(c, R.string.copy) + " md5");
         a.neutralText(R.string.cancel);
+        a.positiveColor(Color.parseColor(fabskin));
+        a.negativeColor(Color.parseColor(fabskin));
+        a.neutralColor(Color.parseColor(fabskin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -521,30 +539,6 @@ public String getSize(File f) {
 
         }if(b)b=f.delete();
         return b;
-    }
-
-    public boolean deletefiles(File f) {
-
-        // make sure directory exists
-        if (!f.exists()) {
-
-            System.out.println("Directory does not exist.");
-            return false;
-
-        } else {
-
-            try {
-                if(f.isDirectory())
-                    return deletedirectory(f);
-                    else
-                return f.delete();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
     }
 
     public boolean rename(File f, String name,boolean root) {
@@ -621,45 +615,60 @@ public String getSize(File f) {
 
 public void showPackageDialog(final File f,final MainActivity m){
     MaterialDialog.Builder mat=new MaterialDialog.Builder(m);
-    mat.title(R.string.packageinstaller).content(R.string.pitext).positiveText(R.string.install).negativeText(R.string.view).neutralText(R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
-        @Override
-        public void onPositive(MaterialDialog materialDialog) {
-            openunknown(f,m,false);
-        }
+    mat.title(R.string.packageinstaller).content(R.string.pitext)
+            .positiveText(R.string.install)
+            .negativeText(R.string.view)
+            .neutralText(R.string.cancel)
+            .positiveColor(Color.parseColor(m.fabskin))
+            .negativeColor(Color.parseColor(m.fabskin))
+            .neutralColor(Color.parseColor(m.fabskin))
+            .callback(new MaterialDialog.ButtonCallback() {
+                @Override
+                public void onPositive(MaterialDialog materialDialog) {
+                    openunknown(f, m, false);
+                }
 
-        @Override
-        public void onNegative(MaterialDialog materialDialog) {
-            m.openZip(f.getPath());
-        }
-    });
+                @Override
+                public void onNegative(MaterialDialog materialDialog) {
+                    m.openZip(f.getPath());
+                }
+            });
     if(m.theme1==1)mat.theme(Theme.DARK);
     mat.build().show();
 
 }
 
-    public void showArchiveDialog(final File f,final MainActivity m){
-        MaterialDialog.Builder mat=new MaterialDialog.Builder(m);
-        mat.title(R.string.archive).content(R.string.archtext).positiveText(R.string.extract).negativeText(R.string.view).neutralText(R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
-            @Override
-            public void onPositive(MaterialDialog materialDialog) {
-                m.extractFile(f);
-            }
+    public void showArchiveDialog(final File f, final MainActivity m) {
+        MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
+        mat.title(R.string.archive)
+                .content(R.string.archtext)
+                .positiveText(R.string.extract)
+                .negativeText(R.string.view)
+                .neutralText(R.string.cancel)
+                .positiveColor(Color.parseColor(m.fabskin))
+                .negativeColor(Color.parseColor(m.fabskin))
+                .neutralColor(Color.parseColor(m.fabskin))
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog materialDialog) {
+                        m.extractFile(f);
+                    }
 
-            @Override
-            public void onNegative(MaterialDialog materialDialog) {
-                //m.addZipViewTab(f.getPath());
-                if(f.getName().toLowerCase().endsWith(".rar"))
-                    m.openRar(f.getPath());
-                else
-                    m.openZip(f.getPath());
-            }
-        });
-        if(m.theme1==1)mat.theme(Theme.DARK);
-        MaterialDialog b=mat.build();
+                    @Override
+                    public void onNegative(MaterialDialog materialDialog) {
+                        //m.addZipViewTab(f.getPath());
+                        if (f.getName().toLowerCase().endsWith(".rar"))
+                            m.openRar(f.getPath());
+                        else
+                            m.openZip(f.getPath());
+                    }
+                });
+        if (m.theme1 == 1) mat.theme(Theme.DARK);
+        MaterialDialog b = mat.build();
 
-        if(!f.getName().toLowerCase().endsWith(".rar") && !f.getName().toLowerCase().endsWith(".jar") && !f.getName().toLowerCase().endsWith(".apk") && !f.getName().toLowerCase().endsWith(".zip"))
+        if (!f.getName().toLowerCase().endsWith(".rar") && !f.getName().toLowerCase().endsWith(".jar") && !f.getName().toLowerCase().endsWith(".apk") && !f.getName().toLowerCase().endsWith(".zip"))
             b.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
-                b.show();
+        b.show();
 
     }
 
@@ -686,19 +695,23 @@ public void showPackageDialog(final File f,final MainActivity m){
 
     public void showNameDialog(final MainActivity m, final ArrayList<String> b, final String current) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
-        View v = m.getLayoutInflater().inflate(R.layout.dialog, null);
-        final EditText e = (EditText) v.findViewById(R.id.newname);
-        e.setText(new File(current).getName()+".zip");
-        a.customView(v, true);
+        a.input(getString(m, R.string.enterzipname), new File(current).getName() + ".zip", false, new
+                MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
+
+                    }
+                });
+        a.widgetColor(Color.parseColor(m.fabskin));
         if(m.theme1==1)
             a.theme(Theme.DARK);
         a.title(getString(m, R.string.enterzipname));
-        e.setHint(getString(m, R.string.enterzipname));
         a.positiveText(R.string.create);
+        a.positiveColor(Color.parseColor(m.fabskin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-                String name = current + "/" + e.getText().toString();
+                String name = current + "/" + materialDialog.getInputEditText().getText().toString();
                 m.compressFiles(new File(name), b);
             }
 
@@ -708,6 +721,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             }
         });
         a.negativeText(getString(m, R.string.cancel));
+        a.negativeColor(Color.parseColor(m.fabskin));
         a.build().show();
     }
 
@@ -755,6 +769,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         final ArrayList<String> paths = m.history.readTable();
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
+        a.positiveColor(Color.parseColor(m.fabSkin));
         a.title(R.string.history);
         if(m.theme1==1)
             a.theme(Theme.DARK);
@@ -778,6 +793,7 @@ public void showPackageDialog(final File f,final MainActivity m){
           final ArrayList<String> paths = m.hidden.readTable();
             final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
+        a.positiveColor(Color.parseColor(m.fabSkin));
         a.title(R.string.hiddenfiles);
         if(m.theme1==1)
             a.theme(Theme.DARK);
@@ -828,6 +844,8 @@ public void showPackageDialog(final File f,final MainActivity m){
             exegroup.setChecked(exe[1]);
             exeother.setChecked(exe[2]);
             a.positiveText(R.string.set);
+            a.positiveColor(Color.parseColor(main.fabSkin));
+            a.widgetColor(Color.parseColor(main.fabSkin));
             a.callback(new MaterialDialog.ButtonCallback() {
                 @Override
                 public void onPositive(MaterialDialog materialDialog) {
@@ -988,63 +1006,5 @@ public int getColonPosition(String[] array){
         arrayList.add(write);
         arrayList.add(execute);
         return arrayList;
-    }
-    public Boolean[] unparsePermissions(int i){
-
-        switch (i){
-            case 0:return new Boolean[]{false,false,false};
-            case 1:return new Boolean[]{false,false,true};
-            case 2:return new Boolean[]{false,true,false};
-            case 3:return new Boolean[]{false,true,true};
-            case 4:return new Boolean[]{true,false,false};
-            case 5:return new Boolean[]{true,false,true};
-            case 6:return new Boolean[]{true,true,false};
-            case 7:return new Boolean[]{true,true,true};
-            default:return null;
-        }
-    }
-    public int parsePermissions(String permission) {
-        int tmp;
-        if (permission.charAt(0) == 'r')
-            tmp = 4;
-        else
-            tmp = 0;
-
-        RootTools.log("permission " + tmp);
-        RootTools.log("character " + permission.charAt(0));
-
-        if (permission.charAt(1) == 'w')
-            tmp += 2;
-        else
-            tmp += 0;
-
-        RootTools.log("permission " + tmp);
-        RootTools.log("character " + permission.charAt(1));
-
-        if (permission.charAt(2) == 'x')
-            tmp += 1;
-        else
-            tmp += 0;
-
-        RootTools.log("permission " + tmp);
-        RootTools.log("character " + permission.charAt(2));
-
-        return tmp;
-    }
-
-    public int parseSpecialPermissions(String permission) {
-        int tmp = 0;
-        if (permission.charAt(2) == 's')
-            tmp += 4;
-
-        if (permission.charAt(5) == 's')
-            tmp += 2;
-
-        if (permission.charAt(8) == 't')
-            tmp += 1;
-
-        RootTools.log("special permissions " + tmp);
-
-        return tmp;
     }
 }

@@ -233,10 +233,13 @@ public class Preffrag extends PreferenceFragment  {
 
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
                 skin = PreferenceUtils.getSkinColor(sharedPref.getInt("skin_color_position", 4));
+                int fab_skin = Color.parseColor(PreferenceUtils.getSkinColor(sharedPref.getInt
+                        ("fab_skin_color_position", 1)));
                 if(theme==1)
                     a.theme(Theme.DARK);
 
                 a.positiveText(R.string.close);
+                a.positiveColor(fab_skin);
                 LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = layoutInflater.inflate(R.layout.authors, null);
                 a.customView(view, true);
@@ -320,7 +323,11 @@ public class Preffrag extends PreferenceFragment  {
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
                 if(theme==1)a.theme(Theme.DARK);
                 a.title(R.string.changelog);
-                a.content(Html.fromHtml(getActivity().getString(R.string.changelog_version_7) +
+                a.content(Html.fromHtml(getActivity().getString(R.string.changelog_version_9) +
+                        getActivity().getString(R.string.changelog_change_9) +
+                        getActivity().getString(R.string.changelog_version_8) +
+                        getActivity().getString(R.string.changelog_change_8) +
+                        getActivity().getString(R.string.changelog_version_7) +
                         getActivity().getString(R.string.changelog_change_7) +
                         getActivity().getString(R.string.changelog_version_6) +
                         getActivity().getString(R.string.changelog_change_6) +
@@ -336,6 +343,10 @@ public class Preffrag extends PreferenceFragment  {
                         getActivity().getString(R.string.changelog_change_1)));
                 a.negativeText(R.string.close);
                 a.positiveText(R.string.fullChangelog);
+                int fab_skin = Color.parseColor(PreferenceUtils.getSkinColor(sharedPref.getInt
+                        ("fab_skin_color_position", 1)));
+                a.positiveColor(fab_skin);
+                a.negativeColor(fab_skin);
                 a.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {

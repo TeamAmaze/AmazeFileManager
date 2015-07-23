@@ -80,4 +80,27 @@
                                       - Improved tab UI and drawer header&lt;br>
                                       - Introducing lollipop external storage write access&lt;br>&lt;br>
                                    </string>
+    <string name="changelog_version_8">&lt;font
+        color="#524ef8">&lt;b>v2.0.9&lt;/font>&lt;/b>&lt;i>&lt;br></string>
+    <string name="changelog_change_8">- Fixed fab for tablets&lt;br>
+                                      - Fixed Color settings&lt;br>
+                                      - New materialized fab&lt;br>
+                                      &lt;font color="#524ef8">&lt;b>v2.0.8&lt;/font>&lt;/b>&lt;br>
+                                      - Fixed file sharing&lt;br>
+                                      - New faster method for file searching&lt;br>
+                                      &lt;font color="#524ef8">&lt;b>v2.0.7b&lt;/font>&lt;/b>&lt;br>
+                                      - Minor bugfixes&lt;br>
+                                      &lt;font color="#524ef8">&lt;b>v2.0.7&lt;/font>&lt;/b>&lt;br>
+                                      - Minor fix for shortcuts&lt;br>
+                                      - Minor fix for root file deletion&lt;br>
+                                      - Improved Dialogs&lt;br>
+                                      (Now \'Hidden Items\' in menu will only be visible if \"Show hidden Files\" preference is enabled in
+                                                settings)- Sort options for apps list&lt;br>
+                                   </string>
+    <string name="changelog_version_9">&lt;font
+        color="#524ef8">&lt;b>v3.0.0&lt;/font>&lt;/b>&lt;i>&lt;br></string>
+    <string name="changelog_change_9">- &lt;br>
+                                      - &lt;br>
+                                      - &lt;br>
+                                     </string>
 </resources>

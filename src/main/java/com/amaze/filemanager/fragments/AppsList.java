@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -200,6 +201,8 @@ public class AppsList extends ListFragment {
                                 for(ApplicationInfo info:c){
                                     if(info.publicSourceDir.equals(a.get(position).getDesc()))info1=info;
                                 }
+                                int color= Color.parseColor(PreferenceUtils.getFabColor
+                                        (Sp.getInt("fab_skin_color_position", 1)));
                                 //arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1),"", false));
                                 //utils.deleteFiles(arrayList, null, arrayList1);
                                 if ((info1.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
@@ -210,6 +213,8 @@ public class AppsList extends ListFragment {
                                             builder1.theme(Theme.DARK);
                                         builder1.content(utils.getString(getActivity(), R.string.unin_system_apk))
                                                 .title(utils.getString(getActivity(), R.string.warning))
+                                                .negativeColor(color)
+                                                .positiveColor(color)
                                                 .negativeText(utils.getString(getActivity(), R.string.no))
                                                 .positiveText(utils.getString(getActivity(), R.string.yes))
                                                 .callback(new MaterialDialog.ButtonCallback() {
@@ -254,7 +259,9 @@ public class AppsList extends ListFragment {
                             case 5:
                                 ArrayList<File> arrayList2=new ArrayList<File>();
                                 arrayList2.add(new File(a.get(position).getDesc()));
-                                utils.shareFiles(arrayList2,getActivity(),theme1);
+                                int color1= Color.parseColor(PreferenceUtils.getFabColor
+                                        (Sp.getInt("fab_skin_color_position", 1)));
+                                utils.shareFiles(arrayList2,getActivity(),theme1,color1);
                         }
                     }
                 }).title(a.get(position).getTitle()).build()

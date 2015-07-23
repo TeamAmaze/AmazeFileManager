@@ -935,7 +935,8 @@ public class Main extends android.support.v4.app.Fragment {
                     if (arrayList.size() > 100)
                         Toast.makeText(getActivity(), "Can't share more than 100 files", Toast.LENGTH_SHORT).show();
                     else
-                        utils.shareFiles(arrayList, getActivity(), theme1);
+                        utils.shareFiles(arrayList, getActivity(), theme1,Color.parseColor
+                                (fabSkin));
                     return true;
                 case R.id.openparent:
                     loadlist(new File(list.get(plist.get(0)).getDesc()).getParent(), false,false);
@@ -1052,24 +1053,21 @@ public class Main extends android.support.v4.app.Fragment {
     };
 
     public void rename(final String f) {
-
-        View dialog = getActivity().getLayoutInflater().inflate(
-                R.layout.dialog, null);
         MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-        final EditText edit = (EditText) dialog
-                .findViewById(R.id.newname);
         String name =new HFile(f).getName();
-        edit.setText(name);
-        a.customView(dialog, true);
-        if (theme1 == 1)
-            a.theme(Theme.DARK);
-        a.title(utils.getString(getActivity(), R.string.rename));
+        a.input("", name, false, new MaterialDialog.InputCallback() {
+            @Override
+            public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
 
+            }
+        });
+        if (theme1 == 1) a.theme(Theme.DARK);
+        a.title(utils.getString(getActivity(), R.string.rename));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-                String name = edit.getText().toString();
-                if(openMode==1) try {
+                String name = materialDialog.getInputEditText().getText().toString();
+                if (openMode == 1) try {
                     if (new SmbFile(f).isDirectory() && !name.endsWith("/"))
                         name = name + "/";
                 } catch (SmbException e) {
@@ -1077,7 +1075,7 @@ public class Main extends android.support.v4.app.Fragment {
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
-                if (openMode==1)
+                if (openMode == 1)
                     mainActivity.rename(f, current + name);
                 else
                     mainActivity.rename((f), (current + "/" + name));
@@ -1092,6 +1090,8 @@ public class Main extends android.support.v4.app.Fragment {
         });
         a.positiveText(R.string.save);
         a.negativeText(R.string.cancel);
+        int color=Color.parseColor(fabSkin);
+        a.positiveColor(color).negativeColor(color).widgetColor(color);
         a.build().show();
     }
     public void computeScroll() {

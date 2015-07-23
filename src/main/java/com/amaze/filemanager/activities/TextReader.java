@@ -283,6 +283,8 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
                     .content(R.string.unsavedchangesdesc)
                     .positiveText(R.string.yes)
                     .negativeText(R.string.no)
+                    .positiveColor(Color.parseColor(fabSkin))
+                    .negativeColor(Color.parseColor(fabSkin))
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {

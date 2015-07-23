@@ -27,15 +27,16 @@ import java.util.List;
  */
 public class ShareTask extends AsyncTask<String,String,Void> {
     Activity contextc;
-    int theme;
+    int theme,fab_skin;
     ArrayList<Uri> arrayList;
     ArrayList<Intent> targetShareIntents=new ArrayList<Intent>();
     ArrayList<String> arrayList1=new ArrayList<>();
     ArrayList<Drawable> arrayList2=new ArrayList<>();
-    public ShareTask(Activity context,ArrayList<Uri> arrayList,int theme){
+    public ShareTask(Activity context,ArrayList<Uri> arrayList,int theme,int fab_skin){
         this.contextc=context;
         this.arrayList=arrayList;
         this.theme=theme;
+        this.fab_skin=fab_skin;
     }
     @Override
     protected Void doInBackground(String... strings) {
@@ -100,6 +101,7 @@ public class ShareTask extends AsyncTask<String,String,Void> {
                 }
             });
             builder.negativeText(R.string.cancel);
+            builder.negativeColor(fab_skin);
             MaterialDialog b=builder.build();
             shareAdapter.updateMatDialog(b);
             b.show();

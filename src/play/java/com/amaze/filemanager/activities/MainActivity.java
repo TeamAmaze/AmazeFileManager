@@ -1251,29 +1251,22 @@ public class MainActivity extends AppCompatActivity implements
                 final String path = ma.current;
                 final MaterialDialog.Builder ba1 = new MaterialDialog.Builder(this);
                 ba1.title(R.string.newfolder);
-                View v = getLayoutInflater().inflate(R.layout.dialog, null);
-                final EditText edir = (EditText) v.findViewById(R.id.newname);
-                edir.setHint(utils.getString(this, R.string.entername));
-                ba1.customView(v, true);
-                edir.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                ba1.input(utils.getString(this, R.string.entername), "", false, new MaterialDialog.InputCallback() {
                     @Override
-                    public void onFocusChange(View v, boolean hasFocus) {
-                        edir.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                                inputMethodManager.showSoftInput(edir, InputMethodManager.SHOW_IMPLICIT);
-                            }
-                        });
+                    public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
+
                     }
                 });
                 if (theme1 == 1) ba1.theme(Theme.DARK);
                 ba1.positiveText(R.string.create);
                 ba1.negativeText(R.string.cancel);
+                ba1.positiveColor(Color.parseColor(fabskin));
+                ba1.negativeColor(Color.parseColor(fabskin));
+                ba1.widgetColor(Color.parseColor(fabskin));
                 ba1.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
-                        String a = edir.getText().toString();
+                        String a = materialDialog.getInputEditText().getText().toString();
                         mkDir(path + "/" + a, ma);
                     }
 
@@ -1290,6 +1283,7 @@ public class MainActivity extends AppCompatActivity implements
                 ba2.title((R.string.newfile));
                 View v1 = getLayoutInflater().inflate(R.layout.dialog, null);
                 final EditText edir1 = (EditText) v1.findViewById(R.id.newname);
+                utils.setTint(edir1,Color.parseColor(fabskin));
                 edir1.setHint(utils.getString(this, R.string.entername));
                 ba2.customView(v1, true);
                 edir1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -1307,6 +1301,8 @@ public class MainActivity extends AppCompatActivity implements
                 if (theme1 == 1) ba2.theme(Theme.DARK);
                 ba2.negativeText(R.string.cancel);
                 ba2.positiveText(R.string.create);
+                ba2.positiveColor(Color.parseColor(fabskin));
+                ba2.negativeColor(Color.parseColor(fabskin));
                 ba2.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -1334,31 +1330,26 @@ public class MainActivity extends AppCompatActivity implements
         final String fpath = ma.current;
         final MaterialDialog.Builder a = new MaterialDialog.Builder(this);
         a.title(R.string.search);
-        View v = getLayoutInflater().inflate(R.layout.dialog, null);
-        final EditText e = (EditText) v.findViewById(R.id.newname);
-        e.setHint(utils.getString(this, R.string.enterfile));
-        a.customView(v, true);
-        e.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        a.input(utils.getString(this, R.string.enterfile), "", true, new MaterialDialog
+                .InputCallback() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                e.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.showSoftInput(e, InputMethodManager.SHOW_IMPLICIT);
-                    }
-                });
+            public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
             }
         });
-        e.requestFocus();
         if (theme1 == 1) a.theme(Theme.DARK);
         a.negativeText(R.string.cancel);
         a.positiveText(R.string.search);
+        a.widgetColor(Color.parseColor(fabskin));
+        a.positiveColor(Color.parseColor(fabskin));
+        a.negativeColor(Color.parseColor(fabskin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 materialDialog.dismiss();
-                String a = e.getText().toString();
+                String a = materialDialog.getInputEditText().getText().toString();
+                if(a.length()==0){
+                    return;
+                }
                 SearchTask task = new SearchTask(ma.searchHelper, ma, a);
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);
                 ma.searchTask = task;
@@ -1532,11 +1523,15 @@ public class MainActivity extends AppCompatActivity implements
                 textView.setText(utils.getString(con, R.string.fileexist) + "\n" + new File(a.get(counter)).getName());
                 // checkBox
                 final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+                utils.setTint(checkBox, Color.parseColor(fabskin));
                 if (theme1 == 1) x.theme(Theme.DARK);
                 x.title(utils.getString(con, R.string.paste));
                 x.positiveText(R.string.skip);
                 x.negativeText(R.string.overwrite);
                 x.neutralText(R.string.cancel);
+                x.positiveColor(Color.parseColor(fabskin));
+                x.negativeColor(Color.parseColor(fabskin));
+                x.neutralColor(Color.parseColor(fabskin));
                 x.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -1877,6 +1872,8 @@ public class MainActivity extends AppCompatActivity implements
         ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
         x.positiveText(R.string.open);
         x.negativeText(R.string.cancel);
+        x.positiveColor(Color.parseColor(fabskin));
+        x.negativeColor(Color.parseColor(fabskin));
         x.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -2636,9 +2633,14 @@ public class MainActivity extends AppCompatActivity implements
         ba3.title((R.string.smb_con));
         final View v2 = getLayoutInflater().inflate(R.layout.smb_dialog, null);
         final EditText ip = (EditText) v2.findViewById(R.id.editText);
+        int color=Color.parseColor(fabskin);
+        utils.setTint(ip,color);
         final EditText user = (EditText) v2.findViewById(R.id.editText3);
+        utils.setTint(user,color);
         final EditText pass = (EditText) v2.findViewById(R.id.editText2);
+        utils.setTint(pass,color);
         final CheckBox ch = (CheckBox) v2.findViewById(R.id.checkBox2);
+        utils.setTint(ch,color);
         ch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -2679,6 +2681,7 @@ public class MainActivity extends AppCompatActivity implements
         ba3.neutralText(R.string.cancel);
         ba3.positiveText(R.string.create);
         if (edit) ba3.negativeText(R.string.delete);
+        ba3.positiveColor(color).negativeColor(color).neutralColor(color);
         ba3.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {

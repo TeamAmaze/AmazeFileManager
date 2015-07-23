@@ -83,6 +83,9 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             a.theme(Theme.DARK);
 
         a.autoDismiss(true);
+        int fab_skin_pos=sharedPref.getInt("fab_skin_color_position",1);
+        int fab_skin=Color.parseColor(PreferenceUtils.getFabColor(fab_skin_pos));
+        a.positiveColor(fab_skin);
         ColorAdapter adapter = null;
         String[] colors=PreferenceUtils.colors;
         List<String> arrayList = Arrays.asList(colors);
@@ -91,7 +94,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                 adapter = new ColorAdapter(getActivity(), arrayList, "skin_color_position",sharedPref.getInt("skin_color_position",4));
                 break;
             case "fab_skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "fab_skin_color_position",sharedPref.getInt("fab_skin_color_position",1));
+                adapter = new ColorAdapter(getActivity(), arrayList, "fab_skin_color_position",fab_skin_pos);
                 break;
             case "icon_skin":
                 adapter = new ColorAdapter(getActivity(), arrayList, "icon_skin_color_position",sharedPref.getInt("icon_skin_color_position",4));

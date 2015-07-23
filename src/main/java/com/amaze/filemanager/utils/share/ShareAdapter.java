@@ -29,7 +29,8 @@ public class ShareAdapter extends ArrayAdapter<Intent> {
     ArrayList<Drawable> arrayList;
     int theme;
     public void updateMatDialog(MaterialDialog b){this.b=b;}
-    public ShareAdapter(Context context, ArrayList<Intent> arrayList,ArrayList<String> labels,ArrayList<Drawable>  arrayList1,int theme) {
+    public ShareAdapter(Context context, ArrayList<Intent> arrayList,ArrayList<String> labels,
+                        ArrayList<Drawable>  arrayList1,int theme) {
         super(context, R.layout.rowlayout, arrayList);
         this.labels=labels;
         iconHolder=new IconHolder(context,true,true);

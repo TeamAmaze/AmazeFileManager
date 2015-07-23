@@ -46,6 +46,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     int item_count,column,count_factor,rowHeight;
     boolean topFab;
     int grey_color;
+    int c1,c2,c3,c4,c5,c6,c7,c8,c9;
     public Recycleradapter(Main m,ArrayList<Layoutelements> items,Context context){
         this.main=m;
         this.items=items;
@@ -56,7 +57,15 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         colorMatrixColorFilter=main.colorMatrixColorFilter;
         mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-
+        c1=Color.parseColor("#757575");
+        c2=Color.parseColor("#f06292");
+        c3=Color.parseColor("#9575cd");
+        c4=Color.parseColor("#da4336");
+        c5=Color.parseColor("#00bfa5");
+        c6=Color.parseColor("#e06055");
+        c7=Color.parseColor("#f9a825");
+        c8=Color.parseColor("#a4c439");
+        c9=Color.parseColor("#9e9e9e");
         column=main.columns;
         topFab=main.topFab;
         count_factor=(main.islist?(topFab?1:2):column);
@@ -380,7 +389,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     holder.imageView.setVisibility(View.VISIBLE);
                     holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
-                    gradientDrawable.setColor(Color.parseColor("#757575"));
+                    gradientDrawable.setColor(c1);
                     holder.rl.setSelected(true);
                     holder.ext.setText("");
                 } else {
@@ -390,21 +399,21 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                             gradientDrawable.setColor(main.icon_skin_color);
                         else if (Icons.isVideo(rowItem.getDesc()) || Icons.isPicture(rowItem
                                 .getDesc()))
-                            gradientDrawable.setColor(Color.parseColor("#f06292"));
+                            gradientDrawable.setColor(c2);
                         else if (Icons.isAudio(rowItem.getDesc()))
-                            gradientDrawable.setColor(Color.parseColor("#9575cd"));
+                            gradientDrawable.setColor(c3);
                         else if (Icons.isPdf(rowItem.getDesc()))
-                            gradientDrawable.setColor(Color.parseColor("#da4336"));
+                            gradientDrawable.setColor(c4);
                         else if (Icons.isCode(rowItem.getDesc()))
-                            gradientDrawable.setColor(Color.parseColor("#00bfa5"));
+                            gradientDrawable.setColor(c5);
                         else if (Icons.isText(rowItem.getDesc()))
-                            gradientDrawable.setColor(Color.parseColor("#e06055"));
+                            gradientDrawable.setColor(c6);
                         else if (Icons.isArchive(rowItem.getDesc()))
-                            gradientDrawable.setColor(Color.parseColor("#f9a825"));
+                            gradientDrawable.setColor(c7);
                         else if(Icons.isApk(rowItem.getDesc()))
-                            gradientDrawable.setColor(Color.parseColor("#a4c439"));
+                            gradientDrawable.setColor(c8);
                         else if (Icons.isgeneric(rowItem.getDesc())) {
-                            gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
+                            gradientDrawable.setColor(c9);
                             String ext = MimeTypes.getExtension(new File(rowItem.getDesc()).getName());
                             if (ext != null && ext.trim().length() != 0) {
                                 holder.ext.setText(ext);
@@ -415,7 +424,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         }
                     } else gradientDrawable.setColor((main.icon_skin_color));
                     if (rowItem.getSize().equals(main.goback))
-                        gradientDrawable.setColor(Color.parseColor("#757575"));
+                        gradientDrawable.setColor(c1);
 
 
                 }
@@ -462,7 +471,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
                 if (main.theme == 1)
-                    holder.imageView1.setBackgroundColor(Color.parseColor("#000000"));
+                    holder.imageView1.setBackgroundColor(Color.BLACK);
                 main.ic.cancelLoad(holder.imageView1);
                 main.ic.loadDrawable(holder.imageView1, (rowItem.getDesc()), null);
             } else if (Icons.isApk((rowItem.getDesc()))) {
@@ -475,7 +484,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
                 if (main.theme == 1)
-                    holder.imageView1.setBackgroundColor(Color.parseColor("#000000"));
+                    holder.imageView1.setBackgroundColor(Color.BLACK);
                 main.ic.cancelLoad(holder.imageView1);
                 main.ic.loadDrawable(holder.imageView1, (rowItem.getDesc()), null);
 
@@ -486,25 +495,25 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     holder.imageView.setColorFilter(main.icon_skin_color);
 
                 else if (Icons.isVideo(rowItem.getDesc()))
-                    holder.imageView.setColorFilter(Color.parseColor("#f06292"));
+                    holder.imageView.setColorFilter(c2);
 
                 else if (Icons.isAudio(rowItem.getDesc()))
-                    holder.imageView.setColorFilter(Color.parseColor("#9575cd"));
+                    holder.imageView.setColorFilter(c3);
 
                 else if (Icons.isPdf(rowItem.getDesc()))
-                    holder.imageView.setColorFilter(Color.parseColor("#da4336"));
+                    holder.imageView.setColorFilter(c4);
 
                 else if (Icons.isCode(rowItem.getDesc()))
-                    holder.imageView.setColorFilter(Color.parseColor("#00bfa5"));
+                    holder.imageView.setColorFilter(c5);
 
                 else if (Icons.isText(rowItem.getDesc()))
-                    holder.imageView.setColorFilter(Color.parseColor("#e06055"));
+                    holder.imageView.setColorFilter(c6);
 
                 else if (Icons.isArchive(rowItem.getDesc()))
-                    holder.imageView.setColorFilter(Color.parseColor("#f9a825"));
+                    holder.imageView.setColorFilter(c7);
 
                 else if (Icons.isgeneric(rowItem.getDesc()))
-                    holder.imageView.setColorFilter(Color.parseColor("#9e9e9e"));
+                    holder.imageView.setColorFilter(c9);
 
                 else if (Icons.isApk(rowItem.getDesc()) || Icons.isPicture(rowItem.getDesc()))
                     holder.imageView.setColorFilter(null);
@@ -516,7 +525,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             else
                 holder.imageView.setColorFilter(null);
             if (rowItem.getSize().equals(main.goback))
-                holder.imageView.setColorFilter(Color.parseColor("#757575"));
+                holder.imageView.setColorFilter(c1);
             if (checked != null) {
 
                 if (checked) {
