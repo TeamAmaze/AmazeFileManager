@@ -242,19 +242,19 @@ public class TabFragment extends android.support.v4.app.Fragment {
         String newPath="";
         switch (Integer.parseInt(path)){
             case 0:
-                newPath="Images";
+                newPath=getResources().getString(R.string.images);
                 break;
             case 1:
-                newPath="Videos";
+                newPath=getResources().getString(R.string.videos);
                 break;
             case 2:
-                newPath="Audio";
+                newPath=getResources().getString(R.string.audio);
                 break;
             case 3:
-                newPath="Documents";
+                newPath=getResources().getString(R.string.documents);
                 break;
             case 4:
-                newPath="Apks";
+                newPath=getResources().getString(R.string.apks);
                 break;
         }
         return newPath;

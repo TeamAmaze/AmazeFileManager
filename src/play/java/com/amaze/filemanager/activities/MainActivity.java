@@ -2193,23 +2193,22 @@ public class MainActivity extends AppCompatActivity implements
         else if(openmode==2)
             switch (Integer.parseInt(news)){
                 case 0:
-                    newPath="Images";
+                    newPath=getResources().getString(R.string.images);
                     break;
                 case 1:
-                    newPath="Videos";
+                    newPath=getResources().getString(R.string.videos);
                     break;
                 case 2:
-                    newPath="Audio";
+                    newPath=getResources().getString(R.string.audio);
                     break;
                 case 3:
-                    newPath="Documents";
+                    newPath=getResources().getString(R.string.documents);
                     break;
                 case 4:
-                    newPath="Apks";
+                    newPath=getResources().getString(R.string.apks);
                     break;
             }
         else newPath = news;
-
         try {
             f = new File(newPath);
         } catch (Exception e) {
