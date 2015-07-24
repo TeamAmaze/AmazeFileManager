@@ -99,8 +99,18 @@
                                    </string>
     <string name="changelog_version_9">
         &lt;font color="#5299f2">&lt;b>v3.0.0&lt;/font>&lt;/b>&lt;br></string>
-    <string name="changelog_change_9">- &lt;br>
-                                      - &lt;br>
-                                      - &lt;br>&lt;br>
+    <string name="changelog_change_9">- Implemented windows(smb) file sharing&lt;br>
+                                      - Faster and better file sharing&lt;br>
+                                      - Added list animations&lt;br>
+                                      - GridView can now adjust number of columns on its
+        own even on rotation(Experimental)&lt;br>
+                                      - Separate Properties button for each file in landscape
+        mode and for tablets&lt;br>
+                                      - New Fab&lt;br>
+                                      - Improved structure of drawer&lt;br>
+                                      - New shortcuts in drawer to load all media
+        files(Images,Audio,Videos,Apks,Docs)&lt;br>
+                                      - Updated Translations&lt;br>
+                                      - Many Bug Fixes&lt;br>&lt;br>
                                      </string>
 </resources>

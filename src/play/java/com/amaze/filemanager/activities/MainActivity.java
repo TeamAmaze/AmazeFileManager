@@ -400,7 +400,8 @@ public class MainActivity extends AppCompatActivity implements
         showHidden = Sp.getBoolean("showHidden", false);
         topfab = hidemode == 0 ? Sp.getBoolean("topFab", false) : false;
         floatingActionButton = !topfab ?
-                (FloatingActionMenu) findViewById(R.id.menu) : (FloatingActionMenu) findViewById(R.id.menu_top);        floatingActionButton.setVisibility(View.VISIBLE);
+                (FloatingActionMenu) findViewById(R.id.menu) : (FloatingActionMenu) findViewById(R.id.menu_top);
+        floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.showMenuButton(true);
         floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
         floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
@@ -723,7 +724,6 @@ public class MainActivity extends AppCompatActivity implements
                 public void onDrawerOpened(View drawerView) {
                     //title.setText("Amaze File Manager");
                     // creates call to onPrepareOptionsMenu()
-                    supportInvalidateOptionsMenu();
                 }
             };
             mDrawerLayout.setDrawerListener(mDrawerToggle);
