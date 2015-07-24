@@ -887,6 +887,13 @@ public class MainActivity extends AppCompatActivity implements
     public void exit() {
         if (backPressedToExitOnce) {
             finish();
+            if (rootmode){
+                try {
+                    RootTools.closeAllShells();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         } else {
             this.backPressedToExitOnce = true;
             showToast(utils.getString(this, R.string.pressagain));
@@ -1195,6 +1202,13 @@ public class MainActivity extends AppCompatActivity implements
                 utils.showHistoryDialog(ma);
                 break;
             case R.id.item3:
+                if (rootmode) {
+                    try {
+                        RootTools.closeAllShells();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 finish();
                 break;
             case R.id.item10:
