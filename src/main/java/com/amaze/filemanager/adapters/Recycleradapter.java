@@ -47,6 +47,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     boolean topFab;
     int grey_color;
     int c1,c2,c3,c4,c5,c6,c7,c8,c9;
+
     public Recycleradapter(Main m,ArrayList<Layoutelements> items,Context context){
         this.main=m;
         this.items=items;
@@ -266,8 +267,10 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 
                 public boolean onLongClick(View p1) {
-                    if (!rowItem.getSize().equals(main.goback)) {
 
+                    if (!rowItem.getSize().equals(main.goback)) {
+                        Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.holder_anim);
+                        holder.imageView.setAnimation(iconAnimation);
                         toggleChecked(p);
                     }
 
@@ -299,9 +302,11 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    final Animation animation = AnimationUtils.loadAnimation(context, R.anim.holder_anim);
+
                     if (!rowItem.getSize().equals(main.goback)) {
-                        holder.imageView.setAnimation(animation);
+
+                        Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.holder_anim);
+                        holder.imageView.setAnimation(iconAnimation);
                         toggleChecked(p);
                     } else main.goBack();
 
@@ -310,16 +315,24 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.viewmageV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!rowItem.getSize().equals(main.goback))
+                    if (!rowItem.getSize().equals(main.goback)) {
+
+                        Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.holder_anim);
+                        holder.imageView.setAnimation(iconAnimation);
                         toggleChecked(p);
+                    }
                     else main.goBack();
                 }
             });
             holder.apk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!rowItem.getSize().equals(main.goback))
+                    if (!rowItem.getSize().equals(main.goback)) {
+
+                        Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.holder_anim);
+                        holder.imageView.setAnimation(iconAnimation);
                         toggleChecked(p);
+                    }
                     else main.goBack();
                 }
             });
@@ -455,8 +468,10 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 
                 public boolean onLongClick(View p1) {
-                    if (!rowItem.getSize().equals(main.goback)) {
 
+                    if (!rowItem.getSize().equals(main.goback)) {
+                        Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.holder_anim);
+                        holder.imageView.setAnimation(iconAnimation);
                         toggleChecked(p);
                     }
                     return true;

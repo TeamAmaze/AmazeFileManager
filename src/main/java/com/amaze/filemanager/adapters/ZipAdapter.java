@@ -250,8 +250,13 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                if(rowItem.getEntry()!=null)  toggleChecked(p);/*
-                }*/
+                if(rowItem.getEntry()!=null) {
+
+                    final Animation animation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.holder_anim);
+
+                    holder.imageView.setAnimation(animation);
+                    toggleChecked(p);
+                }
                 System.out.println("onLongClick");
                 return true;
             }
@@ -290,7 +295,11 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                 if(rowItem.getEntry()==null)
                     zipViewer.goBack();
                 else{
-                    if(zipViewer.selection)toggleChecked(p);
+                    if(zipViewer.selection) {
+                        final Animation animation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.holder_anim);
+                        holder.imageView.setAnimation(animation);
+                        toggleChecked(p);
+                    }
                     else {
                         final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
                         if (rowItem.isDirectory())

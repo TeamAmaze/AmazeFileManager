@@ -242,6 +242,9 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+
+                final Animation animation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.holder_anim);
+                holder.imageView.setAnimation(animation);
                 toggleChecked(p);
                 return true;
             }
@@ -276,8 +279,11 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         holder.rl.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View p1) {
-                if(zipViewer.selection)
+                if(zipViewer.selection) {
+                    final Animation animation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.holder_anim);
+                    holder.imageView.setAnimation(animation);
                     toggleChecked(p);
+                }
                 else {
 
                     if (rowItem.isDirectory()) {
