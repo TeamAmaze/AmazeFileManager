@@ -33,6 +33,7 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -48,8 +49,10 @@ import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -64,6 +67,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -145,7 +149,7 @@ public class MainActivity extends AppCompatActivity{
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
     SharedPreferences Sp;
-    private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
+    private ActionBarDrawerToggle mDrawerToggle;
     public List<String> val;
     ArrayList<String> books;
     public ArrayList<String> Servers;
@@ -176,7 +180,9 @@ public class MainActivity extends AppCompatActivity{
     public int storage_count = 0;
     private View drawerHeaderLayout;
     private View drawerHeaderView;
+    private RoundedImageView drawerProfilePic;
     private int sdk;
+    private TextView mGoogleName, mGoogleId;
     public String fabskin;
     private LinearLayout buttons;
     private HorizontalScrollView scroll, scroll1;
@@ -191,10 +197,23 @@ public class MainActivity extends AppCompatActivity{
     int operation;
     ArrayList<String> oparrayList;
     String oppathe, oppathe1;
-    private boolean  showHidden = false;
+    // Check for user interaction for google+ api only once
+    private boolean mGoogleApiKey = false;
+    // string builder object variables for pathBar animations
+    private StringBuilder newPathBuilder, oldPathBuilder;
+
+    // counter manages the pathBar animations
+    private int COUNTER=0;
+
+    /* Request code used to invoke sign in user interactions. */
+    private static final int RC_SIGN_IN = 0;
+
+    /* A flag indicating that a PendingIntent is in progress and prevents
+   * us from starting further intents.
+   */
+    private boolean mIntentInProgress, topfab = false, showHidden = false;
     public boolean isDrawerLocked = false;
     static final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3, RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
-    Drawable sd, sd1, folder, folder1, root, root1, smb, smb1;
 
     /**
      * Called when the activity is first created.
@@ -366,21 +385,14 @@ public class MainActivity extends AppCompatActivity{
 
         hidemode = Sp.getInt("hidemode", 0);
         showHidden = Sp.getBoolean("showHidden", false);
-        Resources resources = getResources();
-        smb = resources.getDrawable(R.drawable.ic_settings_remote_black_48dp);
-        smb1 = resources.getDrawable(R.drawable.ic_settings_remote_white_48dp);
-        sd = resources.getDrawable(R.drawable.ic_sd_storage_grey600_48dp);
-        sd1 = resources.getDrawable(R.drawable.ic_sd_storage_white_48dp);
-        folder = resources.getDrawable(R.drawable.folder_drawer);
-        folder1 = resources.getDrawable(R.drawable.folder_drawer_white);
-        root = resources.getDrawable(R.drawable.ic_drawer_root);
-        root1 = resources.getDrawable(R.drawable.ic_drawer_root_white);
-
-        floatingActionButton = (FloatingActionMenu) findViewById(R.id.menu);
+        topfab = hidemode == 0 ? Sp.getBoolean("topFab", false) : false;
+        floatingActionButton = !topfab ?
+                (FloatingActionMenu) findViewById(R.id.menu) : (FloatingActionMenu) findViewById(R.id.menu_top);
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.showMenuButton(true);
         floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
         floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
+
         //if (theme1 == 1) floatingActionButton.setMen
         floatingActionButton.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
@@ -392,7 +404,7 @@ public class MainActivity extends AppCompatActivity{
         });
         View v = findViewById(R.id.fab_bg);
         if (theme1 == 1)
-            v.setBackgroundColor(Color.parseColor("#80ffffff"));
+            v.setBackgroundColor(Color.parseColor("#a6ffffff"));
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -403,8 +415,10 @@ public class MainActivity extends AppCompatActivity{
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
+        drawerProfilePic = (RoundedImageView) drawerHeaderLayout.findViewById(R.id.profile_pic);
+        mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
+        mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
 
-        // initialize g+ api client as per preferences
 
         utils = new Futils();
         s = new Shortcuts(this, "shortcut.xml");
@@ -412,8 +426,6 @@ public class MainActivity extends AppCompatActivity{
         path = getIntent().getStringExtra("path");
         openprocesses = getIntent().getBooleanExtra("openprocesses", false);
         restart = getIntent().getBooleanExtra("restart", false);
-
-
         rootmode = Sp.getBoolean("rootmode", false);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         util = new IconUtils(Sp, this);
@@ -426,7 +438,7 @@ public class MainActivity extends AppCompatActivity{
         scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
         scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
-        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(R.id.menu_item);
+        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item_top : R.id.menu_item);
         String folder_skin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
         int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
@@ -440,7 +452,7 @@ public class MainActivity extends AppCompatActivity{
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById( R.id.menu_item1);
+        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item1_top : R.id.menu_item1);
         floatingActionButton2.setColorNormal(folderskin);
         floatingActionButton2.setColorPressed(fabskinpressed);
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
@@ -451,7 +463,7 @@ public class MainActivity extends AppCompatActivity{
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(R.id.menu_item2);
+        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item2_top : R.id.menu_item2);
         floatingActionButton3.setColorNormal(folderskin);
         floatingActionButton3.setColorPressed(fabskinpressed);
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
@@ -462,11 +474,27 @@ public class MainActivity extends AppCompatActivity{
                 floatingActionButton.close(true);
             }
         });
-        IntentFilter newFilter = new IntentFilter();
-        newFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-        newFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
-        newFilter.addDataScheme(ContentResolver.SCHEME_FILE);
-        registerReceiver(mNotificationReceiver, newFilter);
+        if (topfab) {
+            buttonBarFrame.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) floatingActionButton.getLayoutParams();
+                    layoutParams.setMargins(layoutParams.leftMargin, findViewById(R.id.lin)
+                                    .getBottom()-(floatingActionButton.getMenuIconView().getHeight
+                                    ()),
+                            layoutParams.rightMargin,
+                            layoutParams.bottomMargin);
+                    floatingActionButton.setLayoutParams(layoutParams);
+
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                        buttonBarFrame.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        buttonBarFrame.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+
+            });
+        }
         // Toolbar
         toolbar = (Toolbar) findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
@@ -595,6 +623,11 @@ public class MainActivity extends AppCompatActivity{
 
             }
         });
+        ImageView divider = (ImageView) findViewById(R.id.divider1);
+        if (theme1==0)
+            divider.setImageResource(R.color.divider);
+        else
+            divider.setImageResource(R.color.divider_dark);
 
         mDrawerList.addHeaderView(drawerHeaderLayout);
         updateDrawer();
@@ -640,10 +673,10 @@ public class MainActivity extends AppCompatActivity{
             tabsSpinner.setVisibility(View.GONE);
         }
         if (!isDrawerLocked) {
-            mDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(
+            mDrawerToggle = new ActionBarDrawerToggle(
                     this,                  /* host Activity */
                     mDrawerLayout,         /* DrawerLayout object */
-                    toolbar,  /* nav drawer image to replace 'Up' caret */
+                    R.drawable.ic_drawer_l,  /* nav drawer image to replace 'Up' caret */
                     R.string.drawer_open,  /* "open drawer" description for accessibility */
                     R.string.drawer_close  /* "close drawer" description for accessibility */
             ) {
@@ -654,10 +687,10 @@ public class MainActivity extends AppCompatActivity{
                 public void onDrawerOpened(View drawerView) {
                     //title.setText("Amaze File Manager");
                     // creates call to onPrepareOptionsMenu()
-                    supportInvalidateOptionsMenu();
                 }
             };
             mDrawerLayout.setDrawerListener(mDrawerToggle);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer_l);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
             mDrawerToggle.syncState();
@@ -669,6 +702,10 @@ public class MainActivity extends AppCompatActivity{
                 } else mDrawerLayout.openDrawer(mDrawerLinear);
             }
         });*/
+
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer_l);
+
         //recents header color implementation
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
@@ -685,6 +722,8 @@ public class MainActivity extends AppCompatActivity{
      *
      * @return paths to all available SD-Cards in the system (include emulated)
      */
+
+
     public List<String> getStorageDirectories() {
         // Final set of paths
         final ArrayList<String> rv = new ArrayList<String>();
@@ -786,6 +825,7 @@ public class MainActivity extends AppCompatActivity{
                         fragmentTransaction.commit();
                         supportInvalidateOptionsMenu();
                         floatingActionButton.showMenuButton(true);
+
                     }
                 } else {
                     zipViewer.mActionMode.finish();
@@ -810,6 +850,13 @@ public class MainActivity extends AppCompatActivity{
     public void exit() {
         if (backPressedToExitOnce) {
             finish();
+            if (rootmode){
+                try {
+                    RootTools.closeAllShells();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         } else {
             this.backPressedToExitOnce = true;
             showToast(utils.getString(this, R.string.pressagain));
@@ -832,7 +879,7 @@ public class MainActivity extends AppCompatActivity{
         for (String file : val) {
             File f = new File(file);
             String name;
-            Drawable icon = sd, icon1 = sd1;
+            Drawable  icon1 = ContextCompat.getDrawable(this,R.drawable.ic_sd_storage_white_48dp);
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
 
@@ -840,12 +887,11 @@ public class MainActivity extends AppCompatActivity{
                 name = getResources().getString(R.string.extstorage);
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
-                icon = root;
-                icon1 = root1;
+                icon1 = ContextCompat.getDrawable(this,R.drawable.ic_drawer_root_white);
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                list.add(new EntryItem(name, file, icon, icon1));
+                list.add(new EntryItem(name, file,  icon1));
             }
         }
         list.add(new SectionItem());
@@ -854,7 +900,7 @@ public class MainActivity extends AppCompatActivity{
             try {
                 for (String s : servers.readS()) {
                     Servers.add(s);
-                    list.add(new EntryItem(parseSmbPath(s), s, smb, smb1));
+                    list.add(new EntryItem(parseSmbPath(s), s,ContextCompat.getDrawable(this,R.drawable.ic_settings_remote_white_48dp)));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -866,18 +912,25 @@ public class MainActivity extends AppCompatActivity{
             if (Servers.size() > 0)
                 list.add(new SectionItem());
         }
-
         try {
             File f1 = new File(getFilesDir() + "/shortcut.xml");
             if (!f1.exists()) s.makeS(true);
             for (String file : s.readS()) {
                 String name = new File(file).getName();
                 books.add(file);
-                list.add(new EntryItem(name, file, folder, folder1));
+                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this,R.drawable.folder_drawer_white)));
             }
+            if(books.size()>0)
+                list.add(new SectionItem());
         } catch (Exception e) {
 
         }
+        list.add(new EntryItem("Images","0", ContextCompat.getDrawable(this,R.drawable.ic_doc_image)));
+        list.add(new EntryItem("Videos","1",ContextCompat.getDrawable(this,R.drawable.ic_doc_video_am)));
+        list.add(new EntryItem("Audio","2",ContextCompat.getDrawable(this,R.drawable.ic_doc_audio_am)));
+        list.add(new EntryItem("Documents","3",ContextCompat.getDrawable(this,R.drawable
+                .ic_doc_doc_am)));
+        list.add(new EntryItem("Apks","4",ContextCompat.getDrawable(this,R.drawable.ic_doc_apk_grid)));
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
     }
@@ -922,6 +975,7 @@ public class MainActivity extends AppCompatActivity{
         transaction.addToBackStack("tabt" + 1);
         transaction.commit();
         toolbar.setTitle(null);
+        tabsSpinner.setVisibility(View.VISIBLE);
         floatingActionButton.showMenuButton(true);
         if (openzip && zippath != null) {
             if (zippath.endsWith(".zip") || zippath.endsWith(".apk")) openZip(zippath);
@@ -950,7 +1004,10 @@ public class MainActivity extends AppCompatActivity{
                 adapter.toggleChecked(select);
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
+                tabsSpinner.setVisibility(View.VISIBLE);
                 floatingActionButton.showMenuButton(true);
+
+
             } else if (removeBookmark) {
                 try {
                     String path = ((EntryItem) list.get(i)).getPath();
@@ -994,11 +1051,10 @@ public class MainActivity extends AppCompatActivity{
             return true;
         }
         if (f.contains("TabFragment")) {
-
             try {
                 TabFragment tabFragment = (TabFragment) fragment;
                 Main ma = ((Main) tabFragment.getTab());
-                updatePath(ma.current, true, ma.results);
+                updatePath(ma.current, ma.results, ma.openMode,ma.folder_count,ma.file_count);
             } catch (Exception e) {
             }
             tabsSpinner.setVisibility(View.VISIBLE);
@@ -1008,6 +1064,7 @@ public class MainActivity extends AppCompatActivity{
             } else {
                 s.setTitle(getResources().getString(R.string.listview));
             }
+            initiatebbar();
             if (Build.VERSION.SDK_INT >= 21) toolbar.setElevation(0);
             invalidatePasteButton(paste);
             search.setVisible(true);
@@ -1031,8 +1088,19 @@ public class MainActivity extends AppCompatActivity{
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
-        } else if (f.contains("ZipViewer") ) {
+        } else if (f.contains("ZipViewer")) {
             tabsSpinner.setVisibility(View.GONE);
+            TextView textView = (TextView) mainActivity.pathbar.findViewById(R.id.fullpath);
+            pathbar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                }
+            });
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                }
+            });
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
@@ -1097,6 +1165,13 @@ public class MainActivity extends AppCompatActivity{
                 utils.showHistoryDialog(ma);
                 break;
             case R.id.item3:
+                if (rootmode) {
+                    try {
+                        RootTools.closeAllShells();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 finish();
                 break;
             case R.id.item10:
@@ -1156,29 +1231,22 @@ public class MainActivity extends AppCompatActivity{
                 final String path = ma.current;
                 final MaterialDialog.Builder ba1 = new MaterialDialog.Builder(this);
                 ba1.title(R.string.newfolder);
-                View v = getLayoutInflater().inflate(R.layout.dialog, null);
-                final EditText edir = (EditText) v.findViewById(R.id.newname);
-                edir.setHint(utils.getString(this, R.string.entername));
-                ba1.customView(v, true);
-                edir.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                ba1.input(utils.getString(this, R.string.entername), "", false, new MaterialDialog.InputCallback() {
                     @Override
-                    public void onFocusChange(View v, boolean hasFocus) {
-                        edir.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                                inputMethodManager.showSoftInput(edir, InputMethodManager.SHOW_IMPLICIT);
-                            }
-                        });
+                    public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
+
                     }
                 });
                 if (theme1 == 1) ba1.theme(Theme.DARK);
                 ba1.positiveText(R.string.create);
                 ba1.negativeText(R.string.cancel);
+                ba1.positiveColor(Color.parseColor(fabskin));
+                ba1.negativeColor(Color.parseColor(fabskin));
+                ba1.widgetColor(Color.parseColor(fabskin));
                 ba1.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
-                        String a = edir.getText().toString();
+                        String a = materialDialog.getInputEditText().getText().toString();
                         mkDir(path + "/" + a, ma);
                     }
 
@@ -1195,6 +1263,7 @@ public class MainActivity extends AppCompatActivity{
                 ba2.title((R.string.newfile));
                 View v1 = getLayoutInflater().inflate(R.layout.dialog, null);
                 final EditText edir1 = (EditText) v1.findViewById(R.id.newname);
+                utils.setTint(edir1,Color.parseColor(fabskin));
                 edir1.setHint(utils.getString(this, R.string.entername));
                 ba2.customView(v1, true);
                 edir1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -1212,6 +1281,8 @@ public class MainActivity extends AppCompatActivity{
                 if (theme1 == 1) ba2.theme(Theme.DARK);
                 ba2.negativeText(R.string.cancel);
                 ba2.positiveText(R.string.create);
+                ba2.positiveColor(Color.parseColor(fabskin));
+                ba2.negativeColor(Color.parseColor(fabskin));
                 ba2.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -1239,31 +1310,26 @@ public class MainActivity extends AppCompatActivity{
         final String fpath = ma.current;
         final MaterialDialog.Builder a = new MaterialDialog.Builder(this);
         a.title(R.string.search);
-        View v = getLayoutInflater().inflate(R.layout.dialog, null);
-        final EditText e = (EditText) v.findViewById(R.id.newname);
-        e.setHint(utils.getString(this, R.string.enterfile));
-        a.customView(v, true);
-        e.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        a.input(utils.getString(this, R.string.enterfile), "", true, new MaterialDialog
+                .InputCallback() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                e.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.showSoftInput(e, InputMethodManager.SHOW_IMPLICIT);
-                    }
-                });
+            public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
             }
         });
-        e.requestFocus();
         if (theme1 == 1) a.theme(Theme.DARK);
         a.negativeText(R.string.cancel);
         a.positiveText(R.string.search);
+        a.widgetColor(Color.parseColor(fabskin));
+        a.positiveColor(Color.parseColor(fabskin));
+        a.negativeColor(Color.parseColor(fabskin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 materialDialog.dismiss();
-                String a = e.getText().toString();
+                String a = materialDialog.getInputEditText().getText().toString();
+                if(a.length()==0){
+                    return;
+                }
                 SearchTask task = new SearchTask(ma.searchHelper, ma, a);
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);
                 ma.searchTask = task;
@@ -1274,9 +1340,8 @@ public class MainActivity extends AppCompatActivity{
 
             }
         });
-
-        MaterialDialog b=a.build();
-        if(fpath.startsWith("smb:"))b.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+        MaterialDialog b = a.build();
+        if (fpath.startsWith("smb:")) b.getActionButton(DialogAction.POSITIVE).setEnabled(false);
         b.show();
     }
 
@@ -1305,13 +1370,18 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onPause() {
         super.onPause();
-
+        unregisterReceiver(mNotificationReceiver);
         killToast();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        IntentFilter newFilter = new IntentFilter();
+        newFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+        newFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
+        newFilter.addDataScheme(ContentResolver.SCHEME_FILE);
+        registerReceiver(mNotificationReceiver, newFilter);
     }
 
     @Override
@@ -1335,7 +1405,6 @@ public class MainActivity extends AppCompatActivity{
     protected void onDestroy() {
         super.onDestroy();
         Sp.edit().putBoolean("remember", true).apply();
-        unregisterReceiver(mNotificationReceiver);
     }
 
     class CheckForFiles extends AsyncTask<ArrayList<String>, String, ArrayList<String>> {
@@ -1434,11 +1503,15 @@ public class MainActivity extends AppCompatActivity{
                 textView.setText(utils.getString(con, R.string.fileexist) + "\n" + new File(a.get(counter)).getName());
                 // checkBox
                 final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+                utils.setTint(checkBox, Color.parseColor(fabskin));
                 if (theme1 == 1) x.theme(Theme.DARK);
                 x.title(utils.getString(con, R.string.paste));
                 x.positiveText(R.string.skip);
                 x.negativeText(R.string.overwrite);
                 x.neutralText(R.string.cancel);
+                x.positiveColor(Color.parseColor(fabskin));
+                x.negativeColor(Color.parseColor(fabskin));
+                x.neutralColor(Color.parseColor(fabskin));
                 x.callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -1494,9 +1567,9 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    public void updatepaths() {
+    public void updatepaths(int pos) {
         try {
-            getFragment().updatepaths();
+            getFragment().updatepaths(pos);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1560,8 +1633,8 @@ public class MainActivity extends AppCompatActivity{
                     Toast.makeText(con, "Media Mounted", Toast.LENGTH_SHORT).show();
                     String a = intent.getData().getPath();
                     if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
-                        list.add(new EntryItem(new File(a).getName(), a,sd,sd1));
-
+                        list.add(new EntryItem(new File(a).getName(), a, ContextCompat
+                                .getDrawable(mainActivity, R.drawable.ic_sd_storage_white_48dp)));
                         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
                         mDrawerList.setAdapter(adapter);
                     } else {
@@ -1582,7 +1655,7 @@ public class MainActivity extends AppCompatActivity{
         for (String file : val) {
             File f = new File(file);
             String name;
-            Drawable icon = sd, icon1 = sd1;
+            Drawable icon1 = ContextCompat.getDrawable(this, R.drawable.ic_sd_storage_white_48dp);
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
 
@@ -1590,51 +1663,42 @@ public class MainActivity extends AppCompatActivity{
                 name = getResources().getString(R.string.extstorage);
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
-                icon = root;
-                icon1 = root1;
+                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                list.add(new EntryItem(name, file, icon, icon1));
+                list.add(new EntryItem(name, file, icon1));
             }
         }
         list.add(new SectionItem());
         if (Servers != null && Servers.size() > 0) {
             for (String file : Servers) {
                 String name = parseSmbPath(file);
-                list.add(new EntryItem(name, file, smb, smb1));
+                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this, R.drawable.ic_settings_remote_white_48dp)));
             }
 
             list.add(new SectionItem());
         }
+        if (books != null && books.size() > 0) {
 
-        try {
             for (String file : books) {
                 String name = new File(file).getName();
-                list.add(new EntryItem(name, file, folder, folder1));
+                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this, R.drawable.folder_drawer_white)));
             }
-        } catch (Exception e) {
+            list.add(new SectionItem());
         }
+        list.add(new EntryItem("Images", "0", ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
+        list.add(new EntryItem("Videos", "1", ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
+        list.add(new EntryItem("Audio", "2", ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
+        list.add(new EntryItem("Documents", "3", ContextCompat.getDrawable(this, R.drawable
+                .ic_doc_doc_am)));
+        list.add(new EntryItem("Apks", "4", ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
 
 
         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
-
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-
-    }
 
     public void guideDialogForLEXA(String path) {
         final MaterialDialog.Builder x = new MaterialDialog.Builder(MainActivity.this);
@@ -1649,6 +1713,8 @@ public class MainActivity extends AppCompatActivity{
         ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
         x.positiveText(R.string.open);
         x.negativeText(R.string.cancel);
+        x.positiveColor(Color.parseColor(fabskin));
+        x.negativeColor(Color.parseColor(fabskin));
         x.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -1665,7 +1731,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-         if (requestCode == 3) {
+       if (requestCode == 3) {
             String p = Sp.getString("URI", null);
             Uri oldUri = null;
             if (p != null) oldUri = Uri.parse(p);
@@ -1712,7 +1778,7 @@ public class MainActivity extends AppCompatActivity{
                 case RENAME:
                     rename((oppathe), (oppathe1));
                     Main ma2 = ((Main) getFragment().getTab());
-                    ma2.loadlist((ma2.current), true);
+                    ma2.updateList();
                     break;
                 case NEW_FILE:
                     Main ma3 = ((Main) getFragment().getTab());
@@ -1818,7 +1884,7 @@ public class MainActivity extends AppCompatActivity{
             }
             View view = new View(this);
             LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                    dpToPx(42), LinearLayout.LayoutParams.WRAP_CONTENT);
+                    tabsSpinner.getLeft(), LinearLayout.LayoutParams.WRAP_CONTENT);
             view.setLayoutParams(params1);
             buttons.addView(view);
             for (int i = 0; i < names.size(); i++) {
@@ -1826,7 +1892,7 @@ public class MainActivity extends AppCompatActivity{
                 ImageView v = new ImageView(this);
                 v.setImageDrawable(arrow);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 params.gravity = Gravity.CENTER_VERTICAL;
                 v.setLayoutParams(params);
                 final int index = i;
@@ -1837,7 +1903,7 @@ public class MainActivity extends AppCompatActivity{
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            main.loadlist(("/"), false);
+                            main.loadlist(("/"), false,false);
                             timer.cancel();
                             timer.start();
                         }
@@ -1846,14 +1912,14 @@ public class MainActivity extends AppCompatActivity{
                     buttons.addView(ib);
                     if (names.size() - i != 1)
                         buttons.addView(v);
-                } else if (rpaths.get(i).equals(Environment.getExternalStorageDirectory().getPath())) {
+                } else if (isStorage(rpaths.get(i))) {
                     ImageButton ib = new ImageButton(this);
                     ib.setImageDrawable(icons.getSdDrawable());
                     ib.setBackgroundColor(Color.parseColor("#00ffffff"));
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            main.loadlist((rpaths.get(k)), false);
+                            main.loadlist((rpaths.get(k)), false, true);
                             timer.cancel();
                             timer.start();
                         }
@@ -1872,7 +1938,8 @@ public class MainActivity extends AppCompatActivity{
                     button.setOnClickListener(new Button.OnClickListener() {
 
                         public void onClick(View p1) {
-                            main.loadlist((rpaths.get(k)), false);
+                            main.loadlist((rpaths.get(k)), false,true);
+                            main.loadlist((rpaths.get(k)), false,true);
                             timer.cancel();
                             timer.start();
                         }
@@ -1893,15 +1960,7 @@ public class MainActivity extends AppCompatActivity{
                         buttons.addView(v);
                 }
             }
-            File f = new File(text);
 
-            TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
-            String used = utils.readableFileSize(f.getTotalSpace() - f.getFreeSpace());
-            String free = utils.readableFileSize(f.getFreeSpace());
-            textView.setText(getResources().getString(R.string.used) + " " + used + " " + getResources().getString(R.string.free) + " " + free);
-
-            TextView bapath = (TextView) pathbar.findViewById(R.id.fullpath);
-            bapath.setText(f.getPath());
             scroll.post(new Runnable() {
                 @Override
                 public void run() {
@@ -1919,7 +1978,11 @@ public class MainActivity extends AppCompatActivity{
             System.out.println("button view not available");
         }
     }
-
+    boolean isStorage(String path){
+        for(int i=0;i<storage_count;i++)
+            if(((EntryItem)list.get(i)).getPath().equals(path))return true;
+        return false;
+    }
     private void sendScroll(final HorizontalScrollView scrollView) {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
@@ -1947,37 +2010,64 @@ public class MainActivity extends AppCompatActivity{
         else return a;
     }
 
-    public void updatePath(@NonNull final String news, boolean calcsize, boolean results) {
+    public void updatePath(@NonNull final String news,  boolean results,int
+            openmode,int folder_count,int file_count) {
+
+        if(news.length()==0)return;
         File f = null;
         if (news == null) return;
-        if (news.startsWith("smb:/"))
+        if (openmode==1 && news.startsWith("smb:/"))
             newPath = parseSmbPath(news);
+        else if(openmode==2)
+            switch (Integer.parseInt(news)){
+                case 0:
+                    newPath=getResources().getString(R.string.images);
+                    break;
+                case 1:
+                    newPath=getResources().getString(R.string.videos);
+                    break;
+                case 2:
+                    newPath=getResources().getString(R.string.audio);
+                    break;
+                case 3:
+                    newPath=getResources().getString(R.string.documents);
+                    break;
+                case 4:
+                    newPath=getResources().getString(R.string.apks);
+                    break;
+            }
         else newPath = news;
-
         try {
             f = new File(newPath);
         } catch (Exception e) {
             return;
         }
-        if (!results) {
-            TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
-            textView.setText("");
-            if (calcsize) {
-                String used = utils.readableFileSize(f.getTotalSpace() - f.getFreeSpace());
-                String free = utils.readableFileSize(f.getFreeSpace());
-                textView.setText(getResources().getString(R.string.used) + " " + used + " " + getResources().getString(R.string.free) + " " + free);
-            }
-        }
         final TextView bapath = (TextView) pathbar.findViewById(R.id.fullpath);
         final TextView animPath = (TextView) pathbar.findViewById(R.id.fullpath_anim);
+        if (!results) {
+            TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
+            textView.setText(folder_count + " " + getResources().getString(R.string.folders)+"" +
+                    " " +file_count + " " + getResources().getString(R.string.files));
+        }
         final String oldPath = bapath.getText().toString();
+        if(oldPath!=null && oldPath.equals(newPath))return;
+
+
         // implement animation while setting text
-        final StringBuilder stringBuilder = new StringBuilder();
-        if (newPath.length() >= oldPath.length()) {
+        newPathBuilder = new StringBuilder().append(newPath);
+        oldPathBuilder = new StringBuilder().append(oldPath);
+
+        final Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in);
+        Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_out);
+
+        if (newPath.length() >= oldPath.length() &&
+                newPathBuilder.delete(oldPath.length(), newPath.length()).toString().equals(oldPath) &&
+                oldPath.length()!=0) {
+
             // navigate forward
-            Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in);
-            stringBuilder.append(newPath);
-            stringBuilder.delete(0, oldPath.length());
+            newPathBuilder = new StringBuilder();
+            newPathBuilder.append(newPath);
+            newPathBuilder.delete(0, oldPath.length());
             animPath.setAnimation(slideIn);
             animPath.animate().setListener(new AnimatorListenerAdapter() {
                 @Override
@@ -1991,7 +2081,7 @@ public class MainActivity extends AppCompatActivity{
                 public void onAnimationStart(Animator animation) {
                     super.onAnimationStart(animation);
                     animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(stringBuilder.toString());
+                    animPath.setText(newPathBuilder.toString());
                     //bapath.setText(oldPath);
 
                     scroll.post(new Runnable() {
@@ -2001,12 +2091,14 @@ public class MainActivity extends AppCompatActivity{
                         }
                     });
                 }
-            }).start();
-        } else if (newPath.length() <= oldPath.length()) {
+            }).setStartDelay(500).start();
+        } else if (newPath.length() <= oldPath.length() &&
+                oldPathBuilder.delete(newPath.length(), oldPath.length()).toString().equals(newPath)) {
+
             // navigate backwards
-            Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_out);
-            stringBuilder.append(oldPath);
-            stringBuilder.delete(0, newPath.length());
+            oldPathBuilder = new StringBuilder();
+            oldPathBuilder.append(oldPath);
+            oldPathBuilder.delete(0, newPath.length());
             animPath.setAnimation(slideOut);
             animPath.animate().setListener(new AnimatorListenerAdapter() {
                 @Override
@@ -2027,7 +2119,7 @@ public class MainActivity extends AppCompatActivity{
                 public void onAnimationStart(Animator animation) {
                     super.onAnimationStart(animation);
                     animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(stringBuilder.toString());
+                    animPath.setText(oldPathBuilder.toString());
                     bapath.setText(newPath);
 
                     scroll.post(new Runnable() {
@@ -2037,7 +2129,92 @@ public class MainActivity extends AppCompatActivity{
                         }
                     });
                 }
-            }).start();
+            }).setStartDelay(500).start();
+        } else if (oldPath.isEmpty()) {
+
+            // case when app starts
+            COUNTER++;
+            if (COUNTER==2) {
+
+                animPath.setAnimation(slideIn);
+                animPath.setText(newPath);
+                animPath.animate().setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        animPath.setVisibility(View.VISIBLE);
+                        bapath.setText("");
+                        scroll.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                scroll1.fullScroll(View.FOCUS_RIGHT);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        animPath.setVisibility(View.GONE);
+                        bapath.setText(newPath);
+                    }
+                }).setStartDelay(500).start();
+            }
+
+        } else {
+
+            // completely different path
+            // first slide out of old path followed by slide in of new path
+            animPath.setAnimation(slideOut);
+            animPath.animate().setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    super.onAnimationStart(animator);
+                    animPath.setVisibility(View.VISIBLE);
+                    animPath.setText(oldPath);
+                    bapath.setText("");
+
+                    scroll.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scroll1.fullScroll(View.FOCUS_LEFT);
+                        }
+                    });
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    super.onAnimationEnd(animator);
+
+                    //animPath.setVisibility(View.GONE);
+                    animPath.setText(newPath);
+                    bapath.setText("");
+                    animPath.setAnimation(slideIn);
+
+                    animPath.animate().setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            animPath.setVisibility(View.GONE);
+                            bapath.setText(newPath);
+                        }
+
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                            // we should not be having anything here in path bar
+                            animPath.setVisibility(View.VISIBLE);
+                            bapath.setText("");
+                            scroll.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    scroll1.fullScroll(View.FOCUS_RIGHT);
+                                }
+                            });
+                        }
+                    }).start();
+                }
+            }).setStartDelay(500).start();
         }
     }
 
@@ -2048,27 +2225,32 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void initiatebbar() {
-        LinearLayout pathbar = (LinearLayout) findViewById(R.id.pathbar);
+        View pathbar =  findViewById(R.id.pathbar);
         TextView textView = (TextView) findViewById(R.id.fullpath);
 
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bbar(((Main) getFragment().getTab()));
-                crossfade();
-                timer.cancel();
-                timer.start();
+                Main m = ((Main) getFragment().getTab());
+                if (m.openMode == 0) {
+                    bbar(m);
+                    crossfade();
+                    timer.cancel();
+                    timer.start();
+                }
             }
         });
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bbar(((Main) getFragment().getTab()));
-                crossfade();
-                timer.cancel();
-                timer.start();
-            }
-        });
+                Main m = ((Main) getFragment().getTab());
+                if (m.openMode == 0) {
+                    bbar(m);
+                    crossfade();
+                    timer.cancel();
+                    timer.start();
+                }
+            }});
 
     }
 
@@ -2147,7 +2329,7 @@ public class MainActivity extends AppCompatActivity{
 
         if (reveal) {
             ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 0f, 1f);
-            animator.setDuration(100); //ms
+            animator.setDuration(300); //ms
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -2158,7 +2340,7 @@ public class MainActivity extends AppCompatActivity{
         } else {
 
             ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0f);
-            animator.setDuration(100); //ms
+            animator.setDuration(300); //ms
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -2179,9 +2361,12 @@ public class MainActivity extends AppCompatActivity{
         if (pending_path != null) {
             try {
                 TabFragment m = getFragment();
-                if (new HFile(pending_path).isDirectory()) {
-                    ((Main) m.getTab()).loadlist((pending_path), false);
-                } else utils.openFile(new File(pending_path), mainActivity);
+                HFile hFile=new HFile(pending_path);
+                if (hFile.isDirectory() && !hFile.isSmb()) {
+                    ((Main) m.getTab()).loadlist((pending_path), false,false);
+                }else if(hFile.isSmb() || hFile.isCustomPath())
+                    ((Main) m.getTab()).loadCustomList((pending_path),false);
+                else utils.openFile(new File(pending_path), mainActivity);
 
             } catch (ClassCastException e) {
                 select = null;
@@ -2312,20 +2497,26 @@ public class MainActivity extends AppCompatActivity{
         ba3.title((R.string.smb_con));
         final View v2 = getLayoutInflater().inflate(R.layout.smb_dialog, null);
         final EditText ip = (EditText) v2.findViewById(R.id.editText);
+        int color=Color.parseColor(fabskin);
+        utils.setTint(ip,color);
         final EditText user = (EditText) v2.findViewById(R.id.editText3);
+        utils.setTint(user,color);
         final EditText pass = (EditText) v2.findViewById(R.id.editText2);
+        utils.setTint(pass,color);
         final CheckBox ch = (CheckBox) v2.findViewById(R.id.checkBox2);
+        utils.setTint(ch,color);
         ch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(ch.isChecked()){
+                if (ch.isChecked()) {
                     user.setEnabled(false);
                     pass.setEnabled(false);
-                }else{
+                } else {
                     user.setEnabled(true);
                     pass.setEnabled(true);
 
-                }}
+                }
+            }
         });
         if (edit) {
             String userp = "", passp = "", ipp = "";
@@ -2354,6 +2545,7 @@ public class MainActivity extends AppCompatActivity{
         ba3.neutralText(R.string.cancel);
         ba3.positiveText(R.string.create);
         if (edit) ba3.negativeText(R.string.delete);
+        ba3.positiveColor(color).negativeColor(color).neutralColor(color);
         ba3.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -2371,7 +2563,7 @@ public class MainActivity extends AppCompatActivity{
                 if (smbFile == null) return;
                 try {
                     if (!edit) {
-                        ma.loadSmblist(smbFile, false);
+                        ma.loadCustomList(smbFile.getPath(), false);
                         if (Servers == null) Servers = new ArrayList<String>();
                         Servers.add(smbFile.getPath());
                         refreshDrawer();
