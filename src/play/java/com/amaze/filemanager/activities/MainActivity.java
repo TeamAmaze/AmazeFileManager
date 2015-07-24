@@ -214,6 +214,8 @@ public class MainActivity extends AppCompatActivity implements
     private boolean mGoogleApiKey = false;
     // string builder object variables for pathBar animations
     private StringBuilder newPathBuilder, oldPathBuilder;
+
+    // counter manages the pathBar animations
     private int COUNTER=0;
 
     /* Request code used to invoke sign in user interactions. */

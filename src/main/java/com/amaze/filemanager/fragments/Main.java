@@ -172,6 +172,8 @@ public class Main extends android.support.v4.app.Fragment {
     public int skinselection;
     boolean stopAnims=true;
     public int file_count,folder_count;
+    private View actionModeView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -670,6 +672,9 @@ public class Main extends android.support.v4.app.Fragment {
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
+            actionModeView = getActivity().getLayoutInflater().inflate(R.layout.actionmode,null);
+            mode.setCustomView(actionModeView);
+
             mainActivity.setPagingEnabled(false);
             mainActivity.floatingActionButton.hideMenuButton(true);
             if (mainActivity.isDrawerLocked) mainActivity.translateDrawerList(true);
@@ -713,6 +718,9 @@ public class Main extends android.support.v4.app.Fragment {
         // may be called multiple times if the mode is invalidated.
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             ArrayList<Integer> positions = adapter.getCheckedItemPositions();
+            TextView textView1 = (TextView) actionModeView.findViewById(R.id.item_count);
+            textView1.setText(positions.size() + "");
+            textView1.setOnClickListener(null);
             mode.setTitle(positions.size() + "");
             hideOption(R.id.openmulti, menu);
             if (openMode==1) {
