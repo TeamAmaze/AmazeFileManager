@@ -149,10 +149,9 @@ public class Main extends android.support.v4.app.Fragment {
     public int theme1;
     public float[] color;
     public ColorMatrixColorFilter colorMatrixColorFilter;
-    public Animation animation, animation1;
     public String year, goback;
     ArrayList<String> hiddenfiles;
-    String Intentpath, itemsstring;
+    String itemsstring;
     int no;
     TabHandler tabHandler;
     LinearLayoutManager mLayoutManager;
@@ -220,6 +219,7 @@ public class Main extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
+        mToolbarContainer = getActivity().findViewById(R.id.lin);
         listView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -231,9 +231,17 @@ public class Main extends android.support.v4.app.Fragment {
                 return false;
             }
         });
-        animation = AnimationUtils.loadAnimation(getActivity(), R.anim.load_list_anim);
-        animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_newtab);
-        mToolbarContainer = getActivity().findViewById(R.id.lin);
+        mToolbarContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(adapter!=null && stopAnims)
+                {
+                    stopAnimation();
+                    stopAnims=false;
+                }
+                return false;
+            }
+        });
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
         pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
         showThumbs = Sp.getBoolean("showThumbs", true);
