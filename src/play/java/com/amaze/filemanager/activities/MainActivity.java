@@ -739,10 +739,10 @@ public class MainActivity extends AppCompatActivity implements
                 } else mDrawerLayout.openDrawer(mDrawerLinear);
             }
         });*/
-
+        if(mDrawerToggle!=null){
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer_l);
-
+        }
         //recents header color implementation
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
@@ -916,7 +916,7 @@ public class MainActivity extends AppCompatActivity implements
         for (String file : val) {
             File f = new File(file);
             String name;
-            Drawable  icon1 = ContextCompat.getDrawable(this,R.drawable.ic_sd_storage_white_48dp);
+            Drawable  icon1 = ContextCompat.getDrawable(this,R.drawable.ic_sd_storage_white_56dp);
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
 
@@ -955,7 +955,8 @@ public class MainActivity extends AppCompatActivity implements
             for (String file : s.readS()) {
                 String name = new File(file).getName();
                 books.add(file);
-                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this,R.drawable.folder_drawer_white)));
+                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this,R.drawable
+                        .folder_fab)));
             }
             if(books.size()>0)
                 list.add(new SectionItem());
@@ -1671,7 +1672,7 @@ public class MainActivity extends AppCompatActivity implements
                     String a = intent.getData().getPath();
                     if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
                         list.add(new EntryItem(new File(a).getName(), a, ContextCompat
-                                .getDrawable(mainActivity, R.drawable.ic_sd_storage_white_48dp)));
+                                .getDrawable(mainActivity, R.drawable.ic_sd_storage_white_56dp)));
                         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
                         mDrawerList.setAdapter(adapter);
                     } else {
@@ -1692,10 +1693,9 @@ public class MainActivity extends AppCompatActivity implements
         for (String file : val) {
             File f = new File(file);
             String name;
-            Drawable  icon1 = ContextCompat.getDrawable(this,R.drawable.ic_sd_storage_white_48dp);
+            Drawable  icon1 = ContextCompat.getDrawable(this,R.drawable.ic_sd_storage_white_56dp);
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
-
             } else if ("/storage/sdcard1".equals(file)) {
                 name = getResources().getString(R.string.extstorage);
             } else if ("/".equals(file)) {
@@ -1720,7 +1720,8 @@ public class MainActivity extends AppCompatActivity implements
 
             for (String file : books) {
                 String name = new File(file).getName();
-                list.add(new EntryItem(name, file,  ContextCompat.getDrawable(this,R.drawable.folder_drawer_white)));
+                list.add(new EntryItem(name, file,  ContextCompat.getDrawable(this,R.drawable
+                        .folder_fab)));
             }
             list.add(new SectionItem());
         }
@@ -2281,7 +2282,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
-            }).setStartDelay(500).start();
+            }).setStartDelay(100).start();
         } else if (newPath.length() <= oldPath.length() &&
                 oldPathBuilder.delete(newPath.length(), oldPath.length()).toString().equals(newPath)) {
 
@@ -2319,7 +2320,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
-            }).setStartDelay(500).start();
+            }).setStartDelay(100).start();
         } else if (oldPath.isEmpty()) {
 
             // case when app starts
@@ -2348,7 +2349,7 @@ public class MainActivity extends AppCompatActivity implements
                         animPath.setVisibility(View.GONE);
                         bapath.setText(newPath);
                     }
-                }).setStartDelay(500).start();
+                }).setStartDelay(100).start();
             }
 
         } else {

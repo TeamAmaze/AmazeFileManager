@@ -143,7 +143,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         if (isCancelled()) {
             bitmap = null;
 
-        }    ma.createViews(bitmap, back, path,openmode);
+        }    ma.createViews(bitmap, back, path,openmode,false);
 
     }
     ArrayList<String[]> listaudio(){

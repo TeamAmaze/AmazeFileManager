@@ -119,6 +119,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     @Override
     public long getHeaderId(int position) {
+        if(position<0)return -1;
         if(position>=0 && position<enter.size()+1)
             if(position==0)return -1;
         if(enter.get(position-1)==null)return -1;
@@ -144,7 +145,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-        if(i!=0){
+        if(i>0){
         HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
         if(enter.get(i-1)!=null && enter.get(i-1).isDirectory())holder.ext.setText(R.string.directories);
         else holder.ext.setText(R.string.files);
@@ -183,8 +184,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     }
 
     void animate(RarAdapter.ViewHolder holder){    holder.rl.clearAnimation();
-        localAnimation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.fade_in_top);
-        localAnimation.setInterpolator(new LinearOutSlowInInterpolator());
+        holder.rl.clearAnimation();
+        localAnimation = AnimationUtils.loadAnimation(zipViewer.getActivity(), android.R.anim.fade_in);
         localAnimation.setStartOffset(this.offset);
         holder.rl.startAnimation(localAnimation);
         this.offset = (30 + this.offset);
@@ -202,6 +203,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         {
             animate(holder);
         }
+        if(position1<0)return;
         if(position1==0){
             holder.rl.setMinimumHeight(zipViewer.paddingTop);
             return;

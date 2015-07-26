@@ -71,6 +71,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -172,7 +174,7 @@ public class Main extends android.support.v4.app.Fragment {
     boolean stopAnims=true;
     public int file_count,folder_count;
     private View actionModeView;
-
+    View nofilesview;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -234,10 +236,9 @@ public class Main extends android.support.v4.app.Fragment {
         mToolbarContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(adapter!=null && stopAnims)
-                {
+                if (adapter != null && stopAnims) {
                     stopAnimation();
-                    stopAnims=false;
+                    stopAnims = false;
                 }
                 return false;
             }
@@ -297,6 +298,7 @@ public class Main extends android.support.v4.app.Fragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
         mainActivity = (MainActivity) getActivity();
+        initNoFileLayout();
         utils = new Futils();
         String x = getSelectionColor();
         skinselection = Color.parseColor(x);
@@ -309,21 +311,16 @@ public class Main extends android.support.v4.app.Fragment {
         rootMode = Sp.getBoolean("rootmode", false);
         showHidden = Sp.getBoolean("showHidden", false);
         coloriseIcons = Sp.getBoolean("coloriseIcons", true);
-        if (islist) {
-            folder = res.getDrawable(R.drawable.ic_grid_folder_new);
-        } else {
-            folder = res.getDrawable(R.drawable.ic_grid_folder1);
-        }
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
         getSortModes();
         darkimage = res.getDrawable(R.drawable.ic_doc_image_dark);
         darkvideo = res.getDrawable(R.drawable.ic_doc_video_dark);
         this.setRetainInstance(false);
          f= new HFile(current);
-        if (!current.startsWith("smb:/") && !f.isDirectory()) {
+        if (!f.isCustomPath() && !f.isSmb() && !f.isDirectory()) {
             File file=new File(current);
             utils.openFile(file, mainActivity);
-            f = new HFile(file.getParent());
+            current=(file.getParent());
         }
         mainActivity.initiatebbar();
 
@@ -339,6 +336,7 @@ public class Main extends android.support.v4.app.Fragment {
         });
         mToolbarHeight = getToolbarHeight(getActivity());
         paddingTop = (mToolbarHeight) + dpToPx(72);
+        if (hidemode == 2) mToolbarHeight = paddingTop;
         mSwipeRefreshLayout.setProgressViewOffset(true, paddingTop, paddingTop + dpToPx(30));
         mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor(fabSkin));
         DefaultItemAnimator animator=new DefaultItemAnimator();
@@ -346,13 +344,16 @@ public class Main extends android.support.v4.app.Fragment {
         mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
              @Override
              public void onGlobalLayout() {
+                 if (hidemode != 2) mToolbarHeight = mainActivity.toolbar.getHeight();
+                 else mToolbarHeight = paddingTop;
                  paddingTop = mToolbarContainer.getHeight();
                  if (!islist && (columns == 0 || columns == -1)) {
                      int screen_width = listView.getWidth();
                      int dptopx = dpToPx(120);
                      columns = screen_width / dptopx;
                      mLayoutManagerGrid.setSpanCount(columns);
-                 }
+                 }paddingTop = mToolbarContainer.getHeight();
+
                  mSwipeRefreshLayout.setProgressViewOffset(true, paddingTop, paddingTop + dpToPx(72));
                  if(savedInstanceState!=null && !islist)retrieveFromSavedInstance(savedInstanceState);
                  if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
@@ -364,7 +365,7 @@ public class Main extends android.support.v4.app.Fragment {
 
          });
         if (savedInstanceState == null) {
-            loadlist(f.getPath(), false, true);
+            loadlist(current, false, true);
 
         } else {
             if(islist)
@@ -389,13 +390,13 @@ public class Main extends android.support.v4.app.Fragment {
             file_count = savedInstanceState.getInt("file_count", 0);
             if (savedInstanceState.getBoolean("results")) {
                 try {
-                    createViews(list, true, (current), openMode);
+                    createViews(list, true, (current), openMode,true);
                     pathname.setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
                     results = true;
                 } catch (Exception e) {
                 }
             } else {
-                createViews(list, true, (cur), openMode);
+                createViews(list, true, (cur), openMode,false);
             }
             if (savedInstanceState.getBoolean("selection")) {
 
@@ -443,7 +444,7 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
     public void home() {
-        ma.loadlist((ma.home), false,false);
+        ma.loadlist((ma.home), false, false);
     }
 
 
@@ -574,9 +575,16 @@ public class Main extends android.support.v4.app.Fragment {
 
 
     @SuppressWarnings("unchecked")
+    void initNoFileLayout(){
+    nofilesview=rootView.findViewById(R.id.nofilelayout);
+    if(theme1==0)
+        ((ImageView)nofilesview.findViewById(R.id.image)).setColorFilter(Color.parseColor
+                ("#666666"));
+    else ((TextView)nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
+    }
 
-
-    public void createViews(ArrayList<Layoutelements> bitmap, boolean back, String f,int openMode) {
+    public void createViews(ArrayList<Layoutelements> bitmap, boolean back, String f,int
+            openMode,boolean results) {
         try {
             if (bitmap != null) {
                 if (gobackitem)
@@ -585,6 +593,16 @@ public class Main extends android.support.v4.app.Fragment {
                             bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "..", "", "", goback, 0, false, true, ""));
                     }
 
+                if(bitmap.size()==0 && !results) {
+                    nofilesview.setVisibility(View.VISIBLE);
+                    listView.setVisibility(View.GONE);
+                    mSwipeRefreshLayout.setEnabled(false);
+                }else {
+                    mSwipeRefreshLayout.setEnabled(true);
+                    nofilesview.setVisibility(View.GONE);
+                    listView.setVisibility(View.VISIBLE);
+
+                }
                 list=bitmap;
                 if(adapter==null)
                 adapter = new Recycleradapter(ma,
@@ -626,7 +644,7 @@ public class Main extends android.support.v4.app.Fragment {
                     }
                     //floatingActionButton.show();
                     mainActivity.updatepaths(no);
-                    listView.setOnScrollListener(new HidingScrollListener(paddingTop, hidemode) {
+                    listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight, hidemode) {
 
                         @Override
                         public void onMoved(int distance) {
@@ -1445,9 +1463,8 @@ public class Main extends android.support.v4.app.Fragment {
             if (arrayList1.size() > 0)
             for(Layoutelements layoutelements:arrayList1)
             list.add(layoutelements);
-            adapter.addItem();
             if (!results) {
-                createViews(list, false, (current),openMode);
+                createViews(list, false, (current),openMode,true);
             }
             pathname.setText(R.string.searching);
             if (results) {
@@ -1467,7 +1484,7 @@ public class Main extends android.support.v4.app.Fragment {
 
             @Override
             public void onPostExecute(Void c) {
-                createViews(list, true, (current),openMode);
+                createViews(list, true, (current),openMode,true);
                 pathname.setText(R.string.searchresults);
                 results = true;
             }

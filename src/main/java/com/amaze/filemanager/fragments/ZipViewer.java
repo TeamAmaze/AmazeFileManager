@@ -160,6 +160,29 @@ public class ZipViewer extends Fragment {
         s = getArguments().getString("path");
         f = new File(s);
         mToolbarContainer = getActivity().findViewById(R.id.lin);
+        mToolbarContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(stopAnims)
+                    if(openmode==0 && zipAdapter!=null){
+
+                        if ((!zipAdapter.stoppedAnimation) )
+                        {
+                            stopAnim();
+                        }
+                        zipAdapter.stoppedAnimation = true;
+                    }
+                    else {
+                        if ((!rarAdapter.stoppedAnimation) )
+                        {
+                            stopAnim();
+                        }
+                        rarAdapter.stoppedAnimation = true;
+
+                    }stopAnims=false;
+                return false;
+            }
+        });
         hidemode = Sp.getInt("hidemode", 0);
         listView.setVisibility(View.VISIBLE);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -554,11 +577,14 @@ public class ZipViewer extends Fragment {
         stopAnims=true;
         if (!addheader) {
             listView.removeItemDecoration(dividerItemDecoration);
+            listView.removeItemDecoration(headersDecor);
             addheader = true;
         }
         if (addheader) {
             dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, false, showDividers);
             listView.addItemDecoration(dividerItemDecoration);
+            headersDecor = new StickyRecyclerHeadersDecoration(openmode==0?zipAdapter:rarAdapter);
+            listView.addItemDecoration(headersDecor);
             addheader = false;
         }
         listView.setOnScrollListener(new HidingScrollListener(paddingTop, hidemode) {

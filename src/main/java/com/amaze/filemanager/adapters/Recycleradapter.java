@@ -46,7 +46,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     int item_count,column,count_factor,rowHeight;
     boolean topFab;
     int grey_color;
-    int c1,c2,c3,c4,c5,c6,c7,c8,c9;
+    int c1,c2,c3,c4,c5,c6,c7,c8,c9,anim;
 
     public Recycleradapter(Main m,ArrayList<Layoutelements> items,Context context){
         this.main=m;
@@ -73,6 +73,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         item_count=items.size()+count_factor;
         rowHeight=main.dpToPx(100);
         grey_color=Color.parseColor("#666666");
+        anim = /*main.islist?R.anim.fade_in_top:*/android.R.anim.fade_in;
     }
     public void addItem(){
         notifyDataSetChanged();
@@ -214,7 +215,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     void animate(Recycleradapter.ViewHolder holder){
         holder.rl.clearAnimation();
-        localAnimation = AnimationUtils.loadAnimation(context, R.anim.fade_in_top);
+        localAnimation = AnimationUtils.loadAnimation(context,anim);
         localAnimation.setStartOffset(this.offset);
         holder.rl.startAnimation(localAnimation);
         this.offset+=30;
@@ -250,9 +251,11 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             return;}}
         else{
             i=main.columns;
-            if(p1>=0 && p1<i){
+            if(p1>=0 && p1<i)
+            {
                 holder.rl.setMinimumHeight(main.paddingTop);
-                return;}
+                return;
+            }
         }
         final int p=p1-i;
         final Layoutelements rowItem = items.get(p);
@@ -570,6 +573,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     @Override
     public long getHeaderId(int i) {
+        if(items.size()==0)return -1;
         if(i>=0 && i<item_count)
         if(main.islist){
             if(i!=0 && (topFab ?i!=0: i!=item_count-1)){

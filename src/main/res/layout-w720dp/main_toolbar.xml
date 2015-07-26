@@ -200,7 +200,7 @@
                 android:id="@+id/menu_item_top"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/folder_drawer_white"
+                android:src="@drawable/folder_fab"
                 fab:fab_size="mini"
                 fab:fab_label="@string/folder" />
 
