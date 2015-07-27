@@ -73,7 +73,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         item_count=items.size()+count_factor;
         rowHeight=main.dpToPx(100);
         grey_color=Color.parseColor("#666666");
-        anim = /*main.islist?R.anim.fade_in_top:*/android.R.anim.fade_in;
+        anim = /*main.islist?R.anim.fade_in_top:*/R.anim.fade_in_top;
     }
     public void addItem(){
         notifyDataSetChanged();

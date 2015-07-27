@@ -419,7 +419,6 @@ public class MainActivity extends AppCompatActivity{
         mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
         mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
 
-
         utils = new Futils();
         s = new Shortcuts(this, "shortcut.xml");
         servers = new Shortcuts(this, "servers.xml");
@@ -702,10 +701,10 @@ public class MainActivity extends AppCompatActivity{
                 } else mDrawerLayout.openDrawer(mDrawerLinear);
             }
         });*/
-
-        mDrawerToggle.setDrawerIndicatorEnabled(true);
-        mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer_l);
-
+        if(mDrawerToggle!=null){
+            mDrawerToggle.setDrawerIndicatorEnabled(true);
+            mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer_l);
+        }
         //recents header color implementation
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
@@ -879,7 +878,7 @@ public class MainActivity extends AppCompatActivity{
         for (String file : val) {
             File f = new File(file);
             String name;
-            Drawable  icon1 = ContextCompat.getDrawable(this,R.drawable.ic_sd_storage_white_48dp);
+            Drawable  icon1 = ContextCompat.getDrawable(this,R.drawable.ic_sd_storage_white_56dp);
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
 
@@ -918,7 +917,8 @@ public class MainActivity extends AppCompatActivity{
             for (String file : s.readS()) {
                 String name = new File(file).getName();
                 books.add(file);
-                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this,R.drawable.folder_drawer_white)));
+                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this,R.drawable
+                        .folder_fab)));
             }
             if(books.size()>0)
                 list.add(new SectionItem());
@@ -1143,7 +1143,7 @@ public class MainActivity extends AppCompatActivity{
 
 
     //// called when the user exits the action mode
-//	
+//
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
@@ -1634,7 +1634,7 @@ public class MainActivity extends AppCompatActivity{
                     String a = intent.getData().getPath();
                     if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
                         list.add(new EntryItem(new File(a).getName(), a, ContextCompat
-                                .getDrawable(mainActivity, R.drawable.ic_sd_storage_white_48dp)));
+                                .getDrawable(mainActivity, R.drawable.ic_sd_storage_white_56dp)));
                         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
                         mDrawerList.setAdapter(adapter);
                     } else {
@@ -1655,26 +1655,25 @@ public class MainActivity extends AppCompatActivity{
         for (String file : val) {
             File f = new File(file);
             String name;
-            Drawable icon1 = ContextCompat.getDrawable(this, R.drawable.ic_sd_storage_white_48dp);
+            Drawable  icon1 = ContextCompat.getDrawable(this,R.drawable.ic_sd_storage_white_56dp);
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
-
             } else if ("/storage/sdcard1".equals(file)) {
                 name = getResources().getString(R.string.extstorage);
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
-                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
+                icon1 = ContextCompat.getDrawable(this,R.drawable.ic_drawer_root_white);
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                list.add(new EntryItem(name, file, icon1));
+                list.add(new EntryItem(name, file,  icon1));
             }
         }
         list.add(new SectionItem());
         if (Servers != null && Servers.size() > 0) {
             for (String file : Servers) {
                 String name = parseSmbPath(file);
-                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this, R.drawable.ic_settings_remote_white_48dp)));
+                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this,R.drawable.ic_settings_remote_white_48dp)));
             }
 
             list.add(new SectionItem());
@@ -1683,22 +1682,23 @@ public class MainActivity extends AppCompatActivity{
 
             for (String file : books) {
                 String name = new File(file).getName();
-                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this, R.drawable.folder_drawer_white)));
+                list.add(new EntryItem(name, file,  ContextCompat.getDrawable(this,R.drawable
+                        .folder_fab)));
             }
             list.add(new SectionItem());
         }
-        list.add(new EntryItem("Images", "0", ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
-        list.add(new EntryItem("Videos", "1", ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
-        list.add(new EntryItem("Audio", "2", ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
-        list.add(new EntryItem("Documents", "3", ContextCompat.getDrawable(this, R.drawable
+        list.add(new EntryItem("Images","0", ContextCompat.getDrawable(this,R.drawable.ic_doc_image)));
+        list.add(new EntryItem("Videos","1",ContextCompat.getDrawable(this,R.drawable.ic_doc_video_am)));
+        list.add(new EntryItem("Audio","2",ContextCompat.getDrawable(this,R.drawable.ic_doc_audio_am)));
+        list.add(new EntryItem("Documents","3",ContextCompat.getDrawable(this,R.drawable
                 .ic_doc_doc_am)));
-        list.add(new EntryItem("Apks", "4", ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
+        list.add(new EntryItem("Apks","4",ContextCompat.getDrawable(this,R.drawable.ic_doc_apk_grid)));
 
 
         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
-    }
 
+    }
 
     public void guideDialogForLEXA(String path) {
         final MaterialDialog.Builder x = new MaterialDialog.Builder(MainActivity.this);
@@ -1731,7 +1731,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-       if (requestCode == 3) {
+        if (requestCode == 3) {
             String p = Sp.getString("URI", null);
             Uri oldUri = null;
             if (p != null) oldUri = Uri.parse(p);
@@ -2091,7 +2091,7 @@ public class MainActivity extends AppCompatActivity{
                         }
                     });
                 }
-            }).setStartDelay(500).start();
+            }).setStartDelay(300).start();
         } else if (newPath.length() <= oldPath.length() &&
                 oldPathBuilder.delete(newPath.length(), oldPath.length()).toString().equals(newPath)) {
 
@@ -2129,7 +2129,7 @@ public class MainActivity extends AppCompatActivity{
                         }
                     });
                 }
-            }).setStartDelay(500).start();
+            }).setStartDelay(300).start();
         } else if (oldPath.isEmpty()) {
 
             // case when app starts
@@ -2158,7 +2158,7 @@ public class MainActivity extends AppCompatActivity{
                         animPath.setVisibility(View.GONE);
                         bapath.setText(newPath);
                     }
-                }).setStartDelay(500).start();
+                }).setStartDelay(300).start();
             }
 
         } else {

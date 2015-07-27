@@ -2282,7 +2282,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
-            }).setStartDelay(100).start();
+            }).setStartDelay(300).start();
         } else if (newPath.length() <= oldPath.length() &&
                 oldPathBuilder.delete(newPath.length(), oldPath.length()).toString().equals(newPath)) {
 
@@ -2320,7 +2320,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
-            }).setStartDelay(100).start();
+            }).setStartDelay(300).start();
         } else if (oldPath.isEmpty()) {
 
             // case when app starts
@@ -2349,7 +2349,7 @@ public class MainActivity extends AppCompatActivity implements
                         animPath.setVisibility(View.GONE);
                         bapath.setText(newPath);
                     }
-                }).setStartDelay(100).start();
+                }).setStartDelay(300).start();
             }
 
         } else {

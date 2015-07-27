@@ -132,6 +132,7 @@ public  final int READ = 4;
         return new ColorStateList(states, colors);
     }
     public  void setTint(CheckBox box, int color) {
+        if(Build.VERSION.SDK_INT>=21)return;
         ColorStateList sl = new ColorStateList(new int[][]{
                 new int[]{-android.R.attr.state_checked},
                 new int[]{android.R.attr.state_checked}
@@ -148,6 +149,7 @@ public  final int READ = 4;
         }
     }
     public void setTint(EditText editText, int color) {
+        if(Build.VERSION.SDK_INT>=21)return;
         ColorStateList editTextColorStateList = createEditTextColorStateList(color);
         if (editText instanceof AppCompatEditText) {
             ((AppCompatEditText) editText).setSupportBackgroundTintList(editTextColorStateList);

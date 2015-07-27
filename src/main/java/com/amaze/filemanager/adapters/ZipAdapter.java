@@ -173,7 +173,7 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     void animate(ZipAdapter.ViewHolder holder){
         holder.rl.clearAnimation();
-        localAnimation = AnimationUtils.loadAnimation(zipViewer.getActivity(), android.R.anim.fade_in);
+        localAnimation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.fade_in_top);
         localAnimation.setStartOffset(this.offset);
         holder.rl.startAnimation(localAnimation);
         this.offset = (30 + this.offset);

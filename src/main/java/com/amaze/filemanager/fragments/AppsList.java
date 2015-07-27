@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.ContextCompat;
 import android.view.ActionMode;
 import android.view.View;
 import android.view.ViewGroup;
@@ -296,7 +297,7 @@ public class AppsList extends ListFragment {
 
                 }
                 for (ApplicationInfo object : c)
-                    a.add(new Layoutelements(getActivity().getResources().getDrawable(R.drawable.ic_doc_apk_grid), object.loadLabel(getActivity().getPackageManager()).toString(), object.publicSourceDir, object.packageName, "", utils.readableFileSize(new File(object.publicSourceDir).length()),new File(object.publicSourceDir).length(), false, new File(object.publicSourceDir).lastModified()+"", false));
+                    a.add(new Layoutelements(ContextCompat.getDrawable(getActivity(),R.drawable.ic_doc_apk_grid), object.loadLabel(getActivity().getPackageManager()).toString(), object.publicSourceDir, object.packageName, "", utils.readableFileSize(new File(object.publicSourceDir).length()),new File(object.publicSourceDir).length(), false, new File(object.publicSourceDir).lastModified()+"", false));
                 Collections.sort(a, new FileListSorter(0, sortby, asc, false));
             } catch (Exception e) {
                 //Toast.makeText(getActivity(), "" + e, Toast.LENGTH_LONG).show();

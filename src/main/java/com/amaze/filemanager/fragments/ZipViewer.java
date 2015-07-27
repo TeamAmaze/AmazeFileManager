@@ -535,7 +535,7 @@ public class ZipViewer extends Fragment {
 
 
     public void bbar() {
-        if (current != null)
+        if (current != null && current.length()!=0)
             mainActivity.updatePath(current,  false,0,folder,file);
         else     mainActivity.updatePath("/", false,0,folder,file);
 

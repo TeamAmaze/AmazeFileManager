@@ -28,6 +28,7 @@ import android.graphics.drawable.*;
 import android.media.ThumbnailUtils;
 import android.os.*;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.widget.*;
 
 import com.amaze.filemanager.R;
@@ -240,7 +241,7 @@ public class IconHolder {
                 d1 = ((BitmapDrawable) d).getBitmap();
                 bitsat = d1;
             } catch (Exception e) {
-                Drawable apk =mContext. getResources().getDrawable(R.drawable.ic_doc_apk_grid);
+                Drawable apk = ContextCompat.getDrawable(mContext, R.drawable.ic_doc_apk_grid);
                 Bitmap apk1 = ((BitmapDrawable) apk).getBitmap();
                 bitsat = apk1;
             }
@@ -268,7 +269,7 @@ public class IconHolder {
 
 				bitsat = bit;// decodeFile(path);//.createScaledBitmap(bits,imageViewReference.get().getHeight(),imageViewReference.get().getWidth(),true);
 			} catch (Exception e) {
-				Drawable img = mContext.getResources().getDrawable(R.drawable.ic_doc_image);
+				Drawable img = ContextCompat.getDrawable(mContext, R.drawable.ic_doc_image);
 				Bitmap img1 = ((BitmapDrawable) img).getBitmap();
 				bitsat = img1;
 			}return bitsat;

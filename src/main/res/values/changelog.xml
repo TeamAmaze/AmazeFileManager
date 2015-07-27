@@ -102,6 +102,8 @@
     <string name="changelog_change_9">- Implemented windows(smb) file sharing&lt;br>
                                       - Faster and better file sharing&lt;br>
                                       - Added list animations&lt;br>
+                                      - Number of files and folders are shown instead of used
+        space&lt;br>
                                       - GridView can now adjust number of columns on its
         own even on rotation(Experimental)&lt;br>
                                       - Separate Properties button for each file in landscape

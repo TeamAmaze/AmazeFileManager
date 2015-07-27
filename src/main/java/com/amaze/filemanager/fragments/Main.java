@@ -631,7 +631,7 @@ public class Main extends android.support.v4.app.Fragment {
                         listView.addItemDecoration(headersDecor);
                         addheader = false;
                     }
-                    results = false;
+                    if(!results)this.results = false;
                     current = f;
                     if (back) {
                         if (scrolls.containsKey(current)) {

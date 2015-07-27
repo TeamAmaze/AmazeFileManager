@@ -32,6 +32,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -92,7 +93,11 @@ public class DbViewer extends AppCompatActivity {
         setSupportActionBar(toolbar);
         skin =PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
         if (Build.VERSION.SDK_INT>=21) {
-            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription
+                    ("Amaze", ((BitmapDrawable) ContextCompat.getDrawable(this,R.mipmap
+                            .ic_launcher))
+                    .getBitmap(),
+                            Color.parseColor(skin));
             ((Activity)this).setTaskDescription(taskDescription);
         }
         skinStatusBar = PreferenceUtils.getStatusColor(skin);
