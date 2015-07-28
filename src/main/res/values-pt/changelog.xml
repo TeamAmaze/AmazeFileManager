@@ -99,8 +99,18 @@
                                    </string>
     <string name="changelog_version_9">
         &lt;font color="#5299f2">&lt;b>v3.0.0&lt;/font>&lt;/b>&lt;br></string>
-    <string name="changelog_change_9">- &lt;br>
-                                      - &lt;br>
-                                      - &lt;br>&lt;br>
+        <string name="changelog_change_9">- Implementação de partilha de ficheiros em Windows(smb)&lt;br>
+                                      - Melhorias ao nível da partilha de ficheiros&lt;br>
+                                      - Adição de animações nas listas&lt;br>
+                                      - Possibilidade de ajustar o número de colunas na vista em grelha,
+        mesmo com a rotação ativa (Experimental)&lt;br>
+                                      - Butão individual de Propriedades para cada ficheiro no modo
+        horizontal e para tablets&lt;br>
+                                      - Novo FAB&lt;br>
+                                      - Melhorias na estrutura do menu&lt;br>
+                                      - Adição de atalhos ao menu para todos os tipos de ficheiros multimédia
+        (Imagens, áudio, vídeos, apk, documentos)&lt;br>
+                                      - Atualização de traduções&lt;br>
+                                      - Diversas correções&lt;br>&lt;br>
                                      </string>
 </resources>
