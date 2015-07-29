@@ -1,31 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-    <!--
-    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
-
-    This file is part of Amaze File Manager.
-
-    Amaze File Manager is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    -->
-
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="170dp"
-    android:id="@+id/second"
-    android:background="@drawable/item_doc_grid"
-    android:foreground="@drawable/item_backgrund"
-    android:layout_margin="2dp">
+             android:layout_width="match_parent"
+             android:layout_height="170dp"
+             android:id="@+id/second"
+             android:background="@drawable/item_doc_grid"
+             android:foreground="@drawable/item_backgrund"
+             android:layout_margin="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -88,7 +67,6 @@
                 android:ellipsize="middle"
                 android:paddingLeft="5dp"
                 android:textSize="14dp"
-                android:fontFamily="sans-serif-medium"
                 android:textColor="@android:color/black"
                 android:layout_gravity="start"
                 android:textAlignment="viewStart"
@@ -108,7 +86,7 @@
             <TextView
                 android:id="@+id/secondLine"
                 android:layout_height="wrap_content"
-                 android:layout_width="wrap_content"
+                android:layout_width="wrap_content"
                 android:layout_alignParentRight="true"
                 android:singleLine="true"
                 android:ellipsize="end"

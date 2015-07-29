@@ -485,7 +485,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setImageDrawable(rowItem.getImageId());
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) {
-                holder.imageView.setColorFilter(null);
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
                 if (main.theme == 1)
@@ -507,8 +506,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 main.ic.loadDrawable(holder.imageView1, (rowItem.getDesc()), null);
 
             }
-            if (main.coloriseIcons) {
-
                 if (rowItem.isDirectory())
                     holder.imageView.setColorFilter(main.icon_skin_color);
 
@@ -537,11 +534,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     holder.imageView.setColorFilter(null);
 
                 else holder.imageView.setColorFilter(main.icon_skin_color);
-
-            } else if (!Icons.isApk(rowItem.getDesc()) && !Icons.isPicture(rowItem.getDesc()))
-                holder.imageView.setColorFilter(main.icon_skin_color);
-            else
-                holder.imageView.setColorFilter(null);
             if (rowItem.getSize().equals(main.goback))
                 holder.imageView.setColorFilter(c1);
             if (checked != null) {

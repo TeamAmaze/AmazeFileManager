@@ -92,29 +92,35 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                     e.printStackTrace();
                 }
             } else if(hFile.isCustomPath()){
+                ArrayList<String[]> arrayList=null;
             switch (Integer.parseInt(path)){
                 case 0:
-                    list=ma.addTo(listImages());
+                    arrayList=(listImages());
                     path="0";
                     break;
                 case 1:
-                    list=ma.addTo(listVideos());
+                    arrayList=(listVideos());
                     path="1";
                     break;
                 case 2:
-                    list=ma.addTo(listaudio());
+                    arrayList=(listaudio());
                     path="2";
                     break;
                 case 3:
-                    list=ma.addTo(listDocs());
+                    arrayList=(listDocs());
                     path="3";
                     break;
                 case 4:
-                    list=ma.addTo(listApks());
+                    arrayList=(listApks());
                     path="4";
                     break;
             }
+            if(arrayList!=null)
+            {
+            list=ma.addTo(arrayList);
             openmode=2;
+            }
+            else return null;
             }
         } else {
             try {
@@ -143,7 +149,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         if (isCancelled()) {
             bitmap = null;
 
-        }    ma.createViews(bitmap, back, path,openmode,false);
+        }    ma.createViews(bitmap, back, path, openmode, false);
 
     }
     ArrayList<String[]> listaudio(){
@@ -161,8 +167,13 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                 null);
 
          ArrayList<String[]> songs = new ArrayList<String[]>();
-        while(cursor.moveToNext()) {
-            songs.add(RootHelper.addFile(new File(cursor.getString(0)), ma.showSize,ma.showHidden));
+        if (cursor.getCount()>0 && cursor.moveToFirst()) {
+            do {
+                String path = cursor.getString(cursor.getColumnIndex
+                        (MediaStore.Files.FileColumns.DATA));
+                String[] strings = RootHelper.addFile(new File(path), ma.showSize, ma.showHidden);
+                if (strings != null) songs.add(strings);
+            } while (cursor.moveToNext());
         }
         cursor.close();
         return songs;
@@ -175,9 +186,12 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                 null,
                 null,
                 null);
-        if (cursor.moveToFirst()) {
+        if (cursor.getCount()>0 && cursor.moveToFirst()) {
             do {
-                songs.add(RootHelper.addFile(new File(cursor.getString(0)), ma.showSize,ma.showHidden));
+                String path=cursor.getString(cursor.getColumnIndex
+                        (MediaStore.Files.FileColumns.DATA));
+                String[] strings=RootHelper.addFile(new File(path), ma.showSize, ma.showHidden);
+                if(strings!=null) songs.add(strings);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -192,10 +206,13 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                 null,
                 null,
                 null);
-        if (cursor.moveToFirst()) {
+        if (cursor.getCount()>0 && cursor.moveToFirst()) {
             do {
-                songs.add(RootHelper.addFile(new File(cursor.getString(0)), ma.showSize,ma.showHidden));
-            } while (cursor.moveToNext());
+                String path=cursor.getString(cursor.getColumnIndex
+                        (MediaStore.Files.FileColumns.DATA));
+                 String[] strings=RootHelper.addFile(new File(path), ma.showSize, ma.showHidden);
+                    if(strings!=null) songs.add(strings);
+                } while (cursor.moveToNext());
         }
         cursor.close();
         return songs;
@@ -206,14 +223,14 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                         .getContentUri("external"), null,
                 null,
                 null, null);
-        if (cursor.moveToFirst()) {
+        if (cursor.getCount()>0 && cursor.moveToFirst()) {
             do {
                 String path=cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
                 if(path!=null && path.endsWith(".apk"))
-                songs.add(RootHelper.addFile(new File(path)
-                        , ma.showSize,ma
-                        .showHidden));
+                { String[] strings=RootHelper.addFile(new File(path), ma.showSize, ma.showHidden);
+                  if(strings!=null) songs.add(strings);
+                }
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -228,14 +245,15 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         String[] types=new String[]{".pdf",".xml",".html",".asm", ".text/x-asm",".def",".in",".rc",
                 ".list",".log",".pl",".prop",".properties",".rc",
                 ".doc",".docx",".msg",".odt",".pages",".rtf",".txt",".wpd",".wps"};
-        if (cursor.moveToFirst()) {
+        if (cursor.getCount()>0 && cursor.moveToFirst()) {
             do {
                 String path=cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                if(path!=null && contains(types,path))
-                    songs.add(RootHelper.addFile(new File(path)
-                            , ma.showSize,ma
-                            .showHidden));
+                if(path!=null && contains(types, path))
+                {
+                    String[] strings=RootHelper.addFile(new File(path), ma.showSize, ma.showHidden);
+                if(strings!=null) songs.add(strings);
+                }
             } while (cursor.moveToNext());
         }
         cursor.close();

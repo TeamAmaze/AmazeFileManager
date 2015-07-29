@@ -366,7 +366,7 @@ public class ZipAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-        if(i!=0){
+        if(i>0){
             HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
         if(enter.get(i-1)!=null && enter.get(i-1).isDirectory())holder.ext.setText("Directories");
         else holder.ext.setText("Files");

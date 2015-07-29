@@ -212,12 +212,6 @@ public class MainActivity extends AppCompatActivity implements
     String oppathe, oppathe1;
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
-    // string builder object variables for pathBar animations
-    private StringBuilder newPathBuilder, oldPathBuilder;
-
-    // counter manages the pathBar animations
-    private int COUNTER=0;
-
     /* Request code used to invoke sign in user interactions. */
     private static final int RC_SIGN_IN = 0;
 
@@ -2244,21 +2238,14 @@ public class MainActivity extends AppCompatActivity implements
         if(oldPath!=null && oldPath.equals(newPath))return;
 
 
-        // implement animation while setting text
-        newPathBuilder = new StringBuilder().append(newPath);
-        oldPathBuilder = new StringBuilder().append(oldPath);
-
         final Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in);
         Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_out);
 
-        if (newPath.length() >= oldPath.length() &&
-                newPathBuilder.delete(oldPath.length(), newPath.length()).toString().equals(oldPath) &&
-                oldPath.length()!=0) {
-
+        final StringBuilder stringBuilder = new StringBuilder();
+        if (newPath.length() >= oldPath.length()) {
             // navigate forward
-            newPathBuilder = new StringBuilder();
-            newPathBuilder.append(newPath);
-            newPathBuilder.delete(0, oldPath.length());
+            stringBuilder.append(newPath);
+            stringBuilder.delete(0, oldPath.length());
             animPath.setAnimation(slideIn);
             animPath.animate().setListener(new AnimatorListenerAdapter() {
                 @Override
@@ -2272,7 +2259,7 @@ public class MainActivity extends AppCompatActivity implements
                 public void onAnimationStart(Animator animation) {
                     super.onAnimationStart(animation);
                     animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(newPathBuilder.toString());
+                    animPath.setText(stringBuilder.toString());
                     //bapath.setText(oldPath);
 
                     scroll.post(new Runnable() {
@@ -2282,14 +2269,11 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
-            }).setStartDelay(300).start();
-        } else if (newPath.length() <= oldPath.length() &&
-                oldPathBuilder.delete(newPath.length(), oldPath.length()).toString().equals(newPath)) {
-
+            }).start();
+        } else if (newPath.length() <= oldPath.length()) {
             // navigate backwards
-            oldPathBuilder = new StringBuilder();
-            oldPathBuilder.append(oldPath);
-            oldPathBuilder.delete(0, newPath.length());
+            stringBuilder.append(oldPath);
+            stringBuilder.delete(0, newPath.length());
             animPath.setAnimation(slideOut);
             animPath.animate().setListener(new AnimatorListenerAdapter() {
                 @Override
@@ -2310,7 +2294,7 @@ public class MainActivity extends AppCompatActivity implements
                 public void onAnimationStart(Animator animation) {
                     super.onAnimationStart(animation);
                     animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(oldPathBuilder.toString());
+                    animPath.setText(stringBuilder.toString());
                     bapath.setText(newPath);
 
                     scroll.post(new Runnable() {
@@ -2320,92 +2304,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
-            }).setStartDelay(300).start();
-        } else if (oldPath.isEmpty()) {
-
-            // case when app starts
-            COUNTER++;
-            if (COUNTER==2) {
-
-                animPath.setAnimation(slideIn);
-                animPath.setText(newPath);
-                animPath.animate().setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        super.onAnimationStart(animation);
-                        animPath.setVisibility(View.VISIBLE);
-                        bapath.setText("");
-                        scroll.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                scroll1.fullScroll(View.FOCUS_RIGHT);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        animPath.setVisibility(View.GONE);
-                        bapath.setText(newPath);
-                    }
-                }).setStartDelay(300).start();
-            }
-
-        } else {
-
-            // completely different path
-            // first slide out of old path followed by slide in of new path
-            animPath.setAnimation(slideOut);
-            animPath.animate().setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animator) {
-                    super.onAnimationStart(animator);
-                    animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(oldPath);
-                    bapath.setText("");
-
-                    scroll.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            scroll1.fullScroll(View.FOCUS_LEFT);
-                        }
-                    });
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animator) {
-                    super.onAnimationEnd(animator);
-
-                    //animPath.setVisibility(View.GONE);
-                    animPath.setText(newPath);
-                    bapath.setText("");
-                    animPath.setAnimation(slideIn);
-
-                    animPath.animate().setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            animPath.setVisibility(View.GONE);
-                            bapath.setText(newPath);
-                        }
-
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            super.onAnimationStart(animation);
-                            // we should not be having anything here in path bar
-                            animPath.setVisibility(View.VISIBLE);
-                            bapath.setText("");
-                            scroll.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    scroll1.fullScroll(View.FOCUS_RIGHT);
-                                }
-                            });
-                        }
-                    }).start();
-                }
-            }).setStartDelay(500).start();
+            }).start();
         }
     }
 

@@ -476,13 +476,10 @@ public class Main extends android.support.v4.app.Fragment {
             if (selection) adapter.toggleChecked(position);
             else {
                 try {
-                    SmbFile g = new SmbFile(list.get(position).getDesc());
-                    if (g.isDirectory())
-                        loadCustomList(g.getPath(), false);
-                    else launch(g);
+                    if (list.get(position).isDirectory())
+                        loadCustomList(list.get(position).getDesc(), false);
+                    else launch(new SmbFile(list.get(position).getDesc()));
                 } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (SmbException e) {
                     e.printStackTrace();
                 }
             }
