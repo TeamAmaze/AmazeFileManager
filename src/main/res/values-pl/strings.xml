@@ -48,6 +48,8 @@
     <string name="create">UTWÓRZ</string>
     <string name="success">Powodzenie</string>
     <string name="filenotexists">Plik nie istnieje</string>
+    <string name="loading">Ładowanie...</string>
+    <string name="file_empty">Plik jest pusty</string>
     <string name="error">Błąd</string>
     <string name="cantlistfiles">Nie można wyświetlić plików bez uprawnień root\'a</string>
     <string name="searchresults">Wyniki wyszukiwania</string>
@@ -259,8 +261,8 @@
 	<string name="invalid_dir">Nieprawidłowy katalog</string>
     <string name="circularimages">Użyj okrągłych ikon dla obrazów i wideo</string>
     <string name="circularicons">Użyj okrągłych ikon</string>
-    <string name="back_title">Klawiszem wstecz</string>
-    <string name="back_summary">Włącza nawigację klawiszem wstecz na górze listy</string>
+    <string name="back_title">Przycisk cofania</string>
+    <string name="back_summary">Włącza klawisz powrotu na górze listy</string>
     <string name="details">Szczegóły</string>
 	<string name="translators">Osoby tłumaczące</string>
     <string name="german_translation_title">Niemiecki</string>
@@ -275,6 +277,9 @@
     <string name="ukrainian_translation_title">Ukraiński</string>
     <string name="portuguese_translation_title">Portugalski</string>
     <string name="polish_translation_title">Polski</string>
+    <string name="korean_translation_title">Koreański</string>
+    <string name="greek_translation_title">Grecki</string>
+
     <string name="zip_viewer">Przeglądarka archiwum</string>
     <string name="unin_system_apk">To jest aplikacja systemowa, usunięcie jej może prowadzić do niestabliności systemu.\nKontynuować?</string>
     <string name="warning">Ostrzeżenie</string>
@@ -336,5 +341,17 @@
     <string name="needsaccess">Wymagany dostęp zapisu</string>
     <string name="needsaccesssummary">Prosze wybrać główny katalog dla \t</string>
     <string name="needsaccesssummary1">\taby przyznać dostęp zapisu dla operacji.</string>
+    <string name="smb_con">Połączenie SMB</string>
+    <string name="smb_server">Serwer: Adres IP lub Adres IP/SharedFolder</string>
+    <string name="username">Nazwa użytkownika</string>
+    <string name="password">Hasło</string>
+    <string name="anonymous">Anonimowy</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="extstorage">Pamięć zewnętrzna</string>
+    <string name="folders">Foldery</string>
+    <string name="videos">Filmy</string>
+    <string name="apks">Aplikacje</string>
+    <string name="documents">Dokumenty</string>
+    <string name="images">Obrazki</string>
 </resources>
 
