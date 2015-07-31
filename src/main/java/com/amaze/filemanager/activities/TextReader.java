@@ -444,7 +444,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
             writeTextFile(mFile.getPath(), mInput.getText().toString());
             return true;
         } else if (item.getItemId() == R.id.details) {
-            utils.showProps(mFile, c, theme1);
+            utils.showProps(mFile, this, theme1);
             return true;
         } else if (item.getItemId() == R.id.openwith) {
             utils.openunknown(mFile, c, false);

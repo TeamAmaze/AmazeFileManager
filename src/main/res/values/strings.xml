@@ -353,5 +353,6 @@
     <string name="apks">Apks</string>
     <string name="documents">Documents</string>
     <string name="images">Images</string>
+    <string name="clear">Clear</string>
 </resources>
 

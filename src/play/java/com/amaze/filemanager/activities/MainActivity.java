@@ -32,8 +32,6 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -557,10 +555,10 @@ public class MainActivity extends AppCompatActivity implements
                 mReturnIntent = true;
                 Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
             } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
-
                 // ringtone picker intent
                 mReturnIntent = true;
                 mRingtonePickerIntent = true;
+               System.out.println( intent.getData());
                 Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
             } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
 
@@ -933,11 +931,7 @@ public class MainActivity extends AppCompatActivity implements
                     Servers.add(s);
                     list.add(new EntryItem(parseSmbPath(s), s,ContextCompat.getDrawable(this,R.drawable.ic_settings_remote_white_48dp)));
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (SAXException e) {
-                e.printStackTrace();
-            } catch (ParserConfigurationException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             if (Servers.size() > 0)
@@ -1293,7 +1287,7 @@ public class MainActivity extends AppCompatActivity implements
                 final String path1 = ma.current;
                 final MaterialDialog.Builder ba2 = new MaterialDialog.Builder(this);
                 ba2.title((R.string.newfile));
-                View v1 = getLayoutInflater().inflate(R.layout.dialog, null);
+                View v1 = getLayoutInflater().inflate(R.layout.dialog_rename, null);
                 final EditText edir1 = (EditText) v1.findViewById(R.id.newname);
                 utils.setTint(edir1,Color.parseColor(fabskin));
                 edir1.setHint(utils.getString(this, R.string.entername));
@@ -2452,6 +2446,8 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 TabFragment m = getFragment();
                 HFile hFile=new HFile(pending_path);
+                Main main=((Main) m.getTab());
+                if(main!=null)
                 if (hFile.isDirectory() && !hFile.isSmb()) {
                     ((Main) m.getTab()).loadlist((pending_path), false,false);
                 }else if(hFile.isSmb() || hFile.isCustomPath())

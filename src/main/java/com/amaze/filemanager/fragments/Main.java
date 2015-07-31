@@ -26,6 +26,8 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -40,6 +42,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -535,11 +538,9 @@ public class Main extends android.support.v4.app.Fragment {
 
         Intent intent = new Intent();
         if (mainActivity.mRingtonePickerIntent) {
-
-            Log.d("pickup", "ringtone");
-            Uri uri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
-
-            intent.putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_PICKED_URI, uri);
+            Uri uri=MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, uri);
+            intent.setType("audio/mp3");
             getActivity().setResult(getActivity().RESULT_OK, intent);
             getActivity().finish();
         } else {
@@ -571,7 +572,6 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
 
-    @SuppressWarnings("unchecked")
     void initNoFileLayout(){
     nofilesview=rootView.findViewById(R.id.nofilelayout);
     if(theme1==0)

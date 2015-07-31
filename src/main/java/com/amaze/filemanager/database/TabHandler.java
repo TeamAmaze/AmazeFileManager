@@ -88,9 +88,9 @@ public class TabHandler extends SQLiteOpenHelper {
         Tab tab = new Tab();
         if (cursor.moveToFirst()) {
             cursor.moveToFirst();
-            tab.setTab((cursor.getInt(cursor.getColumnIndex(COLUMN_TAB_NO))));
-            tab.setPath(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
-            tab.setHome(cursor.getString(cursor.getColumnIndex(COLUMN_HOME)));
+            tab.setTab((cursor.getInt(0)));
+            tab.setPath(cursor.getString(1));
+            tab.setHome(cursor.getString(2));
             cursor.close();
         } else {
             tab = null;
@@ -107,12 +107,12 @@ public class TabHandler extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
         // Looping through all rows and adding them to list
-        if (cursor.moveToFirst()) {
+        if (cursor.getCount()>0 && cursor.moveToFirst()) {
             do {
                 Tab tab = new Tab();
-                tab.setTab((cursor.getInt(cursor.getColumnIndex(COLUMN_TAB_NO))));
-                tab.setPath(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
-                tab.setHome(cursor.getString(cursor.getColumnIndex(COLUMN_HOME)));
+                tab.setTab((cursor.getInt(0)));
+                tab.setPath(cursor.getString(1));
+                tab.setHome(cursor.getString(2));
                 //Adding them to list
                 tabList.add(tab);
             } while (cursor.moveToNext());

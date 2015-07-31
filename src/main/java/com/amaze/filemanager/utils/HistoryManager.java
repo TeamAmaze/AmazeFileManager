@@ -52,7 +52,9 @@ public class HistoryManager {
         } while (c.moveToPrevious());
         return paths;
     }
-
+    public void clear(){
+        db.execSQL("DELETE FROM "+table+" WHERE PATH is NOT NULL");
+    }
     public void addPath(String path) {
         try {
             try {

@@ -45,9 +45,11 @@ import android.support.v7.widget.AppCompatEditText;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
@@ -57,9 +59,11 @@ import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
+import com.amaze.filemanager.ui.CircleAnimation;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.ui.views.SizeDrawable;
 import com.amaze.filemanager.utils.share.ShareTask;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
@@ -237,18 +241,6 @@ public  final int READ = 4;
                 / Math.pow(1024, digitGroups))
                 + "" + units[digitGroups];
     }
-
-    public String getFileExtension(String url) {
-        try {
-            int a = url.lastIndexOf(".");
-            int b = url.length();
-            return url.substring(a, b);
-        } catch (Exception e) {
-            return "";
-        }
-
-    }
-
     private boolean isSelfDefault(File f, Context c){
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);
@@ -354,8 +346,8 @@ public void openWith(final File f,final Context c) {
         c.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-            Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_SHORT).show();
-            b.mainActivity.deleteFiles(todelete);
+                Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_SHORT).show();
+                b.mainActivity.deleteFiles(todelete);
             }
 
             @Override
@@ -440,6 +432,12 @@ public void openWith(final File f,final Context c) {
         a.title(getString(c.getActivity(), R.string.properties));
         if(c.theme1==1)
             a.theme(Theme.DARK);
+
+        View v=c.getActivity().getLayoutInflater().inflate(R.layout.properties_dialog,null);
+        SizeDrawable sizeDrawable=(SizeDrawable)v.findViewById(R.id.sizedrawable);
+        TextView textView=(TextView)v.findViewById(R.id.firstline);
+        TextView textView1=(TextView)v.findViewById(R.id.secondLine);
+        a.customView(v,true);
         a.positiveText(R.string.copy_path);
         a.negativeText(getString(c.getActivity(), R.string.copy) + " md5");
         a.positiveColor(Color.parseColor(fabskin));
@@ -449,7 +447,6 @@ public void openWith(final File f,final Context c) {
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-
                 c.mainActivity.copyToClipboard(c.getActivity(), f);
                 Toast.makeText(c.getActivity(), c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
             }
@@ -460,10 +457,24 @@ public void openWith(final File f,final Context c) {
         });
         MaterialDialog materialDialog=a.build();
         materialDialog.show();
-        new GenerateMD5Task(materialDialog, hFile, name, parent, size, items, date,c.getActivity()).execute(f);
+        new GenerateMD5Task(materialDialog, hFile, name, parent, size, items, date,c.getActivity
+                (),textView,sizeDrawable,textView1).execute(f);
     }
-
-    public void showProps(final File f, final Context c,int theme1) {
+    public long[] getSpaces(String s){
+        HFile hFile=new HFile(s);
+        if(!hFile.isSmb() && hFile.isDirectory()){
+            try {
+                File file=new File(s);
+                long[] ints=new long[]{file.getTotalSpace(), file.getFreeSpace(),folderSize
+                        (new File(hFile.getPath()))};
+                return ints;
+            } catch (Exception e) {
+                return new long[]{-1,-1,-1};
+            }
+        }
+        return new long[]{-1,-1,-1};
+    }
+    public void showProps(final File f, final Activity c,int theme1) {
         String date = getString(c, R.string.date) + getdate(f);
         String items = getString(c, R.string.totalitems)+" calculating", size = getString(c, R.string.size)+" calculating", name, parent;
         name = getString(c, R.string.name) + f.getName();
@@ -474,16 +485,21 @@ public void openWith(final File f,final Context c) {
         a.title(getString(c, R.string.properties));
         if(theme1==1)
             a.theme(Theme.DARK);
+
+        View v=c.getLayoutInflater().inflate(R.layout.properties_dialog,null);
+        SizeDrawable sizeDrawable=(SizeDrawable)v.findViewById(R.id.sizedrawable);
+        TextView textView=(TextView)v.findViewById(R.id.firstline);
+        TextView textView1=(TextView)v.findViewById(R.id.secondLine);
+        a.customView(v, true);
         a.positiveText(R.string.copy_path);
         a.negativeText(getString(c, R.string.copy) + " md5");
-        a.neutralText(R.string.cancel);
         a.positiveColor(Color.parseColor(fabskin));
         a.negativeColor(Color.parseColor(fabskin));
+        a.neutralText(R.string.cancel);
         a.neutralColor(Color.parseColor(fabskin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-
                 copyToClipboard(c, f.getPath());
                 Toast.makeText(c, c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
             }
@@ -492,10 +508,11 @@ public void openWith(final File f,final Context c) {
             public void onNegative(MaterialDialog materialDialog) {
             }
         });
-
         MaterialDialog materialDialog=a.build();
         materialDialog.show();
-        new GenerateMD5Task(materialDialog,new HFile( f.getPath()), name, parent, size, items, date,c).execute(f.getPath());
+        new GenerateMD5Task(materialDialog, new HFile(f.getPath()), name, parent, size, items, date,c,
+                textView,
+                sizeDrawable,textView1).execute(f.getPath());
     }
 
     public boolean copyToClipboard(Context context, String text) {
@@ -772,7 +789,16 @@ public void showPackageDialog(final File f,final MainActivity m){
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(Color.parseColor(m.fabSkin));
+        a.negativeText(R.string.clear);
+        a.negativeColor(Color.parseColor(m.fabSkin));
         a.title(R.string.history);
+        a.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onNegative(MaterialDialog dialog) {
+                super.onNegative(dialog);
+                m.history.clear();
+            }
+        });
         if(m.theme1==1)
             a.theme(Theme.DARK);
 

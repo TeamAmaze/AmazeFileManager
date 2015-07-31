@@ -320,7 +320,9 @@ public class TabFragment extends android.support.v4.app.Fragment {
         mViewPager.setOffscreenPageLimit(4);
     }
     public Fragment getTab() {
+        if(fragments.size()==2)
         return fragments.get(mViewPager.getCurrentItem());
+        else return null;
     }
      void updateSpinner(){
         mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
