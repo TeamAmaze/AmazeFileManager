@@ -101,19 +101,16 @@
         <service
 			android:name = ".services.ExtractService"
 			android:label = "Extracting"
-            android:process=":amaze"
 			>	
 		</service>
         <service
 			android:name = ".services.ZipTask"
 			android:label = "Compressing"
-            android:process=":amaze"
             >
 		</service>
 			<service
 			android:name = ".services.CopyService"
 			android:label = "Copying"
-            android:process=":amaze"
             >
 		</service>
     </application>

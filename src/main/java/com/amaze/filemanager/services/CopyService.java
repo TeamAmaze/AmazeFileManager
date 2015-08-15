@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -37,6 +38,8 @@ import android.support.v4.app.NotificationCompat;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.fragments.ProcessViewer;
+import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HFile;
@@ -58,6 +61,7 @@ import jcifs.smb.SmbFile;
 
 public class CopyService extends Service {
     HashMap<Integer, Boolean> hash = new HashMap<Integer, Boolean>();
+    public HashMap<Integer, DataPackage> hash1 = new HashMap<Integer, DataPackage>();
     Notification notification;
     boolean rootmode;
     NotificationManager mNotifyManager;
@@ -70,6 +74,15 @@ public class CopyService extends Service {
         rootmode=Sp.getBoolean("rootmode",false);
         registerReceiver(receiver3, new IntentFilter("copycancel"));
     }
+
+    private final IBinder mBinder = new LocalBinder();
+    public class LocalBinder extends Binder {
+        public CopyService getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return CopyService.this;
+        }
+    }
+
     boolean foreground=true;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -81,6 +94,7 @@ public class CopyService extends Service {
         b.putInt("id", startId);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
+        notificationIntent.putExtra("openprocesses",true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         mBuilder = new NotificationCompat.Builder(c);
         mBuilder.setContentIntent(pendingIntent);
@@ -91,13 +105,24 @@ public class CopyService extends Service {
             startForeground(Integer.parseInt("456"+startId),mBuilder.build());
         foreground=false;
         }
-        b.putBoolean("move",intent.getBooleanExtra("move",false));
+        b.putBoolean("move", intent.getBooleanExtra("move", false));
         b.putString("FILE2", FILE2);
         b.putStringArrayList("files", files);
-        new Doback().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, b);
         hash.put(startId, true);
+        DataPackage intent1 = new DataPackage();
+        intent1.setName(files.get(0));
+        intent1.setTotal(0);
+        intent1.setDone(0);
+        intent1.setId(startId);
+        intent1.setP1(0);
+        intent1.setP2(0);
+        intent1.setMove(intent.getBooleanExtra("move", false));
+        intent1.setCompleted(false);
+        hash1.put(startId,intent1);
+        new Doback().execute(b);
+
         // If we get killed, after returning from here, restart
-        return START_REDELIVER_INTENT;
+        return START_STICKY;
     }
     // Binder given to clients
 
@@ -106,6 +131,17 @@ public class CopyService extends Service {
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
 
+
+    public void setProgressListener(ProgressListener progressListener) {
+        this.progressListener = progressListener;
+    }
+
+    ProgressListener progressListener;
+
+    public interface ProgressListener {
+        void onUpdate(DataPackage dataPackage);
+        void refresh();
+    }
 
     public void onDestroy() {
         this.unregisterReceiver(receiver3);
@@ -130,48 +166,64 @@ public class CopyService extends Service {
 
         @Override
         public void onPostExecute(Integer b) {
-            publishResults("", 0, 0, b, 0, 0, true,move);
+            publishResults("", 0, 0, b, 0, 0, true, move);
+            hash.put(b,false);
+            boolean stop=true;
+            for(int a:hash.keySet()){
+            if(hash.get(a))stop=false;
+            }
+            if(stop)
             stopSelf(b);
 
         }
 
     }
 
-    private void publishResults(String a, int p1, int p2, int id, long total, long done, boolean b,boolean move) {
-        if(hash.get(id)) {
+    private void publishResults(String a, int p1, int p2, int id, long total, long done, boolean b, boolean move) {
+        if (hash.get(id)) {
 
             mBuilder.setProgress(100, p1, false);
             mBuilder.setOngoing(true);
-            int title=R.string.copying;
-            if(move)title=R.string.moving;
-            mBuilder.setContentTitle(utils.getString(c,title));
-            mBuilder.setContentText(new File(a).getName()+" "+utils.readableFileSize(done)+"/"+utils.readableFileSize(total));
-            int id1=Integer.parseInt("456"+id);
-            mNotifyManager.notify(id1,mBuilder.build());
-            if(p1==100 || total==0){
+            int title = R.string.copying;
+            if (move) title = R.string.moving;
+            mBuilder.setContentTitle(utils.getString(c, title));
+            mBuilder.setContentText(new File(a).getName() + " " + utils.readableFileSize(done) + "/" + utils.readableFileSize(total));
+            int id1 = Integer.parseInt("456" + id);
+            mNotifyManager.notify(id1, mBuilder.build());
+            if (p1 == 100 || total == 0) {
                 mBuilder.setContentTitle("Copy completed");
-                if(move)
-                mBuilder.setContentTitle("Move Completed");
+                if (move)
+                    mBuilder.setContentTitle("Move Completed");
                 mBuilder.setContentText("");
-                mBuilder.setProgress(0,0,false);
+                mBuilder.setProgress(0, 0, false);
                 mBuilder.setOngoing(false);
-                mNotifyManager.notify(id1,mBuilder.build());
-            publishCompletedResult(a,id1);
+                mBuilder.setAutoCancel(true);
+                mNotifyManager.notify(id1, mBuilder.build());
+                publishCompletedResult(id, id1);
             }
-        }else publishCompletedResult(a,Integer.parseInt("456"+id));}
-    public void publishCompletedResult(String a,int id1){
+                DataPackage intent = new DataPackage();
+                intent.setName(a);
+                intent.setTotal(total);
+                intent.setDone(done);
+                intent.setId(id);
+                intent.setP1(p1);
+                intent.setP2(p2);
+                intent.setMove(move);
+                intent.setCompleted(b);
+                hash1.put(id,intent);
+            if(progressListener!=null){
+                progressListener.onUpdate(intent);
+                if(b)progressListener.refresh();
+            }
+        } else publishCompletedResult(id, Integer.parseInt("456" + id));
+    }
+    public void publishCompletedResult(int id,int id1){
         try {
             mNotifyManager.cancel(id1);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
-
-
-
-
     class copy {
         public copy() {
         }
@@ -195,7 +247,6 @@ public class CopyService extends Service {
         }
         long totalBytes = 0L, copiedBytes = 0L;
         int lastpercent=0;
-        int threshold_bytes=1024*1024;
 
         public void execute(int id, final ArrayList<String> files, final String FILE2, final boolean move) {
             if (utils.checkFolder((FILE2), c) == 1) {
@@ -280,7 +331,25 @@ public class CopyService extends Service {
                         if(!targetFile.isSmb())
                         utils.scanFile(targetFile.getPath(), c);
             }}
-        long time=System.nanoTime()/1000000000;
+        long time=System.nanoTime()/500000000;
+        AsyncTask asyncTask;
+        void calculateProgress(final String name,final long fileBytes,final int id,final long
+                size,final boolean move){
+            if(asyncTask!=null && asyncTask.getStatus() == AsyncTask.Status.RUNNING)asyncTask.cancel(true);
+            asyncTask=new AsyncTask<Void,Void,Void>(){
+                int p1,p2;
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    p1 = (int) ((copiedBytes / (float) totalBytes) * 100);
+                    p2=(int) ((fileBytes / (float) size) * 100);
+                    lastpercent = (int)copiedBytes;
+                    return null;
+                }@Override
+            public void onPostExecute(Void v){
+                    publishResults(name, p1,p2 , id, totalBytes, copiedBytes, false, move);
+                }
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
         void copy(InputStream stream,OutputStream outputStream,long size,int id,String name,boolean move) throws IOException {
             long  fileBytes = 0l;
             // txtDetails.append("Copying " + sourceFile.getAbsolutePath() + " ... ");
@@ -297,17 +366,14 @@ public class CopyService extends Service {
                         out.write(buffer, 0, length);
                         copiedBytes += length;
                         fileBytes += length;
-                        long time1=System.nanoTime()/1000000000;
-
-                        if((int)time1>(int)time){
-                            int p = (int) ((copiedBytes / (float) totalBytes) * 100);
-                            publishResults(name, p, (int) ((fileBytes / (float) size) * 100), id, totalBytes, copiedBytes, false, move);
-                            lastpercent = (int)copiedBytes;
-                            time=System.nanoTime()/1000000000;
+                        long time1=System.nanoTime()/500000000;
+                        if(((int)time1)>((int)(time))){
+                            calculateProgress(name,fileBytes,id,size,move);
+                            time=System.nanoTime()/500000000;
                         }
 
                     } else {
-                        publishCompletedResult(name, Integer.parseInt("456" + id));
+                        publishCompletedResult(id, Integer.parseInt("456" + id));
                         in.close();
                         out.close();
                         stopSelf(id);
@@ -333,6 +399,6 @@ public class CopyService extends Service {
     @Override
     public IBinder onBind(Intent arg0) {
         // TODO Auto-generated method stub
-        return null;
+        return mBinder;
     }
 }

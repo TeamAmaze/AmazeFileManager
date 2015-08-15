@@ -1223,10 +1223,12 @@ public class MainActivity extends AppCompatActivity implements
                 ArrayList<String> arrayList = new ArrayList<String>();
                 if (COPY_PATH != null) {
                     arrayList = COPY_PATH;
-                    new CheckForFiles(ma, path, false).execute(arrayList);
+                    new CheckForFiles(ma, path, false).executeOnExecutor(AsyncTask
+                            .THREAD_POOL_EXECUTOR,arrayList);
                 } else if (MOVE_PATH != null) {
                     arrayList = MOVE_PATH;
-                    new CheckForFiles(ma, path, true).execute(arrayList);
+                    new CheckForFiles(ma, path, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                            arrayList);
                 }
                 COPY_PATH = null;
                 MOVE_PATH = null;

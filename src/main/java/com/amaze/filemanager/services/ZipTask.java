@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -34,6 +35,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 
@@ -57,6 +59,7 @@ public class ZipTask extends Service {
     Futils utils = new Futils();
     // Binder given to clients
     HashMap<Integer, Boolean> hash = new HashMap<Integer, Boolean>();
+    public HashMap<Integer, DataPackage> hash1 = new HashMap<Integer, DataPackage>();
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
     String zpath;
@@ -88,6 +91,14 @@ boolean foreground=true;
                 e.printStackTrace();
             }
         }
+        DataPackage intent1 = new DataPackage();
+        intent1.setName(name);
+        intent1.setTotal(0);
+        intent1.setDone(0);
+        intent1.setId(startId);
+        intent1.setP1(0);
+        intent1.setCompleted(false);
+        hash1.put(startId, intent1);
         mBuilder = new NotificationCompat.Builder(this);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.putExtra("openprocesses",true);
@@ -103,10 +114,28 @@ boolean foreground=true;
         b.putInt("id", startId);
         b.putStringArrayList("files", a);
         b.putString("name", name);
-        new Doback().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, b);
         hash.put(startId, true);
+        new Doback().execute(b);
         // If we get killed, after returning from here, restart
-        return START_REDELIVER_INTENT;
+        return START_STICKY;
+    }
+    private final IBinder mBinder = new LocalBinder();
+    public class LocalBinder extends Binder {
+        public ZipTask getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return ZipTask.this;
+        }
+    }
+
+    public void setProgressListener(ProgressListener progressListener) {
+        this.progressListener = progressListener;
+    }
+
+    ProgressListener progressListener;
+
+    public interface ProgressListener {
+        void onUpdate(DataPackage dataPackage);
+        void refresh();
     }
 
     public class Doback extends AsyncTask<Bundle, Void, Integer> {
@@ -130,8 +159,13 @@ boolean foreground=true;
         @Override
         public void onPostExecute(Integer b) {
             publishResults(b, name, 100, true,0,totalBytes);
-             
-            stopSelf(b);
+            hash.put(b,false);
+            boolean stop=true;
+            for(int a:hash.keySet()){
+                if(hash.get(a))stop=false;
+            }
+            if(stop)
+                stopSelf(b);
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
         }
@@ -154,14 +188,20 @@ boolean foreground=true;
                 mBuilder.setOngoing(false);
                 mNotifyManager.notify(id1, mBuilder.build());
                 publishCompletedResult(id1);
+                b=true;
             }
-            Intent intent = new Intent(EXTRACT_CONDITION);
-            intent.putExtra(EXTRACT_PROGRESS, i);
-            intent.putExtra("id", id);
-            intent.putExtra("name", fileName);
-            intent.putExtra(EXTRACT_COMPLETED, b);
-            sendBroadcast(intent);
-
+            DataPackage intent = new DataPackage();
+            intent.setName(fileName);
+            intent.setTotal(total);
+            intent.setDone(done);
+            intent.setId(id);
+            intent.setP1(i);
+            intent.setCompleted(b);
+            hash1.put(id, intent);
+            if(progressListener!=null){
+                progressListener.onUpdate(intent);
+                if(b)progressListener.refresh();
+            }
         } else {
             publishCompletedResult(Integer.parseInt("789" + id));
         }
@@ -186,7 +226,6 @@ boolean foreground=true;
             hash.put(intent.getIntExtra("id", 1), false);
         }
     };
-
     class zip {
         public zip() {
         }
@@ -230,6 +269,27 @@ boolean foreground=true;
 
         ZipOutputStream zos;
         private int isCompressed = 0;
+        AsyncTask asyncTask;
+        void calculateProgress(final String name,final int id, final boolean completed,final long
+                copiedbytes,final long totalbytes)
+        {
+            if(asyncTask!=null && asyncTask.getStatus()== AsyncTask.Status.RUNNING)asyncTask.cancel(true);
+            asyncTask=new AsyncTask<Void,Void,Void>(){
+                int p1,p2;
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    if(isCancelled())return null;
+                    p1 = (int) ((copiedbytes / (float) totalbytes) * 100);
+                    lastpercent = (int)copiedbytes;
+                    if(isCancelled())return null;
+                    return null;
+                }@Override
+                 public void onPostExecute(Void v){
+                    publishResults(id, name, p1, completed, copiedbytes,totalbytes);
+                }
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        }
 
         private void compressFile(int id, File file, String path) throws IOException,NullPointerException {
 
@@ -244,8 +304,7 @@ boolean foreground=true;
                         size += len;
                         int p=(int) ((size / (float) totalBytes) * 100);
                         if(p!=lastpercent || lastpercent==0) {
-                            publishResults(id, fileName, p, false, size, totalBytes);
-                             
+                            calculateProgress(fileName,id,false,size,totalBytes);
                         }lastpercent=p;
                     }
                 }
@@ -268,7 +327,7 @@ boolean foreground=true;
     @Override
     public IBinder onBind(Intent arg0) {
         // TODO Auto-generated method stub
-        return null;
+        return mBinder;
     }
 
     @Override

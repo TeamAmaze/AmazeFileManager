@@ -87,6 +87,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:cardview-v7:22.2.0'
     compile 'com.afollestad:material-dialogs:0.7.4.1'
     compile 'com.github.junrar:junrar:0.7'
     compile 'org.apache.commons:commons-compress:1.8.1'
