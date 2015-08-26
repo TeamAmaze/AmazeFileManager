@@ -30,13 +30,13 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
     private HFile f;
     Context c;
     String md5 = "";
-    TextView textView, textView1;
+    View textView;
     SizeDrawable sizeDrawable;
     GenerateMD5Task g = this;
-
+    TextView t5,t6,t7,t8,t9;
+    TextView md5TextView;
     public GenerateMD5Task(MaterialDialog a, HFile f, String name, String parent,
-                           String size, String items, String date, Context c, TextView textView) {
-
+                           String size, String items, String date, Context c, final View textView) {
         this.a = a;
         this.c = c;
         this.f = f;
@@ -46,22 +46,22 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
         this.items = items;
         this.date = date;
         this.textView = textView;
-    }
-
-    public GenerateMD5Task(MaterialDialog a, HFile f, String name, String parent,
-                           String size, String items, String date, Context c, TextView textView,
-                           SizeDrawable sizeDrawable, TextView textView1) {
-        this.a = a;
-        this.c = c;
-        this.f = f;
-        this.name = name;
-        this.parent = parent;
-        this.size = size;
-        this.items = items;
-        this.date = date;
-        this.textView = textView;
-        this.textView1 = textView1;
-        this.sizeDrawable = sizeDrawable;
+        this.sizeDrawable = (SizeDrawable)textView.findViewById(R.id.sizedrawable);
+        final TextView t1=(TextView)textView.findViewById(R.id.t1);
+        final TextView t2=(TextView)textView.findViewById(R.id.t2);
+        final TextView t3=(TextView)textView.findViewById(R.id.t3);
+        final TextView t4=(TextView)textView.findViewById(R.id.t4);
+        t5=(TextView)textView.findViewById(R.id.t5);
+        t6=(TextView)textView.findViewById(R.id.t6);
+        t7=(TextView)textView.findViewById(R.id.t7);
+        t8=(TextView)textView.findViewById(R.id.t8);
+        t9=(TextView)textView.findViewById(R.id.t9);
+        md5TextView=(TextView)textView.findViewById(R.id.md5);
+        if(!f.isDirectory()) {
+            textView.findViewById(R.id.divider).setVisibility(View.GONE);
+            textView.findViewById(R.id.dirprops).setVisibility(View.GONE);
+        }
+        else
         new AsyncTask<Void, Void, long[]>() {
             @Override
             protected long[] doInBackground(Void... voids) {
@@ -74,22 +74,19 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
             protected void onPostExecute(long[] longs) {
                 super.onPostExecute(longs);
                 Futils futils = new Futils();
-                if (longs[0] != -1 && longs[0]!=0 && g.textView1 != null) {
+                if (longs[0] != -1 && longs[0]!=0 ) {
                     float r1 = (longs[0] - longs[1]) * 360 / longs[0];
                     float r2=(longs[2]) * 360 / longs[0];
-                    g.textView1.setText("Total "+futils.readableFileSize(longs[0]) + "\n" +"Free "+
-                            futils
-                            .readableFileSize
-                                    (longs[1]) + "\n" +"Used "+ futils.readableFileSize(longs[0] -
-                                    longs[1])+"\n"+"Folder Size "+futils.readableFileSize
-                            (longs[2]));
+                    t1.setText(futils.readableFileSize(longs[0]));
+                    t2.setText( futils.readableFileSize(longs[1]));
+                    t3.setText( futils.readableFileSize(longs[0] - longs[1]));
+                    t4.setText(futils.readableFileSize(longs[2]));
 
                     CircleAnimation animation = new CircleAnimation(g.sizeDrawable, r1,r2);
                     animation.setDuration(Math.round(r1 * 5));
                     g.sizeDrawable.startAnimation(animation);
                 } else {
-                    g.sizeDrawable.setVisibility(View.GONE);
-                    g.textView1.setVisibility(View.GONE);
+                    textView.setVisibility(View.GONE);
                 }
 
             }
@@ -99,15 +96,17 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
     @Override
     public void onProgressUpdate(String... ab) {
         if (a != null && a.isShowing()) {
-            textView.setText(name + "\n" + parent + "\n" + size +"\n" + date);
+            t7.setText(items);
         }
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        textView.setText(name + "\n" + parent + "\n" + size + "\n"
-                + date);
+        t5.setText(name);
+        t6.setText(parent);
+        t7.setText(items);
+        t8.setText(date);
         a.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
 
     }
@@ -117,10 +116,10 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
         String param = params[0];
         Futils futils = new Futils();
         if (f.isDirectory()) {
-            items =  futils.getString(c, R.string.totalitems) + f.listFiles(false).size();
+            int x=f.listFiles(false).size();
+            items =  x +" " +futils.getString(c,x==0?R.string.item:R.string.items);
         } else {
-            items = "";
-            size = futils.getString(c, R.string.size) + futils.readableFileSize(f.length());
+            items =  futils.readableFileSize(f.length());
         }
         publishProgress("");
         String md5 = "";
@@ -137,12 +136,12 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
         super.onPostExecute(aVoid);
         if (a.isShowing()) {
             md5 = aVoid;
-            if (f.isDirectory())
-                textView.setText(name + "\n" + parent  + "\n" + items + "\n"
-                        + date );
-            else
-                textView.setText(name + "\n" + parent + "\n" + size  + "\n"
-                        + date + "\n" + "md5:" + aVoid);
+            if (!f.isDirectory())
+                t9.setText(aVoid);
+            else{
+                md5TextView.setVisibility(View.GONE);
+                t9.setVisibility(View.GONE);
+            }
             if (f.isDirectory())
                 a.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
             else {

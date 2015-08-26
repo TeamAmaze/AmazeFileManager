@@ -101,7 +101,6 @@ public  final int READ = 4;
                     length += folderSize(file);
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return length;
     }
@@ -422,10 +421,10 @@ public void openWith(final File f,final Context c) {
         } catch (SmbException e) {
             e.printStackTrace();
         }
-        String date = getString(c.getActivity(), R.string.date) + getdate(last);
-        String items = getString(c.getActivity(), R.string.totalitems)+" calculating", size = getString(c.getActivity(), R.string.size)+" calculating", name, parent;
-        name = getString(c.getActivity(), R.string.name) + hFile.getName();
-        parent = getString(c.getActivity(), R.string.location) + hFile.getParent();
+        String date = getdate(last);
+        String items = " calculating", size = " calculating", name, parent;
+        name = hFile.getName();
+        parent = hFile.getParent();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c.getActivity());
         String fabskin = PreferenceUtils.getFabColor(sp.getInt("fab_skin_color_position", 1));
         MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
@@ -434,12 +433,9 @@ public void openWith(final File f,final Context c) {
             a.theme(Theme.DARK);
 
         View v=c.getActivity().getLayoutInflater().inflate(R.layout.properties_dialog,null);
-        SizeDrawable sizeDrawable=(SizeDrawable)v.findViewById(R.id.sizedrawable);
-        TextView textView=(TextView)v.findViewById(R.id.firstline);
-        TextView textView1=(TextView)v.findViewById(R.id.secondLine);
         a.customView(v,true);
         a.positiveText(R.string.copy_path);
-        a.negativeText(getString(c.getActivity(), R.string.copy) + " md5");
+        a.negativeText( getString(c.getActivity(),R.string.md5_2));
         a.positiveColor(Color.parseColor(fabskin));
         a.negativeColor(Color.parseColor(fabskin));
         a.neutralText(R.string.cancel);
@@ -458,7 +454,7 @@ public void openWith(final File f,final Context c) {
         MaterialDialog materialDialog=a.build();
         materialDialog.show();
         new GenerateMD5Task(materialDialog, hFile, name, parent, size, items, date,c.getActivity
-                (),textView,sizeDrawable,textView1).execute(f);
+                (),v).execute(f);
     }
     public long[] getSpaces(String s){
         HFile hFile=new HFile(s);
@@ -475,10 +471,10 @@ public void openWith(final File f,final Context c) {
         return new long[]{-1,-1,-1};
     }
     public void showProps(final File f, final Activity c,int theme1) {
-        String date = getString(c, R.string.date) + getdate(f);
-        String items = getString(c, R.string.totalitems)+" calculating", size = getString(c, R.string.size)+" calculating", name, parent;
-        name = getString(c, R.string.name) + f.getName();
-        parent = getString(c, R.string.location) + f.getParent();
+        String date = getdate(f);
+        String items =  getString(c,R.string.calculating), size = getString(c,R.string.calculating), name, parent;
+        name =  f.getName();
+        parent = f.getParent();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         String fabskin = PreferenceUtils.getFabColor(sp.getInt("fab_skin_color_position", 1));
         MaterialDialog.Builder a = new MaterialDialog.Builder(c);
@@ -487,12 +483,9 @@ public void openWith(final File f,final Context c) {
             a.theme(Theme.DARK);
 
         View v=c.getLayoutInflater().inflate(R.layout.properties_dialog,null);
-        SizeDrawable sizeDrawable=(SizeDrawable)v.findViewById(R.id.sizedrawable);
-        TextView textView=(TextView)v.findViewById(R.id.firstline);
-        TextView textView1=(TextView)v.findViewById(R.id.secondLine);
         a.customView(v, true);
         a.positiveText(R.string.copy_path);
-        a.negativeText(getString(c, R.string.copy) + " md5");
+        a.negativeText(getString(c, R.string.md5_2));
         a.positiveColor(Color.parseColor(fabskin));
         a.negativeColor(Color.parseColor(fabskin));
         a.neutralText(R.string.cancel);
@@ -510,9 +503,7 @@ public void openWith(final File f,final Context c) {
         });
         MaterialDialog materialDialog=a.build();
         materialDialog.show();
-        new GenerateMD5Task(materialDialog, new HFile(f.getPath()), name, parent, size, items, date,c,
-                textView,
-                sizeDrawable,textView1).execute(f.getPath());
+        new GenerateMD5Task(materialDialog, new HFile(f.getPath()), name, parent, size, items, date,c,v).execute(f.getPath());
     }
 
     public boolean copyToClipboard(Context context, String text) {

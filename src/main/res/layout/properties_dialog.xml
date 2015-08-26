@@ -6,25 +6,195 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/dirprops"
         android:orientation="horizontal">
         <com.amaze.filemanager.ui.views.SizeDrawable
             android:id="@+id/sizedrawable"
             android:layout_width="100dp"
             android:layout_height="100dp"/>
+<TableLayout
+    android:layout_width="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:gravity="center_vertical"
+    android:paddingLeft="10dp"
+    android:layout_height="match_parent"
+    android:minHeight="100dp">
+    <TableRow>
         <TextView
-            android:id="@+id/secondLine"
+            android:text="@string/total"
+            android:fontFamily="sans-serif"
             android:layout_width="wrap_content"
-            android:paddingLeft="15dp"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/t1"
+            android:text="@string/calculating"
+            android:padding="3dp"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:layout_height="match_parent"
-            android:minHeight="100dp"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:text="@string/free"
+            android:fontFamily="sans-serif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/t2"
+            android:text="@string/calculating"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            />
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:text="@string/used"
+            android:fontFamily="sans-serif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/t3"
+            android:text="@string/calculating"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            />
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:text="@string/size"
+            android:fontFamily="sans-serif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/t4"
+            android:text="@string/calculating"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            />
+    </TableRow>
+</TableLayout>
+
     </LinearLayout>
-    <TextView
-        android:paddingTop="5dp"
-        android:id="@+id/firstline"
+    <ImageView
+        android:layout_height="9dp"
+        android:layout_width="match_parent"
+        android:id="@+id/divider"
+        android:background="@android:color/transparent"
+        android:src="@color/divider"
+        android:paddingTop="8dp"/>
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:minHeight="100dp"
+        android:paddingTop="5dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/name"
+                android:fontFamily="sans-serif" />
+
+            <TextView
+                android:id="@+id/t5"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+                android:text="@string/calculating"
+                android:paddingLeft="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/location"
+                android:fontFamily="sans-serif" />
+            <TextView
+                android:id="@+id/t6"
+                android:text="@string/calculating"
+                android:paddingLeft="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/size"
+                android:fontFamily="sans-serif" />
+
+            <TextView
+                android:id="@+id/t7"
+                android:paddingLeft="3dp"
+                android:text="@string/calculating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/date"
+                android:fontFamily="sans-serif" />
+
+            <TextView
+                android:id="@+id/t8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="3dp"
+                android:text="@string/calculating"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"/>
+        </LinearLayout>
+        <LinearLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/md5"
+                android:id="@+id/md5"
+                android:fontFamily="sans-serif" />
+
+            <TextView
+                android:id="@+id/t9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="3dp"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"/>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>
