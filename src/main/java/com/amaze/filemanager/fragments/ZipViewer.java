@@ -306,7 +306,6 @@ public class ZipViewer extends Fragment {
             showOption(R.id.all, menu);
             hideOption(R.id.book, menu);
             hideOption(R.id.compress, menu);
-            hideOption(R.id.permissions, menu);
             hideOption(R.id.hide, menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
             ObjectAnimator anim = ObjectAnimator.ofInt(mainActivity.findViewById(R.id.buttonbarframe), "backgroundColor", Color.parseColor(skin), getResources().getColor(R.color.holo_dark_action_mode));

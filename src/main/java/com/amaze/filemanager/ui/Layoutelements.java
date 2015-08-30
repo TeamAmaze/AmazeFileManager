@@ -120,7 +120,7 @@ public class Layoutelements implements Parcelable {
         return imageId;
     }
 
-
+    public void setImageId(Drawable imageId){this.imageId=imageId;}
     public String getDesc() {
         return desc.toString();
     }

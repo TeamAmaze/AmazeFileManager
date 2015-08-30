@@ -37,6 +37,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -109,6 +110,7 @@ import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.utils.HFile;
+import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.ui.views.RoundedImageView;
@@ -220,6 +222,8 @@ public class MainActivity extends AppCompatActivity implements
     public boolean isDrawerLocked = false;
     static final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3, RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
 
+    public HistoryManager history, hidden,grid,listManager;
+    public ArrayList<String> hiddenfiles,gridfiles,listfiles;
     /**
      * Called when the activity is first created.
      */
@@ -423,7 +427,13 @@ public class MainActivity extends AppCompatActivity implements
         drawerProfilePic = (RoundedImageView) drawerHeaderLayout.findViewById(R.id.profile_pic);
         mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
         mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
-
+        history = new HistoryManager(this, "Table1","Table2");
+        hidden = new HistoryManager(this, "Table2","Table2");
+        grid=new HistoryManager(this,"grid","listgridmodes");
+        listManager=new HistoryManager(this,"list","listgridmodes");
+        hiddenfiles = hidden.readTable();
+        gridfiles=grid.readTable();
+        listfiles=listManager.readTable();
         // initialize g+ api client as per preferences
         if (Sp.getBoolean("plus_pic", false)) {
 
@@ -1077,19 +1087,22 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         }
         if (f.contains("TabFragment")) {
-            try {
-                TabFragment tabFragment = (TabFragment) fragment;
-                Main ma = ((Main) tabFragment.getTab());
-                updatePath(ma.current, ma.results, ma.openMode,ma.folder_count,ma.file_count);
-            } catch (Exception e) {
-            }
-            tabsSpinner.setVisibility(View.VISIBLE);
-            getSupportActionBar().setTitle("");
             if (aBoolean) {
                 s.setTitle(getResources().getString(R.string.gridview));
             } else {
                 s.setTitle(getResources().getString(R.string.listview));
             }
+            try {
+                TabFragment tabFragment = (TabFragment) fragment;
+                Main ma = ((Main) tabFragment.getTab());
+                if(ma.IS_LIST)s.setTitle(R.string.gridview);
+                else s.setTitle(R.string.listview);
+                updatePath(ma.CURRENT_PATH, ma.results, ma.openMode,ma.folder_count,ma.file_count);
+            } catch (Exception e) {
+            }
+            tabsSpinner.setVisibility(View.VISIBLE);
+            getSupportActionBar().setTitle("");
+
             initiatebbar();
             if (Build.VERSION.SDK_INT >= 21) toolbar.setElevation(0);
             invalidatePasteButton(paste);
@@ -1111,6 +1124,10 @@ public class MainActivity extends AppCompatActivity implements
             menu.findItem(R.id.history).setVisible(false);
             menu.findItem(R.id.extract).setVisible(false);
             if (f.contains("ProcessViewer")) menu.findItem(R.id.item10).setVisible(false);
+            else {
+                menu.findItem(R.id.dsort).setVisible(false);
+                menu.findItem(R.id.sortby).setVisible(false);
+            }
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
@@ -1202,24 +1219,53 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.item10:
                 Fragment fragment = getDFragment();
-                if (fragment.getClass().getName().contains("TabFragment"))
-                    utils.showSortDialog(ma);
-                else
+                if (fragment.getClass().getName().contains("AppsList"))
                     utils.showSortDialog((AppsList) fragment);
+
+                break;
+            case R.id.sortby:
+                    utils.showSortDialog(ma);
+                break;
+            case R.id.dsort:
+                String[] sort = getResources().getStringArray(R.array.directorysortmode);
+                MaterialDialog.Builder a = new MaterialDialog.Builder(mainActivity);
+                if(theme==1)a.theme(Theme.DARK);
+                a.title(R.string.directorysort);
+                int current = Integer.parseInt(Sp.getString("dirontop", "0"));
+                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
+                    @Override
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        Sp.edit().putString("dirontop", "" + which).commit();
+                        dialog.dismiss();
+                        return true;
+                    }
+                });
+                a.build().show();
                 break;
             case R.id.hiddenitems:
                 utils.showHiddenDialog(ma);
                 break;
             case R.id.view:
-                // Save the changes, but don't show a disruptive Toast:
-                Sp.edit().putBoolean("view", !ma.islist).commit();
-                ma.restartPC(ma.getActivity());
+                if (ma.IS_LIST) {
+                    grid.addPath(ma.CURRENT_PATH);
+                    gridfiles.add(ma.CURRENT_PATH);
+                    listManager.removePath(ma.CURRENT_PATH);
+                } else {
+                    if (gridfiles.contains(ma.CURRENT_PATH)) {
+                        gridfiles.remove(ma.CURRENT_PATH);
+                        grid.removePath(ma.CURRENT_PATH);
+                    }
+                    listManager.addPath(ma.CURRENT_PATH);
+                    listfiles.add(ma.CURRENT_PATH);
+
+                }
+                ma.switchView();
                 break;
             case R.id.search:
                 search();
                 break;
             case R.id.paste:
-                String path = ma.current;
+                String path = ma.CURRENT_PATH;
                 ArrayList<String> arrayList = new ArrayList<String>();
                 if (COPY_PATH != null) {
                     arrayList = COPY_PATH;
@@ -1256,7 +1302,7 @@ public class MainActivity extends AppCompatActivity implements
         switch (pos) {
 
             case 0:
-                final String path = ma.current;
+                final String path = ma.CURRENT_PATH;
                 final MaterialDialog.Builder ba1 = new MaterialDialog.Builder(this);
                 ba1.title(R.string.newfolder);
                 ba1.input(utils.getString(this, R.string.entername), "", false, new MaterialDialog.InputCallback() {
@@ -1286,7 +1332,7 @@ public class MainActivity extends AppCompatActivity implements
                 ba1.build().show();
                 break;
             case 1:
-                final String path1 = ma.current;
+                final String path1 = ma.CURRENT_PATH;
                 final MaterialDialog.Builder ba2 = new MaterialDialog.Builder(this);
                 ba2.title((R.string.newfile));
                 View v1 = getLayoutInflater().inflate(R.layout.dialog_rename, null);
@@ -1335,7 +1381,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public void search() {
         final Main ma = (Main) ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
-        final String fpath = ma.current;
+        final String fpath = ma.CURRENT_PATH;
         final MaterialDialog.Builder a = new MaterialDialog.Builder(this);
         a.title(R.string.search);
         a.input(utils.getString(this, R.string.enterfile), "", true, new MaterialDialog
@@ -1401,10 +1447,14 @@ public class MainActivity extends AppCompatActivity implements
         unregisterReceiver(mNotificationReceiver);
         killToast();
     }
-
+    MaterialDialog materialDialog;
     @Override
     public void onResume() {
         super.onResume();
+        if(materialDialog!=null && !materialDialog.isShowing()){
+            materialDialog.show();
+            materialDialog=null;
+        }
         IntentFilter newFilter = new IntentFilter();
         newFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
         newFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
@@ -1433,6 +1483,14 @@ public class MainActivity extends AppCompatActivity implements
     protected void onDestroy() {
         super.onDestroy();
         Sp.edit().putBoolean("remember", true).apply();
+        if (grid != null)
+            grid.end();
+        if (listManager != null)
+            listManager.end();
+        if (history != null)
+            history.end();
+        if (hidden != null)
+            hidden.end();
     }
 
     class CheckForFiles extends AsyncTask<ArrayList<String>, String, ArrayList<String>> {
@@ -2044,7 +2102,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     public void bbar(final Main main) {
-        final String text = main.current;
+        final String text = main.CURRENT_PATH;
         try {
             buttons.removeAllViews();
             buttons.setMinimumHeight(pathbar.getHeight());

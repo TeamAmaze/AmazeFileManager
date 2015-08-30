@@ -359,5 +359,6 @@
     <string name="md5_2">Copy md5</string>
     <string name="total">Total: </string>
     <string name="calculating"> calculating </string>
+    <string name="sort">Sort</string>
 </resources>
 

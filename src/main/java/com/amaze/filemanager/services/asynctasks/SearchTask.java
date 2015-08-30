@@ -59,8 +59,8 @@ boolean isPresentInList(String p){
                     String k = "", size = "";
                     if (file.isDirectory()) {
                         k = "-1";
-                        if (main.showSize) size = "";
-                    } else if (main.showSize) size = "" + file.length();
+                        if (main.SHOW_SIZE) size = "";
+                    } else if (main.SHOW_SIZE) size = "" + file.length();
                     String[] string = new String[0];
                     try {
                         string = new String[]{file.getPath(), "", "", k, file.lastModified() + "", size};
@@ -91,7 +91,7 @@ boolean isPresentInList(String p){
          arrayList1=new ArrayList<>();
      }
         if (file.isDirectory()) {
-            ArrayList<String[]> f = file.listFiles(main.rootMode);
+            ArrayList<String[]> f = file.listFiles(main.ROOT_MODE);
             // do you have permission to read this directory?
             if (!isCancelled())
                 for (String[] x : f) {

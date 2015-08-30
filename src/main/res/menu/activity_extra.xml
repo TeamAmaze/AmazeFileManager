@@ -39,8 +39,16 @@
     <item
         app:showAsAction="ifRoom"
         android:id="@+id/item10"
-        android:title="@string/sortby"
-        android:icon="@drawable/ic_sort_white_48dp"/>0
+        android:title="@string/sort"
+        android:icon="@drawable/ic_sort_white_48dp">
+        <menu >
+            <item android:title="@string/sortby"
+                android:id="@+id/sortby"/>
+            <item android:title="@string/directorysort"
+                android:id="@+id/dsort"/>
+        </menu>
+
+    </item>
     <item android:id="@+id/history"
         android:icon="@drawable/ic_history_white_48dp"
         app:showAsAction="ifRoom"

@@ -19,15 +19,16 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/second"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="72dp"
     android:clickable="true"
-    android:gravity="center_vertical"
     android:paddingLeft="16dp"
+    android:gravity="right"
     android:paddingRight="16dp">
     <FrameLayout
         android:id="@+id/iconframe"
+        android:layout_centerVertical="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp">
@@ -63,11 +64,26 @@
             android:textColor="@android:color/white"
             />
     </FrameLayout>
-    <RelativeLayout
-        android:layout_width="fill_parent"
+
+    <ImageButton
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_toRightOf="@id/iconframe">
+        android:id="@+id/properties"
+        android:background="@drawable/ripple"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:padding="8dp"
+        android:visibility="gone"
+        android:clickable="true"
+        android:src="@drawable/ic_action_about_dark"/>
+
+    <RelativeLayout
+        android:layout_toRightOf="@id/iconframe"
+        android:layout_toLeftOf="@id/properties"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
 
         <TextView
             android:id="@+id/firstline"
@@ -84,7 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/firstline"
-            android:paddingTop="5dp">
+            android:layout_marginTop="5dp">
 
 
             <TextView
@@ -103,7 +119,7 @@
                 android:layout_marginLeft="10dip"
                 android:textSize="13sp"
                 android:textColor="?android:attr/textColorTertiary"
-/>
+                />
 
             <TextView
                 android:id="@+id/permis"

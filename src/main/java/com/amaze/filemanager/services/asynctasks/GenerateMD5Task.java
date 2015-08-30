@@ -2,7 +2,7 @@ package com.amaze.filemanager.services.asynctasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,7 +15,6 @@ import com.amaze.filemanager.ui.views.SizeDrawable;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HFile;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.MessageDigest;
@@ -29,7 +28,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
     private String name, parent, size, items, date;
     private HFile f;
     Context c;
-    String md5 = "";
+    String md5 = "",sizeString;
     View textView;
     SizeDrawable sizeDrawable;
     GenerateMD5Task g = this;
@@ -61,37 +60,39 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
             textView.findViewById(R.id.divider).setVisibility(View.GONE);
             textView.findViewById(R.id.dirprops).setVisibility(View.GONE);
         }
-        else
-        new AsyncTask<Void, Void, long[]>() {
-            @Override
-            protected long[] doInBackground(Void... voids) {
-                Futils futils = new Futils();
-                long[] longs = futils.getSpaces(g.f.getPath());
-                return longs;
-            }
+        else{
+            md5TextView.setVisibility(View.GONE);
 
-            @Override
-            protected void onPostExecute(long[] longs) {
-                super.onPostExecute(longs);
-                Futils futils = new Futils();
-                if (longs[0] != -1 && longs[0]!=0 ) {
-                    float r1 = (longs[0] - longs[1]) * 360 / longs[0];
-                    float r2=(longs[2]) * 360 / longs[0];
-                    t1.setText(futils.readableFileSize(longs[0]));
-                    t2.setText( futils.readableFileSize(longs[1]));
-                    t3.setText( futils.readableFileSize(longs[0] - longs[1]));
-                    t4.setText(futils.readableFileSize(longs[2]));
-
-                    CircleAnimation animation = new CircleAnimation(g.sizeDrawable, r1,r2);
-                    animation.setDuration(Math.round(r1 * 5));
-                    g.sizeDrawable.startAnimation(animation);
-                } else {
-                    textView.setVisibility(View.GONE);
+            new AsyncTask<Void, Void, long[]>() {
+                @Override
+                protected long[] doInBackground(Void... voids) {
+                    Futils futils = new Futils();
+                    long[] longs = futils.getSpaces(g.f.getPath());
+                    return longs;
                 }
 
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
+                @Override
+                protected void onPostExecute(long[] longs) {
+                    super.onPostExecute(longs);
+                    Futils futils = new Futils();
+                    if (longs[0] != -1 && longs[0]!=0 ) {
+                        float r1 = (longs[0] - longs[1]) * 360 / longs[0];
+                        float r2=(longs[2]) * 360 / longs[0];
+                        t1.setText(futils.readableFileSize(longs[0]));
+                        t2.setText(futils.readableFileSize(longs[1]));
+                        t3.setText(futils.readableFileSize(longs[0] - longs[1]));
+                        t4.setText(futils.readableFileSize(longs[2]));
+
+                        CircleAnimation animation = new CircleAnimation(g.sizeDrawable, r1,r2);
+                        animation.setDuration(Math.round(r1 * 5));
+                        g.sizeDrawable.startAnimation(animation);
+                    } else {
+                        textView.setVisibility(View.GONE);
+                    }
+
+                }
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }    }
 
     @Override
     public void onProgressUpdate(String... ab) {
@@ -139,7 +140,6 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
             if (!f.isDirectory())
                 t9.setText(aVoid);
             else{
-                md5TextView.setVisibility(View.GONE);
                 t9.setVisibility(View.GONE);
             }
             if (f.isDirectory())

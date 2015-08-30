@@ -22,7 +22,7 @@
     <TableRow>
         <TextView
             android:text="@string/total"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
@@ -39,7 +39,7 @@
     <TableRow>
         <TextView
             android:text="@string/free"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
@@ -56,7 +56,7 @@
     <TableRow>
         <TextView
             android:text="@string/used"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
@@ -73,7 +73,7 @@
     <TableRow>
         <TextView
             android:text="@string/size"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
@@ -115,7 +115,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/name"
-                android:fontFamily="sans-serif" />
+                android:fontFamily="sans-serif-medium" />
 
             <TextView
                 android:id="@+id/t5"
@@ -133,7 +133,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/location"
-                android:fontFamily="sans-serif" />
+                android:fontFamily="sans-serif-medium" />
             <TextView
                 android:id="@+id/t6"
                 android:text="@string/calculating"
@@ -151,7 +151,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/size"
-                android:fontFamily="sans-serif" />
+                android:fontFamily="sans-serif-medium" />
 
             <TextView
                 android:id="@+id/t7"
@@ -169,7 +169,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/date"
-                android:fontFamily="sans-serif" />
+                android:fontFamily="sans-serif-medium" />
 
             <TextView
                 android:id="@+id/t8"
@@ -187,14 +187,33 @@
                 android:layout_height="wrap_content"
                 android:text="@string/md5"
                 android:id="@+id/md5"
-                android:fontFamily="sans-serif" />
+                android:fontFamily="sans-serif-medium" />
 
             <TextView
                 android:id="@+id/t9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="3dp"
+                android:text="@string/calculating"
                 android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"/>
         </LinearLayout>
     </LinearLayout>
+    <android.support.v7.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/permission"
+        android:id="@+id/appX"
+        android:visibility="gone"
+/>
+
+<include
+    android:id="@+id/permtable"
+    android:visibility="gone"
+    layout="@layout/permissiontable"></include>
+ <android.support.v7.widget.AppCompatButton
+     android:id="@+id/set"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:text="@string/set"
+     android:visibility="gone"/>
 </LinearLayout>

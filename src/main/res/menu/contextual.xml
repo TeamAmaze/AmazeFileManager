@@ -75,9 +75,6 @@
         android:id="@+id/openwith"
         android:title="@string/openwith" />
     <item
-        android:id="@+id/permissions"
-        android:title="@string/permission" />
-    <item
         android:id="@+id/hide"
         android:title="@string/hide" />
     <item
