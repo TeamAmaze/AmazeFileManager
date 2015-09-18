@@ -81,13 +81,13 @@ public class Preffrag extends PreferenceFragment  {
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
                 if(theme==1)a.theme(Theme.DARK);
                 a.title(R.string.gridcolumnno);
-                int current = Integer.parseInt(sharedPref.getString("columns", "0"));
-                if(current!=0)current=current-2;
-                else current=1;
+                int current = Integer.parseInt(sharedPref.getString("columns", "-1"));
+                current=current==-1?0:current;
+                if(current!=0)current=current-1;
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        sharedPref.edit().putString("columns", "" + sort[which]).commit();
+                        sharedPref.edit().putString("columns", "" + (which!=0?sort[which]:""+-1)).commit();
                         dialog.dismiss();
                         return true;
                     }

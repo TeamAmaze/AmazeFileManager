@@ -19,6 +19,7 @@
 
 package com.amaze.filemanager.fragments;
 
+import android.animation.Animator;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -586,24 +587,46 @@ public class ZipViewer extends Fragment {
             listView.addItemDecoration(headersDecor);
             addheader = false;
         }
-        listView.setOnScrollListener(new HidingScrollListener(paddingTop, hidemode) {
-
+        mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).setListener(new Animator.AnimatorListener() {
             @Override
-            public void onMoved(int distance) {
-                mToolbarContainer.setTranslationY(-distance);
+            public void onAnimationStart(Animator animator) {
+
             }
 
             @Override
-            public void onShow() {
-                mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+            public void onAnimationEnd(Animator animator) {
+                listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight, hidemode) {
+
+                    @Override
+                    public void onMoved(int distance) {
+                        mToolbarContainer.setTranslationY(-distance);
+                    }
+
+                    @Override
+                    public void onShow() {
+                        mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                    }
+
+                    @Override
+                    public void onHide() {
+                        mToolbarContainer.animate().translationY(-mToolbarHeight)
+                                .setInterpolator(new AccelerateInterpolator(2)).start();
+                    }
+
+                });
+
             }
 
             @Override
-            public void onHide() {
-                mToolbarContainer.findViewById(R.id.lin).animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(2)).start();
+            public void onAnimationCancel(Animator animator) {
+
             }
 
-        });
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        }).start();
         listView.stopScroll();
         zipViewer.current = dir;
         zipViewer.bbar();

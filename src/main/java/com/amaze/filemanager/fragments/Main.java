@@ -20,6 +20,7 @@
 package com.amaze.filemanager.fragments;
 
 
+import android.animation.Animator;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -102,6 +103,10 @@ import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.Drive;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
@@ -132,11 +137,11 @@ public class Main extends android.support.v4.app.Fragment {
     public int sortby, dsort, asc;
 
     public String home, CURRENT_PATH = "",year, goback;
-    Shortcuts sh;
+    public Shortcuts sh;
     HashMap<String, Bundle> scrolls = new HashMap<String, Bundle>();
     Main ma = this;
     IconUtils icons;
-    public boolean selection,results = false,ROOT_MODE, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS, SHOW_SIZE, SHOW_LAST_MODIFIED, SHOW_PROPS = false;
+    public boolean selection,results = false,ROOT_MODE, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS, SHOW_SIZE, SHOW_LAST_MODIFIED;
     View footerView;
     public LinearLayout pathbar;
     public int openMode = 0;
@@ -173,11 +178,10 @@ public class Main extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         MAIN_ACTIVITY = (MainActivity) getActivity();
         no = getArguments().getInt("no", 1);
         home = getArguments().getString("home");
-        CURRENT_PATH = getArguments().getString("lastpath");
+        CURRENT_PATH =getArguments().getString("lastpath");
         tabHandler = new TabHandler(getActivity(), null, null, 1);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
@@ -245,7 +249,6 @@ public class Main extends android.support.v4.app.Fragment {
         goback = res.getString(R.string.goback);
         itemsstring = res.getString(R.string.items);
         apk = res.getDrawable(R.drawable.ic_doc_apk_grid);
-
         mToolbarContainer.setBackgroundColor(skin_color);
         //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
         return rootView;
@@ -284,7 +287,6 @@ public class Main extends android.support.v4.app.Fragment {
         colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
         ROOT_MODE = Sp.getBoolean("rootmode", false);
         SHOW_HIDDEN = Sp.getBoolean("showHidden", false);
-        SHOW_PROPS = Sp.getBoolean("showProps", false);
         COLORISE_ICONS = Sp.getBoolean("coloriseIcons", true);
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
         getSortModes();
@@ -346,7 +348,7 @@ public class Main extends android.support.v4.app.Fragment {
                 paddingTop = mToolbarContainer.getHeight();
                 if ((columns == 0 || columns == -1)) {
                     int screen_width = listView.getWidth();
-                    int dptopx = dpToPx(120);
+                    int dptopx = dpToPx(115);
                     columns = screen_width / dptopx;
                     if (!IS_LIST) mLayoutManagerGrid.setSpanCount(columns);
                 }
@@ -680,6 +682,46 @@ public class Main extends android.support.v4.app.Fragment {
                         listView.addItemDecoration(headersDecor);
                         addheader = false;
                     }
+                    mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight, hidemode) {
+
+                                @Override
+                                public void onMoved(int distance) {
+                                    mToolbarContainer.setTranslationY(-distance);
+                                }
+
+                                @Override
+                                public void onShow() {
+                                    mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                                }
+
+                                @Override
+                                public void onHide() {
+                                    mToolbarContainer.animate().translationY(-mToolbarHeight)
+                                            .setInterpolator(new AccelerateInterpolator(2)).start();
+                                }
+
+                            });
+
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
+
+                        }
+                    }).start();
                     if (!results) this.results = false;
                     CURRENT_PATH = f;
                     if (back) {
@@ -693,25 +735,6 @@ public class Main extends android.support.v4.app.Fragment {
                     }
                     //floatingActionButton.show();
                     MAIN_ACTIVITY.updatepaths(no);
-                    listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight, hidemode) {
-
-                        @Override
-                        public void onMoved(int distance) {
-                            mToolbarContainer.setTranslationY(-distance);
-                        }
-
-                        @Override
-                        public void onShow() {
-                            mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-                        }
-
-                        @Override
-                        public void onHide() {
-                            mToolbarContainer.animate().translationY(-mToolbarHeight)
-                                    .setInterpolator(new AccelerateInterpolator(2)).start();
-                        }
-
-                    });
                     listView.stopScroll();
                     if (buttons.getVisibility() == View.VISIBLE) MAIN_ACTIVITY.bbar(this);
 
@@ -758,11 +781,8 @@ public class Main extends android.support.v4.app.Fragment {
             initMenu(menu);
             hideOption(R.id.addshortcut, menu);
             hideOption(R.id.sethome, menu);
-            hideOption(R.id.rename, menu);
             hideOption(R.id.share, menu);
-            hideOption(R.id.about, menu);
             hideOption(R.id.openwith, menu);
-            hideOption(R.id.ex, menu);
             if (MAIN_ACTIVITY.mReturnIntent)
                 showOption(R.id.openmulti, menu);
             //hideOption(R.id.setringtone,menu);
@@ -800,16 +820,11 @@ public class Main extends android.support.v4.app.Fragment {
             hideOption(R.id.openmulti, menu);
             if (openMode == 1) {
                 hideOption(R.id.addshortcut, menu);
-
-                hideOption(R.id.ex, menu);
                 hideOption(R.id.sethome, menu);
                 hideOption(R.id.openwith, menu);
-                hideOption(R.id.about, menu);
                 hideOption(R.id.share, menu);
                 hideOption(R.id.hide, menu);
-                hideOption(R.id.book, menu);
                 hideOption(R.id.compress, menu);
-                showOption(R.id.rename, menu);
                 return true;
             }
             if (MAIN_ACTIVITY.mReturnIntent)
@@ -820,12 +835,8 @@ public class Main extends android.support.v4.app.Fragment {
                 hideOption(R.id.openparent, menu);
                 if (positions.size() == 1) {
                     showOption(R.id.addshortcut, menu);
-
-
                     showOption(R.id.openwith, menu);
-                    showOption(R.id.about, menu);
                     showOption(R.id.share, menu);
-                    showOption(R.id.rename, menu);
 
                     File x = new File(LIST_ELEMENTS.get(adapter.getCheckedItemPositions().get(0))
 
@@ -836,14 +847,12 @@ public class Main extends android.support.v4.app.Fragment {
                         showOption(R.id.sethome, menu);
                         hideOption(R.id.share, menu);
                         hideOption(R.id.openmulti, menu);
-                    } else if (x.getName().toLowerCase().endsWith(".zip") || x.getName().toLowerCase().endsWith(".jar") || x.getName().toLowerCase().endsWith(".apk") || x.getName().toLowerCase().endsWith(".rar") || x.getName().toLowerCase().endsWith(".tar") || x.getName().toLowerCase().endsWith(".tar.gz")) {
-
-                        showOption(R.id.ex, menu);
+                    }
 
                         if (MAIN_ACTIVITY.mReturnIntent)
                             if (Build.VERSION.SDK_INT >= 16)
                                 showOption(R.id.openmulti, menu);
-                    }
+
                 } else {
                     try {
                         showOption(R.id.share, menu);
@@ -859,16 +868,9 @@ public class Main extends android.support.v4.app.Fragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    hideOption(R.id.ex, menu);
-
                     hideOption(R.id.sethome, menu);
 
                     hideOption(R.id.openwith, menu);
-
-                    //hideOption(R.id.setringtone, menu);
-
-
-                    hideOption(R.id.about, menu);
 
                 }
             } else {
@@ -876,9 +878,7 @@ public class Main extends android.support.v4.app.Fragment {
                     showOption(R.id.addshortcut, menu);
                     showOption(R.id.openparent, menu);
                     showOption(R.id.openwith, menu);
-                    showOption(R.id.about, menu);
                     showOption(R.id.share, menu);
-                    showOption(R.id.rename, menu);
 
                     File x = new File(LIST_ELEMENTS.get(adapter.getCheckedItemPositions().get(0))
 
@@ -889,14 +889,11 @@ public class Main extends android.support.v4.app.Fragment {
                         showOption(R.id.sethome, menu);
                         hideOption(R.id.share, menu);
                         hideOption(R.id.openmulti, menu);
-                    } else if (x.getName().toLowerCase().endsWith(".zip") || x.getName().toLowerCase().endsWith(".jar") || x.getName().toLowerCase().endsWith(".apk") || x.getName().toLowerCase().endsWith(".rar") || x.getName().toLowerCase().endsWith(".tar") || x.getName().toLowerCase().endsWith(".tar.gz")) {
-
-                        showOption(R.id.ex, menu);
-
+                    }
                         if (MAIN_ACTIVITY.mReturnIntent)
                             if (Build.VERSION.SDK_INT >= 16)
                                 showOption(R.id.openmulti, menu);
-                    }
+
                 } else {
                     hideOption(R.id.openparent, menu);
 
@@ -914,16 +911,10 @@ public class Main extends android.support.v4.app.Fragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    hideOption(R.id.ex, menu);
 
                     hideOption(R.id.sethome, menu);
 
                     hideOption(R.id.openwith, menu);
-
-                    //hideOption(R.id.setringtone, menu);
-
-
-                    hideOption(R.id.about, menu);
 
                 }
             }
@@ -1044,17 +1035,6 @@ public class Main extends android.support.v4.app.Fragment {
                         hide(LIST_ELEMENTS.get(plist.get(i1)).getDesc());
                     }
                     updateList();
-                    mode.finish();
-                    return true;
-                case R.id.book:
-                    for (int i1 = 0; i1 < plist.size(); i1++) {
-                        try {
-                            sh.addS((LIST_ELEMENTS.get(plist.get(i1)).getDesc()));
-                        } catch (Exception e) {
-                        }
-                    }
-                    MAIN_ACTIVITY.updateDrawer();
-                    Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                     mode.finish();
                     return true;
                 case R.id.ex:

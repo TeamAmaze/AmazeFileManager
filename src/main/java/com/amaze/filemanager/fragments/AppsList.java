@@ -74,7 +74,7 @@ public class AppsList extends ListFragment {
     ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
     public int theme1;
     private MainActivity mainActivity;
-    private String fabSkin;
+    public String fabSkin;
     int asc,sortby;
     @Override
     public void onCreate(Bundle savedInstanceState) {

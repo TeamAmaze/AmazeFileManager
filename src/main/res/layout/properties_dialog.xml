@@ -31,7 +31,6 @@
             android:id="@+id/t1"
             android:text="@string/calculating"
             android:padding="3dp"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
@@ -47,7 +46,6 @@
         <TextView
             android:id="@+id/t2"
             android:text="@string/calculating"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="3dp"
@@ -64,7 +62,6 @@
         <TextView
             android:id="@+id/t3"
             android:text="@string/calculating"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="3dp"
@@ -81,7 +78,6 @@
         <TextView
             android:id="@+id/t4"
             android:text="@string/calculating"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="3dp"
@@ -119,7 +115,6 @@
 
             <TextView
                 android:id="@+id/t5"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
                 android:text="@string/calculating"
                 android:paddingLeft="3dp"
                 android:layout_width="wrap_content"
@@ -139,8 +134,7 @@
                 android:text="@string/calculating"
                 android:paddingLeft="3dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+                android:layout_height="wrap_content"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -158,8 +152,7 @@
                 android:paddingLeft="3dp"
                 android:text="@string/calculating"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+                android:layout_height="wrap_content"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -176,8 +169,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="3dp"
-                android:text="@string/calculating"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"/>
+                android:text="@string/calculating"/>
         </LinearLayout>
         <LinearLayout android:layout_height="wrap_content"
             android:layout_width="wrap_content">
@@ -194,8 +186,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="3dp"
-                android:text="@string/calculating"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"/>
+                android:text="@string/calculating"/>
         </LinearLayout>
     </LinearLayout>
     <android.support.v7.widget.AppCompatButton

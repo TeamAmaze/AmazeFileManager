@@ -11,6 +11,7 @@ import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -18,9 +19,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.Layoutelements;
@@ -35,7 +39,7 @@ import java.util.ArrayList;
  * Created by Arpit on 11-04-2015.
  */
 public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder>
-        implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
+        implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder>{
     Main main;
     ArrayList<Layoutelements> items;
     Context context;
@@ -72,7 +76,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         count_factor=(main.IS_LIST?(topFab?1:2):column);
         item_count=items.size()+count_factor;
         rowHeight=main.dpToPx(100);
-        grey_color=Color.parseColor("#66000000");
+        grey_color=Color.parseColor("#ff666666");
         anim = /*main.IS_LIST?R.anim.fade_in_top:*/R.anim.fade_in_top;
     }
     public void addItem(){
@@ -290,17 +294,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.ext.setText("");
 
             if (holder.about != null) {
-                if (main.openMode!=1 && main.SHOW_PROPS) {
                     if(main.theme1==0)holder.about.setColorFilter(grey_color);
-                    holder.about.setVisibility(View.VISIBLE);
-                    holder.about.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            main.utils.showProps((rowItem.getDesc()),rowItem.getPermissions(), main, main.ROOT_MODE);
-
-                        }
-                    });
-                }
+                    showPopup(holder.about,rowItem);
             }
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -602,7 +597,69 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
         return TYPE_ITEM;
     }
+    void showPopup(View v,final Layoutelements rowItem){
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popupMenu = new PopupMenu(main.getActivity(), view);
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.about:
+                                main.utils.showProps((rowItem).getDesc(), rowItem.getPermissions(), main, main.ROOT_MODE);
+                                return true;
+                            case R.id.share:
+                                ArrayList<File> arrayList = new ArrayList<File>();
+                                    arrayList.add(new File(rowItem.getDesc()));
+                                 main.utils.shareFiles(arrayList, main.MAIN_ACTIVITY, main.theme1, Color.parseColor(main.fabSkin));
+                                return true;
+                            case R.id.rename:
+                                main.rename(rowItem.getDesc());
+                                return true;
+                            case R.id.cpy:
+                                MainActivity MAIN_ACTIVITY=main.MAIN_ACTIVITY;
+                                main.MAIN_ACTIVITY.MOVE_PATH = null;
+                                ArrayList<String> copies = new ArrayList<String>();
+                                copies.add(rowItem.getDesc());
+                                MAIN_ACTIVITY.COPY_PATH = copies;
+                                MAIN_ACTIVITY.supportInvalidateOptionsMenu();
+                                return true;
+                            case R.id.cut:
+                                MainActivity MAIN_ACTIVITY1=main.MAIN_ACTIVITY;
+                                MAIN_ACTIVITY1.COPY_PATH = null;
+                                ArrayList<String> copie = new ArrayList<String>();
+                                copie.add(rowItem.getDesc());
+                                MAIN_ACTIVITY1.MOVE_PATH = copie;
+                                MAIN_ACTIVITY1.supportInvalidateOptionsMenu();
+                                return true;
+                            case R.id.ex:
+                                main.MAIN_ACTIVITY.extractFile(new File(rowItem.getDesc()));
+                                return true;
+                            case R.id.book:
+                                try {
+                                    main.sh.addS(rowItem.getDesc());
+                                } catch (Exception e) {
+                                }
+                                main.MAIN_ACTIVITY.updateDrawer();
+                                Toast.makeText(main.getActivity(), main.utils.getString(main.getActivity(), R.string.bookmarksadded), Toast.LENGTH_LONG).show();
+                                return true;
 
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.inflate(R.menu.item_extras);
+                if (main.openMode == 1) popupMenu.getMenu().findItem(R.id.about).setVisible(false);
+                String x = rowItem.getDesc().toLowerCase();
+                if(rowItem.isDirectory())popupMenu.getMenu().findItem(R.id.share).setVisible(false);
+                if (x.endsWith(".zip") || x.endsWith(".jar") || x.endsWith(".apk") || x.endsWith(".rar") || x.endsWith(".tar") || x.endsWith(".tar.gz"))
+                    popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
+                popupMenu.show();
+            }
+        });
+
+    }
     private boolean isPositionHeader(int position) {
    if(main.IS_LIST)     return position == 0 || (!topFab && position==item_count-1);
     else return position>= 0 && position<column;}

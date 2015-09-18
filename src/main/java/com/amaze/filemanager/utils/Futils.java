@@ -233,7 +233,8 @@ public  final int READ = 4;
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }    public String readableFileSize(long size) {
+    }
+    public String readableFileSize(long size) {
         if (size <= 0)
             return "0 B";
         final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
@@ -424,7 +425,7 @@ public void openWith(final File f,final Context c) {
             e.printStackTrace();
         }
         String date = getdate(last);
-        String items = " calculating", size = " calculating", name, parent;
+        String items = getString(c.getActivity(),R.string.calculating), size = getString(c.getActivity(),R.string.calculating), name, parent;
         name = hFile.getName();
         parent = hFile.getParent();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c.getActivity());
@@ -438,21 +439,20 @@ public void openWith(final File f,final Context c) {
         appCompatButton.setAllCaps(true);
         final View permtabl=v.findViewById(R.id.permtable);
         final View but=v.findViewById(R.id.set);
-        if(root){
+        if(root && perm.length()>6) {
             appCompatButton.setVisibility(View.VISIBLE);
             appCompatButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (permtabl.getVisibility() == View.GONE){
+                    if (permtabl.getVisibility() == View.GONE) {
                         permtabl.setVisibility(View.VISIBLE);
                         but.setVisibility(View.VISIBLE);
-                        setPermissionsDialog(permtabl,but,hFile,perm,c);
-                    }
-                    else{
+                        setPermissionsDialog(permtabl, but, hFile, perm, c);
+                    } else {
                         but.setVisibility(View.GONE);
                         permtabl.setVisibility(View.GONE);
 
-                }
+                    }
                 }
             });
         }
@@ -764,15 +764,35 @@ public void showPackageDialog(final File f,final MainActivity m){
         int current = Integer.parseInt(m.Sp.getString("sortby", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         if(m.theme1==1)a.theme(Theme.DARK);
-        a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
+        a.items(sort).itemsCallbackSingleChoice(current>3?current-4:current, new MaterialDialog.ListCallbackSingleChoice() {
             @Override
             public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
 
+                return true;
+            }
+        });
+        a.positiveText(R.string.ascending).positiveColor(Color.parseColor(m.fabSkin));
+        a.negativeText(R.string.descending).negativeColor(Color.parseColor(m.fabSkin));
+        a.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onPositive(MaterialDialog dialog) {
+                super.onPositive(dialog);
+                int which=dialog.getSelectedIndex();
                 m.Sp.edit().putString("sortby", "" + which).commit();
                 m.getSortModes();
                 m.updateList();
                 dialog.dismiss();
-                return true;
+
+            }
+
+            @Override
+            public void onNegative(MaterialDialog dialog) {
+                super.onNegative(dialog);
+                int which=4+dialog.getSelectedIndex();
+                m.Sp.edit().putString("sortby", "" + which).commit();
+                m.getSortModes();
+                m.updateList();
+                dialog.dismiss();
             }
         });
         a.title(R.string.sortby);
@@ -784,15 +804,34 @@ public void showPackageDialog(final File f,final MainActivity m){
         int current = Integer.parseInt(m.Sp.getString("sortbyApps", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         if(m.theme1==1)a.theme(Theme.DARK);
-        a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
+        a.items(sort).itemsCallbackSingleChoice(current>2?current-3:current, new MaterialDialog.ListCallbackSingleChoice() {
             @Override
             public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
 
+                return true;
+            }
+        });
+        a.positiveText(R.string.ascending).positiveColor(Color.parseColor(m.fabSkin));
+        a.negativeText(R.string.descending).negativeColor(Color.parseColor(m.fabSkin));
+        a.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onPositive(MaterialDialog dialog) {
+                super.onPositive(dialog);
+                int which=dialog.getSelectedIndex();
                 m.Sp.edit().putString("sortbyApps", "" + which).commit();
                 m.getSortModes();
                 m.loadlist(false);
                 dialog.dismiss();
-                return true;
+            }
+
+            @Override
+            public void onNegative(MaterialDialog dialog) {
+                super.onNegative(dialog);
+                int which=dialog.getSelectedIndex()+3;
+                m.Sp.edit().putString("sortbyApps", "" + which).commit();
+                m.getSortModes();
+                m.loadlist(false);
+                dialog.dismiss();
             }
         });
         a.title(R.string.sortby);

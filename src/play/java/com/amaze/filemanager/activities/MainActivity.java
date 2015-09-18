@@ -71,6 +71,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -89,6 +90,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.TabHandler;
@@ -129,7 +131,6 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
-
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -222,8 +223,9 @@ public class MainActivity extends AppCompatActivity implements
     public boolean isDrawerLocked = false;
     static final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3, RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
 
-    public HistoryManager history, hidden,grid,listManager;
-    public ArrayList<String> hiddenfiles,gridfiles,listfiles;
+    public HistoryManager history, hidden, grid, listManager;
+    public ArrayList<String> hiddenfiles, gridfiles, listfiles;
+
     /**
      * Called when the activity is first created.
      */
@@ -427,13 +429,13 @@ public class MainActivity extends AppCompatActivity implements
         drawerProfilePic = (RoundedImageView) drawerHeaderLayout.findViewById(R.id.profile_pic);
         mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
         mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
-        history = new HistoryManager(this, "Table1","Table2");
-        hidden = new HistoryManager(this, "Table2","Table2");
-        grid=new HistoryManager(this,"grid","listgridmodes");
-        listManager=new HistoryManager(this,"list","listgridmodes");
+        history = new HistoryManager(this, "Table1", "Table2");
+        hidden = new HistoryManager(this, "Table2", "Table2");
+        grid = new HistoryManager(this, "grid", "listgridmodes");
+        listManager = new HistoryManager(this, "list", "listgridmodes");
         hiddenfiles = hidden.readTable();
-        gridfiles=grid.readTable();
-        listfiles=listManager.readTable();
+        gridfiles = grid.readTable();
+        listfiles = listManager.readTable();
         // initialize g+ api client as per preferences
         if (Sp.getBoolean("plus_pic", false)) {
 
@@ -519,7 +521,7 @@ public class MainActivity extends AppCompatActivity implements
                 public void onGlobalLayout() {
                     FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) floatingActionButton.getLayoutParams();
                     layoutParams.setMargins(layoutParams.leftMargin, findViewById(R.id.lin)
-                                    .getBottom()-(floatingActionButton.getMenuIconView().getHeight
+                                    .getBottom() - (floatingActionButton.getMenuIconView().getHeight
                                     ()),
                             layoutParams.rightMargin,
                             layoutParams.bottomMargin);
@@ -568,7 +570,7 @@ public class MainActivity extends AppCompatActivity implements
                 // ringtone picker intent
                 mReturnIntent = true;
                 mRingtonePickerIntent = true;
-               System.out.println( intent.getData());
+                System.out.println(intent.getData());
                 Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
             } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
 
@@ -653,17 +655,16 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                 transaction2.replace(R.id.content_frame, new AppsList());
-
+                findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
                 pending_fragmentTransaction = transaction2;
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
                 select = list.size() + 1;
                 adapter.toggleChecked(false);
-
             }
         });
         ImageView divider = (ImageView) findViewById(R.id.divider1);
-        if (theme1==0)
+        if (theme1 == 0)
             divider.setImageResource(R.color.divider);
         else
             divider.setImageResource(R.color.divider_dark);
@@ -741,9 +742,9 @@ public class MainActivity extends AppCompatActivity implements
                 } else mDrawerLayout.openDrawer(mDrawerLinear);
             }
         });*/
-        if(mDrawerToggle!=null){
-        mDrawerToggle.setDrawerIndicatorEnabled(true);
-        mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer_l);
+        if (mDrawerToggle != null) {
+            mDrawerToggle.setDrawerIndicatorEnabled(true);
+            mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer_l);
         }
         //recents header color implementation
         if (Build.VERSION.SDK_INT >= 21) {
@@ -889,7 +890,7 @@ public class MainActivity extends AppCompatActivity implements
     public void exit() {
         if (backPressedToExitOnce) {
             finish();
-            if (rootmode){
+            if (rootmode) {
                 try {
                     RootTools.closeAllShells();
                 } catch (IOException e) {
@@ -918,7 +919,7 @@ public class MainActivity extends AppCompatActivity implements
         for (String file : val) {
             File f = new File(file);
             String name;
-            Drawable  icon1 = ContextCompat.getDrawable(this,R.drawable.ic_sd_storage_white_56dp);
+            Drawable icon1 = ContextCompat.getDrawable(this, R.drawable.ic_sd_storage_white_56dp);
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
 
@@ -926,11 +927,11 @@ public class MainActivity extends AppCompatActivity implements
                 name = getResources().getString(R.string.extstorage);
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
-                icon1 = ContextCompat.getDrawable(this,R.drawable.ic_drawer_root_white);
+                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                list.add(new EntryItem(name, file,  icon1));
+                list.add(new EntryItem(name, file, icon1));
             }
         }
         list.add(new SectionItem());
@@ -939,7 +940,7 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 for (String s : servers.readS()) {
                     Servers.add(s);
-                    list.add(new EntryItem(parseSmbPath(s), s,ContextCompat.getDrawable(this,R.drawable.ic_settings_remote_white_48dp)));
+                    list.add(new EntryItem(parseSmbPath(s), s, ContextCompat.getDrawable(this, R.drawable.ic_settings_remote_white_48dp)));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -953,20 +954,20 @@ public class MainActivity extends AppCompatActivity implements
             for (String file : s.readS()) {
                 String name = new File(file).getName();
                 books.add(file);
-                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this,R.drawable
+                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this, R.drawable
                         .folder_fab)));
             }
-            if(books.size()>0)
+            if (books.size() > 0)
                 list.add(new SectionItem());
         } catch (Exception e) {
 
         }
-        list.add(new EntryItem("Images","0", ContextCompat.getDrawable(this,R.drawable.ic_doc_image)));
-        list.add(new EntryItem("Videos","1",ContextCompat.getDrawable(this,R.drawable.ic_doc_video_am)));
-        list.add(new EntryItem("Audio","2",ContextCompat.getDrawable(this,R.drawable.ic_doc_audio_am)));
-        list.add(new EntryItem("Documents","3",ContextCompat.getDrawable(this,R.drawable
+        list.add(new EntryItem("Images", "0", ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
+        list.add(new EntryItem("Videos", "1", ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
+        list.add(new EntryItem("Audio", "2", ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
+        list.add(new EntryItem("Documents", "3", ContextCompat.getDrawable(this, R.drawable
                 .ic_doc_doc_am)));
-        list.add(new EntryItem("Apks","4",ContextCompat.getDrawable(this,R.drawable.ic_doc_apk_grid)));
+        list.add(new EntryItem("Apks", "4", ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
     }
@@ -1095,9 +1096,9 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 TabFragment tabFragment = (TabFragment) fragment;
                 Main ma = ((Main) tabFragment.getTab());
-                if(ma.IS_LIST)s.setTitle(R.string.gridview);
+                if (ma.IS_LIST) s.setTitle(R.string.gridview);
                 else s.setTitle(R.string.listview);
-                updatePath(ma.CURRENT_PATH, ma.results, ma.openMode,ma.folder_count,ma.file_count);
+                updatePath(ma.CURRENT_PATH, ma.results, ma.openMode, ma.folder_count, ma.file_count);
             } catch (Exception e) {
             }
             tabsSpinner.setVisibility(View.VISIBLE);
@@ -1224,12 +1225,12 @@ public class MainActivity extends AppCompatActivity implements
 
                 break;
             case R.id.sortby:
-                    utils.showSortDialog(ma);
+                utils.showSortDialog(ma);
                 break;
             case R.id.dsort:
                 String[] sort = getResources().getStringArray(R.array.directorysortmode);
                 MaterialDialog.Builder a = new MaterialDialog.Builder(mainActivity);
-                if(theme==1)a.theme(Theme.DARK);
+                if (theme == 1) a.theme(Theme.DARK);
                 a.title(R.string.directorysort);
                 int current = Integer.parseInt(Sp.getString("dirontop", "0"));
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
@@ -1270,7 +1271,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (COPY_PATH != null) {
                     arrayList = COPY_PATH;
                     new CheckForFiles(ma, path, false).executeOnExecutor(AsyncTask
-                            .THREAD_POOL_EXECUTOR,arrayList);
+                            .THREAD_POOL_EXECUTOR, arrayList);
                 } else if (MOVE_PATH != null) {
                     arrayList = MOVE_PATH;
                     new CheckForFiles(ma, path, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
@@ -1337,7 +1338,7 @@ public class MainActivity extends AppCompatActivity implements
                 ba2.title((R.string.newfile));
                 View v1 = getLayoutInflater().inflate(R.layout.dialog_rename, null);
                 final EditText edir1 = (EditText) v1.findViewById(R.id.newname);
-                utils.setTint(edir1,Color.parseColor(fabskin));
+                utils.setTint(edir1, Color.parseColor(fabskin));
                 edir1.setHint(utils.getString(this, R.string.entername));
                 ba2.customView(v1, true);
                 edir1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -1401,7 +1402,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onPositive(MaterialDialog materialDialog) {
                 materialDialog.dismiss();
                 String a = materialDialog.getInputEditText().getText().toString();
-                if(a.length()==0){
+                if (a.length() == 0) {
                     return;
                 }
                 SearchTask task = new SearchTask(ma.searchHelper, ma, a);
@@ -1447,13 +1448,15 @@ public class MainActivity extends AppCompatActivity implements
         unregisterReceiver(mNotificationReceiver);
         killToast();
     }
+
     MaterialDialog materialDialog;
+
     @Override
     public void onResume() {
         super.onResume();
-        if(materialDialog!=null && !materialDialog.isShowing()){
+        if (materialDialog != null && !materialDialog.isShowing()) {
             materialDialog.show();
-            materialDialog=null;
+            materialDialog = null;
         }
         IntentFilter newFilter = new IntentFilter();
         newFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
@@ -1563,6 +1566,7 @@ public class MainActivity extends AppCompatActivity implements
                         oppathe = path;
 
                     } else if (mode == 1 || mode == 0) {
+
                         if (!move) {
 
                             Intent intent = new Intent(con, CopyService.class);
@@ -1662,6 +1666,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void openZip(String path) {
+        findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
         Fragment zipFragment = new ZipViewer();
@@ -1741,25 +1746,25 @@ public class MainActivity extends AppCompatActivity implements
         for (String file : val) {
             File f = new File(file);
             String name;
-            Drawable  icon1 = ContextCompat.getDrawable(this,R.drawable.ic_sd_storage_white_56dp);
+            Drawable icon1 = ContextCompat.getDrawable(this, R.drawable.ic_sd_storage_white_56dp);
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
             } else if ("/storage/sdcard1".equals(file)) {
                 name = getResources().getString(R.string.extstorage);
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
-                icon1 = ContextCompat.getDrawable(this,R.drawable.ic_drawer_root_white);
+                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                list.add(new EntryItem(name, file,  icon1));
+                list.add(new EntryItem(name, file, icon1));
             }
         }
         list.add(new SectionItem());
         if (Servers != null && Servers.size() > 0) {
             for (String file : Servers) {
                 String name = parseSmbPath(file);
-                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this,R.drawable.ic_settings_remote_white_48dp)));
+                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this, R.drawable.ic_settings_remote_white_48dp)));
             }
 
             list.add(new SectionItem());
@@ -1768,17 +1773,17 @@ public class MainActivity extends AppCompatActivity implements
 
             for (String file : books) {
                 String name = new File(file).getName();
-                list.add(new EntryItem(name, file,  ContextCompat.getDrawable(this,R.drawable
+                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this, R.drawable
                         .folder_fab)));
             }
             list.add(new SectionItem());
         }
-        list.add(new EntryItem("Images","0", ContextCompat.getDrawable(this,R.drawable.ic_doc_image)));
-        list.add(new EntryItem("Videos","1",ContextCompat.getDrawable(this,R.drawable.ic_doc_video_am)));
-        list.add(new EntryItem("Audio","2",ContextCompat.getDrawable(this,R.drawable.ic_doc_audio_am)));
-        list.add(new EntryItem("Documents","3",ContextCompat.getDrawable(this,R.drawable
+        list.add(new EntryItem("Images", "0", ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
+        list.add(new EntryItem("Videos", "1", ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
+        list.add(new EntryItem("Audio", "2", ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
+        list.add(new EntryItem("Documents", "3", ContextCompat.getDrawable(this, R.drawable
                 .ic_doc_doc_am)));
-        list.add(new EntryItem("Apks","4",ContextCompat.getDrawable(this,R.drawable.ic_doc_apk_grid)));
+        list.add(new EntryItem("Apks", "4", ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
 
 
         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
@@ -1924,7 +1929,6 @@ public class MainActivity extends AppCompatActivity implements
             }).run();
         }
     }
-
     public void guideDialogForLEXA(String path) {
         final MaterialDialog.Builder x = new MaterialDialog.Builder(MainActivity.this);
         if (theme1 == 1) x.theme(Theme.DARK);
@@ -2074,7 +2078,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private int checkFolder(final File folder, Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
+        boolean lol=Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP,ext=FileUtil.isOnExtSdCard(folder, context);
+        if (lol && ext) {
             if (!folder.exists() || !folder.isDirectory()) {
                 return 0;
             }
@@ -2142,7 +2147,7 @@ public class MainActivity extends AppCompatActivity implements
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            main.loadlist(("/"), false,false);
+                            main.loadlist(("/"), false, false);
                             timer.cancel();
                             timer.start();
                         }
@@ -2177,8 +2182,8 @@ public class MainActivity extends AppCompatActivity implements
                     button.setOnClickListener(new Button.OnClickListener() {
 
                         public void onClick(View p1) {
-                            main.loadlist((rpaths.get(k)), false,true);
-                            main.loadlist((rpaths.get(k)), false,true);
+                            main.loadlist((rpaths.get(k)), false, true);
+                            main.loadlist((rpaths.get(k)), false, true);
                             timer.cancel();
                             timer.start();
                         }
@@ -2217,11 +2222,13 @@ public class MainActivity extends AppCompatActivity implements
             System.out.println("button view not available");
         }
     }
-    boolean isStorage(String path){
-        for(int i=0;i<storage_count;i++)
-            if(((EntryItem)list.get(i)).getPath().equals(path))return true;
+
+    boolean isStorage(String path) {
+        for (int i = 0; i < storage_count; i++)
+            if (((EntryItem) list.get(i)).getPath().equals(path)) return true;
         return false;
     }
+
     private void sendScroll(final HorizontalScrollView scrollView) {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
@@ -2249,30 +2256,30 @@ public class MainActivity extends AppCompatActivity implements
         else return a;
     }
 
-    public void updatePath(@NonNull final String news,  boolean results,int
-            openmode,int folder_count,int file_count) {
+    public void updatePath(@NonNull final String news, boolean results, int
+            openmode, int folder_count, int file_count) {
 
-        if(news.length()==0)return;
+        if (news.length() == 0) return;
         File f = null;
         if (news == null) return;
-        if (openmode==1 && news.startsWith("smb:/"))
+        if (openmode == 1 && news.startsWith("smb:/"))
             newPath = parseSmbPath(news);
-        else if(openmode==2)
-            switch (Integer.parseInt(news)){
+        else if (openmode == 2)
+            switch (Integer.parseInt(news)) {
                 case 0:
-                    newPath=getResources().getString(R.string.images);
+                    newPath = getResources().getString(R.string.images);
                     break;
                 case 1:
-                    newPath=getResources().getString(R.string.videos);
+                    newPath = getResources().getString(R.string.videos);
                     break;
                 case 2:
-                    newPath=getResources().getString(R.string.audio);
+                    newPath = getResources().getString(R.string.audio);
                     break;
                 case 3:
-                    newPath=getResources().getString(R.string.documents);
+                    newPath = getResources().getString(R.string.documents);
                     break;
                 case 4:
-                    newPath=getResources().getString(R.string.apks);
+                    newPath = getResources().getString(R.string.apks);
                     break;
             }
         else newPath = news;
@@ -2285,11 +2292,11 @@ public class MainActivity extends AppCompatActivity implements
         final TextView animPath = (TextView) pathbar.findViewById(R.id.fullpath_anim);
         if (!results) {
             TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
-            textView.setText(folder_count + " " + getResources().getString(R.string.folders)+"" +
-                    " " +file_count + " " + getResources().getString(R.string.files));
-         }
+            textView.setText(folder_count + " " + getResources().getString(R.string.folders) + "" +
+                    " " + file_count + " " + getResources().getString(R.string.files));
+        }
         final String oldPath = bapath.getText().toString();
-        if(oldPath!=null && oldPath.equals(newPath))return;
+        if (oldPath != null && oldPath.equals(newPath)) return;
 
 
         final Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in);
@@ -2369,7 +2376,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void initiatebbar() {
-        View pathbar =  findViewById(R.id.pathbar);
+        View pathbar = findViewById(R.id.pathbar);
         TextView textView = (TextView) findViewById(R.id.fullpath);
 
         pathbar.setOnClickListener(new View.OnClickListener() {
@@ -2394,7 +2401,8 @@ public class MainActivity extends AppCompatActivity implements
                     timer.cancel();
                     timer.start();
                 }
-            }});
+            }
+        });
 
     }
 
@@ -2505,14 +2513,14 @@ public class MainActivity extends AppCompatActivity implements
         if (pending_path != null) {
             try {
                 TabFragment m = getFragment();
-                HFile hFile=new HFile(pending_path);
-                Main main=((Main) m.getTab());
-                if(main!=null)
-                if (hFile.isDirectory() && !hFile.isSmb()) {
-                    ((Main) m.getTab()).loadlist((pending_path), false,false);
-                }else if(hFile.isSmb() || hFile.isCustomPath())
-                    ((Main) m.getTab()).loadCustomList((pending_path),false);
-                else utils.openFile(new File(pending_path), mainActivity);
+                HFile hFile = new HFile(pending_path);
+                Main main = ((Main) m.getTab());
+                if (main != null)
+                    if (hFile.isDirectory() && !hFile.isSmb()) {
+                        ((Main) m.getTab()).loadlist((pending_path), false, false);
+                    } else if (hFile.isSmb() || hFile.isCustomPath())
+                        ((Main) m.getTab()).loadCustomList((pending_path), false);
+                    else utils.openFile(new File(pending_path), mainActivity);
 
             } catch (ClassCastException e) {
                 select = null;
@@ -2643,14 +2651,14 @@ public class MainActivity extends AppCompatActivity implements
         ba3.title((R.string.smb_con));
         final View v2 = getLayoutInflater().inflate(R.layout.smb_dialog, null);
         final EditText ip = (EditText) v2.findViewById(R.id.editText);
-        int color=Color.parseColor(fabskin);
-        utils.setTint(ip,color);
+        int color = Color.parseColor(fabskin);
+        utils.setTint(ip, color);
         final EditText user = (EditText) v2.findViewById(R.id.editText3);
-        utils.setTint(user,color);
+        utils.setTint(user, color);
         final EditText pass = (EditText) v2.findViewById(R.id.editText2);
-        utils.setTint(pass,color);
+        utils.setTint(pass, color);
         final CheckBox ch = (CheckBox) v2.findViewById(R.id.checkBox2);
-        utils.setTint(ch,color);
+        utils.setTint(ch, color);
         ch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

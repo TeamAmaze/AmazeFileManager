@@ -610,6 +610,7 @@ public abstract class FileUtil {
                 }
             }
         }
+        if(paths.isEmpty())paths.add("/storage/sdcard1");
         return paths.toArray(new String[0]);
     }
 

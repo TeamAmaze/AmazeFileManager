@@ -50,30 +50,18 @@
         android:icon="@drawable/ic_select_all_white_36dp"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/about"
-        android:title="@string/properties"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/rename"
-        android:title="@string/rename" />
-    <item
         android:id="@+id/sethome"
         android:title="@string/setashome" />
     <item
         android:id="@+id/share"
         android:title="@string/share" />
     <item
-        android:id="@+id/book"
-        android:title="@string/addtobook" />
-    <item
-        android:id="@+id/ex"
-        android:title="@string/extract" />
-    <item
         android:id="@+id/compress"
         android:title="@string/compress" />
+
     <item
         android:id="@+id/openwith"
-        android:title="@string/openwith" />
+        android:title="@string/openwith"/>
     <item
         android:id="@+id/hide"
         android:title="@string/hide" />

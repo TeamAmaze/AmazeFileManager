@@ -360,5 +360,8 @@
     <string name="total">Total: </string>
     <string name="calculating"> calculating </string>
     <string name="sort">Sort</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
+    <string name="defualt">Default</string>
 </resources>
 

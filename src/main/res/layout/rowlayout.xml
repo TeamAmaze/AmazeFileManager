@@ -74,9 +74,8 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
         android:padding="8dp"
-        android:visibility="gone"
         android:clickable="true"
-        android:src="@drawable/ic_action_about_dark"/>
+        android:src="@drawable/ic_more_vert_black_48dp"/>
 
     <RelativeLayout
         android:layout_toRightOf="@id/iconframe"
