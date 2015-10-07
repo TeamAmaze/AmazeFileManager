@@ -164,6 +164,7 @@ public  final int READ = 4;
     }
 
     public int checkFolder(final String f,Context context) {
+        if(f==null)return 0;
         if(f.startsWith("smb://"))return 1;
         File folder=new File(f);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {

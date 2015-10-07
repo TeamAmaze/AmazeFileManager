@@ -256,10 +256,10 @@ public class CopyService extends Service {
 
                     try {
 
-                        if (hash.get(id)) copyFiles((f1), new HFile(FILE2, f1.getName(),f1.isDirectory()), id, move);
-                        else {
+                        if (hash.get(id))
+                            copyFiles((f1), new HFile(FILE2, f1.getName(),f1.isDirectory()), id, move);
+                        else
                             stopSelf(id);
-                        }
                     } catch (Exception e) {
                         System.out.println("amaze " + e);
                         publishResults("" + e, 0, 0, id, 0, 0, false, move);
