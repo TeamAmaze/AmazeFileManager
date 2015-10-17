@@ -31,10 +31,11 @@ public class HistoryManager {
     SQLiteDatabase db;
     String table;
     Context c;
-
-    public HistoryManager(Context c, String x) {
+    String dbname;
+    public HistoryManager(Context c, String x,String dbname) {
         this.c = c;
         table = x;
+        this.dbname=dbname;
         open();
         db.execSQL("CREATE TABLE IF NOT EXISTS " + x + " (PATH VARCHAR)");
     }
@@ -47,7 +48,6 @@ public class HistoryManager {
             try {
                 paths.add(c.getString(c.getColumnIndex("PATH")));
             } catch (Exception e) {
-     //           e.printStackTrace();
             }
         } while (c.moveToPrevious());
         return paths;
@@ -82,6 +82,6 @@ public class HistoryManager {
     }
 
     public void open() {
-        db = c.openOrCreateDatabase(table, c.MODE_PRIVATE, null);
+        db = c.openOrCreateDatabase(dbname, c.MODE_PRIVATE, null);
     }
 }

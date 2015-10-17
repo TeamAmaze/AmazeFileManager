@@ -84,10 +84,10 @@ public class TabFragment extends android.support.v4.app.Fragment {
                     String name = fragments.get(p1).getClass().getName();
                     if (name!=null && name.contains("Main")) {
                         Main ma = ((Main) fragments.get(p1));
-                        if (ma.current != null) {
+                        if (ma.CURRENT_PATH != null) {
                             try {
-                                mainActivity.updateDrawer(ma.current);
-                                mainActivity.updatePath(ma.current,  ma.results,ma.openMode,
+                                mainActivity.updateDrawer(ma.CURRENT_PATH);
+                                mainActivity.updatePath(ma.CURRENT_PATH,  ma.results,ma.openMode,
                                         ma.folder_count, ma.file_count);
                                 if (buttons.getVisibility() == View.VISIBLE) {
                                     mainActivity.bbar(ma);
@@ -198,14 +198,14 @@ public class TabFragment extends android.support.v4.app.Fragment {
         for(Fragment fragment:fragments) {
             if(fragment.getClass().getName().contains("Main")){
                 Main m=(Main)fragment;
-                items.add(parsePathForName(m.current,m.openMode));
+                items.add(parsePathForName(m.CURRENT_PATH,m.openMode));
                 if(i-1==currenttab && i==pos){
-                    mainActivity.updatePath(m.current,m.results,m.openMode,m
+                    mainActivity.updatePath(m.CURRENT_PATH,m.results,m.openMode,m
                             .folder_count,m.file_count);
-                    mainActivity.updateDrawer(m.current);
+                    mainActivity.updateDrawer(m.CURRENT_PATH);
                 }
                 if(m.openMode==0) {
-                    tabHandler.addTab(new Tab(i, m.current, m.current, m.home));
+                    tabHandler.addTab(new Tab(i, m.CURRENT_PATH, m.CURRENT_PATH, m.home));
                 }else
                     tabHandler.addTab(new Tab(i, m.home, m.home, m.home));
 

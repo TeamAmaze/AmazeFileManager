@@ -68,13 +68,14 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     public void onProgressUpdate(String... message) {
         Toast.makeText(ma.getActivity(), message[0], Toast.LENGTH_LONG).show();
     }
-
+    boolean grid;
     @Override
     // Actual download method, run in the task thread
     protected ArrayList<Layoutelements> doInBackground(String... params) {
         // params comes from the execute() call: params[0] is the url.
         ArrayList<Layoutelements> list=null;
         path=params[0];
+        grid=ma.checkforpath(path);
         ma.folder_count=0;
         ma.file_count=0;
         if(customPath){
@@ -125,11 +126,11 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         } else {
             try {
                 ArrayList<String[]> arrayList;
-                if (ma.rootMode) {
-                    arrayList = RootHelper.getFilesList(path, ma.rootMode, ma.showHidden, ma
-                            .showSize);
+                if (ma.ROOT_MODE) {
+                    arrayList = RootHelper.getFilesList(path, ma.ROOT_MODE, ma.SHOW_HIDDEN, ma
+                            .SHOW_SIZE);
                 } else
-                    arrayList = (RootHelper.getFilesList(ma.showSize, path, ma.showHidden));
+                    arrayList = (RootHelper.getFilesList(ma.SHOW_SIZE, path, ma.SHOW_HIDDEN));
                 list = ma.addTo(arrayList);
 
             } catch (Exception e) {
@@ -137,7 +138,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
             }
         }
         if(list!=null)
-        Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, ma.rootMode));
+        Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, ma.ROOT_MODE));
+
         return list;
 
 
@@ -149,7 +151,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         if (isCancelled()) {
             bitmap = null;
 
-        }    ma.createViews(bitmap, back, path, openmode, false);
+        }    ma.createViews(bitmap, back, path, openmode, false,grid);
 
     }
     ArrayList<String[]> listaudio(){
@@ -171,7 +173,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
             do {
                 String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                String[] strings = RootHelper.addFile(new File(path), ma.showSize, ma.showHidden);
+                String[] strings = RootHelper.addFile(new File(path), ma.SHOW_SIZE, ma.SHOW_HIDDEN);
                 if (strings != null) songs.add(strings);
             } while (cursor.moveToNext());
         }
@@ -190,7 +192,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
             do {
                 String path=cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                String[] strings=RootHelper.addFile(new File(path), ma.showSize, ma.showHidden);
+                String[] strings=RootHelper.addFile(new File(path), ma.SHOW_SIZE, ma.SHOW_HIDDEN);
                 if(strings!=null) songs.add(strings);
             } while (cursor.moveToNext());
         }
@@ -210,7 +212,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
             do {
                 String path=cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                 String[] strings=RootHelper.addFile(new File(path), ma.showSize, ma.showHidden);
+                 String[] strings=RootHelper.addFile(new File(path), ma.SHOW_SIZE, ma.SHOW_HIDDEN);
                     if(strings!=null) songs.add(strings);
                 } while (cursor.moveToNext());
         }
@@ -228,7 +230,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                 String path=cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
                 if(path!=null && path.endsWith(".apk"))
-                { String[] strings=RootHelper.addFile(new File(path), ma.showSize, ma.showHidden);
+                { String[] strings=RootHelper.addFile(new File(path), ma.SHOW_SIZE, ma.SHOW_HIDDEN);
                   if(strings!=null) songs.add(strings);
                 }
             } while (cursor.moveToNext());
@@ -251,7 +253,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                         (MediaStore.Files.FileColumns.DATA));
                 if(path!=null && contains(types, path))
                 {
-                    String[] strings=RootHelper.addFile(new File(path), ma.showSize, ma.showHidden);
+                    String[] strings=RootHelper.addFile(new File(path), ma.SHOW_SIZE, ma.SHOW_HIDDEN);
                 if(strings!=null) songs.add(strings);
                 }
             } while (cursor.moveToNext());

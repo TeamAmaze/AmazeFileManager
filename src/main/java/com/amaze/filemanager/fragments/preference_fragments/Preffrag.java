@@ -81,13 +81,13 @@ public class Preffrag extends PreferenceFragment  {
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
                 if(theme==1)a.theme(Theme.DARK);
                 a.title(R.string.gridcolumnno);
-                int current = Integer.parseInt(sharedPref.getString("columns", "0"));
-                if(current!=0)current=current-2;
-                else current=1;
+                int current = Integer.parseInt(sharedPref.getString("columns", "-1"));
+                current=current==-1?0:current;
+                if(current!=0)current=current-1;
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        sharedPref.edit().putString("columns", "" + sort[which]).commit();
+                        sharedPref.edit().putString("columns", "" + (which!=0?sort[which]:""+-1)).commit();
                         dialog.dismiss();
                         return true;
                     }
@@ -129,26 +129,6 @@ public class Preffrag extends PreferenceFragment  {
                 hideModePreference.setSummary(getResources().getString(R.string.hide_mode_app_bar));
                 break;
         }
-   findPreference("dirontop").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                String[] sort = getResources().getStringArray(R.array.directorysortmode);
-                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                if(theme==1)a.theme(Theme.DARK);
-                a.title(R.string.directorysort);
-                int current = Integer.parseInt(sharedPref.getString("dirontop", "0"));
-                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        sharedPref.edit().putString("dirontop", "" + which).commit();
-                        dialog.dismiss();
-                        return true;
-                    }
-                });
-                a.build().show();
-                return true;
-            }
-        });
 
         findPreference("theme").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -175,27 +155,6 @@ public class Preffrag extends PreferenceFragment  {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 ((com.amaze.filemanager.activities.Preferences) getActivity()).selectItem(1);
-                return true;
-            }
-        });
-        findPreference("sortby").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                String[] sort = getResources().getStringArray(R.array.sortby);
-                int current = Integer.parseInt(sharedPref.getString("sortby", "0"));
-                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                if (theme == 1) a.theme(Theme.DARK);
-                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-
-                        sharedPref.edit().putString("sortby", "" + which).commit();
-                        dialog.dismiss();
-                        return true;
-                    }
-                });
-                a.title(R.string.sortby);
-                a.build().show();
                 return true;
             }
         });

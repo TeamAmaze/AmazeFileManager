@@ -87,13 +87,7 @@
         <Preference
             android:key="columns"
             android:title="@string/gridcolumnno" />
-        <Preference
-            android:key="dirontop"
-            android:title="@string/directorysort" />
 
-        <Preference
-            android:key="sortby"
-            android:title="@string/sortby" />
     
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/archive_preferences">

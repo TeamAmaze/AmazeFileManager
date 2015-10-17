@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+    Copyright (C) 2014-2015 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
     This file is part of Amaze File Manager (translated by M. Kucharskov <M.Kucharskov@gmail.com>, P. Kowalczyk <p.d.kowalczyk@wp.pl>)
 
@@ -194,6 +194,7 @@
     <string name="Extracting_fles">Wypakowywanie plików</string>
     <string name="Zipping_fles">Pakowywanie plików</string>
     <string name="items">Elementy</string>
+    <string name="item">Element</string>
     <string name="set">Ustaw</string>
     <string name="enablerootmde">Włącz tryb root\'a</string>
     <string name="goback">Wstecz</string>
@@ -353,5 +354,11 @@
     <string name="apks">Aplikacje</string>
     <string name="documents">Dokumenty</string>
     <string name="images">Obrazki</string>
+    <string name="clear">Wyczyść</string>
+    <string name="md5">MD5: </string>
+    <string name="md5_2">Kopiuj MD5</string>
+    <string name="total">Łącznie: </string>
+    <string name="calculating"> obliczanie </string>
+    <string name="sort">Sortowanie</string>
 </resources>
 

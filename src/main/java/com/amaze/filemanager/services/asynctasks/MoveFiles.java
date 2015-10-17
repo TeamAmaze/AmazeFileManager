@@ -55,7 +55,7 @@ public class MoveFiles extends AsyncTask<String,Void,Boolean> {
     @Override
     public void onPostExecute(Boolean b){
         Futils futils=new Futils();
-        if(b ){if(ma!=null)if(ma.current.equals(path))ma.updateList();
+        if(b ){if(ma!=null)if(ma.CURRENT_PATH.equals(path))ma.updateList();
             try {    for(File f:files){
                futils.scanFile(f.getPath(),context);
                 futils.scanFile(path+"/"+f.getName(),context);

@@ -67,7 +67,7 @@
     <string name="enterfile">Enter File Name</string>
     <string name="name">Name: </string>
     <string name="date">Date: </string>
-    <string name="location">Located in: </string>
+    <string name="location">Location: </string>
     <string name="size">Size: </string>
     <string name="totalitems">Total Items: </string>
     <string name="enterzipname">Enter Zip Name</string>
@@ -194,6 +194,7 @@
     <string name="Extracting_fles">Extracting Files</string>
     <string name="Zipping_fles">Zipping Files</string>
     <string name="items">Items</string>
+    <string name="item">Item</string>
     <string name="set">Set</string>
     <string name="enablerootmde">Enable Root Mode</string>
     <string name="goback">Go Back</string>
@@ -354,5 +355,13 @@
     <string name="documents">Documents</string>
     <string name="images">Images</string>
     <string name="clear">Clear</string>
+    <string name="md5">md5: </string>
+    <string name="md5_2">Copy md5</string>
+    <string name="total">Total: </string>
+    <string name="calculating"> calculating </string>
+    <string name="sort">Sort</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
+    <string name="defualt">Default</string>
 </resources>
 

@@ -40,7 +40,7 @@
         android:paddingLeft="10dip">
         <TextView
             android:id="@+id/text1"
-            style="?android:textAppearanceMedium"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:layout_height="wrap_content"

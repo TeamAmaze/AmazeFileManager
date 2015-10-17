@@ -174,6 +174,7 @@ public abstract class FileUtil {
      */
     public static final boolean deleteFile(@NonNull final File file,Context context) {
         // First try the normal deletion.
+        if(file==null) return true;
         boolean fileDelete = deleteFilesInFolder(file, context);
         if (file.delete() || fileDelete)
             return true;
@@ -610,6 +611,7 @@ public abstract class FileUtil {
                 }
             }
         }
+        if(paths.isEmpty())paths.add("/storage/sdcard1");
         return paths.toArray(new String[0]);
     }
 
