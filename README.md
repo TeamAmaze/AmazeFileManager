@@ -15,7 +15,7 @@ Amaze File Manager source code
 - and the list goes on...
 
 ###Note
-- Basic r/w operations might not work on external memory on Kitkat devices. Don't use cut/paste from or to external SD Card. You might loose your files.
+- Basic r/w operations might not work on external memory on Kitkat devices. Don't use cut/paste from or to external SD Card. You might lose your files.
 
 This app is still in beta stage, hence, you might face some bugs, lack of features.
 
