@@ -92,6 +92,7 @@ import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
+import com.amaze.filemanager.utils.DriveUtil;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HFile;
@@ -103,10 +104,9 @@ import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.drive.Drive;
+import com.google.android.gms.auth.UserRecoverableAuthException;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
+import com.google.api.services.drive.Drive;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
@@ -135,7 +135,7 @@ public class Main extends android.support.v4.app.Fragment {
     Resources res;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
-
+    public DriveUtil driveUtil;
     public String home, CURRENT_PATH = "",year, goback;
     public Shortcuts sh;
     HashMap<String, Bundle> scrolls = new HashMap<String, Bundle>();
@@ -174,6 +174,7 @@ public class Main extends android.support.v4.app.Fragment {
     boolean stopAnims = true,PERM_GRID;
     private View actionModeView;
     View nofilesview;
+    String current_drive_id;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -199,6 +200,7 @@ public class Main extends android.support.v4.app.Fragment {
         TOP_FAB = hidemode == 0 ? Sp.getBoolean("topFab", true) : false;
         SHOW_PERMISSIONS = Sp.getBoolean("showPermissions", false);
         SHOW_SIZE = Sp.getBoolean("showFileSize", false);
+        driveUtil=new DriveUtil();
         SHOW_DIVIDERS = Sp.getBoolean("showDividers", true);
         GO_BACK_ITEM = Sp.getBoolean("goBack_checkbox", false);
         CIRCULAR_IMAGES = Sp.getBoolean("circularimages", true);
@@ -330,7 +332,7 @@ public class Main extends android.support.v4.app.Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadlist((CURRENT_PATH), false, true);
+                loadlist((CURRENT_PATH), false, openMode);
             }
         });
         mToolbarHeight = getToolbarHeight(getActivity());
@@ -364,7 +366,7 @@ public class Main extends android.support.v4.app.Fragment {
 
         });
         if (savedInstanceState == null) {
-            loadlist(CURRENT_PATH, false, true);
+            loadlist(CURRENT_PATH, false, openMode);
 
         } else {
             if (IS_LIST)
@@ -444,7 +446,7 @@ public class Main extends android.support.v4.app.Fragment {
                 } catch (Exception e) {
                 }
             } else {
-                createViews(LIST_ELEMENTS, true, (cur), openMode, false,!IS_LIST);
+                createViews(LIST_ELEMENTS, true, (cur), openMode, false, !IS_LIST);
             }
             if (savedInstanceState.getBoolean("selection")) {
 
@@ -493,7 +495,7 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
     public void home() {
-        ma.loadlist((ma.home), false, false);
+        ma.loadlist((ma.home), false, 0);
     }
 
 
@@ -512,7 +514,7 @@ public class Main extends android.support.v4.app.Fragment {
                 final File f = new File(path);
                 if (LIST_ELEMENTS.get(position).isDirectory()) {
 
-                    loadlist(f.getPath(), false, false);
+                    loadlist(f.getPath(), false, 0);
                     results = false;
                 } else {
                     if (MAIN_ACTIVITY.mReturnIntent) {
@@ -521,12 +523,30 @@ public class Main extends android.support.v4.app.Fragment {
                         utils.openFile(f, (MainActivity) getActivity());
                 }
             }
-        } else if (openMode == 1) {
+        }
+        else if (openMode==3){
+            if(LIST_ELEMENTS.get(position).getSymlink().equals("application/vnd.google-apps.folder")){
+                loadlist(LIST_ELEMENTS.get(position).getPermissions(),false,3);
+            }else {
+                try {
+                    driveUtil.getFile(LIST_ELEMENTS.get(position).getPermissions(), MAIN_ACTIVITY.getDriveClient(), new DriveUtil.FileReturn() {
+                        @Override
+                        public void getFile(com.google.api.services.drive.model.File f) {
+                            launch(f);
+                        }
+                    });
+                } catch (UserRecoverableAuthIOException e) {
+                    MAIN_ACTIVITY.chooseAccount();
+                }
+            }
+
+        }
+        else if (openMode == 1) {
             if (selection) adapter.toggleChecked(position);
             else {
                 try {
                     if (LIST_ELEMENTS.get(position).isDirectory())
-                        loadCustomList(LIST_ELEMENTS.get(position).getDesc(), false);
+                        loadlist(LIST_ELEMENTS.get(position).getDesc(), false,openMode);
                     else launch(new SmbFile(LIST_ELEMENTS.get(position).getDesc()));
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
@@ -561,7 +581,7 @@ public class Main extends android.support.v4.app.Fragment {
                 if (l.isDirectory()) {
 
                     computeScroll();
-                    loadlist(f.getPath(), false, false);
+                    loadlist(f.getPath(), false, openMode);
                 } else {
                     if (MAIN_ACTIVITY.mReturnIntent) {
                         returnIntentResults(f);
@@ -598,21 +618,12 @@ public class Main extends android.support.v4.app.Fragment {
         }
     }
 
-    public void loadlist(String path, boolean back, boolean checkpath) {
+    public void loadlist(String path, boolean back, int openMode) {
         if (mActionMode != null) {
             mActionMode.finish();
         }
-        if (checkpath) {
-            if (path.startsWith("smb:") || new HFile(path).isCustomPath())
-                loadCustomList((path), false);
-            else
-                new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
-        } else new LoadList(back, ma).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
+                new LoadList(back, ma,openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
 
-    }
-
-    public void loadCustomList(String path, boolean back) {
-        new LoadList(back, ma, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
     }
 
 
@@ -723,7 +734,12 @@ public class Main extends android.support.v4.app.Fragment {
                         }
                     }).start();
                     if (!results) this.results = false;
-                    CURRENT_PATH = f;
+                    if(openMode!=3 )CURRENT_PATH = f;
+                    else if(android.util.Patterns.EMAIL_ADDRESS.matcher(f).matches()){
+                        CURRENT_PATH=f;
+                        current_drive_id=f;
+                    }
+                    else current_drive_id=f;
                     if (back) {
                         if (scrolls.containsKey(CURRENT_PATH)) {
                             Bundle b = scrolls.get(CURRENT_PATH);
@@ -741,7 +757,7 @@ public class Main extends android.support.v4.app.Fragment {
                 } catch (Exception e) {
                 }
             } else {//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
-                loadlist(home, true, false);
+                loadlist(home, true, 0);
             }
         } catch (Exception e) {
         }
@@ -1010,7 +1026,7 @@ public class Main extends android.support.v4.app.Fragment {
                                 (fabSkin));
                     return true;
                 case R.id.openparent:
-                    loadlist(new File(LIST_ELEMENTS.get(plist.get(0)).getDesc()).getParent(), false, false);
+                    loadlist(new File(LIST_ELEMENTS.get(plist.get(0)).getDesc()).getParent(), false, 0);
                     return true;
                 case R.id.all:
                     if (adapter.areAllChecked(CURRENT_PATH)) {
@@ -1165,8 +1181,22 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
     public void goBack() {
+        if(openMode==3){
+            driveUtil.goBack( current_drive_id, new DriveUtil.GoBackCallback() {
+                @Override
+                public void load(String id) {
+                   mSwipeRefreshLayout.setRefreshing(true);
+                    if(id==null)
+                        loadlist(home, false, 0);
+                    else loadlist(id,false,3);
+
+                }
+            },MAIN_ACTIVITY.getDriveClient());
+            //under construction
+            return;
+        }
         if (openMode == 2) {
-            loadlist(home, false, false);
+            loadlist(home, false, 0);
             return;
         }
         File f = new File(CURRENT_PATH);
@@ -1178,15 +1208,15 @@ public class Main extends android.support.v4.app.Fragment {
                     try {
                         if (!MAIN_ACTIVITY.Servers.contains(CURRENT_PATH)) {
                             String path = (new SmbFile(CURRENT_PATH).getParent());
-                            loadCustomList((path), true);
-                        } else loadlist(home, false, true);
+                            loadlist((path), true,openMode);
+                        } else loadlist(home, false, 0);
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
                 else if (CURRENT_PATH.equals("/") || CURRENT_PATH.equals(home))
                     MAIN_ACTIVITY.exit();
                 else if (utils.canGoBack(f)) {
-                    loadlist(f.getParent(), true, false);
+                    loadlist(f.getParent(), true, openMode);
                 } else MAIN_ACTIVITY.exit();
             }
         } else {
@@ -1195,7 +1225,7 @@ public class Main extends android.support.v4.app.Fragment {
                     searchTask.cancel(true);
                 searchTask = null;
             }
-            loadlist(f.getPath(), true, false);
+            loadlist(f.getPath(), true, 0);
         }
     }
 
@@ -1213,19 +1243,19 @@ public class Main extends android.support.v4.app.Fragment {
                     try {
                         if (!CURRENT_PATH.equals(smbPath)) {
                             String path = (new SmbFile(CURRENT_PATH).getParent());
-                            loadCustomList((path), true);
-                        } else loadlist(home, false, false);
+                            loadlist((path), true,1);
+                        } else loadlist(home, false, 0);
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
                 else if (CURRENT_PATH.equals("/"))
                     MAIN_ACTIVITY.exit();
                 else if (utils.canGoBack(f)) {
-                    loadlist(f.getParent(), true, false);
+                    loadlist(f.getParent(), true, openMode);
                 } else MAIN_ACTIVITY.exit();
             }
         } else {
-            loadlist(f.getPath(), true, false);
+            loadlist(f.getPath(), true, openMode);
         }
     }
 
@@ -1240,7 +1270,7 @@ public class Main extends android.support.v4.app.Fragment {
     public void updateList() {
         computeScroll();
         ic.cleanup();
-        loadlist((CURRENT_PATH), true, true);
+        loadlist((CURRENT_PATH), true, openMode);
     }
 
     public void getSortModes() {
@@ -1342,6 +1372,36 @@ public class Main extends android.support.v4.app.Fragment {
                     }
                 }
             }
+        }
+        return a;
+    }
+
+    public ArrayList<Layoutelements> addToDrive(ArrayList<com.google.api.services.drive.model.File> mFile) {
+        ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
+        for (int i = 0; i < mFile.size(); i++) {
+
+            com.google.api.services.drive.model.File f = mFile.get(i);
+            String size = "";
+            if (f.getMimeType().equals("application/vnd.google-apps.folder")) {
+                a.add(utils.newElement(folder, f.getTitle(), f.getId(), f.getMimeType(), size, 0, true, false, ""));
+                folder_count++;
+            } else {
+                long longSize = 0;
+                try {/*
+                    size = utils.readableFileSize((f.getFileSize()));
+                    longSize = (f.getFileSize());
+*/
+                } catch (NumberFormatException e) {
+                    //e.printStackTrace();
+                }
+                try {
+                    a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getTitle(), !IS_LIST, res), f.getTitle(), f.getId(), f.getMimeType(), size, longSize, false, false, ""));
+                    file_count++;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
         return a;
     }
@@ -1550,4 +1610,32 @@ public class Main extends android.support.v4.app.Fragment {
             }
         }.start();
     }
+
+    private void launch(final com.google.api.services.drive.model.File smbFile) {
+        new Thread() {
+            public void run() {
+                try {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            try {
+                                Uri uri = Uri.parse(smbFile.getDefaultOpenWithLink());
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setDataAndType(uri, smbFile.getMimeType());
+                                PackageManager packageManager = getActivity().getPackageManager();
+                                List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
+                                if (resInfos != null && resInfos.size() > 0)
+                                    startActivity(i);
+                                else
+                                    Toast.makeText(getActivity(), "You will need to copy this file to storage to open it", Toast.LENGTH_SHORT).show();
+                            } catch (ActivityNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();}
 }

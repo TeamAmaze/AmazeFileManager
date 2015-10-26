@@ -99,7 +99,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     public void toggleChecked(boolean b,String path) {
         int k=0;
        // if(enter.get(0).getEntry()==null)k=1;
-        for (int i = k; i < enter.size(); i++) {
+        for (int i = k; i < (zipMode?enter1.size():enter.size()); i++) {
             myChecked.put(i, b);
         }
         notifyDataSetChanged();

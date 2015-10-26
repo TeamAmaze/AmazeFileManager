@@ -149,6 +149,8 @@ public class ZipViewer extends Fragment {
         super.onActivityCreated(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         s = getArguments().getString("path");
+
+        Toast.makeText(getActivity(),s,Toast.LENGTH_SHORT).show();
         f = new File(s);
         mToolbarContainer = getActivity().findViewById(R.id.lin);
         mToolbarContainer.setOnTouchListener(new View.OnTouchListener() {
@@ -282,12 +284,9 @@ public class ZipViewer extends Fragment {
             hideOption(R.id.delete, menu);
             hideOption(R.id.addshortcut, menu);
             hideOption(R.id.sethome, menu);
-            hideOption(R.id.rename, menu);
             hideOption(R.id.share, menu);
-            hideOption(R.id.about, menu);
             hideOption(R.id.openwith, menu);
             showOption(R.id.all, menu);
-            hideOption(R.id.book, menu);
             hideOption(R.id.compress, menu);
             hideOption(R.id.hide, menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));

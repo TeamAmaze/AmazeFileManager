@@ -25,14 +25,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -50,6 +47,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.ui.views.CheckBx;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.stericson.RootTools.RootTools;
 import java.util.ArrayList;
@@ -73,7 +71,13 @@ public class Preffrag extends PreferenceFragment  {
 
         final int th1 = Integer.parseInt(sharedPref.getString("theme", "0"));
         theme = th1==2 ? PreferenceUtils.hourOfDay() : th1;
-
+        findPreference("donate").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                ((com.amaze.filemanager.activities.Preferences) getActivity()).donate();
+                return false;
+            }
+        });
         findPreference("columns").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -161,7 +165,7 @@ public class Preffrag extends PreferenceFragment  {
 
 
 
-        final SwitchPreference rootmode = (SwitchPreference) findPreference("rootmode");
+        final CheckBx rootmode = (CheckBx) findPreference("rootmode");
         rootmode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -393,7 +397,7 @@ public class Preffrag extends PreferenceFragment  {
         });
 
         // G+
-        SwitchPreference preference7 = (SwitchPreference) findPreference("plus_pic");
+        CheckBx preference7 = (CheckBx) findPreference("plus_pic");
         if (BuildConfig.IS_VERSION_FDROID)
             preference7.setEnabled(false);
 

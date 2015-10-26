@@ -1,6 +1,8 @@
 package com.amaze.filemanager.services.asynctasks;
 
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.ZipViewer;
@@ -13,6 +15,7 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 /**
  * Created by Vishal on 11/23/2014.
@@ -31,14 +34,13 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
     @Override
     protected ArrayList<ZipObj> doInBackground(File... params) {
         ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
-
         try {
-            ZipFile zipfile = new ZipFile(params[0]);
+            ZipInputStream zipfile = new ZipInputStream(zipViewer.getActivity().getContentResolver().openInputStream(Uri.parse(params[0].getPath())));
             int i = 0;
+            ZipEntry entry1;
             if (zipViewer.wholelist.size() == 0) {
-                for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
-                    ZipEntry entry = (ZipEntry) e.nextElement();
-                    zipViewer.wholelist.add(new ZipObj(entry, entry.getTime(), entry.getSize(), entry.isDirectory()));
+                while ((entry1=zipfile.getNextEntry())!=null ) {
+                    zipViewer.wholelist.add(new ZipObj(entry1, entry1.getTime(), entry1.getSize(), entry1.isDirectory()));
                 }
             }
             ArrayList<String> strings = new ArrayList<String>();

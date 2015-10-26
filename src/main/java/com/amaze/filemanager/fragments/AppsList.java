@@ -66,8 +66,6 @@ public class AppsList extends ListFragment {
     AppsAdapter adapter;
 
     public SharedPreferences Sp;
-    public boolean selection = false;
-    public ActionMode mActionMode;
     public ArrayList<ApplicationInfo> c = new ArrayList<ApplicationInfo>();
     ListView vl;
     public IconHolder ic;
@@ -157,117 +155,7 @@ public class AppsList extends ListFragment {
             loadlist(true);
             }}
     };
-    public void onLongItemClick(final int position) {
-        final MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        if(theme1==1)
-            builder.theme(Theme.DARK);
-        builder.items(new String[]{utils.getString(getActivity(), R.string.open),utils.getString(getActivity(), R.string.backup), utils.getString(getActivity(), R.string.uninstall),
-                utils.getString(getActivity(), R.string.properties),utils.getString(getActivity(), R.string.play),utils.getString(getActivity(),R.string.share)})
-                .itemsCallback(new MaterialDialog.ListCallback() {
 
-                    @Override
-                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence s) {
-                        switch (i) {
-                            case 0:
-                                Intent i1 = app.getActivity().getPackageManager().getLaunchIntentForPackage(a.get(position).getPermissions());
-                                if (i1!= null)
-                                    app.startActivity(i1);
-                                else
-                                    Toast.makeText(app.getActivity(),utils.getString(getActivity(),R.string.not_allowed), Toast.LENGTH_LONG).show();
-                                break;
-
-                            case 1:
-                                Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
-
-                                File f = new File(a.get(position).getDesc());
-                                ArrayList<String> ab = new ArrayList<String>();
-                                //a.add(info.publicSourceDir);
-                                File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");
-                                if(!dst.exists() || !dst.isDirectory())dst.mkdirs();
-                                Intent intent = new Intent(getActivity(), CopyService.class);
-                                //Toast.makeText(getActivity(), f.getParent(), Toast.LENGTH_LONG).show();
-
-                                if (Build.VERSION.SDK_INT >= 21) {
-                                    ab.add(f.getParent());
-                                } else {
-                                    ab.add(f.getPath());
-                                }
-                                intent.putExtra("FILE_PATHS", ab);
-                                intent.putExtra("COPY_DIRECTORY", dst.getPath());
-                                getActivity().startService(intent);
-                                break;
-                            case 2:
-                                final File f1 = new File(a.get(position).getDesc());
-                                ApplicationInfo info1=null;
-                                for(ApplicationInfo info:c){
-                                    if(info.publicSourceDir.equals(a.get(position).getDesc()))info1=info;
-                                }
-                                int color= Color.parseColor(PreferenceUtils.getFabColor
-                                        (Sp.getInt("fab_skin_color_position", 1)));
-                                //arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1),"", false));
-                                //utils.deleteFiles(arrayList, null, arrayList1);
-                                if ((info1.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-                                    // system package
-                                    if(Sp.getBoolean("rootmode",false)) {
-                                        MaterialDialog.Builder builder1 = new MaterialDialog.Builder(getActivity());
-                                        if(theme1==1)
-                                            builder1.theme(Theme.DARK);
-                                        builder1.content(utils.getString(getActivity(), R.string.unin_system_apk))
-                                                .title(utils.getString(getActivity(), R.string.warning))
-                                                .negativeColor(color)
-                                                .positiveColor(color)
-                                                .negativeText(utils.getString(getActivity(), R.string.no))
-                                                .positiveText(utils.getString(getActivity(), R.string.yes))
-                                                .callback(new MaterialDialog.ButtonCallback() {
-                                                    @Override
-                                                    public void onNegative(MaterialDialog materialDialog) {
-
-                                                        materialDialog.cancel();
-                                                    }
-
-                                                    @Override
-                                                    public void onPositive(MaterialDialog materialDialog) {
-
-                                                        ArrayList<File> files = new ArrayList<File>();
-                                                        if (Build.VERSION.SDK_INT >= 21) {
-                                                            String parent = f1.getParent();
-                                                            if (!parent.equals("app") && !parent.equals("priv-app"))
-                                                                files.add(new File(f1.getParent()));
-                                                            else files.add(f1);
-                                                        } else {
-                                                            files.add(f1);
-                                                        }
-                                                        new DeleteTask(getActivity().getContentResolver(), getActivity()).execute(utils.toStringArray(files));
-                                                    }
-                                                }).build().show();
-                                    } else {
-                                        Toast.makeText(getActivity(),utils.getString(getActivity(), R.string.enablerootmde),Toast.LENGTH_SHORT).show();
-                                    }
-                                } else {
-                                    unin(a.get(position).getPermissions());
-                                }
-                                break;
-                            case 3:
-                                startActivity(new Intent(
-                                        android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                        Uri.parse("package:" + a.get(position).getPermissions())));
-                                break;
-                            case 4:
-                                Intent intent1 = new Intent(Intent.ACTION_VIEW);
-                                intent1.setData(Uri.parse("market://details?id=" + a.get(position).getPermissions()));
-                                startActivity(intent1);
-                                break;
-                            case 5:
-                                ArrayList<File> arrayList2=new ArrayList<File>();
-                                arrayList2.add(new File(a.get(position).getDesc()));
-                                int color1= Color.parseColor(PreferenceUtils.getFabColor
-                                        (Sp.getInt("fab_skin_color_position", 1)));
-                                utils.shareFiles(arrayList2,getActivity(),theme1,color1);
-                        }
-                    }
-                }).title(a.get(position).getTitle()).build()
-                .show();
-    }
 
     @Override
     public void onSaveInstanceState(Bundle b) {

@@ -1,6 +1,5 @@
 package com.amaze.filemanager.fragments.preference_fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,8 +9,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +20,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.ui.views.CheckBx;
 import com.amaze.filemanager.utils.PreferenceUtils;
 
 import java.lang.reflect.Array;
@@ -49,7 +47,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         final int th1 = Integer.parseInt(sharedPref.getString("theme", "0"));
         theme = th1==2 ? PreferenceUtils.hourOfDay() : th1;
 
-        final SwitchPreference checkBoxPreference = (SwitchPreference) findPreference("random_checkbox");
+        final CheckBx checkBoxPreference = (CheckBx) findPreference("random_checkbox");
         checkBoxPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -58,7 +56,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                 return true;
             }
         });
-        SwitchPreference preference8 = (SwitchPreference) findPreference("colorednavigation");
+        CheckBx preference8 = (CheckBx) findPreference("colorednavigation");
         preference8.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {

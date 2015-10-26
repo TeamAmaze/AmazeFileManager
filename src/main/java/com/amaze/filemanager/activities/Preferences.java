@@ -22,6 +22,7 @@ package com.amaze.filemanager.activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,12 +40,16 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import org.sufficientlysecure.donations.DonationsFragment;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -240,7 +245,7 @@ public class Preferences extends AppCompatActivity {
     public void onBackPressed() {
         if(select==1 && changed==1)
             restartPC(this);
-        else if(select==1){selectItem(0);}
+        else if(select==1 || select==2){selectItem(0);}
         else{
             Intent in = new Intent(Preferences.this, MainActivity.class);
             in.setAction(Intent.ACTION_MAIN);
@@ -260,7 +265,7 @@ public class Preferences extends AppCompatActivity {
                 // Navigate "up" the demo structure to the launchpad activity.
                 if(select==1 && changed==1)
                     restartPC(this);
-                else if(select==1){selectItem(0);}
+                else if(select==1 ){selectItem(0);}
                 else{
                 Intent in = new Intent(Preferences.this, MainActivity.class);
                 in.setAction(Intent.ACTION_MAIN);
@@ -275,7 +280,29 @@ public class Preferences extends AppCompatActivity {
 
         }
         return true;
-    }public  void restartPC(final Activity activity) {
+    }
+    private static final String GOOGLE_PUBKEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo9hApxv/pAZAUQshPiQEX2L6ZPoifEUw9fuisAxZFOHpW83mcRbWDmcqdouc1JqHak0/J0tZEBMc4SqSngE+xK3NxS2Mf4uwXPhD40bC1InAKtGNOJllGXKS8RRmk2FDD33ZHrdFUcJuKL6EIXHl1bwFIrd9rvr5VRt1mvXGj+iSdZe1WQpLex/f/s+eEe1B046Z/U6YNoPvP7xFezbZr3F1kRsx4WD5fcrTdptn38BXcwabJ1T/c2fLuGjUCZbycrggqJS47zEJ+SJhJpQUJWabq0sEYAHlyVN0CR0AVTd4/+y4+hFuPaYkhT4u/H5Uvd78u0VQdljzDs4w8mS++QIDAQAB";
+    private static final String[] GOOGLE_CATALOG = new String[]{"ntpsync.donation.1",
+            "ntpsync.donation.2", "ntpsync.donation.3", "ntpsync.donation.5", "ntpsync.donation.8",
+            "ntpsync.donation.13"};
+    public void donate(){
+        try {
+            getFragmentManager().beginTransaction().remove(p).commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String[] s=new String[]{"1 Euro","2 Euros","3 Euros","5 Euros","8 Euros","13 Euros"};
+        DonationsFragment donationsFragment = DonationsFragment.newInstance(BuildConfig.DEBUG, true, GOOGLE_PUBKEY, GOOGLE_CATALOG,
+                s, false, null, null,
+                null, false, null, null, false, null);
+        android.support.v4.app.FragmentTransaction transaction =getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.prefsfragment, donationsFragment);
+        transaction.commit();
+        getSupportActionBar().setTitle(R.string.donate);
+
+    }
+    public  void restartPC(final Activity activity) {
         if (activity == null)
             return;
         final int enter_anim = android.R.anim.fade_in;
@@ -285,11 +312,13 @@ public class Preferences extends AppCompatActivity {
         activity.overridePendingTransition(enter_anim, exit_anim);
         activity.startActivity(activity.getIntent());
     }
+    Preffrag p;
     public void selectItem(int i){
         switch (i){
             case 0:
+                p=new Preffrag();
                 FragmentTransaction transaction =getFragmentManager().beginTransaction();
-                transaction.replace(R.id.prefsfragment, new Preffrag());
+                transaction.replace(R.id.prefsfragment,p );
                 transaction.commit();
                 select=0;
                 getSupportActionBar().setTitle(R.string.setting);

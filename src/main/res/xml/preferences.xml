@@ -27,12 +27,12 @@
             android:key="colors"
             android:summary="@string/color_summary"/>
 
-        <SwitchPreference
+        <com.amaze.filemanager.ui.views.CheckBx
             android:key="circularimages"
             android:defaultValue="true"
             android:summary="@string/circularimages"
             android:title="@string/circularicons"/>
-        <SwitchPreference
+        <com.amaze.filemanager.ui.views.CheckBx
             android:key="plus_pic"
             android:title="@string/gplus_pic_title"
             android:summary="@string/gplus_pic_summary"
@@ -41,11 +41,11 @@
         <Preference
             android:key="hidemode"
             android:title="@string/hide_mode_title" />
-        <SwitchPreference
+        <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="true"
             android:key="showDividers"
             android:title="@string/showDividers" />
-        <SwitchPreference
+        <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="false"
             android:key="topFab"
             android:enabled="false"
@@ -54,32 +54,32 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/general">
-        <SwitchPreference
+        <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="true"
             android:key="savepaths"
             android:summary="@string/savepathsummary"
             android:title="@string/savepaths" />
-        <SwitchPreference
+        <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="true"
             android:key="showThumbs"
             android:summary="@string/thumbSummary"
             android:title="@string/thumb" />
-		<SwitchPreference
+		<com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="false"
             android:key="showHidden"
             android:title="@string/hidden" />
-        <SwitchPreference
+        <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="true"
             android:key="showLastModified"
             android:enabled="false"
             android:summary="@string/lastModifiedSummary"
             android:title="@string/lastModifiedPref" />
-        <SwitchPreference
+        <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="false"
             android:key="showFileSize"
             android:summary="@string/sizePrefSummary"
             android:title="@string/sizePref" />
-        <SwitchPreference
+        <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="false"
             android:key="goBack_checkbox"
             android:title="@string/back_title"
@@ -104,12 +104,12 @@
 </PreferenceCategory>
     <PreferenceCategory android:title="@string/miscellaneous">
 
-        <SwitchPreference
+        <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="false"
             android:key="showPermissions"
             android:summary="@string/rootPrefSummary"
             android:title="@string/rootPref" />
-        <SwitchPreference
+        <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="false"
             android:key="rootmode"
             android:summary="@string/rootmodesummary"
@@ -122,7 +122,7 @@
             <Preference
                 android:key="studio"
                 android:title="@string/version"
-                android:summary="v3.0.0"/>
+                android:summary="v3.0.2"/>
             <Preference
                 android:key="authors"
                 android:title="@string/authors" />
@@ -198,6 +198,9 @@
                 android:key="os"
                 android:title="@string/license" />
             </PreferenceScreen>
+        <Preference
+            android:key="donate"
+            android:title="@string/donate" />
         <Preference
             android:key="feedback"
             android:title="@string/feedback" />

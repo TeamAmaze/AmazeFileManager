@@ -29,14 +29,28 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.DriveUtil;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.RootHelper;
+import com.google.android.gms.auth.UserRecoverableAuthException;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.FileList;
+import com.google.api.services.drive.model.ParentReference;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Vector;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -47,20 +61,16 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     private String path;
     boolean back;
     Main ma;
-    boolean customPath=false;
-    int openmode=0;//0 for normal 1 for smb 2 for custom
-    public LoadList(boolean back, Main ma) {
+    int openmode=0;//0 for normal 1 for smb 2 for custom 3 for drive
+
+    public LoadList(boolean back, Main ma,int openmode) {
         this.back = back;
         this.ma = ma;
-    }
-    public LoadList(boolean back, Main ma,boolean customPath) {
-        this.back = back;
-        this.ma = ma;
-        this.customPath=customPath;
+        this.openmode=openmode;
     }
     @Override
     protected void onPreExecute() {
-        if(customPath)
+        if(openmode!=0)
         ma.mSwipeRefreshLayout.setRefreshing(true);
     }
 
@@ -78,10 +88,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         grid=ma.checkforpath(path);
         ma.folder_count=0;
         ma.file_count=0;
-        if(customPath){
-            HFile hFile=new HFile(path);
-            if(hFile.isSmb()){
-                openmode=1;
+            if(openmode==1){
+                HFile hFile=new HFile(path);
                 try {
                     SmbFile[] smbFile = hFile.getSmbFile().listFiles();
                     list=ma.addToSmb(smbFile);
@@ -92,7 +100,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                     publishProgress(e.getLocalizedMessage());
                     e.printStackTrace();
                 }
-            } else if(hFile.isCustomPath()){
+            } else if(openmode==2){
+
                 ArrayList<String[]> arrayList=null;
             switch (Integer.parseInt(path)){
                 case 0:
@@ -119,10 +128,38 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
             if(arrayList!=null)
             {
             list=ma.addTo(arrayList);
-            openmode=2;
+
             }
             else return null;
-            }
+            }else if(openmode==3){
+                if(android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()){
+                    Drive client;
+                    if((client=ma.MAIN_ACTIVITY.getDriveClient())!=null)
+                    {
+                        try {
+                            list=ma.addToDrive( ma.driveUtil.listRoot(client));
+                        } catch (UserRecoverableAuthIOException e) {
+                            ma.MAIN_ACTIVITY.chooseAccount();
+                            e.printStackTrace();
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }else{
+                    Drive client;
+                    if((client=ma.MAIN_ACTIVITY.getDriveClient())!=null)
+                        try {
+                        list=ma.addToDrive(ma.driveUtil.listFolder(client,path));
+                    } catch (UserRecoverableAuthIOException e) {
+                            ma.MAIN_ACTIVITY.chooseAccount();
+                            e.printStackTrace();
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                }
+
+
         } else {
             try {
                 ArrayList<String[]> arrayList;
@@ -151,7 +188,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         if (isCancelled()) {
             bitmap = null;
 
-        }    ma.createViews(bitmap, back, path, openmode, false,grid);
+        }    ma.createViews(bitmap, back, path, openmode, false, grid);
 
     }
     ArrayList<String[]> listaudio(){
