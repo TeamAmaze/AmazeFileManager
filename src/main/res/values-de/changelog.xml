@@ -20,6 +20,94 @@
 <resources
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
-    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br>&lt;br></string>
-    <string name="changelog_change_1">- Initial release&lt;br>&lt;br></string>
+    <string name="changelog_version_1">&lt;font color="#5299f2">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>11. Nov. 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_1">- Erstveröffentlichung&lt;br>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#5299f2">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>04. Dez. 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_2">- Ausschneiden/Einfügen verbessert&lt;br>
+                                      - Texteditor für Root verbessert&lt;br>
+                                      - Deutsch, Französisch, Italienisch, Russisch und Chinesisch hinzugefügt&lt;br>
+                                      - Lesezeichen in der Seitenleiste&lt;br>
+                                      - Material Dialogs hinzugefügt&lt;br>
+                                      - und viel mehr...&lt;br>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#5299f2">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>13. Dez. 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_3">- Spanisch hinzugefügt&lt;br>
+                                      - Fehlerbehebungen im ZIP-Betrachter&lt;br>
+                                      - Betrachten von APK- und JAR-Dateien hinzugefügt&lt;br>
+                                      - Fehlerbehebungen im Texteditor&lt;br>
+                                      - und viel mehr...&lt;br>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color="#5299f2">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>17. Jan. 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_4">    - Reiter zum Wischen&lt;br>
+                                      - Komplett überarbeitetes Interface&lt;br>
+                                      - Schnelleres Kopieren/Einfügen/Entpacken/Komprimieren&lt;br>
+                                      - Fortschrittsanzeige in Benachrichtigungen&lt;br>
+                                      - Fehlerbehebungen im ZIP-Betrachter und im Texteditor&lt;br>
+                                      - System-Apps können deinstalliert werden&lt;br>
+                                      - Dateisuche verbessert&lt;br>
+                                      - Serbisch und Baskisch hinzugefügt&lt;br>
+                                      - Einstellung für Zurück-Eintrag im Listenkopf hinzugefügt&lt;br>
+                                      - Einstellung für runde Vorschaubilder hinzugefügt&lt;br>
+                                      - Einstellung für das Verzeichnis zum Komprimieren und Entpacken hinzugefügt&lt;br>
+                                      - Einstellung für das Merken des letzten Pfades hinzugefügt&lt;br>
+                                      - und viel mehr...&lt;br>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#5299f2">&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>08. März 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_5">- Datenbankbetrachter implementiert&lt;br>
+                                      - RAR-Betrachter implementiert&lt;br>
+                                      - Benachrichtungen von Operationen verbessert&lt;br>
+                                      - Verbesserungen im Layout und im Schließen der Seitenleiste&lt;br>
+                                      - Neues rundes Icon&lt;br>
+                                      - Ziehen zum Aktualisieren eingeführt&lt;br>
+                                      - Erkennen von USB-Laufwerken auf manchen Geräten ermöglicht&lt;br>
+                                      - Farbige Navigationsleiste auf Lollipop-Geräten&lt;br>
+                                      - Welleneffekt auf Lollipop-Geräten&lt;br>
+                                      - Viele Verbesserungen am Interface&lt;br>
+                                      - Viele Fehlerbehebungen&lt;br>
+                                      - und viel mehr...&lt;br>&lt;br></string>
+    <string name="changelog_version_6">&lt;font color="#5299f2">&lt;b>v2.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>25 Mai 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_6">- Interface an Material Design angepasst&lt;br>
+                                      - Neues Icon und Grafiken von CookIcons.co&lt;br>
+                                      - Verbesserte Animationen&lt;br>
+                                      - Anpassbare Farben für ein dynamischeres Interface&lt;br>
+                                      - Kopfzeilen und Trennlinien in Listen&lt;br>
+                                      - Seitenleiste kann das Profil- und Titelbild von Google+ annehmen&lt;br>
+                                      - Verbesserung des hellen und des dunklen Themas&lt;br>
+                                      - Lesezeichenverwaltung aus der Seitenleiste entfernt. Lesezeichen können gedrückt gehalten werden&lt;br>
+                                      - Verstecken der App-Leisten beim Scrollen möglich&lt;br>
+                                      - Fehlerbehebungen und Leistungsverbesserungen&lt;br>
+                                      - Verbesserte Übersetzungen&lt;br>
+                                      - und viel mehr...&lt;br>&lt;br></string>
+    <string name="changelog_version_7">&lt;font color="#5299f2">&lt;b>v2.0.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>5 Juni 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_7">- Apps können sortiert werden&lt;br>
+                                      - Verbesserungen an der Tablet-Ansicht und der Kopfzeile der Seitenleiste&lt;br>
+                                      - Methode für den Schreibzugriff auf externe Speicher aus Android Lollipop eingeführt&lt;br>&lt;br>
+                                   </string>
+    <string name="changelog_version_8">
+        &lt;font color="#5299f2">&lt;b>v2.0.9&lt;/font>&lt;/b>&lt;br></string>
+    <string name="changelog_change_8">- Verbesserungen am FAB für Tablets&lt;br>
+                                      - Fehlerbehebungen in den Farbeinstellungen&lt;br>
+                                      - Neuer FAB im Material Design&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>v2.0.8&lt;/font>&lt;/b>&lt;br>
+                                      - Fehlerbehebungen im Teilen von Dateien&lt;br>
+                                      - Schnellere Dateisuche eingeführt&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>v2.0.7b&lt;/font>&lt;/b>&lt;br>
+                                      - Kleine Fehlerbehebungen&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>v2.0.7&lt;/font>&lt;/b>&lt;br>
+                                      - Fehler bei Verknüpfungen behoben&lt;br>
+                                      - Fehler beim Löschen von Root-Dateien behoben&lt;br>
+                                      - Verbesserte Dialoge&lt;br>
+                                      (Der Eintrag \'Verstecke Elemente\' ist nur im Menü sichtbar, wenn die Einstellung \"Versteckte Elemente anzeigen\" aktiviert wurde) - Sortieroptionen für die App-Liste&lt;br>&lt;br>
+                                   </string>
+    <string name="changelog_version_9">
+        &lt;font color="#5299f2">&lt;b>v3.0.0&lt;/font>&lt;/b>&lt;br></string>
+    <string name="changelog_change_9">- Teilen von Dateien über SMB eingeführt&lt;br>
+                                      - Schnelleres und verbessertes Teilen von Dateien&lt;br>
+                                      - Animierte Listen&lt;br>
+                                      - Anzahl von Dateien und Ordnern wird statt des Speicherplatzes angezeigt&lt;br>
+                                      - Autom. Anpassung der Spalten in der GridView auch bei Drehung des Geräts (experimentell)&lt;br>
+                                      - Im Querformat und in der Tablet-Ansicht erhält jede Datei einen eigenen Knopf zum Anzeigen der Eigenschaften&lt;br>
+                                      - Neuer FAB&lt;br>
+                                      - Struktur der Seitenleiste verbessert&lt;br>
+                                      - Neue Verknüpfungen in der Seitenleiste, um alle Mediendateien zu laden (Bilder, Musik, Videos, APKs, Dokumente)&lt;br>
+                                      - Verbesserte Übersetzungen&lt;br>
+                                      - Viele Fehlerbehebungen&lt;br>&lt;br>
+                                     </string>
 </resources>
