@@ -2,7 +2,7 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
-    }
+          }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
     }
@@ -12,11 +12,11 @@ apply plugin: 'com.android.application'
 repositories {
     mavenCentral()
     jcenter()
-}
+    maven { url "https://jitpack.io" }}
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    compileSdkVersion 23
+    buildToolsVersion '21.1.2'
 
     packagingOptions {
         exclude 'proguard-project.txt'
@@ -32,7 +32,7 @@ android {
     defaultConfig {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 31
         versionName "3.0.1"
     }
@@ -79,32 +79,24 @@ android {
         }
         play {
             buildConfigField "boolean", "IS_VERSION_FDROID", "false"
-            signingConfig signingConfigs.config
         }
     }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
-    compile 'com.afollestad:material-dialogs:0.7.4.1'
-    compile 'com.github.junrar:junrar:0.7'
-    compile 'org.apache.commons:commons-compress:1.8.1'
-    compile 'com.android.support:appcompat-v7:22.1.0'
-    compile 'com.android.support:cardview-v7:22.1.0'
-    // Google Play Services
-    playCompile 'com.google.android.gms:play-services-plus:6.5.87'
-
-    compile 'com.google.android.gms:play-services-identity:7.8.0'
-    compile('com.google.api-client:google-api-client-android:1.20.0') {
-        exclude group: 'org.apache.httpcomponents'
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.0@aar') {
+        transitive = true
     }
-    compile('com.google.apis:google-api-services-drive:v2-rev170-1.20.0') {
-        exclude group: 'org.apache.httpcomponents'
-    }
-    compile 'org.sufficientlysecure:donations:2.3'
     playCompile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile project(':libs:StickyHeadersRecyclerView')
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+    compile 'com.github.junrar:junrar:0.7'
+    compile 'org.apache.commons:commons-compress:1.8.1'
+    compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.android.support:cardview-v7:23.1.0'
+    playCompile 'com.google.android.gms:play-services-plus:8.3.0'
+    compile 'org.sufficientlysecure:donations:2.3'
     compile 'com.github.clans:fab:1.5.4'
 }
 

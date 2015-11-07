@@ -27,8 +27,6 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -40,7 +38,6 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
@@ -48,8 +45,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.widget.DrawerLayout;
@@ -60,7 +55,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ActionMode;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -71,14 +65,9 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -90,27 +79,22 @@ import com.amaze.filemanager.adapters.Recycleradapter;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
+import com.amaze.filemanager.ui.Layoutelements;
+import com.amaze.filemanager.ui.icons.IconHolder;
+import com.amaze.filemanager.ui.icons.IconUtils;
+import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
-import com.amaze.filemanager.utils.DriveUtil;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.HidingScrollListener;
-import com.amaze.filemanager.ui.icons.IconHolder;
-import com.amaze.filemanager.ui.icons.IconUtils;
-import com.amaze.filemanager.ui.icons.Icons;
-import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Shortcuts;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
-import com.google.android.gms.auth.UserRecoverableAuthException;
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
-import com.google.api.services.drive.Drive;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -135,7 +119,6 @@ public class Main extends android.support.v4.app.Fragment {
     Resources res;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
-    public DriveUtil driveUtil;
     public String home, CURRENT_PATH = "",year, goback;
     public Shortcuts sh;
     HashMap<String, Bundle> scrolls = new HashMap<String, Bundle>();
@@ -200,7 +183,6 @@ public class Main extends android.support.v4.app.Fragment {
         TOP_FAB = hidemode == 0 ? Sp.getBoolean("topFab", true) : false;
         SHOW_PERMISSIONS = Sp.getBoolean("showPermissions", false);
         SHOW_SIZE = Sp.getBoolean("showFileSize", false);
-        driveUtil=new DriveUtil();
         SHOW_DIVIDERS = Sp.getBoolean("showDividers", true);
         GO_BACK_ITEM = Sp.getBoolean("goBack_checkbox", false);
         CIRCULAR_IMAGES = Sp.getBoolean("circularimages", true);
@@ -527,7 +509,7 @@ public class Main extends android.support.v4.app.Fragment {
         else if (openMode==3){
             if(LIST_ELEMENTS.get(position).getSymlink().equals("application/vnd.google-apps.folder")){
                 loadlist(LIST_ELEMENTS.get(position).getPermissions(),false,3);
-            }else {
+            }else {/*
                 try {
                     driveUtil.getFile(LIST_ELEMENTS.get(position).getPermissions(), MAIN_ACTIVITY.getDriveClient(), new DriveUtil.FileReturn() {
                         @Override
@@ -537,7 +519,7 @@ public class Main extends android.support.v4.app.Fragment {
                     });
                 } catch (UserRecoverableAuthIOException e) {
                     MAIN_ACTIVITY.chooseAccount();
-                }
+                }*/
             }
 
         }
@@ -1182,17 +1164,7 @@ public class Main extends android.support.v4.app.Fragment {
 
     public void goBack() {
         if(openMode==3){
-            driveUtil.goBack( current_drive_id, new DriveUtil.GoBackCallback() {
-                @Override
-                public void load(String id) {
-                   mSwipeRefreshLayout.setRefreshing(true);
-                    if(id==null)
-                        loadlist(home, false, 0);
-                    else loadlist(id,false,3);
-
-                }
-            },MAIN_ACTIVITY.getDriveClient());
-            //under construction
+            //// TODO: 07-11-2015
             return;
         }
         if (openMode == 2) {
@@ -1376,35 +1348,7 @@ public class Main extends android.support.v4.app.Fragment {
         return a;
     }
 
-    public ArrayList<Layoutelements> addToDrive(ArrayList<com.google.api.services.drive.model.File> mFile) {
-        ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
-        for (int i = 0; i < mFile.size(); i++) {
 
-            com.google.api.services.drive.model.File f = mFile.get(i);
-            String size = "";
-            if (f.getMimeType().equals("application/vnd.google-apps.folder")) {
-                a.add(utils.newElement(folder, f.getTitle(), f.getId(), f.getMimeType(), size, 0, true, false, ""));
-                folder_count++;
-            } else {
-                long longSize = 0;
-                try {/*
-                    size = utils.readableFileSize((f.getFileSize()));
-                    longSize = (f.getFileSize());
-*/
-                } catch (NumberFormatException e) {
-                    //e.printStackTrace();
-                }
-                try {
-                    a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getTitle(), !IS_LIST, res), f.getTitle(), f.getId(), f.getMimeType(), size, longSize, false, false, ""));
-                    file_count++;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-        return a;
-    }
 
     public boolean isDirectory(String[] path) {
         if (ROOT_MODE)
@@ -1611,31 +1555,4 @@ public class Main extends android.support.v4.app.Fragment {
         }.start();
     }
 
-    private void launch(final com.google.api.services.drive.model.File smbFile) {
-        new Thread() {
-            public void run() {
-                try {
-                    getActivity().runOnUiThread(new Runnable() {
-                        public void run() {
-                            try {
-                                Uri uri = Uri.parse(smbFile.getDefaultOpenWithLink());
-                                Intent i = new Intent(Intent.ACTION_VIEW);
-                                i.setDataAndType(uri, smbFile.getMimeType());
-                                PackageManager packageManager = getActivity().getPackageManager();
-                                List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
-                                if (resInfos != null && resInfos.size() > 0)
-                                    startActivity(i);
-                                else
-                                    Toast.makeText(getActivity(), "You will need to copy this file to storage to open it", Toast.LENGTH_SHORT).show();
-                            } catch (ActivityNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();}
 }

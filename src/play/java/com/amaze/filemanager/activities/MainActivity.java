@@ -19,14 +19,11 @@
 
 package com.amaze.filemanager.activities;
 
-import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -40,10 +37,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.media.RingtoneManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -95,7 +89,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.TabHandler;
@@ -113,7 +106,6 @@ import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
-import com.amaze.filemanager.utils.DriveUtil;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.ui.icons.IconUtils;
@@ -127,19 +119,9 @@ import com.amaze.filemanager.utils.Shortcuts;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.ExponentialBackOff;
-import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.DriveScopes;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -157,7 +139,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -243,13 +224,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public HistoryManager history, hidden, grid, listManager;
     public ArrayList<String> hiddenfiles, gridfiles, listfiles;
-    GoogleAccountCredential mCredential;
 
-    static final int REQUEST_ACCOUNT_PICKER = 1000;
-    static final int REQUEST_AUTHORIZATION = 1001;
-    static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
-    private static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = {DriveScopes.DRIVE};
 
     /**
      * Called when the activity is first created.
@@ -498,12 +473,6 @@ public class MainActivity extends AppCompatActivity implements
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         util = new IconUtils(Sp, this);
         icons = new IconUtils(Sp, this);
-
-        mCredential = GoogleAccountCredential.usingOAuth2(
-                getApplicationContext(), Arrays.asList(SCOPES))
-                .setBackOff(new ExponentialBackOff())
-                .setSelectedAccountName(null);
-
         pathbar = (LinearLayout) findViewById(R.id.pathbar);
         buttons = (LinearLayout) findViewById(R.id.buttons);
         scroll = (HorizontalScrollView) findViewById(R.id.scroll);
@@ -1443,7 +1412,7 @@ public class MainActivity extends AppCompatActivity implements
                 createSmbDialog("", false, ma);
                 break;
             case 3:
-                chooseAccount();
+                //todo
                 break;
         }
     }
@@ -2111,41 +2080,6 @@ public class MainActivity extends AppCompatActivity implements
                     compressFiles(new File(oppathe), oparrayList);
             }
         }
-        else {
-            switch (requestCode){
-                case REQUEST_GOOGLE_PLAY_SERVICES:
-                    if (responseCode != RESULT_OK) {
-                        isGooglePlayServicesAvailable();
-                    }
-                    break;
-                case REQUEST_ACCOUNT_PICKER:
-                    if (responseCode == RESULT_OK && intent != null &&
-                            intent.getExtras() != null) {
-                        String accountName =
-                                intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                        if (accountName != null) {
-                            mCredential.setSelectedAccountName(accountName);
-                            try {
-                                if (!new File(getFilesDir() + "/" + "accounts.xml").exists())
-                                    servers.makeS(false);
-                                account.addS(accountName);
-                                accounts.add(accountName);
-                                refreshDrawer();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        initialiseDrive(accountName);
-                    }
-                    break;
-                case REQUEST_AUTHORIZATION:
-                    if (responseCode != RESULT_OK) {
-                        chooseAccount();
-                    }
-                    break;
-
-            }
-        }
     }
 
     public void rename(String f, String f1) {
@@ -2215,76 +2149,6 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         startActivityForResult(intent, 3);
     }
-    private com.google.api.services.drive.Drive mService = null;
-    public Drive getDriveClient(){
-        if(isDeviceOnline())return mService;
-        else Toast.makeText(mainActivity,"Offline",Toast.LENGTH_SHORT).show();
-        return null;
-    }
-    void initialiseDrive(String accountName){
-        // Initialize credentials and service object.
-        if(accountName!=null)
-            mCredential.setSelectedAccountName(accountName);
-        else chooseAccount();
-        HttpTransport transport = AndroidHttp.newCompatibleTransport();
-        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-        mService = new com.google.api.services.drive.Drive.Builder(
-                transport, jsonFactory, mCredential)
-                .setApplicationName("Amaze")
-                .build();
-        ((Main) getFragment().getTab()).loadlist(accountName, false, 3);
-    }
-
-    public void chooseAccount() {
-        startActivityForResult(
-                mCredential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
-    }
-
-    /**
-     * Checks whether the device currently has a network connection.
-     * @return true if the device has a network connection, false otherwise.
-     */
-    private boolean isDeviceOnline() {
-        ConnectivityManager connMgr =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
-    }
-
-    /**
-     * Check that Google Play services APK is installed and up to date. Will
-     * launch an error dialog for the user to update Google Play Services if
-     * possible.
-     * @return true if Google Play Services is available and up to
-     *     date on this device; false otherwise.
-     */
-    private boolean isGooglePlayServicesAvailable() {
-        final int connectionStatusCode =
-                GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (GooglePlayServicesUtil.isUserRecoverableError(connectionStatusCode)) {
-            showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
-            return false;
-        } else if (connectionStatusCode != ConnectionResult.SUCCESS ) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Display an error dialog showing that Google Play Services is missing
-     * or out of date.
-     * @param connectionStatusCode code describing the presence (or lack of)
-     *     Google Play Services on this device.
-     */
-    void showGooglePlayServicesAvailabilityErrorDialog(
-            final int connectionStatusCode) {
-        Dialog dialog = GooglePlayServicesUtil.getErrorDialog(
-                connectionStatusCode,
-                MainActivity.this,
-                REQUEST_GOOGLE_PLAY_SERVICES);
-        dialog.show();
-    }
-
     public void bbar(final Main main) {
         final String text = main.CURRENT_PATH;
         try {
@@ -2702,8 +2566,7 @@ public class MainActivity extends AppCompatActivity implements
                     else if(hFile.isCustomPath())
                         ((Main) m.getTab()).loadlist((pending_path), false, 2);
                     else if(android.util.Patterns.EMAIL_ADDRESS.matcher(pending_path).matches()){
-                        initialiseDrive(pending_path);
-
+                        //todo
                     }
                     else utils.openFile(new File(pending_path), mainActivity);
 
