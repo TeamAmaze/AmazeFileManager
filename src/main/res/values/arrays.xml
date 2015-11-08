@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string-array name="uimode">
+        <item>@string/simple</item>
+        <item>@string/card</item>
+
+    </string-array>
+    <string-array name="hidemode">
+        <item>@string/none</item>
+        <item>@string/hide_toolbar</item>
+        <item>@string/hide_appbar</item>
+
+    </string-array>
+
+    <string-array name="theme">
+        <item>@string/light</item>
+        <item>@string/dark</item>
+        <item>@string/daytime</item>
+
+    </string-array>
+    <string-array name="columns">
+        <item>@string/defualt</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+
+    <string-array name="directorysortmode">
+        <item>@string/foldersOnTop</item>
+        <item>@string/filesOnTop</item>
+        <item>@string/noneOnTop</item>
+    </string-array>
+    <string-array name="sortby">
+        <item>@string/sortName</item>
+        <item>@string/lastModified</item>
+        <item>@string/sortSize</item>
+        <item>@string/type</item>
+    </string-array>
+
+    <string-array name="sortbyApps">
+        <item>@string/sortName</item>
+        <item>@string/lastModified</item>
+        <item>@string/sortSize</item>
+    </string-array>
+
+    <string-array name="ints2">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+    </string-array>
+    <string-array name="ints1">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="listmode">
+        <item>@string/detailedView</item>
+        <item>@string/simpleView</item>
+    </string-array>
+    <string-array name="folder">
+        <item>@string/orange</item>
+        <item>@string/Yellow</item>
+        <item>@string/blue</item>
+    </string-array>
+
+    <string-array name="ints">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shareInterpolator="false">
+    <alpha
+        android:fromAlpha="1.0"
+        android:toAlpha="0.0"
+        android:interpolator="@anim/decelerate_cubic"
+        android:duration="150" />
+</set><!-- From: file:/build/core/src/main/res/anim/popup_exit.xml --><!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/com.github.afollestad.material-dialogs/core/0.8.5.0/res/anim/popup_exit.xml -->

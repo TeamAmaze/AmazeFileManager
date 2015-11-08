@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/open"
+        android:title="@string/open" />
+    <item
+        android:id="@+id/backup"
+        android:title="@string/backup" />
+    <item
+        android:id="@+id/unins"
+        android:title="@string/uninstall" />
+    <item
+        android:id="@+id/properties"
+        android:title="@string/properties" />
+    <item
+        android:id="@+id/play"
+        android:title="@string/play" />
+    <item
+        android:id="@+id/share"
+        android:title="@string/share" />
+</menu>

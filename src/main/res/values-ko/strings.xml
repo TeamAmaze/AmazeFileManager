@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">Amaze File Manager</string>
+    <string name="drawer_open">네비게이션 창 열기</string>
+    <string name="drawer_close">네비게이션 창 닫기</string>
+    <string name="books">북마크</string>
+    <string name="icon">아이콘</string>
+    <string name="efn">파일 이름을 입력해 주세요</string>
+    <string name="storage">저장소</string>
+    <string name="gallery">갤러리</string>
+    <string name="apps">애플리케이션 매니저</string>
+    <string name="bookmanag">북마크 매니저</string>
+    <string name="setting">설정</string>
+    <string name="select">항목 선택</string>
+    <string name="pressagain">한번 더 누르시면 종료됩니다</string>
+    <string name="open">열기</string>
+    <string name="backup">백업</string>
+    <string name="uninstall">삭제</string>
+    <string name="play">플레이 스토어</string>
+    <string name="properties">상세정보</string>
+    <string name="copyingapk">애플리케이션이 다음 경로에 복사됩니다 </string>
+    <string name="addbook">북마크 추가</string>
+    <string name="addtobook">북마크에 추가</string>
+    <string name="enterpath">경로를 입력해 주세요</string>
+    <string name="cancel">취소</string>
+    <string name="create">생성</string>
+    <string name="success">성공하였습니다</string>
+    <string name="filenotexists">파일이 존재하지 않습니다</string>
+    <string name="loading">로딩하는 중입니다...</string>
+    <string name="file_empty">파일이 비어있습니다</string>
+    <string name="error">오류</string>
+    <string name="cantlistfiles">파일 목록을 보려면 루트 권한이 필요합니다</string>
+    <string name="searchresults">검색 결과</string>
+    <string name="itemsselected">항목이 선택되었습니다</string>
+    <string name="newhomedirectory">새로운 홈 디렉토리</string>
+    <string name="rename">이름 변경</string>
+    <string name="save">저장</string>
+    <string name="renameerror">이름 변경에 실패했습니다</string>
+    <string name="renamed">이름 변경에 성공했습니다</string>
+    <string name="bookmarksadded">북마크에 추가되었습니다</string>
+    <string name="fileexist">경로 내에 같은 이름의 파일이 존재합니다 </string>
+    <string name="filecreated">파일이 생성되었습니다</string>
+    <string name="searchpath">검색 경로</string>
+    <string name="search">검색</string>
+    <string name="enterfile">파일 이름을 입력해 주세요</string>
+    <string name="name">이름: </string>
+    <string name="date">생성일: </string>
+    <string name="location">경로: </string>
+    <string name="size">크기: </string>
+    <string name="totalitems">항목 개수: </string>
+    <string name="enterzipname">압축 파일의 이름을 입력해 주세요</string>
+    <string name="noappfound">이 파일을 열 수 있는 애플리케이션을 찾지 못 했습니다</string>
+    <string name="copying">복사하는 중입니다</string>
+    <string name="moving">이동하는 중입니다</string>
+    <string name="add">추가</string>
+    <string name="tab">탭</string>
+    <string name="file">파일</string>
+    <string name="folder">폴더</string>
+    <string name="newfolder">새 폴더</string>
+    <string name="entername">이름을 입력해 주세요</string>
+    <string name="extracting">압축을 해제하는 중입니다</string>
+    <string name="zipping">압축하는 중입니다</string>
+    <string name="stopping">취소하는 중입니다</string>
+    <string name="guide1">Amaze File Manager에 오신 것을 환영합니다</string>
+    <string name="guide2">푸른 띠를 누르면 상단바를 숨기거나 나타나게 할 수 있습니다</string>
+    <string name="guide3">아무 파일이나 길게 눌러보세요...</string>
+    <string name="guide4">복사, 이동, 상세정보 등 더 많은 옵션을 보실 수 있습니다</string>
+    <string name="guide5">기기의 뒤로가기 버튼을 누르면 언제든지 나갈 수 있고...</string>
+    <string name="guide6">..왼쪽의 화살표 버튼을 누르면 저장소를 탐색할 수 있습니다</string>
+    <string name="maintab">메인 탭은 삭제할 수 없습니다</string>
+    <string name="openparent">상위 디렉토리 열기</string>
+    <string name="openwith">다음으로 열기</string>
+    <string name="share">공유</string>
+    <string name="about">정보</string>
+    <string name="extract">압축 해제</string>
+    <string name="compress">압축</string>
+    <string name="yes">예</string>
+    <string name="no">아니오</string>
+    <string name="confirm">확인</string>
+    <string name="deleting">삭제하는 중입니다</string>
+    <string name="questiondelete">다음의 파일을 정말로 삭제하시겠습니까?</string>
+    <string name="viewmode">보기 형식</string>
+    <string name="uimode">UI</string>
+    <string name="directorysort">디렉토리 정렬</string>
+    <string name="sortby">정렬</string>
+    <string name="theme">테마</string>
+    <string name="skin">스킨</string>
+    <string name="random">무작위 스킨</string>
+    <string name="random_summary">스킨을 무작위로 설정합니다.</string>
+    <string name="colorize">아이콘 색상화</string>
+    <string name="colorize_summary">아이콘에 색상을 입힙니다</string>
+    <string name="back">뒤로가기</string>
+    <string name="home">홈</string>
+    <string name="paste">붙여넣기</string>
+    <string name="close">닫기</string>
+    <string name="history">기록</string>
+    <string name="refresh">새로고침</string>
+    <string name="copy">복사</string>
+    <string name="rootmode">루트 탐색기</string>
+    <string name="rootmodesummary">루팅된 기기만 사용 가능합니다.</string>
+    <string name="mountsystemsummary">시스템 파일의 수정을 원하신다면 이 기능을 켜주세요.</string>
+    <string name="mountsystem">이제 시스템 폴더의 편집이 가능합니다</string>
+    <string name="rootfailure">루트 액세스가 유효하지 않습니다</string>
+    <string name="cut">잘라내기</string>
+    <string name="selectall">모두 선택</string>
+    <string name="delete">삭제</string>
+    <string name="setashome">홈 폴더로 설정</string>
+    <string name="sethome">홈 디렉토리로 설정</string>
+    <string name="foldercolor">폴더 색상</string>
+    <string name="imagegallery">갤러리</string>
+    <string name="fileexplorer">파일 탐색기</string>
+    <string name="changegallerypath">갤러리 경로 바꾸기</string>
+    <string name="usedefaultgallerypath">기본 갤러리 경로로 설정</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <string name="simple">간단한 UI</string>
+    <string name="card">카드 UI</string>
+    <!-- Theme -->
+    <string name="light">밝은</string>
+    <string name="dark">어두운</string>
+    <string name="daytime">시간에 따라</string>
+    <!--Skin-->
+    <string name="red">빨강</string>
+    <string name="pink">분홍</string>
+    <string name="purple">보라</string>
+    <string name="deep_purple">짙은 보라</string>
+    <string name="indigo">짙은 파랑</string>
+    <string name="blue">파랑</string>
+    <string name="light_blue">옅은 파랑</string>
+    <string name="cyan">청록</string>
+    <string name="teal">짙은 초록</string>
+    <string name="green">초록</string>
+    <string name="light_green">옅은 초록</string>
+    <string name="amber">노랑</string>
+    <string name="orange">주황</string>
+    <string name="deep_orange">짙은 주황</string>
+    <string name="brown">고동</string>
+    <string name="black">검정</string>
+    <string name="blue_grey">블루 그레이</string>
+    <string name="supersu">SuperSU</string>
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">폴더 우선</string>
+    <string name="filesOnTop">파일 우선</string>
+    <string name="noneOnTop">우선시하지 않음</string>
+    <!--SortBy-->
+    <string name="sortName">이름</string>
+    <string name="lastModified">최종 수정일</string>
+    <string name="sortSize">크기</string>
+    <string name="sortNameDesc">이름 (역순)</string>
+    <string name="lastModifiedDesc">최종 수정일 (역순)</string>
+    <string name="sortSizeDesc">크기 (역순)</string>
+    <!--ListMode-->
+    <string name="detailedView">자세히 보기</string>
+    <string name="simpleView">간단히 보기</string>
+    <!--Folder-->
+    <string name="Yellow">노랑</string>
+    <string name="pick_a_file">파일을 선택해 주세요</string>
+    <string name="process_viewer">프로세스 뷰어</string>
+    <string name="in_safe">공간이 충분하지 않습니다</string>
+    <string name="no_file_overwrite">파일이 덮어쓰여지지 않았습니다</string>
+    <string name="skip">건너뛰기</string>
+    <string name="overwrite">덮어쓰기</string>
+    <string name="cant_read_file">파일을 읽을 수 없습니다</string>
+    <string name="not_allowed">허용되지 않았습니다</string>
+    <string name="processes">프로세스</string>
+    <string name="searching">검색하는 중입니다</string>
+    <string name="copying_fles">파일을 복사하는 중입니다</string>
+    <string name="done">완료되었습니다</string>
+    <string name="Extracting_fles">파일의 압축을 해제하는 중입니다</string>
+    <string name="Zipping_fles">파일을 압축하는 중입니다</string>
+    <string name="items">항목</string>
+    <string name="set">설정</string>
+    <string name="enablerootmde">루트 모드 활성화</string>
+    <string name="goback">뒤로가기</string>
+    <string name="foldercreated">폴더가 생성되었습니다</string>
+    <string name="newfile">새 파일</string>
+    <string name="nofiles">빈 파일</string>
+    <string name="tapnhold">파일이나 폴더를 길게 누르면 더 많은 옵션을 볼 수 있습니다</string>
+    <string name="pathcopied">클립보드에 복사되었습니다</string>
+    <string name="used">사용 공간 :  </string>
+    <string name="free">여유 공간 :  </string>
+    <string name="atroot">이미 최상위 폴더에 있습니다</string>
+    <string name="listview">목록 보기</string>
+    <string name="gridview">격자 보기</string>
+    <string name="setlistview">목록 보기로 설정합니다</string>
+    <string name="setgridview">격자 보기로 설정합니다</string>
+    <string name="permission">권한</string>
+    <string name="hide">숨기기</string>
+    <string name="exit">나가기</string>
+    <string name="enternewname">새로운 이름을 입력해 주세요</string>
+    <string name="doforall">모든 항목에 적용</string>
+    <string name="gridcolumnno">격자 보기의 가로줄 개수</string>
+    <string name="randomDialog">무작위</string>
+    <string name="setRandom">애플리케이션이 다시 시작된 후 적용됩니다</string>
+    <string name="authors">제작자</string>
+    <string name="changelog">변경사항</string>
+    <string name="fullChangelog">모든 변경사항</string>
+    <string name="ok">확인</string>
+    <string name="chooseUI">항목의 UI를 선택합니다.</string>
+    <string name="ui">인터페이스</string>
+    <string name="general">기본</string>
+    <string name="thumbSummary">애플리케이션과 사진의 섬네일을 보여줍니다.</string>
+    <string name="thumb">섬네일 보기</string>
+    <string name="hidden">숨겨진 파일과 폴더 보기</string>
+    <string name="lastModifiedSummary">파일의 최종 수정일을 보여줍니다.</string>
+    <string name="lastModifiedPref">최종 수정일 보기</string>
+    <string name="sizePrefSummary">폴더 안의 파일 크기와 개수를 보여줍니다.</string>
+    <string name="sizePref">자세히 보기</string>
+    <string name="miscellaneous">기타</string>
+    <string name="rootPrefSummary">파일이나 폴더의 권한을 보여줍니다.</string>
+    <string name="rootPref">권한 보기</string>
+    <string name="aboutFileManager">Amaze File Manager에 대한 정보</string>
+    <string name="version">버전</string>
+    <string name="rate">애플리케이션 평가하기</string>
+    <string name="license">오픈소스 라이선스</string>
+    <string name="feedback">피드백 보내기</string>
+    <string name="hiddenfiles">숨겨진 파일</string>
+    <string name="type">종류</string>
+    <string name="typeDesc">종류 (역순)</string>
+    <string name="rootdirectory">최상위 폴더</string>
+    <string name="new_string">추가</string>
+    <string name="setringtone">벨소리로 설정</string>
+    <string name="copy_path">경로 복사</string>
+    <string name="addshortcut">바로가기 추가</string>
+    <string name="unsavedchanges">저장되지 않은 변경사항</string>
+    <string name="unsavedchangesdesc">저장되지 않은 변경사항이 있습니다. 나가기 전에 저장하시겠습니까?</string>
+    <string name="saving">저장하는 중입니다</string>
+    <string name="packageinstaller">애플리케이션 설치 관리자</string>
+    <string name="view">보기</string>
+    <string name="install">설치</string>
+    <string name="archive">압축 파일</string>
+    <string name="archtext">이 파일은 압축 파일입니다. 무엇을 하시겠습니까?</string>
+    <string name="pitext">이 파일은 설치가 가능한 파일입니다. 무엇을 하시겠습니까?</string>
+    <string name="xda_title">XDA</string>
+    <string name="xda_summary">질문과 답변, 문제 해결 방법</string>
+    <string name="invalid_dir">잘못된 디렉토리입니다</string>
+    <string name="circularimages">파일의 아이콘을 동그랗게 설정합니다.</string>
+    <string name="circularicons">동그란 아이콘 사용</string>
+    <string name="back_title">상위 폴더로 이동</string>
+    <string name="back_summary">상단에 상위 폴더로 이동할 수 있는 버튼을 만들어줍니다.</string>
+    <string name="details">자세히</string>
+    <string name="translators">번역에 도움을 주신 분들</string>
+    <string name="german_translation_title">독일어</string>
+    <string name="italian_translation_title">이탈리아어</string>
+    <string name="french_translation_title">프랑스어</string>
+    <string name="russian_translation_title">러시아어</string>
+    <string name="spanish_translation_title">스페인어</string>
+    <string name="basque_translation_title">바스크어</string>
+    <string name="chinese_translation_title">중국어</string>
+    <string name="serbian_translation_title">세르비아어</string>
+    <string name="turkish_translation_title">터키어</string>
+    <string name="ukrainian_translation_title">우크라이나어</string>
+    <string name="portuguese_translation_title">포르투갈어</string>
+    <string name="polish_translation_title">폴란드어</string>
+    <string name="korean_translation_title">한국어</string>
+    <string name="greek_translation_title">그리스어</string>
+
+    <string name="zip_viewer">압축 파일 뷰어</string>
+    <string name="unin_system_apk">시스템 파일을 삭제하면 시스템이 불안정해질 수도 있습니다 / 삭제 하시겠습니까?</string>
+    <string name="warning">경고</string>
+    <string name="donate">기부</string>
+    <string name="archive_preferences">압축 파일</string>
+    <string name="archive_extract_folder">압축 해제 경로</string>
+    <string name="zip_create_folder">압축 경로</string>
+    <string name="archive_summary">선택한 폴더에 압축을 해제합니다. 기본 경로는 압축 파일의 경로와 같습니다.</string>
+    <string name="zip_summary">선택한 폴더에 압축합니다. 기본 경로는 압축할 파일의 경로와 같습니다.</string>
+    <string name="openas">다음으로 열기</string>
+    <string name="text">텍스트</string>
+    <string name="audio">소리</string>
+    <string name="video">동영상</string>
+    <string name="other">기타</string>
+    <string name="image">사진</string>
+    <string name="contributors">기부해 주신 분들</string>
+    <string name="savepaths">경로 기억</string>
+    <string name="savepathsummary">애플리케이션을 최근 경로에서 시작합니다.</string>
+    <string name="select_intent">선택</string>
+    <string name="md5copied">MD5가 클립보드에 복사되었습니다</string>
+    <string name="generating">변환하는 중입니다</string>
+    <string name="tables">표(s)</string>
+    <string name="database">데이터베이스</string>
+    <string name="colourednavigation">네비게이션 바 색상화</string>
+    <string name="colourednavigationsum">네비게이션 바와 스킨의 색상과 같도록 설정합니다.</string>
+
+    <string name="sd_card_grant_next">sd_card_grant_next</string>
+    <string name="sd_card_grant_first">sd_card_grant_first</string>
+    <string name="fab_skin">플로팅 버튼 스킨</string>
+    <string name="gplus_pic_title">구글 플러스 API</string>
+    <string name="gplus_pic_summary">구글 플러스 커버 사진을 보여줍니다.</string>
+    <string name="icon_credits">Graphics by &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
+
+    <string name="color_title">색상</string>
+    <string name="color_summary">다양한 항목의 색상을 설정합니다.</string>
+    <string name="primary_color_title">대표 색상</string>
+    <string name="primary_color_summary">대표적인 UI의 색상을 설정합니다.</string>
+    <string name="accent_color_title">강조 색상</string>
+    <string name="accent_color_summary">플로팅 버튼 또는 기타 작은 항목의 색상을 설정합니다.</string>
+    <string name="icon_color_title">아이콘 색상</string>
+    <string name="icon_color_summary">아이콘의 색상을 설정합니다.</string>
+    <string name="hide_mode_title">바 숨김 모드</string>
+    <string name="none">사용 안 함</string>
+    <string name="hide_toolbar">툴바 숨김</string>
+    <string name="hide_appbar">애플리케이션바 숨김</string>
+    <string name="choose_color">색상을 선택해 주세요</string>
+    <string name="g_plus_community_title">구글 플러스 커뮤니티</string>
+    <string name="hide_mode_nothing">아무것도 숨겨지지 않습니다</string>
+    <string name="hide_mode_toolbar">스크롤 시 툴바가 숨겨집니다</string>
+    <string name="hide_mode_app_bar">스크롤 시 애플리케이션바가 숨겨집니다</string>
+    <string name="no_cover_photo">커버 사진이 없습니다</string>
+    <string name="files">파일</string>
+    <string name="directories">폴더</string>
+    <string name="textreader">텍스트 리더</string>
+    <string name="databasereader">데이터베이스 리더</string>
+    <string name="showDividers">항목 사이에 칸막이 사용</string>
+    <string name="topFab">애플리케이션바 위에 플로팅 버튼 표시</string>
+    <string name="topFabS">플로팅 버튼이 애플리케이션바 위에 표시됩니다. \'애플리케이션바 숨김 \'모드가 아닐 때만 사용해주세요.</string>
+    <string name="needsaccess">쓰기 권한이 플요합니다</string>
+    <string name="needsaccesssummary">쓰기 권한을 얻으려면</string>
+    <string name="needsaccesssummary1"> /tto 폴더를 선택해 주세요 </string>
+
+</resources>

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="commons-vfs2-2.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-vfs2/2.0/b5af3b9c96b060d77c68fa5ac9384b402dd58013/commons-vfs2-2.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-vfs2/2.0/c29b15a44ebae8501f0e5a892736b27857a4f968/commons-vfs2-2.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

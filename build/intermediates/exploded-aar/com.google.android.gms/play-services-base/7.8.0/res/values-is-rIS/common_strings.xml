@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="common_google_play_services_notification_ticker" msgid="1852570676146674985">"Villa í þjónustu Google Play"</string>
+    <string name="common_google_play_services_notification_needs_update_title" msgid="1388129345631079938">"Forrit krefst þess að þjónusta Google Play sé uppfærð."</string>
+    <string name="common_android_wear_notification_needs_update_text" msgid="6428604800157361567">"<xliff:g id="APP_NAME">%1$s</xliff:g> krefst uppfærslu á Android Wear forritinu."</string>
+    <string name="common_google_play_services_needs_enabling_title" msgid="2583358409598976717">"Forrit krefst þess að þjónusta Google Play sé virk."</string>
+    <string name="common_google_play_services_error_notification_requested_by_msg" msgid="2443362625939284971">"<xliff:g id="APP_NAME">%1$s</xliff:g> bað um"</string>
+    <string name="common_google_play_services_install_title" msgid="26645092511305524">"Sækja þjónustu Google Play"</string>
+    <string name="common_google_play_services_install_text_phone" msgid="8836325110837822534">"<xliff:g id="APP_NAME">%1$s</xliff:g> getur ekki keyrt án þjónustu Google Play, sem vantar í símann þinn."</string>
+    <string name="common_google_play_services_install_text_tablet" msgid="542176290824754127">"<xliff:g id="APP_NAME">%1$s</xliff:g> getur ekki keyrt án þjónustu Google Play, sem vantar í spjaldtölvuna þína."</string>
+    <string name="common_google_play_services_install_button" msgid="8515591849428043265">"Sækja þjónustu Google Play"</string>
+    <string name="common_google_play_services_enable_title" msgid="529078775174559253">"Virkja þjónustu Google Play"</string>
+    <string name="common_google_play_services_enable_text" msgid="4896236883690196080">"<xliff:g id="APP_NAME">%1$s</xliff:g> virkar ekki nema þú gerir þjónustu Google Play virka."</string>
+    <string name="common_google_play_services_enable_button" msgid="4181637455539816337">"Virkja þjónustu Google Play"</string>
+    <string name="common_google_play_services_update_title" msgid="6006316683626838685">"Uppfæra þjónustu Google Play"</string>
+    <string name="common_android_wear_update_title" msgid="1366439133145190222">"Uppfærðu Android Wear"</string>
+    <string name="common_google_play_services_update_text" msgid="5709479369299147668">"<xliff:g id="APP_NAME">%1$s</xliff:g> getur ekki keyrt nema þú uppfærir þjónustu Google Play."</string>
+    <string name="common_android_wear_update_text" msgid="2453027084525739603">"<xliff:g id="APP_NAME">%1$s</xliff:g> getur ekki keyrt nema þú uppfærir Android Wear forritið."</string>
+    <string name="common_google_play_services_updating_title" msgid="815008177440683245">"Verið er að uppfæra þjónustu Google Play"</string>
+    <string name="common_google_play_services_updating_text" msgid="2201289642219771610">"<xliff:g id="APP_NAME">%1$s</xliff:g> getur ekki keyrt án þjónustu Google Play, sem verið er að uppfæra."</string>
+    <string name="common_google_play_services_network_error_title" msgid="3827284619958211114">"Netvilla"</string>
+    <string name="common_google_play_services_network_error_text" msgid="9038847255613537209">"Gagnatengingar er krafist til að tengjast þjónustu Google Play."</string>
+    <string name="common_google_play_services_invalid_account_title" msgid="1066672360770936753">"Ógildur reikningur"</string>
+    <string name="common_google_play_services_invalid_account_text" msgid="4983316348021735578">"Tilgreindur reikningur er ekki til staðar í þessu tæki. Veldu annan reikning."</string>
+    <string name="common_google_play_services_unknown_issue" msgid="4762332809710093730">"Óþekkt vandamál með þjónustu Google Play."</string>
+    <string name="common_google_play_services_unsupported_title" msgid="6334768798839376943">"Þjónusta Google Play"</string>
+    <string name="common_google_play_services_unsupported_text" msgid="7682982632307307938">"<xliff:g id="APP_NAME">%1$s</xliff:g> reiðir sig á þjónustu Google Play, sem er ekki studd í tækinu þínu. Hafðu samband við framleiðandann til að fá aðstoð."</string>
+    <string name="common_google_play_services_update_button" msgid="8932944190611227642">"Uppfæra"</string>
+    <string name="common_signin_button_text" msgid="9071884888741449141">"Skrá inn"</string>
+    <string name="common_signin_button_text_long" msgid="2429381841831957106">"Skrá inn með Google"</string>
+    <string name="common_open_on_phone" msgid="411506735369601515">"Opna í símanum"</string>
+    <string name="common_google_play_services_api_unavailable_text" msgid="6534628256897874213">"<xliff:g id="APP_NAME">%1$s</xliff:g> krefst einhverrar Google Play þjónustu sem ekki er tiltæk sem stendur. Hafðu samband við þróunaraðilann til að fá aðstoð."</string>
+    <string name="common_google_play_services_sign_in_failed_title" msgid="8164948898147532159">"Innskráning mistókst"</string>
+    <string name="common_google_play_services_sign_in_failed_text" msgid="5194079840165204725">"Villa við að skrá tilgreindan reikning inn. Veldu annan reikning."</string>
+</resources>

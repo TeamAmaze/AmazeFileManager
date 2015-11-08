@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>в1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>11. нов, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_1">- Почетно издање&lt;br>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>в1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>04. дец, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_2">- Поправљено исеци/налепи&lt;br>
+                                      - Поправљен уређивач текста за корен&lt;br>
+                                      - Додати немачки, француски, италијански, руски и кинески језици&lt;br>
+                                      - Додати обележивачи у навигациону фиоку&lt;br>
+                                      - Додати материјал дијалози&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>в1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>13. дец, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_3">- Додат шпански&lt;br>
+                                      - Разне исправке зип прегледача&lt;br>
+                                      - Приказ апк и јар фајлова&lt;br>
+                                      - Разне исправке уређивача текста&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color="#524ef8">&lt;b>в1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>17. јан, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_4">    - Превлачење језичака&lt;br>
+                                      - Преуређено сучеље&lt;br>
+                                      - Убрзане радње копирања/лепљења/распакивања/компресовања&lt;br>
+                                      - Напредак радњи у обавештењима&lt;br>
+                                      - Исправке зип прегледача и уређивача текста&lt;br>
+                                      - Могућност уклањања системских апликација&lt;br>
+                                      - Побољшана претрага фајлова&lt;br>
+                                      - Преводи на српски и баскијски&lt;br>
+                                      - Могућност да се искључи заглавље списка за назад&lt;br>
+                                      - Могућност да се искључе кружне сличице&lt;br>
+                                      - Могућност да се одреди фасцикла за распакивање и компресовање&lt;br>
+                                      - Могућност да се запамте путање&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#524ef8">&lt;b>в1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>08. мар, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_5">- Прегледач база података&lt;br>
+                                      - Прегледач рар фајлова&lt;br>
+                                      - Побољшана обавештења за радње&lt;br>
+                                      - Исправљен застој при затварању фиоке и побољшан распоред&lt;br>
+                                      - Нова кружна икона&lt;br>
+                                      - Превлачење за освежење приказа&lt;br>
+                                      - Препознавање УСБ диска на неким уређајима&lt;br>
+                                      - Обојена трака навигације за Лолипоп уређаје&lt;br>
+                                      - Ефекат таласања за Лолипоп уређаје&lt;br>
+                                      - Много побољшања УИ-ја&lt;br>
+                                      - Многе исправке грешака&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
+    <string name="changelog_version_6">&lt;font color="#524ef8">&lt;b>в2.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>25. мај, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_6">- Редизајниран УИ по смерницама материјал дизајна&lt;br>
+                                      - Нова икона и графике од CookIcons.co&lt;br>
+                                      - Побољшане анимације за боље искуство&lt;br>
+                                      - Додата подесива примарна, боје наглашавања и боја икона за динамичнији изглед УИ-ја&lt;br>
+                                      - Додата заглавља и раздвајачи на списку&lt;br>
+                                      - Фиока сада може да синхронизује слику и насловну слику Г+ профила&lt;br>
+                                      - Светла и тамна тема побољшане, изгледају лепше сада!&lt;br>
+                                      - Уклоњен менаџер обележивача са фиоке, притисните и држите обележивач за опције&lt;br>
+                                      - Могућност скривања траке алатки или траке апликације приликом клизања&lt;br>
+                                      - Много побољшања перформанси и исправки грешака&lt;br>
+                                      - Многе исправке превода&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
+    <string name="changelog_version_7">&lt;font color="#524ef8">&lt;b>в2.0.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>5. јун, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_7">- Опције ређања за списак апликација&lt;br>
+                                      - Побољшани УИ језичака и заглавље фиоке&lt;br>
+                                      - Дозвола уписа у спољашње складиште за Лолипоп уређаје&lt;br>&lt;br>
+                                   </string>
+    <string name="changelog_version_8">
+        &lt;font color="#5299f2">&lt;b>в2.0.9&lt;/font>&lt;/b>&lt;br></string>
+    <string name="changelog_change_8">- Поправљен фаб за таблете&lt;br>
+                                      - Поправљене поставке боја&lt;br>
+                                      - Нови материјализовани фаб&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>в2.0.8&lt;/font>&lt;/b>&lt;br>
+                                      - Поправљено дељење фајлова&lt;br>
+                                      - Нова, бржа метода за претрагу фајлова&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>в2.0.7b&lt;/font>&lt;/b>&lt;br>
+                                      - Мање исправке&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>в2.0.7&lt;/font>&lt;/b>&lt;br>
+                                      - Мања исправка за пречице&lt;br>
+                                      - Мања исправка за брисање са кореним привилегијама&lt;br>
+                                      - Побољшани дијалози&lt;br>
+                                      („Сакривене ставке“ у менију ће сада бити видљиво само ако је опција „Скривени фајлови и фасцикле“ укључена)
+                                      - Опција ређања за списак апликација&lt;br>&lt;br>
+                                   </string>
+    <string name="changelog_version_9">
+        &lt;font color="#5299f2">&lt;b>в3.0.0&lt;/font>&lt;/b>&lt;br></string>
+    <string name="changelog_change_9">- Виндоуз (smb) дељење фајлова&lt;br>
+                                      - Брже и боље дељење фајлова&lt;br>
+                                      - Додате анимације спискова&lt;br>
+                                      - Број фајлова и фасцикли уместо коришћеног простора&lt;br>
+                                      - Сада је могуће прилагодити број колона приказа мреже чак и при ротацији (експериментално)&lt;br>
+                                      - Одвојено дугме за својства за сваки фајл у положеном режиму и за таблете&lt;br>
+                                      - Нови ФАБ&lt;br>
+                                      - Побољшана структура фиоке&lt;br>
+                                      - Нове пречице за учитавање свих медијалних фајлова (слике, звук, видео, апк, документи)&lt;br>
+                                      - Ажурирани преводи&lt;br>
+                                      - Многе исправке грешака&lt;br>&lt;br>
+                                     </string>
+</resources>

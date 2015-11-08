@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="changelog_version_1">&lt;font color="#5299f2">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2014-11-11&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_1">- Versão inicial&lt;br>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#5299f2">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2014-12-04&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_2">- Corrigida a opção cortar/colar&lt;br>
+                                      - Corrigido o editor de texto para root&lt;br>
+                                      - Adição de traduções em alemão, francês, italiano, russo e chinês&lt;br>
+                                      - Adição de marcadores ao menu de navegação&lt;br>
+                                      - Adição de Material Design&lt;br>
+                                      - mais...&lt;br>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#5299f2">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2014-12-13&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_3">- Adição de tradução em espanhol&lt;br>
+                                      - Correções ao visualizador zip&lt;br>
+                                      - Possibilidade de abrir ficheiros apk e jar&lt;br>
+                                      - Correções ao editor de texto&lt;br>
+                                      - mais...&lt;br>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color="#5299f2">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2015-01-17&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_4">- Separadores deslizáveis&lt;br>
+                                      - Melhorias na interface&lt;br>
+                                      - Melhorias nas ações copiar/colar/extrair/comprimir&lt;br>
+                                      - Indicação de progresso das ações nas notificações&lt;br>
+                                      - Correções ao visualizador zip e ao editor de texto&lt;br>
+                                      - Possibilidade de desinstalar aplicações do sistema&lt;br>
+                                      - Melhorias na pesquisa de ficheiros&lt;br>
+                                      - Adição tradução em sérvio&lt;br>
+                                      - Adição de preferência para desativar a opção Recuar na lista&lt;br>
+                                      - Adição de preferência para desativar as miniaturas circulares&lt;br>
+                                      - Adição de preferência para escolher o local de extração e compressão dos ficheiros&lt;br>
+                                      - Adição de preferência para memorizar os caminhos&lt;br>
+                                      - mais...&lt;br>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#5299f2">&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2015-03-08&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_5">- Adição de um visualizador de bases de dados&lt;br>
+                                      - Adição de um visualizador de arquivos rar&lt;br>
+                                      - Melhorias nas notificações das operações&lt;br>
+                                      - Correções ao menu de navegação&lt;br>
+                                      - Adição de um novo ícone circular&lt;br>
+                                      - Adição de uma opção de deslizar para baixo e atualizar a vista&lt;br>
+                                      - Adição de um reconhecimento de unidades USB em alguns dispositivos&lt;br>
+                                      - Adição de uma barra de navegação colorida para dispositivos lollipop&lt;br>
+                                      - Adição de um efeito de ondulação em dispositivos lollipop&lt;br>
+                                      - Diversas melhorias à interface&lt;br>
+                                      - Diversas correções de erros&lt;br>
+                                      - mais...&lt;br>&lt;br></string>
+<string name="changelog_version_6">&lt;font color="#5299f2">&lt;b>v2.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2015-05-25&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_6">- Nova interface conforme Material Design Guidelines&lt;br>
+                                      - Novo ícone criado por CookIcons.co&lt;br>
+                                      - Melhorias nas animações da aplicação&lt;br>
+                                      - Adição de cores primárias, secundárias e de ícones na interface&lt;br>
+                                      - Adição de cabeçalhos e separadores à lista&lt;br>
+                                      - Possibilidade de sincronizar a imagem e a capa do perfil G+&lt;br>
+                                      - Melhorias nos temas, agora ainda mais bonitos&lt;br>
+                                      - Remoção do gestor de marcadores no menu de navegação&lt;br>
+                                      - Possibilidade de ocultar a barra de ferramentas e a barra da aplicação ao deslocar&lt;br>
+                                      - Diversas melhorias de desempenho e correção de erros&lt;br>
+                                      - Atualização de traduções&lt;br>
+                                      - mais...&lt;br>&lt;br></string>
+    <string name="changelog_version_7">&lt;font color="#5299f2">&lt;b>v2.0.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2015-06-05&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_7">- Opções de ordenação na lista de aplicações&lt;br>
+                                      - Melhorias na interface&lt;br>
+                                      - Introdução ao acesso de escrita no armazenamento externo em dispositivos Lollipop&lt;br>
+                                   </string>
+	<string name="changelog_version_8">
+        &lt;font color="#5299f2">&lt;b>v2.0.9&lt;/font>&lt;/b>&lt;br></string>
+    <string name="changelog_change_8">- Correções ao FAB em tablets&lt;br>
+                                      - Correções às definições de cores&lt;br>
+                                      - Novo FAB&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>v2.0.8&lt;/font>&lt;/b>&lt;br>
+                                      - Correções na partilha de ficheiros&lt;br>
+                                      - Novo método de pesquisa, agora mais rápido&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>v2.0.7b&lt;/font>&lt;/b>&lt;br>
+                                      - Diversas correções&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>v2.0.7&lt;/font>&lt;/b>&lt;br>
+                                      - Correções aos atalhos&lt;br>
+                                      - Correções na eliminação de ficheiros no modo root&lt;br>
+                                      - Melhoria nos diálogos&lt;br>
+                                      (Os \'Itens ocultos\' do menu apenas estão visíveis se a opção \"Mostrar ficheiros oculto\" estiver ativa nas definições)
+                                      - Opções de ordenação na lista de aplicações&lt;br>&lt;br>
+                                   </string>
+    <string name="changelog_version_9">
+        &lt;font color="#5299f2">&lt;b>v3.0.0&lt;/font>&lt;/b>&lt;br></string>
+        <string name="changelog_change_9">- Implementação de partilha de ficheiros em Windows(smb)&lt;br>
+                                      - Melhorias ao nível da partilha de ficheiros&lt;br>
+                                      - Adição de animações nas listas&lt;br>
+                                      - Possibilidade de ajustar o número de colunas na vista em grelha,
+        mesmo com a rotação ativa (Experimental)&lt;br>
+                                      - Butão individual de Propriedades para cada ficheiro no modo
+        horizontal e para tablets&lt;br>
+                                      - Novo FAB&lt;br>
+                                      - Melhorias na estrutura do menu&lt;br>
+                                      - Adição de atalhos ao menu para todos os tipos de ficheiros multimédia
+        (Imagens, áudio, vídeos, apk, documentos)&lt;br>
+                                      - Atualização de traduções&lt;br>
+                                      - Diversas correções&lt;br>&lt;br>
+                                     </string>
+</resources>

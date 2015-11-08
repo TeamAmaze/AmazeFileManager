@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name">Пример навигации по меню</string>
+    <string name="drawer_open">Открыть меню навигации</string>
+    <string name="drawer_close">Закрыть меню навигации</string>
+    <string name="books">Закладки</string>
+    <string name="icon">иконка</string>
+    <string name="efn">Введите имя файла</string>
+    <string name="storage">Память</string>
+    <string name="gallery">Галерея</string>
+    <string name="apps">Менеджер приложений</string>
+    <string name="bookmanag">Менеджер закладок</string>
+    <string name="setting">Настройки</string>
+    <string name="select">Выбрать элемент</string>
+    <string name="pressagain">Нажмите ещё раз, чтобы выйти.</string>
+    <string name="open">Запустить</string>
+    <string name="backup">Резервная копия</string>
+    <string name="uninstall">Удалить</string>
+    <string name="play">Открыть в Маркете</string>
+    <string name="properties">Свойства</string>
+    <string name="copyingapk">apk-файл скопирован в: </string>
+    <string name="addbook">Добавить закладку</string>
+    <string name="addtobook">Добавить в закладки</string>
+    <string name="enterpath">Введите путь</string>
+    <string name="cancel">Отмена</string>
+    <string name="create">Создать</string>
+    <string name="success">Успешно</string>
+    <string name="filenotexists">Файл не существует</string>
+    <string name="error">Ошибка</string>
+    <string name="cantlistfiles">Не можете выполнить без рут прав</string>
+    <string name="searchresults">Результаты поиска</string>
+    <string name="itemsselected">Выбранные элементы</string>
+    <string name="newhomedirectory">Новый домашний каталог</string>
+    <string name="rename">Переименовать</string>
+    <string name="save">Сохранить</string>
+    <string name="renameerror">Не удалось переименовать</string>
+    <string name="renamed">Успешно переименовано</string>
+    <string name="bookmarksadded">Добавлено в закладки</string>
+    <string name="fileexist">Файл с таким именем уже существует</string>
+    <string name="filecreated">Файл создан</string>
+    <string name="searchpath">Путь поиска</string>
+    <string name="search">Поиск</string>
+    <string name="enterfile">Введите имя файла</string>
+    <string name="name">Имя: </string>
+    <string name="date">Дата: </string>
+    <string name="location">Расположен в: </string>
+    <string name="size">Размер: </string>
+    <string name="totalitems">Всего элементов: </string>
+    <string name="enterzipname">Введите имя zip-архива</string>
+    <string name="noappfound">Нет приложений для открытия этого файла</string>
+    <string name="copying">Копирование...</string>
+    <string name="moving">Перемещение</string>
+    <string name="add">Добавить</string>
+    <string name="tab">Вкладка</string>
+    <string name="file">Файл</string>
+    <string name="folder">Папка</string>
+    <string name="newfolder">Новая папка</string>
+    <string name="entername">Введите имя</string>
+    <string name="extracting">Извлечение...</string>
+    <string name="zipping">Архивирование...</string>
+    <string name="stopping">Остановка</string>
+    <string name="guide1">Добро пожаловать в Amaze File Manager!</string>
+    <string name="guide2">Нажмите на синюю полоску, чтобы показать или скрыть панель</string>
+    <string name="guide3">Нажмите и удерживайте на любом файле, чтобы открыть больше действий...</string>
+    <string name="guide4">Копирование, перемещение, свойства и т.д.</string>
+    <string name="guide5">Чтобы выйти из приложения в любом месте, используйте кнопку "Назад"...</string>
+    <string name="guide6">..и для навигации по файловому менеждеру, используйте кнопку со стрелкой влево</string>
+    <string name="maintab">Главная вкладка не может быть удалена</string>
+    <string name="openparent">Открыть родительскую директорию</string>
+    <string name="openwith">Открыть с помощью</string>
+    <string name="share">Отправить</string>
+    <string name="about">О приложении</string>
+    <string name="extract">Извлечь</string>
+    <string name="compress">Архивировать</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="confirm">Подтвердите</string>
+    <string name="deleting">Удаление...</string>
+    <string name="questiondelete">Вы уверены, что хотите удалить выбранные файлы?</string>
+    <string name="viewmode">Режим просмотра</string>
+    <string name="uimode">Режим интерфейса</string>
+    <string name="directorysort">Режим сортировки каталога</string>
+    <string name="sortby">Сортировать</string>
+    <string name="theme">Темы</string>
+    <string name="skin">Скин</string>
+    <string name="random">Случайный скин</string>
+    <string name="random_summary">Устанавливает случайную тему при запуске</string>
+    <string name="colorize">Раскрасить иконки</string>
+    <string name="colorize_summary">Устанавливает цвета иконок отличающиеся от темы</string>
+    <string name="back">Назад</string>
+    <string name="home">Домой</string>
+    <string name="paste">Вставить</string>
+    <string name="close">Закрыть</string>
+    <string name="history">История</string>
+    <string name="refresh">Обновить</string>
+    <string name="copy">Копировать</string>
+    <string name="rootmode">Root Explorer</string>
+    <string name="rootmodesummary">Только для устройств с рут правами. Используйте с осторожностью, если уверены в своих действиях.</string>
+    <string name="mountsystemsummary">Включите, если хотите редактировать системные файлы</string>
+    <string name="mountsystem">Монтировать системные папки с правом записи</string>
+    <string name="rootfailure">Рут доступ не предоставлен</string>
+    <string name="cut">Вырезать</string>
+    <string name="selectall">Выбрать все</string>
+    <string name="delete">Удалить</string>
+    <string name="setashome">Сделать домашней папкой</string>
+    <string name="sethome">Устан. домашний каталог</string>
+    <string name="foldercolor">Цвет папки</string>
+    <string name="imagegallery">Галерея изображений</string>
+    <string name="fileexplorer">Проводник</string>
+    <string name="changegallerypath">Изменить путь к галерее</string>
+    <string name="usedefaultgallerypath">Использ. путь к галерее по умолчанию</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <string name="simple">Простой пользов. интерфейс</string>
+    <string name="card">Карта польз. интерфейса</string>
+    <!-- Theme -->
+    <string name="light">Светлый</string>
+    <string name="dark">Тёмный</string>
+    <string name="daytime">Дневное время</string>
+    <!--Skin-->
+    <string name="red">Красный</string>
+    <string name="pink">Розовый</string>
+    <string name="purple">Фиолетовый</string>
+    <string name="deep_purple">Багровый</string>
+    <string name="indigo">Индиго</string>
+    <string name="blue">Синий</string>
+    <string name="light_blue">Светло-голубой</string>
+    <string name="cyan">Голубой</string>
+    <string name="teal">Чирок</string>
+    <string name="green">Зелёный</string>
+    <string name="light_green">Светло-зелёный</string>
+    <string name="amber">Янтарный</string>
+    <string name="orange">Оранжевый</string>
+    <string name="deep_orange">Глубокий оранжевый</string>
+    <string name="brown">Коричневый</string>
+    <string name="black">Чёрный</string>
+    <string name="blue_grey">Синий серый</string>
+    <string name="supersu">SuperSU</string>
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">Папки на вершине</string>
+    <string name="filesOnTop">Файлы на вершине</string>
+    <string name="noneOnTop">Ни один на вершине</string>
+    <!--SortBy-->
+    <string name="sortName">Имя</string>
+    <string name="lastModified">Дата последнего изменения</string>
+    <string name="sortSize">Размер</string>
+    <string name="sortNameDesc">Имя (по убыванию)</string>
+    <string name="lastModifiedDesc">Дата последнего изменения (Desc)</string>
+    <string name="sortSizeDesc">Размер (по убыванию)</string>
+    <!--ListMode-->
+    <string name="detailedView">Подробный вид</string>
+    <string name="simpleView">Простой вид</string>
+    <!--Folder-->
+    <string name="Yellow">Жёлтый</string>
+    <string name="pick_a_file">Выбрать файл</string>
+    <string name="process_viewer">Просмотр процессов</string>
+    <string name="in_safe">Недостаточно свободного места</string>
+    <string name="no_file_overwrite">Не перезаписывать файл</string>
+    <string name="skip">Пропустить</string>
+    <string name="overwrite">Перезаписать</string>
+    <string name="cant_read_file">Не удаётся прочитать файл</string>
+    <string name="not_allowed">Не допускается</string>
+    <string name="processes">Процессы</string>
+    <string name="searching">Поиск</string>
+    <string name="copying_fles">Копирование файлов</string>
+    <string name="done">Готово</string>
+    <string name="Extracting_fles">Извлечение файлов</string>
+    <string name="Zipping_fles">Архивирование файлов</string>
+    <string name="items">Элементы</string>
+    <string name="set">Установить</string>
+    <string name="enablerootmde">Включите режим рут прав</string>
+    <string name="goback">Вернуться</string>
+    <string name="foldercreated">Папка создана</string>
+    <string name="newfile">Новый файл</string>
+    <string name="nofiles">Нет файлов</string>
+    <string name="tapnhold">Нажмите и удерживайте файл или папку для больше вариантов</string>
+    <string name="pathcopied">Путь скопирован в буфер обмена</string>
+    <string name="used">Используется: </string>
+    <string name="free">Свободно: </string>
+    <string name="atroot">Вы находитесь в корне</string>
+    <string name="listview">Список</string>
+    <string name="gridview">Сетка</string>
+    <string name="setlistview">Настройка списка</string>
+    <string name="setgridview">Настройка сетки</string>
+    <string name="permission">Права</string>
+    <string name="hide">Скрыть</string>
+    <string name="exit">Выход</string>
+    <string name="enternewname">Введите новое имя</string>
+    <string name="doforall">Выполнить для всех элементов</string>
+    <string name="gridcolumnno">Количество колонок в сетке</string>
+    <string name="randomDialog">Случайный</string>
+    <string name="setRandom">Изменения будут использованы после перезапуска приложения</string>
+    <string name="authors">Авторы</string>
+    <string name="changelog">История изменений</string>
+    <string name="fullChangelog">Полный список изменений</string>
+    <string name="ok">OK</string>
+    <string name="chooseUI">Выберите элемент пользовательского интерфейса</string>
+    <string name="ui">Интерфейс</string>
+    <string name="general">Общие</string>
+    <string name="thumbSummary">Показывать миниатюры приложений и образов</string>
+    <string name="thumb">Показать миниатюры</string>
+    <string name="hidden">Показать скрытые файлы и папки</string>
+    <string name="lastModifiedSummary">Показывать дату и время, когда файл был изменен в последний раз</string>
+    <string name="lastModifiedPref">Показать последние изменения</string>
+    <string name="sizePrefSummary">Показывать размер файлов и количество элементов в папках</string>
+    <string name="sizePref">Показать размеры</string>
+    <string name="miscellaneous">Прочее</string>
+    <string name="rootPrefSummary">Показывать разрешения для файлов и папок</string>
+    <string name="rootPref">Показать разрешения</string>
+    <string name="aboutFileManager">Об Amaze File Manager</string>
+    <string name="version">Версия</string>
+    <string name="rate">Оцените приложение</string>
+    <string name="license">Open Source Licenses</string>
+    <string name="feedback">Отправить отзыв</string>
+    <string name="hiddenfiles">Скрытые файлы</string>
+    <string name="type">Тип</string>
+    <string name="typeDesc">Тип (по убыванию)</string>
+    <string name="rootdirectory">Root</string>
+    <string name="new_string">Новый</string>
+    <string name="setringtone">Устан. как рингтон</string>
+    <string name="copy_path">Копировать Путь</string>
+    <string name="addshortcut">Добавить ярлык</string>
+    <string name="unsavedchanges">Не сохранённые изменения</string>
+    <string name="unsavedchangesdesc">У Вас есть не сохранённые изменения, вы хотите сохранить их перед выходом?</string>
+    <string name="saving">Сохранение</string>
+    <string name="packageinstaller">Установщик пакетов</string>
+    <string name="view">Просмотр</string>
+    <string name="install">Установка</string>
+    <string name="archive">Архивы</string>
+    <string name="archtext">Это архив. Какое действие вы хотели бы выполнить?</string>
+    <string name="pitext">Это пакет установщика. Какое действие вы хотели бы выполнить?</string>
+    <string name="xda_title">XDA</string>
+    <string name="xda_summary">Q&amp;A, Помощь и Устранение неисправностей</string>
+    <string name="invalid_dir">Неверная директория</string>
+    <string name="circularimages">Использовать круглые иконки для изображений и видео</string>
+    <string name="circularicons">Использовать круглые иконки</string>
+    <string name="back_title">Back navigation</string>
+    <string name="back_summary">Enables custom back navigation at top of the list</string>
+    <string name="details">Подробнее</string>
+    <string name="translators">Переводчики</string>
+    <string name="german_translation_title">Немецкий</string>
+    <string name="italian_translation_title">Итальянский</string>
+    <string name="french_translation_title">Французский</string>
+    <string name="russian_translation_title">Русский</string>
+    <string name="spanish_translation_title">Испанский</string>
+    <string name="basque_translation_title">Баскский</string>
+    <string name="chinese_translation_title">Китайский</string>
+    <string name="serbian_translation_title">Сербский</string>
+    <string name="turkish_translation_title">Турецкий</string>
+    <string name="zip_viewer">Просмотр ZIP</string>
+    <string name="unin_system_apk">Это системное приложение, удаление может привести к нестабильности системы.
+Продолжить?</string>
+    <string name="warning">Предупреждение</string>
+    <string name="donate">Пожертвовать</string>
+    <string name="archive_extract_folder">Папка для распаковки архивов</string>
+    <string name="zip_create_folder">Папка для новых архивов</string>
+    <string name="archive_summary">Файлы из архивов будут распакованы в указанную папку. По умолчанию это папка, в которой находятся zip-файлы</string>
+    <string name="zip_summary">Новые zip-архивы будут создаваться в указанной папке. По умолчанию это папка, в которой находятся файлы</string>
+    <string name="text">Текст</string>
+    <string name="audio">Аудио</string>
+    <string name="video">Видео</string>
+    <string name="other">Прочее</string>
+    <string name="image">Изображение</string>
+    <string name="savepaths">Помнить расположение</string>
+    <string name="savepathsummary">При запуске, открывать вкладки папок</string>
+</resources>

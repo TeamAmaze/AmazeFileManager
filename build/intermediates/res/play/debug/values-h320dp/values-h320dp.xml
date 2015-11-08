@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/res/values-h320dp/values-h320dp.xml -->
+    <eat-comment/>
+    <bool name="abc_allow_stacked_button_bar">true</bool>
+</resources>

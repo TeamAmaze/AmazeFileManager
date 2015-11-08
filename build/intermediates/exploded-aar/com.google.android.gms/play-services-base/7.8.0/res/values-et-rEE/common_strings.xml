@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="common_google_play_services_notification_ticker" msgid="1852570676146674985">"Viga Google Play teenustes"</string>
+    <string name="common_google_play_services_notification_needs_update_title" msgid="1388129345631079938">"Rakenduse kasutamiseks tuleb värskendada Google Play teenuseid."</string>
+    <string name="common_android_wear_notification_needs_update_text" msgid="6428604800157361567">"Rakendus <xliff:g id="APP_NAME">%1$s</xliff:g> nõuab rakenduse Android Wear värskendust."</string>
+    <string name="common_google_play_services_needs_enabling_title" msgid="2583358409598976717">"Rakenduse kasutamiseks peavad olema lubatud Google Play teenused."</string>
+    <string name="common_google_play_services_error_notification_requested_by_msg" msgid="2443362625939284971">"Taotluse esitas <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="common_google_play_services_install_title" msgid="26645092511305524">"Hankige Google Play teenused"</string>
+    <string name="common_google_play_services_install_text_phone" msgid="8836325110837822534">"Rakendus <xliff:g id="APP_NAME">%1$s</xliff:g> töötab ainult koos Google Play teenustega, mida teie telefonis pole."</string>
+    <string name="common_google_play_services_install_text_tablet" msgid="542176290824754127">"Rakendus <xliff:g id="APP_NAME">%1$s</xliff:g> töötab ainult koos Google Play teenustega, mida teie tahvelarvutis pole."</string>
+    <string name="common_google_play_services_install_button" msgid="8515591849428043265">"Hankige Google Play teenused"</string>
+    <string name="common_google_play_services_enable_title" msgid="529078775174559253">"Lubage Google Play teenused"</string>
+    <string name="common_google_play_services_enable_text" msgid="4896236883690196080">"Rakendus <xliff:g id="APP_NAME">%1$s</xliff:g> töötab ainult siis, kui lubate Google Play teenused."</string>
+    <string name="common_google_play_services_enable_button" msgid="4181637455539816337">"Lubage Google Play teenused"</string>
+    <string name="common_google_play_services_update_title" msgid="6006316683626838685">"Värskendage Google Play teenuseid"</string>
+    <string name="common_android_wear_update_title" msgid="1366439133145190222">"Rakenduse Android Wear värskendamine"</string>
+    <string name="common_google_play_services_update_text" msgid="5709479369299147668">"Rakenduse <xliff:g id="APP_NAME">%1$s</xliff:g> töötamiseks peate värskendama Google Play teenuseid."</string>
+    <string name="common_android_wear_update_text" msgid="2453027084525739603">"Rakendus <xliff:g id="APP_NAME">%1$s</xliff:g> töötab ainult siis, kui värskendate rakendust Android Wear."</string>
+    <string name="common_google_play_services_updating_title" msgid="815008177440683245">"Google Play teenuseid värskendatakse"</string>
+    <string name="common_google_play_services_updating_text" msgid="2201289642219771610">"Rakendus <xliff:g id="APP_NAME">%1$s</xliff:g> töötab ainult koos Google Play teenustega, mida praegu värskendatakse."</string>
+    <string name="common_google_play_services_network_error_title" msgid="3827284619958211114">"Võrgu viga"</string>
+    <string name="common_google_play_services_network_error_text" msgid="9038847255613537209">"Google Play teenustega ühenduse loomiseks on vajalik andmesideühendus."</string>
+    <string name="common_google_play_services_invalid_account_title" msgid="1066672360770936753">"Vale konto"</string>
+    <string name="common_google_play_services_invalid_account_text" msgid="4983316348021735578">"Määratud kontot pole selles seadmes olemas. Valige muu konto."</string>
+    <string name="common_google_play_services_unknown_issue" msgid="4762332809710093730">"Google Play teenuste tundmatu probleem."</string>
+    <string name="common_google_play_services_unsupported_title" msgid="6334768798839376943">"Google Play teenused"</string>
+    <string name="common_google_play_services_unsupported_text" msgid="7682982632307307938">"Rakendus <xliff:g id="APP_NAME">%1$s</xliff:g> toetub Google Play teenustele, mida teie seadmes ei toetata. Abi saamiseks võtke ühendust tootjaga."</string>
+    <string name="common_google_play_services_update_button" msgid="8932944190611227642">"Värskenda"</string>
+    <string name="common_signin_button_text" msgid="9071884888741449141">"Logi sisse"</string>
+    <string name="common_signin_button_text_long" msgid="2429381841831957106">"Logi sisse Google\'iga"</string>
+    <string name="common_open_on_phone" msgid="411506735369601515">"Ava telefonis"</string>
+    <string name="common_google_play_services_api_unavailable_text" msgid="6534628256897874213">"Rakenduse <xliff:g id="APP_NAME">%1$s</xliff:g> kasutamiseks on vaja ühte või mitut Google Play teenust, mis pole praegu saadaval. Võtke abi saamiseks ühendust arendajaga."</string>
+    <string name="common_google_play_services_sign_in_failed_title" msgid="8164948898147532159">"Sisselogimine ebaõnnestus"</string>
+    <string name="common_google_play_services_sign_in_failed_text" msgid="5194079840165204725">"Määratud kontole sisselogimisel ilmnes viga. Valige teine konto."</string>
+</resources>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Aza 11, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_1">- Hasierako argitaratzea&lt;br>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Abe 04, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_2">- Moztu/itsatsi konponduta&lt;br>
+                                      - root erabiltzailearentzako testu editorea konponduta&lt;br>
+                                      - Alemana, Frantsesa, Italiera, Errusiera eta Txinera gehituta&lt;br>
+                                      - Laster-markak nabigazio tiraderara gehituta&lt;br>
+                                      - Material elkarrizketak gehituta&lt;br>
+                                      - gehiago...&lt;br>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Abe 13, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_3">- Gaztelania gehituta&lt;br>
+                                      - Hainbat konponketa Zip fitxategien bisorean&lt;br>
+                                      - apk eta jar fitxategiak ikus daitezke&lt;br>
+                                      - Hainbat konponketa testu editorean&lt;br>
+                                      - gehiago...&lt;br>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color="#524ef8">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Urt 17, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_4">    - Fitxa trukagarriak&lt;br>
+                                      - Erabat eguneratutako UIa&lt;br>
+                                      - Kopiatze/Itsaste/Erauzte/Konprimitze operazioak bizkortu&lt;br>
+                                      - Operazioen egoera jakinarazpenetan&lt;br>
+                                      - Konponketak Zip fitxategien bisorean eta testu editorean&lt;br>
+                                      - Sistemaren aplikazioak desinstalatzeko aukera&lt;br>
+                                      - Hobetutako fitxategien bilaketa&lt;br>
+                                      - Serbiera, euskara itzulpenak&lt;br>
+                                      - Atzera joan zerrenda burua ezgaitzeko aukera gehituta&lt;br>
+                                      - Aurre-ikuspegi biribilak ezgaitzeko aukera gehituta&lt;br>
+                                      - Artxiboen erauzketa eta konpresio karpeta hautatzeko aukera gehituta&lt;br>
+                                      - Bideak gogoratzeko aukera gehituta&lt;br>
+                                      - gehiago...&lt;br>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#524ef8">&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Mar 08, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_5">- Datu-base bisorea inplementatuta&lt;br>
+                                      - Rar bisorea inplementatuta&lt;br>
+                                      - Lanentzako jakinarazpen hobetuak&lt;br>
+                                      - Tiradera ixterako atzerapena konponduta eta diseinua hobetuta&lt;br>
+                                      - Ikono biribil berria&lt;br>
+                                      - Freskatzeko irristatu(behera tira egin) sartuta&lt;br>
+                                      - USB unitateen errekonozimendua gehituta gailu batzuetan&lt;br>
+                                      - Koloreztatutako nagigazio barra lollipop gailuentzat&lt;br>
+                                      - Uhin efektua lollipop gailuentzat&lt;br>
+                                      - UI hobekuntza ugari&lt;br>
+                                      - Akats konponketa anitz&lt;br>
+                                      - gehiago...&lt;br>&lt;br></string>
+    <string name="changelog_version_6">&lt;font color="#524ef8">&lt;b>v2.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Mai 25, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_6">- Material design gida-lerroen araberako erabiltzaile interfazearen diseinu berria&lt;br>
+                                      - Ikono eta grafiko berriak CookIcons.co egindakoak&lt;br>
+                                      - Animazio hobetuak esperientzi leunagoa izateko&lt;br>
+                                      - Lehen, azentu eta ikono kolore pertsonalizatuak gehitu dira erabiltzaile interfazea dinamikoa bihurtzeko&lt;br>
+                                      - Zerrendetan goiburuak eta banatzaileak gehitu dira&lt;br>
+                                      - Tiradera G+ profil argazki eta azalarekin sinkronizatu daiteke&lt;br>
+                                      - Gai argi eta ilunak hobetu dira, itxura ederragoa du orain!&lt;br>
+                                      - Laster-marka kudeatzailea tiraderatik kendu da, sakatu luze laster-markan orain&lt;br>
+                                      - Orain tresna-barra edo aplikazio barra ezkutatzea gaitu dezakezu desplazatzerakoan&lt;br>
+                                      - Errendimendu eta akatsen konponketa anitz&lt;br>
+                                      - Itzulpenen konponketa ugari&lt;br>
+                                      - gehiago...&lt;br>&lt;br></string>
+	<string name="changelog_version_7">&lt;font color="#524ef8">&lt;b>v2.0.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Eka 5, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_7">- Ordenatzeko aukerak aplikazioen zerrendan&lt;br>
+                                      - Fitxen UIa eta tiraderaren goiburua hobetuak&lt;br>
+                                      - Lollipopen kanpoko biltegian idazteko baimenak gehitu dira&lt;br>&lt;br>
+                                    </string>
+</resources>

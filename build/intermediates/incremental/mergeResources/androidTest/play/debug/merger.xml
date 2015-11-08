@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="/home/vishal/work/android/AmazeFileManager/src/androidTest/res"/><source path="/home/vishal/work/android/AmazeFileManager/build/generated/res/rs/androidTest/play/debug"/><source path="/home/vishal/work/android/AmazeFileManager/build/generated/res/generated/androidTest/play/debug"/></dataSet><dataSet config="androidTestPlay"><source path="/home/vishal/work/android/AmazeFileManager/src/androidTestPlay/res"/></dataSet><mergedItems/></merger>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/home/schuerm/Projekte/Donations/Donations/src/main/res/values-tr/donations__strings.xml -->
+    <eat-comment/>
+    <string name="donations__alert_dialog_no_browser">Web site açmak için tarayıcı bulunamadı!</string>
+    <string name="donations__alert_dialog_title">Hata oluştu</string>
+    <string name="donations__button_close">Kapat</string>
+    <string name="donations__description">Bu uygulamayı kullanışlı mı buluyorsunuz?\nGeliştiriciye bağış yaparak gelişmesine yardımcı olun!</string>
+    <string name="donations__flattr">Flattr</string>
+    <string name="donations__flattr_description">Flattr takes 10 % as a monthly fee!</string>
+    <string name="donations__google_android_market">Google Play Mağazası</string>
+    <string name="donations__google_android_market_description">Google her bağışın %30\'unu alıyor!</string>
+    <string name="donations__google_android_market_donate_button">Bağış Yap!</string>
+    <string name="donations__google_android_market_not_supported">Uygulama içi bağışlar desteklenmez. Google Play Mağazası doğru şekilde kuruldu mu?</string>
+    <string name="donations__google_android_market_not_supported_title">Uygulama içi bağışlar desteklenmez.</string>
+    <string name="donations__google_android_market_text">Ne kadar?</string>
+    <string name="donations__paypal">PayPal</string>
+    <string name="donations__paypal_description">Butona bastıktan sonra ne kadar bağış yapacağınızı seçebilirsiniz!</string>
+    <string name="donations__thanks_dialog">Bağış için teşekkürler!\nBunu gerçekten takdir ediyorum!</string>
+    <string name="donations__thanks_dialog_title">Teşekkürler!</string>
+</resources>

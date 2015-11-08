@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/res/values-hy-rAM/values-hy-rAM.xml -->
+    <eat-comment/>
+    <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Ուղղվել տուն"</string>
+    <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
+    <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
+    <string msgid="1594238315039666878" name="abc_action_bar_up_description">"Ուղղվել վերև"</string>
+    <string msgid="3588849162933574182" name="abc_action_menu_overflow_description">"Այլ ընտրանքներ"</string>
+    <string msgid="4076576682505996667" name="abc_action_mode_done">"Կատարված է"</string>
+    <string msgid="7468859129482906941" name="abc_activity_chooser_view_see_all">"Տեսնել բոլորը"</string>
+    <string msgid="2031811694353399454" name="abc_activitychooserview_choose_application">"Ընտրել ծրագիր"</string>
+    <string msgid="121134116657445385" name="abc_capital_off">"ԱՆՋԱՏՎԱԾ"</string>
+    <string msgid="3405795526292276155" name="abc_capital_on">"ՄԻԱՑՎԱԾ"</string>
+    <string msgid="7723749260725869598" name="abc_search_hint">"Որոնում..."</string>
+    <string msgid="3691816814315814921" name="abc_searchview_description_clear">"Մաքրել հարցումը"</string>
+    <string msgid="2550479030709304392" name="abc_searchview_description_query">"Որոնման հարցում"</string>
+    <string msgid="8264924765203268293" name="abc_searchview_description_search">"Որոնել"</string>
+    <string msgid="8928215447528550784" name="abc_searchview_description_submit">"Ուղարկել հարցումը"</string>
+    <string msgid="893419373245838918" name="abc_searchview_description_voice">"Ձայնային որոնում"</string>
+    <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Տարածել"</string>
+    <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Տարածել ըստ %s"</string>
+    <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Թաքցնել"</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/7.8.0/res/values-hy-rAM/common_strings.xml -->
+    <eat-comment/>
+    <string msgid="6428604800157361567" name="common_android_wear_notification_needs_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> հավելվածի Android Wear համակարգը պետք է թարմացվի:"</string>
+    <string msgid="2453027084525739603" name="common_android_wear_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> հավելվածը չի գործարկվի մինչև չթարմացնեք Android Wear համակարգը:"</string>
+    <string msgid="1366439133145190222" name="common_android_wear_update_title">"Թարմացնել Android Wear-ը"</string>
+    <string msgid="6534628256897874213" name="common_google_play_services_api_unavailable_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> հավելվածի համար պահանջվում է մեկ կամ մի քանի Google Play ծառայություններ, որոնք այս պահին հասանելի չեն: Օգնություն ստանալու համար կապվեք մշակողի հետ:"</string>
+    <string msgid="4181637455539816337" name="common_google_play_services_enable_button">"Միացնել Google Play ծառայությունները"</string>
+    <string msgid="4896236883690196080" name="common_google_play_services_enable_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> հավելվածը չի աշխատի մինչև չմիացնեք Google Play ծառայությունները:"</string>
+    <string msgid="529078775174559253" name="common_google_play_services_enable_title">"Միացնել Google Play ծառայությունները"</string>
+    <string msgid="2443362625939284971" name="common_google_play_services_error_notification_requested_by_msg">"<ns1:g id="APP_NAME">%1$s</ns1:g>-ի հարցմամբ"</string>
+    <string msgid="8515591849428043265" name="common_google_play_services_install_button">"Տեղադրել Google Play ծառայությունները"</string>
+    <string msgid="8836325110837822534" name="common_google_play_services_install_text_phone">"<ns1:g id="APP_NAME">%1$s</ns1:g> հավելվածը չի աշխատի առանց Google Play ծառայությունների, որոնք չկան ձեր հեռախոսում:"</string>
+    <string msgid="542176290824754127" name="common_google_play_services_install_text_tablet">"<ns1:g id="APP_NAME">%1$s</ns1:g> հավելվածը չի աշխատի առանց Google Play ծառայությունների, որոնք չկան ձեր պլանշետում:"</string>
+    <string msgid="26645092511305524" name="common_google_play_services_install_title">"Տեղադրեք Google Play ծառայությունները"</string>
+    <string msgid="4983316348021735578" name="common_google_play_services_invalid_account_text">"Նշված հաշիվը գոյություն չունի այս սարքում: Ընտրեք այլ հաշիվ:"</string>
+    <string msgid="1066672360770936753" name="common_google_play_services_invalid_account_title">"Հաշիվն անվավեր է"</string>
+    <string msgid="2583358409598976717" name="common_google_play_services_needs_enabling_title">"Ինչ-որ հավելված պահանջում է միացնել Google Play ծառայությունները:"</string>
+    <string msgid="9038847255613537209" name="common_google_play_services_network_error_text">"Պահանջվում է տվյալների կապ` Google Play ծառայություններին միանալու համար:"</string>
+    <string msgid="3827284619958211114" name="common_google_play_services_network_error_title">"Ցանցի սխալ կա"</string>
+    <string msgid="1388129345631079938" name="common_google_play_services_notification_needs_update_title">"Ինչ-որ հավելված պահանջում է թարմացնել Google Play ծառայությունները:"</string>
+    <string msgid="1852570676146674985" name="common_google_play_services_notification_ticker">"Google Play ծառայությունների սխալ կա"</string>
+    <string msgid="5194079840165204725" name="common_google_play_services_sign_in_failed_text">"Նշված հաշիվ մուտք գործելիս առաջացել է սխալ: Ընտրեք մեկ այլ հաշիվ:"</string>
+    <string msgid="8164948898147532159" name="common_google_play_services_sign_in_failed_title">"Մուտքը ձախողվեց"</string>
+    <string msgid="4762332809710093730" name="common_google_play_services_unknown_issue">"Անհայտ խնդիր՝ Google Play ծառայություններում:"</string>
+    <string msgid="7682982632307307938" name="common_google_play_services_unsupported_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> հավելվածի համար հարկավոր են Google Play ծառայություններ, որոնք ձեր սարքը չի աջակցում: Օգնություն ստանալու համար կապվեք արտադրողի հետ:"</string>
+    <string msgid="6334768798839376943" name="common_google_play_services_unsupported_title">"Google Play ծառայություններ"</string>
+    <string msgid="8932944190611227642" name="common_google_play_services_update_button">"Նորացնել"</string>
+    <string msgid="5709479369299147668" name="common_google_play_services_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> հավելվածը չի աշխատի մինչև չթարմացնեք Google Play ծառայությունները:"</string>
+    <string msgid="6006316683626838685" name="common_google_play_services_update_title">"Նորացրեք Google Play ծառայությունները"</string>
+    <string msgid="2201289642219771610" name="common_google_play_services_updating_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> հավելվածը չի աշխատի առանց Google Play ծառայությունների, որոնք այս պահին թարմացվում են:"</string>
+    <string msgid="815008177440683245" name="common_google_play_services_updating_title">"Google Play ծառայությունների թարմացում"</string>
+    <string msgid="411506735369601515" name="common_open_on_phone">"Բացել հեռախոսում"</string>
+    <string msgid="9071884888741449141" name="common_signin_button_text">"Մուտք գործել"</string>
+    <string msgid="2429381841831957106" name="common_signin_button_text_long">"Մուտք գործեք Google-ով"</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/res/values-hy-rAM/values-hy-rAM.xml -->
+    <eat-comment/>
+    <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
+</resources>

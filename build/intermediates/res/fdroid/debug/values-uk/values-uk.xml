@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-uk/strings.xml -->
+    <eat-comment/>
+    <string name="Extracting_fles">Розпаковування файлів</string>
+    <string name="Yellow">Жовтий</string>
+    <string name="Zipping_fles">Архівування файлів</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/res/values-uk/values-uk.xml -->
+    <eat-comment/>
+    <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Перейти на головний"</string>
+    <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
+    <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
+    <string msgid="1594238315039666878" name="abc_action_bar_up_description">"Перейти вгору"</string>
+    <string msgid="3588849162933574182" name="abc_action_menu_overflow_description">"Інші опції"</string>
+    <string msgid="4076576682505996667" name="abc_action_mode_done">"Готово"</string>
+    <string msgid="7468859129482906941" name="abc_activity_chooser_view_see_all">"Переглянути всі"</string>
+    <string msgid="2031811694353399454" name="abc_activitychooserview_choose_application">"Вибрати програму"</string>
+    <string msgid="121134116657445385" name="abc_capital_off">"ВИМК."</string>
+    <string msgid="3405795526292276155" name="abc_capital_on">"УВІМК."</string>
+    <string msgid="7723749260725869598" name="abc_search_hint">"Пошук…"</string>
+    <string msgid="3691816814315814921" name="abc_searchview_description_clear">"Очистити запит"</string>
+    <string msgid="2550479030709304392" name="abc_searchview_description_query">"Пошуковий запит"</string>
+    <string msgid="8264924765203268293" name="abc_searchview_description_search">"Пошук"</string>
+    <string msgid="8928215447528550784" name="abc_searchview_description_submit">"Надіслати запит"</string>
+    <string msgid="893419373245838918" name="abc_searchview_description_voice">"Голосовий пошук"</string>
+    <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Надіслати через"</string>
+    <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Надіслати через %s"</string>
+    <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Згорнути"</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-uk/strings.xml -->
+    <eat-comment/>
+    <string name="about">Про програму</string>
+    <string name="aboutFileManager">Про Amaze File Manager</string>
+    <string name="add">Додати</string>
+    <string name="addbook">Додати закладку</string>
+    <string name="addshortcut">Додати ярлик</string>
+    <string name="addtobook">Додати у закладки</string>
+    <string name="amber">Бурштин</string>
+    <string name="app_name">Приклад навігації по меню</string>
+    <string name="apps">Менеджер додатків</string>
+    <string name="archive">Архіви</string>
+    <string name="archive_extract_folder">Папка для розпаковування архівів</string>
+    <string name="archive_summary">Файли з архіву буде розпаковано до вказаної папки. За промовчанням це папка де і zip-файл</string>
+    <string name="archtext">Це архів. Яку дію ви хотіли б виконати?</string>
+    <string name="atroot">Ви знаходитесь в корені</string>
+    <string name="audio">Аудіо</string>
+    <string name="authors">Автори</string>
+    <string name="back">Назад</string>
+    <string name="back_summary">Enables custom back navigation at top of the list</string>
+    <string name="back_title">Back navigation</string>
+    <string name="backup">Резервна копія</string>
+    <string name="basque_translation_title">Баскська</string>
+    <string name="black">Чорний</string>
+    <string name="blue">Синій</string>
+    <string name="blue_grey">Синій сірий</string>
+    <string name="bookmanag">Керування закладками</string>
+    <string name="bookmarksadded">Додані в вибране</string>
+    <string name="books">Закладки</string>
+    <string name="brown">Коричневий</string>
+    <string name="cancel">Скасувати</string>
+    <string name="cant_read_file">Не вдається прочитати файл</string>
+    <string name="cantlistfiles">Не можете виконати без рут прав</string>
+    <string name="card">Карта корист. інтерфейсу</string>
+    <string name="changegallerypath">Змінити шлях до галереї</string>
+    <string name="changelog">Історія змін</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-uk/changelog.xml -->
+    <eat-comment/>
+    <string name="changelog_change_1">- Вихідна версія&lt;br>&lt;br></string>
+    <string name="changelog_change_2">- Виправлено вирізати/вставити&lt;br>
+                                      - Виправлений текстовий редактор для рут доступу&lt;br>
+                                      - Додано Німецька, Французька, Італійська, Російська, Китайська мови&lt;br>
+                                      - Додані закладки для навігації по секції&lt;br>
+                                      - Доданий матеріал діалогів&lt;br>
+                                      - інші виправлення.&lt;br>&lt;br></string>
+    <string name="changelog_change_3">- Додано Іспанська мова&lt;br>
+                                      - Різні Zip Редактора виправлення&lt;br>
+                                      - Тепер ви можете переглядати apk і jar файли&lt;br>
+                                      - Різні виправлення в текстовому редакторі&lt;br>
+                                      - інші виправлення...&lt;br>&lt;br></string>
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color=#524ef8>&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color=#5299f2>&lt;br>Dec 04, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Dec 13, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-uk/strings.xml -->
+    <eat-comment/>
+    <string name="chinese_translation_title">Китайська</string>
+    <string name="chooseUI">Виберіть елемент інтерфейсу</string>
+    <string name="circularicons">Використовувати круглі іконки</string>
+    <string name="circularimages">Використовувати круглі іконки для зображень і відео</string>
+    <string name="close">Закрити</string>
+    <string name="colorize">Розфарбувати іконки</string>
+    <string name="colorize_summary">Встановлює кольори іконок відрізняються від теми</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/7.8.0/res/values-uk/common_strings.xml -->
+    <eat-comment/>
+    <string msgid="6428604800157361567" name="common_android_wear_notification_needs_update_text">"Для роботи додатка <ns1:g id="APP_NAME">%1$s</ns1:g> потрібно оновити Android Wear."</string>
+    <string msgid="2453027084525739603" name="common_android_wear_update_text">"Додаток <ns1:g id="APP_NAME">%1$s</ns1:g> не працюватиме, якщо не оновити Android Wear."</string>
+    <string msgid="1366439133145190222" name="common_android_wear_update_title">"Оновити Android Wear"</string>
+    <string msgid="6534628256897874213" name="common_google_play_services_api_unavailable_text">"Для роботи додатка <ns1:g id="APP_NAME">%1$s</ns1:g> потрібні один або декілька сервісів Google Play, які зараз недоступні. Зверніться по допомогу до розробника."</string>
+    <string msgid="4181637455539816337" name="common_google_play_services_enable_button">"Увімкнути сервіси Google Play"</string>
+    <string msgid="4896236883690196080" name="common_google_play_services_enable_text">"Додаток <ns1:g id="APP_NAME">%1$s</ns1:g> не працюватиме, якщо не ввімкнути сервіси Google Play."</string>
+    <string msgid="529078775174559253" name="common_google_play_services_enable_title">"Увімкніть сервіси Google Play"</string>
+    <string msgid="2443362625939284971" name="common_google_play_services_error_notification_requested_by_msg">"Запит від додатка <ns1:g id="APP_NAME">%1$s</ns1:g>"</string>
+    <string msgid="8515591849428043265" name="common_google_play_services_install_button">"Установити сервіси Google Play"</string>
+    <string msgid="8836325110837822534" name="common_google_play_services_install_text_phone">"Додаток <ns1:g id="APP_NAME">%1$s</ns1:g> не працюватиме без сервісів Google Play, яких немає на вашому телефоні."</string>
+    <string msgid="542176290824754127" name="common_google_play_services_install_text_tablet">"Додаток <ns1:g id="APP_NAME">%1$s</ns1:g> не працюватиме без сервісів Google Play, яких немає на вашому планшеті."</string>
+    <string msgid="26645092511305524" name="common_google_play_services_install_title">"Установіть сервіси Google Play"</string>
+    <string msgid="4983316348021735578" name="common_google_play_services_invalid_account_text">"Указаний обліковий запис не існує на цьому пристрої. Виберіть інший обліковий запис."</string>
+    <string msgid="1066672360770936753" name="common_google_play_services_invalid_account_title">"Недійсний обліковий запис"</string>
+    <string msgid="2583358409598976717" name="common_google_play_services_needs_enabling_title">"Щоб додаток працював, потрібно ввімкнути сервіси Google Play."</string>
+    <string msgid="9038847255613537209" name="common_google_play_services_network_error_text">"Для під’єднання до сервісів Google Play потрібне з’єднання з мережею."</string>
+    <string msgid="3827284619958211114" name="common_google_play_services_network_error_title">"Помилка мережі"</string>
+    <string msgid="1388129345631079938" name="common_google_play_services_notification_needs_update_title">"Щоб додаток працював, потрібно оновити сервіси Google Play."</string>
+    <string msgid="1852570676146674985" name="common_google_play_services_notification_ticker">"Помилка сервісів Google Play"</string>
+    <string msgid="5194079840165204725" name="common_google_play_services_sign_in_failed_text">"Не вдалося ввійти в указаний обліковий запис. Виберіть інший."</string>
+    <string msgid="8164948898147532159" name="common_google_play_services_sign_in_failed_title">"Помилка під час входу"</string>
+    <string msgid="4762332809710093730" name="common_google_play_services_unknown_issue">"Невідома проблема із сервісами Google Play."</string>
+    <string msgid="7682982632307307938" name="common_google_play_services_unsupported_text">"Додаток <ns1:g id="APP_NAME">%1$s</ns1:g> працює завдяки сервісам Google Play, які не підтримуються на вашому пристрої. Зверніться по допомогу до виробника."</string>
+    <string msgid="6334768798839376943" name="common_google_play_services_unsupported_title">"Сервіси Google Play"</string>
+    <string msgid="8932944190611227642" name="common_google_play_services_update_button">"Оновити"</string>
+    <string msgid="5709479369299147668" name="common_google_play_services_update_text">"Додаток <ns1:g id="APP_NAME">%1$s</ns1:g> не працюватиме, якщо не оновити сервіси Google Play."</string>
+    <string msgid="6006316683626838685" name="common_google_play_services_update_title">"Оновіть сервіси Google Play"</string>
+    <string msgid="2201289642219771610" name="common_google_play_services_updating_text">"Додаток <ns1:g id="APP_NAME">%1$s</ns1:g> не працюватиме без сервісів Google Play, які зараз оновлюються."</string>
+    <string msgid="815008177440683245" name="common_google_play_services_updating_title">"Сервіси Google Play оновлюються"</string>
+    <string msgid="411506735369601515" name="common_open_on_phone">"Відкрити на телефоні"</string>
+    <string msgid="9071884888741449141" name="common_signin_button_text">"Увійти"</string>
+    <string msgid="2429381841831957106" name="common_signin_button_text_long">"Увійти в обл.запис Google"</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-uk/strings.xml -->
+    <eat-comment/>
+    <string name="compress">Архівувати</string>
+    <string name="confirm">Підтвердіть</string>
+    <string name="copy">Копіювати</string>
+    <string name="copy_path">Копіювати Шлях</string>
+    <string name="copying">Копіювання...</string>
+    <string name="copying_fles">Копіювання файлів</string>
+    <string name="copyingapk">apk-файл скопійований в:</string>
+    <string name="create">Створити</string>
+    <string name="cut">Вирізати</string>
+    <string name="cyan">Блакитний</string>
+    <string name="dark">Темний</string>
+    <string name="date">Дата: </string>
+    <string name="daytime">Денний час</string>
+    <string name="deep_orange">Глибокий жовтогарячий</string>
+    <string name="deep_purple">Багряний</string>
+    <string name="delete">Видалити</string>
+    <string name="deleting">Видалення...</string>
+    <string name="detailedView">Детальний вид</string>
+    <string name="details">Читати далі</string>
+    <string name="directorysort">Режим сортування каталогу</string>
+    <string name="doforall">Виконати для всіх елементів</string>
+    <string name="donate">Пожертвувати</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/org.sufficientlysecure/donations/2.3/res/values-uk/values.xml -->
+    <eat-comment/>
+    <string name="donations__alert_dialog_no_browser">Не знайдено жодного переглядача, щоб відкрити веб-сайт!</string>
+    <string name="donations__alert_dialog_title">Трапилася помилка</string>
+    <string name="donations__button_close">Закрити</string>
+    <string name="donations__description">Ви вважаєте програму корисною?\n Підтримайте її розробку надіславши пожертву розробнику!</string>
+    <string name="donations__flattr">Flattr</string>
+    <string name="donations__flattr_description">Flattr стягує 10% у вигляді щомісячної абонентської плати!</string>
+    <string name="donations__google_android_market">магазин Google Play</string>
+    <string name="donations__google_android_market_description">Google стягує 30% з кожного пожертвування!</string>
+    <string name="donations__google_android_market_donate_button">Пожертвувати!</string>
+    <string name="donations__google_android_market_not_supported">Пожертвування через програму не підтримуються. Магазин Google Play встановлений правильно?</string>
+    <string name="donations__google_android_market_not_supported_title">Програмні пожертви не підтримуються.</string>
+    <string name="donations__google_android_market_text">Скільки?</string>
+    <string name="donations__paypal">PayPal</string>
+    <string name="donations__paypal_description">Після натискання на кнопку ви можете вибрати скільки хочете пожертвувати!</string>
+    <string name="donations__thanks_dialog">Дякую за пожертвування! Я дуже це ціную!</string>
+    <string name="donations__thanks_dialog_title">Дякую!</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-uk/strings.xml -->
+    <eat-comment/>
+    <string name="done">Закінчено</string>
+    <string name="drawer_close">Закрити меню навігації</string>
+    <string name="drawer_open">Відкрити меню навігації</string>
+    <string name="efn">Введіть ім\'я файлу</string>
+    <string name="enablerootmde">Включити режим рут прав</string>
+    <string name="enterfile">Введіть ім\'я файлу</string>
+    <string name="entername">Введіть ім\'я</string>
+    <string name="enternewname">Введіть нове ім\'я</string>
+    <string name="enterpath">Введіть шлях</string>
+    <string name="enterzipname">Введіть ім\'я zip архіву</string>
+    <string name="error">Помилка</string>
+    <string name="exit">Вихід</string>
+    <string name="extract">Розпакувати</string>
+    <string name="extracting">Розпаковування...</string>
+    <string name="feedback">Відправити відгук</string>
+    <string name="file">Файл</string>
+    <string name="filecreated">Файл створений</string>
+    <string name="fileexist">Файл вже існує</string>
+    <string name="fileexplorer">Провідник</string>
+    <string name="filenotexists">Файл не існує</string>
+    <string name="filesOnTop">Файли на вершині</string>
+    <string name="folder">Папка</string>
+    <string name="foldercolor">Колір папки</string>
+    <string name="foldercreated">Папка створена</string>
+    <string name="foldersOnTop">Папки на вершині</string>
+    <string name="free">Вільно:</string>
+    <string name="french_translation_title">Французька</string>
+    <string name="fullChangelog">Повний список змін</string>
+    <string name="gallery">Галерея</string>
+    <string name="general">Загальні</string>
+    <string name="german_translation_title">Німецька</string>
+    <string name="goback">Повернутися</string>
+    <string name="green">Зелений</string>
+    <string name="gridcolumnno">Кількість колонок в сітці</string>
+    <string name="gridview">Сітка</string>
+    <string name="guide1">Ласкаво просимо до Amaze File Manager!</string>
+    <string name="guide2">Натисніть на синю смужку, щоб показати або приховати панель</string>
+    <string name="guide3">Натисніть і утримуйте будь-який файл, щоб відкрити опції.</string>
+    <string name="guide4">Копіювання, переміщення, властивості і т. д.</string>
+    <string name="guide5">Щоб вийти з програми в будь-який час, використовуйте кнопку Назад...</string>
+    <string name="guide6">..і для навігації по файловому менеждеру, використовуйте кнопку зі стрілкою вліво</string>
+    <string name="hidden">Показувати приховані файли і теки</string>
+    <string name="hiddenfiles">Приховані файли</string>
+    <string name="hide">Приховати</string>
+    <string name="history">Історія</string>
+    <string name="home">Додому</string>
+    <string name="icon">іконка</string>
+    <string name="image">Зображення</string>
+    <string name="imagegallery">Галерея зображень</string>
+    <string name="in_safe">Недостатньо вільного місця</string>
+    <string name="indigo">Індиго</string>
+    <string name="install">Установка</string>
+    <string name="invalid_dir">Невірна директорія</string>
+    <string name="italian_translation_title">Італійська</string>
+    <string name="items">Елементи</string>
+    <string name="itemsselected">Вибрані елементи</string>
+    <string name="lastModified">Дата останнього зміни</string>
+    <string name="lastModifiedDesc">Дата останньої зміни (Desc)</string>
+    <string name="lastModifiedPref">Показати останні зміни</string>
+    <string name="lastModifiedSummary">Показати дату і час, коли файл було змінено в останній раз</string>
+    <string name="license">Open Source Licenses</string>
+    <string name="light">Світлий</string>
+    <string name="light_blue">Світло-блакитний</string>
+    <string name="light_green">Світло-зелений</string>
+    <string name="listview">Список</string>
+    <string name="location">Розташований в: </string>
+    <string name="maintab">Головна вкладка не може бути видалена</string>
+    <string name="miscellaneous">Інше</string>
+    <string name="mountsystem">Монтувати системні папки з правом запису</string>
+    <string name="mountsystemsummary">Ввімкніть, якщо хочете редагувати системні файли</string>
+    <string name="moving">Переміщення</string>
+    <string name="name">Ім\'я: </string>
+    <string name="new_string">Новий</string>
+    <string name="newfile">Новий файл</string>
+    <string name="newfolder">Нова папка</string>
+    <string name="newhomedirectory">Новий домашній каталог</string>
+    <string name="no">Немає</string>
+    <string name="no_file_overwrite">Не перезаписувати файл</string>
+    <string name="noappfound">Немає додатків для відкриття цього файлу</string>
+    <string name="nofiles">Немає файлів</string>
+    <string name="noneOnTop">Ні один на вершині</string>
+    <string name="not_allowed">Не допускається</string>
+    <string name="ok">ОК</string>
+    <string name="open">Запустити</string>
+    <string name="openparent">Відкрити батьківську директорію</string>
+    <string name="openwith">Відкрити з допомогою</string>
+    <string name="orange">Помаранчевий</string>
+    <string name="other">Різне</string>
+    <string name="overwrite">Перезаписати</string>
+    <string name="packageinstaller">Установник пакетів</string>
+    <string name="paste">Вставити</string>
+    <string name="pathcopied">Шлях скопійований в буфер обміну</string>
+    <string name="permission">Права</string>
+    <string name="pick_a_file">Вибрати файл</string>
+    <string name="pink">Рожевий</string>
+    <string name="pitext">Це пакет інсталятора. Яку дію ви хотіли б виконати?</string>
+    <string name="play">Відкрити в Маркеті</string>
+    <string name="pressagain">Натисніть ще раз, щоб вийти.</string>
+    <string name="process_viewer">Перегляд процесів</string>
+    <string name="processes">Процеси</string>
+    <string name="properties">Властивості</string>
+    <string name="purple">Фіолетовий</string>
+    <string name="questiondelete">Ви впевнені, що хочете вилучити вибрані файли?</string>
+    <string name="random">Випадковий скін</string>
+    <string name="randomDialog">Випадковий</string>
+    <string name="random_summary">Встановлює випадкову тему при запуску</string>
+    <string name="rate">Оцініть додаток</string>
+    <string name="red">Червоний</string>
+    <string name="refresh">Оновити</string>
+    <string name="rename">Перейменувати</string>
+    <string name="renamed">Успішно перейменовано</string>
+    <string name="renameerror">Не вдалося перейменувати</string>
+    <string name="rootPref">Показати дозволу</string>
+    <string name="rootPrefSummary">Показати дозволу для файлів і папок</string>
+    <string name="rootdirectory">Root</string>
+    <string name="rootfailure">Рут доступ не надано</string>
+    <string name="rootmode">Root Explorer</string>
+    <string name="rootmodesummary">Тільки для пристроїв з рут правами. Використовуйте з обережністю, якщо впевнені у своїх діях.</string>
+    <string name="russian_translation_title">Російська</string>
+    <string name="save">Зберегти</string>
+    <string name="savepaths">Запам\'ятати розташування</string>
+    <string name="savepathsummary">При запуску, відкривати вкладки папок</string>
+    <string name="saving">Збереження</string>
+    <string name="search">Пошук</string>
+    <string name="searching">Пошук</string>
+    <string name="searchpath">Шлях пошуку</string>
+    <string name="searchresults">Результати пошуку</string>
+    <string name="select">Вибрати елемент</string>
+    <string name="selectall">Вибрати все</string>
+    <string name="serbian_translation_title">Сербська</string>
+    <string name="set">Встановити</string>
+    <string name="setRandom">Зміни будуть використані після перезапуску програми</string>
+    <string name="setashome">Зробити домашньою текою</string>
+    <string name="setgridview">Налаштування сітки</string>
+    <string name="sethome">Встан. домашній каталог</string>
+    <string name="setlistview">Настройка списку</string>
+    <string name="setringtone">Встан. як рінгтон</string>
+    <string name="setting">Налаштування</string>
+    <string name="share">Надіслати</string>
+    <string name="simple">Простий користю. інтерфейс</string>
+    <string name="simpleView">Простий вид</string>
+    <string name="size">Розмір: </string>
+    <string name="sizePref">Показати розміри</string>
+    <string name="sizePrefSummary">Показати розмір файлів і кількість елементів в папках</string>
+    <string name="skin">Скін</string>
+    <string name="skip">Пропуск</string>
+    <string name="sortName">Ім\'я</string>
+    <string name="sortNameDesc">Ім\'я (за спаданням)</string>
+    <string name="sortSize">Розмір</string>
+    <string name="sortSizeDesc">Розмір (за спаданням)</string>
+    <string name="sortby">Сортувати</string>
+    <string name="spanish_translation_title">Іспанська</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/res/values-uk/values-uk.xml -->
+    <eat-comment/>
+    <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-uk/strings.xml -->
+    <eat-comment/>
+    <string name="stopping">Зупинка</string>
+    <string name="storage">Пам\'ять</string>
+    <string name="success">Успішно</string>
+    <string name="supersu">SuperSU</string>
+    <string name="tab">Вкладка</string>
+    <string name="tapnhold">Натисніть та утримуйте файл або папку для більше варіантів</string>
+    <string name="teal">Чирок</string>
+    <string name="text">Текст</string>
+    <string name="theme">Теми</string>
+    <string name="thumb">Показувати мініатюри</string>
+    <string name="thumbSummary">Показувати мініатюри додатків та образів</string>
+    <string name="totalitems">Всього елементів: </string>
+    <string name="translators">Перекладачі</string>
+    <string name="turkish_translation_title">Турецька</string>
+    <string name="type">Тип</string>
+    <string name="typeDesc">Тип (за спаданням)</string>
+    <string name="ui">Інтерфейс</string>
+    <string name="uimode">Режим інтерфейсу</string>
+    <string name="unin_system_apk">Це системний додаток, його видалення може спричинити нестабільність системи.
+Ви хочете продовжити?</string>
+    <string name="uninstall">Видалити</string>
+    <string name="unsavedchanges">Незбережені зміни</string>
+    <string name="unsavedchangesdesc">У Вас є незбережені зміни, ви хочете зберегти їх перед виходом?</string>
+    <string name="used">Використовується:</string>
+    <string name="usedefaultgallerypath">Використ. шлях до галереї за замовчуванням</string>
+    <string name="version">Версія</string>
+    <string name="video">Відео</string>
+    <string name="view">Перегляд</string>
+    <string name="viewmode">Режим перегляду</string>
+    <string name="warning">Попередження</string>
+    <string name="xda_summary">Q&amp;A, Допомога &amp; Усунення несправностей</string>
+    <string name="xda_title">XDA</string>
+    <string name="yes">Так</string>
+    <string name="zip_create_folder">Папка для нових архивів</string>
+    <string name="zip_summary">Нові zip-файли буде створено у вказаній папці. За промовчанням це папка, у якій розташовуються файли</string>
+    <string name="zip_viewer">Перегляд ZIP</string>
+    <string name="zipping">Архівування...</string>
+</resources>

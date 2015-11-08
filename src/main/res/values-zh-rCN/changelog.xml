@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2014-11-11&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_1">- 初始版本&lt;br>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2014-12-04&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_2">- 修复剪切/粘贴的问题&lt;br>
+                                      - 修复 Root 用户文本编辑器问题&lt;br>
+                                      - 添加简体中文、德语、法语、意大利语、俄语翻译&lt;br>
+                                      - 添加书签至导航抽屉&lt;br>
+                                      - 添加 Material 设计对话框&lt;br>
+                                      - 更多改进…&lt;br>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2014-12-13&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_3">- 添加西班牙语翻译&lt;br>
+                                      - 修复 ZIP 查看器的问题&lt;br>
+                                      - 现在可查看 apk 和 jar 格式文件&lt;br>
+                                      - 修复文本编辑器的问题&lt;br>
+                                      - 更多改进…&lt;br>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color="#524ef8">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2015-01-17&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_4">    - 添加可滑动标签&lt;br>
+                                      - 全面改善界面&lt;br>
+                                      - 添加快速复制/粘贴/提取/压缩操作&lt;br>
+                                      - 添加显示操作进度通知&lt;br>
+                                      - 修复 ZIP 查看器和文本编辑器的问题&lt;br>
+                                      - 添加可卸载系统程序的功能&lt;br>
+                                      - 改善搜索文件的功能&lt;br>
+                                      - 更新塞尔维亚语和巴斯克语翻译&lt;br>
+                                      - 在列表顶部添加显示返回选项&lt;br>
+                                      - 添加禁用圆形缩略图选项&lt;br>
+                                      - 添加选择压缩包提取目录和压缩创建目录选项&lt;br>
+                                      - 添加记住路径选项&lt;br>
+                                      - 更多改进…&lt;br>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#524ef8">&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2015-03-08&lt;/i>&lt;/font>&lt;br></string>
+      <string name="changelog_change_5">- 已实现数据库浏览功能&lt;br>
+                                      - 已实现 RAR 格式查看&lt;br>
+                                      - 改善操作通知&lt;br>
+                                      - 修复关闭抽屉滞后问题，改善布局&lt;br>
+                                      - 新增圆形图标&lt;br>
+                                      - 采用下拉刷新交互&lt;br>
+                                      - 添加对某些 USB 设备的识别&lt;br>
+                                      - 对 Lollipop 系统添加导航栏变色功能&lt;br>
+                                      - 对 Lollipop 系统添加波纹效果&lt;br>
+                                      - 更多界面上的改善&lt;br>
+                                      - 更多问题的修复&lt;br>
+                                      - 更多改进…&lt;br>&lt;br></string>
+</resources>

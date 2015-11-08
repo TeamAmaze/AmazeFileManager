@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/color_title">
+        <Preference
+            android:key="skin"
+            android:title="@string/primary_color_title"
+            android:summary="@string/primary_color_summary" />
+        <Preference
+            android:key="fab_skin"
+            android:title="@string/accent_color_title"
+            android:summary="@string/accent_color_summary"/>
+        <Preference
+            android:key="icon_skin"
+            android:title="@string/icon_color_title"
+            android:summary="@string/icon_color_summary"/>
+        <com.amaze.filemanager.ui.views.CheckBx
+            android:key="coloriseIcons"
+            android:defaultValue="true"
+            android:title="@string/colorize"
+            android:summary="@string/colorize_summary" />
+        <com.amaze.filemanager.ui.views.CheckBx
+            android:key="colorednavigation"
+            android:defaultValue="false"
+            android:title="@string/colourednavigation"
+            android:summary="@string/colourednavigationsum"
+            android:enabled="false" />
+        <com.amaze.filemanager.ui.views.CheckBx
+            android:key="random_checkbox"
+            android:title="@string/random"
+            android:summary="@string/random_summary"/>
+    </PreferenceCategory>
+</PreferenceScreen>

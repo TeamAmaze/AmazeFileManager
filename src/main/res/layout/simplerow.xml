@@ -1,0 +1,53 @@
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/second"
+    android:layout_width="match_parent"
+    android:minHeight="50dip"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:background="?selectableItemBackground"
+    android:padding="6dip">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:padding="10dip"
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:clickable="false"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:contentDescription="@string/icon" />
+
+    <TextView
+        android:id="@+id/firstline"
+        android:layout_width="wrap_content"
+        android:layout_toRightOf="@id/icon"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:paddingTop="13dp"
+        android:paddingLeft="15dp"
+        android:layout_gravity="center_vertical"
+        android:singleLine="true"
+        android:textSize="17sp"
+        android:gravity="center_vertical"
+
+        />
+</RelativeLayout>

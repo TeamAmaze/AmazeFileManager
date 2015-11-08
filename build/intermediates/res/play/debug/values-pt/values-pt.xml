@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-pt/strings.xml -->
+    <eat-comment/>
+    <string name="Extracting_fles">A extrair ficheiros</string>
+    <string name="Yellow">Amarelo</string>
+    <string name="Zipping_fles">A comprimir ficheiros</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/res/values-pt/values-pt.xml -->
+    <eat-comment/>
+    <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Navegar para a página inicial"</string>
+    <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
+    <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
+    <string msgid="1594238315039666878" name="abc_action_bar_up_description">"Navegar para cima"</string>
+    <string msgid="3588849162933574182" name="abc_action_menu_overflow_description">"Mais opções"</string>
+    <string msgid="4076576682505996667" name="abc_action_mode_done">"Concluído"</string>
+    <string msgid="7468859129482906941" name="abc_activity_chooser_view_see_all">"Ver tudo"</string>
+    <string msgid="2031811694353399454" name="abc_activitychooserview_choose_application">"Selecione um app"</string>
+    <string msgid="121134116657445385" name="abc_capital_off">"DESATIVAR"</string>
+    <string msgid="3405795526292276155" name="abc_capital_on">"ATIVAR"</string>
+    <string msgid="7723749260725869598" name="abc_search_hint">"Pesquisar..."</string>
+    <string msgid="3691816814315814921" name="abc_searchview_description_clear">"Limpar consulta"</string>
+    <string msgid="2550479030709304392" name="abc_searchview_description_query">"Consulta de pesquisa"</string>
+    <string msgid="8264924765203268293" name="abc_searchview_description_search">"Pesquisar"</string>
+    <string msgid="8928215447528550784" name="abc_searchview_description_submit">"Enviar consulta"</string>
+    <string msgid="893419373245838918" name="abc_searchview_description_voice">"Pesquisa por voz"</string>
+    <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Compartilhar com"</string>
+    <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Compartilhar com %s"</string>
+    <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Recolher"</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-pt/strings.xml -->
+    <eat-comment/>
+    <string name="about">Sobre</string>
+    <string name="aboutFileManager">Sobre o Amaze File Manager</string>
+    <string name="accent_color_summary">Define a cor do FAB e dos restantes itens</string>
+    <string name="accent_color_title">Cor secundária</string>
+    <string name="add">Adicionar</string>
+    <string name="addbook">Adicionar marcador</string>
+    <string name="addshortcut">Adicionar atalho</string>
+    <string name="addtobook">Adicionar aos marcadores</string>
+    <string name="amber">Âmbar</string>
+    <string name="anonymous">Anónimo</string>
+    <string name="apks">Apks</string>
+    <string name="app_name">Amaze File Manager</string>
+    <string name="apps">Gestor de aplicações</string>
+    <string name="archive">Arquivo</string>
+    <string name="archive_extract_folder">Pasta de extração dos arquivos</string>
+    <string name="archive_preferences">Preferências do arquivador</string>
+    <string name="archive_summary">Os ficheiros de arquivos serão extraídos para esta pasta. Normalmente, é utilizada a pasta em que o arquivo está.</string>
+    <string name="archtext">Este pacote é um arquivo. O que pretende fazer?</string>
+    <string name="atroot">Está na raiz</string>
+    <string name="audio">Áudio</string>
+    <string name="authors">Autores</string>
+    <string name="back">Recuar</string>
+    <string name="back_summary">Coloca um botão no topo da lista para recuar na navegação</string>
+    <string name="back_title">Botão para recuar</string>
+    <string name="backup">Backup</string>
+    <string name="basque_translation_title">Basco</string>
+    <string name="black">Preto</string>
+    <string name="blue">Azul</string>
+    <string name="blue_grey">Azul acinzentado</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="bookmanag">Gestor de marcadores</string>
+    <string name="bookmarksadded">Marcadores adicionados</string>
+    <string name="books">Marcadores</string>
+    <string name="brown">Castanho</string>
+    <string name="cancel">Cancelar</string>
+    <string name="cant_read_file">Ficheiro não lido</string>
+    <string name="cantlistfiles">Não é possível listar ficheiros sem root</string>
+    <string name="card">Interface em cartão</string>
+    <string name="changegallerypath">Mudar caminho da galeria</string>
+    <string name="changelog">Resumo de alterações</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-pt/changelog.xml -->
+    <eat-comment/>
+    <string name="changelog_change_1">- Versão inicial&lt;br>&lt;br></string>
+    <string name="changelog_change_2">- Corrigida a opção cortar/colar&lt;br>
+                                      - Corrigido o editor de texto para root&lt;br>
+                                      - Adição de traduções em alemão, francês, italiano, russo e chinês&lt;br>
+                                      - Adição de marcadores ao menu de navegação&lt;br>
+                                      - Adição de Material Design&lt;br>
+                                      - mais...&lt;br>&lt;br></string>
+    <string name="changelog_change_3">- Adição de tradução em espanhol&lt;br>
+                                      - Correções ao visualizador zip&lt;br>
+                                      - Possibilidade de abrir ficheiros apk e jar&lt;br>
+                                      - Correções ao editor de texto&lt;br>
+                                      - mais...&lt;br>&lt;br></string>
+    <string name="changelog_change_4">- Separadores deslizáveis&lt;br>
+                                      - Melhorias na interface&lt;br>
+                                      - Melhorias nas ações copiar/colar/extrair/comprimir&lt;br>
+                                      - Indicação de progresso das ações nas notificações&lt;br>
+                                      - Correções ao visualizador zip e ao editor de texto&lt;br>
+                                      - Possibilidade de desinstalar aplicações do sistema&lt;br>
+                                      - Melhorias na pesquisa de ficheiros&lt;br>
+                                      - Adição tradução em sérvio&lt;br>
+                                      - Adição de preferência para desativar a opção Recuar na lista&lt;br>
+                                      - Adição de preferência para desativar as miniaturas circulares&lt;br>
+                                      - Adição de preferência para escolher o local de extração e compressão dos ficheiros&lt;br>
+                                      - Adição de preferência para memorizar os caminhos&lt;br>
+                                      - mais...&lt;br>&lt;br></string>
+    <string name="changelog_change_5">- Adição de um visualizador de bases de dados&lt;br>
+                                      - Adição de um visualizador de arquivos rar&lt;br>
+                                      - Melhorias nas notificações das operações&lt;br>
+                                      - Correções ao menu de navegação&lt;br>
+                                      - Adição de um novo ícone circular&lt;br>
+                                      - Adição de uma opção de deslizar para baixo e atualizar a vista&lt;br>
+                                      - Adição de um reconhecimento de unidades USB em alguns dispositivos&lt;br>
+                                      - Adição de uma barra de navegação colorida para dispositivos lollipop&lt;br>
+                                      - Adição de um efeito de ondulação em dispositivos lollipop&lt;br>
+                                      - Diversas melhorias à interface&lt;br>
+                                      - Diversas correções de erros&lt;br>
+                                      - mais...&lt;br>&lt;br></string>
+    <string name="changelog_change_6">- Nova interface conforme Material Design Guidelines&lt;br>
+                                      - Novo ícone criado por CookIcons.co&lt;br>
+                                      - Melhorias nas animações da aplicação&lt;br>
+                                      - Adição de cores primárias, secundárias e de ícones na interface&lt;br>
+                                      - Adição de cabeçalhos e separadores à lista&lt;br>
+                                      - Possibilidade de sincronizar a imagem e a capa do perfil G+&lt;br>
+                                      - Melhorias nos temas, agora ainda mais bonitos&lt;br>
+                                      - Remoção do gestor de marcadores no menu de navegação&lt;br>
+                                      - Possibilidade de ocultar a barra de ferramentas e a barra da aplicação ao deslocar&lt;br>
+                                      - Diversas melhorias de desempenho e correção de erros&lt;br>
+                                      - Atualização de traduções&lt;br>
+                                      - mais...&lt;br>&lt;br></string>
+    <string name="changelog_change_7">- Opções de ordenação na lista de aplicações&lt;br>
+                                      - Melhorias na interface&lt;br>
+                                      - Introdução ao acesso de escrita no armazenamento externo em dispositivos Lollipop&lt;br>
+                                   </string>
+    <string name="changelog_change_8">- Correções ao FAB em tablets&lt;br>
+                                      - Correções às definições de cores&lt;br>
+                                      - Novo FAB&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>v2.0.8&lt;/font>&lt;/b>&lt;br>
+                                      - Correções na partilha de ficheiros&lt;br>
+                                      - Novo método de pesquisa, agora mais rápido&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>v2.0.7b&lt;/font>&lt;/b>&lt;br>
+                                      - Diversas correções&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>v2.0.7&lt;/font>&lt;/b>&lt;br>
+                                      - Correções aos atalhos&lt;br>
+                                      - Correções na eliminação de ficheiros no modo root&lt;br>
+                                      - Melhoria nos diálogos&lt;br>
+                                      (Os \'Itens ocultos\' do menu apenas estão visíveis se a opção \"Mostrar ficheiros oculto\" estiver ativa nas definições)
+                                      - Opções de ordenação na lista de aplicações&lt;br>&lt;br>
+                                   </string>
+    <string name="changelog_change_9">- Implementação de partilha de ficheiros em Windows(smb)&lt;br>
+                                      - Melhorias ao nível da partilha de ficheiros&lt;br>
+                                      - Adição de animações nas listas&lt;br>
+                                      - Possibilidade de ajustar o número de colunas na vista em grelha,
+        mesmo com a rotação ativa (Experimental)&lt;br>
+                                      - Butão individual de Propriedades para cada ficheiro no modo
+        horizontal e para tablets&lt;br>
+                                      - Novo FAB&lt;br>
+                                      - Melhorias na estrutura do menu&lt;br>
+                                      - Adição de atalhos ao menu para todos os tipos de ficheiros multimédia
+        (Imagens, áudio, vídeos, apk, documentos)&lt;br>
+                                      - Atualização de traduções&lt;br>
+                                      - Diversas correções&lt;br>&lt;br>
+                                     </string>
+    <string name="changelog_version_1">&lt;font color="#5299f2">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2014-11-11&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#5299f2">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2014-12-04&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#5299f2">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2014-12-13&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color="#5299f2">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2015-01-17&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#5299f2">&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2015-03-08&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_6">&lt;font color="#5299f2">&lt;b>v2.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2015-05-25&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_7">&lt;font color="#5299f2">&lt;b>v2.0.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>2015-06-05&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_8">
+        &lt;font color="#5299f2">&lt;b>v2.0.9&lt;/font>&lt;/b>&lt;br></string>
+    <string name="changelog_version_9">
+        &lt;font color="#5299f2">&lt;b>v3.0.0&lt;/font>&lt;/b>&lt;br></string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-pt/strings.xml -->
+    <eat-comment/>
+    <string name="chinese_translation_title">Chinês</string>
+    <string name="chooseUI">Escolha o tipo de interface</string>
+    <string name="choose_color">Escolha a cor</string>
+    <string name="circularicons">Utilizar ícone circular</string>
+    <string name="circularimages">Utilizar ícones circulares para imagens e vídeos</string>
+    <string name="clear">Limpar</string>
+    <string name="close">Fechar</string>
+    <string name="color_summary">Define a cor dos diversos itens da interface</string>
+    <string name="color_title">Cor</string>
+    <string name="colorize">Colorir ícones</string>
+    <string name="colorize_summary">Define a cor estática do ícone. Não altera a definição da cor de ícone do diretório.</string>
+    <string name="colourednavigation">Barra de navegação colorida</string>
+    <string name="colourednavigationsum">Ative esta opção para colorir a barra de navegação</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/7.8.0/res/values-pt/common_strings.xml -->
+    <eat-comment/>
+    <string msgid="6428604800157361567" name="common_android_wear_notification_needs_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> exige uma atualização para o app Android Wear."</string>
+    <string msgid="2453027084525739603" name="common_android_wear_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> só funciona com uma atualização para o app Android Wear."</string>
+    <string msgid="1366439133145190222" name="common_android_wear_update_title">"Atualizar o Android Wear"</string>
+    <string msgid="6534628256897874213" name="common_google_play_services_api_unavailable_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> exige um ou mais Google Play Services que não estão disponíveis no momento. Entre em contato com o desenvolvedor para receber assistência."</string>
+    <string msgid="4181637455539816337" name="common_google_play_services_enable_button">"Ativar o Google Play Services"</string>
+    <string msgid="4896236883690196080" name="common_google_play_services_enable_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> só funciona com o Google Play Services ativado."</string>
+    <string msgid="529078775174559253" name="common_google_play_services_enable_title">"Ative o Google Play Services"</string>
+    <string msgid="2443362625939284971" name="common_google_play_services_error_notification_requested_by_msg">"Solicitado por <ns1:g id="APP_NAME">%1$s</ns1:g>"</string>
+    <string msgid="8515591849428043265" name="common_google_play_services_install_button">"Instalar o Google Play Services"</string>
+    <string msgid="8836325110837822534" name="common_google_play_services_install_text_phone">"<ns1:g id="APP_NAME">%1$s</ns1:g> não funciona sem o Google Play Services, o qual não está instalado no seu smartphone."</string>
+    <string msgid="542176290824754127" name="common_google_play_services_install_text_tablet">"<ns1:g id="APP_NAME">%1$s</ns1:g> não funciona sem o Google Play Services, o qual não está instalado no seu tablet."</string>
+    <string msgid="26645092511305524" name="common_google_play_services_install_title">"Instale o Google Play Services"</string>
+    <string msgid="4983316348021735578" name="common_google_play_services_invalid_account_text">"A conta especificada não existe no dispositivo. Escolha outra conta."</string>
+    <string msgid="1066672360770936753" name="common_google_play_services_invalid_account_title">"Conta inválida"</string>
+    <string msgid="2583358409598976717" name="common_google_play_services_needs_enabling_title">"Um app requer a ativação do Google Play Services."</string>
+    <string msgid="9038847255613537209" name="common_google_play_services_network_error_text">"É necessária uma conexão de dados para conectar ao Google Play Services."</string>
+    <string msgid="3827284619958211114" name="common_google_play_services_network_error_title">"Erro na rede"</string>
+    <string msgid="1388129345631079938" name="common_google_play_services_notification_needs_update_title">"Um app requer a atualização do Google Play Services."</string>
+    <string msgid="1852570676146674985" name="common_google_play_services_notification_ticker">"Erro do Google Play Services"</string>
+    <string msgid="5194079840165204725" name="common_google_play_services_sign_in_failed_text">"Erro ao fazer login na conta especificada. Escolha outra conta."</string>
+    <string msgid="8164948898147532159" name="common_google_play_services_sign_in_failed_title">"Falha de login"</string>
+    <string msgid="4762332809710093730" name="common_google_play_services_unknown_issue">"Problema desconhecido com o Google Play Services."</string>
+    <string msgid="7682982632307307938" name="common_google_play_services_unsupported_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> depende do Google Play Services, o qual não é compatível com seu dispositivo. Entre em contato com o fabricante para receber assistência."</string>
+    <string msgid="6334768798839376943" name="common_google_play_services_unsupported_title">"Play Services"</string>
+    <string msgid="8932944190611227642" name="common_google_play_services_update_button">"Atualizar"</string>
+    <string msgid="5709479369299147668" name="common_google_play_services_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> só funciona com uma versão atualizada do Google Play Services."</string>
+    <string msgid="6006316683626838685" name="common_google_play_services_update_title">"Atualize o Google Play Services"</string>
+    <string msgid="2201289642219771610" name="common_google_play_services_updating_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> não funciona sem o Google Play Services, o qual está sendo atualizado no momento."</string>
+    <string msgid="815008177440683245" name="common_google_play_services_updating_title">"Google Play Services em atualização"</string>
+    <string msgid="411506735369601515" name="common_open_on_phone">"Abrir no smartphone"</string>
+    <string msgid="9071884888741449141" name="common_signin_button_text">"Login"</string>
+    <string msgid="2429381841831957106" name="common_signin_button_text_long">"Fazer login com o Google"</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-pt/strings.xml -->
+    <eat-comment/>
+    <string name="compress">Comprimir</string>
+    <string name="confirm">Confirmação</string>
+    <string name="contributors">Colaboradores</string>
+    <string name="copy">Copiar</string>
+    <string name="copy_path">Copiar caminho</string>
+    <string name="copying">A copiar</string>
+    <string name="copying_fles">A copiar ficheiros</string>
+    <string name="copyingapk">A copiar apk para </string>
+    <string name="create">Criar</string>
+    <string name="cut">Mover</string>
+    <string name="cyan">Ciano</string>
+    <string name="dark">Material escuro</string>
+    <string name="database">Base de dados</string>
+    <string name="databasereader">Leitor de bases de dados</string>
+    <string name="date">Data: </string>
+    <string name="daytime">Horas do dia</string>
+    <string name="deep_orange">Cor de laranja escuro</string>
+    <string name="deep_purple">Púrpura escuro</string>
+    <string name="delete">Eliminar</string>
+    <string name="deleting">A eliminar</string>
+    <string name="detailedView">Vista detalhada</string>
+    <string name="details">Detalhes</string>
+    <string name="directories">Diretórios</string>
+    <string name="directorysort">Organização de diretórios</string>
+    <string name="documents">Documentos</string>
+    <string name="doforall">Aplicar a todos os itens</string>
+    <string name="donate">Donativos</string>
+    <string name="done">Terminado</string>
+    <string name="drawer_close">Fechar menu de navegação</string>
+    <string name="drawer_open">Abrir menu de navegação</string>
+    <string name="efn">Introduza o nome de ficheiro</string>
+    <string name="enablerootmde">Ative o modo root</string>
+    <string name="enterfile">Introduza o nome do ficheiro</string>
+    <string name="entername">Introduza o nome</string>
+    <string name="enternewname">Introduza o novo nome</string>
+    <string name="enterpath">Introduza o caminho</string>
+    <string name="enterzipname">Introduza o nome do .zip</string>
+    <string name="error">Erro</string>
+    <string name="exit">Sair</string>
+    <string name="extract">Extrair</string>
+    <string name="extracting">A extrair</string>
+    <string name="extstorage">Armazenamento externo</string>
+    <string name="fab_skin">Cor do FAB</string>
+    <string name="feedback">Comentários</string>
+    <string name="file">Ficheiro</string>
+    <string name="file_empty">O ficheiro está vazio</string>
+    <string name="filecreated">Ficheiro criado</string>
+    <string name="fileexist">Já existe um ficheiro com este nome</string>
+    <string name="fileexplorer">Explorador de ficheiros</string>
+    <string name="filenotexists">O ficheiro não existe</string>
+    <string name="files">Ficheiros</string>
+    <string name="filesOnTop">Ficheiros no início</string>
+    <string name="folder">Pasta</string>
+    <string name="foldercolor">Cor da pasta</string>
+    <string name="foldercreated">Pasta criada</string>
+    <string name="folders">Pastas</string>
+    <string name="foldersOnTop">Pastas no início</string>
+    <string name="free">Livre:  </string>
+    <string name="french_translation_title">Francês</string>
+    <string name="fullChangelog">Registo de alterações</string>
+    <string name="g_plus_community_title">Comunidade G+</string>
+    <string name="gallery">Galeria</string>
+    <string name="general">Geral</string>
+    <string name="generating">A gerar...</string>
+    <string name="german_translation_title">Alemão</string>
+    <string name="goback">Recuar</string>
+    <string name="gplus_pic_summary">Mostrar imagem do G+ no menu de navegação</string>
+    <string name="gplus_pic_title">Iniciar sessão com G+</string>
+    <string name="greek_translation_title">Grego</string>
+    <string name="green">Verde</string>
+    <string name="gridcolumnno">N.º de colunas na vista em grelha</string>
+    <string name="gridview">Vista em grelha</string>
+    <string name="guide1">Bem-vindo ao Amaze File Manager</string>
+    <string name="guide2">Toque na faixa azul para mostrar/ocultar a barra de caminho</string>
+    <string name="guide3">Toque longo no ficheiro para mais opções</string>
+    <string name="guide4">Por exemplo: copiar, mover, propriedades...</string>
+    <string name="guide5">Utilize o botão Back do dispositivo para sair da aplicação</string>
+    <string name="guide6">...E utilize as setas para a esquerda/direita para navegar</string>
+    <string name="hidden">Mostrar ficheiros e pastas ocultas</string>
+    <string name="hiddenfiles">Ficheiros ocultos</string>
+    <string name="hide">Ocultar</string>
+    <string name="hide_appbar">Ocultar barra da aplicação</string>
+    <string name="hide_mode_app_bar">Ocultar barra da aplicação ao deslocar</string>
+    <string name="hide_mode_nothing">A barra da aplicação fica inalterada</string>
+    <string name="hide_mode_title">Modo de ocultação</string>
+    <string name="hide_mode_toolbar">Ocultar barra de ferramentas ao deslocar</string>
+    <string name="hide_toolbar">Ocultar barra de ferramentas</string>
+    <string name="history">Histórico</string>
+    <string name="home">Home</string>
+    <string name="icon">ícone</string>
+    <string name="icon_color_summary">Define a cor dos ícones</string>
+    <string name="icon_color_title">Cor do ícone</string>
+    <string name="icon_credits">Imagens criadas por &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
+    <string name="image">Imagem</string>
+    <string name="imagegallery">Galeria de imagens</string>
+    <string name="images">Imagens</string>
+    <string name="in_safe">Espaço insuficiente</string>
+    <string name="indigo">Indigo</string>
+    <string name="install">Instalar</string>
+    <string name="invalid_dir">Diretório inválido</string>
+    <string name="italian_translation_title">Italiano</string>
+    <string name="items">Itens</string>
+    <string name="itemsselected">Itens selecionados</string>
+    <string name="korean_translation_title">Coreano</string>
+    <string name="lastModified">Última modificação</string>
+    <string name="lastModifiedDesc">Última modificação (desc.)</string>
+    <string name="lastModifiedPref">Mostrar última modificação</string>
+    <string name="lastModifiedSummary">Mostrar data e hora da última modificação</string>
+    <string name="license">Licenças Open Source</string>
+    <string name="light">Material claro</string>
+    <string name="light_blue">Azul claro</string>
+    <string name="light_green">Verde claro</string>
+    <string name="listview">Vista em lista</string>
+    <string name="loading">A carregar...</string>
+    <string name="location">Localizado em: </string>
+    <string name="maintab">O separador principal não pode ser removido</string>
+    <string name="md5copied">MD5 copiada para a área de transferência</string>
+    <string name="miscellaneous">Outras</string>
+    <string name="mountsystem">Permitir escrita nas pastas do sistema</string>
+    <string name="mountsystemsummary">Ative esta opção para editar os ficheiros do sistema</string>
+    <string name="moving">A mover</string>
+    <string name="name">Nome: </string>
+    <string name="needsaccess">Requer acesso de escrita</string>
+    <string name="needsaccesssummary">Por favor escolha o diretório raiz do \t</string>
+    <string name="needsaccesssummary1">\tpara poder ter acesso de escrita </string>
+    <string name="new_string">Novo</string>
+    <string name="newfile">Novo ficheiro</string>
+    <string name="newfolder">Nova pasta</string>
+    <string name="newhomedirectory">Nova pasta pessoal</string>
+    <string name="no">Não</string>
+    <string name="no_cover_photo">Sem imagem</string>
+    <string name="no_file_overwrite">Nenhum ficheiro substituído</string>
+    <string name="noappfound">Não existem aplicações para abrir este ficheiro</string>
+    <string name="nofiles">Sem ficheiros</string>
+    <string name="none">Nenhum</string>
+    <string name="noneOnTop">Nada no início</string>
+    <string name="not_allowed">Não permitido</string>
+    <string name="ok">OK</string>
+    <string name="open">Abrir</string>
+    <string name="openas">Abrir como</string>
+    <string name="openparent">Abrir diretório superior</string>
+    <string name="openwith">Abrir com</string>
+    <string name="orange">Cor de laranja</string>
+    <string name="other">Outro</string>
+    <string name="overwrite">Substituir</string>
+    <string name="packageinstaller">Instalador de pacotes</string>
+    <string name="password">Palavra-passe</string>
+    <string name="paste">Colar</string>
+    <string name="pathcopied">Caminho copiado para a área de transferência</string>
+    <string name="permission">Permissões</string>
+    <string name="pick_a_file">Escolha um ficheiro</string>
+    <string name="pink">Cor de rosa</string>
+    <string name="pitext">Este pacote é um instalador. O que pretende fazer?</string>
+    <string name="play">Google Play</string>
+    <string name="polish_translation_title">Polaco</string>
+    <string name="portuguese_translation_title">Português</string>
+    <string name="pressagain">Prima novamente para sair</string>
+    <string name="primary_color_summary">Define a cor dos principais itens</string>
+    <string name="primary_color_title">Cor primária</string>
+    <string name="process_viewer">Visualizador de processos</string>
+    <string name="processes">Processos</string>
+    <string name="properties">Propriedades</string>
+    <string name="purple">Púrpura</string>
+    <string name="questiondelete">Quer mesmo eliminar estes ficheiros?</string>
+    <string name="random">Cor aleatória</string>
+    <string name="randomDialog">Aleatório</string>
+    <string name="random_summary">Define uma cor aleatória ao iniciar</string>
+    <string name="rate">Avaliar</string>
+    <string name="red">Vermelho</string>
+    <string name="refresh">Atualizar</string>
+    <string name="rename">Renomear</string>
+    <string name="renamed">Nome alterado com sucesso</string>
+    <string name="renameerror">Nome não alterado</string>
+    <string name="rootPref">Mostrar permissões</string>
+    <string name="rootPrefSummary">Mostrar permissões das pastas e dos ficheiros</string>
+    <string name="rootdirectory">Root</string>
+    <string name="rootfailure">Acesso root não concedido</string>
+    <string name="rootmode">Explorador root</string>
+    <string name="rootmodesummary">Para dispositivos com root. Assinale a opção se o dispositivo tem root.</string>
+    <string name="russian_translation_title">Russo</string>
+    <string name="save">Gravar</string>
+    <string name="savepaths">Memorizar caminho</string>
+    <string name="savepathsummary">Ao iniciar, mostrar a última pasta aberta (por separador)</string>
+    <string name="saving">A guardar</string>
+    <string name="sd_card_grant_first">sd_card_grant_first</string>
+    <string name="sd_card_grant_next">sd_card_grant_next</string>
+    <string name="search">Procura</string>
+    <string name="searching">A procurar</string>
+    <string name="searchpath">Caminho de procura</string>
+    <string name="searchresults">Resultados da procura</string>
+    <string name="select">Selecionar item</string>
+    <string name="select_intent">Selecionar</string>
+    <string name="selectall">Selecionar tudo</string>
+    <string name="serbian_translation_title">Sérvio</string>
+    <string name="set">Definir</string>
+    <string name="setRandom">As alterações serão aplicadas ao reiniciar</string>
+    <string name="setashome"> Definir como pasta pessoal</string>
+    <string name="setgridview">Definindo vista em grelha</string>
+    <string name="sethome">Definir pasta pessoal</string>
+    <string name="setlistview">Definindo vista em lista</string>
+    <string name="setringtone">Definir como toque</string>
+    <string name="setting">Definições</string>
+    <string name="share">Partilhar</string>
+    <string name="showDividers">Mostrar linhas divisórias</string>
+    <string name="simple">Interface simples</string>
+    <string name="simpleView">Vista simples</string>
+    <string name="size">Tamanho: </string>
+    <string name="sizePref">Mostrar tamanho</string>
+    <string name="sizePrefSummary">Mostrar tamanho dos ficheiros e o número de itens da pasta</string>
+    <string name="skin">Cor</string>
+    <string name="skip">Ignorar</string>
+    <string name="smb_con">Ligação SMB</string>
+    <string name="smb_server">Servidor: Endereço IP ou endereço IP/Pasta_Partilhada</string>
+    <string name="sortName">Nome</string>
+    <string name="sortNameDesc">Nome (desc.)</string>
+    <string name="sortSize">Tamanho</string>
+    <string name="sortSizeDesc">Tamanho (desc.)</string>
+    <string name="sortby">Organizar por</string>
+    <string name="spanish_translation_title">Espanhol</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/res/values-pt/values-pt.xml -->
+    <eat-comment/>
+    <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-pt/strings.xml -->
+    <eat-comment/>
+    <string name="stopping">A parar</string>
+    <string name="storage">Armazenamento</string>
+    <string name="success">Sucesso</string>
+    <string name="supersu">SuperSU</string>
+    <string name="tab">Separador</string>
+    <string name="tables">Tabela(s)</string>
+    <string name="tapnhold">Toque longo num ficheiro ou pasta para mais opções</string>
+    <string name="teal">Verde azulado</string>
+    <string name="text">Texto</string>
+    <string name="textreader">Leitor de texto</string>
+    <string name="theme">Tema</string>
+    <string name="thumb">Mostrar miniaturas</string>
+    <string name="thumbSummary">Mostrar miniaturas das aplicações e das imagens</string>
+    <string name="topFab">FAB na barra da aplicação</string>
+    <string name="topFabS">Se o botão + deve aparecer em cima ou em baixo. Apenas aplicável se a barra da aplicação estiver visível.</string>
+    <string name="totalitems">N.º de itens: </string>
+    <string name="translators">Tradutores</string>
+    <string name="turkish_translation_title">Turco</string>
+    <string name="type">Tipo</string>
+    <string name="typeDesc">Tipo (desc.)</string>
+    <string name="ui">Interface</string>
+    <string name="uimode">Interface</string>
+    <string name="ukrainian_translation_title">Ucraniano</string>
+    <string name="unin_system_apk">Esta é uma aplicação do sistema. Se a eliminar, pode afetar a estabilidade do sistema.\nContinuar?</string>
+    <string name="uninstall">Desinstalar</string>
+    <string name="unsavedchanges">Alterações não gravadas</string>
+    <string name="unsavedchangesdesc">Possui alterações por guardar. Quer guardar as alterações antes de sair?</string>
+    <string name="used">Utilizado:  </string>
+    <string name="usedefaultgallerypath">Utilizar caminho pré-definido</string>
+    <string name="username">Utilizador</string>
+    <string name="version">Versão</string>
+    <string name="video">Vídeo</string>
+    <string name="videos">Vídeos</string>
+    <string name="view">Ver</string>
+    <string name="viewmode">Modo de visualização</string>
+    <string name="warning">Aviso</string>
+    <string name="xda_summary">Q&amp;A, ajuda e resolução de problemas</string>
+    <string name="xda_title">XDA</string>
+    <string name="yes">Sim</string>
+    <string name="zip_create_folder">Pasta de criação dos arquivos</string>
+    <string name="zip_summary">Os ficheiros zip serão criados nesta pasta. Normalmente, é utilizada a pasta em que o ficheiro está.</string>
+    <string name="zip_viewer">Visualizador zip</string>
+    <string name="zipping">A comprimir</string>
+</resources>

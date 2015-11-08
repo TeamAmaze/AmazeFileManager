@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="recyclerview-v7-22.1.0">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/libs/StickyHeadersRecyclerView/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/22.1.0/res" />
+      <root url="jar://$PROJECT_DIR$/libs/StickyHeadersRecyclerView/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/22.1.0/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$APPLICATION_HOME_DIR$/plugins/android-sdk-linux/extras/android/m2repository/com/android/support/recyclerview-v7/22.1.0/recyclerview-v7-22.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

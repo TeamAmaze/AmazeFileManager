@@ -1,0 +1,70 @@
+<com.afollestad.materialdialogs.internal.MDRootLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:md_reduce_padding_no_title_no_buttons="false"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <include layout="@layout/md_stub_titleframe" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingLeft="@dimen/md_dialog_frame_margin"
+        android:paddingRight="@dimen/md_dialog_frame_margin"
+        android:paddingTop="@dimen/md_content_padding_top"
+        android:paddingBottom="@dimen/md_content_padding_bottom">
+
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textSize="@dimen/md_content_textsize"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="@dimen/md_content_padding_bottom"
+            tools:text="Message"
+            android:layout_gravity="center_horizontal"
+            tools:ignore="UnusedAttribute" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@android:id/input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/md_content_textsize"
+                tools:ignore="TextFields"
+                android:layout_marginLeft="-2dp"
+                android:layout_marginRight="-2dp"
+                android:layout_marginBottom="1dp" />
+
+            <TextView
+                android:id="@+id/minMax"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                tools:text="50/100"
+                android:textSize="12sp"
+                android:gravity="end"
+                android:textAlignment="viewEnd"
+                android:layout_alignRight="@android:id/input"
+                android:layout_alignEnd="@android:id/input"
+                android:layout_below="@android:id/input"
+                android:paddingRight="4dp"
+                android:paddingEnd="4dp"
+                android:fontFamily="sans-serif"
+                tools:ignore="RtlSymmetry,UnusedAttribute" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <include layout="@layout/md_stub_actionbuttons" />
+
+</com.afollestad.materialdialogs.internal.MDRootLayout><!-- From: file:/build/core/src/main/res/layout/md_dialog_input.xml -->

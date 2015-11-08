@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">Приклад навігації по меню</string>
+    <string name="drawer_open">Відкрити меню навігації</string>
+    <string name="drawer_close">Закрити меню навігації</string>
+    <string name="books">Закладки</string>
+    <string name="icon">іконка</string>
+    <string name="efn">Введіть ім\'я файлу</string>
+    <string name="storage">Пам\'ять</string>
+    <string name="gallery">Галерея</string>
+    <string name="apps">Менеджер додатків</string>
+    <string name="bookmanag">Керування закладками</string>
+    <string name="setting">Налаштування</string>
+    <string name="select">Вибрати елемент</string>
+    <string name="pressagain">Натисніть ще раз, щоб вийти.</string>
+    <string name="open">Запустити</string>
+    <string name="backup">Резервна копія</string>
+    <string name="uninstall">Видалити</string>
+    <string name="play">Відкрити в Маркеті</string>
+    <string name="properties">Властивості</string>
+    <string name="copyingapk">apk-файл скопійований в:</string>
+    <string name="addbook">Додати закладку</string>
+    <string name="addtobook">Додати у закладки</string>
+    <string name="enterpath">Введіть шлях</string>
+    <string name="cancel">Скасувати</string>
+    <string name="create">Створити</string>
+    <string name="success">Успішно</string>
+    <string name="filenotexists">Файл не існує</string>
+    <string name="error">Помилка</string>
+    <string name="cantlistfiles">Не можете виконати без рут прав</string>
+    <string name="searchresults">Результати пошуку</string>
+    <string name="itemsselected">Вибрані елементи</string>
+    <string name="newhomedirectory">Новий домашній каталог</string>
+    <string name="rename">Перейменувати</string>
+    <string name="save">Зберегти</string>
+    <string name="renameerror">Не вдалося перейменувати</string>
+    <string name="renamed">Успішно перейменовано</string>
+    <string name="bookmarksadded">Додані в вибране</string>
+    <string name="fileexist">Файл вже існує</string>
+    <string name="filecreated">Файл створений</string>
+    <string name="searchpath">Шлях пошуку</string>
+    <string name="search">Пошук</string>
+    <string name="enterfile">Введіть ім\'я файлу</string>
+    <string name="name">Ім\'я: </string>
+    <string name="date">Дата: </string>
+    <string name="location">Розташований в: </string>
+    <string name="size">Розмір: </string>
+    <string name="totalitems">Всього елементів: </string>
+    <string name="enterzipname">Введіть ім\'я zip архіву</string>
+    <string name="noappfound">Немає додатків для відкриття цього файлу</string>
+    <string name="copying">Копіювання...</string>
+    <string name="moving">Переміщення</string>
+    <string name="add">Додати</string>
+    <string name="tab">Вкладка</string>
+    <string name="file">Файл</string>
+    <string name="folder">Папка</string>
+    <string name="newfolder">Нова папка</string>
+    <string name="entername">Введіть ім\'я</string>
+    <string name="extracting">Розпаковування...</string>
+    <string name="zipping">Архівування...</string>
+    <string name="stopping">Зупинка</string>
+    <string name="guide1">Ласкаво просимо до Amaze File Manager!</string>
+    <string name="guide2">Натисніть на синю смужку, щоб показати або приховати панель</string>
+    <string name="guide3">Натисніть і утримуйте будь-який файл, щоб відкрити опції.</string>
+    <string name="guide4">Копіювання, переміщення, властивості і т. д.</string>
+    <string name="guide5">Щоб вийти з програми в будь-який час, використовуйте кнопку Назад...</string>
+    <string name="guide6">..і для навігації по файловому менеждеру, використовуйте кнопку зі стрілкою вліво</string>
+    <string name="maintab">Головна вкладка не може бути видалена</string>
+    <string name="openparent">Відкрити батьківську директорію</string>
+    <string name="openwith">Відкрити з допомогою</string>
+    <string name="share">Надіслати</string>
+    <string name="about">Про програму</string>
+    <string name="extract">Розпакувати</string>
+    <string name="compress">Архівувати</string>
+    <string name="yes">Так</string>
+    <string name="no">Немає</string>
+    <string name="confirm">Підтвердіть</string>
+    <string name="deleting">Видалення...</string>
+    <string name="questiondelete">Ви впевнені, що хочете вилучити вибрані файли?</string>
+    <string name="viewmode">Режим перегляду</string>
+    <string name="uimode">Режим інтерфейсу</string>
+    <string name="directorysort">Режим сортування каталогу</string>
+    <string name="sortby">Сортувати</string>
+    <string name="theme">Теми</string>
+    <string name="skin">Скін</string>
+    <string name="random">Випадковий скін</string>
+    <string name="random_summary">Встановлює випадкову тему при запуску</string>
+    <string name="colorize">Розфарбувати іконки</string>
+    <string name="colorize_summary">Встановлює кольори іконок відрізняються від теми</string>
+    <string name="back">Назад</string>
+    <string name="home">Додому</string>
+    <string name="paste">Вставити</string>
+    <string name="close">Закрити</string>
+    <string name="history">Історія</string>
+    <string name="refresh">Оновити</string>
+    <string name="copy">Копіювати</string>
+    <string name="rootmode">Root Explorer</string>
+    <string name="rootmodesummary">Тільки для пристроїв з рут правами. Використовуйте з обережністю, якщо впевнені у своїх діях.</string>
+    <string name="mountsystemsummary">Ввімкніть, якщо хочете редагувати системні файли</string>
+    <string name="mountsystem">Монтувати системні папки з правом запису</string>
+    <string name="rootfailure">Рут доступ не надано</string>
+    <string name="cut">Вирізати</string>
+    <string name="selectall">Вибрати все</string>
+    <string name="delete">Видалити</string>
+    <string name="setashome">Зробити домашньою текою</string>
+    <string name="sethome">Встан. домашній каталог</string>
+    <string name="foldercolor">Колір папки</string>
+    <string name="imagegallery">Галерея зображень</string>
+    <string name="fileexplorer">Провідник</string>
+    <string name="changegallerypath">Змінити шлях до галереї</string>
+    <string name="usedefaultgallerypath">Використ. шлях до галереї за замовчуванням</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <string name="simple">Простий користю. інтерфейс</string>
+    <string name="card">Карта корист. інтерфейсу</string>
+    <!-- Theme -->
+    <string name="light">Світлий</string>
+    <string name="dark">Темний</string>
+    <string name="daytime">Денний час</string>
+    <!--Skin-->
+    <string name="red">Червоний</string>
+    <string name="pink">Рожевий</string>
+    <string name="purple">Фіолетовий</string>
+    <string name="deep_purple">Багряний</string>
+    <string name="indigo">Індиго</string>
+    <string name="blue">Синій</string>
+    <string name="light_blue">Світло-блакитний</string>
+    <string name="cyan">Блакитний</string>
+    <string name="teal">Чирок</string>
+    <string name="green">Зелений</string>
+    <string name="light_green">Світло-зелений</string>
+    <string name="amber">Бурштин</string>
+    <string name="orange">Помаранчевий</string>
+    <string name="deep_orange">Глибокий жовтогарячий</string>
+    <string name="brown">Коричневий</string>
+    <string name="black">Чорний</string>
+    <string name="blue_grey">Синій сірий</string>
+    <string name="supersu">SuperSU</string>
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">Папки на вершині</string>
+    <string name="filesOnTop">Файли на вершині</string>
+    <string name="noneOnTop">Ні один на вершині</string>
+    <!--SortBy-->
+    <string name="sortName">Ім\'я</string>
+    <string name="lastModified">Дата останнього зміни</string>
+    <string name="sortSize">Розмір</string>
+    <string name="sortNameDesc">Ім\'я (за спаданням)</string>
+    <string name="lastModifiedDesc">Дата останньої зміни (Desc)</string>
+    <string name="sortSizeDesc">Розмір (за спаданням)</string>
+    <!--ListMode-->
+    <string name="detailedView">Детальний вид</string>
+    <string name="simpleView">Простий вид</string>
+    <!--Folder-->
+    <string name="Yellow">Жовтий</string>
+    <string name="pick_a_file">Вибрати файл</string>
+    <string name="process_viewer">Перегляд процесів</string>
+    <string name="in_safe">Недостатньо вільного місця</string>
+    <string name="no_file_overwrite">Не перезаписувати файл</string>
+    <string name="skip">Пропуск</string>
+    <string name="overwrite">Перезаписати</string>
+    <string name="cant_read_file">Не вдається прочитати файл</string>
+    <string name="not_allowed">Не допускається</string>
+    <string name="processes">Процеси</string>
+    <string name="searching">Пошук</string>
+    <string name="copying_fles">Копіювання файлів</string>
+    <string name="done">Закінчено</string>
+    <string name="Extracting_fles">Розпаковування файлів</string>
+    <string name="Zipping_fles">Архівування файлів</string>
+    <string name="items">Елементи</string>
+    <string name="set">Встановити</string>
+    <string name="enablerootmde">Включити режим рут прав</string>
+    <string name="goback">Повернутися</string>
+    <string name="foldercreated">Папка створена</string>
+    <string name="newfile">Новий файл</string>
+    <string name="nofiles">Немає файлів</string>
+    <string name="tapnhold">Натисніть та утримуйте файл або папку для більше варіантів</string>
+    <string name="pathcopied">Шлях скопійований в буфер обміну</string>
+    <string name="used">Використовується:</string>
+    <string name="free">Вільно:</string>
+    <string name="atroot">Ви знаходитесь в корені</string>
+    <string name="listview">Список</string>
+    <string name="gridview">Сітка</string>
+    <string name="setlistview">Настройка списку</string>
+    <string name="setgridview">Налаштування сітки</string>
+    <string name="permission">Права</string>
+    <string name="hide">Приховати</string>
+    <string name="exit">Вихід</string>
+    <string name="enternewname">Введіть нове ім\'я</string>
+    <string name="doforall">Виконати для всіх елементів</string>
+    <string name="gridcolumnno">Кількість колонок в сітці</string>
+    <string name="randomDialog">Випадковий</string>
+    <string name="setRandom">Зміни будуть використані після перезапуску програми</string>
+    <string name="authors">Автори</string>
+    <string name="changelog">Історія змін</string>
+    <string name="fullChangelog">Повний список змін</string>
+    <string name="ok">ОК</string>
+    <string name="chooseUI">Виберіть елемент інтерфейсу</string>
+    <string name="ui">Інтерфейс</string>
+    <string name="general">Загальні</string>
+    <string name="thumbSummary">Показувати мініатюри додатків та образів</string>
+    <string name="thumb">Показувати мініатюри</string>
+    <string name="hidden">Показувати приховані файли і теки</string>
+    <string name="lastModifiedSummary">Показати дату і час, коли файл було змінено в останній раз</string>
+    <string name="lastModifiedPref">Показати останні зміни</string>
+    <string name="sizePrefSummary">Показати розмір файлів і кількість елементів в папках</string>
+    <string name="sizePref">Показати розміри</string>
+    <string name="miscellaneous">Інше</string>
+    <string name="rootPrefSummary">Показати дозволу для файлів і папок</string>
+    <string name="rootPref">Показати дозволу</string>
+    <string name="aboutFileManager">Про Amaze File Manager</string>
+    <string name="version">Версія</string>
+    <string name="rate">Оцініть додаток</string>
+    <string name="license">Open Source Licenses</string>
+    <string name="feedback">Відправити відгук</string>
+    <string name="hiddenfiles">Приховані файли</string>
+    <string name="type">Тип</string>
+    <string name="typeDesc">Тип (за спаданням)</string>
+    <string name="rootdirectory">Root</string>
+    <string name="new_string">Новий</string>
+    <string name="setringtone">Встан. як рінгтон</string>
+    <string name="copy_path">Копіювати Шлях</string>
+    <string name="addshortcut">Додати ярлик</string>
+    <string name="unsavedchanges">Незбережені зміни</string>
+    <string name="unsavedchangesdesc">У Вас є незбережені зміни, ви хочете зберегти їх перед виходом?</string>
+    <string name="saving">Збереження</string>
+    <string name="packageinstaller">Установник пакетів</string>
+    <string name="view">Перегляд</string>
+    <string name="install">Установка</string>
+    <string name="archive">Архіви</string>
+    <string name="archtext">Це архів. Яку дію ви хотіли б виконати?</string>
+    <string name="pitext">Це пакет інсталятора. Яку дію ви хотіли б виконати?</string>
+    <string name="xda_title">XDA</string>
+    <string name="xda_summary">Q&amp;A, Допомога &amp; Усунення несправностей</string>
+    <string name="invalid_dir">Невірна директорія</string>
+    <string name="circularimages">Використовувати круглі іконки для зображень і відео</string>
+    <string name="circularicons">Використовувати круглі іконки</string>
+    <string name="back_title">Back navigation</string>
+    <string name="back_summary">Enables custom back navigation at top of the list</string>
+    <string name="details">Читати далі</string>
+    <string name="translators">Перекладачі</string>
+    <string name="german_translation_title">Німецька</string>
+    <string name="italian_translation_title">Італійська</string>
+    <string name="french_translation_title">Французька</string>
+    <string name="russian_translation_title">Російська</string>
+    <string name="spanish_translation_title">Іспанська</string>
+    <string name="basque_translation_title">Баскська</string>
+    <string name="chinese_translation_title">Китайська</string>
+    <string name="serbian_translation_title">Сербська</string>
+    <string name="turkish_translation_title">Турецька</string>
+    <string name="zip_viewer">Перегляд ZIP</string>
+    <string name="unin_system_apk">Це системний додаток, його видалення може спричинити нестабільність системи.
+Ви хочете продовжити?</string>
+    <string name="warning">Попередження</string>
+    <string name="donate">Пожертвувати</string>
+    <string name="archive_extract_folder">Папка для розпаковування архівів</string>
+    <string name="zip_create_folder">Папка для нових архивів</string>
+    <string name="archive_summary">Файли з архіву буде розпаковано до вказаної папки. За промовчанням це папка де і zip-файл</string>
+    <string name="zip_summary">Нові zip-файли буде створено у вказаній папці. За промовчанням це папка, у якій розташовуються файли</string>
+    <string name="text">Текст</string>
+    <string name="audio">Аудіо</string>
+    <string name="video">Відео</string>
+    <string name="other">Різне</string>
+    <string name="image">Зображення</string>
+    <string name="savepaths">Запам\'ятати розташування</string>
+    <string name="savepathsummary">При запуску, відкривати вкладки папок</string>
+</resources>

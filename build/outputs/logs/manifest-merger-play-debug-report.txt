@@ -1,0 +1,195 @@
+-- Merging decision tree log ---
+manifest
+ADDED from AndroidManifest.xml:22:1
+	package
+		ADDED from AndroidManifest.xml:24:5
+		INJECTED from AndroidManifest.xml:0:0
+		INJECTED from AndroidManifest.xml:0:0
+	android:versionName
+		ADDED from AndroidManifest.xml:26:5
+		INJECTED from AndroidManifest.xml:0:0
+		ADDED from AndroidManifest.xml:26:5
+		INJECTED from AndroidManifest.xml:0:0
+	xmlns:tools
+		ADDED from AndroidManifest.xml:23:5
+	android:versionCode
+		ADDED from AndroidManifest.xml:25:5
+		INJECTED from AndroidManifest.xml:0:0
+		ADDED from AndroidManifest.xml:25:5
+		INJECTED from AndroidManifest.xml:0:0
+	xmlns:android
+		ADDED from AndroidManifest.xml:22:11
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from AndroidManifest.xml:27:5
+	android:name
+		ADDED from AndroidManifest.xml:27:22
+uses-permission#android.permission.ACCESS_SUPERUSER
+ADDED from AndroidManifest.xml:28:5
+	android:name
+		ADDED from AndroidManifest.xml:28:22
+uses-permission#com.android.launcher.permission.INSTALL_SHORTCUT
+ADDED from AndroidManifest.xml:29:5
+	android:name
+		ADDED from AndroidManifest.xml:29:22
+uses-permission#android.permission.INTERNET
+ADDED from AndroidManifest.xml:30:5
+	android:name
+		ADDED from AndroidManifest.xml:30:22
+uses-sdk
+ADDED from AndroidManifest.xml:31:5
+MERGED from com.android.support:appcompat-v7:23.1.0:20:5
+MERGED from com.android.support:support-v4:23.1.0:20:5
+MERGED from com.android.support:cardview-v7:23.1.0:20:5
+MERGED from com.google.android.gms:play-services-identity:7.8.0:18:5
+MERGED from com.google.android.gms:play-services-base:7.8.0:18:5
+MERGED from com.android.support:support-v4:23.1.0:20:5
+MERGED from org.sufficientlysecure:donations:2.3:7:5
+MERGED from com.android.support:support-v4:23.1.0:20:5
+MERGED from AmazeFileManager.libs:StickyHeadersRecyclerView:unspecified:8:5
+MERGED from com.android.support:recyclerview-v7:23.1.0:20:5
+MERGED from com.android.support:support-v4:23.1.0:20:5
+MERGED from com.github.clans:fab:1.6.1:8:5
+MERGED from com.github.afollestad.material-dialogs:core:0.8.5.0:8:5
+MERGED from me.zhanghai.android.materialprogressbar:library:1.1.4:11:5
+MERGED from com.android.support:appcompat-v7:23.1.0:20:5
+MERGED from com.android.support:support-v4:23.1.0:20:5
+MERGED from com.android.support:appcompat-v7:23.1.0:20:5
+MERGED from com.android.support:support-v4:23.1.0:20:5
+MERGED from com.android.support:recyclerview-v7:23.1.0:20:5
+MERGED from com.android.support:support-v4:23.1.0:20:5
+MERGED from com.android.support:support-v4:23.1.0:20:5
+MERGED from com.google.android.gms:play-services-plus:6.5.87:18:5
+MERGED from com.google.android.gms:play-services-base:7.8.0:18:5
+MERGED from com.android.support:support-v4:23.1.0:20:5
+	tools:overrideLibrary
+		ADDED from com.github.afollestad.material-dialogs:core:0.8.5.0:11:9
+	android:targetSdkVersion
+		ADDED from AndroidManifest.xml:33:9
+		INJECTED from AndroidManifest.xml:0:0
+		INJECTED from AndroidManifest.xml:0:0
+	android:minSdkVersion
+		ADDED from AndroidManifest.xml:32:9
+		INJECTED from AndroidManifest.xml:0:0
+		INJECTED from AndroidManifest.xml:0:0
+application
+ADDED from AndroidManifest.xml:35:5
+MERGED from AndroidManifest.xml:35:5
+MERGED from com.android.support:appcompat-v7:23.1.0:22:5
+MERGED from com.android.support:support-v4:23.1.0:22:5
+MERGED from com.android.support:cardview-v7:23.1.0:22:5
+MERGED from com.google.android.gms:play-services-identity:7.8.0:19:5
+MERGED from com.google.android.gms:play-services-base:7.8.0:20:5
+MERGED from com.android.support:support-v4:23.1.0:22:5
+MERGED from org.sufficientlysecure:donations:2.3:11:5
+MERGED from com.android.support:support-v4:23.1.0:22:5
+MERGED from AmazeFileManager.libs:StickyHeadersRecyclerView:unspecified:12:5
+MERGED from com.android.support:support-v4:23.1.0:22:5
+MERGED from com.github.clans:fab:1.6.1:12:5
+MERGED from com.github.afollestad.material-dialogs:core:0.8.5.0:13:5
+MERGED from com.android.support:appcompat-v7:23.1.0:22:5
+MERGED from com.android.support:support-v4:23.1.0:22:5
+MERGED from com.android.support:appcompat-v7:23.1.0:22:5
+MERGED from com.android.support:support-v4:23.1.0:22:5
+MERGED from com.android.support:support-v4:23.1.0:22:5
+MERGED from com.android.support:support-v4:23.1.0:22:5
+MERGED from com.google.android.gms:play-services-plus:6.5.87:19:5
+MERGED from com.google.android.gms:play-services-base:7.8.0:20:5
+MERGED from com.android.support:support-v4:23.1.0:22:5
+	android:label
+		ADDED from AndroidManifest.xml:38:9
+		REJECTED from AndroidManifest.xml:38:9
+	android:icon
+		ADDED from AndroidManifest.xml:36:9
+	tools:replace
+		ADDED from AndroidManifest.xml:37:9
+activity#com.amaze.filemanager.activities.MainActivity
+ADDED from AndroidManifest.xml:40:9
+	android:label
+		ADDED from AndroidManifest.xml:41:13
+	android:theme
+		ADDED from AndroidManifest.xml:43:13
+	android:name
+		ADDED from AndroidManifest.xml:42:13
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from AndroidManifest.xml:44:13
+action#android.intent.action.MAIN
+ADDED from AndroidManifest.xml:45:17
+	android:name
+		ADDED from AndroidManifest.xml:45:25
+category#android.intent.category.LAUNCHER
+ADDED from AndroidManifest.xml:47:17
+	android:name
+		ADDED from AndroidManifest.xml:47:27
+intent-filter#android.intent.action.GET_CONTENT+android.intent.category.DEFAULT+android.intent.category.OPENABLE
+ADDED from AndroidManifest.xml:49:13
+action#android.intent.action.GET_CONTENT
+ADDED from AndroidManifest.xml:50:17
+	android:name
+		ADDED from AndroidManifest.xml:50:25
+data
+ADDED from AndroidManifest.xml:51:17
+	android:mimeType
+		ADDED from AndroidManifest.xml:51:23
+category#android.intent.category.OPENABLE
+ADDED from AndroidManifest.xml:52:17
+	android:name
+		ADDED from AndroidManifest.xml:52:27
+category#android.intent.category.DEFAULT
+ADDED from AndroidManifest.xml:53:17
+	android:name
+		ADDED from AndroidManifest.xml:53:27
+intent-filter#android.intent.action.VIEW+android.intent.category.DEFAULT
+ADDED from AndroidManifest.xml:59:13
+action#android.intent.action.VIEW
+ADDED from AndroidManifest.xml:60:17
+	android:name
+		ADDED from AndroidManifest.xml:60:25
+activity#com.amaze.filemanager.activities.Preferences
+ADDED from AndroidManifest.xml:66:3
+	android:label
+		ADDED from AndroidManifest.xml:68:13
+	android:uiOptions
+		ADDED from AndroidManifest.xml:67:4
+	android:theme
+		ADDED from AndroidManifest.xml:70:4
+	android:name
+		ADDED from AndroidManifest.xml:69:13
+activity#com.amaze.filemanager.activities.TextReader
+ADDED from AndroidManifest.xml:73:3
+	android:label
+		ADDED from AndroidManifest.xml:74:13
+	android:theme
+		ADDED from AndroidManifest.xml:76:4
+	android:name
+		ADDED from AndroidManifest.xml:75:13
+activity#com.amaze.filemanager.activities.DbViewer
+ADDED from AndroidManifest.xml:85:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:89:13
+	android:label
+		ADDED from AndroidManifest.xml:86:13
+	android:theme
+		ADDED from AndroidManifest.xml:88:13
+	android:name
+		ADDED from AndroidManifest.xml:87:13
+service#com.amaze.filemanager.services.ExtractService
+ADDED from AndroidManifest.xml:99:9
+	android:label
+		ADDED from AndroidManifest.xml:101:4
+	android:name
+		ADDED from AndroidManifest.xml:100:4
+service#com.amaze.filemanager.services.ZipTask
+ADDED from AndroidManifest.xml:104:9
+	android:label
+		ADDED from AndroidManifest.xml:106:4
+	android:name
+		ADDED from AndroidManifest.xml:105:4
+service#com.amaze.filemanager.services.CopyService
+ADDED from AndroidManifest.xml:109:4
+	android:label
+		ADDED from AndroidManifest.xml:111:4
+	android:name
+		ADDED from AndroidManifest.xml:110:4
+meta-data#com.google.android.gms.version
+MERGED from com.google.android.gms:play-services-base:7.8.0:21:9
+MERGED from com.google.android.gms:play-services-base:7.8.0:21:9

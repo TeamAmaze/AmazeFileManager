@@ -1,0 +1,56 @@
+<com.afollestad.materialdialogs.internal.MDRootLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <include layout="@layout/md_stub_titleframe_lesspadding" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:id="@+id/contentScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false">
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/md_dialog_frame_margin"
+                android:paddingTop="@dimen/md_content_padding_top"
+                android:paddingRight="@dimen/md_dialog_frame_margin"
+                android:paddingBottom="@dimen/md_content_padding_bottom"
+                android:textSize="@dimen/md_content_textsize"
+                tools:text="Content" />
+
+        </ScrollView>
+
+        <FrameLayout
+            android:id="@+id/contentListViewFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ListView
+                android:id="@+id/contentListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbarStyle="outsideOverlay"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:clipToPadding="false"
+                android:paddingTop="@dimen/md_content_padding_top"
+                android:paddingBottom="@dimen/md_content_padding_bottom" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <include layout="@layout/md_stub_actionbuttons" />
+
+</com.afollestad.materialdialogs.internal.MDRootLayout><!-- From: file:/build/core/src/main/res/layout/md_dialog_list.xml -->

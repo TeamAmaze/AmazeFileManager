@@ -1,0 +1,240 @@
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    --><resources>
+    <string name="app_name">Panel de navegación de ejemplo</string>
+    <string name="drawer_open">Abrir panel de navegación</string>
+    <string name="drawer_close">Cerrar panel de navegación</string>
+    <string name="books">Marcadores</string>
+    <string name="icon">icono</string>
+    <string name="efn">Introduce el nombre del archivo</string>
+    <string name="storage">Almacenamiento</string>
+    <string name="gallery">Galería</string>
+    <string name="apps">Administrador de Apps</string>
+    <string name="bookmanag">Administrador de favoritos</string>
+    <string name="setting">Ajustes</string>
+    <string name="select">Seleccionar elemento</string>
+    <string name="pressagain">Presione nuevamente para salir</string>
+    <string name="open">Abierto</string>
+    <string name="backup">Copia de seguridad</string>
+    <string name="uninstall">Desinstalar</string>
+    <string name="play">Play Store</string>
+    <string name="properties">Propiedades</string>
+    <string name="copyingapk">Copiando apk a </string>
+    <string name="addbook">Añadir favorito</string>
+    <string name="addtobook">Añadir a Favoritos</string>
+    <string name="enterpath">Escribe la ruta</string>
+    <string name="cancel">CANCELAR</string>
+    <string name="create">CREAR</string>
+    <string name="success">Éxito</string>
+    <string name="filenotexists">El archivo no existe</string>
+    <string name="error">Error</string>
+    <string name="cantlistfiles">No se puede enumerar los archivos sin root</string>
+    <string name="searchresults">Resultados de la búsqueda</string>
+    <string name="itemsselected">Elementos seleccionados</string>
+    <string name="newhomedirectory">Nuevo directorio principal</string>
+    <string name="rename">Renombrar</string>
+    <string name="save">Guardar</string>
+    <string name="renameerror">Error al renombrar</string>
+    <string name="renamed">Éxito al renombrar</string>
+    <string name="bookmarksadded">Marcadores Añadidos</string>
+    <string name="fileexist">Ya existe un archivo con el mismo nombre </string>
+    <string name="filecreated">Archivo creado</string>
+    <string name="searchpath">Ruta de búsqueda</string>
+    <string name="search">BUSCAR</string>
+    <string name="enterfile">Introduce el nombre del archivo</string>
+    <string name="name">Nombre </string>
+    <string name="date">Fecha: </string>
+    <string name="location">Ubicado en: </string>
+    <string name="size">Tamaño:  </string>
+    <string name="totalitems">Número de elementos: </string>
+    <string name="enterzipname">Introducir nombre del Zip</string>
+    <string name="noappfound">No se encontró una aplicación para abrir este archivo</string>
+    <string name="copying">Copiando</string>
+    <string name="moving">Moviendo</string>
+    <string name="add">Añadir</string>
+    <string name="tab">Pestaña</string>
+    <string name="file">Archivo</string>
+    <string name="folder">Carpeta</string>
+    <string name="newfolder">Nueva Carpeta</string>
+    <string name="entername">Introducir nombre</string>
+    <string name="extracting">Extrayendo</string>
+    <string name="zipping">Comprimiendo</string>
+    <string name="stopping">Deteniendo</string>
+    <string name="guide1">Bienvenido a Amaze File Manager</string>
+    <string name="guide2">Toque la franja azul para mostrar u ocultar la barra de ruta</string>
+    <string name="guide3">Mantenga pulsado cualquier archivo para más opciones ...</string>
+    <string name="guide4">Como copiar, mover, propiedades etc.</string>
+    <string name="guide5">Utilice el botón \"Atrás\" de su dispositivo para salir de la aplicación en cualquier momento ...</string>
+    <string name="guide6">..Y Utilizar el botón de flecha izquierda para navegar en el administrador de archivos</string>
+    <string name="maintab">No se puede eliminar la pestaña principal</string>
+    <string name="openparent">Abrir directorio padre</string>
+    <string name="openwith">Abrir con</string>
+    <string name="share">Compartir</string>
+    <string name="about">Acerca de</string>
+    <string name="extract">Extraer</string>
+    <string name="compress">Comprimir</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="confirm">Confirmar</string>
+    <string name="deleting">Eliminando</string>
+    <string name="questiondelete">¿De verdad quiere eliminar los siguientes archivos?</string>
+    <string name="viewmode">Modo de visualización</string>
+    <string name="uimode">Modo de UI</string>
+    <string name="directorysort">Modo de ordenación del directorio</string>
+    <string name="sortby">Ordenar por</string>
+    <string name="theme">Tema</string>
+    <string name="skin">Piel</string>
+    <string name="random">Piel Aleatoria</string>
+    <string name="random_summary">Establece tema al azar al iniciar</string>
+    <string name="colorize">Colorear Iconos</string>
+    <string name="colorize_summary">Establece algunos iconos de color diferente al tema</string>
+    <string name="back">Atrás</string>
+    <string name="home">Inicio</string>
+    <string name="paste">Pegar</string>
+    <string name="close">Cerrar</string>
+    <string name="history">Historial</string>
+    <string name="refresh">Actualizar</string>
+    <string name="copy">Copiar</string>
+    <string name="rootmode">Explorador Root</string>
+    <string name="rootmodesummary">Para el dispositivos root solamente. Activar solo si estas seguro de ello.</string>
+    <string name="mountsystemsummary">Habilite esta opción si desea editar archivos de sistema</string>
+    <string name="mountsystem">Montar carpetas del sistema para escritura</string>
+    <string name="rootfailure">Acceso Root no concedido</string>
+    <string name="cut">Cortar</string>
+    <string name="selectall">Seleccionar todo</string>
+    <string name="delete">Borrar</string>
+    <string name="setashome"> Establecer como carpeta principal</string>
+    <string name="sethome">Establecer directorio principal</string>
+    <string name="foldercolor">Color de la carpeta</string>
+    <string name="imagegallery">Galería de imágenes</string>
+    <string name="fileexplorer">Explorador de archivos</string>
+    <string name="changegallerypath">Cambiar la ruta de la galería</string>
+    <string name="usedefaultgallerypath">Utilice la ruta por defecto de la galería</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <string name="simple">UI simple</string>
+    <string name="card">UI de tarjetas</string>
+    <!-- Theme -->
+    <string name="light">Claro</string>
+    <string name="dark">Oscuro</string>
+    <string name="daytime">Durante el día</string>
+    <!--Skin-->
+    <string name="red">Rojo</string>
+    <string name="pink">Rosa</string>
+    <string name="purple">Púrpura</string>
+    <string name="deep_purple">Púrpura oscuro</string>
+    <string name="indigo">Indigo</string>
+    <string name="blue">Azul</string>
+    <string name="light_blue">Azul claro</string>
+    <string name="cyan">Cian</string>
+    <string name="teal">Verde azulado</string>
+    <string name="green">Verde</string>
+    <string name="light_green">Verde claro</string>
+    <string name="amber">Ámbar</string>
+    <string name="orange">Naranja</string>
+    <string name="deep_orange">Naranja oscuro</string>
+    <string name="brown">Marrón</string>
+    <string name="black">Negro</string>
+    <string name="blue_grey">Azul Gris</string>
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">Carpetas primero</string>
+    <string name="filesOnTop">Archivos primero</string>
+    <string name="noneOnTop">Ninguno encima</string>
+    <!--SortBy-->
+    <string name="sortName">Nombre</string>
+    <string name="lastModified">Última modificación</string>
+    <string name="sortSize">Tamaño</string>
+    <string name="sortNameDesc">Nombre (Desc)</string>
+    <string name="lastModifiedDesc">Última modificación (Desc)</string>
+    <string name="sortSizeDesc">Tamaño (Desc)</string>
+    <!--ListMode-->
+    <string name="detailedView">Vista detallada</string>
+    <string name="simpleView">Vista sencilla</string>
+    <!--Folder-->
+    <string name="Yellow">Amarillo</string>
+    <string name="pick_a_file">Escoja un archivo</string>
+    <string name="process_viewer">Visor de procesos</string>
+    <string name="in_safe">Espacio insuficiente</string>
+    <string name="no_file_overwrite">No se ha sobreescrito el archivo</string>
+    <string name="skip">Saltar</string>
+    <string name="overwrite">Sobreescribir</string>
+    <string name="cant_read_file">No se puede leer el archivo</string>
+    <string name="not_allowed">No permitido</string>
+    <string name="processes">Procesos</string>
+    <string name="searching">Buscando</string>
+    <string name="copying_fles">Copiando archivos</string>
+    <string name="done">Hecho</string>
+    <string name="Extracting_fles">Extrayendo archivos</string>
+    <string name="Zipping_fles">Comprimiendo archivos</string>
+    <string name="items">Elementos</string>
+    <string name="set">Ajustar</string>
+    <string name="enablerootmde">Activar modo Root</string>
+    <string name="goback">Regresar</string>
+    <string name="foldercreated">Carpeta creada</string>
+    <string name="newfile">Nuevo archivo</string>
+    <string name="nofiles">No hay archivos</string>
+    <string name="tapnhold">Mantenga pulsado un archivo o carpeta para más opciones</string>
+    <string name="pathcopied">Ruta copiada al portapapeles</string>
+    <string name="used">Usado:  </string>
+    <string name="free">Libre:  </string>
+    <string name="atroot">Estás en la raíz</string>
+    <string name="listview">Vista de lista</string>
+    <string name="gridview">Vista de cuadrícula</string>
+    <string name="setlistview">Configuración de vista de lista</string>
+    <string name="setgridview">Configuración de vista de cuadrícula</string>
+    <string name="permission">Permisos</string>
+    <string name="hide">Ocultar</string>
+    <string name="exit">Salir</string>
+    <string name="enternewname">Introducir nuevo nombreA</string>
+    <string name="doforall">Hacer para todos los elementos</string>
+    <string name="gridcolumnno">Número de columnas en la vista de cuadrícula</string>
+    <string name="randomDialog">Aleatorio</string>
+    <string name="setRandom">Los cambios tendrán lugar después de reiniciar la aplicación</string>
+    <string name="authors">Autores</string>
+    <string name="changelog">Registro de cambios</string>
+    <string name="fullChangelog">Historial de cambios completo</string>
+    <string name="ok">Aceptar</string>
+    <string name="chooseUI">Elija el elemento de UI</string>
+    <string name="ui">Interfaz</string>
+    <string name="general">General</string>
+    <string name="thumbSummary">Mostrar miniaturas de aplicaciones e imágenes</string>
+    <string name="thumb">Mostrar miniaturas</string>
+    <string name="hidden">Mostrar archivos y carpetas ocultos</string>
+    <string name="lastModifiedSummary">Mostrar la fecha y hora en que el archivo fue modificado por última vez</string>
+    <string name="lastModifiedPref">Mostrar la última modificación</string>
+    <string name="sizePrefSummary">Mostrar tamaño de los archivos y el número de elementos de las carpetas</string>
+    <string name="sizePref">Mostrar Tamaños</string>
+    <string name="miscellaneous">Otros</string>
+    <string name="rootPrefSummary">Mostrar permisos de archivos y carpetas</string>
+    <string name="rootPref">Mostrar permisos</string>
+    <string name="aboutFileManager">Acerca de Amaze File Manager</string>
+    <string name="version">Versión</string>
+    <string name="rate">Calificar la aplicacion</string>
+    <string name="license">Licencias de código abierto</string>
+    <string name="feedback">Enviar Comentarios</string>
+    <string name="hiddenfiles">Archivos ocultos</string>
+    <string name="type">Tipo</string>
+    <string name="typeDesc">Tipo (Desc)</string>
+    <string name="rootdirectory">Raíz</string>
+    <string name="new_string">Nuevo</string>
+    <string name="setringtone">Establecer como tono de llamada</string>
+    <string name="addshortcut">Añadir acceso directo</string>
+</resources>

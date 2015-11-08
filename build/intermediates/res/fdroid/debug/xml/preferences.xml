@@ -1,0 +1,208 @@
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/ui">
+        <Preference
+            android:key="theme"
+            android:title="@string/theme" />
+        <Preference
+            android:title="@string/color_title"
+            android:key="colors"
+            android:summary="@string/color_summary"/>
+
+        <com.amaze.filemanager.ui.views.CheckBx
+            android:key="circularimages"
+            android:defaultValue="true"
+            android:summary="@string/circularimages"
+            android:title="@string/circularicons"/>
+        <com.amaze.filemanager.ui.views.CheckBx
+            android:key="plus_pic"
+            android:title="@string/gplus_pic_title"
+            android:summary="@string/gplus_pic_summary"
+            android:defaultValue="false"
+            android:enabled="true"/>
+        <Preference
+            android:key="hidemode"
+            android:title="@string/hide_mode_title" />
+        <com.amaze.filemanager.ui.views.CheckBx
+            android:defaultValue="true"
+            android:key="showDividers"
+            android:title="@string/showDividers" />
+        <com.amaze.filemanager.ui.views.CheckBx
+            android:defaultValue="false"
+            android:key="topFab"
+            android:enabled="false"
+            android:summary="@string/topFabS"
+            android:title="@string/topFab" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/general">
+        <com.amaze.filemanager.ui.views.CheckBx
+            android:defaultValue="true"
+            android:key="savepaths"
+            android:summary="@string/savepathsummary"
+            android:title="@string/savepaths" />
+        <com.amaze.filemanager.ui.views.CheckBx
+            android:defaultValue="true"
+            android:key="showThumbs"
+            android:summary="@string/thumbSummary"
+            android:title="@string/thumb" />
+		<com.amaze.filemanager.ui.views.CheckBx
+            android:defaultValue="false"
+            android:key="showHidden"
+            android:title="@string/hidden" />
+        <com.amaze.filemanager.ui.views.CheckBx
+            android:defaultValue="true"
+            android:key="showLastModified"
+            android:enabled="false"
+            android:summary="@string/lastModifiedSummary"
+            android:title="@string/lastModifiedPref" />
+        <com.amaze.filemanager.ui.views.CheckBx
+            android:defaultValue="false"
+            android:key="showFileSize"
+            android:summary="@string/sizePrefSummary"
+            android:title="@string/sizePref" />
+        <com.amaze.filemanager.ui.views.CheckBx
+            android:defaultValue="false"
+            android:key="goBack_checkbox"
+            android:title="@string/back_title"
+            android:summary="@string/back_summary" />
+        <Preference
+            android:key="columns"
+            android:title="@string/gridcolumnno" />
+
+    
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/archive_preferences">
+        <EditTextPreference
+            android:key="extractpath"
+            android:title="@string/archive_extract_folder"
+            android:summary="@string/archive_summary">
+        </EditTextPreference>
+        <EditTextPreference
+            android:key="zippath"
+            android:summary="@string/zip_summary"
+            android:title="@string/zip_create_folder">
+        </EditTextPreference>
+</PreferenceCategory>
+    <PreferenceCategory android:title="@string/miscellaneous">
+
+        <com.amaze.filemanager.ui.views.CheckBx
+            android:defaultValue="false"
+            android:key="showPermissions"
+            android:summary="@string/rootPrefSummary"
+            android:title="@string/rootPref" />
+        <com.amaze.filemanager.ui.views.CheckBx
+            android:defaultValue="false"
+            android:key="rootmode"
+            android:summary="@string/rootmodesummary"
+            android:title="@string/rootmode" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/about">
+        <PreferenceScreen
+            android:title="@string/aboutFileManager" >
+            <Preference
+                android:key="studio"
+                android:title="@string/version"
+                android:summary="v3.0.2"/>
+            <Preference
+                android:key="authors"
+                android:title="@string/authors" />
+            <PreferenceScreen
+                android:title="@string/translators">
+                <Preference
+                    android:title="@string/german_translation_title"
+                    android:summary="@string/german_translation_summary"/>
+                <Preference
+                    android:title="@string/italian_translation_title"
+                    android:summary="@string/italian_translation_summary"/>
+                <Preference
+                    android:title="@string/french_translation_title"
+                    android:summary="@string/french_translation_summary"/>
+                <Preference
+                    android:title="@string/russian_translation_title"
+                    android:summary="@string/russian_translation_summary"/>
+                <Preference
+                    android:title="@string/spanish_translation_title"
+                    android:summary="@string/spanish_translation_summary"/>
+                <Preference
+                    android:title="@string/basque_translation_title"
+                    android:summary="@string/basque_translation_summary"/>
+                <Preference
+                    android:title="@string/chinese_translation_title"
+                    android:summary="@string/chinese_translation_summary"/>
+                <Preference
+                    android:title="@string/serbian_translation_title"
+                    android:summary="@string/serbian_translation_summary"/>
+                <Preference
+                    android:title="@string/turkish_translation_title"
+                    android:summary="@string/turkish_translation_summary"/>
+                <Preference
+                    android:title="@string/ukrainian_translation_title"
+                    android:summary="@string/ukrainian_translation_summary"/>
+                <Preference
+                    android:title="@string/portuguese_translation_title"
+                    android:summary="@string/portuguese_translation_summary" />
+                <Preference
+                    android:title="@string/polish_translation_title"
+                    android:summary="@string/polish_translation_summary" />
+                <Preference
+                    android:title="@string/korean_translation_title"
+                    android:summary="@string/korean_translation_summary" />
+                <Preference
+                    android:title="@string/greek_translation_title"
+                    android:summary="@string/greek_translation_summary" />
+
+                </PreferenceScreen>
+            <Preference
+                android:key="changelog"
+                android:title="@string/changelog" />
+            <Preference
+                android:key="xda"
+                android:title="@string/xda_title"
+                android:summary="@string/xda_summary">
+                <intent
+                    android:action="android.intent.action.VIEW"
+                    android:data="http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314" />
+            </Preference>
+            <Preference
+                android:key="g_plus"
+                android:title="@string/g_plus_community_title">
+                <intent
+                    android:action="android.intent.action.VIEW"
+                    android:data="https://plus.google.com/communities/113997576965363268101" />
+            </Preference>
+            <Preference
+                android:key="rate"
+                android:title="@string/rate" />
+
+            <Preference
+                android:key="os"
+                android:title="@string/license" />
+            </PreferenceScreen>
+        <Preference
+            android:key="donate"
+            android:title="@string/donate" />
+        <Preference
+            android:key="feedback"
+            android:title="@string/feedback" />
+    </PreferenceCategory>
+</PreferenceScreen><!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/xml/preferences.xml -->

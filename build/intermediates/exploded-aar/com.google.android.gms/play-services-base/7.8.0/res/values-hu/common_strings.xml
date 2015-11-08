@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="common_google_play_services_notification_ticker" msgid="1852570676146674985">"Google Play-szolgáltatások – hiba"</string>
+    <string name="common_google_play_services_notification_needs_update_title" msgid="1388129345631079938">"Egy alkalmazás Google Play-szolgáltatások frissítését kéri."</string>
+    <string name="common_android_wear_notification_needs_update_text" msgid="6428604800157361567">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> alkalmazás az Android Wear alkalmazás frissítését igényli."</string>
+    <string name="common_google_play_services_needs_enabling_title" msgid="2583358409598976717">"Egy alkalmazás Google Play-szolgáltatások engedélyezését kéri."</string>
+    <string name="common_google_play_services_error_notification_requested_by_msg" msgid="2443362625939284971">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> kérésére"</string>
+    <string name="common_google_play_services_install_title" msgid="26645092511305524">"Play-szolgáltatások telepítése"</string>
+    <string name="common_google_play_services_install_text_phone" msgid="8836325110837822534">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> alkalmazás nem fut a Google Play-szolgáltatások nélkül, amelyek hiányoznak a telefonjáról."</string>
+    <string name="common_google_play_services_install_text_tablet" msgid="542176290824754127">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> alkalmazás nem fut a Google Play-szolgáltatások nélkül, amelyek hiányoznak a táblagépéről."</string>
+    <string name="common_google_play_services_install_button" msgid="8515591849428043265">"Play-szolgáltatások telepítése"</string>
+    <string name="common_google_play_services_enable_title" msgid="529078775174559253">"Google Play-szolgáltatások aktiválása"</string>
+    <string name="common_google_play_services_enable_text" msgid="4896236883690196080">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> alkalmazás csak akkor működik, ha Ön engedélyezi a Google Play-szolgáltatásokat."</string>
+    <string name="common_google_play_services_enable_button" msgid="4181637455539816337">"Play-szolgáltatások aktiválása"</string>
+    <string name="common_google_play_services_update_title" msgid="6006316683626838685">"Play-szolgáltatások frissítése"</string>
+    <string name="common_android_wear_update_title" msgid="1366439133145190222">"Az Android Wear frissítése"</string>
+    <string name="common_google_play_services_update_text" msgid="5709479369299147668">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> alkalmazás csak akkor fog működni, ha frissíti a Google Play-szolgáltatásokat."</string>
+    <string name="common_android_wear_update_text" msgid="2453027084525739603">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> alkalmazás csak az Android Wear alkalmazás frissítését követően fog működni."</string>
+    <string name="common_google_play_services_updating_title" msgid="815008177440683245">"A Google Play-szolgáltatások frissülnek"</string>
+    <string name="common_google_play_services_updating_text" msgid="2201289642219771610">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> alkalmazás nem fut a Google Play-szolgáltatások nélkül, amelyek éppen frissülnek."</string>
+    <string name="common_google_play_services_network_error_title" msgid="3827284619958211114">"Hálózati hiba"</string>
+    <string name="common_google_play_services_network_error_text" msgid="9038847255613537209">"A Google Play-szolgáltatásokhoz történő kapcsolódáshoz adatkapcsolat szükséges."</string>
+    <string name="common_google_play_services_invalid_account_title" msgid="1066672360770936753">"Érvénytelen fiók"</string>
+    <string name="common_google_play_services_invalid_account_text" msgid="4983316348021735578">"A megadott fiók nem létezik ezen az eszközön. Kérjük, válasszon másik fiókot."</string>
+    <string name="common_google_play_services_unknown_issue" msgid="4762332809710093730">"Ismeretlen hiba a Google Play-szolgáltatásokban."</string>
+    <string name="common_google_play_services_unsupported_title" msgid="6334768798839376943">"Google Play-szolgáltatások"</string>
+    <string name="common_google_play_services_unsupported_text" msgid="7682982632307307938">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> használatához olyan Google Play-szolgáltatásokra lesz szüksége, amelyeket eszköze nem támogat. Ha segítségre van szüksége, lépjen kapcsolatba a gyártóval."</string>
+    <string name="common_google_play_services_update_button" msgid="8932944190611227642">"Frissítés"</string>
+    <string name="common_signin_button_text" msgid="9071884888741449141">"Belépés"</string>
+    <string name="common_signin_button_text_long" msgid="2429381841831957106">"Google-bejelentkezés"</string>
+    <string name="common_open_on_phone" msgid="411506735369601515">"Megnyitás a telefonon"</string>
+    <string name="common_google_play_services_api_unavailable_text" msgid="6534628256897874213">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> alkalmazásnak szüksége van egy vagy több, jelenleg nem elérhető Google Play-szolgáltatásra. További segítségért vegye fel a kapcsolatot a fejlesztővel."</string>
+    <string name="common_google_play_services_sign_in_failed_title" msgid="8164948898147532159">"Sikertelen bejelentkezés"</string>
+    <string name="common_google_play_services_sign_in_failed_text" msgid="5194079840165204725">"Hiba a megadott fiókba való bejelentkezéskor. Kérjük, válasszon egy másik fiókot."</string>
+</resources>

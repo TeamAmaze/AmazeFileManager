@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AmazeFileManager.iml" filepath="$PROJECT_DIR$/AmazeFileManager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/StickyHeadersRecyclerView/StickyHeadersRecyclerView.iml" filepath="$PROJECT_DIR$/libs/StickyHeadersRecyclerView/StickyHeadersRecyclerView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/libs.iml" filepath="$PROJECT_DIR$/libs/libs.iml" />
+    </modules>
+  </component>
+</project>

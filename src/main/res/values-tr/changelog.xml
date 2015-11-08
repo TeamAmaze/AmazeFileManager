@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="changelog_change_1">- ilk sürüm&lt;br>&lt;br></string>
+    <string name="changelog_change_2">- Sabit kesme/paste&lt;br> - Root için sabit bir metin editörü&lt;br> - Almanca, Fransızca, İtalyanca, Rusça ve Çince dilleri eklendi&lt;br> - Navigasyon çekmece imleri eklendi&lt;br> - Meteryal diyalogları eklendi&lt;br> - more...&lt;br>&lt;br></string>
+    <string name="changelog_change_3">- İspanyolca eklendi&lt;br> - Çeşitli sıkıştırma görüntüleyici düzeltmeleri&lt;br> - Apk ve jar dosyalarını görüntüleyebilme&lt;br> - Çeşitli metin editörü düzeltmeleri&lt;br> - Dahası...&lt;br>&lt;br></string>
+    <string name="changelog_change_4">- Swipable sekmeler&lt;br> - Tamamen yenilenmiş UI&lt;br> - Hızlı kopyala/yapıştır/ayıklamak/sıkıştırmak işlemleri&lt;br> - Bildirimlerde işlem ilerlemeleri&lt;br> - Zip görüntüleyici ve metin editörü için düzeltmeler&lt;br> - Sistem uygulamaları kaldırma yeteneği&lt;br> - Dosyalarda geliştirilmiş arama&lt;br> - Sırp, Bask çevirileri&lt;br> - Liste başlığına geri dönme ve devre dışı bırakmak için tercih eklendi&lt;br> - Eklenen tercih daireselini devre dışı bırakma&lt;br> - Eklenen tercih arşiv ayıklamasını seçme ve dizini sıkıştırma&lt;br> - Yolları hatırlamak tercih eklendi&lt;br> - dahası...&lt;br>&lt;br></string>
+    <string name="changelog_change_5">- Uygulanan veri tabanı görüntüleyici&lt;br> - Uygulanan rar görüntüleyici&lt;br> -Operasyonlar için geliştirilmiş bildirimler&lt;br> - Sabit çekmece kapanışı ve düzenini iyileştirme&lt;br> - Yeni dairesel simgesi&lt;br> - Yenilemek için çekme&lt;br> - Bazı cihazlar için usb sürücü tanıması eklendi&lt;br> - Lolipop cihazlar için renkli gezinti çubuğu&lt;br> - Lolipop cihazlar için dalgalanma efekti&lt;br> - Birçok sistem iyileştirmeleri&lt;br> - Birçok hata düzeltmeleri&lt;br> - Daha fazlası...&lt;br>&lt;br></string>
+    <string name="changelog_change_6">- Materyal tasarım kurallarına göre yeniden tasarlandı&lt;br> - Yeni simge ve grefikler.co&lt;br> - Pürüzsüz bir deneyim için geliştirilmiş animasyonlar&lt;br> - Simge renklerini sistemle dinamik hale getirildi&lt;br> - Listede başlıklar ve bölücüler eklendi&lt;br> - Google+ özellikler eklendi&lt;br> - Işık ve karanlık temalar artık daha güzel görünüyor&lt;br> - Yer imi yöneticisi çekmeceden kaldırıldı&lt;br> - dahası...&lt;br>&lt;br></string>
+
+    <string name="changelog_version_1">&lt;font color=#524ef8>&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color=#5299f2>&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color=#524ef8>&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color=#5299f2>&lt;br>Dec 04, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color=#524ef8>&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color=#5299f2>&lt;br>Dec 13, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color=#524ef8>&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color=#5299f2>&lt;br>Jan 17, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color=#524ef8>&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color=#5299f2>&lt;br>Mar 08, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_6">&lt;font color=#524ef8>&lt;b>v2.0&lt;/font>&lt;/b>&lt;i>&lt;font color=#5299f2>&lt;br>May 25, 2015&lt;/i>&lt;/font>&lt;br></string>
+</resources>

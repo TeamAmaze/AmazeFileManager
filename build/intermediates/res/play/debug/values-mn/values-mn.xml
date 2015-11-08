@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/org.sufficientlysecure/donations/2.3/res/values-mn/values.xml -->
+    <eat-comment/>
+    <string name="donations__button_close">Хаах</string>
+</resources>

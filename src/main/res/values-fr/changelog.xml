@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>11 Nov, 2014&lt;/i>&lt;/font>&lt;br>&lt;br></string>
+    <string name="changelog_change_1">- Première version&lt;br>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>04 Dec, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_2">- Correction couper / coller&lt;br>
+                                      - Correction éditeur de texte pour le root&lt;br>
+                                      - Ajout des langages Allemand, Français, Italien, Russe et Chinois&lt;br>
+                                      - Ajout des signets pour le tiroir de navigation&lt;br>
+                                      - Ajout des boîtes de dialogue material&lt;br>
+                                      - plus...&lt;br>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>13 Dec, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_3">- Ajout de l\'espagnol&lt;br>
+                                      - Diverses corrections de la visionneuse Zip&lt;br>
+                                      - Pouvoir visualiser les fichiers apk et jar&lt;br>
+                                      - Diverses corrections de l\'éditeur de texte&lt;br>
+                                      - plus...&lt;br>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color="#524ef8">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>17 Jan, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_4">- Onglets par balayage&lt;br>
+                                      - Interface utilisateur totalement réorganisé&lt;br>
+                                      - Opérations rapide pour copier / coller / extraire / compresser&lt;br>
+                                      - Progression des opérations dans les notifications&lt;br>
+                                      - Corrections pour le visionneur ZIP et l\'éditeur de texte&lt;br>
+                                      - Possibilité de désinstaller les applications système&lt;br>
+                                      - Amélioration de la recherche de fichiers&lt;br>
+                                      - Traductions Serbe et basque&lt;br>
+                                      - ajout d\'une préférence pour désactiver le retour en tête de liste&lt;br>
+                                      - Ajout d\'une préférence pour désactiver miniatures circulaires&lt;br>
+                                      - Ajout d\'une préférence pour choisir le répertoire d\'extraction et la compression de l\'archive&lt;br>
+                                      - Ajout d\'une préférence de se souvenir des chemins&lt;br>
+                                      - plus...&lt;br>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#524ef8">&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>08 Mar, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_5">- Mis en place de la visionneuse de base de données&lt;br>
+                                      - Mis en place de la visionneuse de fichier rar&lt;br>
+                                      - Notifications améliorées pour les opérations&lt;br>
+                                      - Correction de la latence à la fermeture du tiroir et amélioration de la mise en page&lt;br>
+                                      - Nouvelles icônes circulaires&lt;br>
+                                      - Introduction du Glisser (pull) pour rafraîchir&lt;br>
+                                      - Ajout de la reconnaissance de clé USB pour certains périphériques&lt;br>
+                                      - Barre de navigation colorée pour les dispositifs Android Lollipop&lt;br>
+                                      - Effet d\'ondulation pour les appareils Lollipop&lt;br>
+                                      - Nombreuses améliorations de l\'interface utilisateur&lt;br>
+                                      - Beaucoup de corrections de bug&lt;br>
+                                      - Plus...&lt;br>&lt;br></string>
+</resources>

@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-sr/strings.xml -->
+    <eat-comment/>
+    <string name="Extracting_fles">Распакујем фајлове</string>
+    <string name="Yellow">Жута</string>
+    <string name="Zipping_fles">Компресујем фајлове</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/res/values-sr/values-sr.xml -->
+    <eat-comment/>
+    <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Одлазак на Почетну"</string>
+    <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
+    <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
+    <string msgid="1594238315039666878" name="abc_action_bar_up_description">"Кретање нагоре"</string>
+    <string msgid="3588849162933574182" name="abc_action_menu_overflow_description">"Још опција"</string>
+    <string msgid="4076576682505996667" name="abc_action_mode_done">"Готово"</string>
+    <string msgid="7468859129482906941" name="abc_activity_chooser_view_see_all">"Прикажи све"</string>
+    <string msgid="2031811694353399454" name="abc_activitychooserview_choose_application">"Избор апликације"</string>
+    <string msgid="121134116657445385" name="abc_capital_off">"ИСКЉУЧИ"</string>
+    <string msgid="3405795526292276155" name="abc_capital_on">"УКЉУЧИ"</string>
+    <string msgid="7723749260725869598" name="abc_search_hint">"Претражите..."</string>
+    <string msgid="3691816814315814921" name="abc_searchview_description_clear">"Брисање упита"</string>
+    <string msgid="2550479030709304392" name="abc_searchview_description_query">"Упит за претрагу"</string>
+    <string msgid="8264924765203268293" name="abc_searchview_description_search">"Претрага"</string>
+    <string msgid="8928215447528550784" name="abc_searchview_description_submit">"Слање упита"</string>
+    <string msgid="893419373245838918" name="abc_searchview_description_voice">"Гласовна претрага"</string>
+    <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Дели са"</string>
+    <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Дели са апликацијом %s"</string>
+    <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Скупи"</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-sr/strings.xml -->
+    <eat-comment/>
+    <string name="about">О програму</string>
+    <string name="aboutFileManager">О Амејз менаџеру фајлова</string>
+    <string name="accent_color_summary">Боја ФАБ-а и других мањих елемената УИ-ја</string>
+    <string name="accent_color_title">Боја наглашавања</string>
+    <string name="add">Додај</string>
+    <string name="addbook">Додај обележивач</string>
+    <string name="addshortcut">Додај пречицу</string>
+    <string name="addtobook">Додај у обележиваче</string>
+    <string name="amber">Тамножута</string>
+    <string name="anonymous">Анонимно</string>
+    <string name="apks">Апк</string>
+    <string name="app_name">Амејз менаџер фајлова</string>
+    <string name="apps">Апликације</string>
+    <string name="archive">Архива</string>
+    <string name="archive_extract_folder">Фасцикла распакивања архиве</string>
+    <string name="archive_preferences">Поставке архивисања</string>
+    <string name="archive_summary">Фајлови архиве ће бити распаковани у ову фасциклу. Подразумевана вредност је фасцикла у којој је фајл архиве</string>
+    <string name="archtext">Ово је архива. Шта желите да урадите?</string>
+    <string name="atroot">У кореној сте фасцикли</string>
+    <string name="audio">Звук</string>
+    <string name="authors">Аутори</string>
+    <string name="back">Назад</string>
+    <string name="back_summary">Дугме за назад на врху списка</string>
+    <string name="back_title">Навигација назад</string>
+    <string name="backup">Направи резерву</string>
+    <string name="basque_translation_title">Баскијски</string>
+    <string name="black">Црна</string>
+    <string name="blue">Плава</string>
+    <string name="blue_grey">Плавосива</string>
+    <string name="bluetooth">Блутут</string>
+    <string name="bookmanag">Менаџер обележивача</string>
+    <string name="bookmarksadded">Обележивачи додати</string>
+    <string name="books">Обележивачи</string>
+    <string name="brown">Смеђа</string>
+    <string name="cancel">ОДУСТАНИ</string>
+    <string name="cant_read_file">Не могу да очитам фајл</string>
+    <string name="cantlistfiles">Не могу да излистам фајлове без кореног приступа</string>
+    <string name="card">Сучеље са језичцима</string>
+    <string name="changegallerypath">Промени путању Галерије</string>
+    <string name="changelog">Измене</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-sr/changelog.xml -->
+    <eat-comment/>
+    <string name="changelog_change_1">- Почетно издање&lt;br>&lt;br></string>
+    <string name="changelog_change_2">- Поправљено исеци/налепи&lt;br>
+                                      - Поправљен уређивач текста за корен&lt;br>
+                                      - Додати немачки, француски, италијански, руски и кинески језици&lt;br>
+                                      - Додати обележивачи у навигациону фиоку&lt;br>
+                                      - Додати материјал дијалози&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
+    <string name="changelog_change_3">- Додат шпански&lt;br>
+                                      - Разне исправке зип прегледача&lt;br>
+                                      - Приказ апк и јар фајлова&lt;br>
+                                      - Разне исправке уређивача текста&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
+    <string name="changelog_change_4">    - Превлачење језичака&lt;br>
+                                      - Преуређено сучеље&lt;br>
+                                      - Убрзане радње копирања/лепљења/распакивања/компресовања&lt;br>
+                                      - Напредак радњи у обавештењима&lt;br>
+                                      - Исправке зип прегледача и уређивача текста&lt;br>
+                                      - Могућност уклањања системских апликација&lt;br>
+                                      - Побољшана претрага фајлова&lt;br>
+                                      - Преводи на српски и баскијски&lt;br>
+                                      - Могућност да се искључи заглавље списка за назад&lt;br>
+                                      - Могућност да се искључе кружне сличице&lt;br>
+                                      - Могућност да се одреди фасцикла за распакивање и компресовање&lt;br>
+                                      - Могућност да се запамте путање&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
+    <string name="changelog_change_5">- Прегледач база података&lt;br>
+                                      - Прегледач рар фајлова&lt;br>
+                                      - Побољшана обавештења за радње&lt;br>
+                                      - Исправљен застој при затварању фиоке и побољшан распоред&lt;br>
+                                      - Нова кружна икона&lt;br>
+                                      - Превлачење за освежење приказа&lt;br>
+                                      - Препознавање УСБ диска на неким уређајима&lt;br>
+                                      - Обојена трака навигације за Лолипоп уређаје&lt;br>
+                                      - Ефекат таласања за Лолипоп уређаје&lt;br>
+                                      - Много побољшања УИ-ја&lt;br>
+                                      - Многе исправке грешака&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
+    <string name="changelog_change_6">- Редизајниран УИ по смерницама материјал дизајна&lt;br>
+                                      - Нова икона и графике од CookIcons.co&lt;br>
+                                      - Побољшане анимације за боље искуство&lt;br>
+                                      - Додата подесива примарна, боје наглашавања и боја икона за динамичнији изглед УИ-ја&lt;br>
+                                      - Додата заглавља и раздвајачи на списку&lt;br>
+                                      - Фиока сада може да синхронизује слику и насловну слику Г+ профила&lt;br>
+                                      - Светла и тамна тема побољшане, изгледају лепше сада!&lt;br>
+                                      - Уклоњен менаџер обележивача са фиоке, притисните и држите обележивач за опције&lt;br>
+                                      - Могућност скривања траке алатки или траке апликације приликом клизања&lt;br>
+                                      - Много побољшања перформанси и исправки грешака&lt;br>
+                                      - Многе исправке превода&lt;br>
+                                      - још тога...&lt;br>&lt;br></string>
+    <string name="changelog_change_7">- Опције ређања за списак апликација&lt;br>
+                                      - Побољшани УИ језичака и заглавље фиоке&lt;br>
+                                      - Дозвола уписа у спољашње складиште за Лолипоп уређаје&lt;br>&lt;br>
+                                   </string>
+    <string name="changelog_change_8">- Поправљен фаб за таблете&lt;br>
+                                      - Поправљене поставке боја&lt;br>
+                                      - Нови материјализовани фаб&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>в2.0.8&lt;/font>&lt;/b>&lt;br>
+                                      - Поправљено дељење фајлова&lt;br>
+                                      - Нова, бржа метода за претрагу фајлова&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>в2.0.7b&lt;/font>&lt;/b>&lt;br>
+                                      - Мање исправке&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>в2.0.7&lt;/font>&lt;/b>&lt;br>
+                                      - Мања исправка за пречице&lt;br>
+                                      - Мања исправка за брисање са кореним привилегијама&lt;br>
+                                      - Побољшани дијалози&lt;br>
+                                      („Сакривене ставке“ у менију ће сада бити видљиво само ако је опција „Скривени фајлови и фасцикле“ укључена)
+                                      - Опција ређања за списак апликација&lt;br>&lt;br>
+                                   </string>
+    <string name="changelog_change_9">- Виндоуз (smb) дељење фајлова&lt;br>
+                                      - Брже и боље дељење фајлова&lt;br>
+                                      - Додате анимације спискова&lt;br>
+                                      - Број фајлова и фасцикли уместо коришћеног простора&lt;br>
+                                      - Сада је могуће прилагодити број колона приказа мреже чак и при ротацији (експериментално)&lt;br>
+                                      - Одвојено дугме за својства за сваки фајл у положеном режиму и за таблете&lt;br>
+                                      - Нови ФАБ&lt;br>
+                                      - Побољшана структура фиоке&lt;br>
+                                      - Нове пречице за учитавање свих медијалних фајлова (слике, звук, видео, апк, документи)&lt;br>
+                                      - Ажурирани преводи&lt;br>
+                                      - Многе исправке грешака&lt;br>&lt;br>
+                                     </string>
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>в1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>11. нов, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>в1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>04. дец, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>в1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>13. дец, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color="#524ef8">&lt;b>в1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>17. јан, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#524ef8">&lt;b>в1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>08. мар, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_6">&lt;font color="#524ef8">&lt;b>в2.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>25. мај, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_7">&lt;font color="#524ef8">&lt;b>в2.0.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>5. јун, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_8">
+        &lt;font color="#5299f2">&lt;b>в2.0.9&lt;/font>&lt;/b>&lt;br></string>
+    <string name="changelog_version_9">
+        &lt;font color="#5299f2">&lt;b>в3.0.0&lt;/font>&lt;/b>&lt;br></string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-sr/strings.xml -->
+    <eat-comment/>
+    <string name="chinese_translation_title">Кинески</string>
+    <string name="chooseUI">Изаберите сучеље ставки</string>
+    <string name="choose_color">Избор боје</string>
+    <string name="circularicons">Кружне иконе</string>
+    <string name="circularimages">Користи кружне иконе за слике и видео</string>
+    <string name="clear">Очисти</string>
+    <string name="close">Затвори</string>
+    <string name="color_summary">Постављање боје разних УИ компоненти</string>
+    <string name="color_title">Боја</string>
+    <string name="colorize">Обоји иконе</string>
+    <string name="colorize_summary">Постави статичку боју икона</string>
+    <string name="colourednavigation">Обоји траку навигације</string>
+    <string name="colourednavigationsum">Обоји системску траку навигације заједно са маском</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/7.8.0/res/values-sr/common_strings.xml -->
+    <eat-comment/>
+    <string msgid="6428604800157361567" name="common_android_wear_notification_needs_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> захтева ажурирање апликације Android Wear."</string>
+    <string msgid="2453027084525739603" name="common_android_wear_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> не може да се покрене ако не ажурирате апликацију Android Wear."</string>
+    <string msgid="1366439133145190222" name="common_android_wear_update_title">"Ажурирајте Android Wear"</string>
+    <string msgid="6534628256897874213" name="common_google_play_services_api_unavailable_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> захтева једну Google Play услугу која тренутно није доступна или више њих. Контактирајте програмера да бисте добили помоћ."</string>
+    <string msgid="4181637455539816337" name="common_google_play_services_enable_button">"Омогући Google Play услуге"</string>
+    <string msgid="4896236883690196080" name="common_google_play_services_enable_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> неће функционисати ако не омогућите Google Play услуге."</string>
+    <string msgid="529078775174559253" name="common_google_play_services_enable_title">"Омогућавање Google Play услуга"</string>
+    <string msgid="2443362625939284971" name="common_google_play_services_error_notification_requested_by_msg">"Захтева <ns1:g id="APP_NAME">%1$s</ns1:g>"</string>
+    <string msgid="8515591849428043265" name="common_google_play_services_install_button">"Преузми Google Play услуге"</string>
+    <string msgid="8836325110837822534" name="common_google_play_services_install_text_phone">"<ns1:g id="APP_NAME">%1$s</ns1:g> не може да се покрене без Google Play услуга, које недостају на телефону."</string>
+    <string msgid="542176290824754127" name="common_google_play_services_install_text_tablet">"<ns1:g id="APP_NAME">%1$s</ns1:g> не може да се покрене без Google Play услуга, које недостају на таблету."</string>
+    <string msgid="26645092511305524" name="common_google_play_services_install_title">"Преузимање Google Play услуга"</string>
+    <string msgid="4983316348021735578" name="common_google_play_services_invalid_account_text">"Наведени налог не постоји на овом уређају. Одаберите други налог."</string>
+    <string msgid="1066672360770936753" name="common_google_play_services_invalid_account_title">"Неважећи налог"</string>
+    <string msgid="2583358409598976717" name="common_google_play_services_needs_enabling_title">"Апликација захтева да Google Play услуге буду омогућене."</string>
+    <string msgid="9038847255613537209" name="common_google_play_services_network_error_text">"За повезивање са Google Play услугама потребна је веза за пренос података."</string>
+    <string msgid="3827284619958211114" name="common_google_play_services_network_error_title">"Грешка на мрежи"</string>
+    <string msgid="1388129345631079938" name="common_google_play_services_notification_needs_update_title">"Апликација захтева ажурирање Google Play услуга."</string>
+    <string msgid="1852570676146674985" name="common_google_play_services_notification_ticker">"Грешка Google Play услуга"</string>
+    <string msgid="5194079840165204725" name="common_google_play_services_sign_in_failed_text">"Дошло је до грешке при пријављивању на наведени налог. Изаберите други налог."</string>
+    <string msgid="8164948898147532159" name="common_google_play_services_sign_in_failed_title">"Пријављивање није успело"</string>
+    <string msgid="4762332809710093730" name="common_google_play_services_unknown_issue">"Непознат проблем са Google Play услугама."</string>
+    <string msgid="7682982632307307938" name="common_google_play_services_unsupported_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> користи Google Play услуге, које уређај не подржава. Контактирајте произвођача да бисте добили помоћ."</string>
+    <string msgid="6334768798839376943" name="common_google_play_services_unsupported_title">"Google Play услуге"</string>
+    <string msgid="8932944190611227642" name="common_google_play_services_update_button">"Ажурирај"</string>
+    <string msgid="5709479369299147668" name="common_google_play_services_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> не може да се покрене ако не ажурирате Google Play услуге."</string>
+    <string msgid="6006316683626838685" name="common_google_play_services_update_title">"Ажурирање Google Play услуга"</string>
+    <string msgid="2201289642219771610" name="common_google_play_services_updating_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> не може да се покрене без Google Play услуга, које се тренутно ажурирају."</string>
+    <string msgid="815008177440683245" name="common_google_play_services_updating_title">"Google Play услуге се ажурирају"</string>
+    <string msgid="411506735369601515" name="common_open_on_phone">"Отвори на телефону"</string>
+    <string msgid="9071884888741449141" name="common_signin_button_text">"Пријави ме"</string>
+    <string msgid="2429381841831957106" name="common_signin_button_text_long">"Пријави ме преко Google-а"</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-sr/strings.xml -->
+    <eat-comment/>
+    <string name="compress">Компресуј</string>
+    <string name="confirm">Потврда</string>
+    <string name="contributors">Доприносиоци</string>
+    <string name="copy">Копирај</string>
+    <string name="copy_path">Копирај путању</string>
+    <string name="copying">Копирам</string>
+    <string name="copying_fles">Копирам фајлове</string>
+    <string name="copyingapk">Копирам апк у </string>
+    <string name="create">НАПРАВИ</string>
+    <string name="cut">Исеци</string>
+    <string name="cyan">Цијан</string>
+    <string name="dark">Материјал тамна</string>
+    <string name="database">База података</string>
+    <string name="databasereader">Читач базе података</string>
+    <string name="date">Датум: </string>
+    <string name="daytime">Дневна</string>
+    <string name="deep_orange">Тамнонаранџаста</string>
+    <string name="deep_purple">Тамноружичаста</string>
+    <string name="delete">Обриши</string>
+    <string name="deleting">Бришем</string>
+    <string name="detailedView">Детаљан приказ</string>
+    <string name="details">Детаљи</string>
+    <string name="directories">Фасцикле</string>
+    <string name="directorysort">Режим ређања фасцикли</string>
+    <string name="documents">Документи</string>
+    <string name="doforall">Уради за све ставке</string>
+    <string name="donate">Донирај</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/org.sufficientlysecure/donations/2.3/res/values-sr/values.xml -->
+    <eat-comment/>
+    <string name="donations__alert_dialog_no_browser">Nije pronađen pretraživač koji može da otvori website!</string>
+    <string name="donations__alert_dialog_title">Došlo je do greške</string>
+    <string name="donations__button_close">Zatvori</string>
+    <string name="donations__description">Da li vam je ovo korisna aplikacija?\nPodržite njen razvitak slanjem donacije razvijaču!</string>
+    <string name="donations__flattr">Flattr</string>
+    <string name="donations__flattr_description">Flattr uzima 10 % provizije mesečno!</string>
+    <string name="donations__google_android_market">Google Play prodavnica</string>
+    <string name="donations__google_android_market_description">Google uzima 30 % od svae donacije!</string>
+    <string name="donations__google_android_market_donate_button">Doniraj!</string>
+    <string name="donations__google_android_market_not_supported">Donacije u aplikaciji nisu dostupne. Da li je Google Play prodavnica ispravno instalirana?</string>
+    <string name="donations__google_android_market_not_supported_title">Donacije u aplikaciji nisu dostupne.</string>
+    <string name="donations__google_android_market_text">Koliko?</string>
+    <string name="donations__paypal">PayPal</string>
+    <string name="donations__paypal_description">Možete odabrati koliko ćete donirati posle pritiska na dugme!</string>
+    <string name="donations__thanks_dialog">Hvala za donaciju!\nZaista cenim to!</string>
+    <string name="donations__thanks_dialog_title">Hvala!</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-sr/strings.xml -->
+    <eat-comment/>
+    <string name="done">Завршено</string>
+    <string name="drawer_close">Затвори фиоку навигације</string>
+    <string name="drawer_open">Отвори фиоку навигације</string>
+    <string name="efn">Унесите име фајла</string>
+    <string name="enablerootmde">Омогући корени режим</string>
+    <string name="enterfile">Унесите име фајла</string>
+    <string name="entername">Унесите име</string>
+    <string name="enternewname">Унесите ново име</string>
+    <string name="enterpath">Унесите путању</string>
+    <string name="enterzipname">Унесите име архиве</string>
+    <string name="error">Грешка</string>
+    <string name="exit">Изађи</string>
+    <string name="extract">Распакуј</string>
+    <string name="extracting">Распакујем</string>
+    <string name="extstorage">Спољашње складиште</string>
+    <string name="fab_skin">Маска ФАБ-а</string>
+    <string name="feedback">Повратне информације</string>
+    <string name="file">Фајл</string>
+    <string name="file_empty">Фајл је празан</string>
+    <string name="filecreated">Фајл направљен</string>
+    <string name="fileexist">Фајл истог имена већ постоји </string>
+    <string name="fileexplorer">Прегледач фајлова</string>
+    <string name="filenotexists">Фајл не постоји</string>
+    <string name="files">Фајлови</string>
+    <string name="filesOnTop">Фајлови на врху</string>
+    <string name="folder">Фасцикла</string>
+    <string name="foldercolor">Боја фасцикле</string>
+    <string name="foldercreated">Фасцикла направљена</string>
+    <string name="folders">Фасцикле</string>
+    <string name="foldersOnTop">Фасцикле на врху</string>
+    <string name="free">Слобо:  </string>
+    <string name="french_translation_title">Француски</string>
+    <string name="fullChangelog">Дневник измена</string>
+    <string name="g_plus_community_title">Г+ заједница</string>
+    <string name="gallery">Галерија</string>
+    <string name="general">Опште</string>
+    <string name="generating">Генеришем...</string>
+    <string name="german_translation_title">Немачки</string>
+    <string name="goback">Иди назад</string>
+    <string name="gplus_pic_summary">Прикажи Г+ насловну слику у фиоци</string>
+    <string name="gplus_pic_title">Пријави се Г+ налогом</string>
+    <string name="greek_translation_title">Грчки</string>
+    <string name="green">Зелена</string>
+    <string name="gridcolumnno">Број колона у приказу мреже</string>
+    <string name="gridview">Приказ мреже</string>
+    <string name="guide1">Добро дошли у Амејз менаџер фајлова</string>
+    <string name="guide2">Додирните плаву пругу да бисте приказали или сакрили траку путање</string>
+    <string name="guide3">Притисните и држите било који фајл за још могућности...</string>
+    <string name="guide4">Као што су копирање, померање, својства, итд.</string>
+    <string name="guide5">Користите дугме за назад на вашем уређају да изађете из апликације било кад...</string>
+    <string name="guide6">...и користите дугме стрелице улево за навигацију у менаџеру фајлова</string>
+    <string name="hidden">Скривени фајлови и фасцикле</string>
+    <string name="hiddenfiles">Сакривене ставке</string>
+    <string name="hide">Сакриј</string>
+    <string name="hide_appbar">Сакриј траку апликације</string>
+    <string name="hide_mode_app_bar">Трака апликације скривена при клизању</string>
+    <string name="hide_mode_nothing">Трака апликације остаје нетакнута</string>
+    <string name="hide_mode_title">Режим скривања</string>
+    <string name="hide_mode_toolbar">Трака алатки скривена при клизању</string>
+    <string name="hide_toolbar">Сакриј траку алатки</string>
+    <string name="history">Историјат</string>
+    <string name="home">Почетна</string>
+    <string name="icon">икона</string>
+    <string name="icon_color_summary">Боја икона</string>
+    <string name="icon_color_title">Боја икона</string>
+    <string name="icon_credits">Графика од &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
+    <string name="image">Слика</string>
+    <string name="imagegallery">Галерија слика</string>
+    <string name="images">Слике</string>
+    <string name="in_safe">Недовољно простора</string>
+    <string name="indigo">Индигоплава</string>
+    <string name="install">Инсталирај</string>
+    <string name="invalid_dir">Неисправан директоријум</string>
+    <string name="italian_translation_title">Италијански</string>
+    <string name="items">ставки</string>
+    <string name="itemsselected">ставки изабрано</string>
+    <string name="korean_translation_title">Корејски</string>
+    <string name="lastModified">Датуму измене</string>
+    <string name="lastModifiedDesc">Датуму измене (опад.)</string>
+    <string name="lastModifiedPref">Датум измене</string>
+    <string name="lastModifiedSummary">Прикажи датум и време последње измене фајлова</string>
+    <string name="license">Лиценце отвореног кôда</string>
+    <string name="light">Материјал светла</string>
+    <string name="light_blue">Светлоплава</string>
+    <string name="light_green">Светлозелена</string>
+    <string name="listview">Приказ списка</string>
+    <string name="loading">Учитавам...</string>
+    <string name="location">Локација: </string>
+    <string name="maintab">Главни језичак не можете да уклоните</string>
+    <string name="md5copied">МД5 копиран на клипборд</string>
+    <string name="miscellaneous">Разно</string>
+    <string name="mountsystem">Монтирај системске фасцикле за уписивање</string>
+    <string name="mountsystemsummary">Омогућите ово ако желите да уредите системске фајлове</string>
+    <string name="moving">Померам</string>
+    <string name="name">Име: </string>
+    <string name="needsaccess">Потребна дозвола уписа</string>
+    <string name="needsaccesssummary">Одредите корени директоријум од \t</string>
+    <string name="needsaccesssummary1">\tда бисте одобрили дозволу уписа за радњу </string>
+    <string name="new_string">Ново</string>
+    <string name="newfile">Нови фајл</string>
+    <string name="newfolder">Нова фасцикла</string>
+    <string name="newhomedirectory">Нова почетна фасцикла</string>
+    <string name="no">Не</string>
+    <string name="no_cover_photo">Нема насловне слике</string>
+    <string name="no_file_overwrite">Ниједан фајл није пребрисан</string>
+    <string name="noappfound">Нема апликације за отварање овог фајла</string>
+    <string name="nofiles">Нема фајлова</string>
+    <string name="none">Ништа</string>
+    <string name="noneOnTop">Ништа на врху</string>
+    <string name="not_allowed">Није дозвољено</string>
+    <string name="ok">У реду</string>
+    <string name="open">Отвори</string>
+    <string name="openas">Отвори као</string>
+    <string name="openparent">Отвори родитељску фасциклу</string>
+    <string name="openwith">Отвори помоћу</string>
+    <string name="orange">Наранџаста</string>
+    <string name="other">Остало</string>
+    <string name="overwrite">Пребриши</string>
+    <string name="packageinstaller">Инсталер пакета</string>
+    <string name="password">Лозинка</string>
+    <string name="paste">Налепи</string>
+    <string name="pathcopied">Путања копирана на клипборд</string>
+    <string name="permission">Дозволе</string>
+    <string name="pick_a_file">Изаберите фајл</string>
+    <string name="pink">Ружичаста</string>
+    <string name="pitext">Ово је инсталер пакета. Шта желите да урадите?</string>
+    <string name="play">Плеј продавница</string>
+    <string name="polish_translation_title">Пољски</string>
+    <string name="portuguese_translation_title">Португалски</string>
+    <string name="pressagain">Притисните опет за излаз</string>
+    <string name="primary_color_summary">Боја великих елемената УИ-ја</string>
+    <string name="primary_color_title">Примарна боја</string>
+    <string name="process_viewer">Прегледач процеса</string>
+    <string name="processes">Процеси</string>
+    <string name="properties">Својства</string>
+    <string name="purple">Љубичаста</string>
+    <string name="questiondelete">Желите ли заиста да обришете следеће ставке?</string>
+    <string name="random">Насумично</string>
+    <string name="randomDialog">Насумично</string>
+    <string name="random_summary">Постави насумичну тему по покретању</string>
+    <string name="rate">Оцени апликацију</string>
+    <string name="red">Црвена</string>
+    <string name="refresh">Освежи</string>
+    <string name="rename">Преименуј</string>
+    <string name="renamed">Преименовање је успело</string>
+    <string name="renameerror">Преименовање није успело</string>
+    <string name="rootPref">Дозволе</string>
+    <string name="rootPrefSummary">Прикажи дозволе фајлова и фасцикли</string>
+    <string name="rootdirectory">Корен</string>
+    <string name="rootfailure">Корени приступ није дозвољен</string>
+    <string name="rootmode">Корени приступ</string>
+    <string name="rootmodesummary">Само за рутоване уређаје. Користите само ако знате шта радите.</string>
+    <string name="russian_translation_title">Руски</string>
+    <string name="save">Сачувај</string>
+    <string name="savepaths">Запамти путање</string>
+    <string name="savepathsummary">Прикажи најскорије приказану фасциклу за сваки језичак по покретању</string>
+    <string name="saving">Уписујем</string>
+    <string name="sd_card_grant_first">sd_card_grant_first</string>
+    <string name="sd_card_grant_next">sd_card_grant_next</string>
+    <string name="search">ТРАЖИ</string>
+    <string name="searching">Претрага</string>
+    <string name="searchpath">Путања претраге</string>
+    <string name="searchresults">Резултати претраге</string>
+    <string name="select">Изаберите ставку</string>
+    <string name="select_intent">Изабери</string>
+    <string name="selectall">Изабери све</string>
+    <string name="serbian_translation_title">Српски</string>
+    <string name="set">Постави</string>
+    <string name="setRandom">Измене ће ступити на снагу након поновног покретања</string>
+    <string name="setashome"> Постави за почетну фасциклу</string>
+    <string name="setgridview">Постављам приказ мреже</string>
+    <string name="sethome">Постави почетну фасциклу</string>
+    <string name="setlistview">Постављам приказ списка</string>
+    <string name="setringtone">Постави за звоно</string>
+    <string name="setting">Поставке</string>
+    <string name="share">Дели</string>
+    <string name="showDividers">Прикажи раздвајаче</string>
+    <string name="simple">Једноставно сучеље</string>
+    <string name="simpleView">Једноставан приказ</string>
+    <string name="size">Величина: </string>
+    <string name="sizePref">Величине</string>
+    <string name="sizePrefSummary">Прикажи величину фајлова и број ставки у фасциклама</string>
+    <string name="skin">Маска</string>
+    <string name="skip">Прескочи</string>
+    <string name="smb_con">СМБ веза</string>
+    <string name="smb_server">Сервер: ИП адреса или ИП адреса/дељена_фасцикла</string>
+    <string name="sortName">Имену</string>
+    <string name="sortNameDesc">Имену (опадајуће)</string>
+    <string name="sortSize">Величини</string>
+    <string name="sortSizeDesc">Величини (опадајуће)</string>
+    <string name="sortby">Поређај по</string>
+    <string name="spanish_translation_title">Шпански</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/res/values-sr/values-sr.xml -->
+    <eat-comment/>
+    <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">">999"</string>
+    <!-- From: file:/home/vishal/work/android/AmazeFileManager/src/main/res/values-sr/strings.xml -->
+    <eat-comment/>
+    <string name="stopping">Заустављам</string>
+    <string name="storage">Складиште</string>
+    <string name="success">Успех</string>
+    <string name="supersu">Суперкорисник</string>
+    <string name="tab">Језичак</string>
+    <string name="tables">Табела/е</string>
+    <string name="tapnhold">Тапните и држите фајл или фасциклу за више могућности</string>
+    <string name="teal">Плавозелена</string>
+    <string name="text">Текст</string>
+    <string name="textreader">Читач текста</string>
+    <string name="theme">Тема</string>
+    <string name="thumb">Сличице</string>
+    <string name="thumbSummary">Прикажи сличице апликација и слика</string>
+    <string name="topFab">ФАБ на траци апликације</string>
+    <string name="topFabS">Приказ + дугмета при врху или дну. Примењиво само ако трака апликације није скривена.</string>
+    <string name="totalitems">Укупно ставки: </string>
+    <string name="translators">Преводиоци</string>
+    <string name="turkish_translation_title">Турски</string>
+    <string name="type">Типу</string>
+    <string name="typeDesc">Типу (опадајуће)</string>
+    <string name="ui">Сучеље</string>
+    <string name="uimode">Режим сучеља</string>
+    <string name="ukrainian_translation_title">Украјински</string>
+    <string name="unin_system_apk">Ово је системска апликација, уклањање може да доведе до нестабилности система.\nДа наставим?</string>
+    <string name="uninstall">Уклони</string>
+    <string name="unsavedchanges">Несачуване измене</string>
+    <string name="unsavedchangesdesc">Желите ли да сачувате измене пре него изађете?</string>
+    <string name="used">Искор:  </string>
+    <string name="usedefaultgallerypath">Користи подразумевану путању</string>
+    <string name="username">Корисничко име</string>
+    <string name="version">Издање</string>
+    <string name="video">Видео</string>
+    <string name="videos">Видео</string>
+    <string name="view">Прикажи</string>
+    <string name="viewmode">Режим приказа</string>
+    <string name="warning">Упозорење</string>
+    <string name="xda_summary">ПиО, помоћ и решавање проблема</string>
+    <string name="xda_title">XDA</string>
+    <string name="yes">Да</string>
+    <string name="zip_create_folder">Фасцикла архиве</string>
+    <string name="zip_summary">Нови зип фајлови ће бити направљени у овој фасцикли. Подразумевана вредност је фасцикла у којој су фајлови</string>
+    <string name="zip_viewer">Зип прегледач</string>
+    <string name="zipping">Компресујем</string>
+</resources>

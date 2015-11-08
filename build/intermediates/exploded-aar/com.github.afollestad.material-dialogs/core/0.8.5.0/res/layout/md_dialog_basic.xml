@@ -1,0 +1,33 @@
+<com.afollestad.materialdialogs.internal.MDRootLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:md_reduce_padding_no_title_no_buttons="false"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <include layout="@layout/md_stub_titleframe" />
+
+    <ScrollView
+        android:id="@+id/contentScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/md_content_padding_top"
+        android:paddingBottom="@dimen/md_content_padding_bottom">
+
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/md_dialog_frame_margin"
+            android:paddingRight="@dimen/md_dialog_frame_margin"
+            android:textSize="@dimen/md_content_textsize"
+            tools:text="Content" />
+
+    </ScrollView>
+
+    <include layout="@layout/md_stub_actionbuttons" />
+
+</com.afollestad.materialdialogs.internal.MDRootLayout><!-- From: file:/build/core/src/main/res/layout/md_dialog_basic.xml -->

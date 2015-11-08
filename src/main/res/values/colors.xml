@@ -1,0 +1,77 @@
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources>
+    <color name="theme_primary">#673ab7</color>
+    <color name="holo">#8833B5E5</color>
+    <color name="safr">#5f777777</color>
+    <color name="safrs">#5f777777</color>
+    <color name="bar">#3f333333</color>
+    <color name="safr_ripple">#ffc3c3c3</color>
+    <color name="safr_pressed">#ffd7d7d7</color>
+    <color name="safr_pressed_dark">#ff282828</color>
+    <color name="holo_dark_background_new">#ff263238</color>
+    <color name="holo_dark_background">#303030</color>
+    <color name="holo_dark_text">#ff777777</color>
+    <color name="holo_dark_action_mode">#212121</color>
+    <color name="holo_dark_selection">#424242</color>
+    <color name="divider">#e0e0e0</color>
+    <color name="divider_dark">#474747</color>
+
+    <!-- primary color palatte -->
+    <color name="primary_red">#F44336</color>
+    <color name="primary_pink">#e91e63</color>
+    <color name="primary_purple">#9c27b0</color>
+    <color name="primary_deep_purple">#673ab7</color>
+    <color name="primary_indigo">#3f51b5</color>
+    <color name="primary_blue">#2196F3</color>
+    <color name="primary_light_blue">#03A9F4</color>
+    <color name="primary_cyan">#00BCD4</color>
+    <color name="primary_teal">#009688</color>
+    <color name="primary_green">#4CAF50</color>
+    <color name="primary_light_green">#8bc34a</color>
+    <color name="primary_amber">#FFC107</color>
+    <color name="primary_orange">#FF9800</color>
+    <color name="primary_deep_orange">#FF5722</color>
+    <color name="primary_brown">#795548</color>
+    <color name="primary_black">#000000</color>
+    <color name="primary_blue_grey">#607d8b</color>
+    <color name="primary_super_su">#004d40</color>
+
+    <!-- accent color palatte -->
+    <color name="accent_red">#F44336</color>
+    <color name="accent_pink">#e91e63</color>
+    <color name="accent_purple">#9c27b0</color>
+    <color name="accent_deep_purple">#673ab7</color>
+    <color name="accent_indigo">#3f51b5</color>
+    <color name="accent_blue">#2196F3</color>
+    <color name="accent_light_blue">#03A9F4</color>
+    <color name="accent_cyan">#00BCD4</color>
+    <color name="accent_teal">#009688</color>
+    <color name="accent_green">#4CAF50</color>
+    <color name="accent_light_green">#8bc34a</color>
+    <color name="accent_amber">#FFC107</color>
+    <color name="accent_orange">#FF9800</color>
+    <color name="accent_deep_orange">#FF5722</color>
+    <color name="accent_brown">#795548</color>
+    <color name="accent_black">#212121</color>
+    <color name="accent_blue_grey">#607d8b</color>
+    <color name="accent_super_su">#004d40</color>
+
+</resources>

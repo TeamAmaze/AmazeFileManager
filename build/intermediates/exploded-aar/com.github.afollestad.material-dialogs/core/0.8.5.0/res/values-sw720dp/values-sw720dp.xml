@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/build/core/src/main/res/values-sw720dp/bool.xml -->
+    <eat-comment/>
+    <bool name="md_is_tablet">true</bool>
+</resources>
