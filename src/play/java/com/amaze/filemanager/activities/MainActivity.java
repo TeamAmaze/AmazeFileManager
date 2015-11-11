@@ -25,12 +25,16 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -45,6 +49,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -54,6 +60,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -89,6 +96,8 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.amaze.filemanager.IMyAidlInterface;
+import com.amaze.filemanager.Loadlistener;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.TabHandler;
@@ -103,6 +112,7 @@ import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
+import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
@@ -1412,12 +1422,62 @@ public class MainActivity extends AppCompatActivity implements
                 createSmbDialog("", false, ma);
                 break;
             case 3:
+                bindDrive();
                 //todo
                 break;
         }
     }
+    DriveConnection driveConnection;
+    IMyAidlInterface aidlInterface;
+    void bindDrive() {
+        driveConnection = new DriveConnection();
+        Intent i = new Intent();
+        i.setClassName("com.amaze.filemanager.driveplugin", "com.amaze.filemanager.driveplugin.MainService");
+        try {
+            bindService((i), driveConnection, Context.BIND_AUTO_CREATE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    void unbindDrive(){
+        if(driveConnection!=null)
+       unbindService(driveConnection);
+        driveConnection=null;
+    }
 
+    private class DriveConnection implements ServiceConnection{
+        @Override
+        public void onServiceConnected(ComponentName name, final IBinder service) {
+            aidlInterface=IMyAidlInterface.Stub.asInterface(service);
+            try {
+                aidlInterface.create(new Loadlistener.Stub() {
+                    @Override
+                    public void load(List<Layoutelements> layoutelements, String driveId) throws RemoteException {
+                        Toast.makeText(mainActivity,driveId+"",Toast.LENGTH_SHORT).show();
+                    }
 
+                    @Override
+                    public void error(String message, int mode) throws RemoteException {
+                        Log.d("DriveConnection", "Error" + message);
+                    }
+
+                    @Override
+                    public IBinder asBinder() {
+                        return service;
+                    }
+                });
+            } catch (RemoteException e) {
+                Log.d("DriveConnection",e.getLocalizedMessage());
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            driveConnection=null;
+            Log.d("DriveConnection","DisConnected");
+            aidlInterface=null;
+        }
+    }
     public void search() {
         final Main ma = (Main) ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
         final String fpath = ma.CURRENT_PATH;
@@ -1524,6 +1584,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onDestroy() {
         super.onDestroy();
         Sp.edit().putBoolean("remember", true).apply();
+        unbindDrive();
         if (grid != null)
             grid.end();
         if (listManager != null)
@@ -2707,6 +2768,13 @@ public class MainActivity extends AppCompatActivity implements
         utils.setTint(pass, color);
         final CheckBox ch = (CheckBox) v2.findViewById(R.id.checkBox2);
         utils.setTint(ch, color);
+        TextView help=(TextView)v2.findViewById(R.id.wanthelp);
+        help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                utils.showSMBHelpDialog(mainActivity);
+            }
+        });
         ch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

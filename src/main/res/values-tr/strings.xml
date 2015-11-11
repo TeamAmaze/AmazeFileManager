@@ -289,25 +289,7 @@ Devam etmek istiyor musunuz?"</string>
     <string name="sd_card_grant_next">sd_card_grant_next</string>
     <string name="select_intent">Seç</string>
     <string name="tables">Sekmeler</string>
-    <string name="abc_action_bar_home_description_format">%1$s, %2$s</string>
-    <string name="abc_action_bar_home_subtitle_description_format">%1$s, %2$s, %3$s</string>
-    <string name="abc_search_hint">Ara</string>
-    <string name="abc_toolbar_collapse_description">Çöktü</string>
-    <string name="basque_translation_summary">Aitor Beriain</string>
-    <string name="chinese_translation_summary">amtlib-dot-dll, Felix2yu, Charles Kane</string>
-    <string name="define_FloatingActionButton" />
-    <string name="french_translation_summary">Nicolas PIMENTEL, Primokorn, Renaud ROLLAND</string>
-    <string name="german_translation_summary">Patrick Mertens, Unpublished</string>
     <string name="hide_mode_app_bar">Uygulama çubuğunu kaydırmalarda gizler</string>
     <string name="hide_mode_nothing">Uygulama çubuğu bozulmadan kalır</string>
     <string name="hide_mode_toolbar">Araç çubuğunu kaydırmalarda gizler</string>
-    <string name="italian_translation_summary">Francesco Credidio</string>
-    <string name="korean_translation_summary">Park Kyungjin</string>
-    <string name="polish_translation_summary">M. Kucharskov, P. Kowalczyk</string>
-    <string name="portuguese_translation_summary">Sérgio Marques</string>
-    <string name="russian_translation_summary">Pablo Luchiano, Kim BeeJay</string>
-    <string name="serbian_translation_summary">Mladen Pejaković</string>
-    <string name="spanish_translation_summary">Jose Miguel Sarasola</string>
-    <string name="turkish_translation_summary">Hakan Güven</string>
-    <string name="ukrainian_translation_summary">Pablo Luchiano</string>
 </resources>

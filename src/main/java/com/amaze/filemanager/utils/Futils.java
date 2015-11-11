@@ -44,6 +44,8 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatTextView;
+import android.text.Html;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -162,7 +164,6 @@ public  final int READ = 4;
             editText.setBackgroundTintList(editTextColorStateList);
         }
     }
-
     public int checkFolder(final String f,Context context) {
         if(f==null)return 0;
         if(f.startsWith("smb://"))return 1;
@@ -647,7 +648,34 @@ public void openWith(final File f,final Context c) {
             }
         }
     }
+public void showSMBHelpDialog(MainActivity m){
 
+    MaterialDialog.Builder b=new MaterialDialog.Builder(m);
+    b.content(Html.fromHtml("<html>\n" +
+            "<body>\n" +
+            "<center>\n" +
+            "<h1>How to access shared windows folder on android (smb)</h1>\n" +
+            "</center>\n" +
+            "<ol>\n" +
+            "<li>\n" +
+            "<b>Enable File Sharing</b>\n" +
+            "<br>Open the Control Panel, click Choose homegroup and sharing options under Network and Internet, and click Change advanced sharing settings. Enable the file and printer sharing feature.\n" +
+            "</li><br><li><b>Additional File Sharing settings</b><br>You may also want to configure the other advanced sharing settings here. \n" +
+            "For example, you could enable access to your files without a password if you trust all the devices on your local network.Once file and printer sharing is enabled, you can open File Explorer or Windows Explorer, right-click a folder you want to share, and select Properties. \n" +
+            "Click the Share button and make the folder available on the network.\n" +
+            "</li><li><br><b>Make sure both devices are on same Wifi</b><br> \n" +
+            "This feature makes files available on the local network, so your PC and mobile devices have to be on the same local network. You can’t access a shared Windows folder over the Internet or when your smartphone is connected to its mobile data — it has to be connected to Wi-Fi.</li><li>\n" +
+            "<br><b>Find IP Address</b>\n" +
+            "<br>Open Command Prompt. Type 'ipconfig' and press Enter. Look for Default Gateway under your network adapter for your router's IP address. Look for \\\"IPv4 Address\\\" under the same adapter section to find your computer's IP address.</li><li><br>\n" +
+            "<b>Enter details in smb dialog box</b>\n" +
+            "<br>\n" +
+            "</ol>\n" +
+            "</body>\n" +
+            "</html>"));
+    b.positiveText(R.string.doit);
+    b.positiveColor(Color.parseColor(m.fabskin));
+    b.build().show();
+}
 public void showPackageDialog(final File f,final MainActivity m){
     MaterialDialog.Builder mat=new MaterialDialog.Builder(m);
     mat.title(R.string.packageinstaller).content(R.string.pitext)

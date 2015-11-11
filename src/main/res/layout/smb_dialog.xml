@@ -33,5 +33,10 @@
         android:text="@string/anonymous"
         android:id="@+id/checkBox2"
         android:layout_gravity="center_horizontal" />
-
+<TextView
+    android:layout_width="wrap_content"
+    android:id="@+id/wanthelp"
+    android:layout_height="wrap_content"
+    android:text="@string/wanthelp"
+    />
 </LinearLayout>
