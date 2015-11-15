@@ -162,7 +162,7 @@ import jcifs.smb.SmbFile;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,Loadlistener {
     public Integer select;
     Futils utils;
     private boolean backPressedToExitOnce = false;
@@ -1445,30 +1445,35 @@ public class MainActivity extends AppCompatActivity implements
         driveConnection=null;
     }
 
+    @Override
+    public void load(List<Layoutelements> layoutelements, String driveId) throws RemoteException {
+
+    }
+
+    @Override
+    public void error(String message, int mode) throws RemoteException {
+
+    }
+
+    @Override
+    public IBinder asBinder() {
+        if(aidlInterface!=null)
+            return aidlInterface.asBinder();
+        return null;
+    }
+
     private class DriveConnection implements ServiceConnection{
         @Override
         public void onServiceConnected(ComponentName name, final IBinder service) {
             aidlInterface=IMyAidlInterface.Stub.asInterface(service);
+
             try {
-                aidlInterface.create(new Loadlistener.Stub() {
-                    @Override
-                    public void load(List<Layoutelements> layoutelements, String driveId) throws RemoteException {
-                        Toast.makeText(mainActivity,driveId+"",Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void error(String message, int mode) throws RemoteException {
-                        Log.d("DriveConnection", "Error" + message);
-                    }
-
-                    @Override
-                    public IBinder asBinder() {
-                        return service;
-                    }
-                });
+                aidlInterface.registerCallback(mainActivity);
+                aidlInterface.create();
             } catch (RemoteException e) {
-                Log.d("DriveConnection",e.getLocalizedMessage());
+                e.printStackTrace();
             }
+
         }
 
         @Override
@@ -2739,6 +2744,32 @@ public class MainActivity extends AppCompatActivity implements
             intent.putExtra("zip", file.getPath());
             startService(intent);
         } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void onNewIntent(Intent i){
+        intent = i;
+        path = i.getStringExtra("path");
+        if(path!=null){
+
+            ((Main)getFragment().getTab()).loadlist(path,false,0);
+        }
+        if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
+
+            // file picker intent
+            mReturnIntent = true;
+            Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
+        } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
+            // ringtone picker intent
+            mReturnIntent = true;
+            mRingtonePickerIntent = true;
+            Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
+        } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
+
+            // zip viewer intent
+            Uri uri = intent.getData();
+            openzip = true;
+            zippath = uri.toString();
+        }
     }
 
     public void compressFiles(File file, ArrayList<String> b) {

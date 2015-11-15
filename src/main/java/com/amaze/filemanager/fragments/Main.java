@@ -1064,7 +1064,7 @@ public class Main extends android.support.v4.app.Fragment {
                     for (int i4 = 0; i4 < plist.size(); i4++) {
                         copies1.add(LIST_ELEMENTS.get(plist.get(i4)).getDesc());
                     }
-                    utils.showNameDialog((MainActivity) getActivity(), copies1, CURRENT_PATH);
+                    utils.showCompressDialog((MainActivity) getActivity(), copies1, CURRENT_PATH);
                     mode.finish();
                     return true;
                 case R.id.openwith:
@@ -1230,7 +1230,6 @@ public class Main extends android.support.v4.app.Fragment {
             loadlist(f.getPath(), true, openMode);
         }
     }
-
     private BroadcastReceiver receiver2 = new BroadcastReceiver() {
 
         @Override

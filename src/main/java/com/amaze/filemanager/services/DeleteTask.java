@@ -20,11 +20,14 @@
 package com.amaze.filemanager.services;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -130,9 +133,18 @@ public class DeleteTask extends AsyncTask<ArrayList<String>, String, Boolean> {
     public void onPostExecute(Boolean b) {
         Intent intent = new Intent("loadlist");
         cd.sendBroadcast(intent);
-        for(String  file:files)
-        utils.scanFile(file, cd);
-        if (!b) {
+
+        if(!files.get(0).startsWith("smb:")) {
+            try {
+                for (String f : files) {
+                delete(cd,f);
+                }
+            } catch (Exception e) {
+                for (String f : files) {
+                    utils.scanFile(f, cd);
+                }
+            }
+        }if (!b) {
             Toast.makeText(cd, utils.getString(cd, R.string.error), Toast.LENGTH_SHORT).show();
         } else if (zipViewer==null) {
             Toast.makeText(cd, utils.getString(cd, R.string.done), Toast.LENGTH_SHORT).show();
@@ -140,6 +152,18 @@ public class DeleteTask extends AsyncTask<ArrayList<String>, String, Boolean> {
         if (zipViewer!=null) {
             zipViewer.files.clear();
         }
+    }
+    public void delete(final Context context, final String file) {
+        final String where = MediaStore.MediaColumns.DATA + "=?";
+        final String[] selectionArgs = new String[] {
+                file
+        };
+        final ContentResolver contentResolver = context.getContentResolver();
+        final Uri filesUri = MediaStore.Files.getContentUri("external");
+        // Delete the entry from the media database. This will actually delete media files.
+        contentResolver.delete(filesUri, where, selectionArgs);
+        // If the file is not a media file, create a new entry.
+
     }
 }
 

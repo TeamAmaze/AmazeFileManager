@@ -756,9 +756,9 @@ public void showPackageDialog(final File f,final MainActivity m){
         return b;
     }
 
-    public void showNameDialog(final MainActivity m, final ArrayList<String> b, final String current) {
+    public void showCompressDialog(final MainActivity m, final ArrayList<String> b, final String current) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
-        a.input(getString(m, R.string.enterzipname), new File(current).getName() + ".zip", false, new
+        a.input(getString(m, R.string.enterzipname), ".zip", false, new
                 MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
@@ -771,17 +771,15 @@ public void showPackageDialog(final File f,final MainActivity m){
         a.title(getString(m, R.string.enterzipname));
         a.positiveText(R.string.create);
         a.positiveColor(Color.parseColor(m.fabskin));
-        a.callback(new MaterialDialog.ButtonCallback() {
+        a.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
-            public void onPositive(MaterialDialog materialDialog) {
+            public void onClick(MaterialDialog materialDialog, DialogAction dialogAction) {
+                if(materialDialog.getInputEditText().getText().toString().equals(".zip"))
+                    Toast.makeText(m,"File should have a name",Toast.LENGTH_SHORT).show();
+                else {
                 String name = current + "/" + materialDialog.getInputEditText().getText().toString();
                 m.compressFiles(new File(name), b);
-            }
-
-            @Override
-            public void onNegative(MaterialDialog materialDialog) {
-
-            }
+            }}
         });
         a.negativeText(getString(m, R.string.cancel));
         a.negativeColor(Color.parseColor(m.fabskin));
