@@ -127,9 +127,9 @@
     <orderEntry type="library" exported="" name="google-api-services-drive-v2-rev190-1.20.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-23.1.0" level="project" />
     <orderEntry type="library" exported="" name="library-1.1.4" level="project" />
+    <orderEntry type="library" exported="" name="jsr305-1.3.9" level="project" />
     <orderEntry type="library" exported="" name="commons-vfs2-2.0" level="project" />
     <orderEntry type="library" exported="" name="regexp-1.3" level="project" />
-    <orderEntry type="library" exported="" name="jsr305-1.3.9" level="project" />
     <orderEntry type="library" exported="" name="donations-2.3" level="project" />
     <orderEntry type="library" exported="" name="plexus-utils-1.5.6" level="project" />
     <orderEntry type="library" exported="" name="systembartint-1.0.3" level="project" />
@@ -142,8 +142,8 @@
     <orderEntry type="library" exported="" name="google-api-client-1.20.0" level="project" />
     <orderEntry type="library" exported="" name="google-http-client-jackson2-1.20.0" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-23.1.0" level="project" />
-    <orderEntry type="library" exported="" name="jackson-core-2.1.3" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.4" level="project" />
+    <orderEntry type="library" exported="" name="jackson-core-2.1.3" level="project" />
     <orderEntry type="library" exported="" name="core-0.8.5.0" level="project" />
     <orderEntry type="library" exported="" name="maven-scm-provider-svn-commons-1.4" level="project" />
     <orderEntry type="library" exported="" name="junrar-0.7" level="project" />

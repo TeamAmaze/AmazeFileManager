@@ -627,14 +627,18 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
 
-    void initNoFileLayout() {
+    void initNoFileLayout()
+    {
         nofilesview = rootView.findViewById(R.id.nofilelayout);
-        if (theme1 == 0)
-            ((ImageView) nofilesview.findViewById(R.id.image)).setColorFilter(Color.parseColor
-                    ("#666666"));
-        else ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
+        if (theme1 == 0) {
+
+            ((ImageView) nofilesview.findViewById(R.id.image)).setColorFilter(Color.parseColor("#666666"));
+        } else {
+            nofilesview.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+            ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
+        }
     }
-    public boolean checkforpath(String path){
+    public boolean checkforpath(String path) {
         if(PERM_GRID)return true;
         boolean grid=false;
         for(String s:MAIN_ACTIVITY.gridfiles)
