@@ -30,6 +30,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -38,12 +39,19 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.UserHandle;
 import android.preference.PreferenceManager;
+import android.provider.BaseColumns;
+import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatTextView;
+import android.text.Html;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -63,6 +71,7 @@ import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
 import com.amaze.filemanager.ui.CircleAnimation;
 import com.amaze.filemanager.ui.Layoutelements;
+import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.SizeDrawable;
@@ -162,7 +171,6 @@ public  final int READ = 4;
             editText.setBackgroundTintList(editTextColorStateList);
         }
     }
-
     public int checkFolder(final String f,Context context) {
         if(f==null)return 0;
         if(f.startsWith("smb://"))return 1;
@@ -261,7 +269,10 @@ public  final int READ = 4;
 
         String type = MimeTypes.getMimeType(f);
         if(type!=null && type.trim().length()!=0 && !type.equals("*/*"))
-        {intent.setDataAndType(Uri.fromFile(f), type);
+        {
+            Uri uri=fileToContentUri(c, f);
+            if(uri==null)uri=Uri.fromFile(f);
+            intent.setDataAndType(uri, type);
         Intent startintent;
         if (forcechooser) startintent=Intent.createChooser(intent, c.getResources().getString(R.string.openwith));
         else startintent=intent;
@@ -275,34 +286,123 @@ public  final int READ = 4;
 
     }
 
+    private static final String INTERNAL_VOLUME = "internal";
+    public static final String EXTERNAL_VOLUME = "external";
+
+    private static final String EMULATED_STORAGE_SOURCE = System.getenv("EMULATED_STORAGE_SOURCE");
+    private static final String EMULATED_STORAGE_TARGET = System.getenv("EMULATED_STORAGE_TARGET");
+    private static final String EXTERNAL_STORAGE = System.getenv("EXTERNAL_STORAGE");
+    public static String normalizeMediaPath(String path) {
+        // Retrieve all the paths and check that we have this environment vars
+        if (TextUtils.isEmpty(EMULATED_STORAGE_SOURCE) ||
+                TextUtils.isEmpty(EMULATED_STORAGE_TARGET) ||
+                TextUtils.isEmpty(EXTERNAL_STORAGE)) {
+            return path;
+        }
+
+        // We need to convert EMULATED_STORAGE_SOURCE -> EMULATED_STORAGE_TARGET
+        if (path.startsWith(EMULATED_STORAGE_SOURCE)) {
+            path = path.replace(EMULATED_STORAGE_SOURCE, EMULATED_STORAGE_TARGET);
+        }
+        return path;
+    }
+    public static Uri fileToContentUri(Context context, File file) {
+        // Normalize the path to ensure media search
+        final String normalizedPath = normalizeMediaPath(file.getAbsolutePath());
+
+        // Check in external and internal storages
+        Uri uri = fileToContentUri(context, normalizedPath, EXTERNAL_VOLUME);
+        if (uri != null) {
+            return uri;
+        }
+        uri = fileToContentUri(context, normalizedPath, INTERNAL_VOLUME);
+        if (uri != null) {
+            return uri;
+        }
+        return null;
+    }
+
+    private static Uri fileToContentUri(Context context, String path, String volume) {
+        String[] projection = null;
+        final String where = MediaStore.MediaColumns.DATA + " = ?";
+        Uri baseUri = MediaStore.Files.getContentUri(volume);
+        boolean isMimeTypeImage = false, isMimeTypeVideo = false, isMimeTypeAudio = false;
+        isMimeTypeImage = Icons.isPicture( path);
+        if (!isMimeTypeImage) {
+            isMimeTypeVideo = Icons.isVideo(path);
+            if (!isMimeTypeVideo) {
+                isMimeTypeAudio = Icons.isVideo(path);
+            }
+        }
+        if (isMimeTypeImage || isMimeTypeVideo || isMimeTypeAudio) {
+            projection = new String[]{BaseColumns._ID};
+            if (isMimeTypeImage) {
+                baseUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            } else if (isMimeTypeVideo) {
+                baseUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+            } else if (isMimeTypeAudio) {
+                baseUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+            }
+        } else {
+            projection = new String[]{BaseColumns._ID, MediaStore.Files.FileColumns.MEDIA_TYPE};
+        }
+        ContentResolver cr = context.getContentResolver();
+        Cursor c = cr.query(baseUri, projection, where, new String[]{path}, null);
+        try {
+            if (c != null && c.moveToNext()) {
+                boolean isValid = false;
+                if (isMimeTypeImage || isMimeTypeVideo || isMimeTypeAudio) {
+                    isValid = true;
+                } else {
+                    int type = c.getInt(c.getColumnIndexOrThrow(
+                            MediaStore.Files.FileColumns.MEDIA_TYPE));
+                    isValid = type != 0;
+                }
+
+                if (isValid) {
+                    // Do not force to use content uri for no media files
+                    long id = c.getLong(c.getColumnIndexOrThrow(BaseColumns._ID));
+                    return Uri.withAppendedPath(baseUri, String.valueOf(id));
+                }
+            }
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+        return null;
+    }
 public void openWith(final File f,final Context c) {
         MaterialDialog.Builder a=new MaterialDialog.Builder(c);
         a.title(getString(c, R.string.openas));
         String[] items=new String[]{getString(c,R.string.text),getString(c,R.string.image),getString(c,R.string.video),getString(c,R.string.audio),getString(c,R.string.database),getString(c,R.string.other)};
+
         a.items(items).itemsCallback(new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                Uri uri=fileToContentUri(c, f);
+                if(uri==null)uri=Uri.fromFile(f);
                 Intent intent = new Intent();
                 intent.setAction(android.content.Intent.ACTION_VIEW);
                 switch (i) {
                     case 0:
-                        intent.setDataAndType(Uri.fromFile(f), "text/*");
+                        intent.setDataAndType(uri, "text/*");
                         break;
                     case 1:
-                        intent.setDataAndType(Uri.fromFile(f), "image/*");
+                        intent.setDataAndType(uri, "image/*");
                         break;
                     case 2:
-                        intent.setDataAndType(Uri.fromFile(f), "video/*");
+                        intent.setDataAndType(uri, "video/*");
                         break;
                     case 3:
-                        intent.setDataAndType(Uri.fromFile(f), "audio/*");
+                        intent.setDataAndType(uri, "audio/*");
                         break;
                     case 4:
                         intent = new Intent(c, DbViewer.class);
                         intent.putExtra("path", f.getPath());
                         break;
                     case 5:
-                        intent.setDataAndType(Uri.fromFile(f), "*/*");
+                        intent.setDataAndType(uri, "*/*");
                         break;
                 }
                 try {
@@ -647,7 +747,34 @@ public void openWith(final File f,final Context c) {
             }
         }
     }
+public void showSMBHelpDialog(MainActivity m){
 
+    MaterialDialog.Builder b=new MaterialDialog.Builder(m);
+    b.content(Html.fromHtml("<html>\n" +
+            "<body>\n" +
+            "<center>\n" +
+            "<h1>How to access shared windows folder on android (smb)</h1>\n" +
+            "</center>\n" +
+            "<ol>\n" +
+            "<li>\n" +
+            "<b>Enable File Sharing</b>\n" +
+            "<br>Open the Control Panel, click Choose homegroup and sharing options under Network and Internet, and click Change advanced sharing settings. Enable the file and printer sharing feature.\n" +
+            "</li><br><li><b>Additional File Sharing settings</b><br>You may also want to configure the other advanced sharing settings here. \n" +
+            "For example, you could enable access to your files without a password if you trust all the devices on your local network.Once file and printer sharing is enabled, you can open File Explorer or Windows Explorer, right-click a folder you want to share, and select Properties. \n" +
+            "Click the Share button and make the folder available on the network.\n" +
+            "</li><li><br><b>Make sure both devices are on same Wifi</b><br> \n" +
+            "This feature makes files available on the local network, so your PC and mobile devices have to be on the same local network. You can’t access a shared Windows folder over the Internet or when your smartphone is connected to its mobile data — it has to be connected to Wi-Fi.</li><li>\n" +
+            "<br><b>Find IP Address</b>\n" +
+            "<br>Open Command Prompt. Type 'ipconfig' and press Enter. Look for Default Gateway under your network adapter for your router's IP address. Look for \\\"IPv4 Address\\\" under the same adapter section to find your computer's IP address.</li><li><br>\n" +
+            "<b>Enter details in smb dialog box</b>\n" +
+            "<br>\n" +
+            "</ol>\n" +
+            "</body>\n" +
+            "</html>"));
+    b.positiveText(R.string.doit);
+    b.positiveColor(Color.parseColor(m.fabskin));
+    b.build().show();
+}
 public void showPackageDialog(final File f,final MainActivity m){
     MaterialDialog.Builder mat=new MaterialDialog.Builder(m);
     mat.title(R.string.packageinstaller).content(R.string.pitext)
@@ -728,9 +855,9 @@ public void showPackageDialog(final File f,final MainActivity m){
         return b;
     }
 
-    public void showNameDialog(final MainActivity m, final ArrayList<String> b, final String current) {
+    public void showCompressDialog(final MainActivity m, final ArrayList<String> b, final String current) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
-        a.input(getString(m, R.string.enterzipname), new File(current).getName() + ".zip", false, new
+        a.input(getString(m, R.string.enterzipname), ".zip", false, new
                 MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
@@ -743,17 +870,15 @@ public void showPackageDialog(final File f,final MainActivity m){
         a.title(getString(m, R.string.enterzipname));
         a.positiveText(R.string.create);
         a.positiveColor(Color.parseColor(m.fabskin));
-        a.callback(new MaterialDialog.ButtonCallback() {
+        a.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
-            public void onPositive(MaterialDialog materialDialog) {
+            public void onClick(MaterialDialog materialDialog, DialogAction dialogAction) {
+                if(materialDialog.getInputEditText().getText().toString().equals(".zip"))
+                    Toast.makeText(m,"File should have a name",Toast.LENGTH_SHORT).show();
+                else {
                 String name = current + "/" + materialDialog.getInputEditText().getText().toString();
                 m.compressFiles(new File(name), b);
-            }
-
-            @Override
-            public void onNegative(MaterialDialog materialDialog) {
-
-            }
+            }}
         });
         a.negativeText(getString(m, R.string.cancel));
         a.negativeColor(Color.parseColor(m.fabskin));

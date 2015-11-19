@@ -19,38 +19,20 @@
 
 package com.amaze.filemanager.services.asynctasks;
 
-import android.content.ContentResolver;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
-import android.view.View;
 import android.widget.Toast;
 
 import com.amaze.filemanager.fragments.Main;
-import com.amaze.filemanager.ui.icons.MimeTypes;
-import com.amaze.filemanager.utils.DriveUtil;
-import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.ui.Layoutelements;
+import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.RootHelper;
-import com.google.android.gms.auth.UserRecoverableAuthException;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.model.FileList;
-import com.google.api.services.drive.model.ParentReference;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import java.util.Vector;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -132,32 +114,6 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
             }
             else return null;
             }else if(openmode==3){
-                if(android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()){
-                    Drive client;
-                    if((client=ma.MAIN_ACTIVITY.getDriveClient())!=null)
-                    {
-                        try {
-                            list=ma.addToDrive( ma.driveUtil.listRoot(client));
-                        } catch (UserRecoverableAuthIOException e) {
-                            ma.MAIN_ACTIVITY.chooseAccount();
-                            e.printStackTrace();
-                        }catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }else{
-                    Drive client;
-                    if((client=ma.MAIN_ACTIVITY.getDriveClient())!=null)
-                        try {
-                        list=ma.addToDrive(ma.driveUtil.listFolder(client,path));
-                    } catch (UserRecoverableAuthIOException e) {
-                            ma.MAIN_ACTIVITY.chooseAccount();
-                            e.printStackTrace();
-                        }
-                        catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                }
 
 
         } else {

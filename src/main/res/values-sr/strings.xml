@@ -194,6 +194,7 @@
     <string name="Extracting_fles">Распакујем фајлове</string>
     <string name="Zipping_fles">Компресујем фајлове</string>
     <string name="items">ставки</string>
+    <string name="item">ставка</string>
     <string name="set">Постави</string>
     <string name="enablerootmde">Омогући корени режим</string>
     <string name="goback">Иди назад</string>
@@ -354,5 +355,15 @@
     <string name="documents">Документи</string>
     <string name="images">Слике</string>
     <string name="clear">Очисти</string>
+    <string name="md5">мд5: </string>
+    <string name="md5_2">Копирај мд5</string>
+    <string name="total">Укупно: </string>
+    <string name="calculating"> израчунавам </string>
+    <string name="sort">Ређање</string>
+    <string name="ascending">Растуће</string>
+    <string name="descending">Опадајуће</string>
+    <string name="defualt">Подразумевано</string>
+    <string name="doit">Уради то</string>
+    <string name="wanthelp"><u>Требате помоћ?</u></string>
 </resources>
 

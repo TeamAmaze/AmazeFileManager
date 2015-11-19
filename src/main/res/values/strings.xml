@@ -363,5 +363,7 @@
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
     <string name="defualt">Default</string>
+    <string name="doit">Do it</string>
+    <string name="wanthelp"><u>Need help?</u></string>
 </resources>
 

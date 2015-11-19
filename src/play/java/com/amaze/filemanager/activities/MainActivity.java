@@ -19,31 +19,29 @@
 
 package com.amaze.filemanager.activities;
 
-import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.media.RingtoneManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -51,6 +49,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -60,6 +60,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -95,7 +96,8 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.IMyAidlInterface;
+import com.amaze.filemanager.Loadlistener;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.TabHandler;
@@ -110,10 +112,10 @@ import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
+import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
-import com.amaze.filemanager.utils.DriveUtil;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.ui.icons.IconUtils;
@@ -127,19 +129,9 @@ import com.amaze.filemanager.utils.Shortcuts;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.ExponentialBackOff;
-import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.DriveScopes;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -157,7 +149,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -171,7 +162,7 @@ import jcifs.smb.SmbFile;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,Loadlistener {
     public Integer select;
     Futils utils;
     private boolean backPressedToExitOnce = false;
@@ -213,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements
     private View drawerHeaderView;
     private RoundedImageView drawerProfilePic;
     private DisplayImageOptions displayImageOptions;
-    private int sdk, COUNTER=0;
+    private int sdk;
     private TextView mGoogleName, mGoogleId;
     public String fabskin;
     private LinearLayout buttons;
@@ -229,10 +220,6 @@ public class MainActivity extends AppCompatActivity implements
     int operation;
     ArrayList<String> oparrayList;
     String oppathe, oppathe1;
-
-    // string builder object variables for pathBar animations
-    private StringBuilder newPathBuilder, oldPathBuilder;
-
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
     /* Request code used to invoke sign in user interactions. */
@@ -247,13 +234,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public HistoryManager history, hidden, grid, listManager;
     public ArrayList<String> hiddenfiles, gridfiles, listfiles;
-    GoogleAccountCredential mCredential;
 
-    static final int REQUEST_ACCOUNT_PICKER = 1000;
-    static final int REQUEST_AUTHORIZATION = 1001;
-    static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
-    private static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = {DriveScopes.DRIVE};
 
     /**
      * Called when the activity is first created.
@@ -502,12 +483,6 @@ public class MainActivity extends AppCompatActivity implements
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         util = new IconUtils(Sp, this);
         icons = new IconUtils(Sp, this);
-
-        mCredential = GoogleAccountCredential.usingOAuth2(
-                getApplicationContext(), Arrays.asList(SCOPES))
-                .setBackOff(new ExponentialBackOff())
-                .setSelectedAccountName(null);
-
         pathbar = (LinearLayout) findViewById(R.id.pathbar);
         buttons = (LinearLayout) findViewById(R.id.buttons);
         scroll = (HorizontalScrollView) findViewById(R.id.scroll);
@@ -1447,12 +1422,67 @@ public class MainActivity extends AppCompatActivity implements
                 createSmbDialog("", false, ma);
                 break;
             case 3:
-                chooseAccount();
+                bindDrive();
+                //todo
                 break;
         }
     }
+    DriveConnection driveConnection;
+    IMyAidlInterface aidlInterface;
+    void bindDrive() {
+        driveConnection = new DriveConnection();
+        Intent i = new Intent();
+        i.setClassName("com.amaze.filemanager.driveplugin", "com.amaze.filemanager.driveplugin.MainService");
+        try {
+            bindService((i), driveConnection, Context.BIND_AUTO_CREATE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    void unbindDrive(){
+        if(driveConnection!=null)
+       unbindService(driveConnection);
+        driveConnection=null;
+    }
 
+    @Override
+    public void load(List<Layoutelements> layoutelements, String driveId) throws RemoteException {
 
+    }
+
+    @Override
+    public void error(String message, int mode) throws RemoteException {
+
+    }
+
+    @Override
+    public IBinder asBinder() {
+        if(aidlInterface!=null)
+            return aidlInterface.asBinder();
+        return null;
+    }
+
+    private class DriveConnection implements ServiceConnection{
+        @Override
+        public void onServiceConnected(ComponentName name, final IBinder service) {
+            aidlInterface=IMyAidlInterface.Stub.asInterface(service);
+
+            try {
+                aidlInterface.registerCallback(mainActivity);
+                aidlInterface.create();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            driveConnection=null;
+            Log.d("DriveConnection","DisConnected");
+            aidlInterface=null;
+        }
+    }
     public void search() {
         final Main ma = (Main) ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
         final String fpath = ma.CURRENT_PATH;
@@ -1559,6 +1589,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onDestroy() {
         super.onDestroy();
         Sp.edit().putBoolean("remember", true).apply();
+        unbindDrive();
         if (grid != null)
             grid.end();
         if (listManager != null)
@@ -2115,41 +2146,6 @@ public class MainActivity extends AppCompatActivity implements
                     compressFiles(new File(oppathe), oparrayList);
             }
         }
-        else {
-            switch (requestCode){
-                case REQUEST_GOOGLE_PLAY_SERVICES:
-                    if (responseCode != RESULT_OK) {
-                        isGooglePlayServicesAvailable();
-                    }
-                    break;
-                case REQUEST_ACCOUNT_PICKER:
-                    if (responseCode == RESULT_OK && intent != null &&
-                            intent.getExtras() != null) {
-                        String accountName =
-                                intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                        if (accountName != null) {
-                            mCredential.setSelectedAccountName(accountName);
-                            try {
-                                if (!new File(getFilesDir() + "/" + "accounts.xml").exists())
-                                    servers.makeS(false);
-                                account.addS(accountName);
-                                accounts.add(accountName);
-                                refreshDrawer();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        initialiseDrive(accountName);
-                    }
-                    break;
-                case REQUEST_AUTHORIZATION:
-                    if (responseCode != RESULT_OK) {
-                        chooseAccount();
-                    }
-                    break;
-
-            }
-        }
     }
 
     public void rename(String f, String f1) {
@@ -2219,76 +2215,6 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         startActivityForResult(intent, 3);
     }
-    private com.google.api.services.drive.Drive mService = null;
-    public Drive getDriveClient(){
-        if(isDeviceOnline())return mService;
-        else Toast.makeText(mainActivity,"Offline",Toast.LENGTH_SHORT).show();
-        return null;
-    }
-    void initialiseDrive(String accountName){
-        // Initialize credentials and service object.
-        if(accountName!=null)
-            mCredential.setSelectedAccountName(accountName);
-        else chooseAccount();
-        HttpTransport transport = AndroidHttp.newCompatibleTransport();
-        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-        mService = new com.google.api.services.drive.Drive.Builder(
-                transport, jsonFactory, mCredential)
-                .setApplicationName("Amaze")
-                .build();
-        ((Main) getFragment().getTab()).loadlist(accountName, false, 3);
-    }
-
-    public void chooseAccount() {
-        startActivityForResult(
-                mCredential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
-    }
-
-    /**
-     * Checks whether the device currently has a network connection.
-     * @return true if the device has a network connection, false otherwise.
-     */
-    private boolean isDeviceOnline() {
-        ConnectivityManager connMgr =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
-    }
-
-    /**
-     * Check that Google Play services APK is installed and up to date. Will
-     * launch an error dialog for the user to update Google Play Services if
-     * possible.
-     * @return true if Google Play Services is available and up to
-     *     date on this device; false otherwise.
-     */
-    private boolean isGooglePlayServicesAvailable() {
-        final int connectionStatusCode =
-                GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (GooglePlayServicesUtil.isUserRecoverableError(connectionStatusCode)) {
-            showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
-            return false;
-        } else if (connectionStatusCode != ConnectionResult.SUCCESS ) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Display an error dialog showing that Google Play Services is missing
-     * or out of date.
-     * @param connectionStatusCode code describing the presence (or lack of)
-     *     Google Play Services on this device.
-     */
-    void showGooglePlayServicesAvailabilityErrorDialog(
-            final int connectionStatusCode) {
-        Dialog dialog = GooglePlayServicesUtil.getErrorDialog(
-                connectionStatusCode,
-                MainActivity.this,
-                REQUEST_GOOGLE_PLAY_SERVICES);
-        dialog.show();
-    }
-
     public void bbar(final Main main) {
         final String text = main.CURRENT_PATH;
         try {
@@ -2481,21 +2407,15 @@ public class MainActivity extends AppCompatActivity implements
         final String oldPath = bapath.getText().toString();
         if (oldPath != null && oldPath.equals(newPath)) return;
 
-        // implement animation while setting text
-        newPathBuilder = new StringBuilder().append(newPath);
-        oldPathBuilder = new StringBuilder().append(oldPath);
 
         final Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in);
         Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_out);
 
-        if (newPath.length() >= oldPath.length() &&
-                newPathBuilder.delete(oldPath.length(), newPath.length()).toString().equals(oldPath) &&
-                oldPath.length()!=0) {
-
+        final StringBuilder stringBuilder = new StringBuilder();
+        if (newPath.length() >= oldPath.length()) {
             // navigate forward
-            newPathBuilder = new StringBuilder();
-            newPathBuilder.append(newPath);
-            newPathBuilder.delete(0, oldPath.length());
+            stringBuilder.append(newPath);
+            stringBuilder.delete(0, oldPath.length());
             animPath.setAnimation(slideIn);
             animPath.animate().setListener(new AnimatorListenerAdapter() {
                 @Override
@@ -2509,7 +2429,7 @@ public class MainActivity extends AppCompatActivity implements
                 public void onAnimationStart(Animator animation) {
                     super.onAnimationStart(animation);
                     animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(newPathBuilder.toString());
+                    animPath.setText(stringBuilder.toString());
                     //bapath.setText(oldPath);
 
                     scroll.post(new Runnable() {
@@ -2519,14 +2439,11 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
-            }).setStartDelay(500).start();
-        } else if (newPath.length() <= oldPath.length() &&
-                oldPathBuilder.delete(newPath.length(), oldPath.length()).toString().equals(newPath)) {
-
+            }).start();
+        } else if (newPath.length() <= oldPath.length()) {
             // navigate backwards
-            oldPathBuilder = new StringBuilder();
-            oldPathBuilder.append(oldPath);
-            oldPathBuilder.delete(0, newPath.length());
+            stringBuilder.append(oldPath);
+            stringBuilder.delete(0, newPath.length());
             animPath.setAnimation(slideOut);
             animPath.animate().setListener(new AnimatorListenerAdapter() {
                 @Override
@@ -2547,7 +2464,7 @@ public class MainActivity extends AppCompatActivity implements
                 public void onAnimationStart(Animator animation) {
                     super.onAnimationStart(animation);
                     animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(oldPathBuilder.toString());
+                    animPath.setText(stringBuilder.toString());
                     bapath.setText(newPath);
 
                     scroll.post(new Runnable() {
@@ -2557,92 +2474,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
-            }).setStartDelay(500).start();
-        } else if (oldPath.isEmpty()) {
-
-            // case when app starts
-            COUNTER++;
-            if (COUNTER==2) {
-
-                animPath.setAnimation(slideIn);
-                animPath.setText(newPath);
-                animPath.animate().setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        super.onAnimationStart(animation);
-                        animPath.setVisibility(View.VISIBLE);
-                        bapath.setText("");
-                        scroll.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                scroll1.fullScroll(View.FOCUS_RIGHT);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        animPath.setVisibility(View.GONE);
-                        bapath.setText(newPath);
-                    }
-                }).setStartDelay(500).start();
-            }
-
-        } else {
-
-            // completely different path
-            // first slide out of old path followed by slide in of new path
-            animPath.setAnimation(slideOut);
-            animPath.animate().setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animator) {
-                    super.onAnimationStart(animator);
-                    animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(oldPath);
-                    bapath.setText("");
-
-                    scroll.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            scroll1.fullScroll(View.FOCUS_LEFT);
-                        }
-                    });
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animator) {
-                    super.onAnimationEnd(animator);
-
-                    //animPath.setVisibility(View.GONE);
-                    animPath.setText(newPath);
-                    bapath.setText("");
-                    animPath.setAnimation(slideIn);
-
-                    animPath.animate().setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            animPath.setVisibility(View.GONE);
-                            bapath.setText(newPath);
-                        }
-
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            super.onAnimationStart(animation);
-                            // we should not be having anything here in path bar
-                            animPath.setVisibility(View.VISIBLE);
-                            bapath.setText("");
-                            scroll.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    scroll1.fullScroll(View.FOCUS_RIGHT);
-                                }
-                            });
-                        }
-                    }).start();
-                }
-            }).setStartDelay(500).start();
+            }).start();
         }
     }
 
@@ -2800,8 +2632,7 @@ public class MainActivity extends AppCompatActivity implements
                     else if(hFile.isCustomPath())
                         ((Main) m.getTab()).loadlist((pending_path), false, 2);
                     else if(android.util.Patterns.EMAIL_ADDRESS.matcher(pending_path).matches()){
-                        initialiseDrive(pending_path);
-
+                        //todo
                     }
                     else utils.openFile(new File(pending_path), mainActivity);
 
@@ -2914,6 +2745,32 @@ public class MainActivity extends AppCompatActivity implements
             startService(intent);
         } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
+    @Override
+    public void onNewIntent(Intent i){
+        intent = i;
+        path = i.getStringExtra("path");
+        if(path!=null){
+
+            ((Main)getFragment().getTab()).loadlist(path,false,0);
+        }
+        if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
+
+            // file picker intent
+            mReturnIntent = true;
+            Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
+        } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
+            // ringtone picker intent
+            mReturnIntent = true;
+            mRingtonePickerIntent = true;
+            Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
+        } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
+
+            // zip viewer intent
+            Uri uri = intent.getData();
+            openzip = true;
+            zippath = uri.toString();
+        }
+    }
 
     public void compressFiles(File file, ArrayList<String> b) {
         int mode = checkFolder(file.getParentFile(), this);
@@ -2942,6 +2799,13 @@ public class MainActivity extends AppCompatActivity implements
         utils.setTint(pass, color);
         final CheckBox ch = (CheckBox) v2.findViewById(R.id.checkBox2);
         utils.setTint(ch, color);
+        TextView help=(TextView)v2.findViewById(R.id.wanthelp);
+        help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                utils.showSMBHelpDialog(mainActivity);
+            }
+        });
         ch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
