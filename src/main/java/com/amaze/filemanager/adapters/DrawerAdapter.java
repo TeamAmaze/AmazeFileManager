@@ -119,7 +119,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             view.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View p1) {
-                    m.selectItem(position, false);
+                    m.selectItem(position);
                 }
                 // TODO: Implement this method
 
@@ -135,18 +135,8 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                             m.createSmbDialog(path, true, null);
                             return true;
                         }
-                        if (m.theme1 == 0)
-                            imageView.setImageResource(R.drawable.ic_action_cancel_light);
-                        else
-                            imageView.setImageResource(R.drawable.ic_action_cancel);
-                        imageView.setClickable(true);
+                        m.renameBookmark(((EntryItem) getItem(position)).getTitle(),path);
 
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                m.selectItem(position, true);
-                            }
-                        });
                     }
 
                     // return true to denote no further processing

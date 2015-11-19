@@ -24,23 +24,51 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class HistoryManager {
     SQLiteDatabase db;
-    String table;
     Context c;
     String dbname;
-    public HistoryManager(Context c, String x,String dbname) {
+    String[] a;
+    public HistoryManager(Context c ,String dbname) {
         this.c = c;
-        table = x;
         this.dbname=dbname;
         open();
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + x + " (PATH VARCHAR)");
+        String sd = Environment.getExternalStorageDirectory() + "/";
+        a = new String[]{sd + Environment.DIRECTORY_DCIM, sd + Environment.DIRECTORY_DOWNLOADS, sd + Environment.DIRECTORY_MOVIES, sd + Environment.DIRECTORY_MUSIC, sd + Environment.DIRECTORY_PICTURES};
     }
+    public void make(String table){
+        for(String d:a){
+            addPath(new File(d).getName(),d,table,1);
+        }
+    }
+    public void initializeTable(String table,int mode){
+        if(mode==0)
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + table + " (PATH VARCHAR)");
+        else
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + table + " (NAME VARCHAR,PATH VARCHAR)");
 
-    public ArrayList<String> readTable() {
+    }
+    public boolean rename(String path,String name,String table){
+    ArrayList<String[]> arrayList=readTableSecondary(table);
+
+        for(int i=0;i<arrayList.size();i++){
+            if(arrayList.get(i)[1].equals(path)){
+                try {
+                    db.execSQL("update "+table+" set name='"+name+"' where path='"+path+"';");
+                    return true;
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false;
+    }
+    public ArrayList<String> readTable(String table) {
         Cursor c = db.rawQuery("SELECT * FROM " + table, null);
         c.moveToLast();
         ArrayList<String> paths = new ArrayList<String>();
@@ -52,26 +80,46 @@ public class HistoryManager {
         } while (c.moveToPrevious());
         return paths;
     }
-    public void clear(){
+    public ArrayList<String[]> readTableSecondary(String table) {
+        Cursor c = db.rawQuery("SELECT * FROM " + table, null);
+        c.moveToLast();
+        ArrayList<String[]> paths = new ArrayList<String[]>();
+        do {
+            try {
+                paths.add(new String[]{c.getString(c.getColumnIndex("NAME")),c.getString(c.getColumnIndex("PATH"))});
+            } catch (Exception e) {
+            }
+        } while (c.moveToPrevious());
+        return paths;
+    }
+    public void clear(String table){
         db.execSQL("DELETE FROM "+table+" WHERE PATH is NOT NULL");
     }
-    public void addPath(String path) {
+    public void addPath(String name,String path,String table,int mode) {
+
         try {
             try {
                 db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "'");
             } catch (Exception e) {
             }
-            db.execSQL("INSERT INTO " + table + " VALUES" + "('" + path + "');");
+            if(mode==0)
+                db.execSQL("INSERT INTO " + table + " VALUES" + "('" + path + "');");
+            else
+                db.execSQL("INSERT INTO " + table + " VALUES" + "('"+name+"','" + path + "');");
         } catch (Exception e) {
-            open();
+                open();
             try {
                 db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "'");
-                db.execSQL("INSERT INTO " + table + " VALUES" + "('" + path + "');");
-            } catch (Exception f) {
-            }e.printStackTrace();
+                if(mode==0)
+                    db.execSQL("INSERT INTO " + table + " VALUES" + "('" + path + "');");
+                else
+                    db.execSQL("INSERT INTO " + table + " VALUES" + "('"+name+"','" + path + "');");
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
         }
     }
-    public void removePath(String path){
+    public void removePath(String path,String table){
         try {
             db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "'");
         } catch (Exception e) {

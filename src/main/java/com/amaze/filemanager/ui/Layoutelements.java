@@ -27,8 +27,6 @@ import android.os.Parcelable;
 
 import com.amaze.filemanager.utils.Futils;
 
-import java.text.SimpleDateFormat;
-
 public class Layoutelements implements Parcelable {
     public Layoutelements(Parcel im) {
         try {
@@ -102,17 +100,8 @@ public class Layoutelements implements Parcelable {
         this.isDirectory = isDirectory;
         if (!date.trim().equals("")) {
             this.date = Long.parseLong(date);
-            this.date1 = getdate(this.date, "MMM dd, yyyy", "15");
+            this.date1 = new Futils().getdate(this.date, "MMM dd, yyyy", "15");
         }
-    }
-
-    public String getdate(long f,String form,String year) {
-
-        SimpleDateFormat sdf = new SimpleDateFormat(form);
-        String date=(sdf.format(f)).toString();
-        if(date.substring(date.length()-2,date.length()).equals(year))
-            date=date.substring(0,date.length()-6);
-        return date;
     }
 
 

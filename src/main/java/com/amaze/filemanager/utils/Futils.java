@@ -100,6 +100,30 @@ public  final int READ = 4;
 
     public Futils() {
     }
+    public MaterialDialog showNameDialog(final MainActivity m, String[] texts) {
+        MaterialDialog.Builder a = new MaterialDialog.Builder(m);
+        a.input(texts[0], texts[1], false, new
+                MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
+
+                    }
+                });
+            a.widgetColor(Color.parseColor(m.fabskin));
+            if(m.theme1==1)
+                a.theme(Theme.DARK);
+            a.title(texts[2]);
+            a.positiveText(texts[3]);
+            a.positiveColor(Color.parseColor(m.fabskin));
+            a.neutralText(texts[4]);
+            if(!texts[5].equals(null)){
+                a.negativeText(texts[5]);
+                a.negativeColor(Color.parseColor(m.fabskin));
+            }
+            MaterialDialog dialog=a.build();
+            return dialog;
+        }
+
 
     public static long folderSize(File directory) {
         long length = 0;
@@ -965,7 +989,7 @@ public void showPackageDialog(final File f,final MainActivity m){
     }
 
     public void showHistoryDialog(final Main m) {
-        final ArrayList<String> paths = m.MAIN_ACTIVITY.history.readTable();
+        final ArrayList<String> paths = m.MAIN_ACTIVITY.history.readTable(m.MAIN_ACTIVITY.HISTORY);
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(Color.parseColor(m.fabSkin));
@@ -976,14 +1000,14 @@ public void showPackageDialog(final File f,final MainActivity m){
             @Override
             public void onNegative(MaterialDialog dialog) {
                 super.onNegative(dialog);
-                m.MAIN_ACTIVITY.history.clear();
+                m.MAIN_ACTIVITY.history.clear(m.MAIN_ACTIVITY.HISTORY);
             }
         });
         if(m.theme1==1)
             a.theme(Theme.DARK);
 
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.MAIN_ACTIVITY.hidden,null,true);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.MAIN_ACTIVITY.history,null,true);
         a.adapter(adapter, new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
@@ -998,7 +1022,7 @@ public void showPackageDialog(final File f,final MainActivity m){
     }
 
     public void showHiddenDialog(final Main m) {
-          final ArrayList<String> paths = m.MAIN_ACTIVITY.hidden.readTable();
+          final ArrayList<String> paths = m.MAIN_ACTIVITY.history.readTable(m.MAIN_ACTIVITY.HIDDEN);
             final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(Color.parseColor(m.fabSkin));
@@ -1006,7 +1030,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         if(m.theme1==1)
             a.theme(Theme.DARK);
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.MAIN_ACTIVITY.hidden,null,false);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.MAIN_ACTIVITY.history,null,false);
         a.adapter(adapter, new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {

@@ -17,7 +17,7 @@ import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
-import com.amaze.filemanager.utils.Shortcuts;
+
 
 import java.io.File;
 import java.util.ArrayList;
@@ -83,7 +83,7 @@ public class HiddenAdapter extends ArrayAdapter<File> {
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            hidden.removePath(items.get(p).getPath());
+            hidden.removePath(items.get(p).getPath(),"Table2");
             if(items.get(p).isDirectory())
             {
                 ArrayList<File> a=new ArrayList<File>();

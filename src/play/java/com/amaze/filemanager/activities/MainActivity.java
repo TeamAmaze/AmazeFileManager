@@ -125,7 +125,6 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootHelper;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
-import com.amaze.filemanager.utils.Shortcuts;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
@@ -172,13 +171,12 @@ public class MainActivity extends AppCompatActivity implements
     SharedPreferences Sp;
     private ActionBarDrawerToggle mDrawerToggle;
     public List<String> val;
-    ArrayList<String> books;
-    public ArrayList<String> Servers,accounts;
+    ArrayList<String[]> books;
+    public ArrayList<String[]> Servers,accounts;
     MainActivity mainActivity = this;
     DrawerAdapter adapter;
     IconUtils util;
     public ScrimInsetsRelativeLayout mDrawerLinear;
-    Shortcuts s, servers,account;
     public String skin, path = "", launchPath;
     public int theme;
     public ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
@@ -232,10 +230,10 @@ public class MainActivity extends AppCompatActivity implements
     public boolean isDrawerLocked = false;
     static final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3, RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
 
-    public HistoryManager history, hidden, grid, listManager;
+    public HistoryManager history, grid;
     public ArrayList<String> hiddenfiles, gridfiles, listfiles;
 
-
+    public String DRIVE="drive",SMB="smb",BOOKS="books",HISTORY="Table1",HIDDEN="Table2",LIST="list",GRID="grid";
     /**
      * Called when the activity is first created.
      */
@@ -439,13 +437,18 @@ public class MainActivity extends AppCompatActivity implements
         drawerProfilePic = (RoundedImageView) drawerHeaderLayout.findViewById(R.id.profile_pic);
         mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
         mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
-        history = new HistoryManager(this, "Table1", "Table2");
-        hidden = new HistoryManager(this, "Table2", "Table2");
-        grid = new HistoryManager(this, "grid", "listgridmodes");
-        listManager = new HistoryManager(this, "list", "listgridmodes");
-        hiddenfiles = hidden.readTable();
-        gridfiles = grid.readTable();
-        listfiles = listManager.readTable();
+        history = new HistoryManager(this, "Table2");
+        history.initializeTable(HISTORY,0);
+        history.initializeTable(HIDDEN,0);
+        grid = new HistoryManager(this, "listgridmodes");
+        grid.initializeTable(LIST,0);
+        grid.initializeTable(GRID,0);
+        grid.initializeTable(BOOKS,1);
+        grid.initializeTable(DRIVE,1);
+        grid.initializeTable(SMB,1);
+        hiddenfiles = history.readTable(HIDDEN);
+        gridfiles = grid.readTable(GRID);
+        listfiles = grid.readTable(LIST);
         // initialize g+ api client as per preferences
         if (Sp.getBoolean("plus_pic", false)) {
 
@@ -473,9 +476,6 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         utils = new Futils();
-        s = new Shortcuts(this, "shortcut.xml");
-        servers = new Shortcuts(this, "servers.xml");
-        account=new Shortcuts(this,"accounts.xml");
         path = getIntent().getStringExtra("path");
         openprocesses = getIntent().getBooleanExtra("openprocesses", false);
         restart = getIntent().getBooleanExtra("restart", false);
@@ -936,7 +936,7 @@ public class MainActivity extends AppCompatActivity implements
         list = new ArrayList<>();
         val = getStorageDirectories();
         books = new ArrayList<>();
-        Servers = new ArrayList<String>();
+        Servers = new ArrayList<>();
         accounts=new ArrayList<>();
         storage_count = 0;
         for (String file : val) {
@@ -958,39 +958,32 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
         list.add(new SectionItem());
-        File f = new File(getFilesDir() + "/servers.xml");
-        if (f.exists()) {
             try {
-                for (String s : servers.readS()) {
+                for (String[] s : grid.readTableSecondary(SMB)) {
                     Servers.add(s);
-                    list.add(new EntryItem(parseSmbPath(s), s, ContextCompat.getDrawable(this, R.drawable.ic_settings_remote_white_48dp)));
+                    list.add(new EntryItem((s)[0], s[1], ContextCompat.getDrawable(this, R.drawable.ic_settings_remote_white_48dp)));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
             if (Servers.size() > 0)
                 list.add(new SectionItem());
-        }
-        File f2 = new File(getFilesDir() + "/accounts.xml");
-        if (f2.exists()) {
-            try {
-                for (String s : account.readS()) {
+
+        try {
+                for (String[] s : grid.readTableSecondary(DRIVE)) {
                     accounts.add(s);
-                    list.add(new EntryItem((s), "drive", ContextCompat.getDrawable(this, R.drawable.drive)));
+                    list.add(new EntryItem((s)[0], s[1], ContextCompat.getDrawable(this, R.drawable.drive)));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
             if (accounts.size() > 0)
                 list.add(new SectionItem());
-        }
+
         try {
-            File f1 = new File(getFilesDir() + "/shortcut.xml");
-            if (!f1.exists()) s.makeS(true);
-            for (String file : s.readS()) {
-                String name = new File(file).getName();
+            for (String[] file : grid.readTableSecondary(BOOKS)) {
                 books.add(file);
-                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this, R.drawable
+                list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
                         .folder_fab)));
             }
             if (books.size() > 0)
@@ -1059,9 +1052,9 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public void selectItem(final int i, boolean removeBookmark) {
+    public void selectItem(final int i) {
         if (!list.get(i).isSection())
-            if ((select == null || select >= list.size()) && !removeBookmark) {
+            if ((select == null || select >= list.size()) ) {
 
                 TabFragment tabFragment = new TabFragment();
                 Bundle a = new Bundle();
@@ -1081,23 +1074,6 @@ public class MainActivity extends AppCompatActivity implements
                 floatingActionButton.showMenuButton(true);
 
 
-            } else if (removeBookmark) {
-                try {
-                    String path = ((EntryItem) list.get(i)).getPath();
-                    if(books.contains(path))
-                    {   s.removeS(path, MainActivity.this);
-                        books.remove(path);
-                    }
-                    else if(accounts.contains(path)){
-                        account.removeS(path, MainActivity.this);
-                        accounts.remove(path);
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                refreshDrawer();
-                select = 0;
             } else {
                 pending_path = ((EntryItem) list.get(i)).getPath();
                 if(pending_path.equals("drive")){
@@ -1293,15 +1269,15 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.view:
                 if (ma.IS_LIST) {
-                    grid.addPath(ma.CURRENT_PATH);
+                    grid.addPath(null,ma.CURRENT_PATH,GRID,0);
                     gridfiles.add(ma.CURRENT_PATH);
-                    listManager.removePath(ma.CURRENT_PATH);
+                    grid.removePath(ma.CURRENT_PATH,LIST);
                 } else {
                     if (gridfiles.contains(ma.CURRENT_PATH)) {
                         gridfiles.remove(ma.CURRENT_PATH);
-                        grid.removePath(ma.CURRENT_PATH);
+                        grid.removePath(ma.CURRENT_PATH,GRID);
                     }
-                    listManager.addPath(ma.CURRENT_PATH);
+                    grid.addPath(null,ma.CURRENT_PATH,LIST,0);
                     listfiles.add(ma.CURRENT_PATH);
 
                 }
@@ -1592,13 +1568,9 @@ public class MainActivity extends AppCompatActivity implements
         unbindDrive();
         if (grid != null)
             grid.end();
-        if (listManager != null)
-            listManager.end();
         if (history != null)
             history.end();
-        if (hidden != null)
-            hidden.end();
-    }
+        }
 
     class CheckForFiles extends AsyncTask<ArrayList<String>, String, ArrayList<String>> {
         Main ma;
@@ -1866,25 +1838,23 @@ public class MainActivity extends AppCompatActivity implements
         }
         list.add(new SectionItem());
         if (Servers != null && Servers.size() > 0) {
-            for (String file : Servers) {
-                String name = parseSmbPath(file);
-                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this, R.drawable.ic_settings_remote_white_48dp)));
+            for (String[] file : Servers) {
+                list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_settings_remote_white_48dp)));
             }
 
             list.add(new SectionItem());
         }
         if (accounts != null && accounts.size() > 0) {
-            for (String file : accounts) {
-                list.add(new EntryItem(file, "drive", ContextCompat.getDrawable(this, R.drawable.drive)));
+            for (String[] file : accounts) {
+                list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.drive)));
             }
 
             list.add(new SectionItem());
         }
         if (books != null && books.size() > 0) {
 
-            for (String file : books) {
-                String name = new File(file).getName();
-                list.add(new EntryItem(name, file, ContextCompat.getDrawable(this, R.drawable
+            for (String[] file : books) {
+                list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
                         .folder_fab)));
             }
             list.add(new SectionItem());
@@ -2613,6 +2583,36 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
+    public void renameBookmark(final String title, final String path){
+        if(contains(path,books)!=-1){
+            final MaterialDialog materialDialog=utils.showNameDialog(this,new String[]{utils.getString(this,R.string.entername),title,utils.getString(this,R.string.rename),utils.getString(this,R.string.save),utils.getString(this,R.string.cancel),utils.getString(this,R.string.delete)});
+            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String t=materialDialog.getInputEditText().getText().toString();
+                    if(!t.equals(title) && t.length()>=1){
+                    int i=contains(path,books);
+                        books.remove(i);
+                    books.add(i,new String[]{t,path});
+                    grid.rename(path,t,BOOKS);
+                    refreshDrawer();
+                    }
+                    materialDialog.dismiss();
+
+                }
+            });
+            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    books.remove(contains(path,books));
+                    grid.removePath(path,BOOKS);
+                    refreshDrawer();
+                    materialDialog.dismiss();
+                }
+            });
+            materialDialog.show();
+        }
+    }
 
     private void onDrawerClosed() {
         if (pending_fragmentTransaction != null) {
@@ -2851,6 +2851,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 Main ma = ma1;
+                String s[];
                 if (ma == null) ma = ((Main) getFragment().getTab());
                 String ipa = ip.getText().toString();
                 SmbFile smbFile;
@@ -2862,34 +2863,24 @@ public class MainActivity extends AppCompatActivity implements
                     smbFile = ma.connectingWithSmbServer(new String[]{ipa, useru, passp}, false);
                 }
                 if (smbFile == null) return;
+                s=new String[]{parseSmbPath(smbFile.getPath()),smbFile.getPath()};
                 try {
                     if (!edit) {
-                        ma.loadlist(smbFile.getPath(), false,1);
-                        if (Servers == null) Servers = new ArrayList<String>();
-                        Servers.add(smbFile.getPath());
+                        ma.loadlist(smbFile.getPath(), false, 1);
+                        if (Servers == null) Servers = new ArrayList<>();
+                        Servers.add(s);
                         refreshDrawer();
-                        if (!new File(getFilesDir() + "/" + "servers.xml").exists())
-                            servers.makeS(false);
-                        servers.addS(smbFile.getPath());
+                        grid.addPath(s[0],s[1],SMB,1);
                     } else {
-                        if (Servers == null) Servers = new ArrayList<String>();
-                        if (Servers.contains(path)) Servers.remove(path);
-                        Servers.add(smbFile.getPath());
-                        refreshDrawer();
-                        if (!new File(getFilesDir() + "/" + "servers.xml").exists())
-                            servers.makeS(false);
-                        try {
-                            servers.removeS(path, mainActivity);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (SAXException e) {
-                            e.printStackTrace();
-                        } catch (ParserConfigurationException e) {
-                            e.printStackTrace();
-                        } catch (TransformerException e) {
-                            e.printStackTrace();
+                        if (Servers == null) Servers = new ArrayList<>();
+                        if (contains(s[1],Servers)!=-1){
+                            Servers.remove(path);
+                            grid.removePath(path,SMB);
                         }
-                        servers.addS(smbFile.getPath());
+                        Servers.add(s);
+                        refreshDrawer();
+                        grid.removePath(path, SMB);
+                        grid.addPath(s[0],s[1],SMB,1);
                     }
                 } catch (Exception e) {
                     Toast.makeText(mainActivity, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
@@ -2903,24 +2894,23 @@ public class MainActivity extends AppCompatActivity implements
                 if (Servers.contains(path)) {
                     Servers.remove(path);
                     refreshDrawer();
-                    try {
-                        servers.removeS(path, mainActivity);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (SAXException e) {
-                        e.printStackTrace();
-                    } catch (ParserConfigurationException e) {
-                        e.printStackTrace();
-                    } catch (TransformerException e) {
-                        e.printStackTrace();
-                    }
+                     grid.removePath(path,SMB);
+
                 }
             }
         });
         ba3.build().show();
 
     }
+    int contains(String a,ArrayList<String[]> b){
+        int i=0;
+        for(String[] x:b){
+            if(x[1].equals(a))return i;
+            i++;
 
+        }
+        return -1;
+    }
     public void translateDrawerList(boolean down) {
         if (down)
             mDrawerList.animate().translationY(toolbar.getHeight());

@@ -638,7 +638,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 return true;
                             case R.id.book:
                                 try {
-                                    main.sh.addS(rowItem.getDesc());
+                                    main.MAIN_ACTIVITY.grid.addPath(rowItem.getTitle(),rowItem.getDesc(),main.MAIN_ACTIVITY.BOOKS,1);
                                 } catch (Exception e) {
                                 }
                                 main.MAIN_ACTIVITY.updateDrawer();

@@ -90,7 +90,6 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.HidingScrollListener;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.Shortcuts;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
@@ -120,7 +119,6 @@ public class Main extends android.support.v4.app.Fragment {
     public LinearLayout buttons;
     public int sortby, dsort, asc;
     public String home, CURRENT_PATH = "",year, goback;
-    public Shortcuts sh;
     HashMap<String, Bundle> scrolls = new HashMap<String, Bundle>();
     Main ma = this;
     IconUtils icons;
@@ -173,7 +171,6 @@ public class Main extends android.support.v4.app.Fragment {
         iconskin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
         skin_color = Color.parseColor(skin);
         icon_skin_color = Color.parseColor(iconskin);
-        sh = new Shortcuts(getActivity(), "shortcut.xml");
         PERM_GRID = Sp.getBoolean("perm_grid", false);
         Calendar calendar = Calendar.getInstance();
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
@@ -657,7 +654,7 @@ public class Main extends android.support.v4.app.Fragment {
                 stopAnims = true;
                 this.openMode = openMode;
                 if (openMode == 0) {
-                    MAIN_ACTIVITY.history.addPath(f);
+                    MAIN_ACTIVITY.history.addPath(null,f,MAIN_ACTIVITY.HISTORY,0);
                 }
                 mSwipeRefreshLayout.setRefreshing(false);
                 try {
@@ -1380,13 +1377,13 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
     public void updatehiddenfiles() {
-        MAIN_ACTIVITY.hiddenfiles = MAIN_ACTIVITY.hidden.readTable();
+        MAIN_ACTIVITY.hiddenfiles = MAIN_ACTIVITY.history.readTable(MAIN_ACTIVITY.HIDDEN);
     }
 
 
     public void hide(String path) {
-        MAIN_ACTIVITY.hidden.addPath(path);
-        MAIN_ACTIVITY.hiddenfiles = MAIN_ACTIVITY.hidden.readTable();
+        MAIN_ACTIVITY.history.addPath(null,path,MAIN_ACTIVITY.HIDDEN,0);
+        MAIN_ACTIVITY.hiddenfiles = MAIN_ACTIVITY.history.readTable(MAIN_ACTIVITY.HIDDEN);
         if (new File(path).isDirectory()) {
             File f1 = new File(path + "/" + ".nomedia");
             if (!f1.exists()) {
