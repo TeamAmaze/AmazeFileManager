@@ -116,6 +116,7 @@ import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
+import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.ui.icons.IconUtils;
@@ -144,6 +145,7 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -959,35 +961,43 @@ public class MainActivity extends AppCompatActivity implements
         }
         list.add(new SectionItem());
             try {
-                for (String[] s : grid.readTableSecondary(SMB)) {
-                    Servers.add(s);
-                    list.add(new EntryItem((s)[0], s[1], ContextCompat.getDrawable(this, R.drawable.ic_settings_remote_white_48dp)));
+                for (String[] file : grid.readTableSecondary(SMB))
+                Servers.add(file);
+                if (Servers.size() > 0) {
+                    Collections.sort(Servers, new BookSorter());
+                    for (String[] file : Servers)
+                        list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
+                                .folder_fab)));
+                    list.add(new SectionItem());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (Servers.size() > 0)
-                list.add(new SectionItem());
 
         try {
-                for (String[] s : grid.readTableSecondary(DRIVE)) {
-                    accounts.add(s);
-                    list.add(new EntryItem((s)[0], s[1], ContextCompat.getDrawable(this, R.drawable.drive)));
-                }
-            } catch (Exception e) {
+            for (String[] file : grid.readTableSecondary(DRIVE)) {
+                accounts.add(file);
+            }
+            if (accounts.size() > 0) {
+                Collections.sort(accounts, new BookSorter());
+                for (String[] file : accounts)
+                    list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
+                            .folder_fab)));
+                list.add(new SectionItem());
+            }} catch (Exception e) {
                 e.printStackTrace();
             }
-            if (accounts.size() > 0)
-                list.add(new SectionItem());
-
         try {
             for (String[] file : grid.readTableSecondary(BOOKS)) {
                 books.add(file);
-                list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
-                        .folder_fab)));
             }
-            if (books.size() > 0)
+            if (books.size() > 0) {
+                Collections.sort(books, new BookSorter());
+                for (String[] file : books)
+                    list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
+                            .folder_fab)));
                 list.add(new SectionItem());
+            }
         } catch (Exception e) {
 
         }
@@ -1814,7 +1824,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
     };
-
     public void refreshDrawer() {
         val = getStorageDirectories();
         list = new ArrayList<>();
@@ -2593,8 +2602,9 @@ public class MainActivity extends AppCompatActivity implements
                     if(!t.equals(title) && t.length()>=1){
                     int i=contains(path,books);
                         books.remove(i);
-                    books.add(i,new String[]{t,path});
-                    grid.rename(path,t,BOOKS);
+                    books.add(i, new String[]{t, path});
+                    grid.rename(path, t, BOOKS);
+                    Collections.sort(books,new BookSorter());
                     refreshDrawer();
                     }
                     materialDialog.dismiss();
@@ -2878,6 +2888,7 @@ public class MainActivity extends AppCompatActivity implements
                             grid.removePath(path,SMB);
                         }
                         Servers.add(s);
+                        Collections.sort(Servers,new BookSorter());
                         refreshDrawer();
                         grid.removePath(path, SMB);
                         grid.addPath(s[0],s[1],SMB,1);
