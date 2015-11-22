@@ -1460,7 +1460,7 @@ public class Main extends android.support.v4.app.Fragment {
                 MainActivity.class);
         shortcutIntent.putExtra("path", path.getDesc());
         shortcutIntent.setAction(Intent.ACTION_MAIN);
-
+        shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         Intent addIntent = new Intent();
         addIntent
                 .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);

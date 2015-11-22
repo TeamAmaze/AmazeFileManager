@@ -108,13 +108,23 @@ public class ProcessViewer extends Fragment {
             try {
                 binder.registerCallBack(new ProgressListener.Stub() {
                     @Override
-                    public void onUpdate(DataPackage dataPackage) {
-                        processResults(dataPackage);
+                    public void onUpdate(final DataPackage dataPackage) {
+                        mainActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                processResults(dataPackage);
+                            }
+                        });
                     }
 
                     @Override
                     public void refresh() {
-                        clear();
+                        mainActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                clear();
+                            }
+                        });
                     }
                 });
             } catch (RemoteException e) {

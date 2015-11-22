@@ -2212,6 +2212,18 @@ public class MainActivity extends AppCompatActivity implements
 
             ((Main) getFragment().getTab()).loadlist(path, false, 0);
         }
+        else if((openprocesses = getIntent().getBooleanExtra("openprocesses", false))!=false){
+
+            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content_frame, new ProcessViewer());
+            //   transaction.addToBackStack(null);
+            select = 102;
+            openprocesses = false;
+            //title.setText(utils.getString(con, R.string.process_viewer));
+            //Commit the transaction
+            transaction.commit();
+            supportInvalidateOptionsMenu();
+        }
         if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
 
             // file picker intent
