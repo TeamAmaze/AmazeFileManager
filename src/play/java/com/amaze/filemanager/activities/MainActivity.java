@@ -33,8 +33,6 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -60,7 +58,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -116,16 +113,16 @@ import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
+import com.amaze.filemanager.ui.icons.IconUtils;
+import com.amaze.filemanager.ui.views.RoundedImageView;
+import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootHelper;
-import com.amaze.filemanager.ui.views.RoundedImageView;
-import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
@@ -140,12 +137,9 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
-import org.xml.sax.SAXException;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -154,9 +148,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
@@ -164,41 +155,82 @@ import jcifs.smb.SmbFile;
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,Loadlistener {
+    static final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3, RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
+    private static final Pattern DIR_SEPARATOR = Pattern.compile("/");
+    /* Request code used to invoke sign in user interactions. */
+    private static final int RC_SIGN_IN = 0;
     public Integer select;
-    Futils utils;
-    private boolean backPressedToExitOnce = false;
-    private Toast toast = null;
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
-    SharedPreferences Sp;
-    private ActionBarDrawerToggle mDrawerToggle;
     public List<String> val;
-    ArrayList<String[]> books;
-    public ArrayList<String[]> Servers,accounts;
-    MainActivity mainActivity = this;
-    DrawerAdapter adapter;
-    IconUtils util;
+    public ArrayList<String[]> Servers, accounts;
     public ScrimInsetsRelativeLayout mDrawerLinear;
     public String skin, path = "", launchPath;
     public int theme;
     public ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
-    Context con = this;
     public FrameLayout frameLayout;
     public boolean mReturnIntent = false;
-    private Intent intent;
-    private static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     public ArrayList<Item> list;
     public int theme1;
     public boolean rootmode, aBoolean, openzip = false;
-    String zippath;
     public Spinner tabsSpinner;
     public boolean mRingtonePickerIntent = false, restart = false, colourednavigation = false;
     public Toolbar toolbar;
     public int skinStatusBar;
+    public int storage_count = 0;
+    public String fabskin;
+    public FloatingActionMenu floatingActionButton;
+    public LinearLayout pathbar;
+    public FrameLayout buttonBarFrame;
+    public boolean isDrawerLocked = false;
+    public HistoryManager history, grid;
+    public ArrayList<String> hiddenfiles, gridfiles, listfiles;
+    public String DRIVE = "drive", SMB = "smb", BOOKS = "books", HISTORY = "Table1", HIDDEN = "Table2", LIST = "list", GRID = "grid";
+    Futils utils;
+    SharedPreferences Sp;
+    ArrayList<String[]> books;
+    MainActivity mainActivity = this;
+    DrawerAdapter adapter;
+    IconUtils util;
+    Context con = this;
+    private final BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
+                    Toast.makeText(con, "Media Mounted", Toast.LENGTH_SHORT).show();
+                    String a = intent.getData().getPath();
+                    if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
+                        list.add(new EntryItem(new File(a).getName(), a, ContextCompat
+                                .getDrawable(mainActivity, R.drawable.ic_sd_storage_white_56dp)));
+                        adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
+                        mDrawerList.setAdapter(adapter);
+                    } else {
+                        refreshDrawer();
+                    }
+                } else if (intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+
+                    refreshDrawer();
+                }
+            }
+        }
+    };
+    String zippath;
     FragmentTransaction pending_fragmentTransaction;
     String pending_path;
     boolean openprocesses = false;
-    public int storage_count = 0;
+    int hidemode;
+    int operation;
+    ArrayList<String> oparrayList;
+    String oppathe, oppathe1;
+    DriveConnection driveConnection;
+    IMyAidlInterface aidlInterface;
+    MaterialDialog materialDialog;
+    String newPath = null;
+    private boolean backPressedToExitOnce = false;
+    private Toast toast = null;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private Intent intent;
     private GoogleApiClient mGoogleApiClient;
     private View drawerHeaderLayout;
     private View drawerHeaderView;
@@ -206,36 +238,19 @@ public class MainActivity extends AppCompatActivity implements
     private DisplayImageOptions displayImageOptions;
     private int sdk;
     private TextView mGoogleName, mGoogleId;
-    public String fabskin;
     private LinearLayout buttons;
     private HorizontalScrollView scroll, scroll1;
     private CountDownTimer timer;
     private IconUtils icons;
     private TabHandler tabHandler;
-    int hidemode;
-    public FloatingActionMenu floatingActionButton;
-    public LinearLayout pathbar;
-    public FrameLayout buttonBarFrame;
     private RelativeLayout drawerHeaderParent;
-    int operation;
-    ArrayList<String> oparrayList;
-    String oppathe, oppathe1;
     // Check for user interaction for google+ api only once
     private boolean mGoogleApiKey = false;
-    /* Request code used to invoke sign in user interactions. */
-    private static final int RC_SIGN_IN = 0;
-
     /* A flag indicating that a PendingIntent is in progress and prevents
    * us from starting further intents.
    */
     private boolean mIntentInProgress, topfab = false, showHidden = false;
-    public boolean isDrawerLocked = false;
-    static final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3, RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
 
-    public HistoryManager history, grid;
-    public ArrayList<String> hiddenfiles, gridfiles, listfiles;
-
-    public String DRIVE="drive",SMB="smb",BOOKS="books",HISTORY="Table1",HIDDEN="Table2",LIST="list",GRID="grid";
     /**
      * Called when the activity is first created.
      */
@@ -451,6 +466,10 @@ public class MainActivity extends AppCompatActivity implements
         hiddenfiles = history.readTable(HIDDEN);
         gridfiles = grid.readTable(GRID);
         listfiles = grid.readTable(LIST);
+        if (!Sp.getBoolean("booksadded", false)) {
+            grid.make(BOOKS);
+            Sp.edit().putBoolean("booksadded", true).commit();
+        }
         // initialize g+ api client as per preferences
         if (Sp.getBoolean("plus_pic", false)) {
 
@@ -845,7 +864,6 @@ public class MainActivity extends AppCompatActivity implements
         return rv;
     }
 
-
     @Override
     public void onBackPressed() {
         if (!isDrawerLocked) {
@@ -967,7 +985,7 @@ public class MainActivity extends AppCompatActivity implements
                     Collections.sort(Servers, new BookSorter());
                     for (String[] file : Servers)
                         list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
-                                .folder_fab)));
+                                .ic_settings_remote_white_48dp)));
                     list.add(new SectionItem());
                 }
             } catch (Exception e) {
@@ -982,7 +1000,7 @@ public class MainActivity extends AppCompatActivity implements
                 Collections.sort(accounts, new BookSorter());
                 for (String[] file : accounts)
                     list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
-                            .folder_fab)));
+                            .drive)));
                 list.add(new SectionItem());
             }} catch (Exception e) {
                 e.printStackTrace();
@@ -1216,9 +1234,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onBackPressed();
     }
 
-
     //// called when the user exits the action mode
-//	
+//
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
@@ -1413,8 +1430,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
         }
     }
-    DriveConnection driveConnection;
-    IMyAidlInterface aidlInterface;
+
     void bindDrive() {
         driveConnection = new DriveConnection();
         Intent i = new Intent();
@@ -1425,6 +1441,7 @@ public class MainActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
     }
+
     void unbindDrive(){
         if(driveConnection!=null)
        unbindService(driveConnection);
@@ -1448,27 +1465,6 @@ public class MainActivity extends AppCompatActivity implements
         return null;
     }
 
-    private class DriveConnection implements ServiceConnection{
-        @Override
-        public void onServiceConnected(ComponentName name, final IBinder service) {
-            aidlInterface=IMyAidlInterface.Stub.asInterface(service);
-
-            try {
-                aidlInterface.registerCallback(mainActivity);
-                aidlInterface.create();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            driveConnection=null;
-            Log.d("DriveConnection","DisConnected");
-            aidlInterface=null;
-        }
-    }
     public void search() {
         final Main ma = (Main) ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
         final String fpath = ma.CURRENT_PATH;
@@ -1516,7 +1512,6 @@ public class MainActivity extends AppCompatActivity implements
         if (mDrawerToggle != null) mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -1537,8 +1532,6 @@ public class MainActivity extends AppCompatActivity implements
         unregisterReceiver(mNotificationReceiver);
         killToast();
     }
-
-    MaterialDialog materialDialog;
 
     @Override
     public void onResume() {
@@ -1581,167 +1574,6 @@ public class MainActivity extends AppCompatActivity implements
         if (history != null)
             history.end();
         }
-
-    class CheckForFiles extends AsyncTask<ArrayList<String>, String, ArrayList<String>> {
-        Main ma;
-        String path;
-        Boolean move;
-        ArrayList<String> ab, a, b, lol;
-        int counter = 0;
-
-        public CheckForFiles(Main main, String path, Boolean move) {
-            this.ma = main;
-            this.path = path;
-            this.move = move;
-            a = new ArrayList<String>();
-            b = new ArrayList<String>();
-            lol = new ArrayList<String>();
-        }
-
-        @Override
-        public void onProgressUpdate(String... message) {
-            Toast.makeText(con, message[0], Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        // Actual download method, run in the task thread
-        protected ArrayList<String> doInBackground(ArrayList<String>... params) {
-
-            ab = params[0];
-            long totalBytes = 0;
-
-            for (int i = 0; i < params[0].size(); i++) {
-
-                HFile f1 = new HFile(params[0].get(i));
-
-                if (f1.isDirectory()) {
-
-                    totalBytes = totalBytes + f1.folderSize();
-                } else {
-
-                    totalBytes = totalBytes + f1.length();
-                }
-            }
-            HFile f = new HFile(path);
-            if (f.getUsableSpace() > totalBytes) {
-
-                for (String k1[] : f.listFiles(rootmode)) {
-                    HFile k = new HFile(k1[0]);
-                    for (String j : ab) {
-
-                        if (k.getName().equals(new HFile(j).getName())) {
-
-                            a.add(j);
-                        }
-                    }
-                }
-            } else publishProgress(utils.getString(con, R.string.in_safe));
-
-            return a;
-        }
-
-        public void showDialog() {
-
-            if (counter == a.size() || a.size() == 0) {
-
-                if (ab != null && ab.size() != 0) {
-                    int mode = checkFolder(new File(path), mainActivity);
-                    if (mode == 2) {
-                        oparrayList = (ab);
-                        operation = move ? MOVE : COPY;
-                        oppathe = path;
-
-                    } else if (mode == 1 || mode == 0) {
-
-                        if (!move) {
-
-                            Intent intent = new Intent(con, CopyService.class);
-                            intent.putExtra("FILE_PATHS", ab);
-                            intent.putExtra("COPY_DIRECTORY", path);
-                            startService(intent);
-                        } else {
-
-                            new MoveFiles(utils.toFileArray(ab), ma, ma.getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
-                        }
-                    }
-                } else {
-
-                    Toast.makeText(MainActivity.this, utils.getString(con, R.string.no_file_overwrite), Toast.LENGTH_SHORT).show();
-                }
-            } else {
-
-                final MaterialDialog.Builder x = new MaterialDialog.Builder(MainActivity.this);
-                LayoutInflater layoutInflater = (LayoutInflater) MainActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
-                View view = layoutInflater.inflate(R.layout.copy_dialog, null);
-                x.customView(view, true);
-                // textView
-                TextView textView = (TextView) view.findViewById(R.id.textView);
-                textView.setText(utils.getString(con, R.string.fileexist) + "\n" + new File(a.get(counter)).getName());
-                // checkBox
-                final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
-                utils.setTint(checkBox, Color.parseColor(fabskin));
-                if (theme1 == 1) x.theme(Theme.DARK);
-                x.title(utils.getString(con, R.string.paste));
-                x.positiveText(R.string.skip);
-                x.negativeText(R.string.overwrite);
-                x.neutralText(R.string.cancel);
-                x.positiveColor(Color.parseColor(fabskin));
-                x.negativeColor(Color.parseColor(fabskin));
-                x.neutralColor(Color.parseColor(fabskin));
-                x.callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog materialDialog) {
-
-                        if (counter < a.size()) {
-
-                            if (!checkBox.isChecked()) {
-
-                                ab.remove(a.get(counter));
-                                counter++;
-
-                            } else {
-                                for (int j = counter; j < a.size(); j++) {
-
-                                    ab.remove(a.get(j));
-                                }
-                                counter = a.size();
-                            }
-                            showDialog();
-                        }
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog materialDialog) {
-
-                        if (counter < a.size()) {
-
-                            if (!checkBox.isChecked()) {
-
-                                counter++;
-                            } else {
-
-                                counter = a.size();
-                            }
-                            showDialog();
-                        }
-
-                    }
-                });
-                final MaterialDialog y = x.build();
-                y.show();
-                if (new File(ab.get(0)).getParent().equals(path)) {
-                    View negative = y.getActionButton(DialogAction.NEGATIVE);
-                    negative.setEnabled(false);
-                }
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<String> strings) {
-            super.onPostExecute(strings);
-            showDialog();
-        }
-    }
 
     public void updatepaths(int pos) {
         try {
@@ -1802,28 +1634,6 @@ public class MainActivity extends AppCompatActivity implements
         return null;
     }
 
-    private final BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent != null) {
-                if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                    Toast.makeText(con, "Media Mounted", Toast.LENGTH_SHORT).show();
-                    String a = intent.getData().getPath();
-                    if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
-                        list.add(new EntryItem(new File(a).getName(), a, ContextCompat
-                                .getDrawable(mainActivity, R.drawable.ic_sd_storage_white_56dp)));
-                        adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
-                        mDrawerList.setAdapter(adapter);
-                    } else {
-                        refreshDrawer();
-                    }
-                } else if (intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-
-                    refreshDrawer();
-                }
-            }
-        }
-    };
     public void refreshDrawer() {
         val = getStorageDirectories();
         list = new ArrayList<>();
@@ -1995,7 +1805,6 @@ public class MainActivity extends AppCompatActivity implements
         }).run();
     }
 
-
     public void onConnectionFailed(final ConnectionResult result) {
         Log.d("G+", "Connection failed");
         if (!mIntentInProgress && result.hasResolution()) {
@@ -2019,6 +1828,7 @@ public class MainActivity extends AppCompatActivity implements
             }).run();
         }
     }
+
     public void guideDialogForLEXA(String path) {
         final MaterialDialog.Builder x = new MaterialDialog.Builder(MainActivity.this);
         if (theme1 == 1) x.theme(Theme.DARK);
@@ -2194,6 +2004,7 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         startActivityForResult(intent, 3);
     }
+
     public void bbar(final Main main) {
         final String text = main.CURRENT_PATH;
         try {
@@ -2335,8 +2146,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         }).start();
     }
-
-    String newPath = null;
 
     String parseSmbPath(String a) {
         if (a.contains("@"))
@@ -2592,20 +2401,21 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
-    public void renameBookmark(final String title, final String path){
-        if(contains(path,books)!=-1){
-            final MaterialDialog materialDialog=utils.showNameDialog(this,new String[]{utils.getString(this,R.string.entername),title,utils.getString(this,R.string.rename),utils.getString(this,R.string.save),utils.getString(this,R.string.cancel),utils.getString(this,R.string.delete)});
+
+    public void renameBookmark(final String title, final String path) {
+        if (contains(path, books) != -1) {
+            final MaterialDialog materialDialog = utils.showNameDialog(this, new String[]{utils.getString(this, R.string.entername), title, utils.getString(this, R.string.rename), utils.getString(this, R.string.save), utils.getString(this, R.string.cancel), utils.getString(this, R.string.delete)});
             materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String t=materialDialog.getInputEditText().getText().toString();
-                    if(!t.equals(title) && t.length()>=1){
-                    int i=contains(path,books);
+                    String t = materialDialog.getInputEditText().getText().toString();
+                    if (!t.equals(title) && t.length() >= 1) {
+                        int i = contains(path, books);
                         books.remove(i);
-                    books.add(i, new String[]{t, path});
-                    grid.rename(path, t, BOOKS);
-                    Collections.sort(books,new BookSorter());
-                    refreshDrawer();
+                        books.add(i, new String[]{t, path});
+                        grid.rename(path, t, BOOKS);
+                        Collections.sort(books, new BookSorter());
+                        refreshDrawer();
                     }
                     materialDialog.dismiss();
 
@@ -2614,8 +2424,8 @@ public class MainActivity extends AppCompatActivity implements
             materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    books.remove(contains(path,books));
-                    grid.removePath(path,BOOKS);
+                    books.remove(contains(path, books));
+                    grid.removePath(path, BOOKS);
                     refreshDrawer();
                     materialDialog.dismiss();
                 }
@@ -2639,12 +2449,11 @@ public class MainActivity extends AppCompatActivity implements
                         ((Main) m.getTab()).loadlist((pending_path), false, 0);
                     } else if (hFile.isSmb())
                         ((Main) m.getTab()).loadlist((pending_path), false, 1);
-                    else if(hFile.isCustomPath())
+                    else if (hFile.isCustomPath())
                         ((Main) m.getTab()).loadlist((pending_path), false, 2);
-                    else if(android.util.Patterns.EMAIL_ADDRESS.matcher(pending_path).matches()){
+                    else if (android.util.Patterns.EMAIL_ADDRESS.matcher(pending_path).matches()) {
                         //todo
-                    }
-                    else utils.openFile(new File(pending_path), mainActivity);
+                    } else utils.openFile(new File(pending_path), mainActivity);
 
             } catch (ClassCastException e) {
                 select = null;
@@ -2755,13 +2564,14 @@ public class MainActivity extends AppCompatActivity implements
             startService(intent);
         } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
+
     @Override
-    public void onNewIntent(Intent i){
+    public void onNewIntent(Intent i) {
         intent = i;
         path = i.getStringExtra("path");
-        if(path!=null){
+        if (path != null) {
 
-            ((Main)getFragment().getTab()).loadlist(path,false,0);
+            ((Main) getFragment().getTab()).loadlist(path, false, 0);
         }
         if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
 
@@ -2809,7 +2619,7 @@ public class MainActivity extends AppCompatActivity implements
         utils.setTint(pass, color);
         final CheckBox ch = (CheckBox) v2.findViewById(R.id.checkBox2);
         utils.setTint(ch, color);
-        TextView help=(TextView)v2.findViewById(R.id.wanthelp);
+        TextView help = (TextView) v2.findViewById(R.id.wanthelp);
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -2873,25 +2683,25 @@ public class MainActivity extends AppCompatActivity implements
                     smbFile = ma.connectingWithSmbServer(new String[]{ipa, useru, passp}, false);
                 }
                 if (smbFile == null) return;
-                s=new String[]{parseSmbPath(smbFile.getPath()),smbFile.getPath()};
+                s = new String[]{parseSmbPath(smbFile.getPath()), smbFile.getPath()};
                 try {
                     if (!edit) {
                         ma.loadlist(smbFile.getPath(), false, 1);
                         if (Servers == null) Servers = new ArrayList<>();
                         Servers.add(s);
                         refreshDrawer();
-                        grid.addPath(s[0],s[1],SMB,1);
+                        grid.addPath(s[0], s[1], SMB, 1);
                     } else {
                         if (Servers == null) Servers = new ArrayList<>();
-                        if (contains(s[1],Servers)!=-1){
+                        if (contains(s[1], Servers) != -1) {
                             Servers.remove(path);
-                            grid.removePath(path,SMB);
+                            grid.removePath(path, SMB);
                         }
                         Servers.add(s);
-                        Collections.sort(Servers,new BookSorter());
+                        Collections.sort(Servers, new BookSorter());
                         refreshDrawer();
                         grid.removePath(path, SMB);
-                        grid.addPath(s[0],s[1],SMB,1);
+                        grid.addPath(s[0], s[1], SMB, 1);
                     }
                 } catch (Exception e) {
                     Toast.makeText(mainActivity, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
@@ -2905,7 +2715,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (Servers.contains(path)) {
                     Servers.remove(path);
                     refreshDrawer();
-                     grid.removePath(path,SMB);
+                    grid.removePath(path, SMB);
 
                 }
             }
@@ -2913,18 +2723,203 @@ public class MainActivity extends AppCompatActivity implements
         ba3.build().show();
 
     }
-    int contains(String a,ArrayList<String[]> b){
-        int i=0;
-        for(String[] x:b){
-            if(x[1].equals(a))return i;
+
+    int contains(String a, ArrayList<String[]> b) {
+        int i = 0;
+        for (String[] x : b) {
+            if (x[1].equals(a)) return i;
             i++;
 
         }
         return -1;
     }
+
     public void translateDrawerList(boolean down) {
         if (down)
             mDrawerList.animate().translationY(toolbar.getHeight());
         else mDrawerList.setTranslationY(0);
+    }
+
+    private class DriveConnection implements ServiceConnection {
+        @Override
+        public void onServiceConnected(ComponentName name, final IBinder service) {
+            aidlInterface = IMyAidlInterface.Stub.asInterface(service);
+
+            try {
+                aidlInterface.registerCallback(mainActivity);
+                aidlInterface.create();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            driveConnection = null;
+            Log.d("DriveConnection", "DisConnected");
+            aidlInterface = null;
+        }
+    }
+
+    class CheckForFiles extends AsyncTask<ArrayList<String>, String, ArrayList<String>> {
+        Main ma;
+        String path;
+        Boolean move;
+        ArrayList<String> ab, a, b, lol;
+        int counter = 0;
+
+        public CheckForFiles(Main main, String path, Boolean move) {
+            this.ma = main;
+            this.path = path;
+            this.move = move;
+            a = new ArrayList<String>();
+            b = new ArrayList<String>();
+            lol = new ArrayList<String>();
+        }
+
+        @Override
+        public void onProgressUpdate(String... message) {
+            Toast.makeText(con, message[0], Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        // Actual download method, run in the task thread
+        protected ArrayList<String> doInBackground(ArrayList<String>... params) {
+
+            ab = params[0];
+            long totalBytes = 0;
+
+            for (int i = 0; i < params[0].size(); i++) {
+
+                HFile f1 = new HFile(params[0].get(i));
+
+                if (f1.isDirectory()) {
+
+                    totalBytes = totalBytes + f1.folderSize();
+                } else {
+
+                    totalBytes = totalBytes + f1.length();
+                }
+            }
+            HFile f = new HFile(path);
+            if (f.getUsableSpace() > totalBytes) {
+
+                for (String k1[] : f.listFiles(rootmode)) {
+                    HFile k = new HFile(k1[0]);
+                    for (String j : ab) {
+
+                        if (k.getName().equals(new HFile(j).getName())) {
+
+                            a.add(j);
+                        }
+                    }
+                }
+            } else publishProgress(utils.getString(con, R.string.in_safe));
+
+            return a;
+        }
+
+        public void showDialog() {
+
+            if (counter == a.size() || a.size() == 0) {
+
+                if (ab != null && ab.size() != 0) {
+                    int mode = checkFolder(new File(path), mainActivity);
+                    if (mode == 2) {
+                        oparrayList = (ab);
+                        operation = move ? MOVE : COPY;
+                        oppathe = path;
+
+                    } else if (mode == 1 || mode == 0) {
+
+                        if (!move) {
+
+                            Intent intent = new Intent(con, CopyService.class);
+                            intent.putExtra("FILE_PATHS", ab);
+                            intent.putExtra("COPY_DIRECTORY", path);
+                            startService(intent);
+                        } else {
+
+                            new MoveFiles(utils.toFileArray(ab), ma, ma.getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                        }
+                    }
+                } else {
+
+                    Toast.makeText(MainActivity.this, utils.getString(con, R.string.no_file_overwrite), Toast.LENGTH_SHORT).show();
+                }
+            } else {
+
+                final MaterialDialog.Builder x = new MaterialDialog.Builder(MainActivity.this);
+                LayoutInflater layoutInflater = (LayoutInflater) MainActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                View view = layoutInflater.inflate(R.layout.copy_dialog, null);
+                x.customView(view, true);
+                // textView
+                TextView textView = (TextView) view.findViewById(R.id.textView);
+                textView.setText(utils.getString(con, R.string.fileexist) + "\n" + new File(a.get(counter)).getName());
+                // checkBox
+                final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+                utils.setTint(checkBox, Color.parseColor(fabskin));
+                if (theme1 == 1) x.theme(Theme.DARK);
+                x.title(utils.getString(con, R.string.paste));
+                x.positiveText(R.string.skip);
+                x.negativeText(R.string.overwrite);
+                x.neutralText(R.string.cancel);
+                x.positiveColor(Color.parseColor(fabskin));
+                x.negativeColor(Color.parseColor(fabskin));
+                x.neutralColor(Color.parseColor(fabskin));
+                x.callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog materialDialog) {
+
+                        if (counter < a.size()) {
+
+                            if (!checkBox.isChecked()) {
+
+                                ab.remove(a.get(counter));
+                                counter++;
+
+                            } else {
+                                for (int j = counter; j < a.size(); j++) {
+
+                                    ab.remove(a.get(j));
+                                }
+                                counter = a.size();
+                            }
+                            showDialog();
+                        }
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog materialDialog) {
+
+                        if (counter < a.size()) {
+
+                            if (!checkBox.isChecked()) {
+
+                                counter++;
+                            } else {
+
+                                counter = a.size();
+                            }
+                            showDialog();
+                        }
+
+                    }
+                });
+                final MaterialDialog y = x.build();
+                y.show();
+                if (new File(ab.get(0)).getParent().equals(path)) {
+                    View negative = y.getActionButton(DialogAction.NEGATIVE);
+                    negative.setEnabled(false);
+                }
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<String> strings) {
+            super.onPostExecute(strings);
+            showDialog();
+        }
     }
 }

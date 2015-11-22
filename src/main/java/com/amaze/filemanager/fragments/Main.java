@@ -115,18 +115,12 @@ public class Main extends android.support.v4.app.Fragment {
     public ActionMode mActionMode;
     public SharedPreferences Sp;
     public Drawable folder, apk, DARK_IMAGE, DARK_VIDEO;
-    Resources res;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
     public String home, CURRENT_PATH = "",year, goback;
-    HashMap<String, Bundle> scrolls = new HashMap<String, Bundle>();
-    Main ma = this;
-    IconUtils icons;
     public boolean selection,results = false,ROOT_MODE, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS, SHOW_SIZE, SHOW_LAST_MODIFIED;
-    View footerView;
     public LinearLayout pathbar;
     public int openMode = 0;
-    private View rootView;
     public android.support.v7.widget.RecyclerView listView;
     public boolean GO_BACK_ITEM, IS_LIST=true, SHOW_THUMBS, COLORISE_ICONS, SHOW_DIVIDERS, TOP_FAB;
     public IconHolder ic;
@@ -134,615 +128,37 @@ public class Main extends android.support.v4.app.Fragment {
     public String skin, fabSkin, iconskin;
     public float[] color;
     public ColorMatrixColorFilter colorMatrixColorFilter;
+    public SwipeRefreshLayout mSwipeRefreshLayout;
+    public int paddingTop;
+    public int skin_color, icon_skin_color, theme1, theme, file_count, folder_count, columns;
+    public String smbPath;
+    public ArrayList<String> searchHelper = new ArrayList<String>();
+    public SearchTask searchTask;
+    public int skinselection;
+    Resources res;
+    HashMap<String, Bundle> scrolls = new HashMap<String, Bundle>();
+    Main ma = this;
+    IconUtils icons;
+    View footerView;
     String itemsstring;
     int no;
     TabHandler tabHandler;
     LinearLayoutManager mLayoutManager;
     GridLayoutManager mLayoutManagerGrid;
-    public SwipeRefreshLayout mSwipeRefreshLayout;
     boolean addheader = false;
     StickyRecyclerHeadersDecoration headersDecor;
     DividerItemDecoration dividerItemDecoration;
-    public int paddingTop;
     int mToolbarHeight, hidemode;
     View mToolbarContainer;
-    public int skin_color, icon_skin_color,theme1,theme,file_count, folder_count, columns;
-    public String smbPath;
-    public ArrayList<String> searchHelper = new ArrayList<String>();
-    public SearchTask searchTask;
     TextView pathname;
-    public int skinselection;
     boolean stopAnims = true,PERM_GRID;
-    private View actionModeView;
     View nofilesview;
     String current_drive_id;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        MAIN_ACTIVITY = (MainActivity) getActivity();
-        no = getArguments().getInt("no", 1);
-        home = getArguments().getString("home");
-        CURRENT_PATH =getArguments().getString("lastpath");
-        tabHandler = new TabHandler(getActivity(), null, null, 1);
-        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
-        fabSkin = PreferenceUtils.getFabColor(Sp.getInt("fab_skin_color_position", 1));
-        iconskin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
-        skin_color = Color.parseColor(skin);
-        icon_skin_color = Color.parseColor(iconskin);
-        PERM_GRID = Sp.getBoolean("perm_grid", false);
-        Calendar calendar = Calendar.getInstance();
-        year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
-        theme = Integer.parseInt(Sp.getString("theme", "0"));
-        theme1 = theme == 2 ? PreferenceUtils.hourOfDay() : theme;
-        hidemode = Sp.getInt("hidemode", 0);
-        TOP_FAB = hidemode == 0 ? Sp.getBoolean("topFab", true) : false;
-        SHOW_PERMISSIONS = Sp.getBoolean("showPermissions", false);
-        SHOW_SIZE = Sp.getBoolean("showFileSize", false);
-        SHOW_DIVIDERS = Sp.getBoolean("showDividers", true);
-        GO_BACK_ITEM = Sp.getBoolean("goBack_checkbox", false);
-        CIRCULAR_IMAGES = Sp.getBoolean("circularimages", true);
-        SHOW_LAST_MODIFIED = Sp.getBoolean("showLastModified", true);
-        icons = new IconUtils(Sp, getActivity());
-    }
-
-    public void stopAnimation() {
-        if ((!adapter.stoppedAnimation)) {
-            for (int j = 0; j < listView.getChildCount(); j++) {
-                View v = listView.getChildAt(j);
-                if (v != null) v.clearAnimation();
-            }
-        }
-        adapter.stoppedAnimation = true;
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.main_frag, container, false);
-        listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
-        mToolbarContainer = getActivity().findViewById(R.id.lin);
-        listView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (adapter != null && stopAnims) {
-                    stopAnimation();
-                    stopAnims = false;
-                }
-                return false;
-            }
-        });
-        mToolbarContainer.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (adapter != null && stopAnims) {
-                    stopAnimation();
-                    stopAnims = false;
-                }
-                return false;
-            }
-        });
-        buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
-        pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
-        SHOW_THUMBS = Sp.getBoolean("showThumbs", true);
-        res = getResources();
-        pathname = (TextView) getActivity().findViewById(R.id.pathname);
-        goback = res.getString(R.string.goback);
-        itemsstring = res.getString(R.string.items);
-        apk = res.getDrawable(R.drawable.ic_doc_apk_grid);
-        mToolbarContainer.setBackgroundColor(skin_color);
-        //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
-        return rootView;
-    }
-
     DisplayMetrics displayMetrics;
-
-    public int dpToPx(int dp) {
-        if (displayMetrics == null) displayMetrics = getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
-    }
-
-    public static int getToolbarHeight(Context context) {
-        final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
-                new int[]{android.R.attr.actionBarSize});
-        int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
-        styledAttributes.recycle();
-
-        return toolbarHeight;
-    }
-
     HFile f;
-
-    @Override
-    public void onActivityCreated(final Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(false);
-        MAIN_ACTIVITY = (MainActivity) getActivity();
-        initNoFileLayout();
-        utils = new Futils();
-        String x = getSelectionColor();
-        skinselection = Color.parseColor(x);
-        color = calculatevalues(x);
-        ColorMatrix colorMatrix = new ColorMatrix(calculatefilter(color));
-        colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
-        ROOT_MODE = Sp.getBoolean("rootmode", false);
-        SHOW_HIDDEN = Sp.getBoolean("showHidden", false);
-        COLORISE_ICONS = Sp.getBoolean("coloriseIcons", true);
-        folder = res.getDrawable(R.drawable.ic_grid_folder_new);
-        getSortModes();
-        DARK_IMAGE = res.getDrawable(R.drawable.ic_doc_image_dark);
-        DARK_VIDEO = res.getDrawable(R.drawable.ic_doc_video_dark);
-        this.setRetainInstance(false);
-        f = new HFile(CURRENT_PATH);
-        if (!f.isCustomPath() && !f.isSmb() && !f.isDirectory()) {
-            File file = new File(CURRENT_PATH);
-            utils.openFile(file, MAIN_ACTIVITY);
-            CURRENT_PATH = (file.getParent());
-        }
-        MAIN_ACTIVITY.initiatebbar();
-        IS_LIST=savedInstanceState!=null?savedInstanceState.getBoolean("IS_LIST",IS_LIST):IS_LIST;
-        ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
-        if (theme1 == 1) {
-
-            listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.holo_dark_background)));
-        } else {
-
-            if (IS_LIST)
-                listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
-
-        }
-        listView.setHasFixedSize(true);
-        columns = Integer.parseInt(Sp.getString("columns", "-1"));
-        if (IS_LIST) {
-            mLayoutManager = new LinearLayoutManager(getActivity());
-            listView.setLayoutManager(mLayoutManager);
-        } else {
-            if (columns == -1 || columns == 0)
-                mLayoutManagerGrid = new GridLayoutManager(getActivity(), 3);
-            else
-                mLayoutManagerGrid = new GridLayoutManager(getActivity(), columns);
-            listView.setLayoutManager(mLayoutManagerGrid);
-        }
-        // use a linear layout manager
-        footerView = getActivity().getLayoutInflater().inflate(R.layout.divider, null);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
-
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadlist((CURRENT_PATH), false, openMode);
-            }
-        });
-        mToolbarHeight = getToolbarHeight(getActivity());
-        paddingTop = (mToolbarHeight) + dpToPx(72);
-        if (hidemode == 2) mToolbarHeight = paddingTop;
-        mSwipeRefreshLayout.setProgressViewOffset(true, paddingTop, paddingTop + dpToPx(30));
-        mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor(fabSkin));
-        DefaultItemAnimator animator = new DefaultItemAnimator();
-        listView.setItemAnimator(animator);
-        mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if (hidemode != 2) mToolbarHeight = MAIN_ACTIVITY.toolbar.getHeight();
-                else mToolbarHeight = paddingTop;
-                paddingTop = mToolbarContainer.getHeight();
-                if ((columns == 0 || columns == -1)) {
-                    int screen_width = listView.getWidth();
-                    int dptopx = dpToPx(115);
-                    columns = screen_width / dptopx;
-                    if (!IS_LIST) mLayoutManagerGrid.setSpanCount(columns);
-                }
-                mSwipeRefreshLayout.setProgressViewOffset(true, paddingTop, paddingTop + dpToPx(72));
-                if (savedInstanceState != null && !IS_LIST)
-                    retrieveFromSavedInstance(savedInstanceState);
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                    mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    mToolbarContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-            }
-
-        });
-        if (savedInstanceState == null) {
-            loadlist(CURRENT_PATH, false, openMode);
-
-        } else {
-            if (IS_LIST)
-                retrieveFromSavedInstance(savedInstanceState);
-        }
-    }
-
-    void switchToGrid() {
-        IS_LIST = false;
-        ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
-        folder = res.getDrawable(R.drawable.ic_grid_folder_new);
-        fixIcons();
-
-        if (theme1 == 1) {
-
-            listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.holo_dark_background)));
-        } else {
-
-            if (IS_LIST)
-                listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
-            else listView.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#f2f2f2")));
-        }
-        if (mLayoutManagerGrid == null)
-            if (columns == -1 || columns == 0)
-                mLayoutManagerGrid = new GridLayoutManager(getActivity(), 3);
-            else
-                mLayoutManagerGrid = new GridLayoutManager(getActivity(), columns);
-        listView.setLayoutManager(mLayoutManagerGrid);
-        adapter = null;
-    }
-    void setBackground(Drawable drawable){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            listView.setBackground(drawable);
-        }else listView.setBackgroundDrawable(drawable);
-    }
-    void switchToList() {
-        IS_LIST = true;
-        if (theme1 == 1) {
-                setBackground(new ColorDrawable(getResources().getColor(R.color.holo_dark_background)));
-        } else {
-
-            if (IS_LIST)
-                setBackground(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
-            else setBackground(new ColorDrawable(Color.parseColor("#f2f2f2")));
-        }
-        ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
-        folder = res.getDrawable(R.drawable.ic_grid_folder_new);
-        fixIcons();
-        if (mLayoutManager == null)
-            mLayoutManager = new LinearLayoutManager(getActivity());
-        listView.setLayoutManager(mLayoutManager);
-        adapter = null;
-    }
-    public void switchView(){
-        createViews(LIST_ELEMENTS,false,CURRENT_PATH,openMode,results,checkforpath(CURRENT_PATH));
-    }
-    void retrieveFromSavedInstance(final Bundle savedInstanceState) {
-
-        Bundle b = new Bundle();
-        String cur = savedInstanceState.getString("CURRENT_PATH");
-        if (cur != null) {
-            b.putInt("index", savedInstanceState.getInt("index"));
-            b.putInt("top", savedInstanceState.getInt("top"));
-            scrolls.put(cur, b);
-
-            openMode = savedInstanceState.getInt("openMode", 0);
-            if (openMode == 1)
-                smbPath = savedInstanceState.getString("SmbPath");
-            LIST_ELEMENTS = savedInstanceState.getParcelableArrayList("list");
-            folder_count = savedInstanceState.getInt("folder_count", 0);
-            file_count = savedInstanceState.getInt("file_count", 0);
-            if (savedInstanceState.getBoolean("results")) {
-                try {
-                    createViews(LIST_ELEMENTS, true, (CURRENT_PATH), openMode, true,!IS_LIST);
-                    pathname.setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
-                    results = true;
-                } catch (Exception e) {
-                }
-            } else {
-                createViews(LIST_ELEMENTS, true, (cur), openMode, false, !IS_LIST);
-            }
-            if (savedInstanceState.getBoolean("selection")) {
-
-                for (int i : savedInstanceState.getIntegerArrayList("position")) {
-                    adapter.toggleChecked(i);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        int index;
-        View vi;
-        if (listView != null) {
-            if (IS_LIST) {
-
-                index = (mLayoutManager).findFirstVisibleItemPosition();
-                vi = listView.getChildAt(0);
-            } else {
-                index = (mLayoutManagerGrid).findFirstVisibleItemPosition();
-                vi = listView.getChildAt(0);
-            }
-            int top = (vi == null) ? 0 : vi.getTop();
-            outState.putInt("index", index);
-            outState.putInt("top", top);
-            outState.putBoolean("IS_LIST", IS_LIST);
-            outState.putParcelableArrayList("list", LIST_ELEMENTS);
-            outState.putString("CURRENT_PATH", CURRENT_PATH);
-            outState.putBoolean("selection", selection);
-            outState.putInt("openMode", openMode);
-            outState.putInt("folder_count", folder_count);
-            outState.putInt("file_count", file_count);
-            if (selection) {
-                outState.putIntegerArrayList("position", adapter.getCheckedItemPositions());
-            }
-            if (results) {
-                outState.putBoolean("results", results);
-            }
-            if (openMode == 1) {
-                outState.putString("SmbPath", smbPath);
-            }
-        }
-    }
-
-    public void home() {
-        ma.loadlist((ma.home), false, 0);
-    }
-
-
-    public void onListItemClicked(int position, View v) {
-        if (position >= LIST_ELEMENTS.size()) return;
-        if (results) {
-            if (searchTask != null) {
-                if (searchTask.getStatus() == AsyncTask.Status.RUNNING)
-                    searchTask.cancel(true);
-                searchTask = null;
-            }
-            String path = LIST_ELEMENTS.get(position).getDesc();
-            if (selection) adapter.toggleChecked(position);
-            else {
-
-                final File f = new File(path);
-                if (LIST_ELEMENTS.get(position).isDirectory()) {
-
-                    loadlist(f.getPath(), false, 0);
-                    results = false;
-                } else {
-                    if (MAIN_ACTIVITY.mReturnIntent) {
-                        returnIntentResults(f);
-                    } else
-                        utils.openFile(f, (MainActivity) getActivity());
-                }
-            }
-        }
-        else if (openMode==3){
-            if(LIST_ELEMENTS.get(position).getSymlink().equals("application/vnd.google-apps.folder")){
-                loadlist(LIST_ELEMENTS.get(position).getPermissions(),false,3);
-            }else {/*
-                try {
-                    driveUtil.getFile(LIST_ELEMENTS.get(position).getPermissions(), MAIN_ACTIVITY.getDriveClient(), new DriveUtil.FileReturn() {
-                        @Override
-                        public void getFile(com.google.api.services.drive.model.File f) {
-                            launch(f);
-                        }
-                    });
-                } catch (UserRecoverableAuthIOException e) {
-                    MAIN_ACTIVITY.chooseAccount();
-                }*/
-            }
-
-        }
-        else if (openMode == 1) {
-            if (selection) adapter.toggleChecked(position);
-            else {
-                try {
-                    if (LIST_ELEMENTS.get(position).isDirectory())
-                        loadlist(LIST_ELEMENTS.get(position).getDesc(), false,openMode);
-                    else launch(new SmbFile(LIST_ELEMENTS.get(position).getDesc()));
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-            }
-        } else if (selection == true) {
-            if (!LIST_ELEMENTS.get(position).getSize().equals(goback)) {
-                adapter.toggleChecked(position);
-            } else {
-                selection = false;
-                if (mActionMode != null)
-                    mActionMode.finish();
-                mActionMode = null;
-            }
-
-        } else {
-            if (!LIST_ELEMENTS.get(position).getSize().equals(goback)) {
-
-                String path;
-                Layoutelements l = LIST_ELEMENTS.get(position);
-
-                if (!l.hasSymlink()) {
-
-                    path = l.getDesc();
-                } else {
-
-                    path = l.getSymlink();
-                }
-
-                final File f = new File(path);
-
-                if (l.isDirectory()) {
-
-                    computeScroll();
-                    loadlist(f.getPath(), false, openMode);
-                } else {
-                    if (MAIN_ACTIVITY.mReturnIntent) {
-                        returnIntentResults(f);
-                    } else {
-
-                        utils.openFile(f, (MainActivity) getActivity());
-                    }
-                }
-
-            } else {
-
-                goBackItemClick();
-
-            }
-        }
-    }
-
-    private void returnIntentResults(File file) {
-        MAIN_ACTIVITY.mReturnIntent = false;
-
-        Intent intent = new Intent();
-        if (MAIN_ACTIVITY.mRingtonePickerIntent) {
-            Uri uri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, uri);
-            intent.setType("audio/mp3");
-            getActivity().setResult(getActivity().RESULT_OK, intent);
-            getActivity().finish();
-        } else {
-
-            Log.d("pickup", "file");
-            intent.setData(Uri.fromFile(file));
-            getActivity().setResult(getActivity().RESULT_OK, intent);
-            getActivity().finish();
-        }
-    }
-
-    public void loadlist(String path, boolean back, int openMode) {
-        if (mActionMode != null) {
-            mActionMode.finish();
-        }
-                new LoadList(back, ma,openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
-
-    }
-
-
-    void initNoFileLayout() {
-        nofilesview = rootView.findViewById(R.id.nofilelayout);
-        if (theme1 == 0)
-            ((ImageView) nofilesview.findViewById(R.id.image)).setColorFilter(Color.parseColor
-                    ("#666666"));
-        else ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
-    }
-    public boolean checkforpath(String path){
-        if(PERM_GRID)return true;
-        boolean grid=false;
-        for(String s:MAIN_ACTIVITY.gridfiles)
-        if((path).contains(s))grid= true;
-        if(MAIN_ACTIVITY.listfiles.contains(path))grid=false;
-        return grid;
-    }
-    public void createViews(ArrayList<Layoutelements> bitmap, boolean back, String f, int
-            openMode, boolean results,boolean grid) {
-        try {
-            if (bitmap != null) {
-                if (GO_BACK_ITEM)
-                    if (!f.equals("/") && openMode == 0) {
-                        if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))
-                            bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "..", "", "", goback, 0, false, true, ""));
-                    }
-
-                if (bitmap.size() == 0 && !results) {
-                    nofilesview.setVisibility(View.VISIBLE);
-                    listView.setVisibility(View.GONE);
-                    mSwipeRefreshLayout.setEnabled(false);
-                } else {
-                    mSwipeRefreshLayout.setEnabled(true);
-                    nofilesview.setVisibility(View.GONE);
-                    listView.setVisibility(View.VISIBLE);
-
-                }
-                LIST_ELEMENTS = bitmap;
-                if(grid && IS_LIST)
-                    switchToGrid();
-                else if(!grid && !IS_LIST)switchToList();
-                if (adapter == null)
-                    adapter = new Recycleradapter(ma,
-                            bitmap, ma.getActivity());
-                else {
-                    adapter.generate(LIST_ELEMENTS);
-                }
-                stopAnims = true;
-                this.openMode = openMode;
-                if (openMode == 0) {
-                    MAIN_ACTIVITY.history.addPath(null,f,MAIN_ACTIVITY.HISTORY,0);
-                }
-                mSwipeRefreshLayout.setRefreshing(false);
-                try {
-                    listView.setAdapter(adapter);
-                    if (!addheader) {
-                        listView.removeItemDecoration(dividerItemDecoration);
-                        listView.removeItemDecoration(headersDecor);
-                        addheader = true;
-                    }
-                    if (addheader && IS_LIST) {
-                        dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, false, SHOW_DIVIDERS);
-                        listView.addItemDecoration(dividerItemDecoration);
-
-                        headersDecor = new StickyRecyclerHeadersDecoration(adapter);
-                        listView.addItemDecoration(headersDecor);
-                        addheader = false;
-                    }
-                    mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).setListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animator) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animator) {
-                            listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight, hidemode) {
-
-                                @Override
-                                public void onMoved(int distance) {
-                                    mToolbarContainer.setTranslationY(-distance);
-                                }
-
-                                @Override
-                                public void onShow() {
-                                    mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-                                }
-
-                                @Override
-                                public void onHide() {
-                                    mToolbarContainer.animate().translationY(-mToolbarHeight)
-                                            .setInterpolator(new AccelerateInterpolator(2)).start();
-                                }
-
-                            });
-
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animator) {
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animator) {
-
-                        }
-                    }).start();
-                    if (!results) this.results = false;
-                    if(openMode!=3 )CURRENT_PATH = f;
-                    else if(android.util.Patterns.EMAIL_ADDRESS.matcher(f).matches()){
-                        CURRENT_PATH=f;
-                        current_drive_id=f;
-                    }
-                    else current_drive_id=f;
-                    if (back) {
-                        if (scrolls.containsKey(CURRENT_PATH)) {
-                            Bundle b = scrolls.get(CURRENT_PATH);
-                            if (IS_LIST)
-                                mLayoutManager.scrollToPositionWithOffset(b.getInt("index"), b.getInt("top"));
-                            else
-                                mLayoutManagerGrid.scrollToPositionWithOffset(b.getInt("index"), b.getInt("top"));
-                        }
-                    }
-                    //floatingActionButton.show();
-                    MAIN_ACTIVITY.updatepaths(no);
-                    listView.stopScroll();
-                    if (buttons.getVisibility() == View.VISIBLE) MAIN_ACTIVITY.bbar(this);
-
-                } catch (Exception e) {
-                }
-            } else {//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
-                loadlist(home, true, 0);
-            }
-        } catch (Exception e) {
-        }
-
-    }
-
+    Streamer s;
+    private View rootView;
+    private View actionModeView;
     public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
         private void hideOption(int id, Menu menu) {
             MenuItem item = menu.findItem(id);
@@ -844,9 +260,9 @@ public class Main extends android.support.v4.app.Fragment {
                         hideOption(R.id.openmulti, menu);
                     }
 
-                        if (MAIN_ACTIVITY.mReturnIntent)
-                            if (Build.VERSION.SDK_INT >= 16)
-                                showOption(R.id.openmulti, menu);
+                    if (MAIN_ACTIVITY.mReturnIntent)
+                        if (Build.VERSION.SDK_INT >= 16)
+                            showOption(R.id.openmulti, menu);
 
                 } else {
                     try {
@@ -885,9 +301,9 @@ public class Main extends android.support.v4.app.Fragment {
                         hideOption(R.id.share, menu);
                         hideOption(R.id.openmulti, menu);
                     }
-                        if (MAIN_ACTIVITY.mReturnIntent)
-                            if (Build.VERSION.SDK_INT >= 16)
-                                showOption(R.id.openmulti, menu);
+                    if (MAIN_ACTIVITY.mReturnIntent)
+                        if (Build.VERSION.SDK_INT >= 16)
+                            showOption(R.id.openmulti, menu);
 
                 } else {
                     hideOption(R.id.openparent, menu);
@@ -1102,6 +518,599 @@ public class Main extends android.support.v4.app.Fragment {
                         MAIN_ACTIVITY.mDrawerLinear);
         }
     };
+    private BroadcastReceiver receiver2 = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateList();
+        }
+    };
+
+    public static int getToolbarHeight(Context context) {
+        final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
+                new int[]{android.R.attr.actionBarSize});
+        int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
+        styledAttributes.recycle();
+
+        return toolbarHeight;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        MAIN_ACTIVITY = (MainActivity) getActivity();
+        no = getArguments().getInt("no", 1);
+        home = getArguments().getString("home");
+        CURRENT_PATH = getArguments().getString("lastpath");
+        tabHandler = new TabHandler(getActivity(), null, null, 1);
+        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
+        fabSkin = PreferenceUtils.getFabColor(Sp.getInt("fab_skin_color_position", 1));
+        iconskin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
+        skin_color = Color.parseColor(skin);
+        icon_skin_color = Color.parseColor(iconskin);
+        PERM_GRID = Sp.getBoolean("perm_grid", false);
+        Calendar calendar = Calendar.getInstance();
+        year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
+        theme = Integer.parseInt(Sp.getString("theme", "0"));
+        theme1 = theme == 2 ? PreferenceUtils.hourOfDay() : theme;
+        hidemode = Sp.getInt("hidemode", 0);
+        TOP_FAB = hidemode == 0 ? Sp.getBoolean("topFab", true) : false;
+        SHOW_PERMISSIONS = Sp.getBoolean("showPermissions", false);
+        SHOW_SIZE = Sp.getBoolean("showFileSize", false);
+        SHOW_DIVIDERS = Sp.getBoolean("showDividers", true);
+        GO_BACK_ITEM = Sp.getBoolean("goBack_checkbox", false);
+        CIRCULAR_IMAGES = Sp.getBoolean("circularimages", true);
+        SHOW_LAST_MODIFIED = Sp.getBoolean("showLastModified", true);
+        icons = new IconUtils(Sp, getActivity());
+    }
+
+    public void stopAnimation() {
+        if ((!adapter.stoppedAnimation)) {
+            for (int j = 0; j < listView.getChildCount(); j++) {
+                View v = listView.getChildAt(j);
+                if (v != null) v.clearAnimation();
+            }
+        }
+        adapter.stoppedAnimation = true;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.main_frag, container, false);
+        listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
+        mToolbarContainer = getActivity().findViewById(R.id.lin);
+        listView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (adapter != null && stopAnims) {
+                    stopAnimation();
+                    stopAnims = false;
+                }
+                return false;
+            }
+        });
+        mToolbarContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (adapter != null && stopAnims) {
+                    stopAnimation();
+                    stopAnims = false;
+                }
+                return false;
+            }
+        });
+        buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
+        pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
+        SHOW_THUMBS = Sp.getBoolean("showThumbs", true);
+        res = getResources();
+        pathname = (TextView) getActivity().findViewById(R.id.pathname);
+        goback = res.getString(R.string.goback);
+        itemsstring = res.getString(R.string.items);
+        apk = res.getDrawable(R.drawable.ic_doc_apk_grid);
+        mToolbarContainer.setBackgroundColor(skin_color);
+        //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
+        return rootView;
+    }
+
+    public int dpToPx(int dp) {
+        if (displayMetrics == null) displayMetrics = getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
+    }
+
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(false);
+        MAIN_ACTIVITY = (MainActivity) getActivity();
+        initNoFileLayout();
+        utils = new Futils();
+        String x = getSelectionColor();
+        skinselection = Color.parseColor(x);
+        color = calculatevalues(x);
+        ColorMatrix colorMatrix = new ColorMatrix(calculatefilter(color));
+        colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
+        ROOT_MODE = Sp.getBoolean("rootmode", false);
+        SHOW_HIDDEN = Sp.getBoolean("showHidden", false);
+        COLORISE_ICONS = Sp.getBoolean("coloriseIcons", true);
+        folder = res.getDrawable(R.drawable.ic_grid_folder_new);
+        getSortModes();
+        DARK_IMAGE = res.getDrawable(R.drawable.ic_doc_image_dark);
+        DARK_VIDEO = res.getDrawable(R.drawable.ic_doc_video_dark);
+        this.setRetainInstance(false);
+        f = new HFile(CURRENT_PATH);
+        if (!f.isCustomPath() && !f.isSmb() && !f.isDirectory()) {
+            File file = new File(CURRENT_PATH);
+            utils.openFile(file, MAIN_ACTIVITY);
+            CURRENT_PATH = (file.getParent());
+        }
+        MAIN_ACTIVITY.initiatebbar();
+        IS_LIST=savedInstanceState!=null?savedInstanceState.getBoolean("IS_LIST",IS_LIST):IS_LIST;
+        ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
+        if (theme1 == 1) {
+
+            listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.holo_dark_background)));
+        } else {
+
+            if (IS_LIST)
+                listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
+
+        }
+        listView.setHasFixedSize(true);
+        columns = Integer.parseInt(Sp.getString("columns", "-1"));
+        if (IS_LIST) {
+            mLayoutManager = new LinearLayoutManager(getActivity());
+            listView.setLayoutManager(mLayoutManager);
+        } else {
+            if (columns == -1 || columns == 0)
+                mLayoutManagerGrid = new GridLayoutManager(getActivity(), 3);
+            else
+                mLayoutManagerGrid = new GridLayoutManager(getActivity(), columns);
+            listView.setLayoutManager(mLayoutManagerGrid);
+        }
+        // use a linear layout manager
+        footerView = getActivity().getLayoutInflater().inflate(R.layout.divider, null);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadlist((CURRENT_PATH), false, openMode);
+            }
+        });
+        mToolbarHeight = getToolbarHeight(getActivity());
+        paddingTop = (mToolbarHeight) + dpToPx(72);
+        if (hidemode == 2) mToolbarHeight = paddingTop;
+        mSwipeRefreshLayout.setProgressViewOffset(true, paddingTop, paddingTop + dpToPx(30));
+        mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor(fabSkin));
+        DefaultItemAnimator animator = new DefaultItemAnimator();
+        listView.setItemAnimator(animator);
+        mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (hidemode != 2) mToolbarHeight = MAIN_ACTIVITY.toolbar.getHeight();
+                else mToolbarHeight = paddingTop;
+                paddingTop = mToolbarContainer.getHeight();
+                if ((columns == 0 || columns == -1)) {
+                    int screen_width = listView.getWidth();
+                    int dptopx = dpToPx(115);
+                    columns = screen_width / dptopx;
+                    if (!IS_LIST) mLayoutManagerGrid.setSpanCount(columns);
+                }
+                mSwipeRefreshLayout.setProgressViewOffset(true, paddingTop, paddingTop + dpToPx(72));
+                if (savedInstanceState != null && !IS_LIST)
+                    retrieveFromSavedInstance(savedInstanceState);
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    mToolbarContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+
+        });
+        if (savedInstanceState == null) {
+            loadlist(CURRENT_PATH, false, openMode);
+
+        } else {
+            if (IS_LIST)
+                retrieveFromSavedInstance(savedInstanceState);
+        }
+    }
+
+    void switchToGrid() {
+        IS_LIST = false;
+        ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
+        folder = res.getDrawable(R.drawable.ic_grid_folder_new);
+        fixIcons();
+
+        if (theme1 == 1) {
+
+            listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.holo_dark_background)));
+        } else {
+
+            if (IS_LIST)
+                listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
+            else listView.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#f2f2f2")));
+        }
+        if (mLayoutManagerGrid == null)
+            if (columns == -1 || columns == 0)
+                mLayoutManagerGrid = new GridLayoutManager(getActivity(), 3);
+            else
+                mLayoutManagerGrid = new GridLayoutManager(getActivity(), columns);
+        listView.setLayoutManager(mLayoutManagerGrid);
+        adapter = null;
+    }
+
+    void setBackground(Drawable drawable){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            listView.setBackground(drawable);
+        }else listView.setBackgroundDrawable(drawable);
+    }
+
+    void switchToList() {
+        IS_LIST = true;
+        if (theme1 == 1) {
+                setBackground(new ColorDrawable(getResources().getColor(R.color.holo_dark_background)));
+        } else {
+
+            if (IS_LIST)
+                setBackground(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
+            else setBackground(new ColorDrawable(Color.parseColor("#f2f2f2")));
+        }
+        ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
+        folder = res.getDrawable(R.drawable.ic_grid_folder_new);
+        fixIcons();
+        if (mLayoutManager == null)
+            mLayoutManager = new LinearLayoutManager(getActivity());
+        listView.setLayoutManager(mLayoutManager);
+        adapter = null;
+    }
+
+    public void switchView(){
+        createViews(LIST_ELEMENTS,false,CURRENT_PATH,openMode,results,checkforpath(CURRENT_PATH));
+    }
+
+    void retrieveFromSavedInstance(final Bundle savedInstanceState) {
+
+        Bundle b = new Bundle();
+        String cur = savedInstanceState.getString("CURRENT_PATH");
+        if (cur != null) {
+            b.putInt("index", savedInstanceState.getInt("index"));
+            b.putInt("top", savedInstanceState.getInt("top"));
+            scrolls.put(cur, b);
+
+            openMode = savedInstanceState.getInt("openMode", 0);
+            if (openMode == 1)
+                smbPath = savedInstanceState.getString("SmbPath");
+            LIST_ELEMENTS = savedInstanceState.getParcelableArrayList("list");
+            folder_count = savedInstanceState.getInt("folder_count", 0);
+            file_count = savedInstanceState.getInt("file_count", 0);
+            if (savedInstanceState.getBoolean("results")) {
+                try {
+                    createViews(LIST_ELEMENTS, true, (CURRENT_PATH), openMode, true,!IS_LIST);
+                    pathname.setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
+                    results = true;
+                } catch (Exception e) {
+                }
+            } else {
+                createViews(LIST_ELEMENTS, true, (cur), openMode, false, !IS_LIST);
+            }
+            if (savedInstanceState.getBoolean("selection")) {
+
+                for (int i : savedInstanceState.getIntegerArrayList("position")) {
+                    adapter.toggleChecked(i);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        int index;
+        View vi;
+        if (listView != null) {
+            if (IS_LIST) {
+
+                index = (mLayoutManager).findFirstVisibleItemPosition();
+                vi = listView.getChildAt(0);
+            } else {
+                index = (mLayoutManagerGrid).findFirstVisibleItemPosition();
+                vi = listView.getChildAt(0);
+            }
+            int top = (vi == null) ? 0 : vi.getTop();
+            outState.putInt("index", index);
+            outState.putInt("top", top);
+            outState.putBoolean("IS_LIST", IS_LIST);
+            outState.putParcelableArrayList("list", LIST_ELEMENTS);
+            outState.putString("CURRENT_PATH", CURRENT_PATH);
+            outState.putBoolean("selection", selection);
+            outState.putInt("openMode", openMode);
+            outState.putInt("folder_count", folder_count);
+            outState.putInt("file_count", file_count);
+            if (selection) {
+                outState.putIntegerArrayList("position", adapter.getCheckedItemPositions());
+            }
+            if (results) {
+                outState.putBoolean("results", results);
+            }
+            if (openMode == 1) {
+                outState.putString("SmbPath", smbPath);
+            }
+        }
+    }
+
+    public void home() {
+        ma.loadlist((ma.home), false, 0);
+    }
+
+    public void onListItemClicked(int position, View v) {
+        if (position >= LIST_ELEMENTS.size()) return;
+        if (results) {
+            if (searchTask != null) {
+                if (searchTask.getStatus() == AsyncTask.Status.RUNNING)
+                    searchTask.cancel(true);
+                searchTask = null;
+            }
+            String path = LIST_ELEMENTS.get(position).getDesc();
+            if (selection) adapter.toggleChecked(position);
+            else {
+
+                final File f = new File(path);
+                if (LIST_ELEMENTS.get(position).isDirectory()) {
+
+                    loadlist(f.getPath(), false, 0);
+                    results = false;
+                } else {
+                    if (MAIN_ACTIVITY.mReturnIntent) {
+                        returnIntentResults(f);
+                    } else
+                        utils.openFile(f, (MainActivity) getActivity());
+                }
+            }
+        }
+        else if (openMode==3){
+            /*if(LIST_ELEMENTS.get(position).getSymlink().equals("application/vnd.google-apps.folder")){
+                loadlist(LIST_ELEMENTS.get(position).getPermissions(),false,3);
+            }else {
+                try {
+                    driveUtil.getFile(LIST_ELEMENTS.get(position).getPermissions(), MAIN_ACTIVITY.getDriveClient(), new DriveUtil.FileReturn() {
+                        @Override
+                        public void getFile(com.google.api.services.drive.model.File f) {
+                            launch(f);
+                        }
+                    });
+                } catch (UserRecoverableAuthIOException e) {
+                    MAIN_ACTIVITY.chooseAccount();
+                }*/
+
+
+        }
+        else if (openMode == 1) {
+            if (selection) adapter.toggleChecked(position);
+            else {
+                try {
+                    if (LIST_ELEMENTS.get(position).isDirectory())
+                        loadlist(LIST_ELEMENTS.get(position).getDesc(), false,openMode);
+                    else launch(new SmbFile(LIST_ELEMENTS.get(position).getDesc()));
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (selection == true) {
+            if (!LIST_ELEMENTS.get(position).getSize().equals(goback)) {
+                adapter.toggleChecked(position);
+            } else {
+                selection = false;
+                if (mActionMode != null)
+                    mActionMode.finish();
+                mActionMode = null;
+            }
+
+        } else {
+            if (!LIST_ELEMENTS.get(position).getSize().equals(goback)) {
+
+                String path;
+                Layoutelements l = LIST_ELEMENTS.get(position);
+
+                if (!l.hasSymlink()) {
+
+                    path = l.getDesc();
+                } else {
+
+                    path = l.getSymlink();
+                }
+
+                final File f = new File(path);
+
+                if (l.isDirectory()) {
+
+                    computeScroll();
+                    loadlist(f.getPath(), false, openMode);
+                } else {
+                    if (MAIN_ACTIVITY.mReturnIntent) {
+                        returnIntentResults(f);
+                    } else {
+
+                        utils.openFile(f, (MainActivity) getActivity());
+                    }
+                }
+
+            } else {
+
+                goBackItemClick();
+
+            }
+        }
+    }
+
+    private void returnIntentResults(File file) {
+        MAIN_ACTIVITY.mReturnIntent = false;
+
+        Intent intent = new Intent();
+        if (MAIN_ACTIVITY.mRingtonePickerIntent) {
+            Uri uri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, uri);
+            intent.setType("audio/mp3");
+            getActivity().setResult(getActivity().RESULT_OK, intent);
+            getActivity().finish();
+        } else {
+
+            Log.d("pickup", "file");
+            intent.setData(Uri.fromFile(file));
+            getActivity().setResult(getActivity().RESULT_OK, intent);
+            getActivity().finish();
+        }
+    }
+
+    public void loadlist(String path, boolean back, int openMode) {
+        if (mActionMode != null) {
+            mActionMode.finish();
+        }
+                new LoadList(back, ma,openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
+
+    }
+
+    void initNoFileLayout() {
+        nofilesview = rootView.findViewById(R.id.nofilelayout);
+        if (theme1 == 0)
+            ((ImageView) nofilesview.findViewById(R.id.image)).setColorFilter(Color.parseColor
+                    ("#666666"));
+        else ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
+    }
+
+    public boolean checkforpath(String path){
+        if(PERM_GRID)return true;
+        boolean grid=false;
+        for(String s:MAIN_ACTIVITY.gridfiles)
+        if((path).contains(s))grid= true;
+        if(MAIN_ACTIVITY.listfiles.contains(path))grid=false;
+        return grid;
+    }
+
+    public void createViews(ArrayList<Layoutelements> bitmap, boolean back, String f, int
+            openMode, boolean results,boolean grid) {
+        try {
+            if (bitmap != null) {
+                if (GO_BACK_ITEM)
+                    if (!f.equals("/") && openMode == 0) {
+                        if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))
+                            bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "..", "", "", goback, 0, false, true, ""));
+                    }
+
+                if (bitmap.size() == 0 && !results) {
+                    nofilesview.setVisibility(View.VISIBLE);
+                    listView.setVisibility(View.GONE);
+                    mSwipeRefreshLayout.setEnabled(false);
+                } else {
+                    mSwipeRefreshLayout.setEnabled(true);
+                    nofilesview.setVisibility(View.GONE);
+                    listView.setVisibility(View.VISIBLE);
+
+                }
+                LIST_ELEMENTS = bitmap;
+                if(grid && IS_LIST)
+                    switchToGrid();
+                else if(!grid && !IS_LIST)switchToList();
+                if (adapter == null)
+                    adapter = new Recycleradapter(ma,
+                            bitmap, ma.getActivity());
+                else {
+                    adapter.generate(LIST_ELEMENTS);
+                }
+                stopAnims = true;
+                this.openMode = openMode;
+                if (openMode == 0) {
+                    MAIN_ACTIVITY.history.addPath(null,f,MAIN_ACTIVITY.HISTORY,0);
+                }
+                mSwipeRefreshLayout.setRefreshing(false);
+                try {
+                    listView.setAdapter(adapter);
+                    if (!addheader) {
+                        listView.removeItemDecoration(dividerItemDecoration);
+                        listView.removeItemDecoration(headersDecor);
+                        addheader = true;
+                    }
+                    if (addheader && IS_LIST) {
+                        dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, false, SHOW_DIVIDERS);
+                        listView.addItemDecoration(dividerItemDecoration);
+
+                        headersDecor = new StickyRecyclerHeadersDecoration(adapter);
+                        listView.addItemDecoration(headersDecor);
+                        addheader = false;
+                    }
+                    mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight, hidemode) {
+
+                                @Override
+                                public void onMoved(int distance) {
+                                    mToolbarContainer.setTranslationY(-distance);
+                                }
+
+                                @Override
+                                public void onShow() {
+                                    mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                                }
+
+                                @Override
+                                public void onHide() {
+                                    mToolbarContainer.animate().translationY(-mToolbarHeight)
+                                            .setInterpolator(new AccelerateInterpolator(2)).start();
+                                }
+
+                            });
+
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
+
+                        }
+                    }).start();
+                    if (!results) this.results = false;
+                    if(openMode!=3 )CURRENT_PATH = f;
+                    else if(android.util.Patterns.EMAIL_ADDRESS.matcher(f).matches()){
+                        CURRENT_PATH=f;
+                        current_drive_id=f;
+                    }
+                    else current_drive_id=f;
+                    if (back) {
+                        if (scrolls.containsKey(CURRENT_PATH)) {
+                            Bundle b = scrolls.get(CURRENT_PATH);
+                            if (IS_LIST)
+                                mLayoutManager.scrollToPositionWithOffset(b.getInt("index"), b.getInt("top"));
+                            else
+                                mLayoutManagerGrid.scrollToPositionWithOffset(b.getInt("index"), b.getInt("top"));
+                        }
+                    }
+                    //floatingActionButton.show();
+                    MAIN_ACTIVITY.updatepaths(no);
+                    listView.stopScroll();
+                    if (buttons.getVisibility() == View.VISIBLE) MAIN_ACTIVITY.bbar(this);
+
+                } catch (Exception e) {
+                }
+            } else {//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
+                loadlist(home, true, 0);
+            }
+        } catch (Exception e) {
+        }
+
+    }
 
     public void rename(final String f) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
@@ -1177,7 +1186,7 @@ public class Main extends android.support.v4.app.Fragment {
                     try {
                         if (!MAIN_ACTIVITY.Servers.contains(CURRENT_PATH)) {
                             String path = (new SmbFile(CURRENT_PATH).getParent());
-                            loadlist((path), true,openMode);
+                            loadlist((path), true, openMode);
                         } else loadlist(home, false, 0);
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
@@ -1212,7 +1221,7 @@ public class Main extends android.support.v4.app.Fragment {
                     try {
                         if (!CURRENT_PATH.equals(smbPath)) {
                             String path = (new SmbFile(CURRENT_PATH).getParent());
-                            loadlist((path), true,1);
+                            loadlist((path), true, 1);
                         } else loadlist(home, false, 0);
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
@@ -1227,13 +1236,6 @@ public class Main extends android.support.v4.app.Fragment {
             loadlist(f.getPath(), true, openMode);
         }
     }
-    private BroadcastReceiver receiver2 = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateList();
-        }
-    };
 
     public void updateList() {
         computeScroll();
@@ -1344,8 +1346,6 @@ public class Main extends android.support.v4.app.Fragment {
         return a;
     }
 
-
-
     public boolean isDirectory(String[] path) {
         if (ROOT_MODE)
             if (path[1].length() != 0) return new File(path[0]).isDirectory();
@@ -1354,14 +1354,12 @@ public class Main extends android.support.v4.app.Fragment {
             return new File(path[0]).isDirectory();
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
 
 
     }
-
 
     public SmbFile connectingWithSmbServer(String[] auth, boolean anonym) {
         try {
@@ -1379,7 +1377,6 @@ public class Main extends android.support.v4.app.Fragment {
     public void updatehiddenfiles() {
         MAIN_ACTIVITY.hiddenfiles = MAIN_ACTIVITY.history.readTable(MAIN_ACTIVITY.HIDDEN);
     }
-
 
     public void hide(String path) {
         MAIN_ACTIVITY.history.addPath(null,path,MAIN_ACTIVITY.HIDDEN,0);
@@ -1517,8 +1514,6 @@ public class Main extends android.support.v4.app.Fragment {
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
-
-    Streamer s;
 
     private void launch(final SmbFile smbFile) {
         s = Streamer.getInstance();
