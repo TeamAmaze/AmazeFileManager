@@ -449,7 +449,7 @@ public class Main extends android.support.v4.app.Fragment {
                     mode.finish();
                     return true;
                 case R.id.ex:
-                    MAIN_ACTIVITY.extractFile(new File(LIST_ELEMENTS.get(plist.get(0)).getDesc()));
+                    MAIN_ACTIVITY.mainActivityHelper.extractFile(new File(LIST_ELEMENTS.get(plist.get(0)).getDesc()));
                     mode.finish();
                     return true;
                 case R.id.cpy:
@@ -1136,9 +1136,9 @@ public class Main extends android.support.v4.app.Fragment {
                     e.printStackTrace();
                 }
                 if (openMode == 1)
-                    MAIN_ACTIVITY.rename(f, CURRENT_PATH + name);
+                    MAIN_ACTIVITY.mainActivityHelper.rename(f, CURRENT_PATH + name);
                 else
-                    MAIN_ACTIVITY.rename((f), (CURRENT_PATH + "/" + name));
+                    MAIN_ACTIVITY.mainActivityHelper.rename((f), (CURRENT_PATH + "/" + name));
 
             }
 
@@ -1385,7 +1385,7 @@ public class Main extends android.support.v4.app.Fragment {
             File f1 = new File(path + "/" + ".nomedia");
             if (!f1.exists()) {
                 try {
-                    MAIN_ACTIVITY.mkFile(f1.getPath(), this);
+                    MAIN_ACTIVITY.mainActivityHelper.mkFile(f1.getPath(), this);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

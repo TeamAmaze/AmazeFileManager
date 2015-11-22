@@ -19,19 +19,16 @@
 
 package com.amaze.filemanager.fragments;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -44,22 +41,22 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amaze.filemanager.ProgressListener;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.RegisterCallback;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
+import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.ui.icons.IconUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ProcessViewer extends Fragment {
 
     LinearLayout rootView;
-    CopyService mService;
     boolean mBound = false;
     Futils utils = new Futils();
     ArrayList<Integer> CopyIds = new ArrayList<Integer>();
@@ -93,16 +90,37 @@ public class ProcessViewer extends Fragment {
         mainActivity.supportInvalidateOptionsMenu();
         return root;
     }
-
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            CopyService.LocalBinder binder = (CopyService.LocalBinder) service;
-            mService = binder.getService();
+            RegisterCallback binder = (RegisterCallback.Stub.asInterface(service));
             mBound = true;
+            try {
+                for(DataPackage dataPackage:binder.getCurrent()){
+                    processResults(dataPackage);
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            try {
+                binder.registerCallBack(new ProgressListener.Stub() {
+                    @Override
+                    public void onUpdate(DataPackage dataPackage) {
+                        processResults(dataPackage);
+                    }
+
+                    @Override
+                    public void refresh() {
+                        clear();
+                    }
+                });
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            /*
             for (int i : mService.hash1.keySet()) {
                 processResults(mService.hash1.get(i));
             }
@@ -116,7 +134,7 @@ public class ProcessViewer extends Fragment {
                 public void refresh() {
                     clear();
                 }
-            });
+            });*/
         }
 
         @Override
@@ -228,8 +246,12 @@ public class ProcessViewer extends Fragment {
                     boolean completed = b.isCompleted();
                     View process = rootView.findViewWithTag("copy" + id);
                     if (completed) {
-                        rootView.removeViewInLayout(process);
-                        CopyIds.remove(CopyIds.indexOf(id1));
+                        try {
+                            rootView.removeViewInLayout(process);
+                            CopyIds.remove(CopyIds.indexOf(id1));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     } else {
                         String name = b.getName();
                         int p1 = b.getP1();

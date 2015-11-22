@@ -39,7 +39,6 @@
 
         <activity
             android:label="Amaze"
-            android:launchMode="singleTop"
             android:name=".activities.MainActivity"
             android:theme="@style/appCompatLight">
             <intent-filter >
@@ -110,6 +109,7 @@
 			<service
 			android:name = ".services.CopyService"
 			android:label = "Copying"
+                android:process=":amaze"
             >
 		</service>
     </application>

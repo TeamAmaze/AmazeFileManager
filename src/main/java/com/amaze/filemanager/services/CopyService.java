@@ -29,18 +29,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Binder;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
+import com.amaze.filemanager.ProgressListener;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.RegisterCallback;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.utils.DataPackage;
-import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HFile;
 import com.stericson.RootTools.RootTools;
@@ -48,16 +47,12 @@ import com.stericson.RootTools.RootTools;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile;
+import java.util.List;
 
 public class CopyService extends Service {
     HashMap<Integer, Boolean> hash = new HashMap<Integer, Boolean>();
@@ -75,13 +70,6 @@ public class CopyService extends Service {
         registerReceiver(receiver3, new IntentFilter("copycancel"));
     }
 
-    private final IBinder mBinder = new LocalBinder();
-    public class LocalBinder extends Binder {
-        public CopyService getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return CopyService.this;
-        }
-    }
 
     boolean foreground=true;
     @Override
@@ -94,6 +82,7 @@ public class CopyService extends Service {
         b.putInt("id", startId);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         notificationIntent.putExtra("openprocesses",true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         mBuilder = new NotificationCompat.Builder(c);
@@ -132,16 +121,9 @@ public class CopyService extends Service {
      */
 
 
-    public void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
-    }
 
     ProgressListener progressListener;
 
-    public interface ProgressListener {
-        void onUpdate(DataPackage dataPackage);
-        void refresh();
-    }
 
     public void onDestroy() {
         this.unregisterReceiver(receiver3);
@@ -211,9 +193,13 @@ public class CopyService extends Service {
                 intent.setMove(move);
                 intent.setCompleted(b);
                 hash1.put(id,intent);
-            if(progressListener!=null){
-                progressListener.onUpdate(intent);
-                if(b)progressListener.refresh();
+            try {
+                if(progressListener!=null){
+                    progressListener.onUpdate(intent);
+                    if(b)progressListener.refresh();
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
         } else publishCompletedResult(id, Integer.parseInt("456" + id));
     }
@@ -395,10 +381,24 @@ public class CopyService extends Service {
 
         }
     };
+    RegisterCallback registerCallback= new RegisterCallback.Stub() {
+        @Override
+        public void registerCallBack(ProgressListener p) throws RemoteException {
+            progressListener=p;
+        }
 
+        @Override
+        public List<DataPackage> getCurrent() throws RemoteException {
+            List<DataPackage> dataPackages=new ArrayList<>();
+            for (int i : hash1.keySet()) {
+               dataPackages.add(hash1.get(i));
+            }
+            return dataPackages;
+        }
+    };
     @Override
     public IBinder onBind(Intent arg0) {
         // TODO Auto-generated method stub
-        return mBinder;
+        return registerCallback.asBinder();
     }
 }

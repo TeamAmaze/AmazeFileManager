@@ -19,13 +19,9 @@
 
 package com.amaze.filemanager.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -132,7 +128,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                     if (position > m.storage_count && position < values.size()-5) {
                         String path = ((EntryItem) getItem(position)).getPath();
                         if (!getItem(position).isSection() && path.startsWith("smb:/")) {
-                            m.createSmbDialog(path, true, null);
+                            m.mainActivityHelper.createSmbDialog(path, true, null);
                             return true;
                         }
                         m.renameBookmark(((EntryItem) getItem(position)).getTitle(),path);

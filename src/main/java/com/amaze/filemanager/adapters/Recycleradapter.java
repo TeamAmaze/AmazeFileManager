@@ -4,17 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
@@ -26,8 +22,8 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.Main;
-import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.Layoutelements;
+import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
@@ -634,7 +630,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 MAIN_ACTIVITY1.supportInvalidateOptionsMenu();
                                 return true;
                             case R.id.ex:
-                                main.MAIN_ACTIVITY.extractFile(new File(rowItem.getDesc()));
+                                main.MAIN_ACTIVITY.mainActivityHelper.extractFile(new File(rowItem.getDesc()));
                                 return true;
                             case R.id.book:
                                 try {

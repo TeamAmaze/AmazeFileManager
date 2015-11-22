@@ -29,7 +29,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -39,27 +38,21 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.UserHandle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
@@ -69,12 +62,9 @@ import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
-import com.amaze.filemanager.ui.CircleAnimation;
 import com.amaze.filemanager.ui.Layoutelements;
-import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
-import com.amaze.filemanager.ui.views.SizeDrawable;
 import com.amaze.filemanager.utils.share.ShareTask;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
@@ -474,7 +464,7 @@ public void openWith(final File f,final Context c) {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_SHORT).show();
-                b.MAIN_ACTIVITY.deleteFiles(todelete);
+                b.MAIN_ACTIVITY.mainActivityHelper.deleteFiles(todelete);
             }
 
             @Override
@@ -837,7 +827,7 @@ public void showPackageDialog(final File f,final MainActivity m){
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
-                        m.extractFile(f);
+                        m. mainActivityHelper.extractFile(f);
                     }
 
                     @Override
@@ -901,7 +891,7 @@ public void showPackageDialog(final File f,final MainActivity m){
                     Toast.makeText(m,"File should have a name",Toast.LENGTH_SHORT).show();
                 else {
                 String name = current + "/" + materialDialog.getInputEditText().getText().toString();
-                m.compressFiles(new File(name), b);
+                m.mainActivityHelper.compressFiles(new File(name), b);
             }}
         });
         a.negativeText(getString(m, R.string.cancel));
