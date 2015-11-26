@@ -279,6 +279,7 @@
     <string name="polish_translation_title">Polaco</string>
     <string name="korean_translation_title">Coreano</string>
     <string name="greek_translation_title">Grego</string>
+    <string name="dutch_translation_title">Neerlandês</string>
 
     <string name="zip_viewer">Visualizador zip</string>
     <string name="unin_system_apk">Esta é uma aplicação do sistema. Se a eliminar, pode afetar a estabilidade do sistema.\nContinuar?</string>
