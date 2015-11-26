@@ -280,6 +280,7 @@
     <string name="polish_translation_title">Pools</string>
     <string name="korean_translation_title">Koreaans</string>
     <string name="greek_translation_title">Grieks</string>
+    <string name="dutch_translation_title">Nederlands</string>
 
     <string name="zip_viewer">Zip openen</string>
     <string name="unin_system_apk">Dit is een systeemapp. Het verwijderen kan leiden tot instabiliteit van het systeem.\nDoorgaan?</string>
