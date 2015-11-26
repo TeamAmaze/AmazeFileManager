@@ -274,7 +274,8 @@
     <string name="turkish_translation_title">Turc</string>
     <string name="ukrainian_translation_title">Ukrainien</string>
     <string name="portuguese_translation_title">Portugais</string>
-	<string name="polish_translation_title">Polonais</string>
+    <string name="polish_translation_title">Polonais</string>
+    <string name="dutch_translation_title">Néerlandais</string>
     <string name="zip_viewer">Visionneur ZIP</string>
     <string name="unin_system_apk">Ceci est une application système, sa suppression pourrait conduire à une instabilité du système.\nPoursuivre ?</string>
     <string name="warning">Attention</string>
