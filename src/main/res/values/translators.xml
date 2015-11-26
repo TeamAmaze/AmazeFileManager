@@ -34,4 +34,5 @@
     <string name="polish_translation_summary" translatable="false">M. Kucharskov, P. Kowalczyk</string>
     <string name="korean_translation_summary" translable="false">Park Kyungjin</string>
     <string name="greek_translation_summary" translable="false">Vasilis K.</string>
+    <string name="dutch_translation_summary" translable="false">Robin van der Vliet</string>
 </resources>
