@@ -268,6 +268,7 @@
     <string name="chinese_translation_title">Китайский</string>
     <string name="serbian_translation_title">Сербский</string>
     <string name="turkish_translation_title">Турецкий</string>
+    <string name="dutch_translation_title">Нидерландский</string>
     <string name="zip_viewer">Просмотр ZIP</string>
     <string name="unin_system_apk">Это системное приложение, удаление может привести к нестабильности системы.
 Продолжить?</string>
