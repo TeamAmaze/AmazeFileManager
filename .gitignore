@@ -39,8 +39,8 @@ Icon
 # Android Studio
 .idea/*
 #.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
-.gradle/*
-build/*
+.gradle/
+build/
 .settings
 bin/
 gen/
@@ -52,3 +52,4 @@ gradlew.bat
 .project
 AmazeFileManager.iml
 libs/libs.iml
+.idea/

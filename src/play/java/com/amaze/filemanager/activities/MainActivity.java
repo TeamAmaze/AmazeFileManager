@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements
     private View drawerHeaderView;
     private RoundedImageView drawerProfilePic;
     private DisplayImageOptions displayImageOptions;
-    private int sdk;
+    private int sdk, COUNTER=0;
     private TextView mGoogleName, mGoogleId;
     private LinearLayout buttons;
     private HorizontalScrollView scroll, scroll1;
@@ -214,6 +214,9 @@ public class MainActivity extends AppCompatActivity implements
    * us from starting further intents.
    */
     private boolean mIntentInProgress, topfab = false, showHidden = false;
+
+    // string builder object variables for pathBar animations
+    private StringBuilder newPathBuilder, oldPathBuilder;
 
     /**
      * Called when the activity is first created.
@@ -1917,15 +1920,21 @@ public class MainActivity extends AppCompatActivity implements
         final String oldPath = bapath.getText().toString();
         if (oldPath != null && oldPath.equals(newPath)) return;
 
+        // implement animation while setting text
+        newPathBuilder = new StringBuilder().append(newPath);
+        oldPathBuilder = new StringBuilder().append(oldPath);
 
         final Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in);
         Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_out);
 
-        final StringBuilder stringBuilder = new StringBuilder();
-        if (newPath.length() >= oldPath.length()) {
+        if (newPath.length() >= oldPath.length() &&
+                newPathBuilder.delete(oldPath.length(), newPath.length()).toString().equals(oldPath) &&
+                oldPath.length()!=0) {
+
             // navigate forward
-            stringBuilder.append(newPath);
-            stringBuilder.delete(0, oldPath.length());
+            newPathBuilder.delete(0, newPathBuilder.length());
+            newPathBuilder.append(newPath);
+            newPathBuilder.delete(0, oldPath.length());
             animPath.setAnimation(slideIn);
             animPath.animate().setListener(new AnimatorListenerAdapter() {
                 @Override
@@ -1939,7 +1948,7 @@ public class MainActivity extends AppCompatActivity implements
                 public void onAnimationStart(Animator animation) {
                     super.onAnimationStart(animation);
                     animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(stringBuilder.toString());
+                    animPath.setText(newPathBuilder.toString());
                     //bapath.setText(oldPath);
 
                     scroll.post(new Runnable() {
@@ -1949,11 +1958,14 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
-            }).start();
-        } else if (newPath.length() <= oldPath.length()) {
+            }).setStartDelay(500).start();
+        } else if (newPath.length() <= oldPath.length() &&
+                oldPathBuilder.delete(newPath.length(), oldPath.length()).toString().equals(newPath)) {
+
             // navigate backwards
-            stringBuilder.append(oldPath);
-            stringBuilder.delete(0, newPath.length());
+            oldPathBuilder.delete(0, oldPathBuilder.length());
+            oldPathBuilder.append(oldPath);
+            oldPathBuilder.delete(0, newPath.length());
             animPath.setAnimation(slideOut);
             animPath.animate().setListener(new AnimatorListenerAdapter() {
                 @Override
@@ -1974,7 +1986,7 @@ public class MainActivity extends AppCompatActivity implements
                 public void onAnimationStart(Animator animation) {
                     super.onAnimationStart(animation);
                     animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(stringBuilder.toString());
+                    animPath.setText(oldPathBuilder.toString());
                     bapath.setText(newPath);
 
                     scroll.post(new Runnable() {
@@ -1984,7 +1996,93 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
-            }).start();
+            }).setStartDelay(500).start();
+        } else if (oldPath.isEmpty()) {
+
+            // case when app starts
+            // FIXME: COUNTER is incremented twice on app startup
+            COUNTER++;
+            if (COUNTER==2) {
+
+                animPath.setAnimation(slideIn);
+                animPath.setText(newPath);
+                animPath.animate().setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        animPath.setVisibility(View.VISIBLE);
+                        bapath.setText("");
+                        scroll.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                scroll1.fullScroll(View.FOCUS_RIGHT);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        animPath.setVisibility(View.GONE);
+                        bapath.setText(newPath);
+                    }
+                }).setStartDelay(500).start();
+            }
+
+        } else {
+
+            // completely different path
+            // first slide out of old path followed by slide in of new path
+            animPath.setAnimation(slideOut);
+            animPath.animate().setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    super.onAnimationStart(animator);
+                    animPath.setVisibility(View.VISIBLE);
+                    animPath.setText(oldPath);
+                    bapath.setText("");
+
+                    scroll.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scroll1.fullScroll(View.FOCUS_LEFT);
+                        }
+                    });
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    super.onAnimationEnd(animator);
+
+                    //animPath.setVisibility(View.GONE);
+                    animPath.setText(newPath);
+                    bapath.setText("");
+                    animPath.setAnimation(slideIn);
+
+                    animPath.animate().setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            animPath.setVisibility(View.GONE);
+                            bapath.setText(newPath);
+                        }
+
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                            // we should not be having anything here in path bar
+                            animPath.setVisibility(View.VISIBLE);
+                            bapath.setText("");
+                            scroll.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    scroll1.fullScroll(View.FOCUS_RIGHT);
+                                }
+                            });
+                        }
+                    }).start();
+                }
+            }).setStartDelay(500).start();
         }
     }
 
