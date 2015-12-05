@@ -280,6 +280,7 @@
     <string name="polish_translation_title">Пољски</string>
     <string name="korean_translation_title">Корејски</string>
     <string name="greek_translation_title">Грчки</string>
+    <string name="dutch_translation_title">Холандски</string>
 
     <string name="zip_viewer">Зип прегледач</string>
     <string name="unin_system_apk">Ово је системска апликација, уклањање може да доведе до нестабилности система.\nДа наставим?</string>

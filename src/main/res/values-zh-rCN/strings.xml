@@ -275,6 +275,7 @@
     <string name="ukrainian_translation_title">乌克兰语</string>
     <string name="portuguese_translation_title">葡萄牙语</string>
     <string name="polish_translation_title">波兰语</string>
+    <string name="dutch_translation_title">荷兰语</string>
     <string name="zip_viewer">ZIP 压缩包查看器</string>
     <string name="unin_system_apk">这是一个系统应用，删除它可能导致系统不稳定。\n是否继续？</string>
     <string name="warning">警告</string>

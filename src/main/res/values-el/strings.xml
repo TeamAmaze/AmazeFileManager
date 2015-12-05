@@ -273,6 +273,7 @@
     <string name="polish_translation_title">Πολωνέζικα</string>
     <string name="korean_translation_title">Κορεάτικα</string>
     <string name="greek_translation_title">Ελληνικά</string>
+    <string name="dutch_translation_title">Ολλανδικά</string>
     <string name="zip_viewer">Διαχειριστής Zip</string>
     <string name="unin_system_apk">Αυτή είναι μια εφαρμογή συστήματος. Η διαγραφή της μπορεί να οδηγήσει σε αστάθεια του συστήματος!\nΣυνέχεια;</string>
     <string name="warning">Προειδοποίηση</string>

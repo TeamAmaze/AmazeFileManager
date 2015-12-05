@@ -280,6 +280,7 @@
     <string name="polish_translation_title">Polski</string>
     <string name="korean_translation_title">Koreański</string>
     <string name="greek_translation_title">Grecki</string>
+    <string name="dutch_translation_title">Niderlandzki</string>
 
     <string name="zip_viewer">Przeglądarka archiwum</string>
     <string name="unin_system_apk">To jest aplikacja systemowa, usunięcie jej może prowadzić do niestabliności systemu.\nKontynuować?</string>
