@@ -275,7 +275,7 @@ Questo è un archivio. Quale operazione vorresti effettuare?
 Questo è un package installer. Quale operazione vorresti effettuare?
 </string>
 <string name="xda_title">XDA</string>
-<string name="xda_summary">Q&A, Aiuto & Risoluzione problemi</string>
+<string name="xda_summary">Q&amp;A, Aiuto &amp; Risoluzione problemi</string>
 <string name="invalid_dir">Cartella non valida</string>
 <string name="circularimages">Usa icone circolari per immagini e video</string>
 <string name="circularicons">Usa icone circolari</string>
