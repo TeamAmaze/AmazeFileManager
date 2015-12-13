@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -66,7 +67,7 @@ public class AppsList extends ListFragment {
     AppsAdapter adapter;
 
     public SharedPreferences Sp;
-    public ArrayList<ApplicationInfo> c = new ArrayList<ApplicationInfo>();
+    public ArrayList<PackageInfo> c = new ArrayList<>();
     ListView vl;
     public IconHolder ic;
     ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
@@ -174,18 +175,14 @@ public class AppsList extends ListFragment {
         protected ArrayList<Layoutelements> doInBackground(Void[] p1) {
             try {
                 PackageManager p = getActivity().getPackageManager();
-                List<ApplicationInfo> all_apps = p.getInstalledApplications(PackageManager.GET_META_DATA);
+                List<PackageInfo> all_apps = p.getInstalledPackages(PackageManager.GET_META_DATA);
                 a = new ArrayList<>();
                 c = new ArrayList<>();
-                for (ApplicationInfo object : all_apps) {
-
-
-                    c.add(object);
-
+                for (PackageInfo object : all_apps) {
+                    File f=new File(object.applicationInfo.publicSourceDir);
+                    a.add(new Layoutelements(ContextCompat.getDrawable(getActivity(),R.drawable.ic_doc_apk_grid), object.applicationInfo.loadLabel(p).toString(), object.applicationInfo.publicSourceDir, object.packageName, object.versionName, utils.readableFileSize(f.length()),f.length(), false, f.lastModified()+"", false));
 
                 }
-                for (ApplicationInfo object : c)
-                    a.add(new Layoutelements(ContextCompat.getDrawable(getActivity(),R.drawable.ic_doc_apk_grid), object.loadLabel(getActivity().getPackageManager()).toString(), object.publicSourceDir, object.packageName, "", utils.readableFileSize(new File(object.publicSourceDir).length()),new File(object.publicSourceDir).length(), false, new File(object.publicSourceDir).lastModified()+"", false));
                 Collections.sort(a, new FileListSorter(0, sortby, asc, false));
             } catch (Exception e) {
                 //Toast.makeText(getActivity(), "" + e, Toast.LENGTH_LONG).show();

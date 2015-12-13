@@ -33,22 +33,26 @@ import java.util.ArrayList;
 
 public class MoveFiles extends AsyncTask<String,Void,Boolean> {
     ArrayList<File> files;
+    ArrayList<String> names;
     Main ma;
     String path;
     Context context;
-    public MoveFiles(ArrayList<File> files,Main ma,Context context){
+    public MoveFiles(ArrayList<File> files,ArrayList<String> names,Main ma,Context context){
         this.ma=ma;
         this.context=context;
         this.files=files;
+        this.names=names;
     }
 
     @Override
     protected Boolean doInBackground(String... strings) {
         path=strings[0];
         boolean b=true;
+        int i=0;
         for(File f:files){
-            File file=new File(path+"/"+f.getName());
+            File file=new File(path+"/"+names.get(i));
             if(!f.renameTo(file)){b=false;}
+            i++;
         }
         return b;
     }
@@ -68,6 +72,7 @@ public class MoveFiles extends AsyncTask<String,Void,Boolean> {
             Intent intent = new Intent(context, CopyService.class);
             intent.putExtra("FILE_PATHS", new Futils().toStringArray(files));
             intent.putExtra("COPY_DIRECTORY", path);
+            intent.putExtra("FILE_NAMES",names);
             intent.putExtra("move",true);
             context.startService(intent);}
     }

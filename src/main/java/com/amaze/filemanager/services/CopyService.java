@@ -76,6 +76,7 @@ public class CopyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle b = new Bundle();
         ArrayList<String> files = intent.getStringArrayListExtra("FILE_PATHS");
+        ArrayList<String> names=intent.getStringArrayListExtra("FILE_NAMES");
         String FILE2 = intent.getStringExtra("COPY_DIRECTORY");
         mNotifyManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -96,6 +97,7 @@ public class CopyService extends Service {
         }
         b.putBoolean("move", intent.getBooleanExtra("move", false));
         b.putString("FILE2", FILE2);
+        b.putStringArrayList("names",names);
         b.putStringArrayList("files", files);
         hash.put(startId, true);
         DataPackage intent1 = new DataPackage();
@@ -130,7 +132,7 @@ public class CopyService extends Service {
     }
 
     public class Doback extends AsyncTask<Bundle, Void, Integer> {
-        ArrayList<String> files;
+        ArrayList<String> files,names;
         boolean move;
         public Doback() {
         }
@@ -139,8 +141,9 @@ public class CopyService extends Service {
             String FILE2 = p1[0].getString("FILE2");
             int id = p1[0].getInt("id");
             files = p1[0].getStringArrayList("files");
+            names=p1[0].getStringArrayList("names");
             move=p1[0].getBoolean("move");
-            new copy().execute(id, files, FILE2,move);
+            new copy().execute(id, files,names, FILE2,move);
 
             // TODO: Implement this method
             return id;
@@ -234,7 +237,7 @@ public class CopyService extends Service {
         long totalBytes = 0L, copiedBytes = 0L;
         int lastpercent=0;
 
-        public void execute(int id, final ArrayList<String> files, final String FILE2, final boolean move) {
+        public void execute(int id, final ArrayList<String> files,ArrayList<String> names, final String FILE2, final boolean move) {
             if (utils.checkFolder((FILE2), c) == 1) {
                 totalBytes = getTotalBytes(files, false);
                 for (int i = 0; i < files.size(); i++) {
@@ -243,7 +246,7 @@ public class CopyService extends Service {
                     try {
 
                         if (hash.get(id))
-                            copyFiles((f1), new HFile(FILE2, f1.getName(),f1.isDirectory()), id, move);
+                            copyFiles((f1), new HFile(FILE2, names.get(i),f1.isDirectory()), id, move);
                         else
                             stopSelf(id);
                     } catch (Exception e) {
@@ -268,9 +271,9 @@ public class CopyService extends Service {
                 for (int i = 0; i < files.size(); i++) {
                     boolean b = RootTools.copyFile(getCommandLineString(files.get(i)), getCommandLineString(FILE2), true, true);
                     if (!b && files.get(i).contains("/0/"))
-                        b = RootTools.copyFile(getCommandLineString(files.get(i).replace("/0/", "/legacy/")), getCommandLineString(FILE2), true, true);
+                        b = RootTools.copyFile(getCommandLineString(files.get(i).replace("/0/", "/legacy/")), getCommandLineString(FILE2)+"/"+names.get(i), true, true);
                     if (!b) m = false;
-                    utils.scanFile(FILE2 + "/" + new File(files.get(i)).getName(), c);
+                    utils.scanFile(FILE2 + "/" + names.get(i), c);
                 }
                 if (move && m) {
                     new DeleteTask(getContentResolver(), c).execute((files));

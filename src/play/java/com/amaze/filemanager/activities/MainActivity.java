@@ -186,8 +186,8 @@ public class MainActivity extends AppCompatActivity implements
     String pending_path;
     boolean openprocesses = false;
     int hidemode;
-    public int operation;
-    public ArrayList<String> oparrayList;
+    public int operation=-1;
+    public ArrayList<String> oparrayList,opnameList;
     public String oppathe, oppathe1;
     IMyAidlInterface aidlInterface;
     MaterialDialog materialDialog;
@@ -721,6 +721,7 @@ public class MainActivity extends AppCompatActivity implements
             ArrayList<String> k = savedInstanceState.getStringArrayList("oparrayList");
             if (k != null) {
                 oparrayList = (k);
+                opnameList=savedInstanceState.getStringArrayList("opnameList")!=null?savedInstanceState.getStringArrayList("opnameList"):opnameList;
                 operation = savedInstanceState.getInt("operation");
             }
             select = savedInstanceState.getInt("selectitem", 0);
@@ -1362,7 +1363,8 @@ public class MainActivity extends AppCompatActivity implements
         if (oppathe != null) {
             outState.putString("oppathe", oppathe);
             outState.putString("oppathe1", oppathe1);
-
+            if(opnameList!=null)
+                outState.putStringArrayList("opnameList", (opnameList));
             outState.putStringArrayList("oparraylist", (oparrayList));
             outState.putInt("operation", operation);
         }
@@ -1421,7 +1423,6 @@ public class MainActivity extends AppCompatActivity implements
         try {
             getFragment().updatepaths(pos);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -1442,7 +1443,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public TabFragment getFragment() {
-        TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        Fragment fragment= getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        if(!fragment.getClass().getName().contains("TabFragment"))return null;
+        TabFragment tabFragment = (TabFragment)fragment ;
         return tabFragment;
     }
 
@@ -1718,10 +1721,11 @@ public class MainActivity extends AppCompatActivity implements
                     Intent intent1 = new Intent(con, CopyService.class);
                     intent1.putExtra("FILE_PATHS", (oparrayList));
                     intent1.putExtra("COPY_DIRECTORY", oppathe);
+                    intent1.putExtra("FILE_NAMES",opnameList);
                     startService(intent1);
                     break;
                 case MOVE://moving
-                    new MoveFiles(utils.toFileArray(oparrayList), ((Main) getFragment().getTab()), ((Main) getFragment().getTab()).getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                    new MoveFiles(utils.toFileArray(oparrayList),opnameList, ((Main) getFragment().getTab()), ((Main) getFragment().getTab()).getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     break;
                 case NEW_FOLDER://mkdir
                     Main ma1 = ((Main) getFragment().getTab());
@@ -1742,7 +1746,7 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case COMPRESS:
                     mainActivityHelper.compressFiles(new File(oppathe), oparrayList);
-            }
+            }operation=-1;
         }
     }
 
@@ -2436,7 +2440,7 @@ public class MainActivity extends AppCompatActivity implements
         Main ma;
         String path;
         Boolean move;
-        ArrayList<String> ab, a, b, lol;
+        ArrayList<String> ab, a, b, lol,names;
         int counter = 0;
 
         public CheckForFiles(Main main, String path, Boolean move) {
@@ -2446,6 +2450,7 @@ public class MainActivity extends AppCompatActivity implements
             a = new ArrayList<String>();
             b = new ArrayList<String>();
             lol = new ArrayList<String>();
+            names=new ArrayList<>();
         }
 
         @Override
@@ -2503,15 +2508,20 @@ public class MainActivity extends AppCompatActivity implements
 
                     } else if (mode == 1 || mode == 0) {
 
+                        ArrayList<String> names=new ArrayList<>();
+                        for(String a:ab){
+                            names.add(new HFile(a).getName());
+                        }
                         if (!move) {
 
                             Intent intent = new Intent(con, CopyService.class);
                             intent.putExtra("FILE_PATHS", ab);
                             intent.putExtra("COPY_DIRECTORY", path);
+                            intent.putExtra("FILE_NAMES",names);
                             startService(intent);
                         } else {
 
-                            new MoveFiles(utils.toFileArray(ab), ma, ma.getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                            new MoveFiles(utils.toFileArray(ab),names, ma, ma.getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                         }
                     }
                 } else {

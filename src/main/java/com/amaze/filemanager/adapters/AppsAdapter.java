@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -60,10 +61,10 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
     List<Layoutelements> items;
     public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
     AppsList app;
-    ArrayList<ApplicationInfo> c = new ArrayList<ApplicationInfo>();
+    ArrayList<PackageInfo> c = new ArrayList<PackageInfo>();
 
     public AppsAdapter(Context context, int resourceId,
-                       List<Layoutelements> items, AppsList app, ArrayList<ApplicationInfo> c) {
+                       List<Layoutelements> items, AppsList app, ArrayList<PackageInfo> c) {
         super(context, resourceId, items);
         this.context = context;
         this.items = items;
@@ -222,8 +223,8 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                             case R.id.unins:
                                 final File f1 = new File(rowItem.getDesc());
                                 ApplicationInfo info1=null;
-                                for(ApplicationInfo info:c){
-                                    if(info.publicSourceDir.equals(rowItem.getDesc()))info1=info;
+                                for(PackageInfo info:c){
+                                    if(info.applicationInfo.publicSourceDir.equals(rowItem.getDesc()))info1=info.applicationInfo;
                                 }
                                 int color= Color.parseColor(PreferenceUtils.getFabColor
                                         (app.Sp.getInt("fab_skin_color_position", 1)));
@@ -283,21 +284,16 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                 return true;
                             case R.id.backup:
                                 Toast.makeText(app.getActivity(), new Futils().getString(app.getActivity(), R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
-
                                 File f = new File(rowItem.getDesc());
                                 ArrayList<String> ab = new ArrayList<String>();
-                                //a.add(info.publicSourceDir);
+                                ArrayList<String> names = new ArrayList<String>();
                                 File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");
                                 if(!dst.exists() || !dst.isDirectory())dst.mkdirs();
                                 Intent intent = new Intent(app.getActivity(), CopyService.class);
-                                //Toast.makeText(app.getActivity(), f.getParent(), Toast.LENGTH_LONG).show();
-
-                                if (Build.VERSION.SDK_INT >= 21) {
-                                    ab.add(f.getParent());
-                                } else {
-                                    ab.add(f.getPath());
-                                }
+                                ab.add(f.getPath());
+                                names.add(rowItem.getTitle() + "_" + rowItem.getSymlink() + ".apk");
                                 intent.putExtra("FILE_PATHS", ab);
+                                intent.putExtra("FILE_NAMES",names);
                                 intent.putExtra("COPY_DIRECTORY", dst.getPath());
                                 app.getActivity().startService(intent);
                                 return true;
