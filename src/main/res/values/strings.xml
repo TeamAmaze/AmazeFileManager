@@ -101,6 +101,7 @@
     <string name="confirm">Confirm</string>
     <string name="deleting">Deleting</string>
     <string name="questiondelete">Do you really want to delete following files?</string>
+    <string name="questionset">Do you want to set current path as home for this tab?</string>
     <string name="viewmode">View Mode</string>
     <string name="uimode">UI Mode</string>
     <string name="directorysort">Directory Sort Mode</string>
@@ -126,7 +127,7 @@
     <string name="cut">Move</string>
     <string name="selectall">Select All</string>
     <string name="delete">Delete</string>
-    <string name="setashome"> Set As Home Folder</string>
+    <string name="setashome">Set As Home</string>
     <string name="sethome">Set Home Directory</string>
     <string name="foldercolor">Folder Color</string>
     <string name="imagegallery">Image Gallery</string>

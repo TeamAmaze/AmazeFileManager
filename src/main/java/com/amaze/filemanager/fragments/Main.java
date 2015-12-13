@@ -141,7 +141,7 @@ public class Main extends android.support.v4.app.Fragment {
     IconUtils icons;
     View footerView;
     String itemsstring;
-    int no;
+    public int no;
     TabHandler tabHandler;
     LinearLayoutManager mLayoutManager;
     GridLayoutManager mLayoutManagerGrid;
@@ -191,7 +191,6 @@ public class Main extends android.support.v4.app.Fragment {
             inflater.inflate(R.menu.contextual, menu);
             initMenu(menu);
             hideOption(R.id.addshortcut, menu);
-            hideOption(R.id.sethome, menu);
             hideOption(R.id.share, menu);
             hideOption(R.id.openwith, menu);
             if (MAIN_ACTIVITY.mReturnIntent)
@@ -231,7 +230,6 @@ public class Main extends android.support.v4.app.Fragment {
             hideOption(R.id.openmulti, menu);
             if (openMode == 1) {
                 hideOption(R.id.addshortcut, menu);
-                hideOption(R.id.sethome, menu);
                 hideOption(R.id.openwith, menu);
                 hideOption(R.id.share, menu);
                 hideOption(R.id.hide, menu);
@@ -255,7 +253,6 @@ public class Main extends android.support.v4.app.Fragment {
 
                     if (x.isDirectory()) {
                         hideOption(R.id.openwith, menu);
-                        showOption(R.id.sethome, menu);
                         hideOption(R.id.share, menu);
                         hideOption(R.id.openmulti, menu);
                     }
@@ -279,8 +276,6 @@ public class Main extends android.support.v4.app.Fragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    hideOption(R.id.sethome, menu);
-
                     hideOption(R.id.openwith, menu);
 
                 }
@@ -297,7 +292,6 @@ public class Main extends android.support.v4.app.Fragment {
 
                     if (x.isDirectory()) {
                         hideOption(R.id.openwith, menu);
-                        showOption(R.id.sethome, menu);
                         hideOption(R.id.share, menu);
                         hideOption(R.id.openmulti, menu);
                     }
@@ -322,8 +316,6 @@ public class Main extends android.support.v4.app.Fragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-                    hideOption(R.id.sethome, menu);
 
                     hideOption(R.id.openwith, menu);
 
@@ -359,15 +351,6 @@ public class Main extends android.support.v4.app.Fragment {
                         getActivity().setResult(getActivity().RESULT_OK, intentresult);
                         getActivity().finish();
                     }
-                    return true;
-                case R.id.sethome:
-                    int pos = plist.get(0);
-                    home = LIST_ELEMENTS.get(pos).getDesc();
-                    Toast.makeText(getActivity(),
-                            utils.getString(getActivity(), R.string.newhomedirectory) + " " + LIST_ELEMENTS.get(pos).getTitle(),
-                            Toast.LENGTH_LONG).show();
-                    MAIN_ACTIVITY.updatepaths(no);
-                    mode.finish();
                     return true;
                 case R.id.about:
                     Layoutelements x;

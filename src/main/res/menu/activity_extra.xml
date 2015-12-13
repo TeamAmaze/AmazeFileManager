@@ -61,6 +61,9 @@
         android:visible="false"
         android:title="@string/hiddenfiles" />
     <item
+        android:id="@+id/sethome"
+        android:title="@string/setashome"/>
+    <item
         android:id="@+id/extract"
         android:title="@string/extract"
         android:visible="false"/>

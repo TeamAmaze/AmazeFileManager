@@ -50,9 +50,6 @@
         android:icon="@drawable/ic_select_all_white_36dp"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/sethome"
-        android:title="@string/setashome" />
-    <item
         android:id="@+id/share"
         android:title="@string/share" />
     <item

@@ -1143,6 +1143,7 @@ public class MainActivity extends AppCompatActivity implements
             menu.findItem(R.id.search).setVisible(true);
             menu.findItem(R.id.home).setVisible(true);
             menu.findItem(R.id.history).setVisible(true);
+            menu.findItem(R.id.sethome).setVisible(true);
             menu.findItem(R.id.item10).setVisible(true);
             if (showHidden) menu.findItem(R.id.hiddenitems).setVisible(true);
             menu.findItem(R.id.view).setVisible(true);
@@ -1151,6 +1152,7 @@ public class MainActivity extends AppCompatActivity implements
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
         } else if (f.contains("AppsList") || f.contains("ProcessViewer")) {
             tabsSpinner.setVisibility(View.GONE);
+            menu.findItem(R.id.sethome).setVisible(false);
             findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
@@ -1165,6 +1167,7 @@ public class MainActivity extends AppCompatActivity implements
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
         } else if (f.contains("ZipViewer")) {
+            menu.findItem(R.id.sethome).setVisible(false);
             tabsSpinner.setVisibility(View.GONE);
             TextView textView = (TextView) mainActivity.pathbar.findViewById(R.id.fullpath);
             pathbar.setOnClickListener(new View.OnClickListener() {
@@ -1238,6 +1241,24 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.history:
                 utils.showHistoryDialog(ma);
+                break;
+            case R.id.sethome:
+                final  Main main=ma;
+                if(main.openMode!=0){
+                    Toast.makeText(mainActivity,R.string.not_allowed,Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                final MaterialDialog b=utils.showBasicDialog(mainActivity,new String[]{getResources().getString(R.string.questionset),getResources().getString(R.string.setashome),getResources().getString(R.string.yes),getResources().getString(R.string.no),null});
+                b.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        main.home = main.CURRENT_PATH;
+                        updatepaths(main.no);
+                        b.dismiss();
+                    }
+                });
+                b.show();
                 break;
             case R.id.item3:
                 if (rootmode) {

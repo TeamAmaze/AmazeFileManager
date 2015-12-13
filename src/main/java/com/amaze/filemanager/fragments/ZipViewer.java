@@ -283,7 +283,6 @@ public class ZipViewer extends Fragment {
             hideOption(R.id.cut, menu);
             hideOption(R.id.delete, menu);
             hideOption(R.id.addshortcut, menu);
-            hideOption(R.id.sethome, menu);
             hideOption(R.id.share, menu);
             hideOption(R.id.openwith, menu);
             showOption(R.id.all, menu);
