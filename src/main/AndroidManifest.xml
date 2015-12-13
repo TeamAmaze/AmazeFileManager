@@ -39,6 +39,7 @@
 
         <activity
             android:label="Amaze"
+            android:launchMode="singleInstance"
             android:name=".activities.MainActivity"
             android:theme="@style/appCompatLight">
             <intent-filter >

@@ -896,8 +896,6 @@ public class MainActivity extends AppCompatActivity implements
                 } else {
                     zipViewer.mActionMode.finish();
                 }
-            } else if (name.contains("Process")) {
-                finish();
             } else
                 goToMain("");
         } catch (ClassCastException e) {
@@ -1051,7 +1049,7 @@ public class MainActivity extends AppCompatActivity implements
         // Commit the transaction
         select = 0;
         transaction.addToBackStack("tabt" + 1);
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
         toolbar.setTitle(null);
         tabsSpinner.setVisibility(View.VISIBLE);
         floatingActionButton.showMenuButton(true);
@@ -2325,10 +2323,16 @@ public class MainActivity extends AppCompatActivity implements
         intent = i;
         path = i.getStringExtra("path");
         if (path != null) {
-
-            ((Main) getFragment().getTab()).loadlist(path, false, 0);
+            if(new File(path).isDirectory()){
+                Fragment f=getDFragment();
+                if((f.getClass().getName().contains("TabFragment"))){
+                Main m = ((Main) getFragment().getTab());
+                 m.loadlist(path, false, 0);
+                }else goToMain(path);
+            }
+            else utils.openFile(new File(path),mainActivity);
         }
-        else if((openprocesses = getIntent().getBooleanExtra("openprocesses", false))!=false){
+        else if((openprocesses = i.getBooleanExtra("openprocesses", false))!=false){
 
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, new ProcessViewer());
@@ -2337,7 +2341,7 @@ public class MainActivity extends AppCompatActivity implements
             openprocesses = false;
             //title.setText(utils.getString(con, R.string.process_viewer));
             //Commit the transaction
-            transaction.commit();
+            transaction.commitAllowingStateLoss();
             supportInvalidateOptionsMenu();
         }
         if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
