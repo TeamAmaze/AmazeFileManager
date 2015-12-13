@@ -33,6 +33,9 @@ import com.amaze.filemanager.utils.RootHelper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -106,6 +109,11 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                     arrayList=(listApks());
                     path="4";
                     break;
+                case 5:
+                    arrayList=listRecent();
+                    path="5";
+                    break;
+
             }
             if(arrayList!=null)
             {
@@ -130,9 +138,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                 return null;
             }
         }
-        if(list!=null)
+        if(list!=null )
         Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, ma.ROOT_MODE));
-
         return list;
 
 
@@ -144,7 +151,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         if (isCancelled()) {
             bitmap = null;
 
-        }    ma.createViews(bitmap, back, path, openmode, false, grid);
+        }
+        ma.createViews(bitmap, back, path, openmode, false, grid);
 
     }
     ArrayList<String[]> listaudio(){
@@ -229,6 +237,15 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
             } while (cursor.moveToNext());
         }
         cursor.close();
+        return songs;
+    }
+    ArrayList<String[]> listRecent(){
+        final ArrayList<String> paths = ma.MAIN_ACTIVITY.history.readTable(ma.MAIN_ACTIVITY.HISTORY);
+        ArrayList<String[]> songs=new ArrayList<>();
+        for(String f:paths){
+            if(!f.equals("/"))
+            songs.add(RootHelper.addFile(new File(f), ma.SHOW_SIZE, ma.SHOW_HIDDEN));
+        }
         return songs;
     }
     ArrayList<String[]> listDocs(){

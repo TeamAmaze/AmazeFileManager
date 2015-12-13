@@ -256,6 +256,9 @@ public class TabFragment extends android.support.v4.app.Fragment {
             case 4:
                 newPath=getResources().getString(R.string.apks);
                 break;
+            case 5:
+                newPath=getResources().getString(R.string.quick);
+                break;
         }
         return newPath;
     }

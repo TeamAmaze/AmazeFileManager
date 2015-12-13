@@ -135,7 +135,6 @@ e.printStackTrace();
     public static String getCommandLineString(String input) {
         return input.replaceAll(UNIX_ESCAPE_EXPRESSION, "\\\\$1");
     }	private static final String UNIX_ESCAPE_EXPRESSION = "(\\(|\\)|\\[|\\]|\\s|\'|\"|`|\\{|\\}|&|\\\\|\\?)";
-    static Futils futils=new Futils();
     public static ArrayList<String[]> getFilesList(boolean showSize,String path,boolean showHidden){
         File f=new File(path);
         ArrayList<String[]> files=new ArrayList<String[]>();
@@ -168,13 +167,10 @@ e.printStackTrace();
             return (new String[]{x.getPath(),"",parseFilePermission(x),k,x.lastModified()+"",
                     size});
         }
-        else
-        {
-            if(!x.isHidden())
-            {return (new String[]{x.getPath(),"",parseFilePermission(x),k,x
-                .lastModified()+"",size});
+        else if(!x.isHidden())
+            {
+                return (new String[]{x.getPath(),"",parseFilePermission(x),k,x.lastModified()+"",size});
             }
-        }
         return null;
     }
     public static String parseFilePermission(File f){

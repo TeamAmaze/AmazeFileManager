@@ -227,7 +227,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         column=main.columns;
         topFab=main.TOP_FAB;
         count_factor=(main.IS_LIST?(topFab?1:2):column);
-        System.out.println(count_factor);
         item_count=arrayList.size()+count_factor;
         items=arrayList;
     }

@@ -320,15 +320,17 @@ public class MainActivityHelper {
                         mainActivity.refreshDrawer();
                         mainActivity.grid.addPath(s[0], s[1], mainActivity.SMB, 1);
                     } else {
-                        if (mainActivity.Servers == null) mainActivity.Servers = new ArrayList<>();
-                        if (contains(s[1], mainActivity.Servers) != -1) {
-                            mainActivity.Servers.remove(path);
+                        if (mainActivity.Servers == null){
+                            mainActivity.Servers = new ArrayList<>();
+                        }
+                        int i=-1;
+                        if ((i=contains(path, mainActivity.Servers)) != -1) {
+                            mainActivity.Servers.remove(i);
                             mainActivity.grid.removePath(path, mainActivity.SMB);
                         }
                         mainActivity.Servers.add(s);
                         Collections.sort(mainActivity.Servers, new BookSorter());
                         mainActivity.refreshDrawer();
-                        mainActivity.grid.removePath(path, mainActivity.SMB);
                         mainActivity.grid.addPath(s[0], s[1], mainActivity.SMB, 1);
                     }
                 } catch (Exception e) {

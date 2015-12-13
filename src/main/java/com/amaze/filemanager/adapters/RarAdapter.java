@@ -313,7 +313,6 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                     holder.imageView.setAnimation(animation);
                     toggleChecked(p);
                 }
-                System.out.println("onLongClick");
                 return true;
             }
         });holder.imageView.setOnClickListener(new View.OnClickListener() {

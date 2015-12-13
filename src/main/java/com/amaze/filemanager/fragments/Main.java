@@ -864,6 +864,7 @@ public class Main extends android.support.v4.app.Fragment {
                     loadlist(f.getPath(), false, 0);
                     results = false;
                 } else {
+                    MAIN_ACTIVITY.history.addPath(null,f.getPath(),MAIN_ACTIVITY.HISTORY,0);
                     if (MAIN_ACTIVITY.mReturnIntent) {
                         returnIntentResults(f);
                     } else
@@ -926,10 +927,11 @@ public class Main extends android.support.v4.app.Fragment {
                 final File f = new File(path);
 
                 if (l.isDirectory()) {
-
+                    openMode=0;
                     computeScroll();
                     loadlist(f.getPath(), false, openMode);
                 } else {
+                    MAIN_ACTIVITY.history.addPath(null,f.getPath(),MAIN_ACTIVITY.HISTORY,0);
                     if (MAIN_ACTIVITY.mReturnIntent) {
                         returnIntentResults(f);
                     } else {

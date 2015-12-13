@@ -80,7 +80,7 @@ public class HFile {
         }
     }
     public boolean isCustomPath(){
-        if(path.equals("0") || path.equals("1") || path.equals("2") || path.equals("3") || path
+        if(path.equals("0") || path.equals("1") || path.equals("2") || path.equals("3")  || path.equals("5") || path
                 .equals("4"))return true;
         return false;
     }

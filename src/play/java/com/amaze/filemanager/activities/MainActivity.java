@@ -32,6 +32,7 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -513,7 +514,7 @@ public class MainActivity extends AppCompatActivity implements
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton4 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item3_top : R.id.menu_item3);
+        final FloatingActionButton floatingActionButton4 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item3_top : R.id.menu_item3);
         floatingActionButton4.setColorNormal(folderskin);
         floatingActionButton4.setColorPressed(fabskinpressed);
         floatingActionButton4.setOnClickListener(new View.OnClickListener() {
@@ -524,6 +525,22 @@ public class MainActivity extends AppCompatActivity implements
                 floatingActionButton.close(true);
             }
         });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PackageManager pm = getPackageManager();
+                boolean app_installed;
+                try {
+                    pm.getPackageInfo("com.amaze.filemanager.driveplugin", PackageManager.GET_ACTIVITIES);
+                    app_installed = true;
+                }
+                catch (PackageManager.NameNotFoundException e) {
+                    app_installed = false;
+                }
+                if(!app_installed)floatingActionButton4.setVisibility(View.GONE);
+            }
+        }).run();
         if (topfab) {
             buttonBarFrame.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
@@ -986,12 +1003,12 @@ public class MainActivity extends AppCompatActivity implements
         } catch (Exception e) {
 
         }
-        list.add(new EntryItem("Images", "0", ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
-        list.add(new EntryItem("Videos", "1", ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
-        list.add(new EntryItem("Audio", "2", ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
-        list.add(new EntryItem("Documents", "3", ContextCompat.getDrawable(this, R.drawable
-                .ic_doc_doc_am)));
-        list.add(new EntryItem("Apks", "4", ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
+        list.add(new EntryItem(getResources().getString(R.string.quick), "5", ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
+        list.add(new EntryItem(getResources().getString(R.string.images), "0", ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
+        list.add(new EntryItem(getResources().getString(R.string.videos), "1", ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
+        list.add(new EntryItem(getResources().getString(R.string.audio), "2", ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
+        list.add(new EntryItem(getResources().getString(R.string.documents), "3", ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
+        list.add(new EntryItem(getResources().getString(R.string.apks), "4", ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
         adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
     }
@@ -1505,14 +1522,12 @@ public class MainActivity extends AppCompatActivity implements
             }
             list.add(new SectionItem());
         }
-        list.add(new EntryItem("Images", "0", ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
-        list.add(new EntryItem("Videos", "1", ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
-        list.add(new EntryItem("Audio", "2", ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
-        list.add(new EntryItem("Documents", "3", ContextCompat.getDrawable(this, R.drawable
-                .ic_doc_doc_am)));
-        list.add(new EntryItem("Apks", "4", ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
-
-
+        list.add(new EntryItem(getResources().getString(R.string.quick), "5", ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
+        list.add(new EntryItem(getResources().getString(R.string.images), "0", ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
+        list.add(new EntryItem(getResources().getString(R.string.videos), "1", ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
+        list.add(new EntryItem(getResources().getString(R.string.audio), "2", ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
+        list.add(new EntryItem(getResources().getString(R.string.documents), "3", ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
+        list.add(new EntryItem(getResources().getString(R.string.apks), "4", ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
         adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
 
@@ -1902,6 +1917,9 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case 4:
                     newPath = getResources().getString(R.string.apks);
+                    break;
+                case 5:
+                    newPath = getResources().getString(R.string.quick);
                     break;
             }
         else newPath = news;
