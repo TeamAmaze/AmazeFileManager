@@ -87,7 +87,8 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
                         animation.setDuration(Math.round(r1 * 5));
                         g.sizeDrawable.startAnimation(animation);
                     } else {
-                        textView.setVisibility(View.GONE);
+                        textView.findViewById(R.id.divider).setVisibility(View.GONE);
+                        textView.findViewById(R.id.dirprops).setVisibility(View.GONE);
                     }
 
                 }

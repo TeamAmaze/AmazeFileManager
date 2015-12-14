@@ -30,17 +30,17 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-       <ScrollView
-           android:layout_width="fill_parent"
-           android:layout_height="fill_parent">
+        android:layout_height="match_parent">
         <EditText
             android:id="@+id/fname"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:fontFamily="sans-serif-light"
-            android:textSize="18sp"
+            android:textSize="14sp"
+            android:ems="10"
+            android:gravity="left|top"
             android:inputType="textCapSentences|textMultiLine"
-            /></ScrollView>
+            />
     </LinearLayout>
 </LinearLayout>
