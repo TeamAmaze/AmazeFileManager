@@ -20,6 +20,13 @@
     android:layout_height="match_parent"
     android:minHeight="100dp">
     <TableRow>
+        <ImageView
+            android:src="@android:color/transparent"
+            android:layout_width="25dp"
+            android:minWidth="10dp"
+            android:padding="5dp"
+            android:layout_height="match_parent"
+            />
         <TextView
             android:text="@string/total"
             android:fontFamily="sans-serif-medium"
@@ -36,6 +43,13 @@
             />
     </TableRow>
     <TableRow>
+        <ImageView
+            android:src="#4CAF50"
+            android:layout_width="25dp"
+            android:minWidth="10dp"
+            android:padding="5dp"
+            android:layout_height="match_parent"
+            />
         <TextView
             android:text="@string/free"
             android:fontFamily="sans-serif-medium"
@@ -52,6 +66,14 @@
             />
     </TableRow>
     <TableRow>
+
+        <ImageView
+            android:src="#E53935"
+            android:layout_width="25dp"
+            android:minWidth="10dp"
+            android:padding="5dp"
+            android:layout_height="match_parent"
+            />
         <TextView
             android:text="@string/used"
             android:fontFamily="sans-serif-medium"
@@ -68,6 +90,14 @@
             />
     </TableRow>
     <TableRow>
+
+        <ImageView
+            android:src="#0D47A1"
+            android:layout_width="25dp"
+            android:minWidth="10dp"
+            android:padding="5dp"
+            android:layout_height="match_parent"
+            />
         <TextView
             android:text="@string/size"
             android:fontFamily="sans-serif-medium"
