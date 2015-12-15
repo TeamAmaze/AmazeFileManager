@@ -80,7 +80,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
                         float r2=(longs[2]) * 360 / longs[0];
                         t1.setText(futils.readableFileSize(longs[0]));
                         t2.setText(futils.readableFileSize(longs[1]));
-                        t3.setText(futils.readableFileSize(longs[0] - longs[1]));
+                        t3.setText(futils.readableFileSize(longs[0] - longs[1]-longs[2]));
                         t4.setText(futils.readableFileSize(longs[2]));
 
                         CircleAnimation animation = new CircleAnimation(g.sizeDrawable, r1,r2);

@@ -138,7 +138,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                 return null;
             }
         }
-        if(list!=null )
+        if(list!=null && !(openmode==2 && Integer.parseInt(path)==5))
         Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, ma.ROOT_MODE));
         return list;
 
@@ -243,8 +243,11 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         final ArrayList<String> paths = ma.MAIN_ACTIVITY.history.readTable(ma.MAIN_ACTIVITY.HISTORY);
         ArrayList<String[]> songs=new ArrayList<>();
         for(String f:paths){
-            if(!f.equals("/"))
-            songs.add(RootHelper.addFile(new File(f), ma.SHOW_SIZE, ma.SHOW_HIDDEN));
+            if(!f.equals("/")){
+                String[] a=RootHelper.addFile(new File(f), ma.SHOW_SIZE, ma.SHOW_HIDDEN);
+                if(a!=null && !ma.isDirectory(a))
+                songs.add(a);
+            }
         }
         return songs;
     }

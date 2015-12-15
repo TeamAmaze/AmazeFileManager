@@ -36,8 +36,8 @@ public class SizeDrawable extends View {
 
     public SizeDrawable(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-        int strokeWidth = dpToPx(10);
-        rectF = new RectF(dpToPx(7), dpToPx(7), dpToPx(207), dpToPx(207));
+        int strokeWidth = dpToPx(20);
+        rectF = new RectF(dpToPx(0), dpToPx(0), dpToPx(150), dpToPx(150));
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.STROKE);
