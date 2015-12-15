@@ -36,7 +36,7 @@ public class SizeDrawable extends View {
 
     public SizeDrawable(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-        int strokeWidth = dpToPx(20);
+        int strokeWidth = dpToPx(40);
         rectF = new RectF(dpToPx(0), dpToPx(0), dpToPx(150), dpToPx(150));
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
@@ -73,10 +73,24 @@ public class SizeDrawable extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        rectF.set(twenty, twenty, getWidth() - twenty, getHeight() - twenty);
+        rectF.set(twenty, twenty, getWidth() - twenty, getHeight() - 2 * twenty);
+        canvas.drawLine((getWidth() - twenty)-2,0,(getWidth() - twenty),0,mPaint1);
+        if(angle2!=0)canvas.drawLine((getWidth() - twenty)*angle1,0,(getWidth() - twenty)*angle2,0,mPaint2);
+        canvas.drawLine(0, 0, (getWidth() - twenty) * angle, 0, mPaint);
+        if(angle1!=0)canvas.drawLine((getWidth() - twenty)*angle,0,(getWidth() - twenty)*angle1,0,mPaint1);
+
+        Paint paint = new Paint();
+        paint.setColor(Color.WHITE);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setTextSize(20);
+        canvas.drawText(Math.round(angle * 100)+"%",(getWidth() - twenty)*angle/2, 25,paint);
+        if(angle1>0.20)canvas.drawText(Math.round((angle1-angle)*100)+"%",(getWidth() - twenty)*angle+(getWidth() - twenty)*(angle1-angle)/2, 25,paint);
+        if(angle2>0.20)canvas.drawText(Math.round((angle2-angle1)*100)+"%",(getWidth() - twenty)*angle1+(getWidth() - twenty)*(angle2-angle1)/2, 25,paint);
+/*
         canvas.drawArc(rectF, startangle, angle, false, mPaint);
         canvas.drawArc(rectF, startangle1, angle1, false, mPaint1);
         canvas.drawArc(rectF, startangle2, angle2, false, mPaint2);
+*/
     }
 
     public void setAngle(float angle,float startangle)

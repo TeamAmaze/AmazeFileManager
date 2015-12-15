@@ -113,9 +113,9 @@
         android:orientation="vertical">
         <com.amaze.filemanager.ui.views.SizeDrawable
             android:id="@+id/sizedrawable"
-            android:layout_width="100dp"
+            android:layout_width="fill_parent"
             android:layout_gravity="center_horizontal"
-            android:layout_height="100dp"/>
+            android:layout_height="20dp"/>
         <TableLayout
             android:layout_width="match_parent"
             android:layout_gravity="center_horizontal"

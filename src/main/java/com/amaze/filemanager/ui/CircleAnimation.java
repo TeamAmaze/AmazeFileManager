@@ -30,14 +30,14 @@ public class CircleAnimation extends Animation {
 
         float angle = (interpolatedTime)*360;
         if(angle<newAngle){
-            circle.setAngle( angle,p1);
+            circle.setAngle(interpolatedTime, newAngle / 360);
         }else if(angle<newAngle1){
-            circle.setAngle( newAngle,p1);
-            circle.setAngle1(angle-newAngle,p2);
+            circle.setAngle( newAngle/360,newAngle/360);
+            circle.setAngle1(interpolatedTime,newAngle1/360);
         }else {
-            circle.setAngle(newAngle,p1);
-            circle.setAngle1(newAngle1-newAngle,p2);
-            circle.setAngle2(angle-newAngle1,p3);
+            circle.setAngle( newAngle/360,newAngle/360);
+            circle.setAngle1(newAngle1 / 360, newAngle1 / 360);
+            circle.setAngle2(interpolatedTime,newAngle2/360);
         }
         circle.requestLayout();
     }
