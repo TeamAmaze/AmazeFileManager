@@ -35,9 +35,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -73,9 +76,10 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
     private java.io.File mFile;
     private String mOriginal, skin;
     private Timer mTimer;
-    private boolean mModified;
+    private boolean mModified, isEditAllowed = true;
     private int skinStatusBar;
     private String fabSkin;
+    private WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -260,6 +264,25 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
 
         }
         mInput = (EditText) findViewById(R.id.fname);
+        webView = (WebView) findViewById(R.id.webView);
+
+        try {
+            if (getIntent().getData() != null)
+                mFile = new File(getIntent().getData().getPath());
+            else
+                mFile = new File(getIntent().getStringExtra("path"));
+        } catch (Exception e) {
+            mFile = null;
+        }
+
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setDefaultTextEncodingName("utf-8");
+
+        if (mFile!=null)
+            webView.loadUrl("file://" + mFile.getAbsolutePath());
+        else
+            webView.loadData(getResources().getString(R.string.error), "text/html", null);
+
         mInput.addTextChangedListener(this);
         try {
             if (theme1 == 1) mInput.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
@@ -268,16 +291,11 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
 
         }
 
-        try {
-            if (getIntent().getData() != null) load(new File(getIntent().getData().getPath()));
-            else load(new File(getIntent().getStringExtra("path")));
-        } catch (Exception e) {
-
-        }
+        setTitle(mFile.getName());
     }
 
     private void checkUnsavedChanges() {
-        if (mOriginal != null && !mOriginal.equals(mInput.getText().toString())) {
+        if (mOriginal != null && mInput.isShown() && !mOriginal.equals(mInput.getText().toString())) {
             new MaterialDialog.Builder(this)
                     .title(R.string.unsavedchanges)
                     .content(R.string.unsavedchangesdesc)
@@ -328,7 +346,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(c, "error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(c, R.string.error, Toast.LENGTH_SHORT).show();
                         }
                     });
                     e.printStackTrace();
@@ -366,12 +384,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setTitle(mFile.getName());
-                    }
-                });
+
                 try {
                     if (mFile.canRead()) {
                         try {
@@ -432,22 +445,35 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.text, menu);
         menu.findItem(R.id.save).setVisible(mModified);
+        menu.findItem(R.id.edit).setVisible(isEditAllowed);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            checkUnsavedChanges();
-            return true;
-        } else if (item.getItemId() == R.id.save) {
-            writeTextFile(mFile.getPath(), mInput.getText().toString());
-            return true;
-        } else if (item.getItemId() == R.id.details) {
-            utils.showProps(mFile, this, theme1);
-            return true;
-        } else if (item.getItemId() == R.id.openwith) {
-            utils.openunknown(mFile, c, false);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                checkUnsavedChanges();
+                break;
+            case R.id.save:
+                // Make sure EditText is visible before saving!
+                writeTextFile(mFile.getPath(), mInput.getText().toString());
+                break;
+            case R.id.details:
+                utils.showProps(mFile, this, theme1);
+                break;
+            case R.id.openwith:
+                utils.openunknown(mFile, c, false);
+                break;
+            case R.id.edit:
+                webView.setVisibility(View.GONE);
+                mInput.setVisibility(View.VISIBLE);
+                isEditAllowed = false;
+                load(mFile);
+                invalidateOptionsMenu();
+                break;
+            default:
+                return false;
         }
         return super.onOptionsItemSelected(item);
     }

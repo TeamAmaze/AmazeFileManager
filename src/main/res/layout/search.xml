@@ -41,6 +41,13 @@
             android:ems="10"
             android:gravity="left|top"
             android:inputType="textCapSentences|textMultiLine"
+            android:visibility="gone"
+            />
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
             />
     </LinearLayout>
 </LinearLayout>

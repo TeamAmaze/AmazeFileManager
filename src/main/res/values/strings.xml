@@ -250,7 +250,7 @@
     <string name="copy_path">Copy Path</string>
     <string name="addshortcut">Add Shortcut</string>
     <string name="unsavedchanges">Unsaved Changes</string>
-    <string name="unsavedchangesdesc">You have unsaved changes,do you want to save them before exiting?</string>
+    <string name="unsavedchangesdesc">You have unsaved changes, do you want to save them before exiting?</string>
     <string name="saving">Saving</string>
     <string name="packageinstaller">Package Installer</string>
     <string name="view">View</string>
@@ -368,5 +368,6 @@
     <string name="doit">Do it</string>
     <string name="wanthelp"><u>Need help?</u></string>
     <string name="quick">Quick Access</string>
+    <string name="edit">Edit</string>
 </resources>
 
