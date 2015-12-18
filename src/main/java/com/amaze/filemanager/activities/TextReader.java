@@ -32,8 +32,14 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.Selection;
+import android.text.Spannable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.ActionMode;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +49,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -60,10 +67,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TextReader extends AppCompatActivity implements TextWatcher {
+public class TextReader extends AppCompatActivity implements TextWatcher, View.OnClickListener {
 
     String path;
     Futils utils = new Futils();
@@ -72,7 +85,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
     int theme, theme1;
     SharedPreferences Sp;
 
-    private EditText mInput;
+    private EditText mInput, searchEditText;
     private java.io.File mFile;
     private String mOriginal, skin;
     private Timer mTimer;
@@ -80,6 +93,14 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
     private int skinStatusBar;
     private String fabSkin;
     private WebView webView;
+    private android.support.v7.widget.Toolbar toolbar;
+
+    // hashMap to store search text indexes
+    private LinkedHashMap<Integer, Integer> hashMap = new LinkedHashMap<>();
+    private ListIterator it;
+    private List nodes;
+
+    private ImageButton upButton, downButton, closeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,7 +253,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
             getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         }
         setContentView(R.layout.search);
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
         if (Build.VERSION.SDK_INT>=21) {
@@ -472,6 +493,9 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
                 load(mFile);
                 invalidateOptionsMenu();
                 break;
+            case R.id.find:
+                toolbar.startActionMode(mActionModeCallback);
+                break;
             default:
                 return false;
         }
@@ -484,22 +508,134 @@ public class TextReader extends AppCompatActivity implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        if (mTimer != null) {
-            mTimer.cancel();
-            mTimer.purge();
-            mTimer = null;
-        }
-        mTimer = new Timer();
-        mTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                mModified = !mInput.getText().toString().equals(mOriginal);
-                invalidateOptionsMenu();
+
+        if (charSequence.hashCode()==mInput.getText().hashCode()) {
+            if (mTimer != null) {
+                mTimer.cancel();
+                mTimer.purge();
+                mTimer = null;
             }
-        }, 250);
+            mTimer = new Timer();
+            mTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    mModified = !mInput.getText().toString().equals(mOriginal);
+                    invalidateOptionsMenu();
+                }
+            }, 250);
+        }
     }
 
     @Override
     public void afterTextChanged(Editable editable) {
+
+        // searchBox callback block
+        if (searchEditText!=null && editable.hashCode()==searchEditText.getText().hashCode()) {
+
+            hashMap.clear();
+
+            for (int i = 0; i<(mOriginal.length()-editable.length()); i++) {
+                if (searchEditText.length()==0)
+                    break;
+
+                if (mOriginal.substring(i, i+editable.length()).equalsIgnoreCase(editable.toString())) {
+
+                    hashMap.put(i, i+editable.length());
+                }
+
+            }
+
+            if (!hashMap.isEmpty()) {
+                upButton.setEnabled(true);
+                downButton.setEnabled(true);
+
+                nodes = new ArrayList(hashMap.entrySet());
+                it = nodes.listIterator();
+            } else {
+                upButton.setEnabled(false);
+                downButton.setEnabled(false);
+
+                nodes.clear();
+                it = null;
+            }
+        }
+    }
+
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            MenuInflater menuInflater = mode.getMenuInflater();
+            View actionModeLayout = getLayoutInflater().inflate(R.layout.actionmode_textviewer, null);
+
+            mode.setCustomView(actionModeLayout);
+            menuInflater.inflate(R.menu.empty, menu);
+
+            searchQuery(actionModeLayout);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+
+        }
+    };
+
+    public boolean searchQuery(final View actionModeView) {
+
+        searchEditText = (EditText) actionModeView.findViewById(R.id.search_box);
+
+        upButton = (ImageButton) actionModeView.findViewById(R.id.prev);
+        downButton = (ImageButton) actionModeView.findViewById(R.id.next);
+        closeButton = (ImageButton) actionModeView.findViewById(R.id.close);
+
+        searchEditText.addTextChangedListener(this);
+
+        upButton.setOnClickListener(this);
+        upButton.setEnabled(false);
+        downButton.setOnClickListener(this);
+        downButton.setEnabled(false);
+        closeButton.setOnClickListener(this);
+
+        return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.prev:
+                // upButton
+                Log.d(getClass().getName(), "previous button pressed");
+                if(it!=null && it.hasPrevious()) {
+                    Map.Entry keyValue = (Map.Entry) it.previous();
+                    Log.d(getClass().getName(), "equals after index " + keyValue.getKey()
+                            + " to " + keyValue.getValue());
+                }
+                break;
+            case R.id.next:
+                // downButton
+                Log.d(getClass().getName(), "next button pressed");
+                if(it!=null && it.hasNext()) {
+                    Map.Entry keyValue = (Map.Entry) it.next();
+                    Log.d(getClass().getName(), "equals after index " + keyValue.getKey()
+                            + " to " + keyValue.getValue());
+                }
+                break;
+            case R.id.close:
+                // closeButton
+                searchEditText.setText("");
+                break;
+            default:
+                return;
+        }
     }
 }

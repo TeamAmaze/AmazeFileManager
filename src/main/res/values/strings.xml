@@ -369,5 +369,6 @@
     <string name="wanthelp"><u>Need help?</u></string>
     <string name="quick">Quick Access</string>
     <string name="edit">Edit</string>
+    <string name="find">Find in page</string>
 </resources>
 
