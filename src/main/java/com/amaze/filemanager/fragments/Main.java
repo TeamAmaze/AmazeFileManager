@@ -27,9 +27,11 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -45,6 +47,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.widget.DrawerLayout;
@@ -73,6 +77,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.amaze.filemanager.IMyAidlInterface;
+import com.amaze.filemanager.Loadlistener;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.Recycleradapter;
@@ -954,7 +960,9 @@ public class Main extends android.support.v4.app.Fragment {
         if (mActionMode != null) {
             mActionMode.finish();
         }
-                new LoadList(back, ma,openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
+        if(openMode==3)
+            bindDrive(path);
+        else new LoadList(back, ma,openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
 
     }
 
@@ -1501,6 +1509,66 @@ public class Main extends android.support.v4.app.Fragment {
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
+    Loadlistener loadlistener=new Loadlistener.Stub() {
+        @Override
+        public void load(final List<Layoutelements> layoutelements, String driveId) throws RemoteException {
+            System.out.println(layoutelements.size()+"\t"+driveId);
+        }
+
+        @Override
+        public void error(final String message, final int mode) throws RemoteException {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MAIN_ACTIVITY, "Error " + message+mode, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    };
+    IMyAidlInterface aidlInterface;
+    boolean mbound=false;
+    public void bindDrive(String account) {
+        Intent i = new Intent();
+        i.setClassName("com.amaze.filemanager.driveplugin", "com.amaze.filemanager.driveplugin.MainService");
+        i.putExtra("account",account);
+        try {
+           getActivity(). bindService((i), mConnection, Context.BIND_AUTO_CREATE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    void unbindDrive(){
+        if(mbound!=false)
+            getActivity(). unbindService(mConnection);
+    }
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            aidlInterface = (IMyAidlInterface.Stub.asInterface(service));
+            mbound=true;
+            try {
+                aidlInterface.registerCallback(loadlistener);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            try {
+                aidlInterface.loadRoot();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mbound=false;
+            Log.d("DriveConnection", "DisConnected");
+            aidlInterface = null;
+        }
+    };
 
     private void launch(final SmbFile smbFile) {
         s = Streamer.getInstance();

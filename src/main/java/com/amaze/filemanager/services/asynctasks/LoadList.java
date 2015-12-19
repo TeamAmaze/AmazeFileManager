@@ -31,9 +31,12 @@ import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.RootHelper;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -113,14 +116,18 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                     arrayList=listRecent();
                     path="5";
                     break;
+                case 6:
+                    arrayList=listRecentFiles();
+                    path="6";
 
             }
             if(arrayList!=null)
             {
             list=ma.addTo(arrayList);
-
+            if(path.equals("6"))
+                Collections.sort(list,new FileListSorter(ma.dsort,1,-1,ma.ROOT_MODE));
             }
-            else return null;
+            else return new ArrayList<>();
             }else if(openmode==3){
 
 
@@ -138,7 +145,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                 return null;
             }
         }
-        if(list!=null && !(openmode==2 && Integer.parseInt(path)==5))
+        if(list!=null && !(openmode==2 && ((path).equals("5") || (path).equals("6"))))
         Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, ma.ROOT_MODE));
         return list;
 
@@ -155,9 +162,9 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         ma.createViews(bitmap, back, path, openmode, false, grid);
 
     }
+
     ArrayList<String[]> listaudio(){
         String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
-
         String[] projection = {
                 MediaStore.Audio.Media.DATA
         };
@@ -220,10 +227,41 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         cursor.close();
         return songs;
     }
+    ArrayList<String[]> listRecentFiles(){
+        ArrayList<String[]> songs = new ArrayList<String[]>();
+        final String[] projection = {MediaStore.Files.FileColumns.DATA,MediaStore.Files.FileColumns.DATE_MODIFIED};
+        Calendar c=Calendar.getInstance();
+        c.set(Calendar.DAY_OF_YEAR,c.get(Calendar.DAY_OF_YEAR)-2);
+        Date d=c.getTime();
+        Cursor cursor = ma.getActivity().getContentResolver().query(MediaStore.Files
+                        .getContentUri("external"), projection,
+                null,
+                null, null);
+        if(cursor==null)return songs;
+        if (cursor.getCount()>0 && cursor.moveToFirst()) {
+            do {
+                String path=cursor.getString(cursor.getColumnIndex
+                        (MediaStore.Files.FileColumns.DATA));
+                File f=new File(path);
+                if(d.compareTo(new Date(f.lastModified()))!=1 && !f.isDirectory()){
+                String[] strings=RootHelper.addFile(new File(path), ma.SHOW_SIZE, ma.SHOW_HIDDEN);
+                    if(strings!=null) songs.add(strings);
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        if(songs.size()>20)
+        for(int i=songs.size()-1;i>20;i--){
+            songs.remove(i);
+        }
+        return songs;
+    }
     ArrayList<String[]> listApks(){
         ArrayList<String[]> songs = new ArrayList<String[]>();
+        final String[] projection = {MediaStore.Files.FileColumns.DATA};
+
         Cursor cursor = ma.getActivity().getContentResolver().query(MediaStore.Files
-                        .getContentUri("external"), null,
+                        .getContentUri("external"), projection,
                 null,
                 null, null);
         if (cursor.getCount()>0 && cursor.moveToFirst()) {
@@ -253,8 +291,9 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     }
     ArrayList<String[]> listDocs(){
         ArrayList<String[]> songs = new ArrayList<String[]>();
+        final String[] projection = {MediaStore.Files.FileColumns.DATA};
         Cursor cursor = ma.getActivity().getContentResolver().query(MediaStore.Files
-                        .getContentUri("external"), null,
+                        .getContentUri("external"), projection,
                 null,
                 null, null);
         String[] types=new String[]{".pdf",".xml",".html",".asm", ".text/x-asm",".def",".in",".rc",

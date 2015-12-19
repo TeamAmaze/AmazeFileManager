@@ -1003,6 +1003,7 @@ public class MainActivity extends AppCompatActivity implements
 
         }
         list.add(new EntryItem(getResources().getString(R.string.quick), "5", ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
+        list.add(new EntryItem(getResources().getString(R.string.recent), "6", ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
         list.add(new EntryItem(getResources().getString(R.string.images), "0", ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
         list.add(new EntryItem(getResources().getString(R.string.videos), "1", ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
         list.add(new EntryItem(getResources().getString(R.string.audio), "2", ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
@@ -1545,6 +1546,7 @@ public class MainActivity extends AppCompatActivity implements
             list.add(new SectionItem());
         }
         list.add(new EntryItem(getResources().getString(R.string.quick), "5", ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
+        list.add(new EntryItem(getResources().getString(R.string.recent), "6", ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
         list.add(new EntryItem(getResources().getString(R.string.images), "0", ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
         list.add(new EntryItem(getResources().getString(R.string.videos), "1", ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
         list.add(new EntryItem(getResources().getString(R.string.audio), "2", ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
@@ -1925,26 +1927,7 @@ public class MainActivity extends AppCompatActivity implements
         if (openmode == 1 && news.startsWith("smb:/"))
             newPath = mainActivityHelper.parseSmbPath(news);
         else if (openmode == 2)
-            switch (Integer.parseInt(news)) {
-                case 0:
-                    newPath = getResources().getString(R.string.images);
-                    break;
-                case 1:
-                    newPath = getResources().getString(R.string.videos);
-                    break;
-                case 2:
-                    newPath = getResources().getString(R.string.audio);
-                    break;
-                case 3:
-                    newPath = getResources().getString(R.string.documents);
-                    break;
-                case 4:
-                    newPath = getResources().getString(R.string.apks);
-                    break;
-                case 5:
-                    newPath = getResources().getString(R.string.quick);
-                    break;
-            }
+            newPath=mainActivityHelper.getIntegralNames(news);
         else newPath = news;
         try {
             f = new File(newPath);
@@ -2330,7 +2313,7 @@ public class MainActivity extends AppCompatActivity implements
                     else if (hFile.isCustomPath())
                         ((Main) m.getTab()).loadlist((pending_path), false, 2);
                     else if (android.util.Patterns.EMAIL_ADDRESS.matcher(pending_path).matches()) {
-                        //todo
+                        ((Main) m.getTab()).loadlist((pending_path), false, 3);
                     } else utils.openFile(new File(pending_path), mainActivity);
 
             } catch (ClassCastException e) {
@@ -2396,53 +2379,48 @@ public class MainActivity extends AppCompatActivity implements
             mDrawerList.animate().translationY(toolbar.getHeight());
         else mDrawerList.setTranslationY(0);
     }
+    Loadlistener loadlistener=new Loadlistener.Stub() {
+        @Override
+        public void load(final List<Layoutelements> layoutelements, String driveId) throws RemoteException {
+            if(layoutelements==null && mainActivityHelper.contains(driveId,accounts)==-1) {
+                accounts.add(new String[]{driveId, driveId});
+                grid.addPath(driveId, driveId, DRIVE, 1);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshDrawer();
+                    }
+                });
+                unbindDrive();
 
+            }
+        }
+
+        @Override
+        public void error(final String message, final int mode) throws RemoteException {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(mainActivity, "Error " + message+mode, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    };
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            final IMyAidlInterface binder = (IMyAidlInterface.Stub.asInterface(service));
+            aidlInterface = (IMyAidlInterface.Stub.asInterface(service));
             mbound=true;
             try {
-                binder.registerCallback(new Loadlistener.Stub() {
-                    @Override
-                    public void load(final List<Layoutelements> layoutelements, String driveId) throws RemoteException {
-                        if(mainActivityHelper.contains(driveId,accounts)==-1) {
-                            accounts.add(new String[]{driveId, driveId});
-                            grid.addPath(driveId, driveId, DRIVE, 1);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    refreshDrawer();
-                                }
-                            });
-                            if(layoutelements==null)binder.loadlist(driveId);
-                        }else {
-                            if(layoutelements!=null){
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                    Toast.makeText(mainActivity,layoutelements.size(),Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-
-                        }
-                    }
-
-                    @Override
-                    public void error(String message, int mode) throws RemoteException {
-                        Toast.makeText(mainActivity,"Error "+message,Toast.LENGTH_SHORT).show();
-
-                    }
-                });
+                aidlInterface.registerCallback(loadlistener);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
             try {
-                binder.create();
+                aidlInterface.create();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

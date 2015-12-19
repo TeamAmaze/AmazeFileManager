@@ -125,7 +125,7 @@ public  final int READ = 4;
             a.positiveText(texts[3]);
             a.positiveColor(Color.parseColor(m.fabskin));
             a.neutralText(texts[4]);
-            if(!texts[5].equals(null)){
+            if(texts[5]!=(null)){
                 a.negativeText(texts[5]);
                 a.negativeColor(Color.parseColor(m.fabskin));
             }

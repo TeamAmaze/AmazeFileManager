@@ -80,7 +80,7 @@ public class MainActivityHelper {
 
             case 0:
                 final String path = ma.CURRENT_PATH;
-                final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{utils.getString(mainActivity, R.string.entername), "",utils.getString(mainActivity,R.string.newfolder),utils.getString(mainActivity, R.string.create),utils.getString(mainActivity,R.string.cancel)});
+                final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{utils.getString(mainActivity, R.string.entername), "",utils.getString(mainActivity,R.string.newfolder),utils.getString(mainActivity, R.string.create),utils.getString(mainActivity,R.string.cancel),null});
                 materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -93,7 +93,7 @@ public class MainActivityHelper {
                 break;
             case 1:
                 final String path1 = ma.CURRENT_PATH;
-                final MaterialDialog materialDialog1=utils.showNameDialog(mainActivity,new String[]{utils.getString(mainActivity, R.string.entername), "",utils.getString(mainActivity,R.string.newfolder),utils.getString(mainActivity, R.string.create),utils.getString(mainActivity,R.string.cancel)});
+                final MaterialDialog materialDialog1=utils.showNameDialog(mainActivity,new String[]{utils.getString(mainActivity, R.string.entername), "",utils.getString(mainActivity,R.string.newfolder),utils.getString(mainActivity, R.string.create),utils.getString(mainActivity,R.string.cancel),null});
                 materialDialog1.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -113,7 +113,33 @@ public class MainActivityHelper {
         }
     }
 
-
+    public String getIntegralNames(String path){
+        String newPath="";
+        switch (Integer.parseInt(path)){
+            case 0:
+                newPath=mainActivity.getResources().getString(R.string.images);
+                break;
+            case 1:
+                newPath=mainActivity.getResources().getString(R.string.videos);
+                break;
+            case 2:
+                newPath=mainActivity.getResources().getString(R.string.audio);
+                break;
+            case 3:
+                newPath=mainActivity.getResources().getString(R.string.documents);
+                break;
+            case 4:
+                newPath=mainActivity.getResources().getString(R.string.apks);
+                break;
+            case 5:
+                newPath=mainActivity.getResources().getString(R.string.quick);
+                break;
+            case 6:
+                newPath=mainActivity.getResources().getString(R.string.recent);
+                break;
+        }
+        return newPath;
+    }
     public void guideDialogForLEXA(String path) {
         final MaterialDialog.Builder x = new MaterialDialog.Builder(mainActivity);
         if (mainActivity.theme1 == 1) x.theme(Theme.DARK);

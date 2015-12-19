@@ -23,6 +23,7 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.views.CustomViewPager;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
 
 import java.io.File;
@@ -234,34 +235,11 @@ public class TabFragment extends android.support.v4.app.Fragment {
         else if("/storage/emulated/0".equals(path))
             return resources.getString(R.string.storage);
         else if(openmode==2)
-            return getIntegralNames(path);
+            return new MainActivityHelper(mainActivity).getIntegralNames(path);
         else
             return new File(path).getName();
     }
-    String getIntegralNames(String path){
-        String newPath="";
-        switch (Integer.parseInt(path)){
-            case 0:
-                newPath=getResources().getString(R.string.images);
-                break;
-            case 1:
-                newPath=getResources().getString(R.string.videos);
-                break;
-            case 2:
-                newPath=getResources().getString(R.string.audio);
-                break;
-            case 3:
-                newPath=getResources().getString(R.string.documents);
-                break;
-            case 4:
-                newPath=getResources().getString(R.string.apks);
-                break;
-            case 5:
-                newPath=getResources().getString(R.string.quick);
-                break;
-        }
-        return newPath;
-    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

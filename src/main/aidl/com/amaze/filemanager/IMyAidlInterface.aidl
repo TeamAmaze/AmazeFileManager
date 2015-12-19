@@ -9,6 +9,7 @@ interface IMyAidlInterface {
      * and return values in AIDL.
      */
     void loadlist(String id);
+    void loadRoot();
     void goback(String id);
     void create();
     void registerCallback(Loadlistener load);
