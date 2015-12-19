@@ -72,7 +72,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         findPreference("icon_skin").setOnPreferenceClickListener(this);
     }
     @Override
-    public boolean onPreferenceClick(Preference preference) {
+    public boolean onPreferenceClick(final Preference preference) {
         if(preferences!=null)preferences.changed=1;
         final MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
         a.positiveText(R.string.cancel);
@@ -84,6 +84,15 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         int fab_skin_pos=sharedPref.getInt("fab_skin_color_position",1);
         int fab_skin=Color.parseColor(PreferenceUtils.getFabColor(fab_skin_pos));
         a.positiveColor(fab_skin);
+        a.neutralColor(fab_skin);
+        a.neutralText(R.string.defualt);
+        a.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onNeutral(MaterialDialog dialog) {
+                super.onNeutral(dialog);
+                sharedPref.edit().remove(preference.getKey());
+            }
+        });
         ColorAdapter adapter = null;
         String[] colors=PreferenceUtils.colors;
         List<String> arrayList = Arrays.asList(colors);

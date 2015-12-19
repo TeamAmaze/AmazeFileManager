@@ -535,7 +535,9 @@ public class Main extends android.support.v4.app.Fragment {
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
         fabSkin = PreferenceUtils.getFabColor(Sp.getInt("fab_skin_color_position", 1));
-        iconskin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
+        int icon=Sp.getInt("icon_skin_color_position", -1);
+        icon=icon==-1?Sp.getInt("skin_color_position", 4):icon;
+        iconskin = PreferenceUtils.getSkinColor(icon);
         skin_color = Color.parseColor(skin);
         icon_skin_color = Color.parseColor(iconskin);
         PERM_GRID = Sp.getBoolean("perm_grid", false);
@@ -1310,10 +1312,8 @@ public class Main extends android.support.v4.app.Fragment {
             searchHelper.add(f.getPath());
             String size = "";
             if (!MAIN_ACTIVITY.hiddenfiles.contains(ele[0])) {
-                if (isDirectory(ele)) {
-                    if (!ele[5].trim().equals("") && !ele[5].toLowerCase().trim().equals("null"))
-                        size = ele[5] + " " + itemsstring;
-                    else size = "";
+                if ((ele[6]).equals("true")) {
+                    size = "";
                     a.add(utils.newElement(folder, f.getPath(), mFile.get(i)[2], mFile.get(i)[1], size, 0, true, false, ele[4]));
                     folder_count++;
                 } else {
@@ -1341,13 +1341,7 @@ public class Main extends android.support.v4.app.Fragment {
         return a;
     }
 
-    public boolean isDirectory(String[] path) {
-        if (ROOT_MODE)
-            if (path[1].length() != 0) return new File(path[0]).isDirectory();
-            else return path[3].equals("-1");
-        else
-            return new File(path[0]).isDirectory();
-    }
+
 
     @Override
     public void onDestroy() {

@@ -479,7 +479,9 @@ public class MainActivity extends AppCompatActivity implements
         scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
         FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item_top : R.id.menu_item);
-        String folder_skin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
+        int icon=Sp.getInt("icon_skin_color_position", -1);
+        icon=icon==-1?Sp.getInt("skin_color_position", 4):icon;
+        String folder_skin = PreferenceUtils.getSkinColor(icon);
         int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
         floatingActionButton1.setColorNormal(folderskin);

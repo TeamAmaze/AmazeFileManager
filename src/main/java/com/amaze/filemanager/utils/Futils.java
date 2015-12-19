@@ -413,8 +413,8 @@ public void openWith(final File f,final Context c) {
         a.items(items).itemsCallback(new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-                Uri uri=fileToContentUri(c, f);
-                if(uri==null)uri=Uri.fromFile(f);
+                Uri uri = fileToContentUri(c, f);
+                if (uri == null) uri = Uri.fromFile(f);
                 Intent intent = new Intent();
                 intent.setAction(android.content.Intent.ACTION_VIEW);
                 switch (i) {
@@ -906,12 +906,13 @@ public void showPackageDialog(final File f,final MainActivity m){
         a.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(MaterialDialog materialDialog, DialogAction dialogAction) {
-                if(materialDialog.getInputEditText().getText().toString().equals(".zip"))
-                    Toast.makeText(m,"File should have a name",Toast.LENGTH_SHORT).show();
+                if (materialDialog.getInputEditText().getText().toString().equals(".zip"))
+                    Toast.makeText(m, "File should have a name", Toast.LENGTH_SHORT).show();
                 else {
-                String name = current + "/" + materialDialog.getInputEditText().getText().toString();
-                m.mainActivityHelper.compressFiles(new File(name), b);
-            }}
+                    String name = current + "/" + materialDialog.getInputEditText().getText().toString();
+                    m.mainActivityHelper.compressFiles(new File(name), b);
+                }
+            }
         });
         a.negativeText(getString(m, R.string.cancel));
         a.negativeColor(Color.parseColor(m.fabskin));
@@ -963,7 +964,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         int current = Integer.parseInt(m.Sp.getString("sortbyApps", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         if(m.theme1==1)a.theme(Theme.DARK);
-        a.items(sort).itemsCallbackSingleChoice(current>2?current-3:current, new MaterialDialog.ListCallbackSingleChoice() {
+        a.items(sort).itemsCallbackSingleChoice(current > 2 ? current - 3 : current, new MaterialDialog.ListCallbackSingleChoice() {
             @Override
             public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
 
@@ -976,7 +977,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             @Override
             public void onPositive(MaterialDialog dialog) {
                 super.onPositive(dialog);
-                int which=dialog.getSelectedIndex();
+                int which = dialog.getSelectedIndex();
                 m.Sp.edit().putString("sortbyApps", "" + which).commit();
                 m.getSortModes();
                 m.loadlist(false);
@@ -986,7 +987,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             @Override
             public void onNegative(MaterialDialog dialog) {
                 super.onNegative(dialog);
-                int which=dialog.getSelectedIndex()+3;
+                int which = dialog.getSelectedIndex() + 3;
                 m.Sp.edit().putString("sortbyApps", "" + which).commit();
                 m.getSortModes();
                 m.loadlist(false);
@@ -1138,14 +1139,17 @@ public void showPackageDialog(final File f,final MainActivity m){
         boolean linked = false;
         String name = "", link = "", size = "-1", date = "";
         String[] array = line.split(" ");
+        if(array.length<6)return null;
         for (int i = 0; i < array.length; i++) {
-            if (array[i].contains("->")) {
+            if (array[i].contains("->") && array[0].startsWith("l")) {
                 linked = true;
             }
         }
         int p = getColonPosition(array);
+        if(p!=-1){
         date = array[p - 1] + " | " + array[p];
-        size = array[p - 2];
+        size = array[p - 2];}
+        else System.out.println("line"+line);
         if (!linked) {
             for (int i = p + 1; i < array.length; i++) {
                 name = name + " " + array[i];
@@ -1163,13 +1167,15 @@ public void showPackageDialog(final File f,final MainActivity m){
         }
         String size1 = size;
         if (size.equals("")) {
-            size = "-1";
             size1 = "";
         }
-        ParsePosition pos = new ParsePosition(0);
-        SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
-        Date stringDate = simpledateformat.parse(date, pos);
-        return new String[]{name, link, array[0], size, stringDate.getTime() + "", size1};
+        if(date.trim().length()>0) {
+            ParsePosition pos = new ParsePosition(0);
+            SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
+            Date stringDate = simpledateformat.parse(date, pos);
+            return new String[]{name, link, array[0], size, stringDate.getTime() + "", size1,""};
+        }else return new String[]{name, link, array[0], size,  new File("/").lastModified()+"", size1,""};
+
     }
 
     public int getLinkPosition(String[] array){
@@ -1183,7 +1189,7 @@ public int getColonPosition(String[] array){
         for(int i=0;i<array.length;i++){
             if(array[i].contains(":"))return i;
         }
-        return  0;
+        return  -1;
     }
 
     public ArrayList<Boolean[]> parse(String permLine) {

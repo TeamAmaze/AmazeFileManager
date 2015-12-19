@@ -286,7 +286,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         for(String f:paths){
             if(!f.equals("/")){
                 String[] a=RootHelper.addFile(new File(f), ma.SHOW_SIZE, ma.SHOW_HIDDEN);
-                if(a!=null && !ma.isDirectory(a))
+                if(a!=null && !(a)[6].equals("true"))
                 songs.add(a);
             }
         }
