@@ -122,11 +122,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
 
             }
             if(arrayList!=null)
-            {
             list=ma.addTo(arrayList);
-            if(path.equals("6"))
-                Collections.sort(list,new FileListSorter(ma.dsort,1,-1,ma.ROOT_MODE));
-            }
             else return new ArrayList<>();
             }else if(openmode==3){
 
@@ -250,6 +246,13 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
             } while (cursor.moveToNext());
         }
         cursor.close();
+        Collections.sort(songs, new Comparator<String[]>() {
+            @Override
+            public int compare(String[] lhs, String[] rhs) {
+                return -1 * Long.valueOf(lhs[4]).compareTo(Long.valueOf(rhs[4]));
+
+            }
+        });
         if(songs.size()>20)
         for(int i=songs.size()-1;i>20;i--){
             songs.remove(i);
