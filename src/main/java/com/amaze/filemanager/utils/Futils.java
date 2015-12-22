@@ -879,7 +879,13 @@ public void showPackageDialog(final File f,final MainActivity m){
         }
         return b;
     }
-
+    public ArrayList<HFile> toHFileArray(ArrayList<String> a) {
+        ArrayList<HFile> b = new ArrayList<>();
+        for (int i = 0; i < a.size(); i++) {
+            b.add(new HFile(a.get(i)));
+        }
+        return b;
+    }
     public ArrayList<String> toStringArray(ArrayList<File> a) {
         ArrayList<String> b = new ArrayList<String>();
         for (int i = 0; i < a.size(); i++) {
@@ -924,7 +930,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         int current = Integer.parseInt(m.Sp.getString("sortby", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         if(m.theme1==1)a.theme(Theme.DARK);
-        a.items(sort).itemsCallbackSingleChoice(current>3?current-4:current, new MaterialDialog.ListCallbackSingleChoice() {
+        a.items(sort).itemsCallbackSingleChoice(current > 3 ? current - 4 : current, new MaterialDialog.ListCallbackSingleChoice() {
             @Override
             public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
 
@@ -937,7 +943,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             @Override
             public void onPositive(MaterialDialog dialog) {
                 super.onPositive(dialog);
-                int which=dialog.getSelectedIndex();
+                int which = dialog.getSelectedIndex();
                 m.Sp.edit().putString("sortby", "" + which).commit();
                 m.getSortModes();
                 m.updateList();
@@ -948,7 +954,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             @Override
             public void onNegative(MaterialDialog dialog) {
                 super.onNegative(dialog);
-                int which=4+dialog.getSelectedIndex();
+                int which = 4 + dialog.getSelectedIndex();
                 m.Sp.edit().putString("sortby", "" + which).commit();
                 m.getSortModes();
                 m.updateList();
@@ -1017,7 +1023,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             a.theme(Theme.DARK);
 
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.MAIN_ACTIVITY.history,null,true);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toHFileArray(paths),m.MAIN_ACTIVITY.history,null,true);
         a.adapter(adapter, new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
@@ -1040,7 +1046,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         if(m.theme1==1)
             a.theme(Theme.DARK);
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.MAIN_ACTIVITY.history,null,false);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toHFileArray(paths),m.MAIN_ACTIVITY.history,null,false);
         a.adapter(adapter, new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {

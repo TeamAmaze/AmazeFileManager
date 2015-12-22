@@ -76,6 +76,18 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         grid=ma.checkforpath(path);
         ma.folder_count=0;
         ma.file_count=0;
+        if(openmode==-1){
+            HFile hFile=new HFile(path);
+            if (hFile.isDirectory() && !hFile.isSmb()) {
+                openmode=( 0);
+            } else if (hFile.isSmb())
+                openmode=( 1);
+            else if (hFile.isCustomPath())
+                openmode=( 2);
+            else if (android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()) {
+                openmode=( 3);
+            }
+            }
             if(openmode==1){
                 HFile hFile=new HFile(path);
                 try {

@@ -238,7 +238,6 @@ public class Main extends android.support.v4.app.Fragment {
                 hideOption(R.id.addshortcut, menu);
                 hideOption(R.id.openwith, menu);
                 hideOption(R.id.share, menu);
-                hideOption(R.id.hide, menu);
                 hideOption(R.id.compress, menu);
                 return true;
             }
@@ -1287,6 +1286,8 @@ public class Main extends android.support.v4.app.Fragment {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         if (searchHelper.size() > 500) searchHelper.clear();
         for (int i = 0; i < mFile.length; i++) {
+            if (MAIN_ACTIVITY.hiddenfiles.contains(mFile[i].getPath()))
+                continue;;
             searchHelper.add(mFile[i].getPath());
             if (mFile[i].isDirectory()) {
                 folder_count++;

@@ -125,17 +125,17 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-
+                    if(!getItem(position).isSection())
                     // not to remove the first bookmark (storage) and permanent bookmarks
-                    if (position > m.storage_count && position < values.size()-5) {
+                    if (position > m.storage_count && position < values.size()-7) {
                         String path = ((EntryItem) getItem(position)).getPath();
-                        if (!getItem(position).isSection() && path.startsWith("smb:/")) {
-                            m.mainActivityHelper.createSmbDialog(path, true, null);
-                            return true;
+                        if(m.mainActivityHelper.contains(path,m.books)!=-1){
+                            m.renameBookmark(((EntryItem) getItem(position)).getTitle(),path);
                         }
-                        m.renameBookmark(((EntryItem) getItem(position)).getTitle(),path);
-
-                    }else if(position<m.storage_count && !getItem(position).isSection()){
+                        else if (path.startsWith("smb:/")) {
+                            m.mainActivityHelper.createSmbDialog(path, true, null);
+                        }
+                    }else if(position<m.storage_count ){
                         String path = ((EntryItem) getItem(position)).getPath();
                         if(!path.equals("/"))
                             new Futils().showProps(new File(path),m,m.theme1);

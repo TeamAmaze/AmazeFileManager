@@ -220,7 +220,12 @@ public class HFile {
         } else exists = new File(path).exists();
         return exists;
     }
-
+    public boolean isSimpleFile(){
+        if(!isSmb()){
+            if(!new File(path).isDirectory())return true;
+        }
+        return false;
+    }
     public void mkdir(Context context) {
         if (isSmb()) {
             try {

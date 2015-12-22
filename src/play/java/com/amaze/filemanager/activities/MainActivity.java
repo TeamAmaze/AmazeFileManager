@@ -117,6 +117,7 @@ import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.StorageUtils;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
@@ -175,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements
     public String DRIVE = "drive", SMB = "smb", BOOKS = "books", HISTORY = "Table1", HIDDEN = "Table2", LIST = "list", GRID = "grid";
     Futils utils;
     public SharedPreferences Sp;
-    ArrayList<String[]> books;
+    public ArrayList<String[]> books;
     MainActivity mainActivity = this;
     public DrawerAdapter adapter;
     IconUtils util;
@@ -796,7 +797,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public List<String> getStorageDirectories() {
         // Final set of paths
-        final ArrayList<String> rv = new ArrayList<String>();
+        final ArrayList<String> rv = new ArrayList<>();
         // Primary physical SD-CARD (not emulated)
         final String rawExternalStorage = System.getenv("EXTERNAL_STORAGE");
         // All Secondary SD-CARDs (all exclude primary) separated by ":"
@@ -847,7 +848,6 @@ public class MainActivity extends AppCompatActivity implements
             rv.add("/");
         File usb = getUsbDrive();
         if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
-
         return rv;
     }
 
@@ -2308,16 +2308,8 @@ public class MainActivity extends AppCompatActivity implements
                 HFile hFile = new HFile(pending_path);
                 Main main = ((Main) m.getTab());
                 if (main != null)
-                    if (hFile.isDirectory() && !hFile.isSmb()) {
-                        ((Main) m.getTab()).loadlist((pending_path), false, 0);
-                    } else if (hFile.isSmb())
-                        ((Main) m.getTab()).loadlist((pending_path), false, 1);
-                    else if (hFile.isCustomPath())
-                        ((Main) m.getTab()).loadlist((pending_path), false, 2);
-                    else if (android.util.Patterns.EMAIL_ADDRESS.matcher(pending_path).matches()) {
-                        ((Main) m.getTab()).loadlist((pending_path), false, 3);
-                    } else utils.openFile(new File(pending_path), mainActivity);
-
+                    if(hFile.isSimpleFile()) utils.openFile(new File(pending_path), mainActivity);
+                    else main.loadlist(pending_path,false,-1);
             } catch (ClassCastException e) {
                 select = null;
                 goToMain("");

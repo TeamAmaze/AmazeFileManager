@@ -16,6 +16,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.HistoryManager;
 
 
@@ -26,16 +27,16 @@ import java.util.ArrayList;
 /**
  * Created by Arpit on 16-11-2014.
  */
-public class HiddenAdapter extends ArrayAdapter<File> {
+public class HiddenAdapter extends ArrayAdapter<HFile> {
     /*Shortcuts s;*/
     Main context;Context c;
-    public ArrayList<File> items;
+    public ArrayList<HFile> items;
     HistoryManager hidden;
     MaterialDialog materialDialog;
     boolean hide;
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public HiddenAdapter(Context c,Main context, int resourceId, ArrayList<File> items,HistoryManager hidden,MaterialDialog materialDialog,boolean hide) {
+    public HiddenAdapter(Context c,Main context, int resourceId, ArrayList<HFile> items,HistoryManager hidden,MaterialDialog materialDialog,boolean hide) {
         super(c, resourceId, items);
         this.c=c;
         this.context = context;
@@ -55,7 +56,7 @@ public class HiddenAdapter extends ArrayAdapter<File> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        File f = items.get(position);
+        final HFile f = items.get(position);
         //final Layoutelements rowItem = getItem(position);
 
         View view;
@@ -77,14 +78,18 @@ public class HiddenAdapter extends ArrayAdapter<File> {
         }
         final ViewHolder holder = (ViewHolder) view.getTag();
         holder.txtTitle.setText(f.getName());
-        holder.txtDesc.setText(f.getPath());
+        String a=f.getPath();
+        if(a.startsWith("smb:/")){
+            a=parseSmbPath(a);
+        }
+        holder.txtDesc.setText(a);
         if(hide)
             holder.image.setVisibility(View.GONE);
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
             hidden.removePath(items.get(p).getPath(),"Table2");
-            if(items.get(p).isDirectory())
+            if(!f.isSmb() && f.isDirectory())
             {
                 ArrayList<File> a=new ArrayList<File>();
                 a.add(new File(items.get(p).getPath()+"/.nomedia"));
@@ -99,13 +104,28 @@ public class HiddenAdapter extends ArrayAdapter<File> {
             @Override
             public void onClick(View view) {
                 materialDialog.dismiss();
-                final File f = (items.get(p));
-                if (f.isDirectory()) {
-
-                    context.loadlist(f.getPath(),false,0);
-                } else {
-                   context.utils. openFile(f, (MainActivity) context.getActivity());
-                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (f.isDirectory()) {
+                            context.getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    context.loadlist(f.getPath(), false, -1);
+                                }
+                            });
+                        } else {
+                            if(!f.isSmb()){
+                                context.getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        context.utils.openFile(new File(f.getPath()), (MainActivity) context.getActivity());
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }).run();
             }
         });
         return view;
@@ -113,4 +133,10 @@ public class HiddenAdapter extends ArrayAdapter<File> {
     public void updateDialog(MaterialDialog dialog){
         materialDialog=dialog;
     }
+    String parseSmbPath(String a) {
+        if (a.contains("@"))
+            return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
+        else return a;
+    }
+
 }
