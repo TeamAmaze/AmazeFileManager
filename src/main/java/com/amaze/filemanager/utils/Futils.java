@@ -853,9 +853,9 @@ public void showPackageDialog(final File f,final MainActivity m){
                     public void onNegative(MaterialDialog materialDialog) {
                         //m.addZipViewTab(f.getPath());
                         if (f.getName().toLowerCase().endsWith(".rar"))
-                            m.openRar(f.getPath());
+                            m.openRar(Uri.fromFile(f).toString());
                         else
-                            m.openZip(f.getPath());
+                            m.openZip(Uri.fromFile(f).toString());
                     }
                 });
         if (m.theme1 == 1) mat.theme(Theme.DARK);

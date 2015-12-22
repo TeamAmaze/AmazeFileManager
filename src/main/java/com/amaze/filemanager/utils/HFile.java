@@ -221,7 +221,7 @@ public class HFile {
         return exists;
     }
     public boolean isSimpleFile(){
-        if(!isSmb()){
+        if(!isSmb() && !isCustomPath()){
             if(!new File(path).isDirectory())return true;
         }
         return false;

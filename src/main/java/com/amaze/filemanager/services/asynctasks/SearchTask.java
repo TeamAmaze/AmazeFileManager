@@ -63,7 +63,7 @@ boolean isPresentInList(String p){
                     } else if (main.SHOW_SIZE) size = "" + file.length();
                     String[] string = new String[0];
                     try {
-                        string = new String[]{file.getPath(), "", "", k, file.lastModified() + "", size};
+                        string = new String[]{file.getPath(), "", "", k, file.lastModified() + "", size,file.isDirectory()+""};
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     } catch (SmbException e) {

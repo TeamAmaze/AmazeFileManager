@@ -1459,7 +1459,7 @@ public class MainActivity extends AppCompatActivity implements
         bundle.putString("path", path);
         zipFragment.setArguments(bundle);
         fragmentTransaction.add(R.id.content_frame, zipFragment);
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     public void openRar(String path) {
@@ -1984,7 +1984,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
-            }).setStartDelay(500).start();
+            }).setStartDelay(300).start();
         } else if (newPath.length() <= oldPath.length() &&
                 oldPathBuilder.delete(newPath.length(), oldPath.length()).toString().equals(newPath)) {
 
@@ -2022,7 +2022,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
-            }).setStartDelay(500).start();
+            }).setStartDelay(300).start();
         } else if (oldPath.isEmpty()) {
 
             // case when app starts
@@ -2052,7 +2052,7 @@ public class MainActivity extends AppCompatActivity implements
                         animPath.setVisibility(View.GONE);
                         bapath.setText(newPath);
                     }
-                }).setStartDelay(500).start();
+                }).setStartDelay(300).start();
             }
 
         } else {
@@ -2247,7 +2247,11 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
-
+    public void invalidateFab(int openmode){
+        if(openmode==2 && !floatingActionButton.isMenuButtonHidden())
+            floatingActionButton.hideMenuButton(true);
+        else floatingActionButton.showMenuButton(true);
+    }
     public void renameBookmark(final String title, final String path) {
         if (mainActivityHelper.contains(path, books) != -1 || mainActivityHelper.contains(path, accounts) != -1) {
             final MaterialDialog materialDialog = utils.showNameDialog(this, new String[]{utils.getString(this, R.string.entername), title, utils.getString(this, R.string.rename), utils.getString(this, R.string.save), utils.getString(this, R.string.cancel), utils.getString(this, R.string.delete)});
@@ -2360,8 +2364,8 @@ public class MainActivity extends AppCompatActivity implements
 
             // zip viewer intent
             Uri uri = intent.getData();
-            openzip = true;
             zippath = uri.toString();
+            openZip(zippath);
         }
     }
 

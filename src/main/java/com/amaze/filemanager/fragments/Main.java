@@ -1097,7 +1097,7 @@ public class Main extends android.support.v4.app.Fragment {
                     MAIN_ACTIVITY.updatepaths(no);
                     listView.stopScroll();
                     if (buttons.getVisibility() == View.VISIBLE) MAIN_ACTIVITY.bbar(this);
-
+                    MAIN_ACTIVITY.invalidateFab(openMode);
                 } catch (Exception e) {
                 }
             } else {//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();

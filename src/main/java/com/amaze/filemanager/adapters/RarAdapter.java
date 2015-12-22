@@ -255,7 +255,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         final int p=position1-1;
         GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
         if(rowItem.getEntry()==null){
-            holder.imageView.setImageResource(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            holder.imageView.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha));
             gradientDrawable.setColor(Color.parseColor("#757575"));
             holder.txtTitle.setText("..");
             holder.txtDesc.setText("");
@@ -362,7 +362,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
                         if (rowItem.isDirectory()) {
 
-                            new ZipHelperTask(zipViewer,  stringBuilder.toString()).execute(zipViewer.f);
+                            new ZipHelperTask(zipViewer,  stringBuilder.toString()).execute(zipViewer.s);
 
                         } else {
                             String x=rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1);

@@ -20,27 +20,38 @@ import java.util.zip.ZipInputStream;
 /**
  * Created by Vishal on 11/23/2014.
  */
-public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
+public class ZipHelperTask extends AsyncTask<String, Void, ArrayList<ZipObj>> {
 
     ZipViewer zipViewer;
     String dir;
 
     public ZipHelperTask(ZipViewer zipViewer, String dir) {
-
         this.zipViewer = zipViewer;
         this.dir = dir;
+        zipViewer.swipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
-    protected ArrayList<ZipObj> doInBackground(File... params) {
+    protected ArrayList<ZipObj> doInBackground(String... params) {
         ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
         try {
-            ZipInputStream zipfile = new ZipInputStream(zipViewer.getActivity().getContentResolver().openInputStream(Uri.parse(params[0].getPath())));
             int i = 0;
-            ZipEntry entry1;
             if (zipViewer.wholelist.size() == 0) {
-                while ((entry1=zipfile.getNextEntry())!=null ) {
-                    zipViewer.wholelist.add(new ZipObj(entry1, entry1.getTime(), entry1.getSize(), entry1.isDirectory()));
+                Uri uri = Uri.parse(params[0]);
+                if (new File(uri.getPath()).canRead()) {
+                    ZipFile zipfile = new ZipFile(uri.getPath());
+                    for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
+                        ZipEntry entry = (ZipEntry) e.nextElement();
+                        zipViewer.wholelist.add(new ZipObj(entry, entry.getTime(), entry.getSize(), entry.isDirectory()));
+                    }
+                } else {
+                    ZipEntry entry1;
+                    if (zipViewer.wholelist.size() == 0) {
+                        ZipInputStream zipfile1 = new ZipInputStream(zipViewer.getActivity().getContentResolver().openInputStream(uri));
+                        while ((entry1 = zipfile1.getNextEntry()) != null) {
+                            zipViewer.wholelist.add(new ZipObj(entry1, entry1.getTime(), entry1.getSize(), entry1.isDirectory()));
+                        }
+                    }
                 }
             }
             ArrayList<String> strings = new ArrayList<String>();
@@ -111,6 +122,7 @@ public class ZipHelperTask extends AsyncTask<File, Void, ArrayList<ZipObj>> {
     @Override
     protected void onPostExecute(ArrayList<ZipObj> zipEntries) {
         super.onPostExecute(zipEntries);
+        zipViewer.swipeRefreshLayout.setRefreshing(false);
         zipViewer.createviews(zipEntries, dir);
     }
 
