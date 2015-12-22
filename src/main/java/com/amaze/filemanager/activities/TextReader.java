@@ -32,12 +32,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.Selection;
-import android.text.Spannable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ActionMode;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -55,6 +52,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootHelper;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -67,12 +65,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -96,9 +90,9 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     private android.support.v7.widget.Toolbar toolbar;
 
     // hashMap to store search text indexes
-    private LinkedHashMap<Integer, Integer> hashMap = new LinkedHashMap<>();
+    //private LinkedHashMap<Integer, Integer> hashMap;
+    private ArrayList<MapEntry>  nodes;
     private ListIterator it;
-    private List nodes;
 
     private ImageButton upButton, downButton, closeButton;
 
@@ -110,6 +104,9 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
 
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
+
+        nodes = new ArrayList<>();
+        it = nodes.listIterator();
 
         // setting accent theme
         if (Build.VERSION.SDK_INT >= 21) {
@@ -532,7 +529,12 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         // searchBox callback block
         if (searchEditText!=null && editable.hashCode()==searchEditText.getText().hashCode()) {
 
-            hashMap.clear();
+            // clearing before adding new values
+            while (it.hasNext()){
+                it.next();
+                it.remove();
+                System.out.println("clearing");
+            }
 
             for (int i = 0; i<(mOriginal.length()-editable.length()); i++) {
                 if (searchEditText.length()==0)
@@ -540,23 +542,20 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
 
                 if (mOriginal.substring(i, i+editable.length()).equalsIgnoreCase(editable.toString())) {
 
-                    hashMap.put(i, i+editable.length());
+                    MapEntry mapEntry = new MapEntry(i, i+editable.length());
+                    it.add(mapEntry);
                 }
 
             }
+            System.out.println(nodes.size());
 
-            if (!hashMap.isEmpty()) {
+            // ignore this code block for time being :/
+            if (!it.hasNext()) {
                 upButton.setEnabled(true);
                 downButton.setEnabled(true);
-
-                nodes = new ArrayList(hashMap.entrySet());
-                it = nodes.listIterator();
             } else {
                 upButton.setEnabled(false);
                 downButton.setEnabled(false);
-
-                nodes.clear();
-                it = null;
             }
         }
     }
@@ -615,8 +614,8 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
             case R.id.prev:
                 // upButton
                 Log.d(getClass().getName(), "previous button pressed");
-                if(it!=null && it.hasPrevious()) {
-                    Map.Entry keyValue = (Map.Entry) it.previous();
+                if(it.hasPrevious()) {
+                    MapEntry keyValue = (MapEntry) it.previous();
                     Log.d(getClass().getName(), "equals after index " + keyValue.getKey()
                             + " to " + keyValue.getValue());
                 }
@@ -624,8 +623,8 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
             case R.id.next:
                 // downButton
                 Log.d(getClass().getName(), "next button pressed");
-                if(it!=null && it.hasNext()) {
-                    Map.Entry keyValue = (Map.Entry) it.next();
+                if(it.hasNext()) {
+                    MapEntry keyValue = (MapEntry) it.next();
                     Log.d(getClass().getName(), "equals after index " + keyValue.getKey()
                             + " to " + keyValue.getValue());
                 }
