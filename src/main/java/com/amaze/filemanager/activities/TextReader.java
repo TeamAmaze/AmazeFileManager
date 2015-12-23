@@ -47,6 +47,7 @@ import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -78,7 +79,8 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     boolean rootMode;
     int theme, theme1;
     SharedPreferences Sp;
-
+    final int maxLength=7000;
+    int start=0,end=maxLength;
     private EditText mInput, searchEditText;
     private java.io.File mFile;
     private String mOriginal, skin;
@@ -86,7 +88,6 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     private boolean mModified, isEditAllowed = true;
     private int skinStatusBar;
     private String fabSkin;
-    private WebView webView;
     private android.support.v7.widget.Toolbar toolbar;
 
     // hashMap to store search text indexes
@@ -282,7 +283,6 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
 
         }
         mInput = (EditText) findViewById(R.id.fname);
-        webView = (WebView) findViewById(R.id.webView);
 
         try {
             if (getIntent().getData() != null)
@@ -292,15 +292,30 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         } catch (Exception e) {
             mFile = null;
         }
+        final ScrollView scrollView=(ScrollView)findViewById(R.id.editscroll);
+        scrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                View view = scrollView.getChildAt(scrollView.getChildCount()-1);
+                int diff = (view.getBottom()-(scrollView.getHeight()+scrollView.getScrollY()));
+                if (diff == 0) {
+                    scrollView.scrollTo(0,0);
+                if(mOriginal.length()-1>end){
+                    System.out.println("Changing");
+                    int i=mOriginal.length()-1;
+                    if(i-end>maxLength && i-((end)+maxLength)>maxLength)
+                        i=end+maxLength;
+                    else if(i-end>maxLength){
+                        i=i-maxLength;
+                    }
+                    System.out.println("end "+i+"\t max "+(mOriginal.length()-1));
+                    mInput.setText(mOriginal.substring(end,i));
+                    end=i;
+                }
+                }
 
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setDefaultTextEncodingName("utf-8");
-
-        if (mFile!=null)
-            webView.loadUrl("file://" + mFile.getAbsolutePath());
-        else
-            webView.loadData(getResources().getString(R.string.error), "text/html", null);
-
+            }
+        });
         mInput.addTextChangedListener(this);
         try {
             if (theme1 == 1) mInput.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
@@ -310,6 +325,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         }
 
         setTitle(mFile.getName());
+        load(mFile);
     }
 
     private void checkUnsavedChanges() {
@@ -430,7 +446,12 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
                         @Override
                         public void run() {
                             try {
-                                mInput.setText(mOriginal);
+                                mInput.setVisibility(View.VISIBLE);
+                                String t=mOriginal;
+                                if(t.length()>maxLength){
+                                    t=t.substring(0,maxLength);
+                                }
+                                mInput.setText(t);
                                 if (mOriginal.isEmpty())
                                     mInput.setHint(R.string.file_empty);
                                 else
@@ -484,11 +505,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
                 utils.openunknown(mFile, c, false);
                 break;
             case R.id.edit:
-                webView.setVisibility(View.GONE);
-                mInput.setVisibility(View.VISIBLE);
-                isEditAllowed = false;
-                load(mFile);
-                invalidateOptionsMenu();
+                System.out.println("end " + end + "\t max " + (mOriginal.length() - 1));
                 break;
             case R.id.find:
                 toolbar.startActionMode(mActionModeCallback);

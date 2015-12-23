@@ -447,7 +447,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.date.setText(size);
 
                 holder.txtDesc.setText("");
-            } else if (main.SHOW_LAST_MODIFIED)
+            } else if (main.SHOW_SIZE)
 
                 holder.txtDesc.setText(rowItem.getSize());
         } else {
@@ -547,7 +547,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             if (rowItem.getSize().equals(main.goback)) {
                 holder.date.setText(rowItem.getSize());
                 holder.txtDesc.setText("");
-            } else
+            }else if(main.SHOW_SIZE)
                 holder.txtDesc.setText(rowItem.getSize());
             if (main.SHOW_PERMISSIONS)
                 holder.perm.setText(rowItem.getPermissions());
