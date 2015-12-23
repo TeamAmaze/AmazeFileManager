@@ -79,8 +79,9 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     boolean rootMode;
     int theme, theme1;
     SharedPreferences Sp;
-    final int maxLength=7000;
-    int start=0,end=maxLength;
+    final int maxLength=200;
+    int start=0,end=maxLength,size;
+    String[] lines=null;
     private EditText mInput, searchEditText;
     private java.io.File mFile;
     private String mOriginal, skin;
@@ -299,19 +300,36 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
                 View view = scrollView.getChildAt(scrollView.getChildCount()-1);
                 int diff = (view.getBottom()-(scrollView.getHeight()+scrollView.getScrollY()));
                 if (diff == 0) {
-                    scrollView.scrollTo(0,0);
-                if(mOriginal.length()-1>end){
-                    System.out.println("Changing");
-                    int i=mOriginal.length()-1;
-                    if(i-end>maxLength && i-((end)+maxLength)>maxLength)
+                if(size>end){
+                    int i=size;
+                    if(size-end>maxLength && size-((end)+maxLength)>maxLength)
                         i=end+maxLength;
                     else if(i-end>maxLength){
                         i=i-maxLength;
                     }
-                    System.out.println("end "+i+"\t max "+(mOriginal.length()-1));
-                    mInput.setText(mOriginal.substring(end,i));
+                    start=end+1;
                     end=i;
+                    StringBuilder builder = new StringBuilder();
+                    for(int k=start;k<=end;k++) {
+                        builder.append(lines[k]+"\n");
+                    }
+                    mInput.setText(builder.toString());
+                    scrollView.scrollTo(0,0);
                 }
+                }
+                else if(oldScrollY<scrollY && scrollY==0){
+                    int i=0;
+                    if(start>maxLength && (start- maxLength)>maxLength)
+                        i=start-maxLength;
+                    else if(start>maxLength)
+                        i=maxLength;
+                    end=start;
+                    start=i;
+                    System.out.println(start+"\t"+end);
+                    StringBuilder builder = new StringBuilder();
+                    for(int k=start;k<=end;k++) {
+                        builder.append(lines[k]+"\n");
+                    }
                 }
 
             }
@@ -442,16 +460,20 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
 
                         }
                     }
+                    lines=mOriginal.split("\n");
+                    size=lines.length-1;
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                mInput.setVisibility(View.VISIBLE);
-                                String t=mOriginal;
-                                if(t.length()>maxLength){
-                                    t=t.substring(0,maxLength);
+                                StringBuilder stringBuilder=new StringBuilder();
+                                int i=0;
+                                for(String s:lines){
+                                    if(i==maxLength)break;
+                                    stringBuilder.append(s+"\n");
+                                    i++;
                                 }
-                                mInput.setText(t);
+                                mInput.setText(stringBuilder.toString());
                                 if (mOriginal.isEmpty())
                                     mInput.setHint(R.string.file_empty);
                                 else
