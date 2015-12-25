@@ -79,9 +79,10 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     boolean rootMode;
     int theme, theme1;
     SharedPreferences Sp;
-    final int maxLength=200;
-    int start=0,end=maxLength,size;
-    String[] lines=null;
+ /*   final int maxLength = 200;
+    int start = 0, end = maxLength, size;
+    String[] lines = null;
+ */
     private EditText mInput, searchEditText;
     private java.io.File mFile;
     private String mOriginal, skin;
@@ -93,7 +94,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
 
     // hashMap to store search text indexes
     //private LinkedHashMap<Integer, Integer> hashMap;
-    private ArrayList<MapEntry>  nodes;
+    private ArrayList<MapEntry> nodes;
     private ListIterator it;
 
     private ImageButton upButton, downButton, closeButton;
@@ -102,10 +103,10 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
-        fabSkin =PreferenceUtils.getFabColor(Sp.getInt("fab_skin_color_position", 1));
+        fabSkin = PreferenceUtils.getFabColor(Sp.getInt("fab_skin_color_position", 1));
 
         theme = Integer.parseInt(Sp.getString("theme", "0"));
-        theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
+        theme1 = theme == 2 ? PreferenceUtils.hourOfDay() : theme;
 
         nodes = new ArrayList<>();
         it = nodes.listIterator();
@@ -115,133 +116,133 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
 
             switch (fabSkin) {
                 case "#F44336":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_red);
                     else
                         setTheme(R.style.pref_accent_dark_red);
                     break;
 
                 case "#e91e63":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_pink);
                     else
                         setTheme(R.style.pref_accent_dark_pink);
                     break;
 
                 case "#9c27b0":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_purple);
                     else
                         setTheme(R.style.pref_accent_dark_purple);
                     break;
 
                 case "#673ab7":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_deep_purple);
                     else
                         setTheme(R.style.pref_accent_dark_deep_purple);
                     break;
 
                 case "#3f51b5":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_indigo);
                     else
                         setTheme(R.style.pref_accent_dark_indigo);
                     break;
 
                 case "#2196F3":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_blue);
                     else
                         setTheme(R.style.pref_accent_dark_blue);
                     break;
 
                 case "#03A9F4":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_light_blue);
                     else
                         setTheme(R.style.pref_accent_dark_light_blue);
                     break;
 
                 case "#00BCD4":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_cyan);
                     else
                         setTheme(R.style.pref_accent_dark_cyan);
                     break;
 
                 case "#009688":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_teal);
                     else
                         setTheme(R.style.pref_accent_dark_teal);
                     break;
 
                 case "#4CAF50":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_green);
                     else
                         setTheme(R.style.pref_accent_dark_green);
                     break;
 
                 case "#8bc34a":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_light_green);
                     else
                         setTheme(R.style.pref_accent_dark_light_green);
                     break;
 
                 case "#FFC107":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_amber);
                     else
                         setTheme(R.style.pref_accent_dark_amber);
                     break;
 
                 case "#FF9800":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_orange);
                     else
                         setTheme(R.style.pref_accent_dark_orange);
                     break;
 
                 case "#FF5722":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_deep_orange);
                     else
                         setTheme(R.style.pref_accent_dark_deep_orange);
                     break;
 
                 case "#795548":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_brown);
                     else
                         setTheme(R.style.pref_accent_dark_brown);
                     break;
 
                 case "#212121":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_black);
                     else
                         setTheme(R.style.pref_accent_dark_black);
                     break;
 
                 case "#607d8b":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_blue_grey);
                     else
                         setTheme(R.style.pref_accent_dark_blue_grey);
                     break;
 
                 case "#004d40":
-                    if (theme1==0)
+                    if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_super_su);
                     else
                         setTheme(R.style.pref_accent_dark_super_su);
                     break;
             }
         } else {
-            if (theme1==1) {
+            if (theme1 == 1) {
                 setTheme(R.style.appCompatDark);
             } else {
                 setTheme(R.style.appCompatLight);
@@ -255,31 +256,31 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
-        if (Build.VERSION.SDK_INT>=21) {
-            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
-            ((Activity)this).setTaskDescription(taskDescription);
+        if (Build.VERSION.SDK_INT >= 21) {
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
+            ((Activity) this).setTaskDescription(taskDescription);
         }
         skinStatusBar = PreferenceUtils.getStatusColor(skin);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         rootMode = PreferenceManager.getDefaultSharedPreferences(c)
                 .getBoolean("rootmode", false);
-        int sdk= Build.VERSION.SDK_INT;
+        int sdk = Build.VERSION.SDK_INT;
 
-        if(sdk==20 || sdk==19) {
+        if (sdk == 20 || sdk == 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintColor(Color.parseColor(skin));
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.texteditor).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
-        }else if(Build.VERSION.SDK_INT>=21){
-            boolean colourednavigation=Sp.getBoolean("colorednavigation",true);
-            Window window =getWindow();
+        } else if (Build.VERSION.SDK_INT >= 21) {
+            boolean colourednavigation = Sp.getBoolean("colorednavigation", true);
+            Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor((PreferenceUtils.getStatusColor(skin)));
-            if(colourednavigation)
+            if (colourednavigation)
                 window.setNavigationBarColor((PreferenceUtils.getStatusColor(skin)));
 
         }
@@ -293,50 +294,60 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         } catch (Exception e) {
             mFile = null;
         }
-        final ScrollView scrollView=(ScrollView)findViewById(R.id.editscroll);
+        /*final ScrollView scrollView = (ScrollView) findViewById(R.id.editscroll);
         scrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                View view = scrollView.getChildAt(scrollView.getChildCount()-1);
-                int diff = (view.getBottom()-(scrollView.getHeight()+scrollView.getScrollY()));
+                System.out.println(scrollY+"\t"+oldScrollY);
+                View view = scrollView.getChildAt(0);
+                int diff = (view.getBottom() - (scrollView.getHeight() + scrollY));
                 if (diff == 0) {
-                if(size>end){
-                    int i=size;
-                    if(size-end>maxLength && size-((end)+maxLength)>maxLength)
-                        i=end+maxLength;
-                    else if(i-end>maxLength){
-                        i=i-maxLength;
+                    if (size > end) {
+                        System.out.println("calling if");
+                        int i = size;
+                        if (size - end > maxLength && size - ((end) + maxLength) > maxLength)
+                            i = end + maxLength;
+                        else if (i - end > maxLength) {
+                            i = i - maxLength;
+                        }
+                        start = end + 1;
+                        end = i;
+                        StringBuilder builder = new StringBuilder();
+                        for (int k = start; k <= end; k++) {
+                            builder.append(lines[k] + "\n");
+                        }
+                        mInput.setText(builder.toString());
+                        scrollView.scrollTo(0, 0);
                     }
-                    start=end+1;
-                    end=i;
-                    StringBuilder builder = new StringBuilder();
-                    for(int k=start;k<=end;k++) {
-                        builder.append(lines[k]+"\n");
-                    }
-                    mInput.setText(builder.toString());
-                    scrollView.scrollTo(0,0);
-                }
-                }
-                else if(oldScrollY<scrollY && scrollY==0){
-                    int i=0;
-                    if(start>maxLength && (start- maxLength)>maxLength)
-                        i=start-maxLength;
-                    else if(start>maxLength)
-                        i=maxLength;
-                    end=start;
-                    start=i;
-                    System.out.println(start+"\t"+end);
-                    StringBuilder builder = new StringBuilder();
-                    for(int k=start;k<=end;k++) {
-                        builder.append(lines[k]+"\n");
+                }else if (scrollY == 0 && oldScrollY<scrollY) {
+
+                    int i = 0;
+                    if (start > maxLength || start>0) {
+                        System.out.println("calling elseif");
+                        i = start - maxLength;
+                        if (i < 0) i = 0;
+                        end = start;
+                        start = i;
+                        if(start==0){
+                            end=maxLength;
+                            if(end>size)end=size;
+                        }
+                        StringBuilder builder = new StringBuilder();
+                        for (int k = start; k <= end; k++) {
+                            builder.append(lines[k] + "\n");
+                        }
+                        mInput.setText(builder.toString());
+                        scrollView.scrollTo(0,view.getBottom());
                     }
                 }
+                System.out.println("start "+start+"End "+end);
 
             }
-        });
+        });*/
         mInput.addTextChangedListener(this);
         try {
-            if (theme1 == 1) mInput.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+            if (theme1 == 1)
+                mInput.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (Exception e) {
 
@@ -408,8 +419,8 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
                 if (!mFile.canWrite())
 
                 {
-                    RootTools.remount(mFile.getParent(),"rw");
-                    RootHelper.runAndWait("cat "+f.getPath()+" > "+mFile.getPath(),true);
+                    RootTools.remount(mFile.getParent(), "rw");
+                    RootHelper.runAndWait("cat " + f.getPath() + " > " + mFile.getPath(), true);
                     f.delete();
                 }
                 runOnUiThread(new Runnable() {
@@ -460,20 +471,11 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
 
                         }
                     }
-                    lines=mOriginal.split("\n");
-                    size=lines.length-1;
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                StringBuilder stringBuilder=new StringBuilder();
-                                int i=0;
-                                for(String s:lines){
-                                    if(i==maxLength)break;
-                                    stringBuilder.append(s+"\n");
-                                    i++;
-                                }
-                                mInput.setText(stringBuilder.toString());
+                                mInput.setText(mOriginal);
                                 if (mOriginal.isEmpty())
                                     mInput.setHint(R.string.file_empty);
                                 else
@@ -506,7 +508,8 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.text, menu);
         menu.findItem(R.id.save).setVisible(mModified);
-        menu.findItem(R.id.edit).setVisible(isEditAllowed);
+        menu.findItem(R.id.find).setVisible(false);
+        menu.findItem(R.id.edit).setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -527,7 +530,6 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
                 utils.openunknown(mFile, c, false);
                 break;
             case R.id.edit:
-                System.out.println("end " + end + "\t max " + (mOriginal.length() - 1));
                 break;
             case R.id.find:
                 toolbar.startActionMode(mActionModeCallback);
@@ -545,7 +547,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
-        if (charSequence.hashCode()==mInput.getText().hashCode()) {
+        if (charSequence.hashCode() == mInput.getText().hashCode()) {
             if (mTimer != null) {
                 mTimer.cancel();
                 mTimer.purge();
@@ -566,22 +568,22 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     public void afterTextChanged(Editable editable) {
 
         // searchBox callback block
-        if (searchEditText!=null && editable.hashCode()==searchEditText.getText().hashCode()) {
+        if (searchEditText != null && editable.hashCode() == searchEditText.getText().hashCode()) {
 
             // clearing before adding new values
-            while (it.hasNext()){
+            while (it.hasNext()) {
                 it.next();
                 it.remove();
                 System.out.println("clearing");
             }
 
-            for (int i = 0; i<(mOriginal.length()-editable.length()); i++) {
-                if (searchEditText.length()==0)
+            for (int i = 0; i < (mOriginal.length() - editable.length()); i++) {
+                if (searchEditText.length() == 0)
                     break;
 
-                if (mOriginal.substring(i, i+editable.length()).equalsIgnoreCase(editable.toString())) {
+                if (mOriginal.substring(i, i + editable.length()).equalsIgnoreCase(editable.toString())) {
 
-                    MapEntry mapEntry = new MapEntry(i, i+editable.length());
+                    MapEntry mapEntry = new MapEntry(i, i + editable.length());
                     it.add(mapEntry);
                 }
 
@@ -653,7 +655,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
             case R.id.prev:
                 // upButton
                 Log.d(getClass().getName(), "previous button pressed");
-                if(it.hasPrevious()) {
+                if (it.hasPrevious()) {
                     MapEntry keyValue = (MapEntry) it.previous();
                     Log.d(getClass().getName(), "equals after index " + keyValue.getKey()
                             + " to " + keyValue.getValue());
@@ -662,7 +664,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
             case R.id.next:
                 // downButton
                 Log.d(getClass().getName(), "next button pressed");
-                if(it.hasNext()) {
+                if (it.hasNext()) {
                     MapEntry keyValue = (MapEntry) it.next();
                     Log.d(getClass().getName(), "equals after index " + keyValue.getKey()
                             + " to " + keyValue.getValue());

@@ -221,7 +221,7 @@ public class HFile {
         return exists;
     }
     public boolean isSimpleFile(){
-        if(!isSmb() && !isCustomPath()){
+        if(!isSmb() && !isCustomPath() && !android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()){
             if(!new File(path).isDirectory())return true;
         }
         return false;
