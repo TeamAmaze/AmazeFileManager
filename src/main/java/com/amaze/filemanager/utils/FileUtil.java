@@ -83,7 +83,7 @@ public abstract class FileUtil {
                 }
                 else if (Build.VERSION.SDK_INT==Build.VERSION_CODES.KITKAT) {
                     // Workaround for Kitkat ext SD card
-                    Uri uri = MediaStoreUtil.getUriFromFile(target.getAbsolutePath(),context);
+                    Uri uri = MediaStoreHack.getUriFromFile(target.getAbsolutePath(),context);
                     outStream = context.getContentResolver().openOutputStream(uri);
                 }
                 else {
@@ -191,7 +191,7 @@ public abstract class FileUtil {
             ContentResolver resolver = context.getContentResolver();
 
             try {
-                Uri uri = MediaStoreUtil.getUriFromFile(file.getAbsolutePath(),context);
+                Uri uri = MediaStoreHack.getUriFromFile(file.getAbsolutePath(),context);
                 resolver.delete(uri, null, null);
                 return !file.exists();
             }

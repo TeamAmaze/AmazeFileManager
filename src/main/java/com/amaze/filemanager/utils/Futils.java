@@ -717,7 +717,9 @@ public void openWith(final File f,final Context c) {
             RootTools.remount(f.getPath(),"rw");
             RootHelper.runAndWait("mv " + f.getPath() + " " + newname, true);
             RootTools.remount(f.getPath(),"ro");
-        }return true;
+            return true;
+        }
+        return false;
     }
 
     public boolean canListFiles(File f) {

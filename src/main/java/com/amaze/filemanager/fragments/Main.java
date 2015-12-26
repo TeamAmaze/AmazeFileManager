@@ -48,6 +48,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -95,6 +96,7 @@ import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.HidingScrollListener;
+import com.amaze.filemanager.utils.MediaStoreHack;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
@@ -938,14 +940,17 @@ public class Main extends android.support.v4.app.Fragment {
         }
     }
 
+
     private void returnIntentResults(File file) {
         MAIN_ACTIVITY.mReturnIntent = false;
 
         Intent intent = new Intent();
         if (MAIN_ACTIVITY.mRingtonePickerIntent) {
-            Uri uri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, uri);
-            intent.setType("audio/mp3");
+
+            Uri mediaStoreUri = MediaStoreHack.getUriFromFile(file.getPath(), getActivity());
+            System.out.println(mediaStoreUri.toString()+"\t"+MimeTypes.getMimeType(file));
+            intent.setDataAndType(mediaStoreUri, MimeTypes.getMimeType(file));
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, mediaStoreUri);
             getActivity().setResult(getActivity().RESULT_OK, intent);
             getActivity().finish();
         } else {
@@ -961,7 +966,7 @@ public class Main extends android.support.v4.app.Fragment {
         if (mActionMode != null) {
             mActionMode.finish();
         }
-        if(openMode==3)
+        if(openMode==-1 && android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches())
             bindDrive(path);
         else new LoadList(back, ma,openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
 
