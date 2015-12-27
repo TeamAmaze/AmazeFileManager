@@ -66,6 +66,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Timer;
@@ -93,9 +94,8 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     private android.support.v7.widget.Toolbar toolbar;
 
     // hashMap to store search text indexes
-    //private LinkedHashMap<Integer, Integer> hashMap;
-    private ArrayList<MapEntry> nodes;
-    private ListIterator it;
+    private LinkedHashMap<Integer, Integer> hashMap = new LinkedHashMap<>();
+    private int id = 1;
 
     private ImageButton upButton, downButton, closeButton;
 
@@ -107,9 +107,6 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
 
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         theme1 = theme == 2 ? PreferenceUtils.hourOfDay() : theme;
-
-        nodes = new ArrayList<>();
-        it = nodes.listIterator();
 
         // setting accent theme
         if (Build.VERSION.SDK_INT >= 21) {
@@ -571,11 +568,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         if (searchEditText != null && editable.hashCode() == searchEditText.getText().hashCode()) {
 
             // clearing before adding new values
-            while (it.hasNext()) {
-                it.next();
-                it.remove();
-                System.out.println("clearing");
-            }
+            hashMap.clear();
 
             for (int i = 0; i < (mOriginal.length() - editable.length()); i++) {
                 if (searchEditText.length() == 0)
@@ -583,21 +576,11 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
 
                 if (mOriginal.substring(i, i + editable.length()).equalsIgnoreCase(editable.toString())) {
 
-                    MapEntry mapEntry = new MapEntry(i, i + editable.length());
-                    it.add(mapEntry);
+                    hashMap.put(i, i + editable.length());
                 }
 
             }
-            System.out.println(nodes.size());
-
-            // ignore this code block for time being :/
-            if (!it.hasNext()) {
-                upButton.setEnabled(true);
-                downButton.setEnabled(true);
-            } else {
-                upButton.setEnabled(false);
-                downButton.setEnabled(false);
-            }
+            System.out.println(hashMap.size());
         }
     }
 
@@ -655,19 +638,19 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
             case R.id.prev:
                 // upButton
                 Log.d(getClass().getName(), "previous button pressed");
-                if (it.hasPrevious()) {
-                    MapEntry keyValue = (MapEntry) it.previous();
-                    Log.d(getClass().getName(), "equals after index " + keyValue.getKey()
-                            + " to " + keyValue.getValue());
+                if (hashMap.containsKey(id-1)) {
+                    --id;
+                    Log.d(getClass().getName(), "equals after index " + id
+                            + " to " + hashMap.get(id));
                 }
                 break;
             case R.id.next:
                 // downButton
                 Log.d(getClass().getName(), "next button pressed");
-                if (it.hasNext()) {
-                    MapEntry keyValue = (MapEntry) it.next();
-                    Log.d(getClass().getName(), "equals after index " + keyValue.getKey()
-                            + " to " + keyValue.getValue());
+                if (hashMap.containsKey(id+1)) {
+                    ++id;
+                    Log.d(getClass().getName(), "equals after index " + id
+                            + " to " + hashMap.get(id));
                 }
                 break;
             case R.id.close:
