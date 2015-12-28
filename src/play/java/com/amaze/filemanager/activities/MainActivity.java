@@ -19,6 +19,7 @@
 
 package com.amaze.filemanager.activities;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -52,6 +53,8 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -95,6 +98,7 @@ import com.amaze.filemanager.IMyAidlInterface;
 import com.amaze.filemanager.Loadlistener;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
+import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.Main;
@@ -117,7 +121,6 @@ import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.StorageUtils;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
@@ -142,7 +145,7 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,OnRequestPermissionsResultCallback  {
     public final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3, RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
     private  final Pattern DIR_SEPARATOR = Pattern.compile("/");
     /* Request code used to invoke sign in user interactions. */
@@ -378,6 +381,11 @@ public class MainActivity extends AppCompatActivity implements
 
         setContentView(R.layout.main_toolbar);
         tabHandler = new TabHandler(this, null, null, 1);
+        utils = new Futils();
+        //requesting storage permissions
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
+            if(!checkStoragePermission())
+                requestStoragePermission();
 
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
         int fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
@@ -465,7 +473,6 @@ public class MainActivity extends AppCompatActivity implements
             ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
         }
 
-        utils = new Futils();
         path = getIntent().getStringExtra("path");
         openprocesses = getIntent().getBooleanExtra("openprocesses", false);
         restart = getIntent().getBooleanExtra("restart", false);
@@ -2431,8 +2438,66 @@ public class MainActivity extends AppCompatActivity implements
             aidlInterface = null;
         }
     };
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
 
+        if (requestCode == 77) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            TabFragment tabFragment=getFragment();
+                if(tabFragment!=null){
+                    Fragment main=tabFragment.getTab(0);
+                    if(main!=null)
+                        ((Main)main).updateList();
+                    Fragment main1=tabFragment.getTab(1);
+                    if(main1!=null)
+                        ((Main)main1).updateList();
+                }
+            } else {
+                Toast.makeText(this,R.string.grantfailed,Toast.LENGTH_SHORT).show();
+                requestStoragePermission();
+            }
 
+        }}
+    public boolean checkStoragePermission() {
+
+        // Verify that all required contact permissions have been granted.
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        return false;
+    }
+    private void requestStoragePermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+            // Provide an additional rationale to the user if the permission was not granted
+            // and the user would benefit from additional context for the use of the permission.
+            // For example, if the request has been denied previously.
+            final MaterialDialog materialDialog=utils.showBasicDialog(this, new String[]{getResources().getString(R.string.granttext), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel),null});
+            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ActivityCompat
+                            .requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
+                    materialDialog.dismiss();
+                }
+            });
+            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+            materialDialog.setCancelable(false);
+            materialDialog.show();
+
+        } else {
+            // Contact permissions have not been granted yet. Request them directly.
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
+        }
+    }
     class CheckForFiles extends AsyncTask<ArrayList<String>, String, ArrayList<String>> {
         Main ma;
         String path;

@@ -512,6 +512,7 @@ public class Main extends android.support.v4.app.Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            Toast.makeText(getActivity(),"Loading list",Toast.LENGTH_SHORT).show();
             updateList();
         }
     };

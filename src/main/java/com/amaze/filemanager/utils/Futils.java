@@ -108,7 +108,24 @@ public  final int READ = 4;
         MaterialDialog dialog=a.build();
         return dialog;
     }
-
+    public MaterialDialog showBasicDialog(final Activity m,String fabskin,int theme1, String[] texts) {
+        MaterialDialog.Builder a = new MaterialDialog.Builder(m);
+        a.content(texts[0]);
+        a.widgetColor(Color.parseColor(fabskin));
+        if(theme1==1)
+            a.theme(Theme.DARK);
+        a.title(texts[1]);
+        a.positiveText(texts[2]);
+        a.positiveColor(Color.parseColor(fabskin));
+        a.negativeText(texts[3]);
+        a.negativeColor(Color.parseColor(fabskin));
+        if(texts[4]!=(null)){
+            a.neutralText(texts[4]);
+            a.neutralColor(Color.parseColor(fabskin));
+        }
+        MaterialDialog dialog=a.build();
+        return dialog;
+    }
     public MaterialDialog showNameDialog(final MainActivity m, String[] texts) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         a.input(texts[0], texts[1], false, new

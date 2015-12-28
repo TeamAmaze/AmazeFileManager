@@ -371,5 +371,10 @@
     <string name="recent">Recent Files</string>
     <string name="edit">Edit</string>
     <string name="find">Find in page</string>
+    <string name="grant">Grant</string>
+    <string name="grantper">Grant permission</string>
+    <string name="grantfailed">Permission not granted</string>
+    <string name="granttext">App needs storage permission to continue.Canceling this dialog will exit the app.</string>
+    <string name="grantgplus">App needs permission for this feature.Canceling this dialog will uncheck this feature.</string>
 </resources>
 

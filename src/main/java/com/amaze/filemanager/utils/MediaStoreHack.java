@@ -133,25 +133,6 @@ public class MediaStoreHack {
     /**
      * Returns an OutputStream to write to the file. The file will be truncated immediately.
      */
-    public static OutputStream getOutputStream(final Context context, final File file,
-                                               final long size) {
-        try {
-            final String where = MediaStore.MediaColumns.DATA + "=?";
-            final String[] selectionArgs = new String[] {
-                    file.getAbsolutePath()
-            };
-            final ContentResolver contentResolver = context.getContentResolver();
-            final Uri filesUri = MediaStore.Files.getContentUri("external");
-            contentResolver.delete(filesUri, where, selectionArgs);
-            final ContentValues values = new ContentValues();
-            values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
-            values.put(MediaStore.MediaColumns.SIZE, size);
-            final Uri uri = contentResolver.insert(filesUri, values);
-            return contentResolver.openOutputStream(uri);
-        } catch (final Throwable t) {
-            return null;
-        }
-    }
 
     private static int getTemporaryAlbumId(final Context context) {
         final File temporaryTrack;
@@ -274,7 +255,7 @@ public class MediaStoreHack {
     }
 
     public static boolean mkfile(final Context context, final File file) {
-        final OutputStream outputStream = getOutputStream(context, file, 0);
+        final OutputStream outputStream = getOutputStream(context, file.getPath());
         if (outputStream == null) {
             return false;
         }

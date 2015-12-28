@@ -305,6 +305,12 @@ public class TabFragment extends android.support.v4.app.Fragment {
         return fragments.get(mViewPager.getCurrentItem());
         else return null;
     }
+
+    public Fragment getTab(int pos) {
+        if(fragments.size()==2 && pos<2)
+            return fragments.get(pos);
+        else return null;
+    }
      void updateSpinner(){
         mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
     }

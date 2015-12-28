@@ -152,7 +152,7 @@ public abstract class FileUtil {
                 }
                 else if (Build.VERSION.SDK_INT==Build.VERSION_CODES.KITKAT) {
                     // Workaround for Kitkat ext SD card
-                return MediaStoreHack.getOutputStream(context,target,s);
+                return MediaStoreHack.getOutputStream(context,target.getPath());
                 }
 
 

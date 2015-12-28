@@ -19,17 +19,21 @@
 
 package com.amaze.filemanager.fragments.preference_fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -43,23 +47,25 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.views.CheckBx;
+import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.stericson.RootTools.RootTools;
 import java.util.ArrayList;
 
-public class Preffrag extends PreferenceFragment  {
+public class Preffrag extends PreferenceFragment{
     int theme;
     SharedPreferences sharedPref;
     String skin;
     private int COUNT = 0;
     private Toast toast;
     private final String TAG = getClass().getName();
-
+    CheckBx gplus;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -397,9 +403,19 @@ public class Preffrag extends PreferenceFragment  {
         });
 
         // G+
-        CheckBx preference7 = (CheckBx) findPreference("plus_pic");
+        gplus = (CheckBx) findPreference("plus_pic");
+        gplus.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                if(gplus.isChecked()){
+                    boolean b=checkGplusPermission();
+                    if(!b)requestGplusPermission();
+                }
+                return false;
+            }
+        });
         if (BuildConfig.IS_VERSION_FDROID)
-            preference7.setEnabled(false);
+            gplus.setEnabled(false);
 
         // Colored navigation bar
     }
@@ -415,4 +431,52 @@ public class Preffrag extends PreferenceFragment  {
         activity.startActivity(activity.getIntent());
     }
 
-}
+    public void invalidateGplus(){
+        boolean a=checkGplusPermission();
+        if(!a)gplus.setChecked(false);
+    }
+    public boolean checkGplusPermission() {
+        // Verify that all required contact permissions have been granted.
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.GET_ACCOUNTS)
+                != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.INTERNET)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }
+        return true;
+    }
+    private void requestGplusPermission() {
+        final String[] PERMISSIONS = {Manifest.permission.GET_ACCOUNTS,
+                Manifest.permission.INTERNET};
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                Manifest.permission.GET_ACCOUNTS) || ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                Manifest.permission.INTERNET)) {
+            // Provide an additional rationale to the user if the permission was not granted
+            // and the user would benefit from additional context for the use of the permission.
+            // For example, if the request has been denied previously.
+
+            String fab_skin = (PreferenceUtils.getSkinColor(sharedPref.getInt
+                    ("fab_skin_color_position", 1)));
+            final MaterialDialog materialDialog=new Futils().showBasicDialog(getActivity(),fab_skin,theme, new String[]{getResources().getString(R.string.grantgplus), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel),null});
+            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ActivityCompat
+                            .requestPermissions(getActivity(),PERMISSIONS, 66);
+                    materialDialog.dismiss();
+                }
+            });
+            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getActivity().finish();
+                }
+            });
+            materialDialog.setCancelable(false);
+            materialDialog.show();
+
+        } else {
+            // Contact permissions have not been granted yet. Request them directly.
+            ActivityCompat
+                    .requestPermissions(getActivity(), PERMISSIONS, 66);
+        }
+    }}
