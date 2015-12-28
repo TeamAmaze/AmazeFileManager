@@ -32,6 +32,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.Selection;
+import android.text.Spannable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ActionMode;
@@ -68,6 +70,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -79,10 +82,6 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     boolean rootMode;
     int theme, theme1;
     SharedPreferences Sp;
- /*   final int maxLength = 200;
-    int start = 0, end = maxLength, size;
-    String[] lines = null;
- */
     private EditText mInput, searchEditText;
     private java.io.File mFile;
     private String mOriginal, skin;
@@ -92,10 +91,16 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     private String fabSkin;
     private android.support.v7.widget.Toolbar toolbar;
 
-    // hashMap to store search text indexes
-    //private LinkedHashMap<Integer, Integer> hashMap;
+    /*
+    List maintaining the searched text's start/end index as key/value pair
+     */
     private ArrayList<MapEntry> nodes;
-    private ListIterator it;
+
+    /*
+    variable to maintain the position of index
+    while pressing next/previous button in the searchBox
+     */
+    private int mCurrent = -1;
 
     private ImageButton upButton, downButton, closeButton;
 
@@ -109,7 +114,6 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         theme1 = theme == 2 ? PreferenceUtils.hourOfDay() : theme;
 
         nodes = new ArrayList<>();
-        it = nodes.listIterator();
 
         // setting accent theme
         if (Build.VERSION.SDK_INT >= 21) {
@@ -294,56 +298,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         } catch (Exception e) {
             mFile = null;
         }
-        /*final ScrollView scrollView = (ScrollView) findViewById(R.id.editscroll);
-        scrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                System.out.println(scrollY+"\t"+oldScrollY);
-                View view = scrollView.getChildAt(0);
-                int diff = (view.getBottom() - (scrollView.getHeight() + scrollY));
-                if (diff == 0) {
-                    if (size > end) {
-                        System.out.println("calling if");
-                        int i = size;
-                        if (size - end > maxLength && size - ((end) + maxLength) > maxLength)
-                            i = end + maxLength;
-                        else if (i - end > maxLength) {
-                            i = i - maxLength;
-                        }
-                        start = end + 1;
-                        end = i;
-                        StringBuilder builder = new StringBuilder();
-                        for (int k = start; k <= end; k++) {
-                            builder.append(lines[k] + "\n");
-                        }
-                        mInput.setText(builder.toString());
-                        scrollView.scrollTo(0, 0);
-                    }
-                }else if (scrollY == 0 && oldScrollY<scrollY) {
 
-                    int i = 0;
-                    if (start > maxLength || start>0) {
-                        System.out.println("calling elseif");
-                        i = start - maxLength;
-                        if (i < 0) i = 0;
-                        end = start;
-                        start = i;
-                        if(start==0){
-                            end=maxLength;
-                            if(end>size)end=size;
-                        }
-                        StringBuilder builder = new StringBuilder();
-                        for (int k = start; k <= end; k++) {
-                            builder.append(lines[k] + "\n");
-                        }
-                        mInput.setText(builder.toString());
-                        scrollView.scrollTo(0,view.getBottom());
-                    }
-                }
-                System.out.println("start "+start+"End "+end);
-
-            }
-        });*/
         mInput.addTextChangedListener(this);
         try {
             if (theme1 == 1)
@@ -508,7 +463,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.text, menu);
         menu.findItem(R.id.save).setVisible(mModified);
-        menu.findItem(R.id.find).setVisible(false);
+        menu.findItem(R.id.find).setVisible(true);
         menu.findItem(R.id.edit).setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
@@ -542,6 +497,12 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+        // clearing before adding new values
+        if (searchEditText != null && charSequence.hashCode() == searchEditText.getText().hashCode()) {
+            nodes.clear();
+            mCurrent = -1;
+        }
     }
 
     @Override
@@ -570,28 +531,17 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         // searchBox callback block
         if (searchEditText != null && editable.hashCode() == searchEditText.getText().hashCode()) {
 
-            // clearing before adding new values
-            while (it.hasNext()) {
-                it.next();
-                it.remove();
-                System.out.println("clearing");
-            }
-
             for (int i = 0; i < (mOriginal.length() - editable.length()); i++) {
                 if (searchEditText.length() == 0)
                     break;
 
                 if (mOriginal.substring(i, i + editable.length()).equalsIgnoreCase(editable.toString())) {
 
-                    MapEntry mapEntry = new MapEntry(i, i + editable.length());
-                    it.add(mapEntry);
+                    nodes.add(new MapEntry(i, i + editable.length()));
                 }
-
             }
-            System.out.println(nodes.size());
 
-            // ignore this code block for time being :/
-            if (!it.hasNext()) {
+            if (nodes.size()!=0) {
                 upButton.setEnabled(true);
                 downButton.setEnabled(true);
             } else {
@@ -654,20 +604,20 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         switch (v.getId()) {
             case R.id.prev:
                 // upButton
-                Log.d(getClass().getName(), "previous button pressed");
-                if (it.hasPrevious()) {
-                    MapEntry keyValue = (MapEntry) it.previous();
-                    Log.d(getClass().getName(), "equals after index " + keyValue.getKey()
-                            + " to " + keyValue.getValue());
+                if (mCurrent>0) {
+                    Map.Entry keyValue = nodes.get(--mCurrent);
+                    mInput.requestFocus();
+                    mInput.setSelection((Integer) keyValue.getKey(),
+                            (Integer) keyValue.getValue());
                 }
                 break;
             case R.id.next:
                 // downButton
-                Log.d(getClass().getName(), "next button pressed");
-                if (it.hasNext()) {
-                    MapEntry keyValue = (MapEntry) it.next();
-                    Log.d(getClass().getName(), "equals after index " + keyValue.getKey()
-                            + " to " + keyValue.getValue());
+                if (mCurrent<nodes.size()-1) {
+                    Map.Entry keyValue = nodes.get(++mCurrent);
+                    mInput.requestFocus();
+                    mInput.setSelection((Integer) keyValue.getKey(),
+                            (Integer) keyValue.getValue());
                 }
                 break;
             case R.id.close:

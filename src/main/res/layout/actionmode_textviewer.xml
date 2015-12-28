@@ -1,41 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
     <EditText
         android:id="@+id/search_box"
-        android:layout_width="wrap_content"
+        android:layout_width="180dp"
         android:layout_height="match_parent"
-        android:layout_weight="10"
         android:singleLine="true"
+        android:textColor="@android:color/white"
+        android:maxLines="1"
+        android:layout_alignParentLeft="true"
         />
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
         android:orientation="horizontal"
-        android:layout_weight="2">
+        >
         <ImageButton
             android:id="@+id/prev"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:background="?android:selectableItemBackground"
             android:src="@drawable/ic_keyboard_arrow_up_white"
-            android:layout_weight="2"/>
+            />
         <ImageButton
             android:id="@+id/next"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:background="?android:selectableItemBackground"
             android:src="@drawable/ic_keyboard_arrow_down_white"
-            android:layout_weight="2"/>
+            />
         <ImageButton
             android:id="@+id/close"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:background="?android:selectableItemBackground"
-            android:src="@drawable/ic_clear_white"
-            android:layout_weight="2"/>
+            android:src="@drawable/ic_clear_white"/>
     </LinearLayout>
 
 </LinearLayout>
