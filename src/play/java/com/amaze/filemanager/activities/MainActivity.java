@@ -116,6 +116,7 @@ import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.BookSorter;
+import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.HistoryManager;
@@ -849,6 +850,14 @@ public class MainActivity extends AppCompatActivity implements
             // All Secondary SD-CARDs splited into array
             final String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
             Collections.addAll(rv, rawSecondaryStorages);
+        }
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
+            rv.clear();
+        String strings[] = FileUtil.getExtSdCardPathsForActivity(this);
+        for(String s:strings){
+            File f=new File(s);
+            if(!rv.contains(s) && utils.canListFiles(f))
+                rv.add(s);
         }
         rootmode = Sp.getBoolean("rootmode", false);
         if (rootmode)

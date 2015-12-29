@@ -591,11 +591,12 @@ public abstract class FileUtil {
      * @return A list of external SD card paths.
      */
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private static String[] getExtSdCardPaths(Context context) {
+    public static String[] getExtSdCardPaths(Context context) {
         List<String> paths = new ArrayList<String>();
         for (File file : context.getExternalFilesDirs("external")) {
             if (file != null && !file.equals(context.getExternalFilesDir("external"))) {
                 int index = file.getAbsolutePath().lastIndexOf("/Android/data");
+                System.out.println(file.getPath()+"\t"+index);
                 if (index < 0) {
                     Log.w("AmazeFileUtils", "Unexpected external file dir: " + file.getAbsolutePath());
                 }
@@ -614,7 +615,31 @@ public abstract class FileUtil {
         if(paths.isEmpty())paths.add("/storage/sdcard1");
         return paths.toArray(new String[0]);
     }
-
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public static String[] getExtSdCardPathsForActivity(Context context) {
+        List<String> paths = new ArrayList<String>();
+        for (File file : context.getExternalFilesDirs("external")) {
+            if (file != null) {
+                int index = file.getAbsolutePath().lastIndexOf("/Android/data");
+                System.out.println(file.getPath()+"\t"+index);
+                if (index < 0) {
+                    Log.w("AmazeFileUtils", "Unexpected external file dir: " + file.getAbsolutePath());
+                }
+                else {
+                    String path = file.getAbsolutePath().substring(0, index);
+                    try {
+                        path = new File(path).getCanonicalPath();
+                    }
+                    catch (IOException e) {
+                        // Keep non-canonical path.
+                    }
+                    paths.add(path);
+                }
+            }
+        }
+        if(paths.isEmpty())paths.add("/storage/sdcard1");
+        return paths.toArray(new String[0]);
+    }
     /**
      * Determine the main folder of the external SD card containing the given file.
      *
