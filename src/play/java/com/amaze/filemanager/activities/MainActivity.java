@@ -851,7 +851,7 @@ public class MainActivity extends AppCompatActivity implements
             final String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
             Collections.addAll(rv, rawSecondaryStorages);
         }
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M && checkStoragePermission())
             rv.clear();
         String strings[] = FileUtil.getExtSdCardPathsForActivity(this);
         for(String s:strings){
@@ -1520,6 +1520,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void refreshDrawer() {
+        if(val==null)
         val = getStorageDirectories();
         list = new ArrayList<>();
         storage_count = 0;
@@ -2453,7 +2454,8 @@ public class MainActivity extends AppCompatActivity implements
 
         if (requestCode == 77) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            TabFragment tabFragment=getFragment();
+                updateDrawer();
+                TabFragment tabFragment=getFragment();
                 if(tabFragment!=null){
                     Fragment main=tabFragment.getTab(0);
                     if(main!=null)
