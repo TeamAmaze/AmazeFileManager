@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements
     public int theme1;
     public boolean rootmode, aBoolean, openzip = false;
     public Spinner tabsSpinner;
-    public boolean mRingtonePickerIntent = false, restart = false, colourednavigation = false;
+    public boolean mRingtonePickerIntent = false,  colourednavigation = false;
     public Toolbar toolbar;
     public int skinStatusBar;
     public int storage_count = 0;
@@ -229,158 +229,12 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        try {
-            super.onCreate(savedInstanceState);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
-
-        int th = Integer.parseInt(Sp.getString("theme", "0"));
-        theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
-
-        fabskin = PreferenceUtils.getFabColor(Sp.getInt("fab_skin_color_position", 1));
-
-        // setting accent theme
-        if (Build.VERSION.SDK_INT >= 21) {
-
-            switch (fabskin) {
-                case "#F44336":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_red);
-                    else
-                        setTheme(R.style.pref_accent_dark_red);
-                    break;
-
-                case "#e91e63":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_pink);
-                    else
-                        setTheme(R.style.pref_accent_dark_pink);
-                    break;
-
-                case "#9c27b0":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_purple);
-                    else
-                        setTheme(R.style.pref_accent_dark_purple);
-                    break;
-
-                case "#673ab7":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_deep_purple);
-                    else
-                        setTheme(R.style.pref_accent_dark_deep_purple);
-                    break;
-
-                case "#3f51b5":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_indigo);
-                    else
-                        setTheme(R.style.pref_accent_dark_indigo);
-                    break;
-
-                case "#2196F3":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_blue);
-                    else
-                        setTheme(R.style.pref_accent_dark_blue);
-                    break;
-
-                case "#03A9F4":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_light_blue);
-                    else
-                        setTheme(R.style.pref_accent_dark_light_blue);
-                    break;
-
-                case "#00BCD4":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_cyan);
-                    else
-                        setTheme(R.style.pref_accent_dark_cyan);
-                    break;
-
-                case "#009688":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_teal);
-                    else
-                        setTheme(R.style.pref_accent_dark_teal);
-                    break;
-
-                case "#4CAF50":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_green);
-                    else
-                        setTheme(R.style.pref_accent_dark_green);
-                    break;
-
-                case "#8bc34a":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_light_green);
-                    else
-                        setTheme(R.style.pref_accent_dark_light_green);
-                    break;
-
-                case "#FFC107":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_amber);
-                    else
-                        setTheme(R.style.pref_accent_dark_amber);
-                    break;
-
-                case "#FF9800":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_orange);
-                    else
-                        setTheme(R.style.pref_accent_dark_orange);
-                    break;
-
-                case "#FF5722":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_deep_orange);
-                    else
-                        setTheme(R.style.pref_accent_dark_deep_orange);
-                    break;
-
-                case "#795548":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_brown);
-                    else
-                        setTheme(R.style.pref_accent_dark_brown);
-                    break;
-
-                case "#212121":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_black);
-                    else
-                        setTheme(R.style.pref_accent_dark_black);
-                    break;
-
-                case "#607d8b":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_blue_grey);
-                    else
-                        setTheme(R.style.pref_accent_dark_blue_grey);
-                    break;
-
-                case "#004d40":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_super_su);
-                    else
-                        setTheme(R.style.pref_accent_dark_super_su);
-                    break;
-            }
-        } else {
-            if (theme1 == 1) {
-                setTheme(R.style.appCompatDark);
-            } else {
-                setTheme(R.style.appCompatLight);
-            }
-        }
-
+        initialisePreferences();
+        setTheme();
         setContentView(R.layout.main_toolbar);
+        initialiseViews();
         tabHandler = new TabHandler(this, null, null, 1);
         utils = new Futils();
         //requesting storage permissions
@@ -388,50 +242,9 @@ public class MainActivity extends AppCompatActivity implements
             if(!checkStoragePermission())
                 requestStoragePermission();
 
-        buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
-        int fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
+
         mainActivityHelper=new MainActivityHelper(this);
-        boolean random = Sp.getBoolean("random_checkbox", false);
-        if (random)
-            skin = PreferenceUtils.random(Sp);
-        else
-            skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
-
-        hidemode = Sp.getInt("hidemode", 0);
-        showHidden = Sp.getBoolean("showHidden", false);
-        topfab = hidemode == 0 ? Sp.getBoolean("topFab", false) : false;
-        floatingActionButton = !topfab ?
-                (FloatingActionMenu) findViewById(R.id.menu) : (FloatingActionMenu) findViewById(R.id.menu_top);
-        floatingActionButton.setVisibility(View.VISIBLE);
-        floatingActionButton.showMenuButton(true);
-        floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
-        floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
-
-        //if (theme1 == 1) floatingActionButton.setMen
-        floatingActionButton.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
-            @Override
-            public void onMenuToggle(boolean b) {
-                View v = findViewById(R.id.fab_bg);
-                if (b) revealShow(v, true);
-                else revealShow(v, false);
-            }
-        });
-        View v = findViewById(R.id.fab_bg);
-        if (theme1 == 1)
-            v.setBackgroundColor(Color.parseColor("#a6ffffff"));
-        v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                floatingActionButton.close(true);
-                revealShow(view, false);
-            }
-        });
-        drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
-        drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
-        drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
-        drawerProfilePic = (RoundedImageView) drawerHeaderLayout.findViewById(R.id.profile_pic);
-        mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
-        mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
+        intialiseFab();
         history = new HistoryManager(this, "Table2");
         history.initializeTable(HISTORY,0);
         history.initializeTable(HIDDEN,0);
@@ -474,117 +287,10 @@ public class MainActivity extends AppCompatActivity implements
             ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
         }
 
-        path = getIntent().getStringExtra("path");
-        openprocesses = getIntent().getBooleanExtra("openprocesses", false);
-        restart = getIntent().getBooleanExtra("restart", false);
-        rootmode = Sp.getBoolean("rootmode", false);
-        theme = Integer.parseInt(Sp.getString("theme", "0"));
         util = new IconUtils(Sp, this);
         icons = new IconUtils(Sp, this);
-        pathbar = (LinearLayout) findViewById(R.id.pathbar);
-        buttons = (LinearLayout) findViewById(R.id.buttons);
-        scroll = (HorizontalScrollView) findViewById(R.id.scroll);
-        scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
-        scroll.setSmoothScrollingEnabled(true);
-        scroll1.setSmoothScrollingEnabled(true);
-        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item_top : R.id.menu_item);
-        int icon=Sp.getInt("icon_skin_color_position", -1);
-        icon=icon==-1?Sp.getInt("skin_color_position", 4):icon;
-        String folder_skin = PreferenceUtils.getSkinColor(icon);
-        int folderskin = Color.parseColor(folder_skin);
-        int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
-        floatingActionButton1.setColorNormal(folderskin);
-        floatingActionButton1.setColorPressed(fabskinpressed);
-        floatingActionButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainActivityHelper.add(0);
-                revealShow(findViewById(R.id.fab_bg), false);
-                floatingActionButton.close(true);
-            }
-        });
-        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item1_top : R.id.menu_item1);
-        floatingActionButton2.setColorNormal(folderskin);
-        floatingActionButton2.setColorPressed(fabskinpressed);
-        floatingActionButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainActivityHelper.add(1);
-                revealShow(findViewById(R.id.fab_bg), false);
-                floatingActionButton.close(true);
-            }
-        });
-        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item2_top : R.id.menu_item2);
-        floatingActionButton3.setColorNormal(folderskin);
-        floatingActionButton3.setColorPressed(fabskinpressed);
-        floatingActionButton3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainActivityHelper.add(2);
-                revealShow(findViewById(R.id.fab_bg), false);
-                floatingActionButton.close(true);
-            }
-        });
-        final FloatingActionButton floatingActionButton4 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item3_top : R.id.menu_item3);
-        floatingActionButton4.setColorNormal(folderskin);
-        floatingActionButton4.setColorPressed(fabskinpressed);
-        floatingActionButton4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainActivityHelper.add(3);
-                revealShow(findViewById(R.id.fab_bg), false);
-                floatingActionButton.close(true);
-            }
-        });
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                PackageManager pm = getPackageManager();
-                boolean app_installed;
-                try {
-                    pm.getPackageInfo("com.amaze.filemanager.driveplugin", PackageManager.GET_ACTIVITIES);
-                    app_installed = true;
-                }
-                catch (PackageManager.NameNotFoundException e) {
-                    app_installed = false;
-                }
-                if(!app_installed)floatingActionButton4.setVisibility(View.GONE);
-            }
-        }).run();
-        if (topfab) {
-            buttonBarFrame.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) floatingActionButton.getLayoutParams();
-                    layoutParams.setMargins(layoutParams.leftMargin, findViewById(R.id.lin)
-                                    .getBottom() - (floatingActionButton.getMenuIconView().getHeight
-                                    ()),
-                            layoutParams.rightMargin,
-                            layoutParams.bottomMargin);
-                    floatingActionButton.setLayoutParams(layoutParams);
-
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                        buttonBarFrame.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    } else {
-                        buttonBarFrame.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    }
-                }
-
-            });
-        }
         // Toolbar
-        toolbar = (Toolbar) findViewById(R.id.action_bar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        aBoolean = Sp.getBoolean("view", true);
-        //ImageView overflow = ((ImageView)findViewById(R.id.action_overflow));
-
-        //showPopup(overflow);
-        tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
-        //title = (TextView) findViewById(R.id.title);
-        frameLayout = (FrameLayout) findViewById(R.id.content_frame);
-
         timer = new CountDownTimer(5000, 1000) {
             @Override
             public void onTick(long l) {
@@ -595,7 +301,8 @@ public class MainActivity extends AppCompatActivity implements
                 crossfadeInverse();
             }
         };
-
+        path = getIntent().getStringExtra("path");
+        openprocesses = getIntent().getBooleanExtra("openprocesses", false);
         try {
             intent = getIntent();
             if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
@@ -619,95 +326,6 @@ public class MainActivity extends AppCompatActivity implements
         } catch (Exception e) {
 
         }
-        findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
-
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
-
-        skinStatusBar = (PreferenceUtils.getStatusColor(skin));
-
-        mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
-        if (theme1 == 1) mDrawerLinear.setBackgroundColor(Color.parseColor("#303030"));
-        else mDrawerLinear.setBackgroundColor(Color.WHITE);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
-        mDrawerList = (ListView) findViewById(R.id.menu_drawer);
-        if (((ViewGroup.MarginLayoutParams) findViewById(R.id.main_frame).getLayoutParams()).leftMargin == (int) getResources().getDimension(R.dimen.drawer_width)) {
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, mDrawerLinear);
-            mDrawerLayout.setScrimColor(Color.TRANSPARENT);
-            isDrawerLocked = true;
-        }
-        // status bar0
-        sdk = Build.VERSION.SDK_INT;
-
-        if (sdk == 20 || sdk == 19) {
-            SystemBarTintManager tintManager = new SystemBarTintManager(this);
-            tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintColor(Color.parseColor(skin));
-            FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
-            SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
-            if (!isDrawerLocked) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
-        } else if (Build.VERSION.SDK_INT >= 21) {
-            colourednavigation = Sp.getBoolean("colorednavigation", true);
-
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            //window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            if (isDrawerLocked) {
-                window.setStatusBarColor((skinStatusBar));
-            } else window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            if (colourednavigation)
-                window.setNavigationBarColor(skinStatusBar);
-
-        }
-
-        View settingsbutton = findViewById(R.id.settingsbutton);
-        if (theme1 == 1) {
-            settingsbutton.setBackgroundResource(R.drawable.safr_ripple_black);
-            ((ImageView) settingsbutton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
-            ((TextView) settingsbutton.findViewById(R.id.settingtext)).setTextColor(getResources().getColor(android.R.color.white));
-        }
-        settingsbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(MainActivity.this, Preferences.class);
-                finish();
-                final int enter_anim = android.R.anim.fade_in;
-                final int exit_anim = android.R.anim.fade_out;
-                Activity s = MainActivity.this;
-                s.overridePendingTransition(exit_anim, enter_anim);
-                s.finish();
-                s.overridePendingTransition(enter_anim, exit_anim);
-                s.startActivity(in);
-            }
-
-        });
-        View appbutton = findViewById(R.id.appbutton);
-        if (theme1 == 1) {
-            appbutton.setBackgroundResource(R.drawable.safr_ripple_black);
-            ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_doc_apk_white);
-            ((TextView) appbutton.findViewById(R.id.apptext)).setTextColor(getResources().getColor(android.R.color.white));
-        }
-        appbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-                transaction2.replace(R.id.content_frame, new AppsList());
-                findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-                pending_fragmentTransaction = transaction2;
-                if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
-                else onDrawerClosed();
-                select = list.size() + 1;
-                adapter.toggleChecked(false);
-            }
-        });
-        ImageView divider = (ImageView) findViewById(R.id.divider1);
-        if (theme1 == 0)
-            divider.setImageResource(R.color.divider);
-        else
-            divider.setImageResource(R.color.divider_dark);
-
-        mDrawerList.addHeaderView(drawerHeaderLayout);
         updateDrawer();
         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
         drawerHeaderParent.setBackgroundColor(Color.parseColor(skin));
@@ -1935,8 +1553,248 @@ public class MainActivity extends AppCompatActivity implements
             }
         }).start();
     }
+    void initialisePreferences(){
+
+        int th = Integer.parseInt(Sp.getString("theme", "0"));
+        theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
+
+        fabskin = PreferenceUtils.getFabColor(Sp.getInt("fab_skin_color_position", 1));
+        boolean random = Sp.getBoolean("random_checkbox", false);
+        if (random)
+            skin = PreferenceUtils.random(Sp);
+        else
+            skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
+        rootmode = Sp.getBoolean("rootmode", false);
+        theme = Integer.parseInt(Sp.getString("theme", "0"));
+        hidemode = Sp.getInt("hidemode", 0);
+        showHidden = Sp.getBoolean("showHidden", false);
+        topfab = hidemode == 0 ? Sp.getBoolean("topFab", false) : false;
+        skinStatusBar = (PreferenceUtils.getStatusColor(skin));
+        aBoolean = Sp.getBoolean("view", true);
+    }
+    void initialiseViews(){
+        buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
+        buttonBarFrame.setBackgroundColor(Color.parseColor(skin));
+        drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
+        drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
+        drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
+        drawerProfilePic = (RoundedImageView) drawerHeaderLayout.findViewById(R.id.profile_pic);
+        mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
+        mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
+        toolbar = (Toolbar) findViewById(R.id.action_bar);
+        setSupportActionBar(toolbar);
+        tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
+        frameLayout = (FrameLayout) findViewById(R.id.content_frame);
+
+        mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
+        if (theme1 == 1) mDrawerLinear.setBackgroundColor(Color.parseColor("#303030"));
+        else mDrawerLinear.setBackgroundColor(Color.WHITE);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
+        mDrawerList = (ListView) findViewById(R.id.menu_drawer);
+        if (((ViewGroup.MarginLayoutParams) findViewById(R.id.main_frame).getLayoutParams()).leftMargin == (int) getResources().getDimension(R.dimen.drawer_width)) {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, mDrawerLinear);
+            mDrawerLayout.setScrimColor(Color.TRANSPARENT);
+            isDrawerLocked = true;
+        }
+        mDrawerList.addHeaderView(drawerHeaderLayout);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        View v = findViewById(R.id.fab_bg);
+        if (theme1 == 1)
+            v.setBackgroundColor(Color.parseColor("#a6ffffff"));
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                floatingActionButton.close(true);
+                revealShow(view, false);
+            }
+        });
+
+        pathbar = (LinearLayout) findViewById(R.id.pathbar);
+        buttons = (LinearLayout) findViewById(R.id.buttons);
+        scroll = (HorizontalScrollView) findViewById(R.id.scroll);
+        scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
+        scroll.setSmoothScrollingEnabled(true);
+        scroll1.setSmoothScrollingEnabled(true);
+        ImageView divider = (ImageView) findViewById(R.id.divider1);
+        if (theme1 == 0)
+            divider.setImageResource(R.color.divider);
+        else
+            divider.setImageResource(R.color.divider_dark);
+        View settingsbutton = findViewById(R.id.settingsbutton);
+        if (theme1 == 1) {
+            settingsbutton.setBackgroundResource(R.drawable.safr_ripple_black);
+            ((ImageView) settingsbutton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
+            ((TextView) settingsbutton.findViewById(R.id.settingtext)).setTextColor(getResources().getColor(android.R.color.white));
+        }
+        settingsbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(MainActivity.this, Preferences.class);
+                finish();
+                final int enter_anim = android.R.anim.fade_in;
+                final int exit_anim = android.R.anim.fade_out;
+                Activity s = MainActivity.this;
+                s.overridePendingTransition(exit_anim, enter_anim);
+                s.finish();
+                s.overridePendingTransition(enter_anim, exit_anim);
+                s.startActivity(in);
+            }
+
+        });
+        View appbutton = findViewById(R.id.appbutton);
+        if (theme1 == 1) {
+            appbutton.setBackgroundResource(R.drawable.safr_ripple_black);
+            ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_doc_apk_white);
+            ((TextView) appbutton.findViewById(R.id.apptext)).setTextColor(getResources().getColor(android.R.color.white));
+        }
+        appbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                transaction2.replace(R.id.content_frame, new AppsList());
+                findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                pending_fragmentTransaction = transaction2;
+                if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
+                else onDrawerClosed();
+                select = list.size() + 1;
+                adapter.toggleChecked(false);
+            }
+        });
+        if (topfab) {
+            buttonBarFrame.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) floatingActionButton.getLayoutParams();
+                    layoutParams.setMargins(layoutParams.leftMargin, findViewById(R.id.lin)
+                                    .getBottom() - (floatingActionButton.getMenuIconView().getHeight
+                                    ()),
+                            layoutParams.rightMargin,
+                            layoutParams.bottomMargin);
+                    floatingActionButton.setLayoutParams(layoutParams);
+
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                        buttonBarFrame.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        buttonBarFrame.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+
+            });
+        }
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
 
 
+        // status bar0
+        sdk = Build.VERSION.SDK_INT;
+
+        if (sdk == 20 || sdk == 19) {
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintColor(Color.parseColor(skin));
+            FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
+            SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
+            if (!isDrawerLocked) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
+        } else if (Build.VERSION.SDK_INT >= 21) {
+            colourednavigation = Sp.getBoolean("colorednavigation", true);
+
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            if (isDrawerLocked) {
+                window.setStatusBarColor((skinStatusBar));
+            } else window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            if (colourednavigation)
+                window.setNavigationBarColor(skinStatusBar);
+
+        }
+    }
+    void intialiseFab(){
+        int icon=Sp.getInt("icon_skin_color_position", -1);
+        icon=icon==-1?Sp.getInt("skin_color_position", 4):icon;
+        String folder_skin = PreferenceUtils.getSkinColor(icon);
+        int fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
+        int folderskin = Color.parseColor(folder_skin);
+        int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
+        floatingActionButton = !topfab ?
+                (FloatingActionMenu) findViewById(R.id.menu) : (FloatingActionMenu) findViewById(R.id.menu_top);
+        floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.showMenuButton(true);
+        floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
+        floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
+
+        //if (theme1 == 1) floatingActionButton.setMen
+        floatingActionButton.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
+            @Override
+            public void onMenuToggle(boolean b) {
+                View v = findViewById(R.id.fab_bg);
+                if (b) revealShow(v, true);
+                else revealShow(v, false);
+            }
+        });
+
+        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item_top : R.id.menu_item);
+        floatingActionButton1.setColorNormal(folderskin);
+        floatingActionButton1.setColorPressed(fabskinpressed);
+        floatingActionButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainActivityHelper.add(0);
+                revealShow(findViewById(R.id.fab_bg), false);
+                floatingActionButton.close(true);
+            }
+        });
+        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item1_top : R.id.menu_item1);
+        floatingActionButton2.setColorNormal(folderskin);
+        floatingActionButton2.setColorPressed(fabskinpressed);
+        floatingActionButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainActivityHelper.add(1);
+                revealShow(findViewById(R.id.fab_bg), false);
+                floatingActionButton.close(true);
+            }
+        });
+        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item2_top : R.id.menu_item2);
+        floatingActionButton3.setColorNormal(folderskin);
+        floatingActionButton3.setColorPressed(fabskinpressed);
+        floatingActionButton3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainActivityHelper.add(2);
+                revealShow(findViewById(R.id.fab_bg), false);
+                floatingActionButton.close(true);
+            }
+        });
+        final FloatingActionButton floatingActionButton4 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item3_top : R.id.menu_item3);
+        floatingActionButton4.setColorNormal(folderskin);
+        floatingActionButton4.setColorPressed(fabskinpressed);
+        floatingActionButton4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainActivityHelper.add(3);
+                revealShow(findViewById(R.id.fab_bg), false);
+                floatingActionButton.close(true);
+            }
+        });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PackageManager pm = getPackageManager();
+                boolean app_installed;
+                try {
+                    pm.getPackageInfo("com.amaze.filemanager.driveplugin", PackageManager.GET_ACTIVITIES);
+                    app_installed = true;
+                }
+                catch (PackageManager.NameNotFoundException e) {
+                    app_installed = false;
+                }
+                if(!app_installed)floatingActionButton4.setVisibility(View.GONE);
+            }
+        }).run();
+    }
     public void updatePath(@NonNull final String news, boolean results, int
             openmode, int folder_count, int file_count) {
 
@@ -2223,7 +2081,145 @@ public class MainActivity extends AppCompatActivity implements
         // set its visibility to GONE as an optimization step (it won't
         // participate in layout passes, etc.)
     }
+    void setTheme(){
+        if (Build.VERSION.SDK_INT >= 21) {
 
+            switch (fabskin) {
+                case "#F44336":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_red);
+                    else
+                        setTheme(R.style.pref_accent_dark_red);
+                    break;
+
+                case "#e91e63":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_pink);
+                    else
+                        setTheme(R.style.pref_accent_dark_pink);
+                    break;
+
+                case "#9c27b0":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_purple);
+                    else
+                        setTheme(R.style.pref_accent_dark_purple);
+                    break;
+
+                case "#673ab7":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_deep_purple);
+                    else
+                        setTheme(R.style.pref_accent_dark_deep_purple);
+                    break;
+
+                case "#3f51b5":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_indigo);
+                    else
+                        setTheme(R.style.pref_accent_dark_indigo);
+                    break;
+
+                case "#2196F3":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_blue);
+                    else
+                        setTheme(R.style.pref_accent_dark_blue);
+                    break;
+
+                case "#03A9F4":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_light_blue);
+                    else
+                        setTheme(R.style.pref_accent_dark_light_blue);
+                    break;
+
+                case "#00BCD4":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_cyan);
+                    else
+                        setTheme(R.style.pref_accent_dark_cyan);
+                    break;
+
+                case "#009688":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_teal);
+                    else
+                        setTheme(R.style.pref_accent_dark_teal);
+                    break;
+
+                case "#4CAF50":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_green);
+                    else
+                        setTheme(R.style.pref_accent_dark_green);
+                    break;
+
+                case "#8bc34a":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_light_green);
+                    else
+                        setTheme(R.style.pref_accent_dark_light_green);
+                    break;
+
+                case "#FFC107":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_amber);
+                    else
+                        setTheme(R.style.pref_accent_dark_amber);
+                    break;
+
+                case "#FF9800":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_orange);
+                    else
+                        setTheme(R.style.pref_accent_dark_orange);
+                    break;
+
+                case "#FF5722":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_deep_orange);
+                    else
+                        setTheme(R.style.pref_accent_dark_deep_orange);
+                    break;
+
+                case "#795548":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_brown);
+                    else
+                        setTheme(R.style.pref_accent_dark_brown);
+                    break;
+
+                case "#212121":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_black);
+                    else
+                        setTheme(R.style.pref_accent_dark_black);
+                    break;
+
+                case "#607d8b":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_blue_grey);
+                    else
+                        setTheme(R.style.pref_accent_dark_blue_grey);
+                    break;
+
+                case "#004d40":
+                    if (theme1 == 0)
+                        setTheme(R.style.pref_accent_light_super_su);
+                    else
+                        setTheme(R.style.pref_accent_dark_super_su);
+                    break;
+            }
+        } else {
+            if (theme1 == 1) {
+                setTheme(R.style.appCompatDark);
+            } else {
+                setTheme(R.style.appCompatLight);
+            }
+        }
+
+    }
     public boolean copyToClipboard(Context context, String text) {
         try {
             android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context
@@ -2236,7 +2232,6 @@ public class MainActivity extends AppCompatActivity implements
             return false;
         }
     }
-
     private void revealShow(final View view, boolean reveal) {
 
         if (reveal) {

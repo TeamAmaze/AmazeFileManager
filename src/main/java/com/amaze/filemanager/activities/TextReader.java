@@ -24,12 +24,15 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Selection;
@@ -63,10 +66,15 @@ import com.stericson.RootTools.RootTools;
 
 import org.codehaus.plexus.util.FileUtils;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -101,7 +109,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     while pressing next/previous button in the searchBox
      */
     private int mCurrent = -1;
-
+    Uri uri=null;
     private ImageButton upButton, downButton, closeButton;
 
     @Override
@@ -291,14 +299,42 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         mInput = (EditText) findViewById(R.id.fname);
 
         try {
-            if (getIntent().getData() != null)
+            if (getIntent().getData() != null){
+                uri=getIntent().getData();
+
                 mFile = new File(getIntent().getData().getPath());
+            }
             else
                 mFile = new File(getIntent().getStringExtra("path"));
         } catch (Exception e) {
             mFile = null;
         }
+        String fileName=null;
+        try {
+            if (uri.getScheme().equals("file")) {
+                fileName = uri.getLastPathSegment();
+            } else {
+                Cursor cursor = null;
+                try {
+                    cursor = getContentResolver().query(uri, new String[]{
+                            MediaStore.Images.ImageColumns.DISPLAY_NAME
+                    }, null, null, null);
 
+                    if (cursor != null && cursor.moveToFirst()) {
+                        fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
+                    }
+                } finally {
+
+                    if (cursor != null) {
+                        cursor.close();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(fileName==null || fileName.trim().length()==0)fileName=f.getName();
+        getSupportActionBar().setTitle(fileName);
         mInput.addTextChangedListener(this);
         try {
             if (theme1 == 1)
@@ -307,8 +343,6 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         } catch (Exception e) {
 
         }
-
-        setTitle(mFile.getName());
         load(mFile);
     }
 
@@ -404,27 +438,26 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
             public void run() {
 
                 try {
-                    if (mFile.canRead()) {
-                        try {
-                            mOriginal = FileUtils.fileRead(mFile);
-                        } catch (final Exception e) {
-                            e.printStackTrace();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mInput.setHint(R.string.error);
-                                }
-                            });
+                    InputStream inputStream=getInputStream(uri,path);
+                    if (inputStream!=null) {
+                        String str=null;
+                        StringBuilder stringBuilder=new StringBuilder();
+                        BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
+                        if(bufferedReader!=null){
+                            while ((str=bufferedReader.readLine())!=null)
+                                stringBuilder.append(str+"\n");
                         }
+                        mOriginal=stringBuilder.toString();
+                     inputStream.close();
                     } else {
                         mOriginal = "";
+                        StringBuilder stringBuilder=new StringBuilder();
                         ArrayList<String> arrayList = RootHelper
                                 .runAndWait1("cat " + mFile.getPath(), true);
                         for (String x : arrayList) {
-                            if (mOriginal.equals("")) mOriginal = x;
-                            else mOriginal = mOriginal + "\n" + x;
-
+                            stringBuilder.append(x+"\n");
                         }
+                        mOriginal=stringBuilder.toString();
                     }
                     runOnUiThread(new Runnable() {
                         @Override
@@ -442,6 +475,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
                         }
                     });
                 } catch (final Exception e) {
+                    e.printStackTrace();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -579,7 +613,24 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
 
         }
     };
+    InputStream getInputStream(Uri uri,String path){
+        InputStream stream=null;
+           try {
+               stream=getContentResolver().openInputStream(uri);
+           } catch (FileNotFoundException e) {
+               stream=null;
+           }
+        if(stream==null)
+            if(new File(path).canRead()){
+            try {
+                stream=new FileInputStream(path);
+            } catch (FileNotFoundException e) {
+                stream=null;
+            }
+        }
 
+        return stream;
+    }
     public boolean searchQuery(final View actionModeView) {
 
         searchEditText = (EditText) actionModeView.findViewById(R.id.search_box);
