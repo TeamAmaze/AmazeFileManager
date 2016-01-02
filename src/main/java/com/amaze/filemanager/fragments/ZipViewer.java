@@ -215,7 +215,6 @@ public class ZipViewer extends Fragment {
             }
 
         }
-        mainActivity.tabsSpinner.setVisibility(View.GONE);
         mainActivity.floatingActionButton.hideMenuButton(true);
         String fileName=null;
         try {
@@ -243,9 +242,9 @@ public class ZipViewer extends Fragment {
         }
         if(fileName==null || fileName.trim().length()==0)fileName=f.getName();
         try {
-            mainActivity.toolbar.setTitle(fileName);
+            mainActivity.setActionBarTitle(fileName);
         } catch (Exception e) {
-            mainActivity.toolbar.setTitle(getResources().getString(R.string.zip_viewer));
+            mainActivity.setActionBarTitle(getResources().getString(R.string.zip_viewer));
         }
         mainActivity.supportInvalidateOptionsMenu();
         mToolbarHeight = getToolbarHeight(getActivity());

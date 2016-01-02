@@ -165,7 +165,6 @@ public class MainActivity extends AppCompatActivity implements
     public ArrayList<Item> list;
     public int theme1;
     public boolean rootmode, aBoolean, openzip = false;
-    public Spinner tabsSpinner;
     public boolean mRingtonePickerIntent = false,  colourednavigation = false;
     public Toolbar toolbar;
     public int skinStatusBar;
@@ -203,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements
     private Intent intent;
     private GoogleApiClient mGoogleApiClient;
     private View drawerHeaderLayout;
-    private View drawerHeaderView;
+    private View drawerHeaderView,indicator_layout;
     private RoundedImageView drawerProfilePic;
     private DisplayImageOptions displayImageOptions;
     private int sdk, COUNTER=0;
@@ -357,18 +356,9 @@ public class MainActivity extends AppCompatActivity implements
             adapter.toggleChecked(select);
         }
         if (theme1 == 1) {
-            mDrawerList.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+            mDrawerList.setBackgroundColor(ContextCompat.getColor(this,R.color.holo_dark_background));
         }
         mDrawerList.setDivider(null);
-        if (select == 0) {
-
-            //title.setVisibility(View.GONE);
-            tabsSpinner.setVisibility(View.VISIBLE);
-        } else {
-
-            //title.setVisibility(View.VISIBLE);
-            tabsSpinner.setVisibility(View.GONE);
-        }
         if (!isDrawerLocked) {
             mDrawerToggle = new ActionBarDrawerToggle(
                     this,                  /* host Activity */
@@ -688,8 +678,7 @@ public class MainActivity extends AppCompatActivity implements
         select = 0;
         transaction.addToBackStack("tabt" + 1);
         transaction.commitAllowingStateLoss();
-        toolbar.setTitle(null);
-        tabsSpinner.setVisibility(View.VISIBLE);
+        setActionBarTitle(null);
         floatingActionButton.showMenuButton(true);
         if (openzip && zippath != null) {
             if (zippath.endsWith(".zip") || zippath.endsWith(".apk")) openZip(zippath);
@@ -718,7 +707,6 @@ public class MainActivity extends AppCompatActivity implements
                 adapter.toggleChecked(select);
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
-                tabsSpinner.setVisibility(View.VISIBLE);
                 floatingActionButton.showMenuButton(true);
 
 
@@ -742,7 +730,10 @@ public class MainActivity extends AppCompatActivity implements
         menuInflater.inflate(R.menu.activity_extra, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
+    public void setActionBarTitle(String title){
+        if(toolbar!=null)
+        toolbar.setTitle(title);
+    }
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem s = menu.findItem(R.id.view);
@@ -757,6 +748,7 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         }
         if (f.contains("TabFragment")) {
+            setActionBarTitle("Amaze");
             if (aBoolean) {
                 s.setTitle(getResources().getString(R.string.gridview));
             } else {
@@ -770,17 +762,17 @@ public class MainActivity extends AppCompatActivity implements
                 updatePath(ma.CURRENT_PATH, ma.results, ma.openMode, ma.folder_count, ma.file_count);
             } catch (Exception e) {
             }
-            tabsSpinner.setVisibility(View.VISIBLE);
-            getSupportActionBar().setTitle("");
 
             initiatebbar();
             if (Build.VERSION.SDK_INT >= 21) toolbar.setElevation(0);
             invalidatePasteButton(paste);
             search.setVisible(true);
+            if(indicator_layout!=null)indicator_layout.setVisibility(View.VISIBLE);
             menu.findItem(R.id.search).setVisible(true);
             menu.findItem(R.id.home).setVisible(true);
             menu.findItem(R.id.history).setVisible(true);
             menu.findItem(R.id.sethome).setVisible(true);
+
             menu.findItem(R.id.item10).setVisible(true);
             if (showHidden) menu.findItem(R.id.hiddenitems).setVisible(true);
             menu.findItem(R.id.view).setVisible(true);
@@ -788,8 +780,8 @@ public class MainActivity extends AppCompatActivity implements
             invalidatePasteButton(menu.findItem(R.id.paste));
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
         } else if (f.contains("AppsList") || f.contains("ProcessViewer")) {
-            tabsSpinner.setVisibility(View.GONE);
             menu.findItem(R.id.sethome).setVisible(false);
+            if(indicator_layout!=null)indicator_layout.setVisibility(View.GONE);
             findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
@@ -805,7 +797,7 @@ public class MainActivity extends AppCompatActivity implements
             menu.findItem(R.id.paste).setVisible(false);
         } else if (f.contains("ZipViewer")) {
             menu.findItem(R.id.sethome).setVisible(false);
-            tabsSpinner.setVisibility(View.GONE);
+            if(indicator_layout!=null)indicator_layout.setVisibility(View.GONE);
             TextView textView = (TextView) mainActivity.pathbar.findViewById(R.id.fullpath);
             pathbar.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1434,7 +1426,7 @@ public class MainActivity extends AppCompatActivity implements
             }
             View view = new View(this);
             LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                    tabsSpinner.getLeft(), LinearLayout.LayoutParams.WRAP_CONTENT);
+                    toolbar.getContentInsetLeft(), LinearLayout.LayoutParams.WRAP_CONTENT);
             view.setLayoutParams(params1);
             buttons.addView(view);
             for (int i = 0; i < names.size(); i++) {
@@ -1583,16 +1575,15 @@ public class MainActivity extends AppCompatActivity implements
         mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
         toolbar = (Toolbar) findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
-        tabsSpinner = (Spinner) findViewById(R.id.tab_spinner);
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
-
+        indicator_layout=findViewById(R.id.indicator_layout);
         mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
         if (theme1 == 1) mDrawerLinear.setBackgroundColor(Color.parseColor("#303030"));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
-        if (((ViewGroup.MarginLayoutParams) findViewById(R.id.main_frame).getLayoutParams()).leftMargin == (int) getResources().getDimension(R.dimen.drawer_width)) {
+        if (findViewById(R.id.tab_frame)!=null) {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, mDrawerLinear);
             mDrawerLayout.setScrimColor(Color.TRANSPARENT);
             isDrawerLocked = true;
@@ -2260,7 +2251,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }
     public void invalidateFab(int openmode){
-        if(openmode==2 && !floatingActionButton.isMenuButtonHidden())
+        if(openmode==2)
             floatingActionButton.hideMenuButton(true);
         else floatingActionButton.showMenuButton(true);
     }

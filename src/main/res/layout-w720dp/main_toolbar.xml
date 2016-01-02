@@ -50,17 +50,10 @@
                 android:layout_height="?attr/actionBarSize"
                 android:layout_width="match_parent"
                 android:theme="?attr/toolbar_theme"
-                app:popupTheme="?attr/popup">
+                app:popupTheme="?attr/popup"
+                app:contentInsetLeft="72dp"
+                app:contentInsetStart="72dp">
 
-                <Spinner
-                    android:id="@+id/tab_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingLeft="52dp"
-                    android:gravity="center_vertical"
-                    android:background="@null"
-                    android:minHeight="?android:attr/listPreferredItemHeightSmall"
-                    />
             </android.support.v7.widget.Toolbar>
 
             <FrameLayout
@@ -142,7 +135,26 @@
 
             </FrameLayout>
         </RelativeLayout>
+        <LinearLayout
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:id="@+id/indicator_layout"
+            android:layout_height="2dp">
+            <ImageView
+                android:id="@+id/tab_indicator1"
+                android:layout_width="wrap_content"
+                android:minWidth="50dp"
+                android:layout_marginRight="2dp"
+                android:layout_height="match_parent" />
 
+            <ImageView
+                android:id="@+id/tab_indicator2"
+                android:layout_width="wrap_content"
+                android:minWidth="50dp"
+                android:layout_marginLeft="2dp"
+                android:layout_height="match_parent" />
+        </LinearLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
