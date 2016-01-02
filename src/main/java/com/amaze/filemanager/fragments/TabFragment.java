@@ -117,7 +117,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                     addTab(new Tab(1,"",((EntryItem)mainActivity.list.get(1)).getPath(),"/"),1,"");
                 else
                 addTab(new Tab(1,"","/","/"),1,"");
-                if(mainActivity.list.get(0).isSection()){
+                if(!mainActivity.list.get(0).isSection()){
                 String pa=((EntryItem)mainActivity.list.get(0)).getPath();
                 addTab(new Tab(2,"",pa,pa),2,"");}
                 else     addTab(new Tab(2,"",((EntryItem)mainActivity.list.get(1)).getPath(),"/"),2,"");
