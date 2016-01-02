@@ -33,6 +33,7 @@
     <color name="holo_dark_selection">#424242</color>
     <color name="divider">#e0e0e0</color>
     <color name="divider_dark">#474747</color>
+    <color name="search_text_highlight">#FF9632</color>
 
     <!-- primary color palatte -->
     <color name="primary_red">#F44336</color>

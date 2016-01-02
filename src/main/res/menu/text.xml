@@ -25,10 +25,6 @@
         android:icon="@drawable/ic_action_save"
         app:showAsAction="ifRoom|withText" />
     <item
-        android:id="@+id/edit"
-        android:title="@string/edit"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/find"
         android:title="@string/find"
         app:showAsAction="never" />

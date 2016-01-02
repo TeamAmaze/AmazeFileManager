@@ -35,10 +35,9 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.Selection;
-import android.text.Spannable;
+import android.text.Spanned;
 import android.text.TextWatcher;
-import android.util.Log;
+import android.text.style.BackgroundColorSpan;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,24 +46,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.services.asynctasks.SearchTextTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootHelper;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
-
-import org.codehaus.plexus.util.FileUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -76,8 +71,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -88,9 +81,9 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     Futils utils = new Futils();
     Context c = this;
     boolean rootMode;
-    int theme, theme1;
+    public int theme, theme1;
     SharedPreferences Sp;
-    private EditText mInput, searchEditText;
+    public EditText mInput, searchEditText;
     private java.io.File mFile;
     private String mOriginal, skin;
     private Timer mTimer;
@@ -102,15 +95,18 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     /*
     List maintaining the searched text's start/end index as key/value pair
      */
-    private ArrayList<MapEntry> nodes;
+    public ArrayList<MapEntry> nodes;
 
     /*
     variable to maintain the position of index
     while pressing next/previous button in the searchBox
      */
     private int mCurrent = -1;
+
+    private SearchTextTask searchTextTask;
+
     Uri uri=null;
-    private ImageButton upButton, downButton, closeButton;
+    public ImageButton upButton, downButton, closeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -464,9 +460,10 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
                         public void run() {
                             try {
                                 mInput.setText(mOriginal);
-                                if (mOriginal.isEmpty())
+                                if (mOriginal.isEmpty()) {
+
                                     mInput.setHint(R.string.file_empty);
-                                else
+                                } else
                                     mInput.setHint(null);
                             } catch (OutOfMemoryError e) {
                                 mInput.setHint(R.string.error);
@@ -498,7 +495,6 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         getMenuInflater().inflate(R.menu.text, menu);
         menu.findItem(R.id.save).setVisible(mModified);
         menu.findItem(R.id.find).setVisible(true);
-        menu.findItem(R.id.edit).setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -518,8 +514,6 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
             case R.id.openwith:
                 utils.openunknown(mFile, c, false);
                 break;
-            case R.id.edit:
-                break;
             case R.id.find:
                 toolbar.startActionMode(mActionModeCallback);
                 break;
@@ -534,8 +528,18 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
 
         // clearing before adding new values
         if (searchEditText != null && charSequence.hashCode() == searchEditText.getText().hashCode()) {
+
+            if (searchTextTask!=null)
+                searchTextTask.cancel(true);
+
             nodes.clear();
             mCurrent = -1;
+
+            BackgroundColorSpan[] colorSpans = mInput.getText().getSpans(0,
+                    mInput.length(), BackgroundColorSpan.class);
+            for (BackgroundColorSpan colorSpan : colorSpans) {
+                mInput.getText().removeSpan(colorSpan);
+            }
         }
     }
 
@@ -565,23 +569,9 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         // searchBox callback block
         if (searchEditText != null && editable.hashCode() == searchEditText.getText().hashCode()) {
 
-            for (int i = 0; i < (mOriginal.length() - editable.length()); i++) {
-                if (searchEditText.length() == 0)
-                    break;
+            searchTextTask = new SearchTextTask(this);
+            searchTextTask.execute(editable);
 
-                if (mOriginal.substring(i, i + editable.length()).equalsIgnoreCase(editable.toString())) {
-
-                    nodes.add(new MapEntry(i, i + editable.length()));
-                }
-            }
-
-            if (nodes.size()!=0) {
-                upButton.setEnabled(true);
-                downButton.setEnabled(true);
-            } else {
-                upButton.setEnabled(false);
-                downButton.setEnabled(false);
-            }
         }
     }
 
@@ -594,7 +584,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
             mode.setCustomView(actionModeLayout);
             menuInflater.inflate(R.menu.empty, menu);
 
-            searchQuery(actionModeLayout);
+            searchQueryInit(actionModeLayout);
             return true;
         }
 
@@ -611,6 +601,12 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         @Override
         public void onDestroyActionMode(ActionMode mode) {
 
+            // clearing all the spans
+            BackgroundColorSpan[] colorSpans = mInput.getText().getSpans(0,
+                    mInput.length(), BackgroundColorSpan.class);
+            for (BackgroundColorSpan colorSpan : colorSpans) {
+                mInput.getText().removeSpan(colorSpan);
+            }
         }
     };
     InputStream getInputStream(Uri uri,String path){
@@ -631,7 +627,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
 
         return stream;
     }
-    public boolean searchQuery(final View actionModeView) {
+    public boolean searchQueryInit(final View actionModeView) {
 
         searchEditText = (EditText) actionModeView.findViewById(R.id.search_box);
 
@@ -640,6 +636,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         closeButton = (ImageButton) actionModeView.findViewById(R.id.close);
 
         searchEditText.addTextChangedListener(this);
+        searchEditText.requestFocus();
 
         upButton.setOnClickListener(this);
         upButton.setEnabled(false);
@@ -656,24 +653,46 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
             case R.id.prev:
                 // upButton
                 if (mCurrent>0) {
-                    Map.Entry keyValue = nodes.get(--mCurrent);
-                    mInput.requestFocus();
-                    mInput.setSelection((Integer) keyValue.getKey(),
-                            (Integer) keyValue.getValue());
+
+                    // setting older span back before setting new one
+                    Map.Entry keyValueOld = nodes.get(mCurrent);
+                    mInput.getText().setSpan(theme1 == 0 ? new BackgroundColorSpan(Color.YELLOW) :
+                                    new BackgroundColorSpan(Color.LTGRAY),
+                            (Integer) keyValueOld.getKey(),
+                            (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                    Map.Entry keyValueNew = nodes.get(--mCurrent);
+                    mInput.getText().setSpan(new BackgroundColorSpan(getResources()
+                                    .getColor(R.color.search_text_highlight, getTheme())),
+                            (Integer) keyValueNew.getKey(),
+                            (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 }
                 break;
             case R.id.next:
                 // downButton
                 if (mCurrent<nodes.size()-1) {
+
+                    // setting older span back before setting new one
+                    if (mCurrent!=-1) {
+
+                        Map.Entry keyValueOld = nodes.get(mCurrent);
+                        mInput.getText().setSpan(theme1 == 0 ? new BackgroundColorSpan(Color.YELLOW) :
+                                        new BackgroundColorSpan(Color.LTGRAY),
+                                (Integer) keyValueOld.getKey(),
+                                (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    }
+
                     Map.Entry keyValue = nodes.get(++mCurrent);
-                    mInput.requestFocus();
-                    mInput.setSelection((Integer) keyValue.getKey(),
-                            (Integer) keyValue.getValue());
+                    mInput.getText().setSpan(new BackgroundColorSpan(getResources()
+                                    .getColor(R.color.search_text_highlight, getTheme())),
+                            (Integer) keyValue.getKey(),
+                            (Integer) keyValue.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 }
                 break;
             case R.id.close:
                 // closeButton
                 searchEditText.setText("");
+                searchEditText.requestFocus();
                 break;
             default:
                 return;
