@@ -92,8 +92,7 @@ public class AppsList extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
         mainActivity=(MainActivity)getActivity();
-        mainActivity.toolbar.setTitle(utils.getString(getActivity(), R.string.apps));
-        mainActivity.tabsSpinner.setVisibility(View.GONE);
+        mainActivity.setActionBarTitle(utils.getString(getActivity(), R.string.apps));
         mainActivity.floatingActionButton.hideMenuButton(true);
         mainActivity.buttonBarFrame.setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();

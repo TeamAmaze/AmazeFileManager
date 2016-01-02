@@ -159,14 +159,14 @@ public class RootHelper {
 
     private static final String UNIX_ESCAPE_EXPRESSION = "(\\(|\\)|\\[|\\]|\\s|\'|\"|`|\\{|\\}|&|\\\\|\\?)";
 
-    public static ArrayList<String[]> getFilesList(boolean showSize, String path, boolean showHidden) {
+    public static ArrayList<String[]> getFilesList( String path, boolean showHidden) {
         File f = new File(path);
         ArrayList<String[]> files = new ArrayList<String[]>();
         try {
             if (f.exists() && f.isDirectory()) {
                 for (File x : f.listFiles()) {
                     String k = "", size = "";
-                    if (showSize && !x.isDirectory()) size = "" + x.length();
+                    if (!x.isDirectory()) size = "" + x.length();
                     if (showHidden) {
                         files.add(new String[]{x.getPath(), "", parseFilePermission(x), k, x.lastModified() + "", size, x.isDirectory() + ""});
                     } else {
@@ -183,9 +183,9 @@ public class RootHelper {
         return files;
     }
 
-    public static String[] addFile(File x, boolean showSize, boolean showHidden) {
+    public static String[] addFile(File x, boolean showHidden) {
         String k = "", size = "";
-        if (showSize && !x.isDirectory())
+        if (!x.isDirectory())
             size = "" + x.length();
         if (showHidden) {
             return (new String[]{x.getPath(), "", parseFilePermission(x), k, x.lastModified() + "",
@@ -245,7 +245,7 @@ public class RootHelper {
         else return new File(path[0]).isDirectory();
     }
 
-    public static ArrayList<String[]> getFilesList(String path, boolean root, boolean showHidden, boolean showSize) {
+    public static ArrayList<String[]> getFilesList(String path, boolean root, boolean showHidden) {
         String p = " ";
         if (showHidden) p = "a ";
         Futils futils = new Futils();
@@ -276,17 +276,17 @@ public class RootHelper {
                     }
                 }
             } else if (futils.canListFiles(new File(path))) {
-                a = getFilesList(showSize, path, showHidden);
+                a = getFilesList(path, showHidden);
             } else {
-                a = new ArrayList<String[]>();
+                a = new ArrayList<>();
             }
         } else if (futils.canListFiles(new File(path))) {
-            a = getFilesList(showSize, path, showHidden);
+            a = getFilesList( path, showHidden);
         } else {
-            a = new ArrayList<String[]>();
+            a = new ArrayList<>();
         }
         if (a.size() == 0 && futils.canListFiles(new File(path))) {
-            a = getFilesList(showSize, path, showHidden);
+            a = getFilesList( path, showHidden);
         }
         return a;
 

@@ -49,112 +49,114 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     private String path;
     boolean back;
     Main ma;
-    int openmode=0;//0 for normal 1 for smb 2 for custom 3 for drive
+    int openmode = 0;//0 for normal 1 for smb 2 for custom 3 for drive
 
-    public LoadList(boolean back, Main ma,int openmode) {
+    public LoadList(boolean back, Main ma, int openmode) {
         this.back = back;
         this.ma = ma;
-        this.openmode=openmode;
+        this.openmode = openmode;
     }
+
     @Override
     protected void onPreExecute() {
-        if(openmode!=0)
-        ma.mSwipeRefreshLayout.setRefreshing(true);
+        if (openmode != 0)
+            ma.mSwipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void onProgressUpdate(String... message) {
         Toast.makeText(ma.getActivity(), message[0], Toast.LENGTH_LONG).show();
     }
+
     boolean grid;
+
     @Override
     // Actual download method, run in the task thread
     protected ArrayList<Layoutelements> doInBackground(String... params) {
         // params comes from the execute() call: params[0] is the url.
-        ArrayList<Layoutelements> list=null;
-        path=params[0];
-        grid=ma.checkforpath(path);
-        ma.folder_count=0;
-        ma.file_count=0;
-        if(openmode==-1){
-            HFile hFile=new HFile(path);
+        ArrayList<Layoutelements> list = null;
+        path = params[0];
+        grid = ma.checkforpath(path);
+        ma.folder_count = 0;
+        ma.file_count = 0;
+        if (openmode == -1) {
+            HFile hFile = new HFile(path);
             if (hFile.isDirectory() && !hFile.isSmb()) {
-                openmode=( 0);
+                openmode = (0);
             } else if (hFile.isSmb())
-                openmode=( 1);
+                openmode = (1);
             else if (hFile.isCustomPath())
-                openmode=( 2);
+                openmode = (2);
             else if (android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()) {
-                openmode=( 3);
+                openmode = (3);
             }
+        }
+        if (openmode == 1) {
+            HFile hFile = new HFile(path);
+            try {
+                SmbFile[] smbFile = hFile.getSmbFile().listFiles();
+                list = ma.addToSmb(smbFile);
+            } catch (SmbException e) {
+                publishProgress(e.getLocalizedMessage());
+                e.printStackTrace();
+            } catch (NullPointerException e) {
+                publishProgress(e.getLocalizedMessage());
+                e.printStackTrace();
             }
-            if(openmode==1){
-                HFile hFile=new HFile(path);
-                try {
-                    SmbFile[] smbFile = hFile.getSmbFile().listFiles();
-                    list=ma.addToSmb(smbFile);
-                } catch (SmbException e) {
-                    publishProgress(e.getLocalizedMessage());
-                    e.printStackTrace();
-                }catch (NullPointerException e) {
-                    publishProgress(e.getLocalizedMessage());
-                    e.printStackTrace();
-                }
-            } else if(openmode==2){
+        } else if (openmode == 2) {
 
-                ArrayList<String[]> arrayList=null;
-            switch (Integer.parseInt(path)){
+            ArrayList<String[]> arrayList = null;
+            switch (Integer.parseInt(path)) {
                 case 0:
-                    arrayList=(listImages());
-                    path="0";
+                    arrayList = (listImages());
+                    path = "0";
                     break;
                 case 1:
-                    arrayList=(listVideos());
-                    path="1";
+                    arrayList = (listVideos());
+                    path = "1";
                     break;
                 case 2:
-                    arrayList=(listaudio());
-                    path="2";
+                    arrayList = (listaudio());
+                    path = "2";
                     break;
                 case 3:
-                    arrayList=(listDocs());
-                    path="3";
+                    arrayList = (listDocs());
+                    path = "3";
                     break;
                 case 4:
-                    arrayList=(listApks());
-                    path="4";
+                    arrayList = (listApks());
+                    path = "4";
                     break;
                 case 5:
-                    arrayList=listRecent();
-                    path="5";
+                    arrayList = listRecent();
+                    path = "5";
                     break;
                 case 6:
-                    arrayList=listRecentFiles();
-                    path="6";
+                    arrayList = listRecentFiles();
+                    path = "6";
 
             }
-            if(arrayList!=null)
-            list=ma.addTo(arrayList);
+            if (arrayList != null)
+                list = ma.addTo(arrayList);
             else return new ArrayList<>();
-            }else if(openmode==3){
+        } else if (openmode == 3) {
 
 
         } else {
             try {
                 ArrayList<String[]> arrayList;
                 if (ma.ROOT_MODE) {
-                    arrayList = RootHelper.getFilesList(path, ma.ROOT_MODE, ma.SHOW_HIDDEN, ma
-                            .SHOW_SIZE);
+                    arrayList = RootHelper.getFilesList(path, ma.ROOT_MODE, ma.SHOW_HIDDEN);
                 } else
-                    arrayList = (RootHelper.getFilesList(ma.SHOW_SIZE, path, ma.SHOW_HIDDEN));
+                    arrayList = (RootHelper.getFilesList(path, ma.SHOW_HIDDEN));
                 list = ma.addTo(arrayList);
 
             } catch (Exception e) {
                 return null;
             }
         }
-        if(list!=null && !(openmode==2 && ((path).equals("5") || (path).equals("6"))))
-        Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, ma.ROOT_MODE));
+        if (list != null && !(openmode == 2 && ((path).equals("5") || (path).equals("6"))))
+            Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, ma.ROOT_MODE));
         return list;
 
 
@@ -171,89 +173,92 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
 
     }
 
-    ArrayList<String[]> listaudio(){
+    ArrayList<String[]> listaudio() {
         String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
         String[] projection = {
                 MediaStore.Audio.Media.DATA
         };
 
-        Cursor cursor =ma.getActivity().getContentResolver().query(
+        Cursor cursor = ma.getActivity().getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 selection,
                 null,
                 null);
 
-         ArrayList<String[]> songs = new ArrayList<String[]>();
-        if (cursor.getCount()>0 && cursor.moveToFirst()) {
+        ArrayList<String[]> songs = new ArrayList<String[]>();
+        if (cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
                 String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                String[] strings = RootHelper.addFile(new File(path), ma.SHOW_SIZE, ma.SHOW_HIDDEN);
+                String[] strings = RootHelper.addFile(new File(path), ma.SHOW_HIDDEN);
                 if (strings != null) songs.add(strings);
             } while (cursor.moveToNext());
         }
         cursor.close();
         return songs;
     }
-    ArrayList<String[]> listImages(){
+
+    ArrayList<String[]> listImages() {
         ArrayList<String[]> songs = new ArrayList<String[]>();
-        final String[] projection = { MediaStore.Images.Media.DATA };
+        final String[] projection = {MediaStore.Images.Media.DATA};
         final Cursor cursor = ma.getActivity().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 null,
                 null,
                 null);
-        if (cursor.getCount()>0 && cursor.moveToFirst()) {
+        if (cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
-                String path=cursor.getString(cursor.getColumnIndex
+                String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                String[] strings=RootHelper.addFile(new File(path), ma.SHOW_SIZE, ma.SHOW_HIDDEN);
-                if(strings!=null) songs.add(strings);
+                String[] strings = RootHelper.addFile(new File(path), ma.SHOW_HIDDEN);
+                if (strings != null) songs.add(strings);
             } while (cursor.moveToNext());
         }
         cursor.close();
         return songs;
     }
-    ArrayList<String[]> listVideos(){
+
+    ArrayList<String[]> listVideos() {
         ArrayList<String[]> songs = new ArrayList<String[]>();
-        final String[] projection = { MediaStore.Images.Media.DATA };
+        final String[] projection = {MediaStore.Images.Media.DATA};
         final Cursor cursor = ma.getActivity().getContentResolver().query(MediaStore.Video.Media
                         .EXTERNAL_CONTENT_URI,
                 projection,
                 null,
                 null,
                 null);
-        if (cursor.getCount()>0 && cursor.moveToFirst()) {
+        if (cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
-                String path=cursor.getString(cursor.getColumnIndex
+                String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                 String[] strings=RootHelper.addFile(new File(path), ma.SHOW_SIZE, ma.SHOW_HIDDEN);
-                    if(strings!=null) songs.add(strings);
-                } while (cursor.moveToNext());
+                String[] strings = RootHelper.addFile(new File(path), ma.SHOW_HIDDEN);
+                if (strings != null) songs.add(strings);
+            } while (cursor.moveToNext());
         }
         cursor.close();
         return songs;
     }
-    ArrayList<String[]> listRecentFiles(){
+
+    ArrayList<String[]> listRecentFiles() {
         ArrayList<String[]> songs = new ArrayList<String[]>();
-        final String[] projection = {MediaStore.Files.FileColumns.DATA,MediaStore.Files.FileColumns.DATE_MODIFIED};
-        Calendar c=Calendar.getInstance();
-        c.set(Calendar.DAY_OF_YEAR,c.get(Calendar.DAY_OF_YEAR)-2);
-        Date d=c.getTime();
+        final String[] projection = {MediaStore.Files.FileColumns.DATA, MediaStore.Files.FileColumns.DATE_MODIFIED};
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
+        Date d = c.getTime();
         Cursor cursor = ma.getActivity().getContentResolver().query(MediaStore.Files
                         .getContentUri("external"), projection,
                 null,
                 null, null);
-        if(cursor==null)return songs;
-        if (cursor.getCount()>0 && cursor.moveToFirst()) {
+        if (cursor == null) return songs;
+        if (cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
-                String path=cursor.getString(cursor.getColumnIndex
+                String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                File f=new File(path);
-                if(d.compareTo(new Date(f.lastModified()))!=1 && !f.isDirectory()){
-                String[] strings=RootHelper.addFile(new File(path), ma.SHOW_SIZE, ma.SHOW_HIDDEN);
-                    if(strings!=null) songs.add(strings);
+                File f = new File(path);
+                if (d.compareTo(new Date(f.lastModified())) != 1 && !f.isDirectory()) {
+                    String[] strings = RootHelper.addFile(new File(path), ma.SHOW_HIDDEN);
+                    if (strings != null) songs.add(strings);
                 }
             } while (cursor.moveToNext());
         }
@@ -265,13 +270,14 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
 
             }
         });
-        if(songs.size()>20)
-        for(int i=songs.size()-1;i>20;i--){
-            songs.remove(i);
-        }
+        if (songs.size() > 20)
+            for (int i = songs.size() - 1; i > 20; i--) {
+                songs.remove(i);
+            }
         return songs;
     }
-    ArrayList<String[]> listApks(){
+
+    ArrayList<String[]> listApks() {
         ArrayList<String[]> songs = new ArrayList<String[]>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA};
 
@@ -279,58 +285,61 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                         .getContentUri("external"), projection,
                 null,
                 null, null);
-        if (cursor.getCount()>0 && cursor.moveToFirst()) {
+        if (cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
-                String path=cursor.getString(cursor.getColumnIndex
+                String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                if(path!=null && path.endsWith(".apk"))
-                { String[] strings=RootHelper.addFile(new File(path), ma.SHOW_SIZE, ma.SHOW_HIDDEN);
-                  if(strings!=null) songs.add(strings);
+                if (path != null && path.endsWith(".apk")) {
+                    String[] strings = RootHelper.addFile(new File(path), ma.SHOW_HIDDEN);
+                    if (strings != null) songs.add(strings);
                 }
             } while (cursor.moveToNext());
         }
         cursor.close();
         return songs;
     }
-    ArrayList<String[]> listRecent(){
+
+    ArrayList<String[]> listRecent() {
         final ArrayList<String> paths = ma.MAIN_ACTIVITY.history.readTable(ma.MAIN_ACTIVITY.HISTORY);
-        ArrayList<String[]> songs=new ArrayList<>();
-        for(String f:paths){
-            if(!f.equals("/")){
-                String[] a=RootHelper.addFile(new File(f), ma.SHOW_SIZE, ma.SHOW_HIDDEN);
-                if(a!=null && !(a)[6].equals("true"))
-                songs.add(a);
+        ArrayList<String[]> songs = new ArrayList<>();
+        for (String f : paths) {
+            if (!f.equals("/")) {
+                String[] a = RootHelper.addFile(new File(f), ma.SHOW_HIDDEN);
+                if (a != null && !(a)[6].equals("true"))
+                    songs.add(a);
             }
         }
         return songs;
     }
-    ArrayList<String[]> listDocs(){
+
+    ArrayList<String[]> listDocs() {
         ArrayList<String[]> songs = new ArrayList<String[]>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA};
         Cursor cursor = ma.getActivity().getContentResolver().query(MediaStore.Files
                         .getContentUri("external"), projection,
                 null,
                 null, null);
-        String[] types=new String[]{".pdf",".xml",".html",".asm", ".text/x-asm",".def",".in",".rc",
-                ".list",".log",".pl",".prop",".properties",".rc",
-                ".doc",".docx",".msg",".odt",".pages",".rtf",".txt",".wpd",".wps"};
-        if (cursor.getCount()>0 && cursor.moveToFirst()) {
+        String[] types = new String[]{".pdf", ".xml", ".html", ".asm", ".text/x-asm", ".def", ".in", ".rc",
+                ".list", ".log", ".pl", ".prop", ".properties", ".rc",
+                ".doc", ".docx", ".msg", ".odt", ".pages", ".rtf", ".txt", ".wpd", ".wps"};
+        if (cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
-                String path=cursor.getString(cursor.getColumnIndex
+                String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                if(path!=null && contains(types, path))
-                {
-                    String[] strings=RootHelper.addFile(new File(path), ma.SHOW_SIZE, ma.SHOW_HIDDEN);
-                if(strings!=null) songs.add(strings);
+                if (path != null && contains(types, path)) {
+                    String[] strings = RootHelper.addFile(new File(path), ma.SHOW_HIDDEN);
+                    if (strings != null) songs.add(strings);
                 }
             } while (cursor.moveToNext());
         }
         cursor.close();
         return songs;
     }
-boolean contains(String[] types,String path){
-    for(String string:types){
-        if(path.endsWith(string))return true;
-    }return false;
-}
+
+    boolean contains(String[] types, String path) {
+        for (String string : types) {
+            if (path.endsWith(string)) return true;
+        }
+        return false;
+    }
 }

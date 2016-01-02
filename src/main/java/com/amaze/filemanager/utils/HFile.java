@@ -163,7 +163,7 @@ public class HFile {
                 e.printStackTrace();
             }
         } else {
-            arrayList = RootHelper.getFilesList(path, rootmode, true, false);
+            arrayList = RootHelper.getFilesList(path, rootmode, true);
         }
         if (arrayList == null) arrayList = new ArrayList<>();
         return arrayList;
