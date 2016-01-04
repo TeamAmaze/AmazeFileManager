@@ -36,6 +36,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -113,6 +114,8 @@ import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
 import com.amaze.filemanager.ui.icons.IconUtils;
+import com.amaze.filemanager.ui.icons.Icons;
+import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.BookSorter;
@@ -137,7 +140,9 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -148,9 +153,9 @@ public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,OnRequestPermissionsResultCallback  {
     public final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3, RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
-    private  final Pattern DIR_SEPARATOR = Pattern.compile("/");
+     final Pattern DIR_SEPARATOR = Pattern.compile("/");
     /* Request code used to invoke sign in user interactions. */
-    private static final int RC_SIGN_IN = 0;
+    static final int RC_SIGN_IN = 0;
     public Integer select;
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
@@ -196,32 +201,33 @@ public class MainActivity extends AppCompatActivity implements
     IMyAidlInterface aidlInterface;
     MaterialDialog materialDialog;
     String newPath = null;
-    private boolean backPressedToExitOnce = false;
-    private Toast toast = null;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private Intent intent;
-    private GoogleApiClient mGoogleApiClient;
-    private View drawerHeaderLayout;
-    private View drawerHeaderView,indicator_layout;
-    private RoundedImageView drawerProfilePic;
-    private DisplayImageOptions displayImageOptions;
-    private int sdk, COUNTER=0;
-    private TextView mGoogleName, mGoogleId;
-    private LinearLayout buttons;
-    private HorizontalScrollView scroll, scroll1;
-    private CountDownTimer timer;
-    private IconUtils icons;
-    private TabHandler tabHandler;
-    private RelativeLayout drawerHeaderParent;
+    boolean backPressedToExitOnce = false;
+    Toast toast = null;
+    ActionBarDrawerToggle mDrawerToggle;
+    Intent intent;
+    GoogleApiClient mGoogleApiClient;
+    View drawerHeaderLayout;
+    View drawerHeaderView,indicator_layout;
+    RoundedImageView drawerProfilePic;
+    DisplayImageOptions displayImageOptions;
+    int sdk, COUNTER=0;
+    TextView mGoogleName, mGoogleId;
+    LinearLayout buttons;
+    HorizontalScrollView scroll, scroll1;
+    CountDownTimer timer;
+    IconUtils icons;
+    TabHandler tabHandler;
+    RelativeLayout drawerHeaderParent;
+    static final int image_selector_request_code=31;
     // Check for user interaction for google+ api only once
-    private boolean mGoogleApiKey = false;
+    boolean mGoogleApiKey = false;
     /* A flag indicating that a PendingIntent is in progress and prevents
    * us from starting further intents.
    */
-    private boolean mIntentInProgress, topfab = false, showHidden = false;
+    boolean mIntentInProgress, topfab = false, showHidden = false;
 
     // string builder object variables for pathBar animations
-    private StringBuilder newPathBuilder, oldPathBuilder;
+    StringBuilder newPathBuilder, oldPathBuilder;
 
     /**
      * Called when the activity is first created.
@@ -313,7 +319,6 @@ public class MainActivity extends AppCompatActivity implements
                 // ringtone picker intent
                 mReturnIntent = true;
                 mRingtonePickerIntent = true;
-                System.out.println(intent.getData());
                 Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
             } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
 
@@ -326,8 +331,6 @@ public class MainActivity extends AppCompatActivity implements
 
         }
         updateDrawer();
-        drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-        drawerHeaderParent.setBackgroundColor(Color.parseColor(skin));
         if (savedInstanceState == null) {
 
             if (openprocesses) {
@@ -821,7 +824,7 @@ public class MainActivity extends AppCompatActivity implements
         return super.onPrepareOptionsMenu(menu);
     }
 
-    private void showToast(String message) {
+    void showToast(String message) {
         if (this.toast == null) {
             // Create toast if found null, it would he the case of first call only
             this.toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
@@ -839,7 +842,7 @@ public class MainActivity extends AppCompatActivity implements
         this.toast.show();
     }
 
-    private void killToast() {
+    void killToast() {
         if (this.toast != null) {
             this.toast.cancel();
         }
@@ -1338,7 +1341,16 @@ public class MainActivity extends AppCompatActivity implements
 
                 }
             }).run();
-        } else if (requestCode == 3) {
+        }
+        else if(requestCode==image_selector_request_code){
+            if(Sp!=null && intent!=null && intent.getData()!=null){
+                if(Build.VERSION.SDK_INT>=19)
+                getContentResolver().takePersistableUriPermission(intent.getData(),Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                Sp.edit().putString("drawer_header_path",intent.getData().toString()).commit();
+                setDrawerHeaderBackground();
+            }
+        }
+        else if (requestCode == 3) {
             String p = Sp.getString("URI", null);
             Uri oldUri = null;
             if (p != null) oldUri = Uri.parse(p);
@@ -1527,7 +1539,7 @@ public class MainActivity extends AppCompatActivity implements
         return false;
     }
 
-    private void sendScroll(final HorizontalScrollView scrollView) {
+    void sendScroll(final HorizontalScrollView scrollView) {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
             @Override
@@ -1570,6 +1582,22 @@ public class MainActivity extends AppCompatActivity implements
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
+        drawerHeaderView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent;
+                if (Build.VERSION.SDK_INT < 19){
+                    intent = new Intent();
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                } else {
+                    intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                }
+                intent.setType("image/*");
+                startActivityForResult(intent, image_selector_request_code);
+                return false;
+            }
+        });
         drawerProfilePic = (RoundedImageView) drawerHeaderLayout.findViewById(R.id.profile_pic);
         mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
         mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
@@ -1583,6 +1611,8 @@ public class MainActivity extends AppCompatActivity implements
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
+        drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
+        drawerHeaderParent.setBackgroundColor(Color.parseColor(skin));
         if (findViewById(R.id.tab_frame)!=null) {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, mDrawerLinear);
             mDrawerLayout.setScrimColor(Color.TRANSPARENT);
@@ -1612,6 +1642,8 @@ public class MainActivity extends AppCompatActivity implements
             divider.setImageResource(R.color.divider);
         else
             divider.setImageResource(R.color.divider_dark);
+
+        setDrawerHeaderBackground();
         View settingsbutton = findViewById(R.id.settingsbutton);
         if (theme1 == 1) {
             settingsbutton.setBackgroundResource(R.drawable.safr_ripple_black);
@@ -2044,7 +2076,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    private void crossfadeInverse() {
+    void crossfadeInverse() {
 
 
         // Set the content view to 0% opacity but visible, so that it is visible
@@ -2223,7 +2255,7 @@ public class MainActivity extends AppCompatActivity implements
             return false;
         }
     }
-    private void revealShow(final View view, boolean reveal) {
+    void revealShow(final View view, boolean reveal) {
 
         if (reveal) {
             ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 0f, 1f);
@@ -2304,7 +2336,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void onDrawerClosed() {
+    void onDrawerClosed() {
         if (pending_fragmentTransaction != null) {
             pending_fragmentTransaction.commit();
             pending_fragmentTransaction = null;
@@ -2371,7 +2403,29 @@ public class MainActivity extends AppCompatActivity implements
             openZip(zippath);
         }
     }
-
+    void setDrawerHeaderBackground(){
+        new Thread(new Runnable() {
+            public void run() {
+                if(Sp.getBoolean("plus_pic", false))return;
+                String path=Sp.getString("drawer_header_path",null);
+                if(path==null)return;
+                Uri uri=Uri.parse(path);
+                Bitmap b = null;
+                try {
+                    InputStream i=getContentResolver().openInputStream(uri);
+                    if(i==null)return;
+                    b = BitmapFactory.decodeStream(i);
+                    if(b==null)return;
+                    Drawable d = new BitmapDrawable(getResources(), b);
+                    if(d==null)return;
+                    drawerHeaderParent.setBackgroundDrawable(d);
+                    drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).run();
+    }
 
 
 
@@ -2407,7 +2461,7 @@ public class MainActivity extends AppCompatActivity implements
             });
         }
     };
-    private ServiceConnection mConnection = new ServiceConnection() {
+    ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,
@@ -2465,7 +2519,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         return false;
     }
-    private void requestStoragePermission() {
+    void requestStoragePermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 

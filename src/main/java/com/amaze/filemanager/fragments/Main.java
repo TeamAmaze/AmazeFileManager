@@ -1300,8 +1300,9 @@ public class Main extends android.support.v4.app.Fragment {
             } else {
                 file_count++;
                 try {
-                    a.add(new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(), !IS_LIST, res), mFile[i].getName(), mFile[i].getPath(), "", "", utils.readableFileSize(mFile[i].length()), mFile[1].length(), false, mFile[i].lastModified() + "", false));
-                } catch (Exception e) {
+                    a.add(new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(), !IS_LIST, res), mFile[i].getName(), mFile[i].getPath(), "", "", utils.readableFileSize(mFile[i].length()), mFile[i].length(), false, mFile[i].lastModified() + "", false));
+                    }
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }

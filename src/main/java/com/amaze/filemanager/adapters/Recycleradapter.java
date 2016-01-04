@@ -88,7 +88,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         }
 
         notifyDataSetChanged();
-        if ((main.selection == false || main.mActionMode == null) && getCheckedItemPositions().size()>0) {
+        if (main.selection == false || main.mActionMode == null) {
             main.selection = true;
             /*main.mActionMode = main.getActivity().startActionMode(
                     main.mActionModeCallback);*/
