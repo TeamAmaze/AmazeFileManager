@@ -2428,7 +2428,7 @@ public class MainActivity extends AppCompatActivity implements
                             Drawable d = new BitmapDrawable(getResources(), b);
                             if(d==null)return;
                             drawerHeaderParent.setBackgroundDrawable(d);
-                            drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
+                            drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
 
                         }
 
