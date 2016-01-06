@@ -652,7 +652,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     @Override
     public int getItemCount() {
-        return items.size()+1;
+        return main.IS_LIST?items.size()+1:items.size();
     }
 }
 
