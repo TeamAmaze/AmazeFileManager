@@ -45,8 +45,15 @@ public class PreferenceUtils {
         Sp.edit().putInt("skin_color_position", pos).commit();
         return colors[pos];
     }
-
-      public final static String[] colors = new String[]{
+    public static int getAccent(SharedPreferences Sp){
+        int i=Sp.getInt("fab_skin_color_position", 1);
+        return Color.parseColor(colors[i]);
+    }
+    public static String getAccentString(SharedPreferences Sp) {
+        int i = Sp.getInt("fab_skin_color_position", 1);
+        return (colors[i]);
+    }
+        public final static String[] colors = new String[]{
                 "#F44336",
                 "#e91e63",
                 "#9c27b0",

@@ -142,22 +142,20 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     @Override
     public long getHeaderId(int position) {
-        if(zipMode)return getHeaderid(position);
-        if(position<0)return -1;
-        if(position>=0 && position<enter.size()+1)
-            if(position==0)return -1;
-        if(enter.get(position-1)==null)return -1;
-        else if(enter.get(position-1).isDirectory())return 'D';
-        else return 'F';
-    }
-
+        if (zipMode) return getHeaderid(position);
+        if (position < 0) return -1;
+        if (position >= 0 && position < enter.size()) {
+            if (enter.get(position) == null) return -1;
+            else if (enter.get(position).isDirectory()) return 'D';
+            else return 'F';
+        }
+    return -1;}
     long getHeaderid(int position) {
-        if (position >= 0 && position < enter1.size() + 1)
-            if (position != 0) {
-                if (enter1.get(position - 1) == null) return -1;
-                else if (enter1.get(position - 1).isDirectory()) return 'D';
+        if (position >= 0 && position < enter1.size())
+              if (enter1.get(position ) == null) return -1;
+                else if (enter1.get(position).isDirectory()) return 'D';
                 else return 'F';
-            }
+
         return -1;
     }
     public static class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -179,15 +177,15 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-    if(zipMode && i>0){
+    if(zipMode && i>=0){
         HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
-        if(enter1.get(i-1)!=null && enter1.get(i-1).isDirectory())holder.ext.setText("Directories");
+        if(enter1.get(i)!=null && enter1.get(i).isDirectory())holder.ext.setText("Directories");
         else holder.ext.setText("Files");
 
     }
-        else if(i>0){
+        else if(i>=0){
         HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
-        if(enter.get(i-1)!=null && enter.get(i-1).isDirectory())holder.ext.setText(R.string.directories);
+        if(enter.get(i)!=null && enter.get(i).isDirectory())holder.ext.setText(R.string.directories);
         else holder.ext.setText(R.string.files);
     }}
 
@@ -248,11 +246,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         {
             animate(holder);
         }
-        if(position1==0)
-        {holder.rl.setMinimumHeight(zipViewer.paddingTop);
-            return;
-        }final ZipObj rowItem=enter1.get(position1-1);
-        final int p=position1-1;
+        final ZipObj rowItem=enter1.get(position1);
+        final int p=position1;
         GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
         if(rowItem.getEntry()==null){
             holder.imageView.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha));
@@ -392,13 +387,9 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             animate(holder);
         }
         if(position1<0)return;
-        if(position1==0){
-            holder.rl.setMinimumHeight(zipViewer.paddingTop);
-            return;
-        }
-        final FileHeader rowItem = enter.get(position1-1);
-        zipViewer.elementsRar.add(position1-1, headerRequired(rowItem));
-        final int p = position1-1;
+        final FileHeader rowItem = enter.get(position1);
+        zipViewer.elementsRar.add(position1, headerRequired(rowItem));
+        final int p = position1;
 
         GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
 
@@ -509,7 +500,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     }
 
     private boolean isPositionHeader(int position) {
-        return position == 0;}
+        return false;}
 
 
     private FileHeader headerRequired(FileHeader rowItem) {
@@ -522,7 +513,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         return null;
     }    @Override
          public int getItemCount() {
-        return zipMode?enter1.size()+1:enter.size()+1;
+        return zipMode?enter1.size():enter.size();
     }
 
 }

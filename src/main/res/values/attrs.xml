@@ -23,7 +23,4 @@
     <attr name="popup" format="reference" />
     <attr name="toolbar_theme" format="reference" />
     <attr name="ripple_color" format="color" />
-    <declare-styleable name="ScrimInsetsView">
-        <attr name="insetForeground" format="reference|color"/>
-    </declare-styleable>
 </resources>

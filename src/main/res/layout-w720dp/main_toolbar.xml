@@ -25,24 +25,27 @@
     android:fitsSystemWindows="true"
     android:id="@+id/tab_frame"
     >
-    <FrameLayout
-        android:layout_marginLeft="@dimen/drawer_width"
-        android:layout_width="match_parent"
+
+    <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_frame"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/drawer_width"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/content_frame"
-            android:layout_width="match_parent"
-            android:clipToPadding="false"
-            android:layout_height="match_parent" />
-        <RelativeLayout
-            android:id="@+id/lin"
-            android:elevation="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
 
+
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
+        android:layout_height="match_parent" />
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:id="@+id/lin"
+        >
             <android.support.v7.widget.Toolbar
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -51,6 +54,7 @@
                 android:layout_width="match_parent"
                 android:theme="?attr/toolbar_theme"
                 app:popupTheme="?attr/popup"
+                app:layout_scrollFlags="scroll|enterAlways"
                 app:contentInsetLeft="72dp"
                 app:contentInsetStart="72dp">
 
@@ -134,7 +138,7 @@
                 </LinearLayout>
 
             </FrameLayout>
-        </RelativeLayout>
+    </android.support.design.widget.AppBarLayout>
         <LinearLayout
             android:layout_gravity="bottom|center_horizontal"
             android:layout_width="wrap_content"
@@ -317,7 +321,7 @@
                 fab:fab_size="mini"
                 fab:fab_label="Drive Connection" />
         </com.github.clans.fab.FloatingActionMenu>
-    </FrameLayout>
+    </android.support.design.widget.CoordinatorLayout>
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"

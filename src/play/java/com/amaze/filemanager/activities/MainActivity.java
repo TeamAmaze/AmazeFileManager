@@ -53,6 +53,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
@@ -135,6 +136,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
@@ -246,7 +248,6 @@ public class MainActivity extends AppCompatActivity implements
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
             if(!checkStoragePermission())
                 requestStoragePermission();
-
 
         mainActivityHelper=new MainActivityHelper(this);
         intialiseFab();
@@ -2409,18 +2410,34 @@ public class MainActivity extends AppCompatActivity implements
                 if(Sp.getBoolean("plus_pic", false))return;
                 String path=Sp.getString("drawer_header_path",null);
                 if(path==null)return;
-                Uri uri=Uri.parse(path);
-                Bitmap b = null;
                 try {
-                    InputStream i=getContentResolver().openInputStream(uri);
-                    if(i==null)return;
-                    b = BitmapFactory.decodeStream(i);
-                    if(b==null)return;
-                    Drawable d = new BitmapDrawable(getResources(), b);
-                    if(d==null)return;
-                    drawerHeaderParent.setBackgroundDrawable(d);
-                    drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
-                } catch (FileNotFoundException e) {
+                    ImageLoader.getInstance().loadImage(path,displayImageOptions, new ImageLoadingListener() {
+                        @Override
+                        public void onLoadingStarted(String s, View view) {
+
+                        }
+
+                        @Override
+                        public void onLoadingFailed(String s, View view, FailReason failReason) {
+
+                        }
+
+                        @Override
+                        public void onLoadingComplete(String s, View view, Bitmap b) {
+                            if(b==null)return;
+                            Drawable d = new BitmapDrawable(getResources(), b);
+                            if(d==null)return;
+                            drawerHeaderParent.setBackgroundDrawable(d);
+                            drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
+
+                        }
+
+                        @Override
+                        public void onLoadingCancelled(String s, View view) {
+
+                        }
+                    });
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

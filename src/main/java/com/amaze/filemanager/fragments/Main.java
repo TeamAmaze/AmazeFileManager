@@ -20,7 +20,6 @@
 package com.amaze.filemanager.fragments;
 
 
-import android.animation.Animator;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -48,10 +47,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Parcelable;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -69,8 +67,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -95,10 +91,10 @@ import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HFile;
-import com.amaze.filemanager.utils.HidingScrollListener;
 import com.amaze.filemanager.utils.MediaStoreHack;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
+import com.futuremind.recyclerviewfastscroll.FastScroller;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
@@ -535,7 +531,7 @@ public class Main extends android.support.v4.app.Fragment {
         tabHandler = new TabHandler(getActivity(), null, null, 1);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
-        fabSkin = PreferenceUtils.getFabColor(Sp.getInt("fab_skin_color_position", 1));
+        fabSkin = PreferenceUtils.getAccentString(Sp);
         int icon=Sp.getInt("icon_skin_color_position", -1);
         icon=icon==-1?Sp.getInt("skin_color_position", 4):icon;
         iconskin = PreferenceUtils.getSkinColor(icon);
@@ -671,10 +667,11 @@ public class Main extends android.support.v4.app.Fragment {
                 loadlist((CURRENT_PATH), false, openMode);
             }
         });
+        // Connect the scroller to the recycler (to let the recycler scroll the scroller's handle)
+
         mToolbarHeight = getToolbarHeight(getActivity());
         paddingTop = (mToolbarHeight) + dpToPx(72);
         if (hidemode == 2) mToolbarHeight = paddingTop;
-        mSwipeRefreshLayout.setProgressViewOffset(true, paddingTop, paddingTop + dpToPx(30));
         mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor(fabSkin));
         DefaultItemAnimator animator = new DefaultItemAnimator();
         listView.setItemAnimator(animator);
@@ -690,7 +687,6 @@ public class Main extends android.support.v4.app.Fragment {
                     columns = screen_width / dptopx;
                     if (!IS_LIST) mLayoutManagerGrid.setSpanCount(columns);
                 }
-                mSwipeRefreshLayout.setProgressViewOffset(true, paddingTop, paddingTop + dpToPx(72));
                 if (savedInstanceState != null && !IS_LIST)
                     retrieveFromSavedInstance(savedInstanceState);
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
@@ -1042,46 +1038,10 @@ public class Main extends android.support.v4.app.Fragment {
                         listView.addItemDecoration(headersDecor);
                         addheader = false;
                     }
-                    mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).setListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animator) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animator) {
-                            listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight, hidemode) {
-
-                                @Override
-                                public void onMoved(int distance) {
-                                    mToolbarContainer.setTranslationY(-distance);
-                                }
-
-                                @Override
-                                public void onShow() {
-                                    mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-                                }
-
-                                @Override
-                                public void onHide() {
-                                    mToolbarContainer.animate().translationY(-mToolbarHeight)
-                                            .setInterpolator(new AccelerateInterpolator(2)).start();
-                                }
-
-                            });
-
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animator) {
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animator) {
-
-                        }
-                    }).start();
+                    /*((AppBarLayout)mToolbarContainer).setExpanded(true,true);*/
+                    final FastScroller fastScroller = (FastScroller)rootView. findViewById(R.id.fastscroll);
+                    fastScroller.setRecyclerView(listView);
+                    fastScroller.setColor(Color.parseColor(fabSkin));
                     if (!results) this.results = false;
                     if(openMode!=3 )CURRENT_PATH = f;
                     else if(android.util.Patterns.EMAIL_ADDRESS.matcher(f).matches()){

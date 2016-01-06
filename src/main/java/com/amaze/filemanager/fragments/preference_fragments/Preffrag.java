@@ -106,39 +106,6 @@ public class Preffrag extends PreferenceFragment{
                 return true;
             }
         });
-        Preference hideModePreference = (Preference) findPreference("hidemode");
-        hideModePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                String[] sort = getResources().getStringArray(R.array.hidemode);
-                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                if (theme == 1) a.theme(Theme.DARK);
-                a.title(getString(R.string.hide_mode_title));
-                int current = sharedPref.getInt("hidemode", 0);
-                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        sharedPref.edit().putInt("hidemode", which).commit();
-                        restartPC(getActivity());
-                        return true;
-                    }
-                });
-                a.build().show();
-                return true;
-            }
-        });
-        switch (sharedPref.getInt("hidemode", 0)) {
-            case 0:
-                findPreference("topFab").setEnabled(true);
-                hideModePreference.setSummary(getResources().getString(R.string.hide_mode_nothing));
-                break;
-            case 1:
-                hideModePreference.setSummary(getResources().getString(R.string.hide_mode_toolbar));
-                break;
-            case 2:
-                hideModePreference.setSummary(getResources().getString(R.string.hide_mode_app_bar));
-                break;
-        }
 
         findPreference("theme").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override

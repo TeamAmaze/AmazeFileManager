@@ -34,6 +34,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -63,9 +64,9 @@ import com.amaze.filemanager.services.asynctasks.RarHelperTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.HidingScrollListener;
 import com.amaze.filemanager.ui.ZipObj;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.futuremind.recyclerviewfastscroll.FastScroller;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
@@ -594,46 +595,10 @@ public class ZipViewer extends Fragment {
             listView.addItemDecoration(headersDecor);
             addheader = false;
         }
-        mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).setListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                listView.setOnScrollListener(new HidingScrollListener(mToolbarHeight, hidemode) {
-
-                    @Override
-                    public void onMoved(int distance) {
-                        mToolbarContainer.setTranslationY(-distance);
-                    }
-
-                    @Override
-                    public void onShow() {
-                        mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-                    }
-
-                    @Override
-                    public void onHide() {
-                        mToolbarContainer.animate().translationY(-mToolbarHeight)
-                                .setInterpolator(new AccelerateInterpolator(2)).start();
-                    }
-
-                });
-
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) {
-
-            }
-        }).start();
+        /*((AppBarLayout)mToolbarContainer).setExpanded(true,true);*/
+        FastScroller fastScroller=(FastScroller)rootView.findViewById(R.id.fastscroll);
+        fastScroller.setColor(PreferenceUtils.getAccent(Sp));
+        fastScroller.setRecyclerView(listView);
         listView.stopScroll();
         zipViewer.current = dir;
         zipViewer.bbar();

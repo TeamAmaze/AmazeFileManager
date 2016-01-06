@@ -43,7 +43,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     ColorMatrixColorFilter colorMatrixColorFilter;
     LayoutInflater mInflater;
     int filetype=-1;
-    int item_count,column,count_factor,rowHeight;
+    int column,rowHeight;
     boolean topFab;
     int grey_color;
     int c1,c2,c3,c4,c5,c6,c7,c8,c9,anim;
@@ -68,16 +68,12 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         c8=Color.parseColor("#a4c439");
         c9=Color.parseColor("#9e9e9e");
         column=main.columns;
-        topFab=main.TOP_FAB;
-        count_factor=(main.IS_LIST?(topFab?1:2):column);
-        item_count=items.size()+count_factor;
         rowHeight=main.dpToPx(100);
         grey_color=Color.parseColor("#ff666666");
         anim = /*main.IS_LIST?R.anim.fade_in_top:*/R.anim.fade_in_top;
     }
     public void addItem(){
         notifyDataSetChanged();
-        item_count=items.size()+count_factor;
     }
     public void toggleChecked(int position) {
         if(!stoppedAnimation)main.stopAnimation();
@@ -225,38 +221,24 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         stoppedAnimation=false;
         notifyDataSetChanged();
         column=main.columns;
-        topFab=main.TOP_FAB;
-        count_factor=(main.IS_LIST?(topFab?1:2):column);
-        item_count=arrayList.size()+count_factor;
         items=arrayList;
     }
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder vholder,final int p1) {
+    public void onBindViewHolder(RecyclerView.ViewHolder vholder,final int p) {
         final Recycleradapter.ViewHolder holder = ((Recycleradapter.ViewHolder)vholder);
+        if (main.IS_LIST) {
+            if ( p == getItemCount() - 1) {
+                holder.rl.setMinimumHeight(rowHeight);
+                if (items.size() == (main.GO_BACK_ITEM ? 1 : 0))
+                    holder.txtTitle.setText(R.string.nofiles);
+                return;
+            }
+        }
+            if(holder.imageView==null)return;
         if (!this.stoppedAnimation)
         {
             animate(holder);
         }
-        int i=0;
-        if(main.IS_LIST){
-            i=1;
-        if(!topFab && p1==getItemCount()-1){
-            holder.rl.setMinimumHeight(rowHeight);
-            if(item_count==(main.GO_BACK_ITEM?3:2))
-            holder.txtTitle.setText(R.string.nofiles);
-            return;}
-        if(p1==0){
-            holder.rl.setMinimumHeight(main.paddingTop);
-            return;}}
-        else{
-            i=main.columns;
-            if(p1>=0 && p1<i)
-            {
-                holder.rl.setMinimumHeight(main.paddingTop);
-                return;
-            }
-        }
-        final int p=p1-i;
         final Layoutelements rowItem = items.get(p);
         if (main.IS_LIST) {
             holder.rl.setOnClickListener(new View.OnClickListener() {
@@ -557,11 +539,11 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     @Override
     public long getHeaderId(int i) {
         if(items.size()==0)return -1;
-        if(i>=0 && i<item_count)
+        if(i>=0 && i<items.size())
         if(main.IS_LIST){
-            if(i!=0 && (topFab ?i!=0: i!=item_count-1)){
-                    if(items.get(i-1).getSize().equals(main.goback))return -1;
-                    if(items.get(i-1).isDirectory())return 'D';
+            if(i!=items.size()){
+                    if(items.get(i).getSize().equals(main.goback))return -1;
+                    if(items.get(i).isDirectory())return 'D';
                     else return 'F';}
     }
         return -1;}
@@ -656,20 +638,21 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     }
     private boolean isPositionHeader(int position) {
-   if(main.IS_LIST)     return position == 0 || (!topFab && position==item_count-1);
-    else return position>= 0 && position<column;}
+   if(main.IS_LIST)
+       return  (position== items.size());
+    return false;}
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-        if(i!=0) {
+        if(i!=getItemCount()-1) {
             HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
-            if(items.get(i-1).isDirectory())holder.ext.setText(R.string.directories);
+            if(items.get(i).isDirectory())holder.ext.setText(R.string.directories);
             else holder.ext.setText(R.string.files);
         }
     }
 
     @Override
     public int getItemCount() {
-        return item_count;
+        return items.size()+1;
     }
 }
 

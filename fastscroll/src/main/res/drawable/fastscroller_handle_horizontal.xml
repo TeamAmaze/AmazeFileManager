@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <corners android:radius="@dimen/fastscroller_reack_corner" />
+
+    <solid android:color="@android:color/darker_gray" />
+
+    <size
+        android:height="@dimen/fastscroller_track_width"
+        android:width="@dimen/fastscroller_track_height" />
+</shape>

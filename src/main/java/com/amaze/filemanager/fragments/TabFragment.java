@@ -28,6 +28,7 @@ import com.amaze.filemanager.ui.views.CustomViewPager;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.futuremind.recyclerviewfastscroll.FastScroller;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -105,10 +106,11 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 // TODO: Implement this method
             }
         });
+
+        mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
+                getActivity().getSupportFragmentManager());
         if (savedInstanceState == null) {
             int l=Sp.getInt("currenttab",1);
-            mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
-                    getActivity().getSupportFragmentManager());
             TabHandler tabHandler=new TabHandler(getActivity(),null,null,1);
             List<Tab> tabs1=tabHandler.getAllTabs();
             int i=tabs1.size();
@@ -304,7 +306,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
     void updateIndicator(int index) {
         if (index != 0 && index != 1) return;
         if (indicator1 == null || indicator2 == null) return;
-        if (!mainActivity.isDrawerLocked)
+        /*if (!mainActivity.isDrawerLocked)
             if (index == 0) {
                 indicator1.setImageDrawable(new ColorDrawable(Color.parseColor(mainActivity.fabskin)));
                 indicator2.setImageDrawable(null);
@@ -313,7 +315,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 indicator2.setImageDrawable(new ColorDrawable(Color.parseColor(mainActivity.fabskin)));
                 indicator1.setImageDrawable(null);
                 return;
-            }
+            }*/
         if (index == 0) {
             indicator1.setImageDrawable(new ColorDrawable(Color.parseColor(mainActivity.fabskin)));
             indicator2.setImageDrawable(new ColorDrawable(Color.GRAY));

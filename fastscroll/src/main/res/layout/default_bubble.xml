@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fastscroller_bubble"
+    android:layout_width="64dp"
+    android:layout_height="64dp"
+    android:background="@drawable/fastscroller_bubble"
+    android:gravity="center"
+    android:textSize="24sp"
+    tools:text="A"
+    tools:visibility="visible"/>

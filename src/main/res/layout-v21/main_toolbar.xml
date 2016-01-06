@@ -24,23 +24,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
-<FrameLayout
-    android:id="@+id/main_frame"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/main_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
 
 
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:clipToPadding="false"
         android:layout_height="match_parent" />
-    <RelativeLayout
-        android:id="@+id/lin"
-        android:elevation="4dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lin"
+            android:elevation="4dp"
+            >
 
         <android.support.v7.widget.Toolbar
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -51,13 +54,13 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/toolbar_theme"
             app:popupTheme="?attr/popup"
+            app:layout_scrollFlags="scroll|enterAlways"
             app:contentInsetLeft="72dp"
             app:contentInsetStart="72dp">
 
         </android.support.v7.widget.Toolbar>
 
         <FrameLayout
-            android:paddingRight="16dp"
             android:id="@+id/buttonbarframe"
             android:layout_height="72dp"
             android:layout_width="match_parent"
@@ -66,6 +69,7 @@
             <HorizontalScrollView
                 android:scrollbars="none"
                 android:id="@+id/scroll"
+                android:paddingRight="16dp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
@@ -79,6 +83,7 @@
             </HorizontalScrollView>
             <LinearLayout
                 android:id="@+id/pathbar"
+                android:paddingRight="16dp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:clickable="false"
@@ -130,26 +135,29 @@
                     android:id="@+id/pathname" />
 
             </LinearLayout>
-
         </FrameLayout>
-    </RelativeLayout>
-    <LinearLayout
-        android:layout_gravity="bottom"
-        android:layout_width="match_parent"
-        android:id="@+id/indicator_layout"
-        android:layout_height="2dp">
-        <ImageView
-            android:id="@+id/tab_indicator1"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="match_parent" />
+    </android.support.design.widget.AppBarLayout>
+        <LinearLayout
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:id="@+id/indicator_layout"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/tab_indicator1"
+                android:layout_width="wrap_content"
+                android:minWidth="7dp"
+                android:minHeight="7dp"
+                android:layout_marginRight="2dp"
+                android:layout_height="wrap_content" />
 
-        <ImageView
-            android:id="@+id/tab_indicator2"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/tab_indicator2"
+                android:layout_width="wrap_content"
+                android:minWidth="7dp"
+                android:minHeight="7dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -312,7 +320,7 @@
     </com.github.clans.fab.FloatingActionMenu>
 
 
-</FrameLayout>    <!--
+</android.support.design.widget.CoordinatorLayout>    <!--
          android:layout_gravity="start" tells DrawerLayout to treat
          this as a sliding drawer on the left side for left-to-right
          languages and on the right side for right-to-left languages.

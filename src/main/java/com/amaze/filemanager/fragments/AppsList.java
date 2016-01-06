@@ -104,11 +104,6 @@ public class AppsList extends ListFragment {
         int theme=Integer.parseInt(Sp.getString("theme","0"));
         theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
         vl.setDivider(null);
-        if (vl.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) vl.getLayoutParams();
-            p.setMargins(0, getToolbarHeight(getActivity()), 0, 0);
-            vl.requestLayout();
-        }
         if(theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
          if(savedInstanceState==null)loadlist(false);
         else{
