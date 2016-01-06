@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'com.android.tools.build:gradle:2.0.0-alpha3'
     }
 }
 apply plugin: 'com.android.application'
@@ -89,7 +89,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
-    // compile 'com.afollestad:material-dialogs:0.8.4.5'
+    compile 'com.android.support:design:23.1.1'
     compile 'com.github.junrar:junrar:0.7'
     compile 'org.apache.commons:commons-compress:1.10'
     compile 'com.android.support:appcompat-v7:23.1.0'
@@ -99,6 +99,7 @@ dependencies {
     compile 'org.sufficientlysecure:donations:2.3'
     playCompile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile project(':libs:StickyHeadersRecyclerView')
+    compile project(':fastscroll')
     compile 'com.github.clans:fab:1.6.1'
     compile('com.github.afollestad.material-dialogs:core:0.8.5.0@aar') {
         transitive = true
