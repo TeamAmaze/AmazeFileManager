@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements
     /* A flag indicating that a PendingIntent is in progress and prevents
    * us from starting further intents.
    */
-    boolean mIntentInProgress, topfab = false, showHidden = false;
+    boolean mIntentInProgress, showHidden = false;
 
     // string builder object variables for pathBar animations
     StringBuilder newPathBuilder, oldPathBuilder;
@@ -933,9 +933,12 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.view:
                 if (ma.IS_LIST) {
+                    if (listfiles.contains(ma.CURRENT_PATH)) {
+                        listfiles.remove(ma.CURRENT_PATH);
+                        grid.removePath(ma.CURRENT_PATH,LIST);
+                    }
                     grid.addPath(null,ma.CURRENT_PATH,GRID,0);
                     gridfiles.add(ma.CURRENT_PATH);
-                    grid.removePath(ma.CURRENT_PATH,LIST);
                 } else {
                     if (gridfiles.contains(ma.CURRENT_PATH)) {
                         gridfiles.remove(ma.CURRENT_PATH);
@@ -1563,17 +1566,16 @@ public class MainActivity extends AppCompatActivity implements
         int th = Integer.parseInt(Sp.getString("theme", "0"));
         theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
 
-        fabskin = PreferenceUtils.getFabColor(Sp.getInt("fab_skin_color_position", 1));
         boolean random = Sp.getBoolean("random_checkbox", false);
         if (random)
             skin = PreferenceUtils.random(Sp);
         else
-            skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
+            skin = PreferenceUtils.getPrimaryColorString(Sp);
+        fabskin = PreferenceUtils.getAccentString(Sp);
         rootmode = Sp.getBoolean("rootmode", false);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         hidemode = Sp.getInt("hidemode", 0);
         showHidden = Sp.getBoolean("showHidden", false);
-        topfab = hidemode == 0 ? Sp.getBoolean("topFab", false) : false;
         skinStatusBar = (PreferenceUtils.getStatusColor(skin));
         aBoolean = Sp.getBoolean("view", true);
     }
@@ -1686,27 +1688,6 @@ public class MainActivity extends AppCompatActivity implements
                 adapter.toggleChecked(false);
             }
         });
-        if (topfab) {
-            buttonBarFrame.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) floatingActionButton.getLayoutParams();
-                    layoutParams.setMargins(layoutParams.leftMargin, findViewById(R.id.lin)
-                                    .getBottom() - (floatingActionButton.getMenuIconView().getHeight
-                                    ()),
-                            layoutParams.rightMargin,
-                            layoutParams.bottomMargin);
-                    floatingActionButton.setLayoutParams(layoutParams);
-
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                        buttonBarFrame.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    } else {
-                        buttonBarFrame.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    }
-                }
-
-            });
-        }
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
 
 
@@ -1735,14 +1716,11 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
     void intialiseFab(){
-        int icon=Sp.getInt("icon_skin_color_position", -1);
-        icon=icon==-1?Sp.getInt("skin_color_position", 4):icon;
-        String folder_skin = PreferenceUtils.getSkinColor(icon);
+        String folder_skin = PreferenceUtils.getFolderColorString(Sp);
         int fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
         int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
-        floatingActionButton = !topfab ?
-                (FloatingActionMenu) findViewById(R.id.menu) : (FloatingActionMenu) findViewById(R.id.menu_top);
+        floatingActionButton =(FloatingActionMenu) findViewById(R.id.menu);
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.showMenuButton(true);
         floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
@@ -1758,7 +1736,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item_top : R.id.menu_item);
+        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(R.id.menu_item);
         floatingActionButton1.setColorNormal(folderskin);
         floatingActionButton1.setColorPressed(fabskinpressed);
         floatingActionButton1.setOnClickListener(new View.OnClickListener() {
@@ -1769,7 +1747,7 @@ public class MainActivity extends AppCompatActivity implements
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item1_top : R.id.menu_item1);
+        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(R.id.menu_item1);
         floatingActionButton2.setColorNormal(folderskin);
         floatingActionButton2.setColorPressed(fabskinpressed);
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
@@ -1780,7 +1758,7 @@ public class MainActivity extends AppCompatActivity implements
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item2_top : R.id.menu_item2);
+        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(R.id.menu_item2);
         floatingActionButton3.setColorNormal(folderskin);
         floatingActionButton3.setColorPressed(fabskinpressed);
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
@@ -1791,7 +1769,7 @@ public class MainActivity extends AppCompatActivity implements
                 floatingActionButton.close(true);
             }
         });
-        final FloatingActionButton floatingActionButton4 = (FloatingActionButton) findViewById(topfab ? R.id.menu_item3_top : R.id.menu_item3);
+        final FloatingActionButton floatingActionButton4 = (FloatingActionButton) findViewById(R.id.menu_item3);
         floatingActionButton4.setColorNormal(folderskin);
         floatingActionButton4.setColorPressed(fabskinpressed);
         floatingActionButton4.setOnClickListener(new View.OnClickListener() {
@@ -2428,7 +2406,7 @@ public class MainActivity extends AppCompatActivity implements
                             Drawable d = new BitmapDrawable(getResources(), b);
                             if(d==null)return;
                             drawerHeaderParent.setBackgroundDrawable(d);
-                            drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
+                            drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
 
                         }
 

@@ -168,9 +168,8 @@ public class Preffrag extends PreferenceFragment{
             public boolean onPreferenceClick(Preference preference) {
 
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                skin = PreferenceUtils.getSkinColor(sharedPref.getInt("skin_color_position", 4));
-                int fab_skin = Color.parseColor(PreferenceUtils.getSkinColor(sharedPref.getInt
-                        ("fab_skin_color_position", 1)));
+                skin = PreferenceUtils.getPrimaryColorString(sharedPref);
+                int fab_skin = Color.parseColor(PreferenceUtils.getAccentString(sharedPref));
                 if(theme==1)
                     a.theme(Theme.DARK);
 
@@ -279,8 +278,7 @@ public class Preffrag extends PreferenceFragment{
                         getActivity().getString(R.string.changelog_change_1)));
                 a.negativeText(R.string.close);
                 a.positiveText(R.string.fullChangelog);
-                int fab_skin = Color.parseColor(PreferenceUtils.getSkinColor(sharedPref.getInt
-                        ("fab_skin_color_position", 1)));
+                int fab_skin = Color.parseColor(PreferenceUtils.getAccentString(sharedPref));
                 a.positiveColor(fab_skin);
                 a.negativeColor(fab_skin);
                 a.callback(new MaterialDialog.ButtonCallback() {
@@ -421,8 +419,7 @@ public class Preffrag extends PreferenceFragment{
             // and the user would benefit from additional context for the use of the permission.
             // For example, if the request has been denied previously.
 
-            String fab_skin = (PreferenceUtils.getSkinColor(sharedPref.getInt
-                    ("fab_skin_color_position", 1)));
+            String fab_skin = (PreferenceUtils.getAccentString(sharedPref));
             final MaterialDialog materialDialog=new Futils().showBasicDialog(getActivity(),fab_skin,theme, new String[]{getResources().getString(R.string.grantgplus), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel),null});
             materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override

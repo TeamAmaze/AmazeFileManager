@@ -1,2 +1,2 @@
-include ':libs:StickyHeadersRecyclerView', ':', ':fastscroll'
+include ':libs:StickyHeadersRecyclerView', ':', ':libs:fastscroll'
 include ':'

@@ -580,7 +580,7 @@ public void openWith(final File f,final Context c) {
         name = hFile.getName();
         parent = hFile.getParent();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c.getActivity());
-        String fabskin = PreferenceUtils.getFabColor(sp.getInt("fab_skin_color_position", 1));
+        String fabskin = PreferenceUtils.getAccentString(sp);
         MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
         a.title(getString(c.getActivity(), R.string.properties));
         if(c.theme1==1)
@@ -650,7 +650,7 @@ public void openWith(final File f,final Context c) {
         name =  f.getName();
         parent = f.getParent();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
-        String fabskin = PreferenceUtils.getFabColor(sp.getInt("fab_skin_color_position", 1));
+        String fabskin = PreferenceUtils.getAccentString(sp);
         MaterialDialog.Builder a = new MaterialDialog.Builder(c);
         a.title(getString(c, R.string.properties));
         if(theme1==1)

@@ -26,33 +26,61 @@ public class PreferenceUtils {
                 Math.max( (int)(g * factor), 0 ),
                 Math.max( (int)(b * factor), 0 ) );
     }
-    public static String getSkinColor(int i) {
-
-
-        return colors[i];
-    }
-
-    public static String getFabColor(int i) {
-
-
-                return colors[i];
-        }
     public static String random(SharedPreferences Sp) {
 
 
         Random random = new Random();
-        int pos = random.nextInt(colors.length - 1);
-        Sp.edit().putInt("skin_color_position", pos).commit();
-        return colors[pos];
+        int[] pos =combinations[ random.nextInt(combinations.length - 1)];
+        int primary=pos[0],accent=pos[1],icon=pos[2];
+        Sp.edit().putInt("skin_color_position", primary).commit();
+        Sp.edit().putInt("fab_skin_color_position", accent).commit();
+        Sp.edit().putInt("icon_skin_color_position", icon).commit();
+        return colors[primary];
     }
     public static int getAccent(SharedPreferences Sp){
         int i=Sp.getInt("fab_skin_color_position", 1);
-        return Color.parseColor(colors[i]);
+        return i;
+    }
+    public static int getPrimaryColor(SharedPreferences Sp){
+        int i = Sp.getInt("skin_color_position", 4);
+        return i;
+    }
+    public static int getFolderColor(SharedPreferences Sp){
+        int icon=Sp.getInt("icon_skin_color_position", -1);
+        icon=icon==-1?Sp.getInt("skin_color_position", 4):icon;
+        return icon;
+    }
+    public static String getPrimaryColorString(SharedPreferences Sp) {
+        int i = Sp.getInt("skin_color_position", 4);
+        return (colors[i]);
+    }
+    public static String getFolderColorString(SharedPreferences Sp) {
+        int icon=Sp.getInt("icon_skin_color_position", -1);
+        icon=icon==-1?Sp.getInt("skin_color_position", 4):icon;
+        return (colors[icon]);
     }
     public static String getAccentString(SharedPreferences Sp) {
         int i = Sp.getInt("fab_skin_color_position", 1);
         return (colors[i]);
     }
+    public static int getPosition(String Sp){
+        int i=-1;
+        for(String s:colors){
+            i++;
+            if(s.equals(Sp))return i;
+        }
+        return -1;
+    }
+    public final static int[][] combinations=new int[][]{
+            //primary,accent,folder
+            {14,11,12},
+            {4,1,4},
+            {8,12,8},
+            {17,11,12},
+            {3,1,3},
+            {16,14,16}
+
+    };
         public final static String[] colors = new String[]{
                 "#F44336",
                 "#e91e63",

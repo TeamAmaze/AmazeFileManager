@@ -91,7 +91,7 @@ public class DbViewer extends AppCompatActivity {
         setContentView(R.layout.activity_db_viewer);
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        skin =PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
+        skin =PreferenceUtils.getPrimaryColorString(Sp);
         if (Build.VERSION.SDK_INT>=21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription
                     ("Amaze", ((BitmapDrawable) ContextCompat.getDrawable(this,R.mipmap

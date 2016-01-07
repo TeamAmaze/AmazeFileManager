@@ -189,8 +189,8 @@ public class ZipViewer extends Fragment {
         showLastModified = Sp.getBoolean("showLastModified", true);
         showDividers = Sp.getBoolean("showDividers", true);
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
-        skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
-        iconskin = PreferenceUtils.getSkinColor(Sp.getInt("icon_skin_color_position", 4));
+        skin = PreferenceUtils.getPrimaryColorString(Sp);
+        iconskin = PreferenceUtils.getFolderColorString(Sp);
         mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
         files = new ArrayList<File>();
@@ -597,7 +597,7 @@ public class ZipViewer extends Fragment {
         }
         /*((AppBarLayout)mToolbarContainer).setExpanded(true,true);*/
         FastScroller fastScroller=(FastScroller)rootView.findViewById(R.id.fastscroll);
-        fastScroller.setColor(PreferenceUtils.getAccent(Sp));
+        fastScroller.setColor(Color.parseColor(PreferenceUtils.getAccentString(Sp)));
         fastScroller.setRecyclerView(listView);
         listView.stopScroll();
         zipViewer.current = dir;

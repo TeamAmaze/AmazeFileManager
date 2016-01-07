@@ -216,8 +216,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                             case R.id.share:
                                 ArrayList<File> arrayList2=new ArrayList<File>();
                                 arrayList2.add(new File(rowItem.getDesc()));
-                                int color1= Color.parseColor(PreferenceUtils.getFabColor
-                                        (app.Sp.getInt("fab_skin_color_position", 1)));
+                                int color1= Color.parseColor(PreferenceUtils.getAccentString(app.Sp));
                                 utils.shareFiles(arrayList2,app.getActivity(),app.theme1,color1);
                                 return true;
                             case R.id.unins:
@@ -226,8 +225,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                 for(PackageInfo info:c){
                                     if(info.applicationInfo.publicSourceDir.equals(rowItem.getDesc()))info1=info.applicationInfo;
                                 }
-                                int color= Color.parseColor(PreferenceUtils.getFabColor
-                                        (app.Sp.getInt("fab_skin_color_position", 1)));
+                                int color= Color.parseColor(PreferenceUtils.getAccentString(app.Sp));
                                 //arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1),"", false));
                                 //utils.deleteFiles(arrayList, null, arrayList1);
                                 if ((info1.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {

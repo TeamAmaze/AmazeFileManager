@@ -126,7 +126,7 @@ public class Main extends android.support.v4.app.Fragment {
     public LinearLayout pathbar;
     public int openMode = 0;
     public android.support.v7.widget.RecyclerView listView;
-    public boolean GO_BACK_ITEM, IS_LIST=true, SHOW_THUMBS, COLORISE_ICONS, SHOW_DIVIDERS, TOP_FAB;
+    public boolean GO_BACK_ITEM, IS_LIST=true, SHOW_THUMBS, COLORISE_ICONS, SHOW_DIVIDERS;
     public IconHolder ic;
     public MainActivity MAIN_ACTIVITY;
     public String skin, fabSkin, iconskin;
@@ -155,7 +155,7 @@ public class Main extends android.support.v4.app.Fragment {
     int mToolbarHeight, hidemode;
     View mToolbarContainer;
     TextView pathname;
-    boolean stopAnims = true,PERM_GRID;
+    boolean stopAnims = true;
     View nofilesview;
     String current_drive_id;
     DisplayMetrics displayMetrics;
@@ -530,20 +530,19 @@ public class Main extends android.support.v4.app.Fragment {
         CURRENT_PATH = getArguments().getString("lastpath");
         tabHandler = new TabHandler(getActivity(), null, null, 1);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
+        skin = PreferenceUtils.getPrimaryColorString(Sp);
         fabSkin = PreferenceUtils.getAccentString(Sp);
         int icon=Sp.getInt("icon_skin_color_position", -1);
         icon=icon==-1?Sp.getInt("skin_color_position", 4):icon;
-        iconskin = PreferenceUtils.getSkinColor(icon);
+        iconskin = PreferenceUtils.getFolderColorString(Sp);
         skin_color = Color.parseColor(skin);
         icon_skin_color = Color.parseColor(iconskin);
-        PERM_GRID = Sp.getBoolean("perm_grid", false);
         Calendar calendar = Calendar.getInstance();
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         theme1 = theme == 2 ? PreferenceUtils.hourOfDay() : theme;
         hidemode = Sp.getInt("hidemode", 0);
-        TOP_FAB = hidemode == 0 ? Sp.getBoolean("topFab", true) : false;
+
         SHOW_PERMISSIONS = Sp.getBoolean("showPermissions", false);
         SHOW_SIZE = Sp.getBoolean("showFileSize", false);
         SHOW_DIVIDERS = Sp.getBoolean("showDividers", true);
@@ -979,11 +978,30 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
     public boolean checkforpath(String path){
-        if(PERM_GRID)return true;
-        boolean grid=false;
-        for(String s:MAIN_ACTIVITY.gridfiles)
-        if((path).contains(s))grid= true;
-        if(MAIN_ACTIVITY.listfiles.contains(path))grid=false;
+        boolean grid=false,both_contain=false;
+        int index1=-1,index2=-1;
+        for (String s : MAIN_ACTIVITY.gridfiles) {
+            index1++;
+            if ((path).contains(s)) {
+                grid = true;
+                break;
+            }
+        }
+        for (String s : MAIN_ACTIVITY.listfiles) {
+            index2++;
+            if ((path).contains(s)) {
+                if(grid==true)both_contain=true;
+                grid = false;
+                break;
+            }
+        }
+        if(!both_contain)return grid;
+        String path1=MAIN_ACTIVITY.gridfiles.get(index1),path2=MAIN_ACTIVITY.listfiles.get(index2);
+        if(path1.contains(path2))
+            return true;
+        else if(path2.contains(path1))
+            return false;
+        else
         return grid;
     }
 
