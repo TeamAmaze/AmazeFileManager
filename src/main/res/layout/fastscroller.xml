@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
     android:layout_height="match_parent">
 
     <ImageButton
@@ -11,6 +9,6 @@
         android:focusable="true"
         android:background="@null"
         android:layout_height="wrap_content"
-        android:src="@drawable/fastscroller"
+        android:src="@drawable/fastscroller_handle_normal"
         />
 </LinearLayout>

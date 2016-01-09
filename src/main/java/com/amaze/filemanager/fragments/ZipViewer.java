@@ -66,7 +66,7 @@ import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.ui.ZipObj;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.futuremind.recyclerviewfastscroll.FastScroller;
+import com.amaze.filemanager.ui.views.FastScroller;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;

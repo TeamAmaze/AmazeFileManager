@@ -90,6 +90,26 @@ public  final int READ = 4;
 
     public Futils() {
     }
+    public static float getViewRawY(View view) {
+        int[] location = new int[2];
+        location[0] = 0;
+        location[1] = (int) view.getY();
+        ((View)view.getParent()).getLocationInWindow(location);
+        return location[1];
+    }
+
+    public static float getViewRawX(View view) {
+        int[] location = new int[2];
+        location[0] = (int) view.getX();
+        location[1] = 0;
+        ((View)view.getParent()).getLocationInWindow(location);
+        return location[0];
+    }
+
+    public static float getValueInRange(float min, float max, float value) {
+        float minimum = Math.max(min, value);
+        return Math.min(minimum, max);
+    }
     public MaterialDialog showBasicDialog(final MainActivity m, String[] texts) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         a.content(texts[0]);

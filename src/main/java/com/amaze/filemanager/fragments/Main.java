@@ -94,7 +94,7 @@ import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.MediaStoreHack;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
-import com.futuremind.recyclerviewfastscroll.FastScroller;
+import com.amaze.filemanager.ui.views.FastScroller;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
@@ -152,7 +152,7 @@ public class Main extends android.support.v4.app.Fragment {
     StickyRecyclerHeadersDecoration headersDecor;
     DividerItemDecoration dividerItemDecoration;
     int  hidemode;
-    View mToolbarContainer;
+    AppBarLayout mToolbarContainer;
     TextView pathname;
     boolean stopAnims = true;
     View nofilesview;
@@ -162,6 +162,7 @@ public class Main extends android.support.v4.app.Fragment {
     Streamer s;
     private View rootView;
     private View actionModeView;
+    FastScroller fastScroller;
     public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
         private void hideOption(int id, Menu menu) {
             MenuItem item = menu.findItem(id);
@@ -557,7 +558,9 @@ public class Main extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
-        mToolbarContainer = getActivity().findViewById(R.id.lin);
+        mToolbarContainer = (AppBarLayout) getActivity().findViewById(R.id.lin);
+        fastScroller = (FastScroller)rootView. findViewById(R.id.fastscroll);
+        fastScroller.setColor(Color.parseColor(fabSkin));
         listView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -1041,10 +1044,7 @@ public class Main extends android.support.v4.app.Fragment {
                         listView.addItemDecoration(headersDecor);
                         addheader = false;
                     }
-                    /*((AppBarLayout)mToolbarContainer).setExpanded(true,true);*/
-                    final FastScroller fastScroller = (FastScroller)rootView. findViewById(R.id.fastscroll);
                     fastScroller.setRecyclerView(listView);
-                    fastScroller.setColor(Color.parseColor(fabSkin));
                     fastScroller.setAppBarListner(new FastScroller.AppBarListner() {
                         @Override
                         public void onChange(int i) {
@@ -1052,13 +1052,12 @@ public class Main extends android.support.v4.app.Fragment {
                                 stopAnimation();
                                 stopAnims = false;
                             }
-                            AppBarLayout appBarLayout=(AppBarLayout)mToolbarContainer;
                             switch (i){
                                 case 0:
-                                    appBarLayout.setExpanded(false);
+                                    mToolbarContainer.setExpanded(false);
                                     break;
                                 case 1:
-                                    appBarLayout.setExpanded(true);
+                                    mToolbarContainer.setExpanded(true);
                                     break;
                             }
                         }

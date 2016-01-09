@@ -29,7 +29,6 @@ import com.amaze.filemanager.ui.views.CustomViewPager;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.futuremind.recyclerviewfastscroll.FastScroller;
 
 import java.io.File;
 import java.util.ArrayList;

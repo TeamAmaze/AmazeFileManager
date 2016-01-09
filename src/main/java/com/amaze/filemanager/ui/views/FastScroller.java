@@ -1,5 +1,8 @@
-package com.futuremind.recyclerviewfastscroll;
+package com.amaze.filemanager.ui.views;
 
+/**
+ * Created by arpitkh996 on 10-01-2016.
+ */
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -8,6 +11,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.Futils;
 
 /**
  * Created by mklimczak on 28/07/15.
@@ -22,14 +28,11 @@ public class FastScroller extends LinearLayout {
 
     private boolean manuallyChangingPosition;
 
-    private SectionTitleProvider titleProvider;
-
-
     public FastScroller(Context context, AttributeSet attrs) {
         super(context, attrs);
         setClipChildren(false);
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        inflater.inflate(R.layout.fastscroller_vertical, this);
+        inflater.inflate(R.layout.fastscroller, this);
     }
 
 
@@ -42,8 +45,6 @@ public class FastScroller extends LinearLayout {
      */
     public void setRecyclerView(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
-        if (recyclerView.getAdapter() instanceof SectionTitleProvider)
-            titleProvider = (SectionTitleProvider) recyclerView.getAdapter();
         recyclerView.addOnScrollListener(scrollListener);
         invalidateVisibility();
         recyclerView.setOnHierarchyChangeListener(new OnHierarchyChangeListener() {
@@ -88,7 +89,8 @@ public class FastScroller extends LinearLayout {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE) {
-
+                    if(!manuallyChangingPosition)
+                        handle.setImageResource(R.drawable.fastscroller_handle_pressed);
                     manuallyChangingPosition = true;
 
                     float relativePos = getRelativeTouchPosition(event);
@@ -108,7 +110,8 @@ public class FastScroller extends LinearLayout {
                     return true;
 
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-
+                    if(manuallyChangingPosition)
+                        handle.setImageResource(R.drawable.fastscroller_handle_normal);
                     manuallyChangingPosition = false;
                     return true;
 
@@ -121,7 +124,7 @@ public class FastScroller extends LinearLayout {
     }
 
     private float getRelativeTouchPosition(MotionEvent event) {
-        float yInParent = event.getRawY() - Utils.getViewRawY(handle);
+        float yInParent = event.getRawY() - Futils.getViewRawY(handle);
         return yInParent / (getHeight() - handle.getHeight());
 
     }
@@ -147,13 +150,13 @@ public class FastScroller extends LinearLayout {
     private void setRecyclerViewPosition(float relativePos) {
         if (recyclerView != null) {
             int itemCount = recyclerView.getAdapter().getItemCount();
-            int targetPos = (int) Utils.getValueInRange(0, itemCount - 1, (int) (relativePos * (float) itemCount));
+            int targetPos = (int) Futils.getValueInRange(0, itemCount - 1, (int) (relativePos * (float) itemCount));
             recyclerView.scrollToPosition(targetPos);
         }
     }
 
     private void setHandlePosition(float relativePos) {
-        handle.setY(Utils.getValueInRange(
+        handle.setY(Futils.getValueInRange(
                 0, getHeight() - handle.getHeight(), relativePos * (getHeight() - handle.getHeight()))
         );
 
@@ -178,3 +181,4 @@ public class FastScroller extends LinearLayout {
 
 
 }
+
