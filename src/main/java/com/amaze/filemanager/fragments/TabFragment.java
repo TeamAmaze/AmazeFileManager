@@ -3,6 +3,7 @@ package com.amaze.filemanager.fragments;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -306,16 +307,29 @@ public class TabFragment extends android.support.v4.app.Fragment {
     void updateIndicator(int index) {
         if (index != 0 && index != 1) return;
         if (indicator1 == null || indicator2 == null) return;
-        /*if (!mainActivity.isDrawerLocked)
+        /*if (!mainActivity.isDrawerLocked){
             if (index == 0) {
-                indicator1.setImageDrawable(new ColorDrawable(Color.parseColor(mainActivity.fabskin)));
-                indicator2.setImageDrawable(null);
-                return;
+                indicator1.setImageResource(R.drawable.square_filled);
+                indicator2.setImageResource(R.drawable.square_hollow);
+                indicator1.setColorFilter(Color.parseColor(mainActivity.fabskin));
+                if(theme1==0)
+                indicator2.setColorFilter(Color.GRAY);
+                else
+                    indicator2.setColorFilter(null);
+
             } else {
-                indicator2.setImageDrawable(new ColorDrawable(Color.parseColor(mainActivity.fabskin)));
-                indicator1.setImageDrawable(null);
-                return;
-            }*/
+                indicator2.setImageResource(R.drawable.square_filled);
+                indicator1.setImageResource(R.drawable.square_hollow);
+                indicator2.setColorFilter(Color.parseColor(mainActivity.fabskin));
+                if(theme1==0)
+                    indicator1.setColorFilter(Color.GRAY);
+                else
+                    indicator1.setColorFilter(null);
+            }
+
+        return;
+        }*/
+
         if (index == 0) {
             indicator1.setImageDrawable(new ColorDrawable(Color.parseColor(mainActivity.fabskin)));
             indicator2.setImageDrawable(new ColorDrawable(Color.GRAY));

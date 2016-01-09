@@ -133,7 +133,6 @@ public class Main extends android.support.v4.app.Fragment {
     public float[] color;
     public ColorMatrixColorFilter colorMatrixColorFilter;
     public SwipeRefreshLayout mSwipeRefreshLayout;
-    public int paddingTop;
     public int skin_color, icon_skin_color, theme1, theme, file_count, folder_count, columns;
     public String smbPath;
     public ArrayList<String> searchHelper = new ArrayList<String>();
@@ -152,7 +151,7 @@ public class Main extends android.support.v4.app.Fragment {
     boolean addheader = false;
     StickyRecyclerHeadersDecoration headersDecor;
     DividerItemDecoration dividerItemDecoration;
-    int mToolbarHeight, hidemode;
+    int  hidemode;
     View mToolbarContainer;
     TextView pathname;
     boolean stopAnims = true;
@@ -512,14 +511,6 @@ public class Main extends android.support.v4.app.Fragment {
         }
     };
 
-    public static int getToolbarHeight(Context context) {
-        final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
-                new int[]{android.R.attr.actionBarSize});
-        int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
-        styledAttributes.recycle();
-
-        return toolbarHeight;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -667,19 +658,14 @@ public class Main extends android.support.v4.app.Fragment {
             }
         });
         // Connect the scroller to the recycler (to let the recycler scroll the scroller's handle)
-
-        mToolbarHeight = getToolbarHeight(getActivity());
-        paddingTop = (mToolbarHeight) + dpToPx(72);
-        if (hidemode == 2) mToolbarHeight = paddingTop;
+        dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, false, SHOW_DIVIDERS);
+        listView.addItemDecoration(dividerItemDecoration);
         mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor(fabSkin));
         DefaultItemAnimator animator = new DefaultItemAnimator();
         listView.setItemAnimator(animator);
         mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                if (hidemode != 2) mToolbarHeight = MAIN_ACTIVITY.toolbar.getHeight();
-                else mToolbarHeight = paddingTop;
-                paddingTop = mToolbarContainer.getHeight();
                 if ((columns == 0 || columns == -1)) {
                     int screen_width = listView.getWidth();
                     int dptopx = dpToPx(115);
@@ -1044,14 +1030,13 @@ public class Main extends android.support.v4.app.Fragment {
                 try {
                     listView.setAdapter(adapter);
                     if (!addheader) {
-                        listView.removeItemDecoration(dividerItemDecoration);
                         listView.removeItemDecoration(headersDecor);
+                        listView.removeItemDecoration(dividerItemDecoration);
                         addheader = true;
                     }
                     if (addheader && IS_LIST) {
-                        dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, false, SHOW_DIVIDERS);
+                        dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, true, SHOW_DIVIDERS);
                         listView.addItemDecoration(dividerItemDecoration);
-
                         headersDecor = new StickyRecyclerHeadersDecoration(adapter);
                         listView.addItemDecoration(headersDecor);
                         addheader = false;
@@ -1060,6 +1045,24 @@ public class Main extends android.support.v4.app.Fragment {
                     final FastScroller fastScroller = (FastScroller)rootView. findViewById(R.id.fastscroll);
                     fastScroller.setRecyclerView(listView);
                     fastScroller.setColor(Color.parseColor(fabSkin));
+                    fastScroller.setAppBarListner(new FastScroller.AppBarListner() {
+                        @Override
+                        public void onChange(int i) {
+                            if (adapter != null && stopAnims) {
+                                stopAnimation();
+                                stopAnims = false;
+                            }
+                            AppBarLayout appBarLayout=(AppBarLayout)mToolbarContainer;
+                            switch (i){
+                                case 0:
+                                    appBarLayout.setExpanded(false);
+                                    break;
+                                case 1:
+                                    appBarLayout.setExpanded(true);
+                                    break;
+                            }
+                        }
+                    });
                     if (!results) this.results = false;
                     if(openMode!=3 )CURRENT_PATH = f;
                     else if(android.util.Patterns.EMAIL_ADDRESS.matcher(f).matches()){

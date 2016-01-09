@@ -599,6 +599,20 @@ public class ZipViewer extends Fragment {
         FastScroller fastScroller=(FastScroller)rootView.findViewById(R.id.fastscroll);
         fastScroller.setColor(Color.parseColor(PreferenceUtils.getAccentString(Sp)));
         fastScroller.setRecyclerView(listView);
+        fastScroller.setAppBarListner(new FastScroller.AppBarListner() {
+            @Override
+            public void onChange(int i) {
+                AppBarLayout appBarLayout=(AppBarLayout)mToolbarContainer;
+                switch (i){
+                    case 0:
+                        appBarLayout.setExpanded(false);
+                        break;
+                    case 1:
+                        appBarLayout.setExpanded(true);
+                        break;
+                }
+            }
+        });
         listView.stopScroll();
         zipViewer.current = dir;
         zipViewer.bbar();

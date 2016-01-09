@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:layout_height="match_parent">
 
-    <com.futuremind.recyclerviewfastscroll.FastScrollBubble
-        android:id="@+id/fastscroller_bubble"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/fastscroller_bubble"
-        android:elevation="4dp"
-        android:visibility="invisible"
-        tools:visibility="visible"/>
-
-    <ImageView
+    <ImageButton
         android:id="@+id/fastscroller_handle"
         android:layout_width="10dp"
+        android:focusable="true"
+        android:background="@null"
         android:layout_height="wrap_content"
-        android:src="@drawable/fastscroller_handle_vertical"
+        android:src="@drawable/fastscroller"
         />
-
-</merge>
+</LinearLayout>

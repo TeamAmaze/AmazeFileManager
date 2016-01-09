@@ -230,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements
 
     // string builder object variables for pathBar animations
     StringBuilder newPathBuilder, oldPathBuilder;
+    AppBarLayout appBarLayout;
 
     /**
      * Called when the activity is first created.
@@ -278,20 +279,7 @@ public class MainActivity extends AppCompatActivity implements
                     .addScope(Plus.SCOPE_PLUS_LOGIN)
                     .build();
         }
-        displayImageOptions = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.amaze_header)
-                .showImageForEmptyUri(R.drawable.amaze_header)
-                .showImageOnFail(R.drawable.amaze_header)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
 
-        if (!ImageLoader.getInstance().isInited()) {
-
-            ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
-        }
 
         util = new IconUtils(Sp, this);
         icons = new IconUtils(Sp, this);
@@ -784,6 +772,7 @@ public class MainActivity extends AppCompatActivity implements
             invalidatePasteButton(menu.findItem(R.id.paste));
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
         } else if (f.contains("AppsList") || f.contains("ProcessViewer")) {
+            appBarLayout.setExpanded(true);
             menu.findItem(R.id.sethome).setVisible(false);
             if(indicator_layout!=null)indicator_layout.setVisibility(View.GONE);
             findViewById(R.id.buttonbarframe).setVisibility(View.GONE);
@@ -1580,6 +1569,21 @@ public class MainActivity extends AppCompatActivity implements
         aBoolean = Sp.getBoolean("view", true);
     }
     void initialiseViews(){
+        appBarLayout=(AppBarLayout)findViewById(R.id.lin);
+        displayImageOptions = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.drawable.amaze_header)
+                .showImageForEmptyUri(R.drawable.amaze_header)
+                .showImageOnFail(R.drawable.amaze_header)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .considerExifParams(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .build();
+
+        if (!ImageLoader.getInstance().isInited()) {
+
+            ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
+        }
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
         buttonBarFrame.setBackgroundColor(Color.parseColor(skin));
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);

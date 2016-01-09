@@ -78,8 +78,12 @@ public class PreferenceUtils {
             {8,12,8},
             {17,11,12},
             {3,1,3},
-            {16,14,16}
-
+            {16,14,16},
+            {1,12,1},
+            {16,0,16},
+            {0,12,0},
+            {6,1,6},
+            {7,1,7}
     };
         public final static String[] colors = new String[]{
                 "#F44336",
