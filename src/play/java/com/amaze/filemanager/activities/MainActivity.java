@@ -119,6 +119,7 @@ import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
+import com.amaze.filemanager.utils.BaseFile;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
@@ -333,17 +334,22 @@ public class MainActivity extends AppCompatActivity implements
                 transaction.commit();
                 supportInvalidateOptionsMenu();
             } else {
-                goToMain(path);
+                HFile file=new HFile(path);
+                if(path!=null && path.length()>0 && file.isDirectory())
+                    goToMain(path);
+                else {
+                   goToMain("");
+                   if(path!=null && path.length()>0) utils.openFile(new File(path),this);
+                }
             }
         } else {
+            COPY_PATH=savedInstanceState.getStringArrayList("COPY_PATH");
+            MOVE_PATH=savedInstanceState.getStringArrayList("MOVE_PATH");
             oppathe = savedInstanceState.getString("oppathe");
             oppathe1 = savedInstanceState.getString("oppathe1");
-            ArrayList<String> k = savedInstanceState.getStringArrayList("oparrayList");
-            if (k != null) {
-                oparrayList = (k);
-                opnameList=savedInstanceState.getStringArrayList("opnameList")!=null?savedInstanceState.getStringArrayList("opnameList"):opnameList;
-                operation = savedInstanceState.getInt("operation");
-            }
+            oparrayList = savedInstanceState.getStringArrayList("oparrayList");
+            opnameList=savedInstanceState.getStringArrayList("opnameList");
+            operation = savedInstanceState.getInt("operation");
             select = savedInstanceState.getInt("selectitem", 0);
             adapter.toggleChecked(select);
         }
@@ -968,6 +974,17 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    /*@Override
+    public void onRestoreInstanceState(Bundle savedInstanceState){
+        COPY_PATH=savedInstanceState.getStringArrayList("COPY_PATH");
+        MOVE_PATH=savedInstanceState.getStringArrayList("MOVE_PATH");
+        oppathe = savedInstanceState.getString("oppathe");
+        oppathe1 = savedInstanceState.getString("oppathe1");
+        oparrayList = savedInstanceState.getStringArrayList("oparrayList");
+        opnameList=savedInstanceState.getStringArrayList("opnameList");
+        operation = savedInstanceState.getInt("operation");
+        select = savedInstanceState.getInt("selectitem", 0);
+    }*/
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -1004,13 +1021,16 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        if(select!=null)
         outState.putInt("selectitem", select);
-
+        if(COPY_PATH!=null)
+            outState.putStringArrayList("COPY_PATH",COPY_PATH);
+        if(MOVE_PATH!=null)
+            outState.putStringArrayList("MOVE_PATH",MOVE_PATH);
         if (oppathe != null) {
             outState.putString("oppathe", oppathe);
             outState.putString("oppathe1", oppathe1);
-            if(opnameList!=null)
-                outState.putStringArrayList("opnameList", (opnameList));
+            outState.putStringArrayList("opnameList", (opnameList));
             outState.putStringArrayList("oparraylist", (oparrayList));
             outState.putInt("operation", operation);
         }
@@ -1090,6 +1110,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public TabFragment getFragment() {
         Fragment fragment= getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        if(fragment==null)return null;
         if(!fragment.getClass().getName().contains("TabFragment"))return null;
         TabFragment tabFragment = (TabFragment)fragment ;
         return tabFragment;
@@ -1354,7 +1375,6 @@ public class MainActivity extends AppCompatActivity implements
                 // Persist URI - this is required for verification of writability.
                 if (treeUri != null) Sp.edit().putString("URI", treeUri.toString()).commit();
             }
-
             // If not confirmed SAF, or if still not writable, then revert settings.
             if (responseCode != Activity.RESULT_OK) {
                /* DialogUtil.displayError(getActivity(), R.string.message_dialog_cannot_write_to_folder_saf, false,
@@ -1562,6 +1582,12 @@ public class MainActivity extends AppCompatActivity implements
             skin = PreferenceUtils.getPrimaryColorString(Sp);
         fabskin = PreferenceUtils.getAccentString(Sp);
         rootmode = Sp.getBoolean("rootmode", false);
+        if(rootmode){
+            if (!RootTools.isAccessGiven()) {
+                rootmode=false;
+                Sp.edit().putBoolean("rootmode",false).commit();
+            }
+        }
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         hidemode = Sp.getInt("hidemode", 0);
         showHidden = Sp.getBoolean("showHidden", false);
@@ -2495,13 +2521,38 @@ public class MainActivity extends AppCompatActivity implements
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 updateDrawer();
                 TabFragment tabFragment=getFragment();
+                boolean b=Sp.getBoolean("needtosethome",true);
+                //reset home and current paths according to new storages
+                if(b){
+                tabHandler.clear();
+                if (storage_count>1)
+                    tabHandler.addTab(new Tab(1, "",((EntryItem)mainActivity.list.get(1)).getPath(),"/"));
+                else
+                    tabHandler.addTab(new Tab(1,"","/","/"));
+                if(!mainActivity.list.get(0).isSection()){
+                    String pa=((EntryItem)mainActivity.list.get(0)).getPath();
+                    tabHandler.addTab(new Tab(2,"",pa,pa));}
+                else     tabHandler.addTab(new Tab(2,"",((EntryItem)mainActivity.list.get(1)).getPath(),"/"));
                 if(tabFragment!=null){
                     Fragment main=tabFragment.getTab(0);
                     if(main!=null)
-                        ((Main)main).updateList();
+                        ((Main)main).updateTabWithDb(tabHandler.findTab(1));
                     Fragment main1=tabFragment.getTab(1);
                     if(main1!=null)
-                        ((Main)main1).updateList();
+                        ((Main)main1).updateTabWithDb(tabHandler.findTab(2));
+                }
+                    Sp.edit().putBoolean("needtosethome",false).commit();
+                }
+                else {
+                    //just refresh list
+                    if(tabFragment!=null) {
+                        Fragment main = tabFragment.getTab(0);
+                        if (main != null)
+                            ((Main) main).updateList();
+                        Fragment main1 = tabFragment.getTab(1);
+                        if (main1 != null)
+                            ((Main) main1).updateList();
+                    }
                 }
             } else {
                 Toast.makeText(this,R.string.grantfailed,Toast.LENGTH_SHORT).show();
@@ -2559,9 +2610,9 @@ public class MainActivity extends AppCompatActivity implements
             this.ma = main;
             this.path = path;
             this.move = move;
-            a = new ArrayList<String>();
-            b = new ArrayList<String>();
-            lol = new ArrayList<String>();
+            a = new ArrayList<>();
+            b = new ArrayList<>();
+            lol = new ArrayList<>();
             names=new ArrayList<>();
         }
 
@@ -2592,8 +2643,8 @@ public class MainActivity extends AppCompatActivity implements
             HFile f = new HFile(path);
             if (f.getUsableSpace() > totalBytes) {
 
-                for (String k1[] : f.listFiles(rootmode)) {
-                    HFile k = new HFile(k1[0]);
+                for (BaseFile k1 : f.listFiles(rootmode)) {
+                    HFile k = new HFile(k1.getPath());
                     for (String j : ab) {
 
                         if (k.getName().equals(new HFile(j).getName())) {
@@ -2612,18 +2663,19 @@ public class MainActivity extends AppCompatActivity implements
             if (counter == a.size() || a.size() == 0) {
 
                 if (ab != null && ab.size() != 0) {
+
+                    ArrayList<String> names=new ArrayList<>();
+                    for(String a:ab){
+                        names.add(new HFile(a).getName());
+                    }
                     int mode = mainActivityHelper.checkFolder(new File(path), mainActivity);
                     if (mode == 2) {
                         oparrayList = (ab);
                         operation = move ? MOVE : COPY;
                         oppathe = path;
-
+                        opnameList=names;
                     } else if (mode == 1 || mode == 0) {
 
-                        ArrayList<String> names=new ArrayList<>();
-                        for(String a:ab){
-                            names.add(new HFile(a).getName());
-                        }
                         if (!move) {
 
                             Intent intent = new Intent(con, CopyService.class);

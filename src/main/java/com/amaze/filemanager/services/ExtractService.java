@@ -208,7 +208,7 @@ public class ExtractService extends Service {
                 stopSelf(b);
         }
     private void unzipEntry(int id, ZipFile zipfile, ZipEntry entry, String outputDir)
-            throws IOException {
+            throws Exception {
         if (entry.isDirectory()) {
             createDir(new File(outputDir, entry.getName()));
             return;
@@ -221,7 +221,7 @@ public class ExtractService extends Service {
         BufferedInputStream inputStream = new BufferedInputStream(
                 zipfile.getInputStream(entry));
         BufferedOutputStream outputStream = new BufferedOutputStream(
-                FileUtil.getOutputStream(outputFile,cd,entry.getCompressedSize()));
+                FileUtil.getOutputStream(outputFile,cd,0));
         try {
             int len;
             byte buf[] = new byte[20480];
@@ -248,7 +248,7 @@ public class ExtractService extends Service {
         }
     }
     private void unzipRAREntry(int id,String a, Archive zipfile, FileHeader entry, String outputDir)
-            throws IOException, RarException {
+            throws Exception {
         String name=entry.getFileNameString();
         name=name.replaceAll("\\\\","/");
         if (entry.isDirectory()) {
@@ -289,7 +289,7 @@ public class ExtractService extends Service {
         }
     }
     private void unzipTAREntry(int id, TarArchiveInputStream zipfile, TarArchiveEntry entry, String outputDir,String string)
-            throws IOException, RarException {
+            throws Exception {
         String name=entry.getName();
         if (entry.isDirectory()) {
             createDir(new File(outputDir, name));

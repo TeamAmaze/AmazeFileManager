@@ -134,7 +134,7 @@ public abstract class FileUtil {
         }
         return true;
     }
-    public static OutputStream getOutputStream(@NonNull final File target,Context context,long s) {
+    public static OutputStream getOutputStream(@NonNull final File target,Context context,long s)throws Exception {
 
         OutputStream outStream = null;
         try {
@@ -319,7 +319,6 @@ public abstract class FileUtil {
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(file, context)) {
             DocumentFile document = getDocumentFile(file, true,context);
             // getDocumentFile implicitly creates the directory.
-
             return document.exists();
         }
 

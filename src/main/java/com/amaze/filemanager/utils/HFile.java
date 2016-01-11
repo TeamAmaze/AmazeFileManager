@@ -1,6 +1,7 @@
 package com.amaze.filemanager.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -145,13 +146,13 @@ public class HFile {
         return size;
     }
 
-    public ArrayList<String[]> listFiles(boolean rootmode) {
-        ArrayList<String[]> arrayList = new ArrayList<>();
+    public ArrayList<BaseFile> listFiles(boolean rootmode) {
+        ArrayList<BaseFile> arrayList = new ArrayList<>();
         if (isSmb()) {
             try {
                 SmbFile smbFile = new SmbFile(path);
                 for (SmbFile smbFile1 : smbFile.listFiles()) {
-                    arrayList.add(new String[]{smbFile1.getPath()});
+                    arrayList.add(new BaseFile(smbFile1.getPath()));
                 }
             } catch (MalformedURLException e) {
                 if (arrayList != null) arrayList.clear();
@@ -199,7 +200,11 @@ public class HFile {
                 e.printStackTrace();
             }
         } else {
-            inputStream = FileUtil.getOutputStream(new File(path), context, length());
+            try {
+                inputStream = FileUtil.getOutputStream(new File(path), context, length());
+            } catch (Exception e) {
+                inputStream=null;
+            }
 
         }
         return inputStream;
@@ -226,6 +231,23 @@ public class HFile {
         }
         return false;
     }
+    public boolean setLastModified(long date){
+        if(isSmb())
+            try {
+            new SmbFile(path).setLastModified(date);
+
+             return true;
+        } catch (SmbException e) {
+            e.printStackTrace();
+            return false;
+        } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return false;
+        }
+        File f=new File(path);
+        return f.setLastModified(date);
+
+    }
     public void mkdir(Context context) {
         if (isSmb()) {
             try {
@@ -237,16 +259,18 @@ public class HFile {
             }
         } else FileUtil.mkdir(new File(path), context);
     }
-    public void delete(Context context){
+    public boolean delete(Context context){
         if(isSmb()){ try {
             new SmbFile(path).delete();
         } catch (SmbException e) {
             e.printStackTrace();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        }}
-        else{
-            FileUtil.deleteFile(new File(path),context);
         }
+        }
+        else{
+          return   FileUtil.deleteFile(new File(path),context);
+        }
+        return exists();
     }
 }

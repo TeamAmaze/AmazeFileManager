@@ -19,6 +19,8 @@
 
 package com.amaze.filemanager.utils;
 
+import android.util.Log;
+
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
 
@@ -158,20 +160,19 @@ public class RootHelper {
     }
 
     private static final String UNIX_ESCAPE_EXPRESSION = "(\\(|\\)|\\[|\\]|\\s|\'|\"|`|\\{|\\}|&|\\\\|\\?)";
-
-    public static ArrayList<String[]> getFilesList( String path, boolean showHidden) {
+    public static ArrayList<BaseFile> getFilesList( String path, boolean showHidden) {
         File f = new File(path);
-        ArrayList<String[]> files = new ArrayList<String[]>();
+        ArrayList<BaseFile> files = new ArrayList<>();
         try {
             if (f.exists() && f.isDirectory()) {
                 for (File x : f.listFiles()) {
-                    String k = "", size = "";
-                    if (!x.isDirectory()) size = "" + x.length();
+                    long size = 0;
+                    if (!x.isDirectory()) size = x.length();
                     if (showHidden) {
-                        files.add(new String[]{x.getPath(), "", parseFilePermission(x), k, x.lastModified() + "", size, x.isDirectory() + ""});
+                        files.add(new BaseFile(x.getPath(), parseFilePermission(x), x.lastModified() , size, x.isDirectory()));
                     } else {
                         if (!x.isHidden()) {
-                            files.add(new String[]{x.getPath(), "", parseFilePermission(x), k, x.lastModified() + "", size, x.isDirectory() + ""});
+                            files.add(new BaseFile(x.getPath(), parseFilePermission(x), x.lastModified() , size, x.isDirectory()));
                         }
                     }
                 }
@@ -183,15 +184,14 @@ public class RootHelper {
         return files;
     }
 
-    public static String[] addFile(File x, boolean showHidden) {
-        String k = "", size = "";
+    public static BaseFile generateBaseFile(File x, boolean showHidden) {
+        long size = 0;
         if (!x.isDirectory())
-            size = "" + x.length();
+            size = x.length();
         if (showHidden) {
-            return (new String[]{x.getPath(), "", parseFilePermission(x), k, x.lastModified() + "",
-                    size, x.isDirectory() + ""});
+            return (new BaseFile(x.getPath(), parseFilePermission(x), x.lastModified() , size, x.isDirectory()));
         } else if (!x.isHidden()) {
-            return (new String[]{x.getPath(), "", parseFilePermission(x), k, x.lastModified() + "", size, x.isDirectory() + ""});
+            return (new BaseFile(x.getPath(), parseFilePermission(x), x.lastModified() , size, x.isDirectory()));
         }
         return null;
     }
@@ -209,7 +209,30 @@ public class RootHelper {
         }
         return per;
     }
+    public static Boolean fileExists(String path){
+        File f=new File(path);
+        String name = f.getName();
+        String p=f.getParent();
+        Futils futils=new Futils();
+        if (p != null && p.length() >0) {
+            ArrayList<String> ls = runAndWait1("ls -la " + p, true);
+            for(String s:ls){
+                BaseFile strings=futils.parseName(s);
+                if(strings.getPath()!=null && strings.getPath().equals(name)){
+                    return true;
+                }
 
+            }
+        }
+    return null;
+    }
+    static boolean contains(String[] a,String name){
+        for(String s:a){
+            Log.e("checking",s);
+            if(s.equals(name))return true;
+        }
+        return false;
+    }
     static boolean isDirectory(String a, boolean root,int count) {
         File f = new File(a);
         String name = f.getName();
@@ -217,15 +240,15 @@ public class RootHelper {
         if (p != null && p.length() > 1) {
             ArrayList<String> ls = runAndWait1("ls -la " + p, root, 2000);
             for (String s : ls) {
-                if (s.contains(name)) {
+                if (contains(s.split(" "),name)) {
                     try {
-                        String[] path = new Futils().parseName(s);
-                        if (path[2].trim().startsWith("d")) return true;
-                        else if (path[2].trim().startsWith("l")) {
+                        BaseFile path = new Futils().parseName(s);
+                        if (path.getPermisson().trim().startsWith("d")) return true;
+                        else if (path.getPermisson().trim().startsWith("l")) {
                             if(count>5)
                                 return f.isDirectory();
                             else
-                            return isDirectory(path[1].trim(), root, ++count);
+                            return isDirectory(path.getLink().trim(), root, ++count);
                         }
                         else return f.isDirectory();
                     } catch (Exception e) {
@@ -239,17 +262,16 @@ public class RootHelper {
         return f.isDirectory();
     }
 
-    static boolean isDirectory(String[] path) {
-        if (path[2].startsWith("d")) return true;
-        else if (path[1].startsWith("l")) return new File(path[1]).isDirectory();
-        else return new File(path[0]).isDirectory();
+    static boolean isDirectory(BaseFile path) {
+        if (path.getPermisson().startsWith("d")) return true;
+        else return new File(path.getPath()).isDirectory();
     }
 
-    public static ArrayList<String[]> getFilesList(String path, boolean root, boolean showHidden) {
+    public static ArrayList<BaseFile> getFilesList(String path, boolean root, boolean showHidden) {
         String p = " ";
         if (showHidden) p = "a ";
         Futils futils = new Futils();
-        ArrayList<String[]> a = new ArrayList<>();
+        ArrayList<BaseFile> a = new ArrayList<>();
         ArrayList<String> ls = new ArrayList<>();
         if (root) {
             if (!path.startsWith("/storage") && !path.startsWith("/sdcard")) {
@@ -259,14 +281,13 @@ public class RootHelper {
                     for (String file : ls) {
                         if (!file.contains("Permission denied"))
                             try {
-                                String[] array = futils.parseName(file);
+                                BaseFile array = futils.parseName(file);
                                 if (array != null) {
-                                    array[0] = path + "/" + array[0];
-                                    if (array[1].trim().length() > 0) {
-                                        boolean isdirectory = isDirectory(array[1], root,0);
-                                        array[6] = isdirectory + "";
-
-                                    } else array[6] = "" + isDirectory(array);
+                                    array.setPath( path + "/" + array.getPath());
+                                    if (array.getLink().trim().length() > 0) {
+                                        boolean isdirectory = isDirectory(array.getLink(), root,0);
+                                        array.setDirectory(isdirectory);
+                                    } else array.setDirectory(isDirectory(array));
                                     a.add(array);
                                 }
                             } catch (Exception e) {

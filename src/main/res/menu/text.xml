@@ -32,7 +32,7 @@
         android:id="@+id/details"
         android:title="@string/details"
         app:showAsAction="never" />
-    <!--<item
+    <item
         android:id="@+id/openwith"
-        android:title="@string/openwith" />-->
+        android:title="@string/openwith" />
 </menu>

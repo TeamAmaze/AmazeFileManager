@@ -79,6 +79,7 @@ import com.amaze.filemanager.Loadlistener;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.Recycleradapter;
+import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
@@ -88,6 +89,7 @@ import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
+import com.amaze.filemanager.utils.BaseFile;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HFile;
@@ -525,7 +527,6 @@ public class Main extends android.support.v4.app.Fragment {
         skin = PreferenceUtils.getPrimaryColorString(Sp);
         fabSkin = PreferenceUtils.getAccentString(Sp);
         int icon=Sp.getInt("icon_skin_color_position", -1);
-        icon=icon==-1?Sp.getInt("skin_color_position", 4):icon;
         iconskin = PreferenceUtils.getFolderColorString(Sp);
         skin_color = Color.parseColor(skin);
         icon_skin_color = Color.parseColor(iconskin);
@@ -621,11 +622,6 @@ public class Main extends android.support.v4.app.Fragment {
         DARK_VIDEO = res.getDrawable(R.drawable.ic_doc_video_dark);
         this.setRetainInstance(false);
         f = new HFile(CURRENT_PATH);
-        if (!f.isCustomPath() && !f.isSmb() && !f.isDirectory()) {
-            File file = new File(CURRENT_PATH);
-            utils.openFile(file, MAIN_ACTIVITY);
-            CURRENT_PATH = (file.getParent());
-        }
         MAIN_ACTIVITY.initiatebbar();
         IS_LIST=savedInstanceState!=null?savedInstanceState.getBoolean("IS_LIST",IS_LIST):IS_LIST;
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
@@ -660,7 +656,6 @@ public class Main extends android.support.v4.app.Fragment {
                 loadlist((CURRENT_PATH), false, openMode);
             }
         });
-        // Connect the scroller to the recycler (to let the recycler scroll the scroller's handle)
         dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, false, SHOW_DIVIDERS);
         listView.addItemDecoration(dividerItemDecoration);
         mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor(fabSkin));
@@ -673,6 +668,7 @@ public class Main extends android.support.v4.app.Fragment {
                     int screen_width = listView.getWidth();
                     int dptopx = dpToPx(115);
                     columns = screen_width / dptopx;
+                    if(columns==0 || columns==-1)columns=3;
                     if (!IS_LIST) mLayoutManagerGrid.setSpanCount(columns);
                 }
                 if (savedInstanceState != null && !IS_LIST)
@@ -923,7 +919,11 @@ public class Main extends android.support.v4.app.Fragment {
             }
         }
     }
-
+    public void updateTabWithDb(Tab tab){
+       CURRENT_PATH= tab.getPath();
+        home=tab.getHome();
+        loadlist(CURRENT_PATH,false,-1);
+    }
 
     private void returnIntentResults(File file) {
         MAIN_ACTIVITY.mReturnIntent = false;
@@ -950,9 +950,9 @@ public class Main extends android.support.v4.app.Fragment {
         if (mActionMode != null) {
             mActionMode.finish();
         }
-        if(openMode==-1 && android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches())
+        /*if(openMode==-1 && android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches())
             bindDrive(path);
-        else new LoadList(back, ma,openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
+        else */new LoadList(back, ma,openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
 
     }
 
@@ -1267,20 +1267,25 @@ public class Main extends android.support.v4.app.Fragment {
         }
     }
 
-    public ArrayList<Layoutelements> addToSmb(SmbFile[] mFile) throws SmbException {
+    public ArrayList<Layoutelements> addToSmb(SmbFile[] mFile,String path) throws SmbException {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         if (searchHelper.size() > 500) searchHelper.clear();
         for (int i = 0; i < mFile.length; i++) {
             if (MAIN_ACTIVITY.hiddenfiles.contains(mFile[i].getPath()))
-                continue;;
+                continue;
             searchHelper.add(mFile[i].getPath());
+            String name=mFile[i].getName();
+            name=(mFile[i].isDirectory() && name.endsWith("/"))?name.substring(0,name.length()-1):name;
+            if(path.equals(smbPath)){
+                if(name.endsWith("$"))continue;
+            }
             if (mFile[i].isDirectory()) {
                 folder_count++;
-                a.add(new Layoutelements(folder, mFile[i].getName(), mFile[i].getPath(), "", "", "", 0, false, mFile[i].lastModified() + "", true));
+                a.add(new Layoutelements(folder, name, mFile[i].getPath(), "", "", "", 0, false, mFile[i].lastModified() + "", true));
             } else {
                 file_count++;
                 try {
-                    a.add(new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(), !IS_LIST, res), mFile[i].getName(), mFile[i].getPath(), "", "", utils.readableFileSize(mFile[i].length()), mFile[i].length(), false, mFile[i].lastModified() + "", false));
+                    a.add(new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(), !IS_LIST, res), name, mFile[i].getPath(), "", "", utils.readableFileSize(mFile[i].length()), mFile[i].length(), false, mFile[i].lastModified() + "", false));
                     }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -1290,25 +1295,25 @@ public class Main extends android.support.v4.app.Fragment {
         return a;
     }
 
-    public ArrayList<Layoutelements> addTo(ArrayList<String[]> mFile) {
+    public ArrayList<Layoutelements> addTo(ArrayList<BaseFile> mFile) {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         if (searchHelper.size() > 500) searchHelper.clear();
         for (int i = 0; i < mFile.size(); i++) {
-            String[] ele = mFile.get(i);
-            File f = new File(ele[0]);
+            BaseFile ele = mFile.get(i);
+            File f = new File(ele.getPath());
             searchHelper.add(f.getPath());
             String size = "";
-            if (!MAIN_ACTIVITY.hiddenfiles.contains(ele[0])) {
-                if ((ele[6]).equals("true")) {
+            if (!MAIN_ACTIVITY.hiddenfiles.contains(ele.getPath())) {
+                if (ele.isDirectory()) {
                     size = "";
-                    a.add(utils.newElement(folder, f.getPath(), mFile.get(i)[2], mFile.get(i)[1], size, 0, true, false, ele[4]));
+                    a.add(utils.newElement(folder, f.getPath(), ele.getPermisson(), ele.getLink(), size, 0, true, false, ele.getDate()+""));
                     folder_count++;
                 } else {
                     long longSize = 0;
                     try {
-                        if (!ele[5].trim().equals("") && !ele[5].toLowerCase().trim().equals("null")) {
-                            size = utils.readableFileSize(Long.parseLong(ele[5]));
-                            longSize = Long.parseLong(ele[5]);
+                        if (ele.getSize()!=-1) {
+                            longSize = Long.valueOf(ele.getSize());
+                            size = utils.readableFileSize(longSize);
                         } else {
                             size = "";
                             longSize = 0;
@@ -1317,7 +1322,7 @@ public class Main extends android.support.v4.app.Fragment {
                         //e.printStackTrace();
                     }
                     try {
-                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(), !IS_LIST, res), f.getPath(), mFile.get(i)[2], mFile.get(i)[1], size, longSize, false, false, ele[4]));
+                        a.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(), !IS_LIST, res), f.getPath(), ele.getPermisson(), ele.getLink(), size, longSize, false, false, ele.getDate()+""));
                         file_count++;
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -1451,7 +1456,7 @@ public class Main extends android.support.v4.app.Fragment {
         getActivity().sendBroadcast(addIntent);
     }
 
-    public void addSearchResult(ArrayList<String[]> a) {
+    public void addSearchResult(ArrayList<BaseFile> a) {
         if (listView != null) {
             if (!results) {
                 LIST_ELEMENTS.clear();

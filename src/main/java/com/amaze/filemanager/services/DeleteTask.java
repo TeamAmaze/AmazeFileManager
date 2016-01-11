@@ -28,6 +28,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -35,6 +36,7 @@ import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.utils.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 
+import com.amaze.filemanager.utils.RootHelper;
 import com.stericson.RootTools.RootTools;
 
 import java.io.File;
@@ -74,6 +76,7 @@ public class DeleteTask extends AsyncTask<ArrayList<String>, String, Boolean> {
     protected Boolean doInBackground(ArrayList<String>... p1) {
         files = p1[0];
         boolean b = true;
+        if(files.size()==0)return true;
         if(files.get(0).startsWith("smb:/")){
             for(String a:files)
                 try {
@@ -97,11 +100,11 @@ public class DeleteTask extends AsyncTask<ArrayList<String>, String, Boolean> {
             }
          if ((!b || mode==0 || mode ==2) && rootMode)
              for (String f : files) {
-                 try {
-                     b=RootTools.deleteFileOrDirectory(f, true);
-                 } catch (Exception e) {
-                     b = false;
-                 }
+                     RootTools.remount(f,"rw");
+                     RootHelper.runAndWait("rm -r \""+f+"\"",true);
+                     RootTools.remount(f,"ro");
+                     Boolean X=RootHelper.fileExists(f);
+                     if(X!=null && X==true)b=false;
             }
 
         return b;
@@ -162,7 +165,6 @@ public class DeleteTask extends AsyncTask<ArrayList<String>, String, Boolean> {
         final Uri filesUri = MediaStore.Files.getContentUri("external");
         // Delete the entry from the media database. This will actually delete media files.
         contentResolver.delete(filesUri, where, selectionArgs);
-        // If the file is not a media file, create a new entry.
 
     }
 }

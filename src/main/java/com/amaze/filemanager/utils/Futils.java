@@ -47,6 +47,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -90,6 +91,7 @@ public  final int READ = 4;
 
     public Futils() {
     }
+    //methods for fastscroller
     public static float getViewRawY(View view) {
         int[] location = new int[2];
         location[0] = 0;
@@ -98,18 +100,11 @@ public  final int READ = 4;
         return location[1];
     }
 
-    public static float getViewRawX(View view) {
-        int[] location = new int[2];
-        location[0] = (int) view.getX();
-        location[1] = 0;
-        ((View)view.getParent()).getLocationInWindow(location);
-        return location[0];
-    }
-
     public static float getValueInRange(float min, float max, float value) {
         float minimum = Math.max(min, value);
         return Math.min(minimum, max);
     }
+
     public MaterialDialog showBasicDialog(final MainActivity m, String[] texts) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         a.content(texts[0]);
@@ -1180,7 +1175,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             });
     }
 
-    public String[] parseName(String line) {
+    public BaseFile parseName(String line) {
         boolean linked = false;
         String name = "", link = "", size = "-1", date = "";
         String[] array = line.split(" ");
@@ -1194,7 +1189,6 @@ public void showPackageDialog(final File f,final MainActivity m){
         if(p!=-1){
         date = array[p - 1] + " | " + array[p];
         size = array[p - 2];}
-        else System.out.println("line"+line);
         if (!linked) {
             for (int i = p + 1; i < array.length; i++) {
                 name = name + " " + array[i];
@@ -1210,16 +1204,19 @@ public void showPackageDialog(final File f,final MainActivity m){
                 link = link + " " + array[i];
             }
         }
-        String size1 = size;
-        if (size.equals("")) {
-            size1 = "";
-        }
+        long Size = (size==null || size.trim().length()==0)?-1:Long.parseLong(size);
         if(date.trim().length()>0) {
             ParsePosition pos = new ParsePosition(0);
             SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
             Date stringDate = simpledateformat.parse(date, pos);
-            return new String[]{name, link, array[0], size, stringDate.getTime() + "", size1,""};
-        }else return new String[]{name, link, array[0], size,  new File("/").lastModified()+"", size1,""};
+            BaseFile baseFile=new BaseFile(name,array[0],stringDate.getTime(),Size,true);
+            baseFile.setLink(link);
+            return baseFile;
+        }else {
+            BaseFile baseFile= new BaseFile(name,array[0],new File("/").lastModified(),Size,true);
+            baseFile.setLink(link);
+            return baseFile;
+        }
 
     }
 

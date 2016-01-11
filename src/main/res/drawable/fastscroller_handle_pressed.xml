@@ -5,6 +5,6 @@
     <solid android:color="@android:color/darker_gray" />
 
     <size
-        android:width="@dimen/fastscroller_track_width"
+        android:width="8dp"
         android:height="@dimen/fastscroller_track_height" />
 </shape>

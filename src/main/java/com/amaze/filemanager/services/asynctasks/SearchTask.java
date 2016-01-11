@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.utils.BaseFile;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HFile;
 import com.amaze.filemanager.utils.RootHelper;
@@ -19,7 +20,7 @@ import jcifs.smb.SmbException;
 /**
  * Created by chinmay on 6/9/2015.
  */
-public class SearchTask extends AsyncTask<String, ArrayList<String[]>, Void> {
+public class SearchTask extends AsyncTask<String, ArrayList<BaseFile>, Void> {
     ArrayList<String> searchHelper;
     ArrayList<String> lis = new ArrayList<>();
     Main main;
@@ -36,7 +37,7 @@ public class SearchTask extends AsyncTask<String, ArrayList<String[]>, Void> {
     main.onSearchCompleted();
     }
     @Override
-    public void onProgressUpdate(ArrayList<String[]>... val) {
+    public void onProgressUpdate(ArrayList<BaseFile>... val) {
         if (!isCancelled()) {
                 main.addSearchResult(val[0]);
         }
@@ -50,27 +51,17 @@ boolean isPresentInList(String p){
     protected Void doInBackground(String... params) {
         int i = 0;
         String path = params[0];
-        ArrayList<String[]> arrayList=new ArrayList<>();
+        ArrayList<BaseFile> arrayList=new ArrayList<>();
         while (!isCancelled() && i < searchHelper.size()) {
             if (searchHelper.get(i).contains(path)){
                 HFile file=new HFile(searchHelper.get(i));
                 if (file.getName().toLowerCase()
                         .contains(key.toLowerCase()) && !isPresentInList(searchHelper.get(i)) ) {
-                    String k = "", size = "";
-                    if (file.isDirectory()) {
-                        k = "-1";
-                        if (main.SHOW_SIZE) size = "";
-                    } else if (main.SHOW_SIZE) size = "" + file.length();
-                    String[] string = new String[0];
-                    try {
-                        string = new String[]{file.getPath(), "", "", k, file.lastModified() + "", size,file.isDirectory()+""};
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    } catch (SmbException e) {
-                        e.printStackTrace();
+                    BaseFile baseFile=RootHelper.generateBaseFile(new File(file.getPath()), main.SHOW_HIDDEN);
+                    if(baseFile!=null){
+                        lis.add(baseFile.getPath());
+                        arrayList.add(baseFile);
                     }
-                    lis.add(string[0]);
-                    arrayList.add(string);
                 }
             }
             i++;
@@ -84,31 +75,31 @@ boolean isPresentInList(String p){
     public void getSearchResult(HFile f, String text) {
         search(f, text);
     }
-    ArrayList<String[]> arrayList1=new ArrayList<>();
+    ArrayList<BaseFile> arrayList1=new ArrayList<>();
     public void search(HFile file, String text) {
      if(arrayList1.size()>5){
          publishProgress(arrayList1);
          arrayList1=new ArrayList<>();
      }
         if (file.isDirectory()) {
-            ArrayList<String[]> f = file.listFiles(main.ROOT_MODE);
+            ArrayList<BaseFile> f = file.listFiles(main.ROOT_MODE);
             // do you have permission to read this directory?
             if (!isCancelled())
-                for (String[] x : f) {
-                    HFile temp = new HFile(x[0]);
+                for (BaseFile x : f) {
+                    HFile temp = new HFile(x.getPath());
                     if (!isCancelled()) {
                         if (temp.isDirectory()) {
                             if (temp.getName().toLowerCase()
-                                    .contains(text.toLowerCase()) && !isPresentInList(x[0])) {
-                                lis.add(x[0]);
+                                    .contains(text.toLowerCase()) && !isPresentInList(x.getPath())) {
+                                lis.add(x.getPath());
                                 arrayList1.add(x);
                             }
                             if (!isCancelled()) search(temp, text);
 
                         } else {
                             if (temp.getName().toLowerCase()
-                                    .contains(text.toLowerCase())&& !isPresentInList(x[0])) {
-                                lis.add(x[0]);
+                                    .contains(text.toLowerCase())&& !isPresentInList(x.getPath())) {
+                                lis.add(x.getPath());
                                 arrayList1.add(x);
                             }
                         }

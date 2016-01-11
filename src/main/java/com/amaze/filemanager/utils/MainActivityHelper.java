@@ -340,7 +340,7 @@ public class MainActivityHelper {
                 s = new String[]{parseSmbPath(smbFile.getPath()), smbFile.getPath()};
                 try {
                     if (!edit) {
-                        ma.loadlist(smbFile.getPath(), false, 1);
+                        ma.loadlist(smbFile.getPath(), false, -1);
                         if (mainActivity.Servers == null) mainActivity.Servers = new ArrayList<>();
                         mainActivity.Servers.add(s);
                         mainActivity.refreshDrawer();

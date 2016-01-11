@@ -134,7 +134,7 @@ public class FastScroller extends LinearLayout {
                 recyclerView.getAdapter() == null ||
                         recyclerView.getAdapter().getItemCount() == 0 ||
                         recyclerView.getChildAt(0) == null ||
-                        isRecyclerViewScrollable() //TODO make it dependent on the orientation
+                        isRecyclerViewScrollable()
                 ) {
             setVisibility(INVISIBLE);
         } else {
