@@ -54,11 +54,18 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 public class CopyService extends Service {
@@ -269,7 +276,7 @@ public class CopyService extends Service {
         boolean contains(String path){
             for(String a:failedFOps)if(a.contains(path))return true;
         return false;}
-        private void copyFiles(HFile sourceFile, HFile targetFile, int id,boolean move) throws IOException {
+        private void copyFiles(final HFile sourceFile,final HFile targetFile,final int id,final boolean move) throws IOException {
             if (sourceFile.isDirectory()) {
                 if(!hash.get(id))return;
                 if (!targetFile.exists()) targetFile.mkdir(c);
@@ -293,29 +300,41 @@ public class CopyService extends Service {
                     }
                 }
             } else {
-                if(!hash.get(id))return;
+                if (!hash.get(id)) return;
                 long size = sourceFile.length();
                 InputStream in = sourceFile.getInputStream();
-                OutputStream out= targetFile.getOutputStream(c);
-                if(in==null || out==null){
+                OutputStream out = targetFile.getOutputStream(c);
+                if (in == null || out == null) {
                     failedFOps.add(sourceFile.getPath());
-                    copy_successful=false;
+                    copy_successful = false;
                     return;
                 }
-                if(!hash.get(id))return;
+                if (!hash.get(id)) return;
                 copy(in, out, size, id, sourceFile.getName(), move);
-                if(!checkNonRootFiles(sourceFile,targetFile)){
-                    failedFOps.add(sourceFile.getPath());
-                    copy_successful=false;
-                }
-                targetFile.setLastModified(sourceFile.lastModified());
-                if(!hash.get(id))return;
-                if(move){
-                    if(!failedFOps.contains(sourceFile.getPath())){
-                        sourceFile.delete(c);
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        if(!checkNonRootFiles(sourceFile,targetFile)){
+                            failedFOps.add(sourceFile.getPath());
+                            copy_successful=false;
+                        }
+                        try {
+                            targetFile.setLastModified(sourceFile.lastModified());
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        } catch (SmbException e) {
+                            e.printStackTrace();
+                        }
+                        if(!hash.get(id))return null;
+                        if(move){
+                            if(!failedFOps.contains(sourceFile.getPath())){
+                                sourceFile.delete(c);
+                            }
+                        }
+                        if(!targetFile.isSmb()) utils.scanFile(targetFile.getPath(), c);
+                        return null;
                     }
-                }
-                if(!targetFile.isSmb()) utils.scanFile(targetFile.getPath(), c);
+                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }
         long time=System.nanoTime()/500000000;
@@ -391,28 +410,28 @@ public class CopyService extends Service {
             long  fileBytes = 0l;
             BufferedInputStream in = new BufferedInputStream(stream);
             BufferedOutputStream out=new BufferedOutputStream(outputStream);
-                byte[] buffer = new byte[1024*60];
-                int length;
-                //copy the file content in bytes
-                while ((length = in.read(buffer)) > 0) {
-                    boolean b = hash.get(id);
-                    if (b) {
-                        out.write(buffer, 0, length);
-                        copiedBytes += length;
-                        fileBytes += length;
-                        long time1=System.nanoTime()/500000000;
-                        if(((int)time1)>((int)(time))){
-                            calculateProgress(name,fileBytes,id,size,move);
-                            time=System.nanoTime()/500000000;
-                        }
+            byte[] buffer = new byte[1024*60];
+            int length;
+            //copy the file content in bytes
+            while ((length = in.read(buffer)) > 0) {
+                boolean b = hash.get(id);
+                if (b) {
+                    out.write(buffer, 0, length);
+                    copiedBytes += length;
+                    fileBytes += length;
+                    long time1=System.nanoTime()/500000000;
+                    if(((int)time1)>((int)(time))){
+                        calculateProgress(name,fileBytes,id,size,move);
+                        time=System.nanoTime()/500000000;
+                    }
 
-                    } else {
-                        publishCompletedResult(id, Integer.parseInt("456" + id));
-                        in.close();
-                        out.close();
-                        stopSelf(id);
-                        return;
-                    }}
+                } else {
+                    publishCompletedResult(id, Integer.parseInt("456" + id));
+                    in.close();
+                    out.close();
+                    stopSelf(id);
+                    return;
+                }}
             in.close();
             out.close();
             stream.close();

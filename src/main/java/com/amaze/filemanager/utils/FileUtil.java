@@ -594,7 +594,6 @@ public abstract class FileUtil {
         for (File file : context.getExternalFilesDirs("external")) {
             if (file != null && !file.equals(context.getExternalFilesDir("external"))) {
                 int index = file.getAbsolutePath().lastIndexOf("/Android/data");
-                System.out.println(file.getPath()+"\t"+index);
                 if (index < 0) {
                     Log.w("AmazeFileUtils", "Unexpected external file dir: " + file.getAbsolutePath());
                 }
