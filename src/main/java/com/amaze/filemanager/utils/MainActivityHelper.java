@@ -52,6 +52,21 @@ public class MainActivityHelper {
         this.mainActivity=mainActivity;
         utils=new Futils();
     }
+    public void showFailedOperationDialog(ArrayList<String> failedOps,boolean move,Context contextc){
+        MaterialDialog.Builder mat=new MaterialDialog.Builder(contextc);
+        mat.title("Operation Unsuccessful");
+        if(mainActivity.theme1==1)mat.theme(Theme.DARK);
+        mat.positiveColor(Color.parseColor(mainActivity.fabskin));
+        mat.positiveText(R.string.cancel);
+        String content="Following files were not "+(move?"moved":"copied")+" successfully";
+        int k=1;
+        for(String s:failedOps){
+            content=content+ "\n" + (k) + ". " + new HFile(s).getName();
+            k++;
+        }
+        mat.content(content);
+        mat.build().show();
+    }
     public final BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

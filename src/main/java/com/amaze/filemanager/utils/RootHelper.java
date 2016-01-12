@@ -233,7 +233,7 @@ public class RootHelper {
         }
         return false;
     }
-    static boolean isDirectory(String a, boolean root,int count) {
+    public static boolean isDirectory(String a, boolean root,int count) {
         File f = new File(a);
         String name = f.getName();
         String p = f.getParent();

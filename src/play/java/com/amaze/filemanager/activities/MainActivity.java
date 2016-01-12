@@ -25,6 +25,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -300,6 +301,13 @@ public class MainActivity extends AppCompatActivity implements
         openprocesses = getIntent().getBooleanExtra("openprocesses", false);
         try {
             intent = getIntent();
+            if(intent.getStringArrayListExtra("failedOps")!=null){
+                ArrayList<String> failedOps=intent.getStringArrayListExtra("failedOps");
+                if(failedOps!=null){
+                    mainActivityHelper.showFailedOperationDialog(failedOps,intent.getBooleanExtra("move",false),this);
+                }
+            }
+            if(intent.getAction()!=null)
             if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
 
                 // file picker intent
@@ -1040,6 +1048,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onPause() {
         super.onPause();
         unregisterReceiver(mainActivityHelper.mNotificationReceiver);
+        unregisterReceiver(receiver2);
         killToast();
     }
 
@@ -1055,6 +1064,7 @@ public class MainActivity extends AppCompatActivity implements
         newFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
         newFilter.addDataScheme(ContentResolver.SCHEME_FILE);
         registerReceiver(mainActivityHelper.mNotificationReceiver, newFilter);
+        registerReceiver(receiver2,new IntentFilter("general_communications"));
     }
 
     @Override
@@ -2382,7 +2392,13 @@ public class MainActivity extends AppCompatActivity implements
             }
             else utils.openFile(new File(path),mainActivity);
         }
-        else if((openprocesses = i.getBooleanExtra("openprocesses", false))!=false){
+        else if(i.getStringArrayListExtra("failedOps")!=null){
+            ArrayList<String> failedOps=i.getStringArrayListExtra("failedOps");
+            if(failedOps!=null){
+               mainActivityHelper.showFailedOperationDialog(failedOps,i.getBooleanExtra("move",false),this);
+            }
+        }
+        else if((openprocesses = i.getBooleanExtra("openprocesses", false))){
 
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, new ProcessViewer());
@@ -2394,6 +2410,7 @@ public class MainActivity extends AppCompatActivity implements
             transaction.commitAllowingStateLoss();
             supportInvalidateOptionsMenu();
         }
+        else if(intent.getAction()!=null)
         if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
 
             // file picker intent
@@ -2452,6 +2469,18 @@ public class MainActivity extends AppCompatActivity implements
         }).run();
     }
 
+    private BroadcastReceiver receiver2 = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent i) {
+            if (i.getStringArrayListExtra("failedOps") != null) {
+                ArrayList<String> failedOps = i.getStringArrayListExtra("failedOps");
+                if (failedOps != null) {
+                    mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), mainActivity);
+                }
+            }
+        }
+    };
 
 
     public void translateDrawerList(boolean down) {

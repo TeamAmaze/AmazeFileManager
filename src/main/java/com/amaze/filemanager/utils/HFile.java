@@ -260,16 +260,16 @@ public class HFile {
         } else FileUtil.mkdir(new File(path), context);
     }
     public boolean delete(Context context){
-        if(isSmb()){ try {
-            new SmbFile(path).delete();
-        } catch (SmbException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        }
-        else{
-          return   FileUtil.deleteFile(new File(path),context);
+        if (isSmb()) {
+            try {
+                new SmbFile(path).delete();
+            } catch (SmbException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            return FileUtil.deleteFile(new File(path), context);
         }
         return exists();
     }

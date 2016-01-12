@@ -579,8 +579,7 @@ public abstract class FileUtil {
         boolean result = document.canWrite() && file.exists();
 
         // Ensure that the dummy file is not remaining.
-        document.delete();
-
+        deleteFile(file,c);
         return result;
     }
 

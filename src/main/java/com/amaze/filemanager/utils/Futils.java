@@ -494,14 +494,7 @@ public void openWith(final File f,final Context c) {
         for (int i = 0; i < pos.size(); i++) {
             String path = a.get(pos.get(i)).getDesc();
             todelete.add((path));
-            if(path.startsWith("smb://"))
-                try {
-                    names = names + "\n" + (i + 1) + ". " + new SmbFile(path).getName();
-                } catch (MalformedURLException e) {
-
-                }
-            else
-            names = names + "\n" + (i + 1) + ". " + new File(path).getName();
+            names = names + "\n" + (i + 1) + ". " + a.get(i).getTitle();
         }
         c.content(getString(b.getActivity(), R.string.questiondelete) + names);
 

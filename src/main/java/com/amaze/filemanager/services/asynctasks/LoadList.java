@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
@@ -66,7 +67,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
 
     @Override
     public void onProgressUpdate(String... message) {
-        Toast.makeText(ma.getActivity(), message[0], Toast.LENGTH_LONG).show();
+        Toast.makeText(ma.getActivity(), message[0], Toast.LENGTH_SHORT).show();
     }
 
     boolean grid;
@@ -99,7 +100,12 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
             try {
                 SmbFile[] smbFile = hFile.getSmbFile().listFiles();
                 list = ma.addToSmb(smbFile,path);
-            } catch (SmbException e) {
+            }
+            catch (SmbAuthException e){
+                ma.reauthenticateSmb();
+                publishProgress(e.getLocalizedMessage());
+            }
+            catch (SmbException e) {
                 publishProgress(e.getLocalizedMessage());
                 e.printStackTrace();
             } catch (NullPointerException e) {

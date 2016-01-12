@@ -1165,7 +1165,7 @@ public class Main extends android.support.v4.app.Fragment {
             } else {
                 if (openMode == 1)
                     try {
-                        if (!MAIN_ACTIVITY.Servers.contains(CURRENT_PATH)) {
+                        if (!smbPath.equals(CURRENT_PATH)) {
                             String path = (new SmbFile(CURRENT_PATH).getParent());
                             loadlist((path), true, openMode);
                         } else loadlist(home, false, 0);
@@ -1187,7 +1187,16 @@ public class Main extends android.support.v4.app.Fragment {
             loadlist(f.getPath(), true, 0);
         }
     }
-
+    public void reauthenticateSmb(){
+        if(smbPath!=null){
+            MAIN_ACTIVITY.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    MAIN_ACTIVITY.mainActivityHelper.createSmbDialog(smbPath,true,ma);
+                }
+            });
+        }
+    }
     public void goBackItemClick() {
         if (openMode == 2) {
             updateList();

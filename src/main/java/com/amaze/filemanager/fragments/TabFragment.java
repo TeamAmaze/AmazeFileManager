@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -51,12 +52,14 @@ public class TabFragment extends android.support.v4.app.Fragment {
     View buttons;
     View mToolBarContainer;
     boolean savepaths;
+    FragmentManager fragmentManager;
     ImageView indicator1,indicator2;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment,
                 container, false);
+        fragmentManager=getActivity().getSupportFragmentManager();
         mToolBarContainer=getActivity().findViewById(R.id.lin);
         indicator1=(ImageView)getActivity().findViewById(R.id.tab_indicator1);
         indicator2=(ImageView)getActivity().findViewById(R.id.tab_indicator2);
@@ -151,8 +154,9 @@ public class TabFragment extends android.support.v4.app.Fragment {
         } else {
             fragments.clear();
                 try {
-                    fragments.add(0, getActivity().getSupportFragmentManager().getFragment(savedInstanceState, "tab"+0));
-                    fragments.add(1, getActivity().getSupportFragmentManager().getFragment(savedInstanceState, "tab"+1));
+                    if(fragmentManager==null)fragmentManager=getActivity().getSupportFragmentManager();
+                    fragments.add(0,fragmentManager.getFragment(savedInstanceState, "tab"+0));
+                    fragments.add(1, fragmentManager.getFragment(savedInstanceState, "tab"+1));
                 } catch (Exception e) {
                     e.printStackTrace();
             }
@@ -243,8 +247,9 @@ public class TabFragment extends android.support.v4.app.Fragment {
         try {
             int i = 0;
             if (fragments != null && fragments.size() !=0) {
+                if(fragmentManager==null)fragmentManager=getActivity().getSupportFragmentManager();
                 for (Fragment fragment : fragments) {
-                    getActivity().getSupportFragmentManager().putFragment(outState, "tab" + i, fragment);
+                    fragmentManager.putFragment(outState, "tab" + i, fragment);
                     i++;
                 }
                 outState.putInt("pos", mViewPager.getCurrentItem());
