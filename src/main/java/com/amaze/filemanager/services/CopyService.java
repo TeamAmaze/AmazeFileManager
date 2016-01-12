@@ -205,7 +205,6 @@ public class CopyService extends Service {
                 getTotalBytes(files);
                 for (int i = 0; i < files.size(); i++) {
                     HFile f1 = new HFile(files.get(i));
-
                     try {
 
                         if (hash.get(id)){
@@ -216,10 +215,10 @@ public class CopyService extends Service {
                             copyFiles((f1), new HFile(FILE2, names.get(i),f1.isDirectory()), id, move);
                         }
                         else{
-                            generateNotification(failedFOps,move);
                             stopSelf(id);
                         }
                     } catch (Exception e) {
+                        e.printStackTrace();
                         failedFOps.add(files.get(i));
                         for(int j=i+1;j<files.size();j++)failedFOps.add(files.get(j));
                         publishResults("" + e, 0, 0, id, 0, 0, false, move);
@@ -305,7 +304,7 @@ public class CopyService extends Service {
                 }
                 if(!hash.get(id))return;
                 copy(in, out, size, id, sourceFile.getName(), move);
-                if(!checkFiles(sourceFile,targetFile)){
+                if(!checkNonRootFiles(sourceFile,targetFile)){
                     failedFOps.add(sourceFile.getPath());
                     copy_successful=false;
                 }
@@ -317,10 +316,56 @@ public class CopyService extends Service {
                     }
                 }
                 if(!targetFile.isSmb()) utils.scanFile(targetFile.getPath(), c);
-            }}
+            }
+        }
         long time=System.nanoTime()/500000000;
         AsyncTask asyncTask;
+        boolean checkNonRootFiles(HFile hFile1,HFile hFile2){
+            long l1=hFile1.length(),l2=hFile2.length();
+            if(hFile2.exists() && ((l1!=-1 && l2!=-1)?l1==l2:true)){
+                //after basic checks try checksum if possible
+                InputStream inputStream=hFile1.getInputStream();
+                InputStream inputStream1=hFile2.getInputStream();
+                if(inputStream==null || inputStream1==null)return true;
+                String md5,md5_1;
+                try {
+                    md5=getMD5Checksum(inputStream);
+                    md5_1=getMD5Checksum(inputStream1);
+                    if(md5!=null && md5_1!=null && md5.length()>0 && md5_1.length()>0){
+                        if(md5.equals(md5_1))return true;
+                        else return false;
+                    }else return true;
+                } catch (Exception e) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public  String getMD5Checksum(InputStream filename) throws Exception {
+            byte[] b = createChecksum(filename);
+            String result = "";
 
+            for (int i = 0; i < b.length; i++) {
+                result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+            }
+            return result;
+        }
+
+        public  byte[] createChecksum(InputStream fis) throws Exception {
+            byte[] buffer = new byte[8192];
+            MessageDigest complete = MessageDigest.getInstance("MD5");
+            int numRead;
+
+            do {
+                numRead = fis.read(buffer);
+                if (numRead > 0) {
+                    complete.update(buffer, 0, numRead);
+                }
+            } while (numRead != -1);
+
+            fis.close();
+            return complete.digest();
+        }
         void calculateProgress(final String name, final long fileBytes, final int id, final long
                 size, final boolean move) {
             if (asyncTask != null && asyncTask.getStatus() == AsyncTask.Status.RUNNING)
@@ -385,7 +430,7 @@ public class CopyService extends Service {
         Intent intent= new Intent(this, MainActivity.class);
         intent.putExtra("failedOps",failedOps);
         intent.putExtra("move",move);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 1, intent, 0);
+        PendingIntent pIntent = PendingIntent.getActivity(this, (int)Math.random(), intent, 0);
         mBuilder.setContentIntent(pIntent);
         mBuilder.setSmallIcon(R.drawable.ic_content_copy_white_36dp);
         mNotifyManager.notify(741,mBuilder.build());

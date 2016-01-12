@@ -49,6 +49,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -91,7 +92,9 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     private int skinStatusBar;
     private String fabSkin;
     private android.support.v7.widget.Toolbar toolbar;
-
+    ArrayList<StringBuilder> texts;
+    static final int maxlength=200;
+    int index=0;
     /*
     List maintaining the searched text's start/end index as key/value pair
      */
@@ -293,6 +296,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
 
         }
         mInput = (EditText) findViewById(R.id.fname);
+        final ScrollView scrollView=(ScrollView)findViewById(R.id.editscroll);
 
         try {
             if (getIntent().getData() != null){
@@ -341,9 +345,20 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         }
         load(mFile);
     }
+class a extends ScrollView {
+    public a(Context context) {
+        super(context);
+    }
+
+    @Override
+    protected void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
+        super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
+
+    }
+}
 
     private void checkUnsavedChanges() {
-        if (mOriginal != null && mInput.isShown() && !mOriginal.equals(mInput.getText().toString())) {
+        if (mOriginal != null && mInput.isShown() && !texts.get(index).equals(mInput.getText().toString())) {
             new MaterialDialog.Builder(this)
                     .title(R.string.unsavedchanges)
                     .content(R.string.unsavedchangesdesc)
@@ -437,11 +452,26 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
                     InputStream inputStream=getInputStream(uri,path);
                     if (inputStream!=null) {
                         String str=null;
+                        if(texts==null)texts=new ArrayList<>();
                         StringBuilder stringBuilder=new StringBuilder();
                         BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
                         if(bufferedReader!=null){
-                            while ((str=bufferedReader.readLine())!=null)
+                            int i=0,k=0;
+                            StringBuilder stringBuilder1=new StringBuilder("");
+                            while ((str=bufferedReader.readLine())!=null){
                                 stringBuilder.append(str+"\n");
+                                if(k<maxlength){
+                                    stringBuilder1.append(str+"\n");
+                                    k++;
+                                }else {
+                                    texts.add(i,stringBuilder1);
+                                    i++;
+                                    stringBuilder1=new StringBuilder("");
+                                    stringBuilder1.append(str+"\n");
+                                    k=1;
+                                }
+                            }
+                            texts.add(i,stringBuilder1);
                         }
                         mOriginal=stringBuilder.toString();
                      inputStream.close();
@@ -450,16 +480,29 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
                         StringBuilder stringBuilder=new StringBuilder();
                         ArrayList<String> arrayList = RootHelper
                                 .runAndWait1("cat " + mFile.getPath(), true);
-                        for (String x : arrayList) {
-                            stringBuilder.append(x+"\n");
+                        int i=0,k=0;
+                        StringBuilder stringBuilder1=new StringBuilder("");
+                        for (String str:arrayList){
+                            stringBuilder.append(str+"\n");
+                            if(k<maxlength){
+                                stringBuilder1.append(str+"\n");
+                                k++;
+                            }else {
+                                texts.add(i,stringBuilder1);
+                                i++;
+                                stringBuilder1=new StringBuilder("");
+                                stringBuilder1.append(str+"\n");
+                                k=1;
+                            }
                         }
+                        texts.add(i,stringBuilder1);
                         mOriginal=stringBuilder.toString();
                     }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                mInput.setText(mOriginal);
+                                mInput.setText(texts.get(0).toString());
                                 if (mOriginal.isEmpty()) {
 
                                     mInput.setHint(R.string.file_empty);
@@ -512,6 +555,11 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
                 utils.showProps(mFile, this, theme1);
                 break;
             case R.id.openwith:
+                int lines=0;
+                for(StringBuilder stringBuilder:texts){
+                    lines+=stringBuilder.toString().split("\n").length;
+                }
+                Toast.makeText(this,lines+"",Toast.LENGTH_SHORT).show();
                 utils.openunknown(mFile, c, false);
                 break;
             case R.id.find:
@@ -556,7 +604,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
             mTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    mModified = !mInput.getText().toString().equals(mOriginal);
+                    mModified = !mInput.getText().toString().equals(texts.get(index));
                     invalidateOptionsMenu();
                 }
             }, 250);

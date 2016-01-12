@@ -268,7 +268,6 @@ public  final int READ = 4;
 
                 @Override
                 public void onScanCompleted(String path, Uri uri) {
-                    System.out.println("SCAN COMPLETED: " + path);
 
                 }
             });
