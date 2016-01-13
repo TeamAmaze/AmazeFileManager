@@ -56,6 +56,9 @@ import com.amaze.filemanager.ui.views.CheckBx;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.stericson.RootTools.RootTools;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Preffrag extends PreferenceFragment{
@@ -330,6 +333,14 @@ public class Preffrag extends PreferenceFragment{
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto","arpitkh96@gmail.com", null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
+                Toast.makeText(getActivity(),getActivity().getFilesDir().getPath(),Toast.LENGTH_SHORT).show();
+                File f=new File(getActivity().getExternalCacheDir(),"log.txt");
+                if(!f.exists()) try {
+                    f.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                emailIntent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(f));
                 startActivity(Intent.createChooser(emailIntent,getResources().getString(R.string.feedback)));
                 return false;
             }

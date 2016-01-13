@@ -1,7 +1,11 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.filesystem;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.util.Log;
+
+import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,38 +25,102 @@ import jcifs.smb.SmbFile;
 //Hybrid file for handeling all types of files
 public class HFile {
     String path;
+    public static final int ROOT_MODE=3,LOCAL_MODE=0,SMB_MODE=1,UNKNOWN=-1;
+    int mode=0;
+    public HFile(int mode, String path) {
+        this.path = path;
+        this.mode = mode;
+    }
 
-    public HFile(String path) {
+    public HFile(int mode,String path, String name,boolean isDirectory) {
+        this.mode = mode;
+        if (path.startsWith("smb://") || isSmb()){
+            if(!isDirectory)this.path = path + name;
+            else if(!name.endsWith("/")) this.path=path+name+"/";
+            else this.path=path+name;
+        }
+        else this.path = path + "/" + name;
+    }
+    public void generateMode(Context context){
+        if(path.startsWith("smb://"))mode=SMB_MODE;
+        else {
+            if(context==null){
+                mode=LOCAL_MODE;
+                return;
+            }
+            boolean rootmode=PreferenceManager.getDefaultSharedPreferences(context).getBoolean("rootMode",false);
+            if(FileUtil.isOnExtSdCard(getFile(),context))mode=LOCAL_MODE;
+            else if(rootmode){
+                if(!getFile().canRead())mode=ROOT_MODE;
+            }
+            if(mode==UNKNOWN)mode=LOCAL_MODE;
+        }
+
+    }
+    public void setMode(int mode) {
+        this.mode = mode;
+    }
+
+    public int getMode() {
+        return mode;
+    }
+
+    public void setPath(String path) {
         this.path = path;
     }
 
-    public HFile(String path, String name,boolean isDirectory) {
-        if (path.startsWith("smb://"))
-            if(!isDirectory)this.path = path + name;
-            else this.path=path+name+"/";
-        else this.path = path + "/" + name;
+    public boolean isLocal(){
+        return mode==LOCAL_MODE;
     }
-
-    public boolean isSmb() {
-        return path.startsWith("smb:/");
+    public boolean isRoot(){
+        return mode==ROOT_MODE;
+    }
+    public boolean isSmb(){
+        return mode==SMB_MODE;
+    }
+    File getFile(){return new File(path);}
+    BaseFile generateBaseFileFromParent(){
+        ArrayList<BaseFile> arrayList= RootHelper.getFilesList(getFile().getParent(),true,true,null);
+        for(BaseFile baseFile:arrayList){
+            if(baseFile.getPath().equals(path))
+                return baseFile;
+        }
+        return null;
     }
     public long lastModified() throws MalformedURLException, SmbException {
-        if(isSmb())return new SmbFile(path).lastModified();
-        else return new File(path).lastModified();
+        switch (mode){
+            case SMB_MODE:
+                SmbFile smbFile=getSmbFile();
+                if(smbFile!=null)
+                    return smbFile.lastModified();
+                break;
+            case LOCAL_MODE:
+                new File(path).lastModified();
+                break;
+            case ROOT_MODE:
+                BaseFile baseFile=generateBaseFileFromParent();
+                return baseFile.getDate();
+        }
+        return new File("/").lastModified();
     }
     public long length() {
         long s = 0l;
-        if (isSmb()) {
-            try {
-                s = new SmbFile(path).length();
-            } catch (SmbException e) {
-                s = 0l;
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                s = 0l;
-                e.printStackTrace();
-            }
-        } else s = new File(path).length();
+        switch (mode){
+            case SMB_MODE:
+                SmbFile smbFile=getSmbFile();
+                if(smbFile!=null)
+                    try {
+                        s = smbFile.length();
+                    } catch (SmbException e) {
+                    }
+                    return s;
+            case LOCAL_MODE:
+                s = new File(path).length();
+                return s;
+            case ROOT_MODE:
+                BaseFile baseFile=generateBaseFileFromParent();
+                return baseFile.getSize();
+        }
         return s;
     }
 
@@ -61,17 +129,28 @@ public class HFile {
     }
 
     public String getName() {
-        String name = "";
-        if (isSmb()) {
-            try {
-                name = new SmbFile(path).getName();
-            } catch (MalformedURLException e) {
-                name = "";
-                e.printStackTrace();
-            }
-        } else
-            name = new File(path).getName();
+        String name = null;
+        switch (mode){
+            case SMB_MODE:
+                SmbFile smbFile=getSmbFile();
+                if(smbFile!=null)
+                    return smbFile.getName();
+                break;
+            case LOCAL_MODE:
+                return new File(path).getName();
+            case ROOT_MODE:
+                return new File(path).getName();
+        }
         return name;
+    }
+    public SmbFile getSmbFile(int timeout){
+        try {
+            SmbFile smbFile=new SmbFile(path);
+            smbFile.setConnectTimeout(timeout);
+            return smbFile;
+        } catch (MalformedURLException e) {
+            return null;
+        }
     }
     public SmbFile getSmbFile(){
         try {
@@ -81,8 +160,14 @@ public class HFile {
         }
     }
     public boolean isCustomPath(){
-        if(path.equals("0") || path.equals("1") || path.equals("2") || path.equals("3")  || path.equals("5") || path.equals("6") || path
-                .equals("4"))return true;
+        if(path.equals("0") ||
+                path.equals("1") ||
+                path.equals("2") ||
+                path.equals("3") ||
+                path.equals("5") ||
+                path.equals("6") ||
+                path.equals("4"))
+            return true;
         return false;
     }
     public String getParent() {
@@ -110,7 +195,8 @@ public class HFile {
                 isDirectory = false;
                 e.printStackTrace();
             }
-        } else isDirectory = new File(path).isDirectory();
+        } else if(isLocal())isDirectory = new File(path).isDirectory();
+        else if(isRoot())isDirectory=RootHelper.isDirectory(path,true,5);
         return isDirectory;
 
     }
@@ -152,7 +238,13 @@ public class HFile {
             try {
                 SmbFile smbFile = new SmbFile(path);
                 for (SmbFile smbFile1 : smbFile.listFiles()) {
-                    arrayList.add(new BaseFile(smbFile1.getPath()));
+                    BaseFile baseFile=new BaseFile(smbFile1.getPath());
+                    baseFile.setName(smbFile1.getName());
+                    baseFile.setMode(HFile.SMB_MODE);
+                    baseFile.setDirectory(smbFile1.isDirectory());
+                    baseFile.setDate(smbFile1.lastModified());
+                    baseFile.setSize(baseFile.isDirectory()?0:smbFile1.length());
+                    arrayList.add(baseFile);
                 }
             } catch (MalformedURLException e) {
                 if (arrayList != null) arrayList.clear();
@@ -164,12 +256,21 @@ public class HFile {
                 e.printStackTrace();
             }
         } else {
-            arrayList = RootHelper.getFilesList(path, rootmode, true);
+            arrayList = RootHelper.getFilesList(path, rootmode, true,null);
         }
         if (arrayList == null) arrayList = new ArrayList<>();
         return arrayList;
     }
-
+    public String getReadablePath(String path){
+        if(isSmb())
+            return parseSmbPath(path);
+            return path;
+    }
+    String parseSmbPath(String a) {
+        if (a.contains("@"))
+            return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
+        else return a;
+    }
     public InputStream getInputStream() {
         InputStream inputStream = null;
         if (isSmb()) {
@@ -214,15 +315,14 @@ public class HFile {
         boolean exists = false;
         if (isSmb()) {
             try {
-                exists = new SmbFile(path).exists();
+                SmbFile smbFile=getSmbFile(2000);
+                exists =smbFile!=null?smbFile .exists():false;
             } catch (SmbException e) {
                 exists = false;
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                exists = false;
-                e.printStackTrace();
             }
-        } else exists = new File(path).exists();
+        }
+        else if(isLocal())exists = new File(path).exists();
+        else if(isRoot())return RootHelper.fileExists(path);
         return exists;
     }
     public boolean isSimpleFile(){
@@ -234,14 +334,11 @@ public class HFile {
     public boolean setLastModified(long date){
         if(isSmb())
             try {
-            new SmbFile(path).setLastModified(date);
-
-             return true;
+                new SmbFile(path).setLastModified(date);
+                return true;
         } catch (SmbException e) {
-            e.printStackTrace();
-            return false;
+                 return false;
         } catch (MalformedURLException e) {
-                e.printStackTrace();
                 return false;
         }
         File f=new File(path);
@@ -253,24 +350,25 @@ public class HFile {
             try {
                 new SmbFile(path).mkdirs();
             } catch (SmbException e) {
-                e.printStackTrace();
+                Logger.log(e,path,context);
             } catch (MalformedURLException e) {
-                e.printStackTrace();
+                Logger.log(e,path,context);
             }
-        } else FileUtil.mkdir(new File(path), context);
+        } else
+            FileUtil.mkdir(new File(path), context);
     }
     public boolean delete(Context context){
         if (isSmb()) {
             try {
                 new SmbFile(path).delete();
             } catch (SmbException e) {
-                e.printStackTrace();
+                Logger.log(e,path,context);
             } catch (MalformedURLException e) {
-                e.printStackTrace();
+                Logger.log(e,path,context);
             }
         } else {
             return FileUtil.deleteFile(new File(path), context);
         }
-        return exists();
+        return !exists();
     }
 }

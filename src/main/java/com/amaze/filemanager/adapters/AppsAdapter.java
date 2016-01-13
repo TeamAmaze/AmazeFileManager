@@ -43,12 +43,13 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.ui.Layoutelements;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.PreferenceUtils;
 
 import java.io.File;
@@ -220,7 +221,8 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                 utils.shareFiles(arrayList2,app.getActivity(),app.theme1,color1);
                                 return true;
                             case R.id.unins:
-                                final File f1 = new File(rowItem.getDesc());
+                                final BaseFile f1 = new BaseFile(rowItem.getDesc());
+                                f1.setMode(HFile.ROOT_MODE);
                                 ApplicationInfo info1=null;
                                 for(PackageInfo info:c){
                                     if(info.applicationInfo.publicSourceDir.equals(rowItem.getDesc()))info1=info.applicationInfo;
@@ -250,16 +252,19 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                                     @Override
                                                     public void onPositive(MaterialDialog materialDialog) {
 
-                                                        ArrayList<File> files = new ArrayList<File>();
+                                                        ArrayList<BaseFile> files = new ArrayList<>();
                                                         if (Build.VERSION.SDK_INT >= 21) {
                                                             String parent = f1.getParent();
-                                                            if (!parent.equals("app") && !parent.equals("priv-app"))
-                                                                files.add(new File(f1.getParent()));
+                                                            if (!parent.equals("app") && !parent.equals("priv-app")){
+                                                                BaseFile baseFile=new BaseFile(f1.getParent());
+                                                                baseFile.setMode(HFile.ROOT_MODE);
+                                                                files.add(baseFile);
+                                                            }
                                                             else files.add(f1);
                                                         } else {
                                                             files.add(f1);
                                                         }
-                                                        new DeleteTask(app.getActivity().getContentResolver(), app.getActivity()).execute(utils.toStringArray(files));
+                                                        new DeleteTask(app.getActivity().getContentResolver(), app.getActivity()).execute((files));
                                                     }
                                                 }).build().show();
                                     } else {

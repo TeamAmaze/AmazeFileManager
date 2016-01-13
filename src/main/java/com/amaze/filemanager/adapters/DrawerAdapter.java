@@ -39,8 +39,8 @@ import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.filesystem.HFile;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -138,7 +138,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                     }else if(position<m.storage_count ){
                         String path = ((EntryItem) getItem(position)).getPath();
                         if(!path.equals("/"))
-                            new Futils().showProps(new File(path),m,m.theme1);
+                            new Futils().showProps(new HFile(HFile.LOCAL_MODE,path),m,m.theme1);
                     }
 
                     // return true to denote no further processing

@@ -37,7 +37,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -69,20 +68,17 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -90,7 +86,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -117,18 +112,17 @@ import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
 import com.amaze.filemanager.ui.icons.IconUtils;
-import com.amaze.filemanager.ui.icons.Icons;
-import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
-import com.amaze.filemanager.utils.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.BookSorter;
-import com.amaze.filemanager.utils.FileUtil;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.HFile;
+import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
@@ -145,9 +139,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -169,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements
     public ScrimInsetsRelativeLayout mDrawerLinear;
     public String skin, path = "", launchPath;
     public int theme;
-    public ArrayList<String> COPY_PATH = null, MOVE_PATH = null;
+    public ArrayList<BaseFile> COPY_PATH = null, MOVE_PATH = null;
     public FrameLayout frameLayout;
     public boolean mReturnIntent = false;
     public ArrayList<Item> list;
@@ -201,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements
     boolean openprocesses = false;
     int hidemode;
     public int operation = -1;
-    public ArrayList<String> oparrayList, opnameList;
+    public ArrayList<BaseFile> oparrayList;
     public String oppathe, oppathe1;
     IMyAidlInterface aidlInterface;
     MaterialDialog materialDialog;
@@ -303,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements
         try {
             intent = getIntent();
             if (intent.getStringArrayListExtra("failedOps") != null) {
-                ArrayList<String> failedOps = intent.getStringArrayListExtra("failedOps");
+                ArrayList<BaseFile> failedOps = intent.getParcelableArrayListExtra("failedOps");
                 if (failedOps != null) {
                     mainActivityHelper.showFailedOperationDialog(failedOps, intent.getBooleanExtra("move", false), this);
                 }
@@ -343,21 +335,27 @@ public class MainActivity extends AppCompatActivity implements
                 transaction.commit();
                 supportInvalidateOptionsMenu();
             } else {
-                HFile file = new HFile(path);
-                if (path != null && path.length() > 0 && file.isDirectory())
+                if (path != null && path.length() > 0){
+                    HFile file = new HFile(HFile.UNKNOWN,path);
+                    file.generateMode(this);
+                    if(file.isDirectory())
                     goToMain(path);
+                    else{
+                        goToMain("");
+                        utils.openFile(new File(path), this);
+                    }
+                }
                 else {
                     goToMain("");
-                    if (path != null && path.length() > 0) utils.openFile(new File(path), this);
+
                 }
             }
         } else {
-            COPY_PATH = savedInstanceState.getStringArrayList("COPY_PATH");
-            MOVE_PATH = savedInstanceState.getStringArrayList("MOVE_PATH");
+            COPY_PATH = savedInstanceState.getParcelableArrayList("COPY_PATH");
+            MOVE_PATH = savedInstanceState.getParcelableArrayList("MOVE_PATH");
             oppathe = savedInstanceState.getString("oppathe");
             oppathe1 = savedInstanceState.getString("oppathe1");
-            oparrayList = savedInstanceState.getStringArrayList("oparrayList");
-            opnameList = savedInstanceState.getStringArrayList("opnameList");
+            oparrayList = savedInstanceState.getParcelableArrayList("oparrayList");
             operation = savedInstanceState.getInt("operation");
             select = savedInstanceState.getInt("selectitem", 0);
             adapter.toggleChecked(select);
@@ -962,7 +960,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.paste:
                 String path = ma.CURRENT_PATH;
-                ArrayList<String> arrayList = new ArrayList<String>();
+                ArrayList<BaseFile> arrayList = new ArrayList<>();
                 if (COPY_PATH != null) {
                     arrayList = COPY_PATH;
                     new CopyFileCheck(ma, path, false,mainActivity,rootmode).executeOnExecutor(AsyncTask
@@ -1035,14 +1033,13 @@ public class MainActivity extends AppCompatActivity implements
         if (select != null)
             outState.putInt("selectitem", select);
         if (COPY_PATH != null)
-            outState.putStringArrayList("COPY_PATH", COPY_PATH);
+            outState.putParcelableArrayList("COPY_PATH", COPY_PATH);
         if (MOVE_PATH != null)
-            outState.putStringArrayList("MOVE_PATH", MOVE_PATH);
+            outState.putParcelableArrayList("MOVE_PATH", MOVE_PATH);
         if (oppathe != null) {
             outState.putString("oppathe", oppathe);
             outState.putString("oppathe1", oppathe1);
-            outState.putStringArrayList("opnameList", (opnameList));
-            outState.putStringArrayList("oparraylist", (oparrayList));
+            outState.putParcelableArrayList("oparraylist", (oparrayList));
             outState.putInt("operation", operation);
         }
     }
@@ -1410,15 +1407,14 @@ public class MainActivity extends AppCompatActivity implements
                     Intent intent1 = new Intent(con, CopyService.class);
                     intent1.putExtra("FILE_PATHS", (oparrayList));
                     intent1.putExtra("COPY_DIRECTORY", oppathe);
-                    intent1.putExtra("FILE_NAMES", opnameList);
                     startService(intent1);
                     break;
                 case MOVE://moving
-                    new MoveFiles(utils.toFileArray(oparrayList), opnameList, ((Main) getFragment().getTab()), ((Main) getFragment().getTab()).getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                    new MoveFiles((oparrayList), ((Main) getFragment().getTab()), ((Main) getFragment().getTab()).getActivity(),0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     break;
                 case NEW_FOLDER://mkdir
                     Main ma1 = ((Main) getFragment().getTab());
-                    mainActivityHelper.mkDir((oppathe), ma1);
+                    mainActivityHelper.mkDir(RootHelper.generateBaseFile(new File(oppathe),true), ma1);
                     break;
                 case RENAME:
                     mainActivityHelper.rename((oppathe), (oppathe1));
@@ -1427,7 +1423,7 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case NEW_FILE:
                     Main ma3 = ((Main) getFragment().getTab());
-                    mainActivityHelper.mkFile((oppathe), ma3);
+                    mainActivityHelper.mkFile(new HFile(HFile.LOCAL_MODE,oppathe), ma3);
 
                     break;
                 case EXTRACT:
@@ -2370,7 +2366,8 @@ public class MainActivity extends AppCompatActivity implements
         if (pending_path != null) {
             try {
                 TabFragment m = getFragment();
-                HFile hFile = new HFile(pending_path);
+                HFile hFile = new HFile(HFile.UNKNOWN,pending_path);
+                hFile.generateMode(this);
                 Main main = ((Main) m.getTab());
                 if (main != null)
                     if (hFile.isSimpleFile()) utils.openFile(new File(pending_path), mainActivity);
@@ -2398,7 +2395,7 @@ public class MainActivity extends AppCompatActivity implements
                 } else goToMain(path);
             } else utils.openFile(new File(path), mainActivity);
         } else if (i.getStringArrayListExtra("failedOps") != null) {
-            ArrayList<String> failedOps = i.getStringArrayListExtra("failedOps");
+            ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra("failedOps");
             if (failedOps != null) {
                 mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), this);
             }
@@ -2478,7 +2475,7 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public void onReceive(Context context, Intent i) {
             if (i.getStringArrayListExtra("failedOps") != null) {
-                ArrayList<String> failedOps = i.getStringArrayListExtra("failedOps");
+                ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra("failedOps");
                 if (failedOps != null) {
                     mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), mainActivity);
                 }

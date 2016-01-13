@@ -19,7 +19,6 @@
 
 package com.amaze.filemanager.fragments;
 
-import android.animation.Animator;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -50,8 +49,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +60,7 @@ import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.RarHelperTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.ui.ZipObj;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -80,7 +78,7 @@ public class ZipViewer extends Fragment {
 
     public String s;
     public File f;
-    public ArrayList<File> files;
+    public ArrayList<BaseFile> files;
     public Boolean selection = false;
     public String current;
     public Futils utils = new Futils();
@@ -193,7 +191,7 @@ public class ZipViewer extends Fragment {
         iconskin = PreferenceUtils.getFolderColorString(Sp);
         mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
-        files = new ArrayList<File>();
+        files = new ArrayList<>();
         if (savedInstanceState == null && f != null) {
             if (f.getPath().endsWith(".rar")) {
                 openmode = 1;
@@ -441,7 +439,7 @@ public class ZipViewer extends Fragment {
         // bug : only deletes most recent openUnknown file from cache
         if (files.size() == 1) {
 
-            new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute(utils.toStringArray(files));
+            new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute((files));
         }
     }
 
@@ -450,7 +448,7 @@ public class ZipViewer extends Fragment {
         super.onResume();
         if (files.size() == 1) {
 
-            new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute(utils.toStringArray(files));
+            new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute((files));
         }
     }
 

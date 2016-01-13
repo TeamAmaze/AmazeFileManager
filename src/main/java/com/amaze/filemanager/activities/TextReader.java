@@ -54,11 +54,12 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.services.asynctasks.SearchTextTask;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.RootHelper;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
@@ -552,7 +553,11 @@ class a extends ScrollView {
                 writeTextFile(mFile.getPath(), mInput.getText().toString());
                 break;
             case R.id.details:
-                utils.showProps(mFile, this, theme1);
+                if(mFile.canRead()){
+                    HFile hFile=new HFile(HFile.UNKNOWN,mFile.getPath());
+                    hFile.generateMode(this);
+                    utils.showProps(hFile, this, theme1);
+                }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
                 break;
             case R.id.openwith:
                 int lines=0;

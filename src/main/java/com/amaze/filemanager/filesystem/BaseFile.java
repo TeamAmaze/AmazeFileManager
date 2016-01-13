@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.filesystem;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -6,26 +6,43 @@ import android.os.Parcelable;
 /**
  * Created by arpitkh996 on 11-01-2016.
  */
-public class BaseFile implements Parcelable{
+public class BaseFile extends HFile implements Parcelable{
     long date,size;
     boolean isDirectory;
-    String path;
     String permisson;
-
+    String name;
 
     String link="";
-
     public BaseFile(String path) {
+        super(0,path);
         this.path = path;
     }
 
     public BaseFile(String path, String permisson, long date, long size, boolean isDirectory) {
+        super(0,path);
         this.date = date;
         this.size = size;
         this.isDirectory = isDirectory;
         this.path = path;
         this.permisson = permisson;
+
     }
+
+    @Override
+    public String getName() {
+        if(name!=null && name.length()>0)
+        return name;
+        else return super.getName();
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getMode() {
+        return mode;
+    }
+
 
     public String getLink() {
         return link;
@@ -62,9 +79,6 @@ public class BaseFile implements Parcelable{
         return path;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
 
     public String getPermisson() {
         return permisson;
@@ -74,11 +88,13 @@ public class BaseFile implements Parcelable{
         this.permisson = permisson;
     }
     protected BaseFile(Parcel in) {
+        super(in.readInt(),in.readString());
+        permisson = in.readString();
+        name=in.readString();
         date = in.readLong();
         size = in.readLong();
         isDirectory = in.readByte() != 0;
-        path = in.readString();
-        permisson = in.readString();
+
     }
 
     public static final Creator<BaseFile> CREATOR = new Creator<BaseFile>() {
@@ -100,10 +116,13 @@ public class BaseFile implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mode);
+        dest.writeString(path);
+        dest.writeString(permisson);
+        dest.writeString(name);
         dest.writeLong(date);
         dest.writeLong(size);
         dest.writeByte((byte) (isDirectory ? 1 : 0));
-        dest.writeString(path);
-        dest.writeString(permisson);
+
     }
 }

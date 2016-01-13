@@ -26,6 +26,7 @@ import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.RoundedImageView;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.io.File;
@@ -575,7 +576,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.about:
-                                main.utils.showProps((rowItem).getDesc(), rowItem.getPermissions(), main, main.ROOT_MODE);
+                                main.utils.showProps((rowItem).generateBaseFile(), rowItem.getPermissions(), main, main.ROOT_MODE);
                                 return true;
                             case R.id.share:
                                 ArrayList<File> arrayList = new ArrayList<File>();
@@ -583,21 +584,21 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                  main.utils.shareFiles(arrayList, main.MAIN_ACTIVITY, main.theme1, Color.parseColor(main.fabSkin));
                                 return true;
                             case R.id.rename:
-                                main.rename(rowItem.getDesc());
+                                main.rename(rowItem.generateBaseFile());
                                 return true;
                             case R.id.cpy:
                                 MainActivity MAIN_ACTIVITY=main.MAIN_ACTIVITY;
                                 main.MAIN_ACTIVITY.MOVE_PATH = null;
-                                ArrayList<String> copies = new ArrayList<String>();
-                                copies.add(rowItem.getDesc());
+                                ArrayList<BaseFile> copies = new ArrayList<>();
+                                copies.add(rowItem.generateBaseFile());
                                 MAIN_ACTIVITY.COPY_PATH = copies;
                                 MAIN_ACTIVITY.supportInvalidateOptionsMenu();
                                 return true;
                             case R.id.cut:
                                 MainActivity MAIN_ACTIVITY1=main.MAIN_ACTIVITY;
                                 MAIN_ACTIVITY1.COPY_PATH = null;
-                                ArrayList<String> copie = new ArrayList<String>();
-                                copie.add(rowItem.getDesc());
+                                ArrayList<BaseFile> copie = new ArrayList<>();
+                                copie.add(rowItem.generateBaseFile());
                                 MAIN_ACTIVITY1.MOVE_PATH = copie;
                                 MAIN_ACTIVITY1.supportInvalidateOptionsMenu();
                                 return true;
@@ -618,7 +619,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     }
                 });
                 popupMenu.inflate(R.menu.item_extras);
-                if (main.openMode == 1) popupMenu.getMenu().findItem(R.id.about).setVisible(false);
                 String x = rowItem.getDesc().toLowerCase();
                 if(rowItem.isDirectory())popupMenu.getMenu().findItem(R.id.share).setVisible(false);
                 if (x.endsWith(".zip") || x.endsWith(".jar") || x.endsWith(".apk") || x.endsWith(".rar") || x.endsWith(".tar") || x.endsWith(".tar.gz"))

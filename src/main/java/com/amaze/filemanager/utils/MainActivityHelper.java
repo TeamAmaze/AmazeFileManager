@@ -21,6 +21,11 @@ import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.DrawerAdapter;
+import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.Operations;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.services.DeleteTask;
@@ -52,7 +57,7 @@ public class MainActivityHelper {
         this.mainActivity=mainActivity;
         utils=new Futils();
     }
-    public void showFailedOperationDialog(ArrayList<String> failedOps,boolean move,Context contextc){
+    public void showFailedOperationDialog(ArrayList<BaseFile> failedOps, boolean move, Context contextc){
         MaterialDialog.Builder mat=new MaterialDialog.Builder(contextc);
         mat.title("Operation Unsuccessful");
         if(mainActivity.theme1==1)mat.theme(Theme.DARK);
@@ -60,8 +65,8 @@ public class MainActivityHelper {
         mat.positiveText(R.string.cancel);
         String content="Following files were not "+(move?"moved":"copied")+" successfully";
         int k=1;
-        for(String s:failedOps){
-            content=content+ "\n" + (k) + ". " + new HFile(s).getName();
+        for(BaseFile s:failedOps){
+            content=content+ "\n" + (k) + ". " + s.getName();
             k++;
         }
         mat.content(content);
@@ -100,7 +105,7 @@ public class MainActivityHelper {
                     @Override
                     public void onClick(View v) {
                         String a = materialDialog.getInputEditText().getText().toString();
-                        mkDir(path + "/" + a, ma);
+                        mkDir(new HFile(ma.openMode,path + "/" + a),ma);
                         materialDialog.dismiss();
                     }
                 });
@@ -113,7 +118,7 @@ public class MainActivityHelper {
                     @Override
                     public void onClick(View v) {
                         String a = materialDialog1.getInputEditText().getText().toString();
-                        mkFile(path1 + "/" + a, ma);
+                        mkFile(new HFile(ma.openMode,path1 + "/" + a), ma);
                         materialDialog1.dismiss();
                     }
                 });
@@ -252,7 +257,7 @@ public class MainActivityHelper {
         }
     }
 
-    public void compressFiles(File file, ArrayList<String> b) {
+    public void compressFiles(File file, ArrayList<BaseFile> b) {
         int mode = checkFolder(file.getParentFile(), mainActivity);
         if (mode == 2) {
             mainActivity.oppathe = (file.getPath());
@@ -395,88 +400,103 @@ public class MainActivityHelper {
 
     }
 
-    public void mkFile(String path, Main ma) {
-        boolean b = false;
-        if (path == null)
-            return;
-        if (path.startsWith("smb:/")) {
-            try {
-                new SmbFile(path).createNewFile();
-            } catch (SmbException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+    public void mkFile(final HFile path,final Main ma) {
+        final Toast toast=Toast.makeText(ma.getActivity(),"Creating File",Toast.LENGTH_LONG);
+        toast.show();
+        Operations.mkdir(path, ma.getActivity(), ma.ROOT_MODE, new Operations.ErrorCallBack() {
+            @Override
+            public void exists(HFile file) {
+                ma.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(toast!=null)toast.cancel();
+                        Toast.makeText(mainActivity, (R.string.fileexist), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
-            ma.updateList();
-            return;
-        }
-        File f1 = new File(path);
-        if (!f1.exists()) {
-            int mode = checkFolder(new File(f1.getParent()), mainActivity);
-            if (mode == 1) try {
-                b = FileUtil.mkfile(f1, mainActivity);
-            } catch (IOException e) {
-                e.printStackTrace();
-                b = false;
-            }
-            else if (mode == 2) {
-                mainActivity.oppathe = f1.getPath();
-                mainActivity.operation = mainActivity.NEW_FILE;
-            }
-            ma.updateList();
 
-        } else {
-            Toast.makeText(mainActivity, (R.string.fileexist), Toast.LENGTH_LONG).show();
-        }
-        if (!b && mainActivity.rootmode) RootTools.remount(f1.getParent(), "rw");
-        RootHelper.runAndWait("touch " + f1.getPath(), true);
-        ma.updateList();
+            @Override
+            public void launchSAF(HFile file) {
 
+                ma.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(toast!=null)toast.cancel();
+                        mainActivity.oppathe = path.getPath();
+                        mainActivity.operation = mainActivity.NEW_FOLDER;
+                        guideDialogForLEXA(mainActivity.oppathe1);
+                    }});
+
+            }
+
+            @Override
+            public void done(HFile hFile,final boolean b) {
+                ma.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(toast!=null)toast.cancel();
+                        if(b){
+                            ma.updateList();
+                        }
+                        else Toast.makeText(ma.getActivity(),"Operation Failed",Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+            }
+        });
     }
-
-    public void mkDir(String path, Main ma) {
-        boolean b = false;
-        if (path == null)
-            return;
-        if (path.startsWith("smb:/")) {
-            try {
-                new SmbFile(path).mkdirs();
-            } catch (SmbException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+    public void mkDir(final HFile path,final Main ma) {
+        final Toast toast=Toast.makeText(ma.getActivity(),"Creating Folder",Toast.LENGTH_LONG);
+                toast.show();
+        Operations.mkdir(path, ma.getActivity(), ma.ROOT_MODE, new Operations.ErrorCallBack() {
+            @Override
+            public void exists(HFile file) {
+                ma.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(toast!=null)toast.cancel();
+                        Toast.makeText(mainActivity, (R.string.fileexist), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
-            ma.updateList();
-            return;
-        }
-        File f = new File(path);
-        if (!f.exists()) {
-            int mode = checkFolder(f.getParentFile(), mainActivity);
-            if (mode == 1) b = FileUtil.mkdir(f, mainActivity);
-            else if (mode == 2) {
-                mainActivity.oppathe = f.getPath();
+
+            @Override
+            public void launchSAF(HFile file) {
+                if(toast!=null)toast.cancel();
+                ma.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                mainActivity.oppathe = path.getPath();
                 mainActivity.operation = mainActivity.NEW_FOLDER;
+                guideDialogForLEXA(mainActivity.oppathe1);
+            }});
+
             }
-            ma.updateList();
-            if (b)
-                Toast.makeText(mainActivity, (R.string.foldercreated), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(mainActivity, (R.string.fileexist), Toast.LENGTH_LONG).show();
-        }
-        if (!b && mainActivity.rootmode) {
-            RootTools.remount(f.getParent(), "rw");
-            RootHelper.runAndWait("mkdir " + f.getPath(), true);
-            ma.updateList();
-        }
+
+           @Override
+           public void done(HFile hFile,final boolean b) {
+            ma.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    if(toast!=null)toast.cancel();
+                    if(b){
+                        ma.updateList();
+                    }
+                    else Toast.makeText(ma.getActivity(),"Operation Failed",Toast.LENGTH_SHORT).show();
+                }
+            });
+           }
+       });
     }
 
-    public void deleteFiles(ArrayList<String> files) {
+    public void deleteFiles(ArrayList<BaseFile> files) {
         if (files == null) return;
-        if (files.get(0).startsWith("smb://")) {
+        if (files.get(0).isSmb()) {
             new DeleteTask(null, mainActivity).execute((files));
             return;
         }
-        int mode = checkFolder(new File(files.get(0)).getParentFile(), mainActivity);
+        int mode = checkFolder(new File(files.get(0).getPath()).getParentFile(), mainActivity);
         if (mode == 2) {
             mainActivity.oparrayList = (files);
             mainActivity.operation = mainActivity.DELETE;
@@ -532,7 +552,7 @@ public class MainActivityHelper {
             }
         });
         MaterialDialog b = a.build();
-        if (fpath.startsWith("smb:")) b.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+        if (ma.openMode==2) b.getActionButton(DialogAction.POSITIVE).setEnabled(false);
         b.show();
     }
 

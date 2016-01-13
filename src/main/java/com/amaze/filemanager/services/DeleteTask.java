@@ -20,7 +20,6 @@
 package com.amaze.filemanager.services;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -28,28 +27,24 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.ZipViewer;
-import com.amaze.filemanager.utils.FileUtil;
+import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 
-import com.amaze.filemanager.utils.RootHelper;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.stericson.RootTools.RootTools;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 
-import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile;
-
-public class DeleteTask extends AsyncTask<ArrayList<String>, String, Boolean> {
+public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> {
 
 
-    ArrayList<String> files;
+    ArrayList<BaseFile> files;
     ContentResolver contentResolver;
     Context cd;
     Futils utils = new Futils();
@@ -70,40 +65,35 @@ public class DeleteTask extends AsyncTask<ArrayList<String>, String, Boolean> {
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
-        Toast.makeText(cd, values[0], Toast.LENGTH_LONG).show();
+        Toast.makeText(cd, values[0], Toast.LENGTH_SHORT).show();
     }
 
-    protected Boolean doInBackground(ArrayList<String>... p1) {
+    protected Boolean doInBackground(ArrayList<BaseFile>... p1) {
         files = p1[0];
         boolean b = true;
         if(files.size()==0)return true;
-        if(files.get(0).startsWith("smb:/")){
-            for(String a:files)
-                try {
-                    new SmbFile(a).delete();
-                } catch (SmbException e) {
-                    b=false;
-                } catch (MalformedURLException e) {
-                b=false;
-                }
+        if(files.get(0).isSmb()){
+            for(BaseFile a:files)
+                    (a).delete(cd);
+
         }
-        int mode=checkFolder(new File(files.get(0)).getParentFile(),cd);
+        int mode=checkFolder(new File(files.get(0).getPath()).getParentFile(),cd);
         if (mode==1) {
-            for(String f:files) {
+            for(BaseFile f:files) {
                 try {
 
-                    if(!FileUtil.deleteFile(new File(f),cd))b=false;
+                    if(!FileUtil.deleteFile(new File(f.getPath()),cd))b=false;
                 } catch (Exception e) {
                     b = false;
                 }
             }
             }
          if ((!b || mode==0 || mode ==2) && rootMode)
-             for (String f : files) {
-                     RootTools.remount(f,"rw");
-                     RootHelper.runAndWait("rm -r \""+f+"\"",true);
-                     RootTools.remount(f,"ro");
-                     Boolean X=RootHelper.fileExists(f);
+             for (BaseFile f : files) {
+                     RootTools.remount(f.getParent(),"rw");
+                     String s=RootHelper.runAndWait("rm -r \""+f.getPath()+"\"",true);
+                     RootTools.remount(f.getParent(),"ro");
+                     Boolean X=RootHelper.fileExists(f.getPath());
                      if(X!=null && X==true)b=false;
             }
 
@@ -137,14 +127,14 @@ public class DeleteTask extends AsyncTask<ArrayList<String>, String, Boolean> {
         Intent intent = new Intent("loadlist");
         cd.sendBroadcast(intent);
 
-        if(!files.get(0).startsWith("smb:")) {
+        if(!files.get(0).isSmb()) {
             try {
-                for (String f : files) {
-                delete(cd,f);
+                for (BaseFile f : files) {
+                delete(cd,f.getPath());
                 }
             } catch (Exception e) {
-                for (String f : files) {
-                    utils.scanFile(f, cd);
+                for (BaseFile f : files) {
+                    utils.scanFile(f.getPath(), cd);
                 }
             }
         }if (!b) {

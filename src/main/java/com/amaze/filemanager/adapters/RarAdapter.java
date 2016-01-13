@@ -9,7 +9,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -27,11 +26,12 @@ import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.ui.ZipObj;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.views.RoundedImageView;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.filesystem.HFile;
 import com.github.junrar.rarfile.FileHeader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.zip.ZipFile;
@@ -361,7 +361,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
                         } else {
                             String x=rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1);
-                            File file = new File(c.getCacheDir().getAbsolutePath() + "/" + x);
+                            BaseFile file = new BaseFile(c.getCacheDir().getAbsolutePath() + "/" + x);
+                                  file  .setMode(HFile.LOCAL_MODE);
                             zipViewer.files.clear();
                             zipViewer.files.add(0, file);
 
@@ -476,8 +477,9 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                     }else {
                         if (headerRequired(rowItem)!=null) {
                             FileHeader fileHeader = headerRequired(rowItem);
-                            File file1 = new File(c.getCacheDir().getAbsolutePath()
+                            BaseFile file1 = new BaseFile(c.getCacheDir().getAbsolutePath()
                                     + "/" + fileHeader.getFileNameString());
+                                file1.setMode(HFile.LOCAL_MODE);
                             zipViewer.files.clear();
                             zipViewer.files.add(0, file1);
                             new ZipExtractTask(zipViewer.archive, c.getCacheDir().getAbsolutePath(),

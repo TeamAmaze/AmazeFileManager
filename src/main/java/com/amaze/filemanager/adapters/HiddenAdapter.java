@@ -15,8 +15,8 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.DeleteTask;
-import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.HFile;
+import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.HistoryManager;
 
 
@@ -78,10 +78,7 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
         }
         final ViewHolder holder = (ViewHolder) view.getTag();
         holder.txtTitle.setText(f.getName());
-        String a=f.getPath();
-        if(a.startsWith("smb:/")){
-            a=parseSmbPath(a);
-        }
+        String a=f.getReadablePath(f.getPath());
         holder.txtDesc.setText(a);
         if(hide)
             holder.image.setVisibility(View.GONE);
@@ -91,9 +88,11 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
             hidden.removePath(items.get(p).getPath(),"Table2");
             if(!f.isSmb() && f.isDirectory())
             {
-                ArrayList<File> a=new ArrayList<File>();
-                a.add(new File(items.get(p).getPath()+"/.nomedia"));
-                new DeleteTask(context.getActivity().getContentResolver(),c).execute(new Futils().toStringArray(a));
+                ArrayList<BaseFile> a=new ArrayList<BaseFile>();
+                BaseFile baseFile=new BaseFile(items.get(p).getPath()+"/.nomedia");
+                baseFile.setMode(HFile.LOCAL_MODE);
+                a.add(baseFile);
+                new DeleteTask(context.getActivity().getContentResolver(),c).execute((a));
             }
                 items.remove(items.get(p));
                 context.updatehiddenfiles();
@@ -133,10 +132,6 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
     public void updateDialog(MaterialDialog dialog){
         materialDialog=dialog;
     }
-    String parseSmbPath(String a) {
-        if (a.contains("@"))
-            return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
-        else return a;
-    }
+
 
 }

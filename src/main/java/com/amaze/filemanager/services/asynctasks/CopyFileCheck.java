@@ -17,9 +17,9 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.CopyService;
-import com.amaze.filemanager.utils.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.HFile;
+import com.amaze.filemanager.filesystem.HFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,28 +28,29 @@ import java.util.ArrayList;
  * Created by arpitkh996 on 12-01-2016.
  */
 
-public class CopyFileCheck extends AsyncTask<ArrayList<String>, String, ArrayList<String>> {
+public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayList<BaseFile>> {
     Main ma;
     String path;
     Boolean move;
-    ArrayList<String> ab, a, b, lol,names;
+    ArrayList<BaseFile> ab, a, b, lol;
     int counter = 0;
     Futils utils;
     MainActivity mainActivity;
     Context con;
     boolean rootmode=false;
+    int openMode=0;
     public CopyFileCheck(Main main, String path, Boolean move, MainActivity context,boolean rootMode) {
         this.ma = main;
         this.path = path;
         this.move = move;
         mainActivity=context;
         con=context;
+        openMode=ma.openMode;
         utils=new Futils();
         this.rootmode=rootMode;
         a = new ArrayList<>();
         b = new ArrayList<>();
         lol = new ArrayList<>();
-        names=new ArrayList<>();
     }
 
     @Override
@@ -59,14 +60,13 @@ public class CopyFileCheck extends AsyncTask<ArrayList<String>, String, ArrayLis
 
     @Override
     // Actual download method, run in the task thread
-    protected ArrayList<String> doInBackground(ArrayList<String>... params) {
+    protected ArrayList<BaseFile> doInBackground(ArrayList<BaseFile>... params) {
 
         ab = params[0];
         long totalBytes = 0;
 
         for (int i = 0; i < params[0].size(); i++) {
-
-            HFile f1 = new HFile(params[0].get(i));
+            BaseFile f1=ab.get(i);
 
             if (f1.isDirectory()) {
 
@@ -76,15 +76,13 @@ public class CopyFileCheck extends AsyncTask<ArrayList<String>, String, ArrayLis
                 totalBytes = totalBytes + f1.length();
             }
         }
-        HFile f = new HFile(path);
-        if (f.getUsableSpace() > totalBytes) {
+        HFile f = new HFile(openMode,path);
+        if (f.getUsableSpace() >= totalBytes) {
 
             for (BaseFile k1 : f.listFiles(rootmode)) {
-                HFile k = new HFile(k1.getPath());
-                for (String j : ab) {
+                for (BaseFile j : ab) {
 
-                    if (k.getName().equals(new HFile(j).getName())) {
-
+                    if (k1.getName().equals((j).getName())) {
                         a.add(j);
                     }
                 }
@@ -100,28 +98,23 @@ public class CopyFileCheck extends AsyncTask<ArrayList<String>, String, ArrayLis
 
             if (ab != null && ab.size() != 0) {
 
-                ArrayList<String> names=new ArrayList<>();
-                for(String a:ab){
-                    names.add(new HFile(a).getName());
-                }
                 int mode = mainActivity.mainActivityHelper.checkFolder(new File(path), mainActivity);
                 if (mode == 2) {
                     mainActivity.oparrayList = (ab);
                     mainActivity.operation = move ? mainActivity.MOVE : mainActivity.COPY;
                     mainActivity.oppathe = path;
-                    mainActivity.opnameList=names;
                 } else if (mode == 1 || mode == 0) {
 
                     if (!move) {
 
                         Intent intent = new Intent(con, CopyService.class);
-                        intent.putExtra("FILE_PATHS", ab);
+                        intent.putParcelableArrayListExtra("FILE_PATHS",ab);
                         intent.putExtra("COPY_DIRECTORY", path);
-                        intent.putExtra("FILE_NAMES",names);
+                        intent.putExtra("MODE",openMode);
                         mainActivity.startService(intent);
                     } else {
 
-                        new MoveFiles(utils.toFileArray(ab),names, ma, ma.getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                        new MoveFiles(ab, ma, ma.getActivity(),openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     }
                 }
             } else {
@@ -136,7 +129,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<String>, String, ArrayLis
             x.customView(view, true);
             // textView
             TextView textView = (TextView) view.findViewById(R.id.textView);
-            textView.setText(utils.getString(con, R.string.fileexist) + "\n" + new File(a.get(counter)).getName());
+            textView.setText(utils.getString(con, R.string.fileexist) + "\n" + a.get(counter).getName());
             // checkBox
             final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
             utils.setTint(checkBox, Color.parseColor(mainActivity.fabskin));
@@ -189,7 +182,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<String>, String, ArrayLis
             });
             final MaterialDialog y = x.build();
             y.show();
-            if (new File(ab.get(0)).getParent().equals(path)) {
+            if (ab.get(0).getParent().equals(path)) {
                 View negative = y.getActionButton(DialogAction.NEGATIVE);
                 negative.setEnabled(false);
             }
@@ -197,7 +190,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<String>, String, ArrayLis
     }
 
     @Override
-    protected void onPostExecute(ArrayList<String> strings) {
+    protected void onPostExecute(ArrayList<BaseFile> strings) {
         super.onPostExecute(strings);
         showDialog();
     }

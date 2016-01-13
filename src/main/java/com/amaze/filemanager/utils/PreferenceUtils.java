@@ -85,6 +85,50 @@ public class PreferenceUtils {
             {6,1,6},
             {7,1,7}
     };
+
+
+    public static float[] calculatevalues(String color) {
+        int c = Color.parseColor(color);
+        float r = (float) Color.red(c) / 255;
+        float g = (float) Color.green(c) / 255;
+        float b = (float) Color.blue(c) / 255;
+        return new float[]{r, g, b};
+    }
+
+    public static float[] calculatefilter(float[] values) {
+        float[] src = {
+
+                values[0], 0, 0, 0, 0,
+                0, values[1], 0, 0, 0,
+                0, 0, values[2], 0, 0,
+                0, 0, 0, 1, 0
+        };
+        return src;
+    }
+    public static String getSelectionColor(String skin) {
+
+        String[] colors = new String[]{
+                "#F44336", "#74e84e40",
+                "#e91e63", "#74ec407a",
+                "#9c27b0", "#74ab47bc",
+                "#673ab7", "#747e57c2",
+                "#3f51b5", "#745c6bc0",
+                "#2196F3", "#74738ffe",
+                "#03A9F4", "#7429b6f6",
+                "#00BCD4", "#7426c6da",
+                "#009688", "#7426a69a",
+                "#4CAF50", "#742baf2b",
+                "#8bc34a", "#749ccc65",
+                "#FFC107", "#74ffca28",
+                "#FF9800", "#74ffa726",
+                "#FF5722", "#74ff7043",
+                "#795548", "#748d6e63",
+                "#212121", "#79bdbdbd",
+                "#607d8b", "#7478909c",
+                "#004d40", "#740E5D50"
+        };
+        return colors[Arrays.asList(colors).indexOf(skin) + 1];
+    }
         public final static String[] colors = new String[]{
                 "#F44336",
                 "#e91e63",

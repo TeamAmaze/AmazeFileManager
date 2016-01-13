@@ -26,20 +26,17 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.ui.Layoutelements;
-import com.amaze.filemanager.utils.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.FileListSorter;
-import com.amaze.filemanager.utils.HFile;
-import com.amaze.filemanager.utils.RootHelper;
+import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.RootHelper;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
 import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
@@ -67,6 +64,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
 
     @Override
     public void onProgressUpdate(String... message) {
+        if(ma!=null && ma.getActivity()!=null)
         Toast.makeText(ma.getActivity(), message[0], Toast.LENGTH_SHORT).show();
     }
 
@@ -82,7 +80,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         ma.folder_count = 0;
         ma.file_count = 0;
         if (openmode == -1) {
-            HFile hFile = new HFile(path);
+            HFile hFile = new HFile(HFile.UNKNOWN,path);
+            hFile.generateMode(ma.getActivity());
             if (hFile.isDirectory() && !hFile.isSmb()) {
                 openmode = (0);
             } else if (hFile.isSmb()){
@@ -96,7 +95,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
             }
         }
         if (openmode == 1) {
-            HFile hFile = new HFile(path);
+            HFile hFile = new HFile(HFile.SMB_MODE,path);
             try {
                 SmbFile[] smbFile = hFile.getSmbFile().listFiles();
                 list = ma.addToSmb(smbFile,path);
@@ -148,16 +147,19 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
             if (arrayList != null)
                 list = ma.addTo(arrayList);
             else return new ArrayList<>();
-        } else if (openmode == 3) {
-
-
         } else {
             try {
                 ArrayList<BaseFile> arrayList;
                 if (ma.ROOT_MODE) {
-                    arrayList = RootHelper.getFilesList(path, ma.ROOT_MODE, ma.SHOW_HIDDEN);
+                    arrayList = RootHelper.getFilesList(path, ma.ROOT_MODE, ma.SHOW_HIDDEN, new RootHelper.GetModeCallBack() {
+                        @Override
+                        public void getMode(int mode) {
+                            openmode=mode;
+                        }
+                    });
                 } else
                     arrayList = (RootHelper.getFilesList(path, ma.SHOW_HIDDEN));
+                openmode=0;
                 list = ma.addTo(arrayList);
 
             } catch (Exception e) {

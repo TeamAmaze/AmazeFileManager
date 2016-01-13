@@ -47,7 +47,6 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -60,6 +59,10 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
+import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
@@ -487,13 +490,11 @@ public void openWith(final File f,final Context c) {
     public void deleteFiles(ArrayList<Layoutelements> a, final Main b, List<Integer> pos) {
         final MaterialDialog.Builder c = new MaterialDialog.Builder(b.getActivity());
         c.title(getString(b.getActivity(), R.string.confirm));
-        final ContentResolver contentResolver=b.getActivity().getContentResolver();
         String names = "";
-        final ArrayList<String> todelete = new ArrayList<>();
+        final ArrayList<BaseFile> todelete = new ArrayList<>();
         for (int i = 0; i < pos.size(); i++) {
-            String path = a.get(pos.get(i)).getDesc();
-            todelete.add((path));
-            names = names + "\n" + (i + 1) + ". " + a.get(i).getTitle();
+            todelete.add(a.get(pos.get(i)).generateBaseFile());
+            names = names + "\n" + (i + 1) + ". " + a.get(pos.get(i)).getTitle();
         }
         c.content(getString(b.getActivity(), R.string.questiondelete) + names);
 
@@ -572,20 +573,12 @@ public void openWith(final File f,final Context c) {
         return inSampleSize;
     }
 
-    public void showProps(final String f, final String perm, final Main c,boolean root) {
-        final HFile hFile=new HFile(f);
-        long last=0;
-        try {
-            last=hFile.lastModified();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (SmbException e) {
-            e.printStackTrace();
-        }
+    public void showProps(final BaseFile hFile, final String perm, final Main c,boolean root) {
+        long last=hFile.getDate();
         String date = getdate(last);
         String items = getString(c.getActivity(),R.string.calculating), size = getString(c.getActivity(),R.string.calculating), name, parent;
         name = hFile.getName();
-        parent = hFile.getParent();
+        parent = hFile.getReadablePath(hFile.getParent());
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c.getActivity());
         String fabskin = PreferenceUtils.getAccentString(sp);
         MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
@@ -624,7 +617,7 @@ public void openWith(final File f,final Context c) {
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-                c.MAIN_ACTIVITY.copyToClipboard(c.getActivity(), f);
+                c.MAIN_ACTIVITY.copyToClipboard(c.getActivity(), hFile.getPath());
                 Toast.makeText(c.getActivity(), c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
             }
 
@@ -635,13 +628,12 @@ public void openWith(final File f,final Context c) {
         MaterialDialog materialDialog=a.build();
         materialDialog.show();
         new GenerateMD5Task(materialDialog, hFile, name, parent, size, items, date,c.getActivity
-                (),v).execute(f);
+                (),v).execute(hFile.getPath());
     }
-    public long[] getSpaces(String s){
-        HFile hFile=new HFile(s);
+    public long[] getSpaces(HFile hFile){
         if(!hFile.isSmb() && hFile.isDirectory()){
             try {
-                File file=new File(s);
+                File file=new File(hFile.getPath());
                 long[] ints=new long[]{file.getTotalSpace(), file.getFreeSpace(),folderSize
                         (new File(hFile.getPath()))};
                 return ints;
@@ -651,11 +643,18 @@ public void openWith(final File f,final Context c) {
         }
         return new long[]{-1,-1,-1};
     }
-    public void showProps(final File f, final Activity c,int theme1) {
-        String date = getdate(f);
+    public void showProps(final HFile f, final Activity c,int theme1) {
+        String date = null;
+        try {
+            date = getdate(f.lastModified());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SmbException e) {
+            e.printStackTrace();
+        }
         String items =  getString(c,R.string.calculating), size = getString(c,R.string.calculating), name, parent;
         name =  f.getName();
-        parent = f.getParent();
+        parent = f.getReadablePath(f.getParent());
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         String fabskin = PreferenceUtils.getAccentString(sp);
         MaterialDialog.Builder a = new MaterialDialog.Builder(c);
@@ -685,7 +684,7 @@ public void openWith(final File f,final Context c) {
         });
         MaterialDialog materialDialog=a.build();
         materialDialog.show();
-        new GenerateMD5Task(materialDialog, new HFile(f.getPath()), name, parent, size, items, date,c,v).execute(f.getPath());
+        new GenerateMD5Task(materialDialog, (f), name, parent, size, items, date,c,v).execute(f.getPath());
     }
 
     public boolean copyToClipboard(Context context, String text) {
@@ -908,19 +907,14 @@ public void showPackageDialog(final File f,final MainActivity m){
     public ArrayList<HFile> toHFileArray(ArrayList<String> a) {
         ArrayList<HFile> b = new ArrayList<>();
         for (int i = 0; i < a.size(); i++) {
-            b.add(new HFile(a.get(i)));
-        }
-        return b;
-    }
-    public ArrayList<String> toStringArray(ArrayList<File> a) {
-        ArrayList<String> b = new ArrayList<String>();
-        for (int i = 0; i < a.size(); i++) {
-            b.add(a.get(i).getPath());
+            HFile hFile=new HFile(HFile.UNKNOWN,a.get(i));
+            hFile.generateMode(null);
+            b.add(hFile);
         }
         return b;
     }
 
-    public void showCompressDialog(final MainActivity m, final ArrayList<String> b, final String current) {
+    public void showCompressDialog(final MainActivity m, final ArrayList<BaseFile> b, final String current) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         a.input(getString(m, R.string.enterzipname), ".zip", false, new
                 MaterialDialog.InputCallback() {
@@ -1079,6 +1073,7 @@ public void showPackageDialog(final File f,final MainActivity m){
 
             }
         });
+        a.dividerColor(Color.GRAY);
         MaterialDialog x= a.build();
         adapter.updateDialog(x);
         x.show();

@@ -21,13 +21,13 @@ public class StreamSource {
     InputStream input;
     protected int bufferSize;
 
-    public StreamSource(SmbFile file) throws SmbException{
+    public StreamSource(SmbFile file,long l) throws SmbException{
         fp = 0;
-        len = file.length();
+        len = l;
         mime = MimeTypeMap.getFileExtensionFromUrl(file.getName());
         name = file.getName();
         this.file = file;
-        bufferSize = 1024*16;
+        bufferSize = 1024*60;
     }
 
     /**

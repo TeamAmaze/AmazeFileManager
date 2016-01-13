@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.filesystem;
 
 /**
  * Created by Arpit on 04-06-2015.
@@ -26,7 +26,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
@@ -37,6 +36,7 @@ import android.util.Log;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.Futils;
 
 /**
  * Utility class for helping parsing file systems.

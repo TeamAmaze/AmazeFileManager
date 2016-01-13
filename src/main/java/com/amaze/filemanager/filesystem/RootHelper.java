@@ -17,10 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.filesystem;
 
 import android.util.Log;
 
+import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.utils.Futils;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
 
@@ -160,7 +163,7 @@ public class RootHelper {
     }
 
     private static final String UNIX_ESCAPE_EXPRESSION = "(\\(|\\)|\\[|\\]|\\s|\'|\"|`|\\{|\\}|&|\\\\|\\?)";
-    public static ArrayList<BaseFile> getFilesList( String path, boolean showHidden) {
+    public static ArrayList<BaseFile> getFilesList(String path, boolean showHidden) {
         File f = new File(path);
         ArrayList<BaseFile> files = new ArrayList<>();
         try {
@@ -168,11 +171,14 @@ public class RootHelper {
                 for (File x : f.listFiles()) {
                     long size = 0;
                     if (!x.isDirectory()) size = x.length();
+                    BaseFile baseFile=new BaseFile(x.getPath(), parseFilePermission(x), x.lastModified() , size, x.isDirectory());
+                    baseFile.setName(x.getName());
+                    baseFile.setMode(BaseFile.LOCAL_MODE);
                     if (showHidden) {
-                        files.add(new BaseFile(x.getPath(), parseFilePermission(x), x.lastModified() , size, x.isDirectory()));
+                        files.add(baseFile);
                     } else {
                         if (!x.isHidden()) {
-                            files.add(new BaseFile(x.getPath(), parseFilePermission(x), x.lastModified() , size, x.isDirectory()));
+                            files.add(baseFile);
                         }
                     }
                 }
@@ -188,10 +194,13 @@ public class RootHelper {
         long size = 0;
         if (!x.isDirectory())
             size = x.length();
+        BaseFile baseFile=new BaseFile(x.getPath(), parseFilePermission(x), x.lastModified() , size, x.isDirectory());
+        baseFile.setName(x.getName());
+        baseFile.setMode(HFile.LOCAL_MODE);
         if (showHidden) {
-            return (new BaseFile(x.getPath(), parseFilePermission(x), x.lastModified() , size, x.isDirectory()));
+            return (baseFile);
         } else if (!x.isHidden()) {
-            return (new BaseFile(x.getPath(), parseFilePermission(x), x.lastModified() , size, x.isDirectory()));
+            return (baseFile);
         }
         return null;
     }
@@ -209,22 +218,19 @@ public class RootHelper {
         }
         return per;
     }
-    public static Boolean fileExists(String path){
+    public static boolean fileExists(String path){
         File f=new File(path);
-        String name = f.getName();
         String p=f.getParent();
-        Futils futils=new Futils();
         if (p != null && p.length() >0) {
-            ArrayList<String> ls = runAndWait1("ls -la " + p, true);
-            for(String s:ls){
-                BaseFile strings=futils.parseName(s);
-                if(strings.getPath()!=null && strings.getPath().equals(name)){
+            ArrayList<BaseFile> ls = getFilesList(p,true,true,null);
+            for(BaseFile strings:ls){
+                if(strings.getPath()!=null && strings.getPath().equals(path)){
                     return true;
                 }
 
             }
         }
-    return null;
+    return false;
     }
     static boolean contains(String[] a,String name){
         for(String s:a){
@@ -266,9 +272,12 @@ public class RootHelper {
         if (path.getPermisson().startsWith("d")) return true;
         else return new File(path.getPath()).isDirectory();
     }
-
-    public static ArrayList<BaseFile> getFilesList(String path, boolean root, boolean showHidden) {
+    public interface GetModeCallBack{
+        void getMode(int mode);
+    }
+    public static ArrayList<BaseFile> getFilesList(String path, boolean root, boolean showHidden,GetModeCallBack getModeCallBack) {
         String p = " ";
+        int mode=0;
         if (showHidden) p = "a ";
         Futils futils = new Futils();
         ArrayList<BaseFile> a = new ArrayList<>();
@@ -282,7 +291,9 @@ public class RootHelper {
                         if (!file.contains("Permission denied"))
                             try {
                                 BaseFile array = futils.parseName(file);
+                                array.setMode(BaseFile.ROOT_MODE);
                                 if (array != null) {
+                                    array.setName(array.getPath());
                                     array.setPath( path + "/" + array.getPath());
                                     if (array.getLink().trim().length() > 0) {
                                         boolean isdirectory = isDirectory(array.getLink(), root,0);
@@ -295,20 +306,27 @@ public class RootHelper {
                             }
 
                     }
+                    mode=3;
                 }
             } else if (futils.canListFiles(new File(path))) {
                 a = getFilesList(path, showHidden);
+                mode=0;
             } else {
+                mode=0;
                 a = new ArrayList<>();
             }
         } else if (futils.canListFiles(new File(path))) {
             a = getFilesList( path, showHidden);
+            mode=0;
         } else {
+            mode=0;
             a = new ArrayList<>();
         }
         if (a.size() == 0 && futils.canListFiles(new File(path))) {
             a = getFilesList( path, showHidden);
+            mode=0;
         }
+        if(getModeCallBack!=null)getModeCallBack.getMode(mode);
         return a;
 
     }

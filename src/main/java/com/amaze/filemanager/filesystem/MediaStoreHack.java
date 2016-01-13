@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.filesystem;
 
 /**
  * Created by Arpit on 29-06-2015.
