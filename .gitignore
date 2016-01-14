@@ -53,3 +53,4 @@ gradlew.bat
 AmazeFileManager.iml
 libs/libs.iml
 .idea/
+gradle.properties

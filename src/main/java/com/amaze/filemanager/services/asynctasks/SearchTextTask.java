@@ -11,6 +11,9 @@ import android.widget.ImageButton;
 import com.amaze.filemanager.activities.TextReader;
 import com.amaze.filemanager.utils.MapEntry;
 
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -26,6 +29,8 @@ public class SearchTextTask extends AsyncTask<Editable, Void, ArrayList<MapEntry
     private TextReader textReader;
     private Editable editText;
     private String searchSubString;
+    private StringReader stringReader;
+    private LineNumberReader lineNumberReader;
 
     public SearchTextTask(TextReader textReader) {
 
@@ -43,26 +48,32 @@ public class SearchTextTask extends AsyncTask<Editable, Void, ArrayList<MapEntry
         this.mInput = textReader.mInput;
         searchTextLength = searchEditText.length();
         editText = mInput.getText();
+        stringReader = new StringReader(editText.toString());
+        lineNumberReader = new LineNumberReader(stringReader);
     }
 
     @Override
     protected ArrayList<MapEntry> doInBackground(Editable... params) {
+
         for (int i = 0; i < (editText.length() - params[0].length()); i++) {
             if (searchTextLength == 0 || isCancelled())
                 break;
 
             searchSubString = editText.subSequence(i, i + params[0].length()).toString();
 
-            // comparing and incrementing line number
-            if (searchSubString.contains("\n"))
-                textReader.setLineNumber(++textReader.mLine);
-
             // comparing and adding searched phrase to a list
             if (searchSubString.equalsIgnoreCase(params[0].toString())) {
 
                 nodes.add(new MapEntry(new MapEntry.KeyMapEntry(i, i + params[0].length()),
-                        textReader.getLineNumber()));
-                System.out.println("equals at lines " + textReader.getLineNumber());
+                        lineNumberReader.getLineNumber()));
+            }
+
+            // comparing and incrementing line number
+            // ended up using LineNumberReader api instead
+            try {
+                lineNumberReader.skip(params[0].length());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         return nodes;
