@@ -38,6 +38,7 @@ import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
+import android.util.DisplayMetrics;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -735,9 +736,10 @@ public class TextReader extends AppCompatActivity
                             (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
                     // scrolling to the highlighted element
+                    DisplayMetrics displayMetrics = new DisplayMetrics();
+                    getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
                     scrollView.scrollTo(0, (Integer) keyValueNew.getValue()
-                            + mInput.getLineHeight() + Math.round(mInput.getLineSpacingExtra())
-                            - getSupportActionBar().getHeight());
+                            + mInput.getLineHeight() - displayMetrics.heightPixels/2);
                 }
                 break;
             case R.id.next:
@@ -761,9 +763,10 @@ public class TextReader extends AppCompatActivity
                             (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
                     // scrolling to the highlighted element
+                    DisplayMetrics displayMetrics = new DisplayMetrics();
+                    getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
                     scrollView.scrollTo(0, (Integer) keyValueNew.getValue()
-                            + mInput.getLineHeight() + Math.round(mInput.getLineSpacingExtra())
-                            - getSupportActionBar().getHeight());
+                            + mInput.getLineHeight() - displayMetrics.heightPixels/2);
                 }
                 break;
             case R.id.close:
