@@ -27,6 +27,5 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:minHeight="?attr/actionBarSize"
-    android:elevation="10dp"
     android:theme="?attr/toolbar_theme"
     app:popupTheme="?attr/popup"/>

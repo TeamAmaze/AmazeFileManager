@@ -21,12 +21,21 @@
     android:layout_width="match_parent"
     android:id="@+id/texteditor"
     android:orientation="vertical"
+    android:animateLayoutChanges="true"
     android:layout_height="match_parent" >
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:elevation="10dp"
+        android:layout_width="match_parent"
+        android:id="@+id/lin"
+        android:layout_height="wrap_content">
     <include layout="@layout/toolbar"
         android:layout_height="?actionBarSize"
         android:layout_width="match_parent"
         />
+        <include layout="@layout/actionmode_textviewer"/>
+    </LinearLayout>
     <View
         android:layout_width="0px"
         android:layout_height="0px"

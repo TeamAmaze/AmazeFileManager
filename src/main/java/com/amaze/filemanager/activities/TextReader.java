@@ -78,7 +78,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class TextReader extends AppCompatActivity
-        implements TextWatcher, View.OnClickListener, Runnable, ActionMode.Callback {
+        implements TextWatcher, View.OnClickListener, Runnable {
 
     String path;
     Futils utils = new Futils();
@@ -94,10 +94,10 @@ public class TextReader extends AppCompatActivity
     private int skinStatusBar;
     private String fabSkin;
     private android.support.v7.widget.Toolbar toolbar;
-    ArrayList<StringBuilder> texts;
-    static final int maxlength=200;
-    int index=0;
-    private ScrollView scrollView;
+    //ArrayList<StringBuilder> texts;
+    //static final int maxlength=200;
+    //int index=0;
+     ScrollView scrollView;
 
     /*
     List maintaining the searched text's start/end index as key/value pair
@@ -277,6 +277,7 @@ public class TextReader extends AppCompatActivity
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         skin = PreferenceUtils.getPrimaryColorString(Sp);
+        findViewById(R.id.lin).setBackgroundColor(Color.parseColor(skin));
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
             ((Activity) this).setTaskDescription(taskDescription);
@@ -365,30 +366,8 @@ public class TextReader extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        MenuInflater menuInflater = mode.getMenuInflater();
-        View actionModeLayout = getLayoutInflater().inflate(R.layout.actionmode_textviewer, null);
 
-        mode.setCustomView(actionModeLayout);
-        menuInflater.inflate(R.menu.empty, menu);
-
-        searchQueryInit(actionModeLayout);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        return false;
-    }
-
-    @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        return false;
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {
+    public void onDestroyActionMode() {
 
         // clearing all the spans
         Thread clearSpans = new Thread(this);
@@ -408,7 +387,7 @@ public class TextReader extends AppCompatActivity
 }
 
     private void checkUnsavedChanges() {
-        if (mOriginal != null && mInput.isShown() && !texts.get(index).equals(mInput.getText().toString())) {
+        if (mOriginal != null && mInput.isShown() && !mOriginal.equals(mInput.getText().toString())) {
             new MaterialDialog.Builder(this)
                     .title(R.string.unsavedchanges)
                     .content(R.string.unsavedchangesdesc)
@@ -502,15 +481,15 @@ public class TextReader extends AppCompatActivity
                     InputStream inputStream=getInputStream(uri,path);
                     if (inputStream!=null) {
                         String str=null;
-                        if(texts==null)texts=new ArrayList<>();
+                        //if(texts==null)texts=new ArrayList<>();
                         StringBuilder stringBuilder=new StringBuilder();
                         BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
                         if(bufferedReader!=null){
-                            int i=0,k=0;
-                            StringBuilder stringBuilder1=new StringBuilder("");
+                         //   int i=0,k=0;
+                       //     StringBuilder stringBuilder1=new StringBuilder("");
                             while ((str=bufferedReader.readLine())!=null){
                                 stringBuilder.append(str+"\n");
-                                if(k<maxlength){
+                         /*       if(k<maxlength){
                                     stringBuilder1.append(str+"\n");
                                     k++;
                                 }else {
@@ -520,8 +499,8 @@ public class TextReader extends AppCompatActivity
                                     stringBuilder1.append(str+"\n");
                                     k=1;
                                 }
-                            }
-                            texts.add(i,stringBuilder1);
+                        */    }
+                          //  texts.add(i,stringBuilder1);
                         }
                         mOriginal=stringBuilder.toString();
                      inputStream.close();
@@ -530,11 +509,11 @@ public class TextReader extends AppCompatActivity
                         StringBuilder stringBuilder=new StringBuilder();
                         ArrayList<String> arrayList = RootHelper
                                 .runAndWait1("cat " + mFile.getPath(), true);
-                        int i=0,k=0;
-                        StringBuilder stringBuilder1=new StringBuilder("");
+                      //  int i=0,k=0;
+                        //StringBuilder stringBuilder1=new StringBuilder("");
                         for (String str:arrayList){
                             stringBuilder.append(str+"\n");
-                            if(k<maxlength){
+                        /*    if(k<maxlength){
                                 stringBuilder1.append(str+"\n");
                                 k++;
                             }else {
@@ -544,15 +523,15 @@ public class TextReader extends AppCompatActivity
                                 stringBuilder1.append(str+"\n");
                                 k=1;
                             }
-                        }
-                        texts.add(i,stringBuilder1);
+                        */}
+                       // texts.add(i,stringBuilder1);
                         mOriginal=stringBuilder.toString();
                     }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                mInput.setText(texts.get(0).toString());
+                                mInput.setText(mOriginal);
                                 if (mOriginal.isEmpty()) {
 
                                     mInput.setHint(R.string.file_empty);
@@ -603,21 +582,18 @@ public class TextReader extends AppCompatActivity
                 break;
             case R.id.details:
                 if(mFile.canRead()){
-                    HFile hFile=new HFile(HFile.UNKNOWN,mFile.getPath());
+                    HFile hFile=new HFile(HFile.LOCAL_MODE,mFile.getPath());
                     hFile.generateMode(this);
                     utils.showProps(hFile, this, theme1);
                 }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
                 break;
             case R.id.openwith:
-                int lines=0;
-                for(StringBuilder stringBuilder:texts){
-                    lines+=stringBuilder.toString().split("\n").length;
-                }
-                Toast.makeText(this,lines+"",Toast.LENGTH_SHORT).show();
-                utils.openunknown(mFile, c, false);
+                if(mFile.canRead()){
+                    utils.openunknown(mFile, c, false);
+                }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
                 break;
             case R.id.find:
-                toolbar.startActionMode(this);
+                searchQueryInit(findViewById(R.id.searchview));
                 break;
             default:
                 return false;
@@ -645,7 +621,6 @@ public class TextReader extends AppCompatActivity
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
         if (charSequence.hashCode() == mInput.getText().hashCode()) {
             if (mTimer != null) {
                 mTimer.cancel();
@@ -656,7 +631,7 @@ public class TextReader extends AppCompatActivity
             mTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    mModified = !mInput.getText().toString().equals(texts.get(index));
+                    mModified = !mInput.getText().toString().equals(mOriginal);
                     invalidateOptionsMenu();
                 }
             }, 250);
@@ -694,9 +669,9 @@ public class TextReader extends AppCompatActivity
         return stream;
     }
     public boolean searchQueryInit(final View actionModeView) {
-
+        actionModeView.setVisibility(View.VISIBLE);
         searchEditText = (EditText) actionModeView.findViewById(R.id.search_box);
-
+        searchEditText.setText("");
         upButton = (ImageButton) actionModeView.findViewById(R.id.prev);
         downButton = (ImageButton) actionModeView.findViewById(R.id.next);
         closeButton = (ImageButton) actionModeView.findViewById(R.id.close);
@@ -767,9 +742,9 @@ public class TextReader extends AppCompatActivity
                 }
                 break;
             case R.id.close:
+                onDestroyActionMode();
                 // closeButton
-                searchEditText.setText("");
-                searchEditText.requestFocus();
+                findViewById(R.id.searchview).setVisibility(View.GONE);
                 break;
             default:
                 return;
