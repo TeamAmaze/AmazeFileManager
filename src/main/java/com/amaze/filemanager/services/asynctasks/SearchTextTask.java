@@ -25,6 +25,7 @@ public class SearchTextTask extends AsyncTask<Editable, Void, ArrayList<MapEntry
     private ImageButton upButton, downButton;
     private TextReader textReader;
     private Editable editText;
+    private String searchSubString;
 
     public SearchTextTask(TextReader textReader) {
 
@@ -50,36 +51,50 @@ public class SearchTextTask extends AsyncTask<Editable, Void, ArrayList<MapEntry
             if (searchTextLength == 0 || isCancelled())
                 break;
 
-            if (editText.subSequence(i, i + params[0].length()).toString()
-                    .equalsIgnoreCase(params[0].toString())) {
+            searchSubString = editText.subSequence(i, i + params[0].length()).toString();
 
-                nodes.add(new MapEntry(i, i + params[0].length()));
+            // comparing and incrementing line number
+            if (searchSubString.contains("\n"))
+                textReader.setLineNumber(++textReader.mLine);
+
+            // comparing and adding searched phrase to a list
+            if (searchSubString.equalsIgnoreCase(params[0].toString())) {
+
+                nodes.add(new MapEntry(new MapEntry.KeyMapEntry(i, i + params[0].length()),
+                        textReader.getLineNumber()));
+                System.out.println("equals at lines " + textReader.getLineNumber());
             }
         }
         return nodes;
     }
 
     @Override
-    protected void onPostExecute(ArrayList<MapEntry> mapEntries) {
+    protected void onPostExecute(final ArrayList<MapEntry> mapEntries) {
         super.onPostExecute(mapEntries);
 
-        for (Map.Entry mapEntry : mapEntries) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (Map.Entry mapEntry : mapEntries) {
 
-            mInput.getText().setSpan(textReader.theme1 == 0 ? new BackgroundColorSpan(Color.YELLOW) :
-                            new BackgroundColorSpan(Color.LTGRAY),
-                    (Integer) mapEntry.getKey(), (Integer) mapEntry.getValue(),
-                    Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        }
+                    Map.Entry keyMapEntry = (Map.Entry) mapEntry.getKey();
+                    mInput.getText().setSpan(textReader.theme1 == 0 ? new BackgroundColorSpan(Color.YELLOW) :
+                                    new BackgroundColorSpan(Color.LTGRAY),
+                            (Integer) keyMapEntry.getKey(), (Integer) keyMapEntry.getValue(),
+                            Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                }
 
-        if (mapEntries.size()!=0) {
-            upButton.setEnabled(true);
-            downButton.setEnabled(true);
+                if (mapEntries.size()!=0) {
+                    upButton.setEnabled(true);
+                    downButton.setEnabled(true);
 
-            // downButton
-            textReader.onClick(downButton);
-        } else {
-            upButton.setEnabled(false);
-            downButton.setEnabled(false);
-        }
+                    // downButton
+                    textReader.onClick(downButton);
+                } else {
+                    upButton.setEnabled(false);
+                    downButton.setEnabled(false);
+                }
+            }
+        }).run();
     }
 }

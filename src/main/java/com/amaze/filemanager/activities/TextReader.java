@@ -77,7 +77,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TextReader extends AppCompatActivity implements TextWatcher, View.OnClickListener {
+public class TextReader extends AppCompatActivity
+        implements TextWatcher, View.OnClickListener, Runnable, ActionMode.Callback {
 
     String path;
     Futils utils = new Futils();
@@ -96,6 +97,8 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     ArrayList<StringBuilder> texts;
     static final int maxlength=200;
     int index=0;
+    private ScrollView scrollView;
+
     /*
     List maintaining the searched text's start/end index as key/value pair
      */
@@ -106,6 +109,12 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
     while pressing next/previous button in the searchBox
      */
     private int mCurrent = -1;
+
+    /*
+    variable to maintain line number of the searched phrase
+    further used to calculate the scroll position
+     */
+    public int mLine = 0;
 
     private SearchTextTask searchTextTask;
 
@@ -297,7 +306,7 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
 
         }
         mInput = (EditText) findViewById(R.id.fname);
-        final ScrollView scrollView=(ScrollView)findViewById(R.id.editscroll);
+        scrollView=(ScrollView)findViewById(R.id.editscroll);
 
         try {
             if (getIntent().getData() != null){
@@ -346,7 +355,47 @@ public class TextReader extends AppCompatActivity implements TextWatcher, View.O
         }
         load(mFile);
     }
-class a extends ScrollView {
+
+    @Override
+    public void run() {
+        BackgroundColorSpan[] colorSpans = mInput.getText().getSpans(0,
+                mInput.length(), BackgroundColorSpan.class);
+        for (BackgroundColorSpan colorSpan : colorSpans) {
+            mInput.getText().removeSpan(colorSpan);
+        }
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        MenuInflater menuInflater = mode.getMenuInflater();
+        View actionModeLayout = getLayoutInflater().inflate(R.layout.actionmode_textviewer, null);
+
+        mode.setCustomView(actionModeLayout);
+        menuInflater.inflate(R.menu.empty, menu);
+
+        searchQueryInit(actionModeLayout);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+
+        // clearing all the spans
+        Thread clearSpans = new Thread(this);
+        clearSpans.run();
+    }
+
+    class a extends ScrollView {
     public a(Context context) {
         super(context);
     }
@@ -568,7 +617,7 @@ class a extends ScrollView {
                 utils.openunknown(mFile, c, false);
                 break;
             case R.id.find:
-                toolbar.startActionMode(mActionModeCallback);
+                toolbar.startActionMode(this);
                 break;
             default:
                 return false;
@@ -587,12 +636,10 @@ class a extends ScrollView {
 
             nodes.clear();
             mCurrent = -1;
+            mLine = 0;
 
-            BackgroundColorSpan[] colorSpans = mInput.getText().getSpans(0,
-                    mInput.length(), BackgroundColorSpan.class);
-            for (BackgroundColorSpan colorSpan : colorSpans) {
-                mInput.getText().removeSpan(colorSpan);
-            }
+            Thread clearSpans = new Thread(this);
+            clearSpans.run();
         }
     }
 
@@ -628,40 +675,6 @@ class a extends ScrollView {
         }
     }
 
-    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            MenuInflater menuInflater = mode.getMenuInflater();
-            View actionModeLayout = getLayoutInflater().inflate(R.layout.actionmode_textviewer, null);
-
-            mode.setCustomView(actionModeLayout);
-            menuInflater.inflate(R.menu.empty, menu);
-
-            searchQueryInit(actionModeLayout);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            return false;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-
-            // clearing all the spans
-            BackgroundColorSpan[] colorSpans = mInput.getText().getSpans(0,
-                    mInput.length(), BackgroundColorSpan.class);
-            for (BackgroundColorSpan colorSpan : colorSpans) {
-                mInput.getText().removeSpan(colorSpan);
-            }
-        }
-    };
     InputStream getInputStream(Uri uri,String path){
         InputStream stream=null;
            try {
@@ -708,17 +721,23 @@ class a extends ScrollView {
                 if (mCurrent>0) {
 
                     // setting older span back before setting new one
-                    Map.Entry keyValueOld = nodes.get(mCurrent);
+                    Map.Entry keyValueOld = (Map.Entry) nodes.get(mCurrent).getKey();
                     mInput.getText().setSpan(theme1 == 0 ? new BackgroundColorSpan(Color.YELLOW) :
                                     new BackgroundColorSpan(Color.LTGRAY),
                             (Integer) keyValueOld.getKey(),
                             (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
-                    Map.Entry keyValueNew = nodes.get(--mCurrent);
+                    // highlighting previous element in list
+                    Map.Entry keyValueNew = (Map.Entry) nodes.get(--mCurrent).getKey();
                     mInput.getText().setSpan(new BackgroundColorSpan(getResources()
                                     .getColor(R.color.search_text_highlight, getTheme())),
                             (Integer) keyValueNew.getKey(),
                             (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                    // scrolling to the highlighted element
+                    scrollView.scrollTo(0, (Integer) keyValueNew.getValue()
+                            + mInput.getLineHeight() + Math.round(mInput.getLineSpacingExtra())
+                            - getSupportActionBar().getHeight());
                 }
                 break;
             case R.id.next:
@@ -728,18 +747,23 @@ class a extends ScrollView {
                     // setting older span back before setting new one
                     if (mCurrent!=-1) {
 
-                        Map.Entry keyValueOld = nodes.get(mCurrent);
+                        Map.Entry keyValueOld = (Map.Entry) nodes.get(mCurrent).getKey();
                         mInput.getText().setSpan(theme1 == 0 ? new BackgroundColorSpan(Color.YELLOW) :
                                         new BackgroundColorSpan(Color.LTGRAY),
                                 (Integer) keyValueOld.getKey(),
                                 (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                     }
 
-                    Map.Entry keyValue = nodes.get(++mCurrent);
+                    Map.Entry keyValueNew = (Map.Entry) nodes.get(++mCurrent).getKey();
                     mInput.getText().setSpan(new BackgroundColorSpan(getResources()
                                     .getColor(R.color.search_text_highlight, getTheme())),
-                            (Integer) keyValue.getKey(),
-                            (Integer) keyValue.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                            (Integer) keyValueNew.getKey(),
+                            (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                    // scrolling to the highlighted element
+                    scrollView.scrollTo(0, (Integer) keyValueNew.getValue()
+                            + mInput.getLineHeight() + Math.round(mInput.getLineSpacingExtra())
+                            - getSupportActionBar().getHeight());
                 }
                 break;
             case R.id.close:
@@ -750,5 +774,13 @@ class a extends ScrollView {
             default:
                 return;
         }
+    }
+
+    public int getLineNumber() {
+        return this.mLine;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.mLine = lineNumber;
     }
 }
