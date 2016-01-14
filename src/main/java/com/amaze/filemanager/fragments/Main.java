@@ -50,12 +50,12 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -1064,9 +1064,9 @@ public class Main extends android.support.v4.app.Fragment {
                         name = name + "/";
 
                 if (openMode == 1)
-                    MAIN_ACTIVITY.mainActivityHelper.rename(f.getPath(), CURRENT_PATH + name);
+                    MAIN_ACTIVITY.mainActivityHelper.rename(openMode,f.getPath(), CURRENT_PATH + name,getActivity(),ROOT_MODE);
                 else
-                    MAIN_ACTIVITY.mainActivityHelper.rename((f).getPath(), (CURRENT_PATH + "/" + name));
+                    MAIN_ACTIVITY.mainActivityHelper.rename(openMode,(f).getPath(), (CURRENT_PATH + "/" + name),getActivity(),ROOT_MODE);
 
             }
 

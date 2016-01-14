@@ -143,7 +143,7 @@ public class FastScroller extends LinearLayout {
     }
 
     private boolean isRecyclerViewScrollable() {
-        return recyclerView.getChildAt(0).getHeight() * recyclerView.getAdapter().getItemCount() <= getHeight();
+        return recyclerView.getChildAt(0).getHeight() * recyclerView.getAdapter().getItemCount() <= getHeight() || recyclerView.getAdapter().getItemCount()<25;
 
     }
 

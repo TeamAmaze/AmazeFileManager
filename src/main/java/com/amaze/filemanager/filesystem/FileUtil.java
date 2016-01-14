@@ -204,27 +204,6 @@ public abstract class FileUtil {
         return !file.exists();
     }
 
-    /**
-     * Move a file. The target file may even be on external SD card.
-     *
-     * @param source
-     *            The source file
-     * @param target
-     *            The target file
-     * @return true if the copying was successful.
-     */
-    public static final boolean moveFile(@NonNull final File source,@NonNull final File target,Context context) {
-        // First try the normal rename.
-        if (source.renameTo(target)) {
-            return true;
-        }
-
-        boolean success = copyFile(source, target,context);
-        if (success) {
-            success = deleteFile(source,context);
-        }
-        return success;
-    }
 
     /**
      * Rename a folder. In case of extSdCard in Kitkat, the old folder stays in place, but files are moved.

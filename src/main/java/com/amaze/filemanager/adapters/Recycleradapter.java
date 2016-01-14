@@ -89,8 +89,10 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             main.selection = true;
             /*main.mActionMode = main.getActivity().startActionMode(
                     main.mActionModeCallback);*/
-            main.mActionMode = main.MAIN_ACTIVITY.toolbar.startActionMode(main.mActionModeCallback);
+            main.mActionMode = main.MAIN_ACTIVITY.startSupportActionMode(main.mActionModeCallback);
+
         }
+        if(main.mActionMode!=null && main.selection)
         main.mActionMode.invalidate();
         if (getCheckedItemPositions().size() == 0) {
             main.selection = false;

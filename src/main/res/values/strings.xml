@@ -376,5 +376,9 @@
     <string name="grantfailed">Permission not granted</string>
     <string name="granttext">App needs storage permission to continue. Canceling this dialog will exit the app.</string>
     <string name="grantgplus">App needs permission for this feature. Canceling this dialog will uncheck this feature.</string>
+    <string name="operationunsuccesful">Operation Unsuccessful</string>
+    <string name="creatingfile">Creating File</string>
+    <string name="creatingfolder">Creating Folder</string>
+    <string name="renaming">Renaming</string>
 </resources>
 

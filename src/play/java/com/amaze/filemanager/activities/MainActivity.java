@@ -1417,7 +1417,7 @@ public class MainActivity extends AppCompatActivity implements
                     mainActivityHelper.mkDir(RootHelper.generateBaseFile(new File(oppathe),true), ma1);
                     break;
                 case RENAME:
-                    mainActivityHelper.rename((oppathe), (oppathe1));
+                    mainActivityHelper.rename(HFile.LOCAL_MODE,(oppathe), (oppathe1),mainActivity,rootmode);
                     Main ma2 = ((Main) getFragment().getTab());
                     ma2.updateList();
                     break;

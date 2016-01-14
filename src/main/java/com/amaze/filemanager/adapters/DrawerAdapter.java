@@ -35,12 +35,14 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.filesystem.HFile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -138,7 +140,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                     }else if(position<m.storage_count ){
                         String path = ((EntryItem) getItem(position)).getPath();
                         if(!path.equals("/"))
-                            new Futils().showProps(new HFile(HFile.LOCAL_MODE,path),m,m.theme1);
+                            new Futils().showProps(RootHelper.generateBaseFile(new File(path),true),m,m.theme1);
                     }
 
                     // return true to denote no further processing
