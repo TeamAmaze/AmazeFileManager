@@ -28,7 +28,7 @@ public class FastScroller extends FrameLayout {
     private RecyclerView recyclerView;
     private final ScrollListener scrollListener;
     boolean manuallyChangingPosition=false;
-
+    int columns=1;
     class ScrollListener extends OnScrollListener {
         private ScrollListener() {
         }
@@ -58,8 +58,8 @@ public class FastScroller extends FrameLayout {
         float recyclerViewOversize; //how much is recyclerView bigger than fastScroller
         int recyclerViewAbsoluteScroll;
         if (firstVisibleView == null || recyclerView == null) return -1;
-        recyclerViewOversize = firstVisibleView.getHeight() * recyclerView.getAdapter().getItemCount() - getHeightMinusPadding();
-        recyclerViewAbsoluteScroll = recyclerView.getChildLayoutPosition(firstVisibleView) * firstVisibleView.getHeight() - firstVisibleView.getTop();
+        recyclerViewOversize = firstVisibleView.getHeight()/columns * recyclerView.getAdapter().getItemCount() - getHeightMinusPadding();
+        recyclerViewAbsoluteScroll = recyclerView.getChildLayoutPosition(firstVisibleView)/columns * firstVisibleView.getHeight() - firstVisibleView.getTop();
         return recyclerViewAbsoluteScroll / recyclerViewOversize;
     }
 
@@ -132,7 +132,7 @@ public class FastScroller extends FrameLayout {
         }
     }
     private boolean isRecyclerViewScrollable() {
-        return recyclerView.getChildAt(0).getHeight() * recyclerView.getAdapter().getItemCount() <= getHeightMinusPadding() || recyclerView.getAdapter().getItemCount()<25;
+        return recyclerView.getChildAt(0).getHeight() * recyclerView.getAdapter().getItemCount()/columns <= getHeightMinusPadding() || recyclerView.getAdapter().getItemCount()/columns<25;
 
     }
 
@@ -164,8 +164,9 @@ public class FastScroller extends FrameLayout {
         stateListDrawable.addState(View.EMPTY_STATE_SET, new InsetDrawable(drawable, getResources().getDimensionPixelSize(R.dimen.fastscroller_track_padding), 0, 0, 0));
         this.handle.setImageDrawable(stateListDrawable);
     }
-    public void setRecyclerView(@NonNull RecyclerView recyclerView) {
+    public void setRecyclerView(@NonNull RecyclerView recyclerView,int columns) {
         this.recyclerView = recyclerView;
+        this.columns=columns;
         bar.setVisibility(INVISIBLE);
         recyclerView.addOnScrollListener(this.scrollListener);
         invalidateVisibility();

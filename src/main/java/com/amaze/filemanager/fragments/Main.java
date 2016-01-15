@@ -161,7 +161,7 @@ public class Main extends android.support.v4.app.Fragment {
     Streamer s;
     private View rootView;
     private View actionModeView;
-    FastScroller fastScroller;
+    private FastScroller fastScroller;
     public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
         private void hideOption(int id, Menu menu) {
             MenuItem item = menu.findItem(id);
@@ -1014,7 +1014,7 @@ public class Main extends android.support.v4.app.Fragment {
                     //floatingActionButton.show();
                     MAIN_ACTIVITY.updatepaths(no);
                     listView.stopScroll();
-                    fastScroller.setRecyclerView(listView);
+                    fastScroller.setRecyclerView(listView,IS_LIST?1:columns);
                     mToolbarContainer.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
                         @Override
                         public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {

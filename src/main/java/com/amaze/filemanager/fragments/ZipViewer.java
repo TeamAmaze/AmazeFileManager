@@ -594,7 +594,7 @@ public class ZipViewer extends Fragment {
             addheader = false;
         }
         final FastScroller fastScroller=(FastScroller)rootView.findViewById(R.id.fastscroll);
-        fastScroller.setRecyclerView(listView);
+        fastScroller.setRecyclerView(listView,1);
         fastScroller.setPressedHandleColor(Color.parseColor(PreferenceUtils.getAccentString(Sp)));
         ((AppBarLayout)mToolbarContainer).addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
