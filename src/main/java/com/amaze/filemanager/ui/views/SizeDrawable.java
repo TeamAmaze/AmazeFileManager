@@ -6,9 +6,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
+import com.amaze.filemanager.R;
 
 
 /**
@@ -41,19 +43,19 @@ public class SizeDrawable extends View {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setColor(Color.parseColor("#0D47A1"));
+        mPaint.setColor(ContextCompat.getColor(getContext(),R.color.accent_indigo));
         mPaint.setStrokeCap(Paint.Cap.BUTT);
         mPaint.setStrokeWidth(strokeWidth);
         mPaint1 = new Paint();
         mPaint1.setAntiAlias(true);
         mPaint1.setStyle(Paint.Style.STROKE);
-        mPaint1.setColor(Color.parseColor("#E53935"));
+        mPaint1.setColor(ContextCompat.getColor(getContext(),R.color.accent_red));
         mPaint1.setStrokeCap(Paint.Cap.BUTT);
         mPaint1.setStrokeWidth(strokeWidth);
         mPaint2 = new Paint();
         mPaint2.setAntiAlias(true);
         mPaint2.setStyle(Paint.Style.STROKE);
-        mPaint2.setColor(Color.parseColor("#4CAF50"));
+        mPaint2.setColor(ContextCompat.getColor(getContext(),R.color.accent_green));
         mPaint2.setStrokeCap(Paint.Cap.BUTT);
         mPaint2.setStrokeWidth(strokeWidth);
         twenty = dpToPx(10);

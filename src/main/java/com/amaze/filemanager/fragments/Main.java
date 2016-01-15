@@ -88,13 +88,13 @@ import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
-import com.amaze.filemanager.ui.views.FastScroller;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
@@ -557,8 +557,8 @@ public class Main extends android.support.v4.app.Fragment {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
         mToolbarContainer = (AppBarLayout) getActivity().findViewById(R.id.lin);
-        fastScroller = (FastScroller)rootView. findViewById(R.id.fastscroll);
-        fastScroller.setColor(Color.parseColor(fabSkin));
+        fastScroller = (FastScroller) rootView. findViewById(R.id.fastscroll);
+        fastScroller.setPressedHandleColor(Color.parseColor(fabSkin));
         listView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -1000,24 +1000,6 @@ public class Main extends android.support.v4.app.Fragment {
                         listView.addItemDecoration(headersDecor);
                         addheader = false;
                     }
-                    fastScroller.setRecyclerView(listView);
-                    fastScroller.setAppBarListner(new FastScroller.AppBarListner() {
-                        @Override
-                        public void onChange(int i) {
-                            if (adapter != null && stopAnims) {
-                                stopAnimation();
-                                stopAnims = false;
-                            }
-                            switch (i){
-                                case 0:
-                                    mToolbarContainer.setExpanded(false);
-                                    break;
-                                case 1:
-                                    mToolbarContainer.setExpanded(true);
-                                    break;
-                            }
-                        }
-                    });
                     if (!results) this.results = false;
                     CURRENT_PATH = f;
                      if (back) {
@@ -1032,6 +1014,24 @@ public class Main extends android.support.v4.app.Fragment {
                     //floatingActionButton.show();
                     MAIN_ACTIVITY.updatepaths(no);
                     listView.stopScroll();
+                    fastScroller.setRecyclerView(listView);
+                    mToolbarContainer.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+                        @Override
+                        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                            fastScroller.updateHandlePosition(verticalOffset,112);
+                        //    fastScroller.setPadding(fastScroller.getPaddingLeft(),fastScroller.getTop(),fastScroller.getPaddingRight(),112+verticalOffset);
+                      //      fastScroller.updateHandlePosition();
+                        }
+                    });
+                    fastScroller.registerOnTouchListener(new FastScroller.onTouchListener() {
+                        @Override
+                        public void onTouch() {
+                            if (stopAnims && adapter != null) {
+                                stopAnimation();
+                                stopAnims = false;
+                            }
+                        }
+                    });
                     if (buttons.getVisibility() == View.VISIBLE) MAIN_ACTIVITY.bbar(this);
                     MAIN_ACTIVITY.invalidateFab(openMode);
                 } catch (Exception e) {

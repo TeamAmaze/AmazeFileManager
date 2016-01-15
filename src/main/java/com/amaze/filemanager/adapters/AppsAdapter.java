@@ -43,6 +43,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
@@ -288,16 +289,16 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                             case R.id.backup:
                                 Toast.makeText(app.getActivity(), new Futils().getString(app.getActivity(), R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
                                 File f = new File(rowItem.getDesc());
-                                ArrayList<String> ab = new ArrayList<String>();
-                                ArrayList<String> names = new ArrayList<String>();
+                                ArrayList<BaseFile> ab = new ArrayList<>();
                                 File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");
                                 if(!dst.exists() || !dst.isDirectory())dst.mkdirs();
                                 Intent intent = new Intent(app.getActivity(), CopyService.class);
-                                ab.add(f.getPath());
-                                names.add(rowItem.getTitle() + "_" + rowItem.getSymlink() + ".apk");
+                                BaseFile baseFile=RootHelper.generateBaseFile(f,true);
+                                baseFile.setName(rowItem.getTitle() + "_" + rowItem.getSymlink() + ".apk");
+                                ab.add(baseFile);
                                 intent.putExtra("FILE_PATHS", ab);
-                                intent.putExtra("FILE_NAMES",names);
                                 intent.putExtra("COPY_DIRECTORY", dst.getPath());
+                                intent.putExtra("MODE",0);
                                 app.getActivity().startService(intent);
                                 return true;
 

@@ -124,7 +124,7 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
                             }
                         }
                     }
-                }).run();
+                }).start();
             }
         });
         return view;

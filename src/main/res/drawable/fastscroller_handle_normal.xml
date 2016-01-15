@@ -19,7 +19,7 @@
 
             <size
                 android:height="@dimen/fastscroller_track_height"
-                android:width="@dimen/fastscroller_track_width" />
+                android:width="5dp" />
         </shape>
     </item>
 </layer-list>

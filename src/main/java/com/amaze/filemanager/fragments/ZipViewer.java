@@ -593,22 +593,13 @@ public class ZipViewer extends Fragment {
             listView.addItemDecoration(headersDecor);
             addheader = false;
         }
-        /*((AppBarLayout)mToolbarContainer).setExpanded(true,true);*/
-        FastScroller fastScroller=(FastScroller)rootView.findViewById(R.id.fastscroll);
-        fastScroller.setColor(Color.parseColor(PreferenceUtils.getAccentString(Sp)));
+        final FastScroller fastScroller=(FastScroller)rootView.findViewById(R.id.fastscroll);
         fastScroller.setRecyclerView(listView);
-        fastScroller.setAppBarListner(new FastScroller.AppBarListner() {
+        fastScroller.setPressedHandleColor(Color.parseColor(PreferenceUtils.getAccentString(Sp)));
+        ((AppBarLayout)mToolbarContainer).addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
-            public void onChange(int i) {
-                AppBarLayout appBarLayout=(AppBarLayout)mToolbarContainer;
-                switch (i){
-                    case 0:
-                        appBarLayout.setExpanded(false);
-                        break;
-                    case 1:
-                        appBarLayout.setExpanded(true);
-                        break;
-                }
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                fastScroller.updateHandlePosition(verticalOffset,112);
             }
         });
         listView.stopScroll();

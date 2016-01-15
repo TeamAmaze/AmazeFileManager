@@ -58,7 +58,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
 
     @Override
     protected void onPreExecute() {
-        if (openmode != 0)
+        if (ma.mSwipeRefreshLayout!=null)
             ma.mSwipeRefreshLayout.setRefreshing(true);
     }
 

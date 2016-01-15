@@ -23,15 +23,18 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.v4.app.NotificationCompat;
 
 import com.amaze.filemanager.ProgressListener;
@@ -209,7 +212,8 @@ public class CopyService extends Service {
                                 copyRoot(files.get(i).getPath(),files.get(i).getName(),FILE2,move);
                                 continue;
                             }
-                            copyFiles((f1), new HFile(mode,FILE2, files.get(i).getName(),f1.isDirectory()), id, move);
+                            HFile hFile=new HFile(mode,FILE2, files.get(i).getName(),f1.isDirectory());
+                            copyFiles((f1),hFile , id, move);
                         }
                         else{
                             stopSelf(id);
@@ -300,6 +304,8 @@ public class CopyService extends Service {
                 }
                 if (!hash.get(id)) return;
                 copy(in, out, size, id, sourceFile.getName(), move);
+                if(!targetFile.isSmb())
+                    utils.scanFile(targetFile.getPath(), c);
                 new AsyncTask<Void, Void, Void>() {
                     @Override
                     protected Void doInBackground(Void... params) {
@@ -318,13 +324,25 @@ public class CopyService extends Service {
                         if(move){
                             if(!failedFOps.contains(sourceFile.getPath())){
                                 sourceFile.delete(c);
+                                if(sourceFile.isLocal())
+                                    delete(c,sourceFile.getPath());
                             }
                         }
-                        if(!targetFile.isSmb()) utils.scanFile(targetFile.getPath(), c);
                         return null;
                     }
                 }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
+        }
+        void delete(final Context context, final String file) {
+            final String where = MediaStore.MediaColumns.DATA + "=?";
+            final String[] selectionArgs = new String[] {
+                    file
+            };
+            final ContentResolver contentResolver = context.getContentResolver();
+            final Uri filesUri = MediaStore.Files.getContentUri("external");
+            // Delete the entry from the media database. This will actually delete media files.
+            contentResolver.delete(filesUri, where, selectionArgs);
+
         }
         long time=System.nanoTime()/500000000;
         AsyncTask asyncTask;

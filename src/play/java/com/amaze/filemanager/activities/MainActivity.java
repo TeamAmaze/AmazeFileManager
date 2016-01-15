@@ -92,6 +92,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.IMyAidlInterface;
 import com.amaze.filemanager.Loadlistener;
 import com.amaze.filemanager.R;
@@ -1606,6 +1607,11 @@ public class MainActivity extends AppCompatActivity implements
 
     void initialiseViews() {
         appBarLayout = (AppBarLayout) findViewById(R.id.lin);
+
+        if (!ImageLoader.getInstance().isInited()) {
+
+            ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
+        }
         displayImageOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.amaze_header)
                 .showImageForEmptyUri(R.drawable.amaze_header)
@@ -1616,10 +1622,6 @@ public class MainActivity extends AppCompatActivity implements
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
 
-        if (!ImageLoader.getInstance().isInited()) {
-
-            ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
-        }
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
         buttonBarFrame.setBackgroundColor(Color.parseColor(skin));
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);

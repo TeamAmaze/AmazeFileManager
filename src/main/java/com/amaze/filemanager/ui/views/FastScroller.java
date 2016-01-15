@@ -1,149 +1,138 @@
 package com.amaze.filemanager.ui.views;
 
-/**
- * Created by arpitkh996 on 10-01-2016.
- */
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
+import android.graphics.drawable.StateListDrawable;
+import android.support.annotation.AttrRes;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.Futils;
 
-/**
- * Created by mklimczak on 28/07/15.
- */
-public class FastScroller extends LinearLayout {
 
-    private ImageButton handle;
-
+public class FastScroller extends FrameLayout {
+    private View bar;
+    private ImageView handle;
     private RecyclerView recyclerView;
+    private final ScrollListener scrollListener;
+    boolean manuallyChangingPosition=false;
 
-    private final ScrollListener scrollListener = new ScrollListener();
+    class ScrollListener extends OnScrollListener {
+        private ScrollListener() {
+        }
 
-    private boolean manuallyChangingPosition;
+        public void onScrolled(RecyclerView recyclerView, int i, int i2) {
+            if (handle != null && !manuallyChangingPosition) {
+            updateHandlePosition();
+            }
+        }
+    }
 
-    public FastScroller(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public FastScroller(@NonNull Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
+        this.scrollListener = new ScrollListener();
+        initialise(context);
+    }
+
+    public FastScroller(@NonNull Context context, AttributeSet attributeSet, int i) {
+        super(context, attributeSet, i);
+        this.scrollListener = new ScrollListener();
+        initialise(context);
+    }
+
+    private float computeHandlePosition() {
+        View firstVisibleView = recyclerView.getChildAt(0);
+        handle.setVisibility(VISIBLE);
+        float recyclerViewOversize; //how much is recyclerView bigger than fastScroller
+        int recyclerViewAbsoluteScroll;
+        if (firstVisibleView == null || recyclerView == null) return -1;
+        recyclerViewOversize = firstVisibleView.getHeight() * recyclerView.getAdapter().getItemCount() - getHeightMinusPadding();
+        recyclerViewAbsoluteScroll = recyclerView.getChildLayoutPosition(firstVisibleView) * firstVisibleView.getHeight() - firstVisibleView.getTop();
+        return recyclerViewAbsoluteScroll / recyclerViewOversize;
+    }
+
+    private int getHeightMinusPadding() {
+        return (getHeight() - getPaddingBottom()) - getPaddingTop();
+    }
+
+
+
+    private void initialise(@NonNull Context context) {
         setClipChildren(false);
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        inflater.inflate(R.layout.fastscroller, this);
+        inflate(context, R.layout.fastscroller, this);
+        this.handle =(ImageView) findViewById(R.id.scroll_handle);
+        this.bar = findViewById(R.id.scroll_bar);
+        this.handle.setEnabled(true);
+        setPressedHandleColor(getResources().getColor(R.color.accent_blue));
+        setUpBarBackground();
+        setVisibility(VISIBLE);
     }
 
-
-    /**
-     * Attach the FastScroller to RecyclerView. Should be used after the Adapter is set
-     * to the RecyclerView. If the adapter implements SectionTitleProvider, the FastScroller
-     * will show a bubble with title.
-     *
-     * @param recyclerView A RecyclerView to attach the FastScroller to
-     */
-    public void setRecyclerView(RecyclerView recyclerView) {
-        this.recyclerView = recyclerView;
-        recyclerView.addOnScrollListener(scrollListener);
-        invalidateVisibility();
-        recyclerView.setOnHierarchyChangeListener(new OnHierarchyChangeListener() {
-            @Override
-            public void onChildViewAdded(View parent, View child) {
-                invalidateVisibility();
-            }
-
-            @Override
-            public void onChildViewRemoved(View parent, View child) {
-                invalidateVisibility();
-            }
-        });
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-        handle = (ImageButton) findViewById(R.id.fastscroller_handle);
-        initHandleMovement();
-    }
-
-    public void setColor(int color) {
-        if (handle == null) handle = (ImageButton) findViewById(R.id.fastscroller_handle);
-        handle.setColorFilter(color);
-    }
-
-    public interface AppBarListner {
-        void onChange(int i);
-    }
-
-    public void setAppBarListner(AppBarListner appBarListner) {
-        this.appBarListner = appBarListner;
-    }
-
-    AppBarListner appBarListner;
-    float r = -1;
-    int i = -1;
-
-    private void initHandleMovement() {
-        handle.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE) {
-                    if(!manuallyChangingPosition)
-                        handle.setImageResource(R.drawable.fastscroller_handle_pressed);
-                    manuallyChangingPosition = true;
-
-                    float relativePos = getRelativeTouchPosition(event);
-                    setHandlePosition(relativePos);
-                    setRecyclerViewPosition(relativePos);
-                    if (appBarListner != null)
-                        if (r != -1 && relativePos > r && (i == -1 || i == 1)) {
-                            {
-                                appBarListner.onChange(0);
-                                i = 0;
-                            }
-                        } else if (r != -1 && relativePos < r && (i == -1 || i == 0)) {
-                            appBarListner.onChange(1);
-                            i = 1;
-                        }
-                    r = relativePos;
-                    return true;
-
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if(manuallyChangingPosition)
-                        handle.setImageResource(R.drawable.fastscroller_handle_normal);
-                    manuallyChangingPosition = false;
-                    return true;
-
-                }
-
-                return false;
-
-            }
-        });
-    }
-
-    private float getRelativeTouchPosition(MotionEvent event) {
-        float yInParent = event.getRawY() - Futils.getViewRawY(handle);
-        return yInParent / (getHeight() - handle.getHeight());
+    private void setHandlePosition1(float relativePos) {
+        handle.setY(Futils.getValueInRange(
+                0, getHeightMinusPadding() - handle.getHeight(), relativePos * (getHeightMinusPadding() - handle.getHeight()))
+        );
 
     }
 
+    private void setUpBarBackground() {
+        InsetDrawable insetDrawable;
+        int resolveColor = resolveColor(getContext(), R.attr.colorControlNormal);
+        insetDrawable = new InsetDrawable(new ColorDrawable(resolveColor), getResources().getDimensionPixelSize(R.dimen.fastscroller_track_padding), 0, 0, 0);
+        this.bar.setBackgroundDrawable(insetDrawable);
+    }
+
+    int resolveColor(@NonNull Context context, @AttrRes int i) {
+        TypedArray obtainStyledAttributes = context.obtainStyledAttributes(new int[]{i});
+        int color = obtainStyledAttributes.getColor(0, 0);
+        obtainStyledAttributes.recycle();
+        return color;
+    }
+    onTouchListener a;
+    public boolean onTouchEvent(@NonNull MotionEvent motionEvent) {
+        if (motionEvent.getAction() == 0 || motionEvent.getAction() == 2) {
+            this.handle.setPressed(true);
+            bar.setVisibility(VISIBLE);
+            float relativePos = getRelativeTouchPosition(motionEvent);
+            setHandlePosition1(relativePos);
+            manuallyChangingPosition=true;
+            setRecyclerViewPosition(relativePos);
+           // showIfHidden();
+            if(a!=null)a.onTouch();
+            return true;
+        } else if (motionEvent.getAction() != 1) {
+            return super.onTouchEvent(motionEvent);
+        } else {
+            bar.setVisibility(INVISIBLE);
+            manuallyChangingPosition=false;
+            this.handle.setPressed(false);
+           // scheduleHide();
+            return true;
+        }
+    }
     private void invalidateVisibility() {
-        if (
-                recyclerView.getAdapter() == null ||
-                        recyclerView.getAdapter().getItemCount() == 0 ||
-                        recyclerView.getChildAt(0) == null ||
+        if (recyclerView.getAdapter() == null || recyclerView.getAdapter().getItemCount() == 0 || recyclerView.getChildAt(0) == null ||
                         isRecyclerViewScrollable()
                 ) {
-            setVisibility(INVISIBLE);
+           setVisibility(INVISIBLE);
         } else {
             setVisibility(VISIBLE);
         }
     }
-
     private boolean isRecyclerViewScrollable() {
-        return recyclerView.getChildAt(0).getHeight() * recyclerView.getAdapter().getItemCount() <= getHeight() || recyclerView.getAdapter().getItemCount()<25;
+        return recyclerView.getChildAt(0).getHeight() * recyclerView.getAdapter().getItemCount() <= getHeightMinusPadding() || recyclerView.getAdapter().getItemCount()<25;
 
     }
 
@@ -155,30 +144,53 @@ public class FastScroller extends LinearLayout {
         }
     }
 
-    private void setHandlePosition(float relativePos) {
-        handle.setY(Futils.getValueInRange(
-                0, getHeight() - handle.getHeight(), relativePos * (getHeight() - handle.getHeight()))
-        );
+    private float getRelativeTouchPosition(MotionEvent event) {
+        float yInParent = event.getRawY() - Futils.getViewRawY(handle);
+        return yInParent / (getHeightMinusPadding() - handle.getHeight());
 
     }
-
-    private class ScrollListener extends RecyclerView.OnScrollListener {
-
-        @Override
-        public void onScrolled(RecyclerView rv, int dx, int dy) {
-            if (handle != null && !manuallyChangingPosition) {
-                View firstVisibleView = recyclerView.getChildAt(0);
-                handle.setVisibility(VISIBLE);
-                float recyclerViewOversize; //how much is recyclerView bigger than fastScroller
-                int recyclerViewAbsoluteScroll;
-                if (firstVisibleView == null || recyclerView == null || rv == null) return;
-                recyclerViewOversize = firstVisibleView.getHeight() * rv.getAdapter().getItemCount() - getHeight();
-                recyclerViewAbsoluteScroll = recyclerView.getChildLayoutPosition(firstVisibleView) * firstVisibleView.getHeight() - firstVisibleView.getTop();
-                setHandlePosition(recyclerViewAbsoluteScroll / recyclerViewOversize);
+    public interface onTouchListener{
+        void onTouch();
+    }
+    public void registerOnTouchListener(onTouchListener onTouchListener){
+        a=onTouchListener;
+    }
+    public void setPressedHandleColor(int i) {
+        handle.setColorFilter(i);
+        StateListDrawable stateListDrawable = new StateListDrawable();
+        Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.fastscroller_handle_normal);
+        Drawable drawable1=ContextCompat.getDrawable(getContext(),R.drawable.fastscroller_handle_pressed);
+        stateListDrawable.addState(View.PRESSED_ENABLED_STATE_SET, new InsetDrawable(drawable1, getResources().getDimensionPixelSize(R.dimen.fastscroller_track_padding), 0, 0, 0));
+        stateListDrawable.addState(View.EMPTY_STATE_SET, new InsetDrawable(drawable, getResources().getDimensionPixelSize(R.dimen.fastscroller_track_padding), 0, 0, 0));
+        this.handle.setImageDrawable(stateListDrawable);
+    }
+    public void setRecyclerView(@NonNull RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
+        bar.setVisibility(INVISIBLE);
+        recyclerView.addOnScrollListener(this.scrollListener);
+        invalidateVisibility();
+        recyclerView.setOnHierarchyChangeListener(new OnHierarchyChangeListener() {
+            @Override
+            public void onChildViewAdded(View parent, View child) {
+                invalidateVisibility();
             }
-        }
+
+
+            @Override
+            public void onChildViewRemoved(View parent, View child) {
+                invalidateVisibility();
+            }
+        });
     }
-
-
+    void updateHandlePosition(){
+        setHandlePosition1(computeHandlePosition());
+    }
+    int vx1=-1;
+    public void updateHandlePosition(int vx,int l) {
+        if(vx!=vx1){
+        setPadding(getPaddingLeft(),getPaddingTop(),getPaddingRight(),l+vx);
+        setHandlePosition1(computeHandlePosition());
+            vx1=vx;
+      }
+    }
 }
-
