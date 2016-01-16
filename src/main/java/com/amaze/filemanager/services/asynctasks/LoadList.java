@@ -19,6 +19,7 @@
 
 package com.amaze.filemanager.services.asynctasks;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -48,24 +49,25 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     private String path;
     boolean back;
     Main ma;
+    Context c;
     int openmode = 0;//0 for normal 1 for smb 2 for custom 3 for drive
-
-    public LoadList(boolean back, Main ma, int openmode) {
+    public LoadList(boolean back, Context c,Main ma, int openmode) {
         this.back = back;
         this.ma = ma;
         this.openmode = openmode;
+        this.c=c;
     }
 
     @Override
     protected void onPreExecute() {
-        if (ma.mSwipeRefreshLayout!=null)
+        if (ma!=null && ma.mSwipeRefreshLayout!=null)
             ma.mSwipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void onProgressUpdate(String... message) {
-        if(ma!=null && ma.getActivity()!=null)
-        Toast.makeText(ma.getActivity(), message[0], Toast.LENGTH_SHORT).show();
+        if(c!=null)
+        Toast.makeText(c, message[0], Toast.LENGTH_SHORT).show();
     }
 
     boolean grid;
@@ -74,102 +76,102 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     // Actual download method, run in the task thread
     protected ArrayList<Layoutelements> doInBackground(String... params) {
         // params comes from the execute() call: params[0] is the url.
-        ArrayList<Layoutelements> list = null;
-        path = params[0];
-        grid = ma.checkforpath(path);
-        ma.folder_count = 0;
-        ma.file_count = 0;
-        if (openmode == -1) {
-            HFile hFile = new HFile(HFile.UNKNOWN,path);
-            hFile.generateMode(ma.getActivity());
-            if (hFile.isDirectory() && !hFile.isSmb()) {
-                openmode = (0);
-            } else if (hFile.isSmb()){
-                openmode = (1);
-                ma.smbPath=path;
-            }
-            else if (hFile.isCustomPath())
-                openmode = (2);
-            else if (android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()) {
-                openmode = (3);
-            }
-        }
-        if (openmode == 1) {
-            HFile hFile = new HFile(HFile.SMB_MODE,path);
-            try {
-                SmbFile[] smbFile = hFile.getSmbFile().listFiles();
-                list = ma.addToSmb(smbFile,path);
-            }
-            catch (SmbAuthException e){
-                ma.reauthenticateSmb();
-                publishProgress(e.getLocalizedMessage());
-            }
-            catch (SmbException e) {
-                publishProgress(e.getLocalizedMessage());
-                e.printStackTrace();
-            } catch (NullPointerException e) {
-                publishProgress(e.getLocalizedMessage());
-                e.printStackTrace();
-            }
-        } else if (openmode == 2) {
+          ArrayList<Layoutelements> list = null;
+           path = params[0];
+           grid = ma.checkforpath(path);
+           ma.folder_count = 0;
+           ma.file_count = 0;
+           if (openmode == -1) {
+               HFile hFile = new HFile(HFile.UNKNOWN, path);
+               hFile.generateMode(ma.getActivity());
+               if (hFile.isDirectory() && !hFile.isSmb()) {
+                   openmode = (0);
+               } else if (hFile.isSmb()) {
+                   openmode = (1);
+                   ma.smbPath = path;
+               } else if (hFile.isCustomPath())
+                   openmode = (2);
+               else if (android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()) {
+                   openmode = (3);
+               }
+           }
+           if (openmode == 1) {
+               HFile hFile = new HFile(HFile.SMB_MODE, path);
+               try {
+                   SmbFile[] smbFile = hFile.getSmbFile(5000).listFiles();
+                   list = ma.addToSmb(smbFile, path);
+               } catch (SmbAuthException e) {
+                   if(!e.getMessage().toLowerCase().contains("denied"))
+                   ma.reauthenticateSmb();
+                   publishProgress(e.getLocalizedMessage());
+               } catch (SmbException e) {
+                   publishProgress(e.getLocalizedMessage());
+                   e.printStackTrace();
+               } catch (NullPointerException e) {
+                   publishProgress(e.getLocalizedMessage());
+                   e.printStackTrace();
+               }
+           } else if (openmode == 2) {
 
-            ArrayList<BaseFile> arrayList = null;
-            switch (Integer.parseInt(path)) {
-                case 0:
-                    arrayList = (listImages());
-                    path = "0";
-                    break;
-                case 1:
-                    arrayList = (listVideos());
-                    path = "1";
-                    break;
-                case 2:
-                    arrayList = (listaudio());
-                    path = "2";
-                    break;
-                case 3:
-                    arrayList = (listDocs());
-                    path = "3";
-                    break;
-                case 4:
-                    arrayList = (listApks());
-                    path = "4";
-                    break;
-                case 5:
-                    arrayList = listRecent();
-                    path = "5";
-                    break;
-                case 6:
-                    arrayList = listRecentFiles();
-                    path = "6";
+               ArrayList<BaseFile> arrayList = null;
+               switch (Integer.parseInt(path)) {
+                   case 0:
+                       arrayList = (listImages());
+                       path = "0";
+                       break;
+                   case 1:
+                       arrayList = (listVideos());
+                       path = "1";
+                       break;
+                   case 2:
+                       arrayList = (listaudio());
+                       path = "2";
+                       break;
+                   case 3:
+                       arrayList = (listDocs());
+                       path = "3";
+                       break;
+                   case 4:
+                       arrayList = (listApks());
+                       path = "4";
+                       break;
+                   case 5:
+                       arrayList = listRecent();
+                       path = "5";
+                       break;
+                   case 6:
+                       arrayList = listRecentFiles();
+                       path = "6";
 
-            }
-            if (arrayList != null)
-                list = ma.addTo(arrayList);
-            else return new ArrayList<>();
-        } else {
-            try {
-                ArrayList<BaseFile> arrayList;
-                if (ma.ROOT_MODE) {
-                    arrayList = RootHelper.getFilesList(path, ma.ROOT_MODE, ma.SHOW_HIDDEN, new RootHelper.GetModeCallBack() {
-                        @Override
-                        public void getMode(int mode) {
-                            openmode=mode;
-                        }
-                    });
-                } else
-                    arrayList = (RootHelper.getFilesList(path, ma.SHOW_HIDDEN));
-                openmode=0;
-                list = ma.addTo(arrayList);
+               }
+               try {
+                   if (arrayList != null)
+                       list = ma.addTo(arrayList);
+                   else return new ArrayList<>();
+               } catch (Exception e) {
+               }
+           } else {
+               try {
+                   ArrayList<BaseFile> arrayList;
+                   if (ma.ROOT_MODE) {
+                       arrayList = RootHelper.getFilesList(path, ma.ROOT_MODE, ma.SHOW_HIDDEN, new RootHelper.GetModeCallBack() {
+                           @Override
+                           public void getMode(int mode) {
+                               openmode = mode;
+                           }
+                       });
+                   } else
+                       arrayList = (RootHelper.getFilesList(path, ma.SHOW_HIDDEN));
+                   openmode = 0;
+                   list = ma.addTo(arrayList);
 
-            } catch (Exception e) {
-                return null;
-            }
-        }
-        if (list != null && !(openmode == 2 && ((path).equals("5") || (path).equals("6"))))
-            Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, ma.ROOT_MODE));
-        return list;
-
+               } catch (Exception e) {
+                   return null;
+               }
+           }
+           if (list != null && !(openmode == 2 && ((path).equals("5") || (path).equals("6"))))
+               Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, ma.ROOT_MODE));
+           return list;
 
     }
 
@@ -178,7 +180,6 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     protected void onPostExecute(ArrayList<Layoutelements> bitmap) {
         if (isCancelled()) {
             bitmap = null;
-
         }
         ma.createViews(bitmap, back, path, openmode, false, grid);
 
@@ -190,7 +191,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                 MediaStore.Audio.Media.DATA
         };
 
-        Cursor cursor = ma.getActivity().getContentResolver().query(
+        Cursor cursor = c.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 selection,
@@ -213,7 +214,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     ArrayList<BaseFile> listImages() {
         ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Images.Media.DATA};
-        final Cursor cursor = ma.getActivity().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+        final Cursor cursor = c.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 null,
                 null,
@@ -233,7 +234,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     ArrayList<BaseFile> listVideos() {
         ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Images.Media.DATA};
-        final Cursor cursor = ma.getActivity().getContentResolver().query(MediaStore.Video.Media
+        final Cursor cursor = c.getContentResolver().query(MediaStore.Video.Media
                         .EXTERNAL_CONTENT_URI,
                 projection,
                 null,
@@ -257,7 +258,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         Calendar c = Calendar.getInstance();
         c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
         Date d = c.getTime();
-        Cursor cursor = ma.getActivity().getContentResolver().query(MediaStore.Files
+        Cursor cursor = this.c.getContentResolver().query(MediaStore.Files
                         .getContentUri("external"), projection,
                 null,
                 null, null);
@@ -292,7 +293,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         ArrayList<BaseFile> songs = new ArrayList<BaseFile>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA};
 
-        Cursor cursor = ma.getActivity().getContentResolver().query(MediaStore.Files
+        Cursor cursor = c.getContentResolver().query(MediaStore.Files
                         .getContentUri("external"), projection,
                 null,
                 null, null);
@@ -326,7 +327,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     ArrayList<BaseFile> listDocs() {
         ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA};
-        Cursor cursor = ma.getActivity().getContentResolver().query(MediaStore.Files
+        Cursor cursor = c.getContentResolver().query(MediaStore.Files
                         .getContentUri("external"), projection,
                 null,
                 null, null);

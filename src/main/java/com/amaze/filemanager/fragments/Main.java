@@ -902,14 +902,17 @@ public class Main extends android.support.v4.app.Fragment {
             getActivity().finish();
         }
     }
-
+    LoadList loadList;
     public void loadlist(String path, boolean back, int openMode) {
         if (mActionMode != null) {
             mActionMode.finish();
         }
         /*if(openMode==-1 && android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches())
             bindDrive(path);
-        else */new LoadList(back, ma,openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
+        else */
+        if(loadList!=null)loadList.cancel(true);
+        loadList=new LoadList(back,ma.getActivity(), ma,openMode);
+        loadList   .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
 
     }
 

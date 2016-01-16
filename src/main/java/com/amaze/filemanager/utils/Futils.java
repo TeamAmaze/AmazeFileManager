@@ -108,20 +108,20 @@ public  final int READ = 4;
         return Math.min(minimum, max);
     }
 
-    public MaterialDialog showBasicDialog(final MainActivity m, String[] texts) {
-        MaterialDialog.Builder a = new MaterialDialog.Builder(m);
+    public MaterialDialog showBasicDialog(Context c,String fabskin,int theme1, String[] texts) {
+        MaterialDialog.Builder a = new MaterialDialog.Builder(c);
         a.content(texts[0]);
-        a.widgetColor(Color.parseColor(m.fabskin));
-        if(m.theme1==1)
+        a.widgetColor(Color.parseColor(fabskin));
+        if(theme1==1)
             a.theme(Theme.DARK);
         a.title(texts[1]);
         a.positiveText(texts[2]);
-        a.positiveColor(Color.parseColor(m.fabskin));
+        a.positiveColor(Color.parseColor(fabskin));
         a.negativeText(texts[3]);
-        a.negativeColor(Color.parseColor(m.fabskin));
+        a.negativeColor(Color.parseColor(fabskin));
         if(texts[4]!=(null)){
             a.neutralText(texts[4]);
-            a.neutralColor(Color.parseColor(m.fabskin));
+            a.neutralColor(Color.parseColor(fabskin));
         }
         MaterialDialog dialog=a.build();
         return dialog;

@@ -72,7 +72,7 @@ public class Preffrag extends PreferenceFragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        PreferenceUtils.reset();
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 

@@ -352,6 +352,9 @@ public class MainActivityHelper {
                 e.printStackTrace();
             }
 
+        }else if(path!=null && path.length()>0){
+            ip.setText(path);
+            user.requestFocus();
         }
         ba3.customView(v2, true);
         if (mainActivity.theme1 == 1) ba3.theme(Theme.DARK);

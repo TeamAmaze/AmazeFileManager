@@ -1,5 +1,6 @@
 package com.amaze.filemanager.utils;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 
@@ -11,7 +12,7 @@ import java.util.Random;
  * Created by Vishal on 12-05-2015.
  */
 public class PreferenceUtils {
-
+    static int primary=-1,accent=-1,folder=-1,theme=-1;
     public static int getStatusColor(String skin) {
         int c=darker(Color.parseColor(skin),0.6f);
         return c;
@@ -38,30 +39,40 @@ public class PreferenceUtils {
         return colors[primary];
     }
     public static int getAccent(SharedPreferences Sp){
-        int i=Sp.getInt("fab_skin_color_position", 1);
-        return i;
+        if(accent==-1)
+        accent=Sp.getInt("fab_skin_color_position", 1);
+        return accent;
     }
     public static int getPrimaryColor(SharedPreferences Sp){
-        int i = Sp.getInt("skin_color_position", 4);
-        return i;
+        if(primary==-1)
+        primary=Sp.getInt("skin_color_position", 4);
+        return primary;
     }
     public static int getFolderColor(SharedPreferences Sp){
-        int icon=Sp.getInt("icon_skin_color_position", -1);
-        icon=icon==-1?Sp.getInt("skin_color_position", 4):icon;
-        return icon;
+        if(folder==-1) {
+            int icon = Sp.getInt("icon_skin_color_position", -1);
+            folder = icon == -1 ? Sp.getInt("skin_color_position", 4) : icon;
+        }
+        return folder;
     }
     public static String getPrimaryColorString(SharedPreferences Sp) {
-        int i = Sp.getInt("skin_color_position", 4);
-        return (colors[i]);
+        return (colors[getPrimaryColor(Sp)]);
     }
     public static String getFolderColorString(SharedPreferences Sp) {
-        int icon=Sp.getInt("icon_skin_color_position", -1);
-        icon=icon==-1?Sp.getInt("skin_color_position", 4):icon;
-        return (colors[icon]);
+        return (colors[getFolderColor(Sp)]);
     }
     public static String getAccentString(SharedPreferences Sp) {
-        int i = Sp.getInt("fab_skin_color_position", 1);
-        return (colors[i]);
+        return (colors[getAccent(Sp)]);
+    }
+    public static int getTheme(SharedPreferences Sp){
+        if(theme==-1){
+            int th = Integer.parseInt(Sp.getString("theme", "0"));
+            theme = th == 2 ? PreferenceUtils.hourOfDay() : th;
+        }
+        return theme;
+    }
+    public static void reset(){
+        primary=accent=folder=theme=-1;
     }
     public static int getPosition(String Sp){
         int i=-1;
