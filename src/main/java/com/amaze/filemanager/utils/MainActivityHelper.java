@@ -33,6 +33,7 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
+import com.amaze.filemanager.ui.SmbDialog;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.stericson.RootTools.RootTools;
 
@@ -132,7 +133,8 @@ public class MainActivityHelper {
                 mkfile(ma.openMode,path1,ma);
                 break;
             case 2:
-                createSmbDialog("", false, ma);
+                SmbDialog smbDialog=new SmbDialog();
+                smbDialog.show(mainActivity.getFragmentManager(),"tab");
                 break;
             case 3:
                 mainActivity.bindDrive();

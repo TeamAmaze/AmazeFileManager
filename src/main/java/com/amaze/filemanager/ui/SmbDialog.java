@@ -53,7 +53,7 @@ public class SmbDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        Sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         theme = PreferenceUtils.getTheme(Sp);
         fabskin = Color.parseColor(PreferenceUtils.getAccentString(Sp));
     }
@@ -79,15 +79,16 @@ public class SmbDialog extends DialogFragment {
                     subnetScanner.interrupt();
                 if(getActivity()!=null && getActivity() instanceof MainActivity) {
                     dismiss();
-                    MainActivity mainActivity = (MainActivity) getActivity();
-                    mainActivity.mainActivityHelper.add(2);
+                    MainActivity mainActivity=(MainActivity)getActivity();
+                    Main ma = (Main) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+                    mainActivity.mainActivityHelper.createSmbDialog("",false,ma);
                 }
                 }
         });
         builder.positiveText("Use custom IP");
         builder.positiveColor(fabskin);
         computers.add(new Computer("-1", "-1"));
-        listviewadapter = new Listviewadapter(getContext(), R.layout.smb_computers_row, computers);
+        listviewadapter = new Listviewadapter(getActivity(), R.layout.smb_computers_row, computers);
         subnetScanner = new SubnetScanner(getActivity());
         subnetScanner.setObserver(new SubnetScanner.ScanObserver() {
             @Override
