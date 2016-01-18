@@ -37,7 +37,7 @@
             android:background="?android:selectableItemBackground"
             android:src="@drawable/ic_clear_white"/>
     </LinearLayout>
-    <EditText
+    <android.support.v7.widget.AppCompatEditText
         android:id="@+id/search_box"
         android:layout_width="match_parent"
         android:layout_toLeftOf="@id/bbar"

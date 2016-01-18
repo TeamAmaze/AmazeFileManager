@@ -108,7 +108,8 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.ui.Layoutelements;
-import com.amaze.filemanager.ui.SmbDialog;
+import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
+import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
@@ -149,7 +150,7 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,OnRequestPermissionsResultCallback {
+        GoogleApiClient.OnConnectionFailedListener,OnRequestPermissionsResultCallback,SmbConnectionListener {
     public final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3, RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
     final Pattern DIR_SEPARATOR = Pattern.compile("/");
     /* Request code used to invoke sign in user interactions. */
@@ -467,11 +468,13 @@ public class MainActivity extends AppCompatActivity implements
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkStoragePermission())
             rv.clear();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
         String strings[] = FileUtil.getExtSdCardPathsForActivity(this);
         for (String s : strings) {
             File f = new File(s);
             if (!rv.contains(s) && utils.canListFiles(f))
                 rv.add(s);
+        }
         }
         rootmode = Sp.getBoolean("rootmode", false);
         if (rootmode)
@@ -872,7 +875,7 @@ public class MainActivity extends AppCompatActivity implements
         Main ma = null;
         try {
             ma = (Main) getFragment().getTab();
-        } catch (ClassCastException e) {
+        } catch (Exception e) {
         }
         switch (item.getItemId()) {
             case R.id.home:
@@ -1636,8 +1639,9 @@ public class MainActivity extends AppCompatActivity implements
                     intent.setAction(Intent.ACTION_GET_CONTENT);
                 } else {
                     intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+
                 }
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("image/*");
                 startActivityForResult(intent, image_selector_request_code);
                 return false;
@@ -1852,11 +1856,12 @@ public class MainActivity extends AppCompatActivity implements
         else newPath = news;
         final TextView bapath = (TextView) pathbar.findViewById(R.id.fullpath);
         final TextView animPath = (TextView) pathbar.findViewById(R.id.fullpath_anim);
+        TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
         if (!results) {
-            TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
             textView.setText(folder_count + " " + getResources().getString(R.string.folders) + "" +
                     " " + file_count + " " + getResources().getString(R.string.files));
         }
+        else textView.setText(R.string.searchresults);
         final String oldPath = bapath.getText().toString();
         if (oldPath != null && oldPath.equals(newPath)) return;
 
@@ -2534,5 +2539,69 @@ public class MainActivity extends AppCompatActivity implements
             // Contact permissions have not been granted yet. Request them directly.
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
         }
+    }
+    public void showSMBDialog(String name,String path,boolean edit){
+        if(path.length()>0 && name.length()==0){
+          int i=-1;
+            if((i=mainActivityHelper.contains(path,Servers))!=-1){
+                name=Servers.get(i)[0];
+            }
+        }
+        SmbConnectDialog smbConnectDialog=new SmbConnectDialog();
+        Bundle bundle=new Bundle();
+        bundle.putString("name",name);
+        bundle.putString("path",path);
+        bundle.putBoolean("edit",edit);
+        smbConnectDialog.setArguments(bundle);
+        smbConnectDialog.show(getFragmentManager(),"smbdailog");
+
+    }
+
+    @Override
+    public void addConnection(boolean edit, String name, String path,String oldPath) {
+
+        try {
+            String[] s=new String[]{name,path};
+            if (!edit) {
+                TabFragment fragment=getFragment();
+                if(fragment!=null) {
+                    Fragment fragment1=fragment.getTab();
+                    if(fragment1!=null){
+                    final Main ma = (Main) fragment1;
+                    ma.loadlist(path, false, -1);
+                }}
+                if (Servers == null) Servers = new ArrayList<>();
+                Servers.add(new String[]{name,path});
+                refreshDrawer();
+                grid.addPath(name, path, mainActivity.SMB, 1);
+            } else {
+                if (mainActivity.Servers == null){
+                    mainActivity.Servers = new ArrayList<>();
+                }
+                int i=-1;
+                if ((i=mainActivityHelper.contains(oldPath, mainActivity.Servers)) != -1) {
+                    mainActivity.Servers.remove(i);
+                    mainActivity.grid.removePath(oldPath, mainActivity.SMB);
+                }
+                mainActivity.Servers.add(s);
+                Collections.sort(mainActivity.Servers, new BookSorter());
+                mainActivity.refreshDrawer();
+                mainActivity.grid.addPath(s[0], s[1], mainActivity.SMB, 1);
+            }
+        } catch (Exception e) {
+            Toast.makeText(mainActivity, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteConnection(String path) {
+        int i=-1;
+        if ((i=mainActivityHelper.contains(path, Servers)) != -1) {
+            Servers.remove(i);
+            grid.removePath(path, mainActivity.SMB);
+            refreshDrawer();
+        }
+
     }
 }

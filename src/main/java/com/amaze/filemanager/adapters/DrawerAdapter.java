@@ -130,12 +130,13 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                     if(!getItem(position).isSection())
                     // not to remove the first bookmark (storage) and permanent bookmarks
                     if (position > m.storage_count && position < values.size()-7) {
-                        String path = ((EntryItem) getItem(position)).getPath();
+                        EntryItem item=(EntryItem) getItem(position);
+                        String path = (item).getPath();
                         if(m.mainActivityHelper.contains(path,m.books)!=-1){
                             m.renameBookmark(((EntryItem) getItem(position)).getTitle(),path);
                         }
                         else if (path.startsWith("smb:/")) {
-                            m.mainActivityHelper.createSmbDialog(path, true, null);
+                            m.showSMBDialog(item.getTitle(),path, true);
                         }
                     }else if(position<m.storage_count ){
                         String path = ((EntryItem) getItem(position)).getPath();

@@ -22,7 +22,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <EditText
+    <android.support.v7.widget.AppCompatEditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/newname"

@@ -41,6 +41,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     ArrayList<Layoutelements> items;
     Context context;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
+    private SparseBooleanArray myanim = new SparseBooleanArray();
     ColorMatrixColorFilter colorMatrixColorFilter;
     LayoutInflater mInflater;
     int filetype=-1;
@@ -55,6 +56,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         this.context=context;
         for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, false);
+            myanim.put(i,false);
         }
         colorMatrixColorFilter=main.colorMatrixColorFilter;
         mInflater = (LayoutInflater) context
@@ -75,6 +77,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
     public void addItem(){
         notifyDataSetChanged();
+
     }
     public void toggleChecked(int position) {
         if(!stoppedAnimation)main.stopAnimation();
@@ -225,6 +228,10 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         notifyDataSetChanged();
         column=main.columns;
         items=arrayList;
+        for (int i = 0; i < items.size(); i++) {
+            myChecked.put(i, false);
+            myanim.put(i,false);
+        }
     }
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder vholder,final int p) {
@@ -234,13 +241,15 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.rl.setMinimumHeight(rowHeight);
                 if (items.size() == (main.GO_BACK_ITEM ? 1 : 0))
                     holder.txtTitle.setText(R.string.nofiles);
+                else holder.txtTitle.setText("");
                 return;
             }
         }
         if(holder.imageView==null)return;
-        if (!this.stoppedAnimation)
+        if (!this.stoppedAnimation && !myanim.get(p))
         {
             animate(holder);
+            myanim.put(p,true);
         }
         final Layoutelements rowItem = items.get(p);
         if (main.IS_LIST) {

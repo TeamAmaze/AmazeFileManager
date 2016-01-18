@@ -54,7 +54,7 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/toolbar_theme"
             app:popupTheme="?attr/popup"
-
+            app:layout_scrollFlags="scroll|enterAlways"
             app:contentInsetLeft="72dp"
             app:contentInsetStart="72dp">
 
@@ -64,6 +64,7 @@
             android:layout_below="@id/action_bar"
             android:id="@+id/buttonbarframe"
             android:layout_height="wrap_content"
+
             android:layout_width="match_parent"
             android:minHeight="72dp">
 

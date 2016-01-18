@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:right="2dip">
+    <item >
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="oval">
 
@@ -8,10 +8,10 @@
 
             <size
                 android:height="@dimen/fastscroller_track_height"
-                android:width="3dp" />
+                android:width="5dp" />
         </shape>
     </item>
-    <item  android:left="2dip" >
+    <item android:left="3dp" >
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="rectangle">
 

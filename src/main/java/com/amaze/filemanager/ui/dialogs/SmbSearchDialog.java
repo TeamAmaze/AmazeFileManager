@@ -1,4 +1,4 @@
-package com.amaze.filemanager.ui;
+package com.amaze.filemanager.ui.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -43,16 +43,17 @@ import java.util.List;
 /**
  * Created by arpitkh996 on 16-01-2016.
  */
-public class SmbDialog extends DialogFragment {
+public class SmbSearchDialog extends DialogFragment {
     Listviewadapter listviewadapter;
     ArrayList<Computer> computers = new ArrayList<>();
     SharedPreferences Sp;
     int theme, fabskin;
     SubnetScanner subnetScanner;
-
+    Context context;
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        context=getActivity();
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         theme = PreferenceUtils.getTheme(Sp);
         fabskin = Color.parseColor(PreferenceUtils.getAccentString(Sp));
@@ -61,7 +62,7 @@ public class SmbDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(R.string.smb_con);
+        builder.title(R.string.searchingdevices);
         builder.negativeColor(fabskin);
         builder.negativeText(R.string.cancel);
         builder.onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -80,8 +81,7 @@ public class SmbDialog extends DialogFragment {
                 if(getActivity()!=null && getActivity() instanceof MainActivity) {
                     dismiss();
                     MainActivity mainActivity=(MainActivity)getActivity();
-                    Main ma = (Main) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
-                    mainActivity.mainActivityHelper.createSmbDialog("",false,ma);
+                    mainActivity.showSMBDialog("","",false);
                 }
                 }
         });
@@ -97,6 +97,7 @@ public class SmbDialog extends DialogFragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            if(!computers.contains(computer))
                             computers.add(computers.size() - 1, computer);
                             listviewadapter.notifyDataSetChanged();
                         }
@@ -109,6 +110,13 @@ public class SmbDialog extends DialogFragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            if(computers.size()==1){
+                                dismiss();
+                                Toast.makeText(getActivity(),R.string.nodevicefound,Toast.LENGTH_SHORT).show();
+                                MainActivity mainActivity=(MainActivity)getActivity();
+                                mainActivity.showSMBDialog("","",false);
+                                return;
+                            }
                             computers.remove(computers.size()-1);
                             listviewadapter.notifyDataSetChanged();
                         }
@@ -132,7 +140,7 @@ public class SmbDialog extends DialogFragment {
 
         public Listviewadapter(Context context, int resource, List<Computer> objects) {
             super(context, resource, objects);
-            mInflater = (LayoutInflater) getContext()
+            mInflater = (LayoutInflater) context
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         }
 
@@ -148,7 +156,7 @@ public class SmbDialog extends DialogFragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             Computer f = getItem(position);
             if (f.addr.equals("-1")) {
-                ProgressBar progressBar = new ProgressBar(getContext());
+                ProgressBar progressBar = new ProgressBar(getContext(),null,android.R.attr.progressBarStyle );
                 progressBar.setIndeterminate(true);
                 progressBar.setBackgroundDrawable(null);
                 return progressBar;
@@ -168,8 +176,7 @@ public class SmbDialog extends DialogFragment {
                     if(getActivity()!=null && getActivity() instanceof MainActivity){
                         dismiss();
                         MainActivity mainActivity=(MainActivity)getActivity();
-                        Main ma = (Main) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
-                        mainActivity.mainActivityHelper.createSmbDialog(listviewadapter.getItem(p).addr,false,ma);
+                        mainActivity.showSMBDialog(listviewadapter.getItem(p).name,listviewadapter.getItem(p).addr,false);
                     }
                 }
             });

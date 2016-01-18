@@ -380,5 +380,10 @@
     <string name="creatingfile">Creating File</string>
     <string name="creatingfolder">Creating Folder</string>
     <string name="renaming">Renaming</string>
+    <string name="cantbeempty">%s cannot be empty</string>
+    <string name="ip">Address</string>
+    <string name="connectionname">Connection name</string>
+    <string name="nodevicefound">No device found</string>
+    <string name="searchingdevices">Searching for devices</string>
 </resources>
 

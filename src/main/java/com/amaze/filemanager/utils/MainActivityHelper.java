@@ -10,8 +10,6 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,28 +24,17 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
-import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.services.asynctasks.SearchTask;
-import com.amaze.filemanager.ui.SmbDialog;
+import com.amaze.filemanager.ui.dialogs.SmbSearchDialog;
 import com.amaze.filemanager.ui.drawer.EntryItem;
-import com.stericson.RootTools.RootTools;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Collections;
-
-import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile;
 
 /**
  * Created by root on 11/22/15.
@@ -133,7 +120,7 @@ public class MainActivityHelper {
                 mkfile(ma.openMode,path1,ma);
                 break;
             case 2:
-                SmbDialog smbDialog=new SmbDialog();
+                SmbSearchDialog smbDialog=new SmbSearchDialog();
                 smbDialog.show(mainActivity.getFragmentManager(),"tab");
                 break;
             case 3:
@@ -299,128 +286,6 @@ public class MainActivityHelper {
 
         }
         return -1;
-    }
-    public void createSmbDialog(final String path, final boolean edit, final Main ma1) {
-        final MaterialDialog.Builder ba3 = new MaterialDialog.Builder(mainActivity);
-        ba3.title((R.string.smb_con));
-        final View v2 = mainActivity.getLayoutInflater().inflate(R.layout.smb_dialog, null);
-        final EditText ip = (EditText) v2.findViewById(R.id.editText);
-        int color = Color.parseColor(mainActivity.fabskin);
-        utils.setTint(ip, color);
-        final EditText user = (EditText) v2.findViewById(R.id.editText3);
-        utils.setTint(user, color);
-        final EditText pass = (EditText) v2.findViewById(R.id.editText2);
-        utils.setTint(pass, color);
-        final CheckBox ch = (CheckBox) v2.findViewById(R.id.checkBox2);
-        utils.setTint(ch, color);
-        TextView help = (TextView) v2.findViewById(R.id.wanthelp);
-        help.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                utils.showSMBHelpDialog(mainActivity);
-            }
-        });
-        ch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (ch.isChecked()) {
-                    user.setEnabled(false);
-                    pass.setEnabled(false);
-                } else {
-                    user.setEnabled(true);
-                    pass.setEnabled(true);
-
-                }
-            }
-        });
-        if (edit) {
-            String userp = "", passp = "", ipp = "";
-            try {
-                jcifs.Config.registerSmbURLHandler();
-                URL a = new URL(path);
-                String userinfo = a.getUserInfo();
-                if (userinfo != null) {
-                    String inf = URLDecoder.decode(userinfo, "UTF-8");
-                    userp = inf.substring(0, inf.indexOf(":"));
-                    passp = inf.substring(inf.indexOf(":") + 1, inf.length());
-                    user.setText(userp);
-                    pass.setText(passp);
-                } else ch.setChecked(true);
-                ipp = a.getHost();
-                ip.setText(ipp);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-
-        }else if(path!=null && path.length()>0){
-            ip.setText(path);
-            user.requestFocus();
-        }
-        ba3.customView(v2, true);
-        if (mainActivity.theme1 == 1) ba3.theme(Theme.DARK);
-        ba3.neutralText(R.string.cancel);
-        ba3.positiveText(R.string.create);
-        if (edit) ba3.negativeText(R.string.delete);
-        ba3.positiveColor(color).negativeColor(color).neutralColor(color);
-        ba3.callback(new MaterialDialog.ButtonCallback() {
-            @Override
-            public void onPositive(MaterialDialog materialDialog) {
-                Main ma = ma1;
-                String s[];
-                if (ma == null) ma = ((Main)mainActivity. getFragment().getTab());
-                String ipa = ip.getText().toString();
-                SmbFile smbFile;
-                if (ch.isChecked())
-                    smbFile = ma.connectingWithSmbServer(new String[]{ipa, "", ""}, true);
-                else {
-                    String useru = user.getText().toString();
-                    String passp = pass.getText().toString();
-                    smbFile = ma.connectingWithSmbServer(new String[]{ipa, useru, passp}, false);
-                }
-                if (smbFile == null) return;
-                s = new String[]{parseSmbPath(smbFile.getPath()), smbFile.getPath()};
-                try {
-                    if (!edit) {
-                        ma.loadlist(smbFile.getPath(), false, -1);
-                        if (mainActivity.Servers == null) mainActivity.Servers = new ArrayList<>();
-                        mainActivity.Servers.add(s);
-                        mainActivity.refreshDrawer();
-                        mainActivity.grid.addPath(s[0], s[1], mainActivity.SMB, 1);
-                    } else {
-                        if (mainActivity.Servers == null){
-                            mainActivity.Servers = new ArrayList<>();
-                        }
-                        int i=-1;
-                        if ((i=contains(path, mainActivity.Servers)) != -1) {
-                            mainActivity.Servers.remove(i);
-                            mainActivity.grid.removePath(path, mainActivity.SMB);
-                        }
-                        mainActivity.Servers.add(s);
-                        Collections.sort(mainActivity.Servers, new BookSorter());
-                        mainActivity.refreshDrawer();
-                        mainActivity.grid.addPath(s[0], s[1], mainActivity.SMB, 1);
-                    }
-                } catch (Exception e) {
-                    Toast.makeText(mainActivity, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-            }
-
-
-            @Override
-            public void onNegative(MaterialDialog materialDialog) {
-                if (mainActivity.Servers.contains(path)) {
-                    mainActivity.Servers.remove(path);
-                    mainActivity.refreshDrawer();
-                    mainActivity.grid.removePath(path, mainActivity.SMB);
-
-                }
-            }
-        });
-        ba3.build().show();
-
     }
 
     public void mkFile(final HFile path,final Main ma) {

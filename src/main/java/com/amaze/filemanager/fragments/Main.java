@@ -1135,12 +1135,16 @@ public class Main extends android.support.v4.app.Fragment {
     }
     public void reauthenticateSmb(){
         if(smbPath!=null){
-            MAIN_ACTIVITY.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    MAIN_ACTIVITY.mainActivityHelper.createSmbDialog(smbPath,true,ma);
-                }
-            });
+            try {
+                MAIN_ACTIVITY.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MAIN_ACTIVITY.showSMBDialog("",smbPath,true);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
     public void goBackItemClick() {
@@ -1304,19 +1308,6 @@ public class Main extends android.support.v4.app.Fragment {
         super.onDestroy();
 
 
-    }
-
-    public SmbFile connectingWithSmbServer(String[] auth, boolean anonym) {
-        try {
-            String yourPeerIP = auth[0], domain = "";
-            String path = "smb://" + (anonym ? "" : (URLEncoder.encode(auth[1] + ":" + auth[2], "UTF-8") + "@")) + yourPeerIP + "/";
-            smbPath = path;
-            SmbFile smbFile = new SmbFile(path);
-            return smbFile;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     public void updatehiddenfiles() {

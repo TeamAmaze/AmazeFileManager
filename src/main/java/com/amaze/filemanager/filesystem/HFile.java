@@ -1,6 +1,7 @@
 package com.amaze.filemanager.filesystem;
 
 import android.content.Context;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -49,6 +50,13 @@ public class HFile {
                 return;
             }
             boolean rootmode=PreferenceManager.getDefaultSharedPreferences(context).getBoolean("rootMode",false);
+            if(Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT)
+            {   mode=LOCAL_MODE;
+                if(rootmode){
+                    if(!getFile().canRead())mode=ROOT_MODE;
+                }
+                return;
+            }
             if(FileUtil.isOnExtSdCard(getFile(),context))mode=LOCAL_MODE;
             else if(rootmode){
                 if(!getFile().canRead())mode=ROOT_MODE;
@@ -99,6 +107,7 @@ public class HFile {
                 break;
             case ROOT_MODE:
                 BaseFile baseFile=generateBaseFileFromParent();
+                if(baseFile!=null)
                 return baseFile.getDate();
         }
         return new File("/").lastModified();
@@ -119,6 +128,7 @@ public class HFile {
                 return s;
             case ROOT_MODE:
                 BaseFile baseFile=generateBaseFileFromParent();
+                if(baseFile!=null)
                 return baseFile.getSize();
         }
         return s;

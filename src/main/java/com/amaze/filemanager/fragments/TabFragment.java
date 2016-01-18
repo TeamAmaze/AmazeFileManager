@@ -246,15 +246,15 @@ public class TabFragment extends android.support.v4.app.Fragment {
         super.onSaveInstanceState(outState);
         try {
             int i = 0;
+            Sp.edit().putInt("currenttab",currenttab).commit();
             if (fragments != null && fragments.size() !=0) {
-                if(fragmentManager==null)fragmentManager=getActivity().getSupportFragmentManager();
+                if(fragmentManager==null)return;
                 for (Fragment fragment : fragments) {
                     fragmentManager.putFragment(outState, "tab" + i, fragment);
                     i++;
                 }
                 outState.putInt("pos", mViewPager.getCurrentItem());
             }
-            Sp.edit().putInt("currenttab",currenttab).commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
