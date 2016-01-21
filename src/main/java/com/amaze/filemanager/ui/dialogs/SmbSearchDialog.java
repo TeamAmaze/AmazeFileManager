@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -57,6 +58,13 @@ public class SmbSearchDialog extends DialogFragment {
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         theme = PreferenceUtils.getTheme(Sp);
         fabskin = Color.parseColor(PreferenceUtils.getAccentString(Sp));
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        if(subnetScanner!=null)
+            subnetScanner.interrupt();
     }
 
     @Override

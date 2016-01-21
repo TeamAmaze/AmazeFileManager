@@ -52,6 +52,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.views.CheckBx;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -334,13 +335,10 @@ public class Preffrag extends PreferenceFragment{
                         "mailto","arpitkh96@gmail.com", null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
                 Toast.makeText(getActivity(),getActivity().getFilesDir().getPath(),Toast.LENGTH_SHORT).show();
-                File f=new File(getActivity().getExternalCacheDir(),"log.txt");
-                if(!f.exists()) try {
-                    f.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                File f=new File(getActivity().getExternalFilesDir("internal"),"log.txt");
+                if(f.exists()){
+                    emailIntent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(f));
                 }
-                emailIntent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(f));
                 startActivity(Intent.createChooser(emailIntent,getResources().getString(R.string.feedback)));
                 return false;
             }

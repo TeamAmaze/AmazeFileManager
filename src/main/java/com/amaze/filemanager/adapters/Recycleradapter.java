@@ -27,6 +27,7 @@ import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.utils.DataUtils;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.io.File;
@@ -622,10 +623,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 main.MAIN_ACTIVITY.mainActivityHelper.extractFile(new File(rowItem.getDesc()));
                                 return true;
                             case R.id.book:
-                                try {
-                                    main.MAIN_ACTIVITY.grid.addPath(rowItem.getTitle(),rowItem.getDesc(),main.MAIN_ACTIVITY.BOOKS,1);
-                                } catch (Exception e) {
-                                }
+                                    DataUtils.addBook(new String[]{rowItem.getTitle(),rowItem.getDesc()},true);
                                 main.MAIN_ACTIVITY.updateDrawer();
                                 Toast.makeText(main.getActivity(), main.utils.getString(main.getActivity(), R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                                 return true;

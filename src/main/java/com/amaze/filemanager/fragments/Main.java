@@ -89,10 +89,12 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.ui.views.FastScroller;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
+import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
@@ -155,7 +157,6 @@ public class Main extends android.support.v4.app.Fragment {
     TextView pathname;
     boolean stopAnims = true;
     View nofilesview;
-    String current_drive_id;
     DisplayMetrics displayMetrics;
     HFile f;
     Streamer s;
@@ -511,7 +512,6 @@ public class Main extends android.support.v4.app.Fragment {
         }
     };
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -852,7 +852,6 @@ public class Main extends android.support.v4.app.Fragment {
                     loadlist(path, false, openMode);
                 }
                 else {
-                    MAIN_ACTIVITY.history.addPath(null, l.getDesc(), MAIN_ACTIVITY.HISTORY, 0);
                     if(l.getMode()==HFile.SMB_MODE)
                         try {
                             SmbFile smbFile=new SmbFile(l.getDesc());
@@ -867,6 +866,7 @@ public class Main extends android.support.v4.app.Fragment {
 
                         utils.openFile(new File(l.getDesc()), (MainActivity) getActivity());
                     }
+                    DataUtils.addHistoryFile(l.getDesc());
                 }
             }
             else {
@@ -929,14 +929,14 @@ public class Main extends android.support.v4.app.Fragment {
     public boolean checkforpath(String path){
         boolean grid=false,both_contain=false;
         int index1=-1,index2=-1;
-        for (String s : MAIN_ACTIVITY.gridfiles) {
+        for (String s : DataUtils.gridfiles) {
             index1++;
             if ((path).contains(s)) {
                 grid = true;
                 break;
             }
         }
-        for (String s : MAIN_ACTIVITY.listfiles) {
+        for (String s : DataUtils.listfiles) {
             index2++;
             if ((path).contains(s)) {
                 if(grid==true)both_contain=true;
@@ -945,7 +945,7 @@ public class Main extends android.support.v4.app.Fragment {
             }
         }
         if(!both_contain)return grid;
-        String path1=MAIN_ACTIVITY.gridfiles.get(index1),path2=MAIN_ACTIVITY.listfiles.get(index2);
+        String path1=DataUtils.gridfiles.get(index1),path2=DataUtils.listfiles.get(index2);
         if(path1.contains(path2))
             return true;
         else if(path2.contains(path1))
@@ -986,8 +986,8 @@ public class Main extends android.support.v4.app.Fragment {
                 }
                 stopAnims = true;
                 this.openMode = openMode;
-                if(openMode!=2)
-                    MAIN_ACTIVITY.history.addPath(null,f,MAIN_ACTIVITY.HISTORY,0);
+                if(openMode!=2 )
+                    DataUtils.addHistoryFile(f);
                 mSwipeRefreshLayout.setRefreshing(false);
                 try {
                     listView.setAdapter(adapter);
@@ -1230,7 +1230,7 @@ public class Main extends android.support.v4.app.Fragment {
         ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
         if (searchHelper.size() > 500) searchHelper.clear();
         for (int i = 0; i < mFile.length; i++) {
-            if (MAIN_ACTIVITY.hiddenfiles.contains(mFile[i].getPath()))
+            if (DataUtils.hiddenfiles.contains(mFile[i].getPath()))
                 continue;
             String name=mFile[i].getName();
             name=(mFile[i].isDirectory() && name.endsWith("/"))?name.substring(0,name.length()-1):name;
@@ -1267,7 +1267,7 @@ public class Main extends android.support.v4.app.Fragment {
             File f = new File(ele.getPath());
             searchHelper.add(ele);
             String size = "";
-            if (!MAIN_ACTIVITY.hiddenfiles.contains(ele.getPath())) {
+            if (!DataUtils.hiddenfiles.contains(ele.getPath())) {
                 if (ele.isDirectory()) {
                     size = "";
                     Layoutelements layoutelements=utils.newElement(folder, f.getPath(), ele.getPermisson(), ele.getLink(), size, 0, true, false, ele.getDate()+"");
@@ -1310,13 +1310,10 @@ public class Main extends android.support.v4.app.Fragment {
 
     }
 
-    public void updatehiddenfiles() {
-        MAIN_ACTIVITY.hiddenfiles = MAIN_ACTIVITY.history.readTable(MAIN_ACTIVITY.HIDDEN);
-    }
 
     public void hide(String path) {
-        MAIN_ACTIVITY.history.addPath(null,path,MAIN_ACTIVITY.HIDDEN,0);
-        MAIN_ACTIVITY.hiddenfiles = MAIN_ACTIVITY.history.readTable(MAIN_ACTIVITY.HIDDEN);
+
+        DataUtils.addHiddenFile(path);
         if (new File(path).isDirectory()) {
             File f1 = new File(path + "/" + ".nomedia");
             if (!f1.exists()) {

@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -41,6 +42,7 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatButton;
@@ -805,7 +807,7 @@ public void openWith(final File f,final Context c) {
             }
         }
     }
-public void showSMBHelpDialog(MainActivity m){
+public void showSMBHelpDialog(Context m,String acc){
 
     MaterialDialog.Builder b=new MaterialDialog.Builder(m);
     b.content(Html.fromHtml("<html>\n" +
@@ -830,7 +832,7 @@ public void showSMBHelpDialog(MainActivity m){
             "</body>\n" +
             "</html>"));
     b.positiveText(R.string.doit);
-    b.positiveColor(Color.parseColor(m.fabskin));
+    b.positiveColor(Color.parseColor(acc));
     b.build().show();
 }
 public void showPackageDialog(final File f,final MainActivity m){
@@ -1025,25 +1027,23 @@ public void showPackageDialog(final File f,final MainActivity m){
     }
 
     public void showHistoryDialog(final Main m) {
-        final ArrayList<String> paths = m.MAIN_ACTIVITY.history.readTable(m.MAIN_ACTIVITY.HISTORY);
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(Color.parseColor(m.fabSkin));
         a.negativeText(R.string.clear);
         a.negativeColor(Color.parseColor(m.fabSkin));
         a.title(R.string.history);
-        a.callback(new MaterialDialog.ButtonCallback() {
+        a.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
-            public void onNegative(MaterialDialog dialog) {
-                super.onNegative(dialog);
-                m.MAIN_ACTIVITY.history.clear(m.MAIN_ACTIVITY.HISTORY);
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                 DataUtils.clearHistory();
             }
         });
         if(m.theme1==1)
             a.theme(Theme.DARK);
 
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toHFileArray(paths),m.MAIN_ACTIVITY.history,null,true);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toHFileArray(DataUtils.history),null,true);
         a.adapter(adapter, new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
@@ -1058,15 +1058,14 @@ public void showPackageDialog(final File f,final MainActivity m){
     }
 
     public void showHiddenDialog(final Main m) {
-          final ArrayList<String> paths = m.MAIN_ACTIVITY.history.readTable(m.MAIN_ACTIVITY.HIDDEN);
-            final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
+        final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(Color.parseColor(m.fabSkin));
         a.title(R.string.hiddenfiles);
         if(m.theme1==1)
             a.theme(Theme.DARK);
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toHFileArray(paths),m.MAIN_ACTIVITY.history,null,false);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toHFileArray(DataUtils.getHiddenfiles()),null,false);
         a.adapter(adapter, new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
@@ -1132,7 +1131,7 @@ public void showPackageDialog(final File f,final MainActivity m){
 
                     String command = "chmod " + finalValue + " " + file.getPath();
                     if (file.isDirectory())
-                        command = "chmod -R " + finalValue + " " + file.getPath();
+                        command = "chmod -R " + finalValue + " \"" + file.getPath()+"\"";
                     Command com = new Command(1, command) {
                         @Override
                         public void commandOutput(int i, String s) {

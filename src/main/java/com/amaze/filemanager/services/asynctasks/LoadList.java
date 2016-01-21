@@ -28,9 +28,11 @@ import android.widget.Toast;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.utils.HistoryManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -312,12 +314,15 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     }
 
     ArrayList<BaseFile> listRecent() {
-        final ArrayList<String> paths = ma.MAIN_ACTIVITY.history.readTable(ma.MAIN_ACTIVITY.HISTORY);
+        final HistoryManager history = new HistoryManager(c, "Table2");
+        final ArrayList<String> paths = history.readTable(DataUtils.HISTORY);
+        history.end();
         ArrayList<BaseFile> songs = new ArrayList<>();
         for (String f : paths) {
             if (!f.equals("/")) {
                 BaseFile a = RootHelper.generateBaseFile(new File(f), ma.SHOW_HIDDEN);
-                if (a != null && !(a).isDirectory())
+                a.generateMode(ma.getActivity());
+                if (a != null && !a.isSmb() && !(a).isDirectory() && a.exists())
                     songs.add(a);
             }
         }

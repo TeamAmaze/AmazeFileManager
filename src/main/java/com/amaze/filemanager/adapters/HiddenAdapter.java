@@ -17,6 +17,7 @@ import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.HistoryManager;
 
 
@@ -31,17 +32,15 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
     /*Shortcuts s;*/
     Main context;Context c;
     public ArrayList<HFile> items;
-    HistoryManager hidden;
     MaterialDialog materialDialog;
     boolean hide;
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public HiddenAdapter(Context c,Main context, int resourceId, ArrayList<HFile> items,HistoryManager hidden,MaterialDialog materialDialog,boolean hide) {
+    public HiddenAdapter(Context c,Main context, int resourceId, ArrayList<HFile> items,MaterialDialog materialDialog,boolean hide) {
         super(c, resourceId, items);
         this.c=c;
         this.context = context;
         this.items = items;
-        this.hidden=hidden;
         this.hide=hide;
         this.materialDialog=materialDialog;
     /*    s = new Shortcuts(c,"shortcut.xml");
@@ -82,10 +81,9 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
         holder.txtDesc.setText(a);
         if(hide)
             holder.image.setVisibility(View.GONE);
-        holder.image.setOnClickListener(new View.OnClickListener() {
+            holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            hidden.removePath(items.get(p).getPath(),"Table2");
             if(!f.isSmb() && f.isDirectory())
             {
                 ArrayList<BaseFile> a=new ArrayList<BaseFile>();
@@ -94,8 +92,8 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
                 a.add(baseFile);
                 new DeleteTask(context.getActivity().getContentResolver(),c).execute((a));
             }
+                DataUtils.removeHiddenFile(items.get(p).getPath());
                 items.remove(items.get(p));
-                context.updatehiddenfiles();
                 notifyDataSetChanged();
             }
         });

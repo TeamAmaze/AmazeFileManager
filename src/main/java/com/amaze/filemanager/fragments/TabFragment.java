@@ -27,7 +27,9 @@ import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.views.CustomViewPager;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
 
@@ -119,13 +121,13 @@ public class TabFragment extends android.support.v4.app.Fragment {
             int i=tabs1.size();
             if(i==0) {
                 if (mainActivity.storage_count>1)
-                    addTab(new Tab(1,"",((EntryItem)mainActivity.list.get(1)).getPath(),"/"),1,"");
+                    addTab(new Tab(1,"",((EntryItem)DataUtils.list.get(1)).getPath(),"/"),1,"");
                 else
                 addTab(new Tab(1,"","/","/"),1,"");
-                if(!mainActivity.list.get(0).isSection()){
-                String pa=((EntryItem)mainActivity.list.get(0)).getPath();
+                if(!DataUtils.list.get(0).isSection()){
+                String pa=((EntryItem) DataUtils.list.get(0)).getPath();
                 addTab(new Tab(2,"",pa,pa),2,"");}
-                else     addTab(new Tab(2,"",((EntryItem)mainActivity.list.get(1)).getPath(),"/"),2,"");
+                else     addTab(new Tab(2,"",((EntryItem)DataUtils.list.get(1)).getPath(),"/"),2,"");
             }
             else{
                 if(path!=null && path.length()!=0){
@@ -256,6 +258,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 outState.putInt("pos", mViewPager.getCurrentItem());
             }
         } catch (Exception e) {
+            Logger.log(e,"puttingtosavedinstance",getActivity());
             e.printStackTrace();
         }
     }

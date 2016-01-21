@@ -37,8 +37,8 @@ import jcifs.smb.SmbFile;
 public class SmbConnectDialog extends DialogFragment {
 
     public interface SmbConnectionListener{
-        void addConnection(boolean edit,String name,String path,String oldPath);
-        void deleteConnection(String path);
+        void addConnection(boolean edit,String name,String path,String oldname,String oldPath);
+        void deleteConnection(String name,String path);
     }
     Context context;
     SmbConnectionListener smbConnectionListener;
@@ -157,7 +157,7 @@ public class SmbConnectDialog extends DialogFragment {
             user.requestFocus();
         }
         else {
-            con_name.setText("Smb Connection");
+            con_name.setText(R.string.smb_con);
             con_name.requestFocus();
         }
         ba3.customView(v2, true);
@@ -193,7 +193,7 @@ public class SmbConnectDialog extends DialogFragment {
                 if (smbFile == null) return;
                 s = new String[]{con_name.getText().toString(), smbFile.getPath()};
                 if(smbConnectionListener!=null){
-                    smbConnectionListener.addConnection(edit,s[0],s[1],path);
+                    smbConnectionListener.addConnection(edit,s[0],s[1],name,path);
                 }
                 dismiss();
             }
@@ -202,7 +202,7 @@ public class SmbConnectDialog extends DialogFragment {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 if(smbConnectionListener!=null){
-                    smbConnectionListener.deleteConnection(path);
+                    smbConnectionListener.deleteConnection(name,path);
                 dismiss();
                 }
                 }
@@ -216,6 +216,7 @@ public class SmbConnectDialog extends DialogFragment {
 
         return ba3.build();
     }
+
     public SmbFile connectingWithSmbServer(String[] auth, boolean anonym) {
         try {
             String yourPeerIP = auth[0], domain = "";

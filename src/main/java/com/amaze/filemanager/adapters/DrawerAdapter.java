@@ -39,6 +39,7 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.icons.IconUtils;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.filesystem.HFile;
 
@@ -132,8 +133,8 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                     if (position > m.storage_count && position < values.size()-7) {
                         EntryItem item=(EntryItem) getItem(position);
                         String path = (item).getPath();
-                        if(m.mainActivityHelper.contains(path,m.books)!=-1){
-                            m.renameBookmark(((EntryItem) getItem(position)).getTitle(),path);
+                        if(DataUtils.containsBooks(new String[]{item.getTitle(),path})!=-1){
+                            m.renameBookmark((item).getTitle(),path);
                         }
                         else if (path.startsWith("smb:/")) {
                             m.showSMBDialog(item.getTitle(),path, true);

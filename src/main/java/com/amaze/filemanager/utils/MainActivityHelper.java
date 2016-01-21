@@ -69,10 +69,8 @@ public class MainActivityHelper {
                     Toast.makeText( mainActivity, "Media Mounted", Toast.LENGTH_SHORT).show();
                     String a = intent.getData().getPath();
                     if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
-                        mainActivity.list.add(new EntryItem(new File(a).getName(), a, ContextCompat
-                                .getDrawable(mainActivity, R.drawable.ic_sd_storage_white_56dp)));
-                        mainActivity.adapter = new DrawerAdapter( mainActivity, mainActivity. list,  mainActivity, mainActivity. Sp);
-                        mainActivity.mDrawerList.setAdapter( mainActivity.adapter);
+                        DataUtils.storages.add(a);
+                        mainActivity.refreshDrawer();
                     } else {
                         mainActivity.refreshDrawer();
                     }
@@ -218,7 +216,7 @@ public class MainActivityHelper {
                         if(toast!=null)toast.cancel();
                         mainActivity.oppathe = file.getPath();
                         mainActivity.oppathe1=file1.getPath();
-                        mainActivity.operation = mainActivity.RENAME;
+                        mainActivity.operation = DataUtils.RENAME;
                         guideDialogForLEXA(mainActivity.oppathe1);
                     }});
             }
@@ -268,7 +266,7 @@ public class MainActivityHelper {
         int mode = checkFolder(file.getParentFile(), mainActivity);
         if (mode == 2) {
             mainActivity.oppathe = (file.getPath());
-            mainActivity.operation = mainActivity.COMPRESS;
+            mainActivity.operation = DataUtils.COMPRESS;
             mainActivity.oparrayList = b;
         } else if (mode == 1) {
             Intent intent2 = new Intent(mainActivity, ZipTask.class);
@@ -278,15 +276,6 @@ public class MainActivityHelper {
         } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
 
-    public int contains(String a, ArrayList<String[]> b) {
-        int i = 0;
-        for (String[] x : b) {
-            if (x[1].equals(a)) return i;
-            i++;
-
-        }
-        return -1;
-    }
 
     public void mkFile(final HFile path,final Main ma) {
         final Toast toast=Toast.makeText(ma.getActivity(),R.string.creatingfile,Toast.LENGTH_LONG);
@@ -314,7 +303,7 @@ public class MainActivityHelper {
                     public void run() {
                         if(toast!=null)toast.cancel();
                         mainActivity.oppathe = path.getPath();
-                        mainActivity.operation = mainActivity.NEW_FOLDER;
+                        mainActivity.operation = DataUtils.NEW_FOLDER;
                         guideDialogForLEXA(mainActivity.oppathe);
                     }});
 
@@ -365,7 +354,7 @@ public class MainActivityHelper {
                     @Override
                     public void run() {
                 mainActivity.oppathe = path.getPath();
-                mainActivity.operation = mainActivity.NEW_FOLDER;
+                mainActivity.operation = DataUtils.NEW_FOLDER;
                 guideDialogForLEXA(mainActivity.oppathe);
             }});
 
@@ -402,7 +391,7 @@ public class MainActivityHelper {
         int mode = checkFolder(new File(files.get(0).getPath()).getParentFile(), mainActivity);
         if (mode == 2) {
             mainActivity.oparrayList = (files);
-            mainActivity.operation = mainActivity.DELETE;
+            mainActivity.operation = DataUtils.DELETE;
         } else if (mode == 1 || mode == 0)
             new DeleteTask(null, mainActivity).execute((files));
     }
@@ -411,7 +400,7 @@ public class MainActivityHelper {
         int mode = checkFolder(file.getParentFile(), mainActivity);
         if (mode == 2) {
             mainActivity.oppathe = (file.getPath());
-            mainActivity.operation = mainActivity.EXTRACT;
+            mainActivity.operation = DataUtils.EXTRACT;
         } else if (mode == 1) {
             Intent intent = new Intent(mainActivity, ExtractService.class);
             intent.putExtra("zip", file.getPath());
@@ -424,7 +413,9 @@ public class MainActivityHelper {
         else return a;
     }
     public void search() {
-        final Main ma = (Main) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+        TabFragment tabFragment=mainActivity.getFragment();
+        if(tabFragment==null)return;
+        final Main ma = (Main) tabFragment.getTab();
         final String fpath = ma.CURRENT_PATH;
         final MaterialDialog.Builder a = new MaterialDialog.Builder( mainActivity);
         a.title(R.string.search);

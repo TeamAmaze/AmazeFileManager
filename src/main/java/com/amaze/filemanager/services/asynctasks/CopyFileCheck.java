@@ -18,6 +18,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.filesystem.HFile;
 
@@ -101,7 +102,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
                 int mode = mainActivity.mainActivityHelper.checkFolder(new File(path), mainActivity);
                 if (mode == 2) {
                     mainActivity.oparrayList = (ab);
-                    mainActivity.operation = move ? mainActivity.MOVE : mainActivity.COPY;
+                    mainActivity.operation = move ? DataUtils.MOVE : DataUtils.COPY;
                     mainActivity.oppathe = path;
                 } else if (mode == 1 || mode == 0) {
 
