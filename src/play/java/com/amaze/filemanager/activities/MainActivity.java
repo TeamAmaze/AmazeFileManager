@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements
     boolean mIntentInProgress, showHidden = false;
 
     // string builder object variables for pathBar animations
-    StringBuilder newPathBuilder, oldPathBuilder;
+    StringBuffer newPathBuilder, oldPathBuilder;
     AppBarLayout appBarLayout;
 
     /**
@@ -1894,8 +1894,8 @@ public class MainActivity extends AppCompatActivity implements
         if (oldPath != null && oldPath.equals(newPath)) return;
 
         // implement animation while setting text
-        newPathBuilder = new StringBuilder().append(newPath);
-        oldPathBuilder = new StringBuilder().append(oldPath);
+        newPathBuilder = new StringBuffer().append(newPath);
+        oldPathBuilder = new StringBuffer().append(oldPath);
 
         final Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in);
         Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_out);
@@ -1905,7 +1905,7 @@ public class MainActivity extends AppCompatActivity implements
                 oldPath.length() != 0) {
 
             // navigate forward
-            newPathBuilder.delete(0, oldPath.length());
+            newPathBuilder.delete(0, newPathBuilder.length());
             newPathBuilder.append(newPath);
             newPathBuilder.delete(0, oldPath.length());
             animPath.setAnimation(slideIn);
@@ -1949,7 +1949,7 @@ public class MainActivity extends AppCompatActivity implements
                     //onAnimationEnd(animation);
                 }
             }).setStartDelay(500).start();
-        } else if (newPath.length() <= oldPath.length() &&
+        } else if (newPath.length() < oldPath.length() &&
                 oldPathBuilder.delete(newPath.length(), oldPath.length()).toString().equals(newPath)) {
 
             // navigate backwards
