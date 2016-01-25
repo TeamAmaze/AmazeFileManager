@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -41,6 +42,7 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatButton;
@@ -59,6 +61,10 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
+import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
@@ -90,25 +96,56 @@ public  final int READ = 4;
 
     public Futils() {
     }
-    public MaterialDialog showBasicDialog(final MainActivity m, String[] texts) {
-        MaterialDialog.Builder a = new MaterialDialog.Builder(m);
+    //methods for fastscroller
+    public static float getViewRawY(View view) {
+        int[] location = new int[2];
+        location[0] = 0;
+        location[1] = (int) view.getY();
+        ((View)view.getParent()).getLocationInWindow(location);
+        return location[1];
+    }
+
+    public static float getValueInRange(float min, float max, float value) {
+        float minimum = Math.max(min, value);
+        return Math.min(minimum, max);
+    }
+
+    public MaterialDialog showBasicDialog(Context c,String fabskin,int theme1, String[] texts) {
+        MaterialDialog.Builder a = new MaterialDialog.Builder(c);
         a.content(texts[0]);
-        a.widgetColor(Color.parseColor(m.fabskin));
-        if(m.theme1==1)
+        a.widgetColor(Color.parseColor(fabskin));
+        if(theme1==1)
             a.theme(Theme.DARK);
         a.title(texts[1]);
         a.positiveText(texts[2]);
-        a.positiveColor(Color.parseColor(m.fabskin));
+        a.positiveColor(Color.parseColor(fabskin));
         a.negativeText(texts[3]);
-        a.negativeColor(Color.parseColor(m.fabskin));
+        a.negativeColor(Color.parseColor(fabskin));
         if(texts[4]!=(null)){
             a.neutralText(texts[4]);
-            a.neutralColor(Color.parseColor(m.fabskin));
+            a.neutralColor(Color.parseColor(fabskin));
         }
         MaterialDialog dialog=a.build();
         return dialog;
     }
-
+    public MaterialDialog showBasicDialog(final Activity m,String fabskin,int theme1, String[] texts) {
+        MaterialDialog.Builder a = new MaterialDialog.Builder(m);
+        a.content(texts[0]);
+        a.widgetColor(Color.parseColor(fabskin));
+        if(theme1==1)
+            a.theme(Theme.DARK);
+        a.title(texts[1]);
+        a.positiveText(texts[2]);
+        a.positiveColor(Color.parseColor(fabskin));
+        a.negativeText(texts[3]);
+        a.negativeColor(Color.parseColor(fabskin));
+        if(texts[4]!=(null)){
+            a.neutralText(texts[4]);
+            a.neutralColor(Color.parseColor(fabskin));
+        }
+        MaterialDialog dialog=a.build();
+        return dialog;
+    }
     public MaterialDialog showNameDialog(final MainActivity m, String[] texts) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         a.input(texts[0], texts[1], false, new
@@ -236,7 +273,6 @@ public  final int READ = 4;
 
                 @Override
                 public void onScanCompleted(String path, Uri uri) {
-                    System.out.println("SCAN COMPLETED: " + path);
 
                 }
             });
@@ -456,20 +492,11 @@ public void openWith(final File f,final Context c) {
     public void deleteFiles(ArrayList<Layoutelements> a, final Main b, List<Integer> pos) {
         final MaterialDialog.Builder c = new MaterialDialog.Builder(b.getActivity());
         c.title(getString(b.getActivity(), R.string.confirm));
-        final ContentResolver contentResolver=b.getActivity().getContentResolver();
         String names = "";
-        final ArrayList<String> todelete = new ArrayList<>();
+        final ArrayList<BaseFile> todelete = new ArrayList<>();
         for (int i = 0; i < pos.size(); i++) {
-            String path = a.get(pos.get(i)).getDesc();
-            todelete.add((path));
-            if(path.startsWith("smb://"))
-                try {
-                    names = names + "\n" + (i + 1) + ". " + new SmbFile(path).getName();
-                } catch (MalformedURLException e) {
-
-                }
-            else
-            names = names + "\n" + (i + 1) + ". " + new File(path).getName();
+            todelete.add(a.get(pos.get(i)).generateBaseFile());
+            names = names + "\n" + (i + 1) + ". " + a.get(pos.get(i)).getTitle();
         }
         c.content(getString(b.getActivity(), R.string.questiondelete) + names);
 
@@ -548,22 +575,14 @@ public void openWith(final File f,final Context c) {
         return inSampleSize;
     }
 
-    public void showProps(final String f, final String perm, final Main c,boolean root) {
-        final HFile hFile=new HFile(f);
-        long last=0;
-        try {
-            last=hFile.lastModified();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (SmbException e) {
-            e.printStackTrace();
-        }
+    public void showProps(final BaseFile hFile, final String perm, final Main c,boolean root) {
+        long last=hFile.getDate();
         String date = getdate(last);
         String items = getString(c.getActivity(),R.string.calculating), size = getString(c.getActivity(),R.string.calculating), name, parent;
         name = hFile.getName();
-        parent = hFile.getParent();
+        parent = hFile.getReadablePath(hFile.getParent());
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c.getActivity());
-        String fabskin = PreferenceUtils.getFabColor(sp.getInt("fab_skin_color_position", 1));
+        String fabskin = PreferenceUtils.getAccentString(sp);
         MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
         a.title(getString(c.getActivity(), R.string.properties));
         if(c.theme1==1)
@@ -600,7 +619,7 @@ public void openWith(final File f,final Context c) {
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-                c.MAIN_ACTIVITY.copyToClipboard(c.getActivity(), f);
+                c.MAIN_ACTIVITY.copyToClipboard(c.getActivity(), hFile.getPath());
                 Toast.makeText(c.getActivity(), c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
             }
 
@@ -611,13 +630,12 @@ public void openWith(final File f,final Context c) {
         MaterialDialog materialDialog=a.build();
         materialDialog.show();
         new GenerateMD5Task(materialDialog, hFile, name, parent, size, items, date,c.getActivity
-                (),v).execute(f);
+                (),v).execute(hFile.getPath());
     }
-    public long[] getSpaces(String s){
-        HFile hFile=new HFile(s);
+    public long[] getSpaces(HFile hFile){
         if(!hFile.isSmb() && hFile.isDirectory()){
             try {
-                File file=new File(s);
+                File file=new File(hFile.getPath());
                 long[] ints=new long[]{file.getTotalSpace(), file.getFreeSpace(),folderSize
                         (new File(hFile.getPath()))};
                 return ints;
@@ -627,13 +645,20 @@ public void openWith(final File f,final Context c) {
         }
         return new long[]{-1,-1,-1};
     }
-    public void showProps(final File f, final Activity c,int theme1) {
-        String date = getdate(f);
+    public void showProps(final HFile f, final Activity c,int theme1) {
+        String date = null;
+        try {
+            date = getdate(f.lastModified());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SmbException e) {
+            e.printStackTrace();
+        }
         String items =  getString(c,R.string.calculating), size = getString(c,R.string.calculating), name, parent;
         name =  f.getName();
-        parent = f.getParent();
+        parent = f.getReadablePath(f.getParent());
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
-        String fabskin = PreferenceUtils.getFabColor(sp.getInt("fab_skin_color_position", 1));
+        String fabskin = PreferenceUtils.getAccentString(sp);
         MaterialDialog.Builder a = new MaterialDialog.Builder(c);
         a.title(getString(c, R.string.properties));
         if(theme1==1)
@@ -661,7 +686,7 @@ public void openWith(final File f,final Context c) {
         });
         MaterialDialog materialDialog=a.build();
         materialDialog.show();
-        new GenerateMD5Task(materialDialog, new HFile(f.getPath()), name, parent, size, items, date,c,v).execute(f.getPath());
+        new GenerateMD5Task(materialDialog, (f), name, parent, size, items, date,c,v).execute(f.getPath());
     }
 
     public boolean copyToClipboard(Context context, String text) {
@@ -717,7 +742,9 @@ public void openWith(final File f,final Context c) {
             RootTools.remount(f.getPath(),"rw");
             RootHelper.runAndWait("mv " + f.getPath() + " " + newname, true);
             RootTools.remount(f.getPath(),"ro");
-        }return true;
+            return true;
+        }
+        return false;
     }
 
     public boolean canListFiles(File f) {
@@ -780,7 +807,7 @@ public void openWith(final File f,final Context c) {
             }
         }
     }
-public void showSMBHelpDialog(MainActivity m){
+public void showSMBHelpDialog(Context m,String acc){
 
     MaterialDialog.Builder b=new MaterialDialog.Builder(m);
     b.content(Html.fromHtml("<html>\n" +
@@ -805,7 +832,7 @@ public void showSMBHelpDialog(MainActivity m){
             "</body>\n" +
             "</html>"));
     b.positiveText(R.string.doit);
-    b.positiveColor(Color.parseColor(m.fabskin));
+    b.positiveColor(Color.parseColor(acc));
     b.build().show();
 }
 public void showPackageDialog(final File f,final MainActivity m){
@@ -853,9 +880,9 @@ public void showPackageDialog(final File f,final MainActivity m){
                     public void onNegative(MaterialDialog materialDialog) {
                         //m.addZipViewTab(f.getPath());
                         if (f.getName().toLowerCase().endsWith(".rar"))
-                            m.openRar(f.getPath());
+                            m.openRar(Uri.fromFile(f).toString());
                         else
-                            m.openZip(f.getPath());
+                            m.openZip(Uri.fromFile(f).toString());
                     }
                 });
         if (m.theme1 == 1) mat.theme(Theme.DARK);
@@ -879,16 +906,17 @@ public void showPackageDialog(final File f,final MainActivity m){
         }
         return b;
     }
-
-    public ArrayList<String> toStringArray(ArrayList<File> a) {
-        ArrayList<String> b = new ArrayList<String>();
+    public ArrayList<HFile> toHFileArray(ArrayList<String> a) {
+        ArrayList<HFile> b = new ArrayList<>();
         for (int i = 0; i < a.size(); i++) {
-            b.add(a.get(i).getPath());
+            HFile hFile=new HFile(HFile.UNKNOWN,a.get(i));
+            hFile.generateMode(null);
+            b.add(hFile);
         }
         return b;
     }
 
-    public void showCompressDialog(final MainActivity m, final ArrayList<String> b, final String current) {
+    public void showCompressDialog(final MainActivity m, final ArrayList<BaseFile> b, final String current) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         a.input(getString(m, R.string.enterzipname), ".zip", false, new
                 MaterialDialog.InputCallback() {
@@ -924,7 +952,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         int current = Integer.parseInt(m.Sp.getString("sortby", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         if(m.theme1==1)a.theme(Theme.DARK);
-        a.items(sort).itemsCallbackSingleChoice(current>3?current-4:current, new MaterialDialog.ListCallbackSingleChoice() {
+        a.items(sort).itemsCallbackSingleChoice(current > 3 ? current - 4 : current, new MaterialDialog.ListCallbackSingleChoice() {
             @Override
             public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
 
@@ -937,7 +965,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             @Override
             public void onPositive(MaterialDialog dialog) {
                 super.onPositive(dialog);
-                int which=dialog.getSelectedIndex();
+                int which = dialog.getSelectedIndex();
                 m.Sp.edit().putString("sortby", "" + which).commit();
                 m.getSortModes();
                 m.updateList();
@@ -948,7 +976,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             @Override
             public void onNegative(MaterialDialog dialog) {
                 super.onNegative(dialog);
-                int which=4+dialog.getSelectedIndex();
+                int which = 4 + dialog.getSelectedIndex();
                 m.Sp.edit().putString("sortby", "" + which).commit();
                 m.getSortModes();
                 m.updateList();
@@ -999,25 +1027,23 @@ public void showPackageDialog(final File f,final MainActivity m){
     }
 
     public void showHistoryDialog(final Main m) {
-        final ArrayList<String> paths = m.MAIN_ACTIVITY.history.readTable(m.MAIN_ACTIVITY.HISTORY);
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(Color.parseColor(m.fabSkin));
         a.negativeText(R.string.clear);
         a.negativeColor(Color.parseColor(m.fabSkin));
         a.title(R.string.history);
-        a.callback(new MaterialDialog.ButtonCallback() {
+        a.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
-            public void onNegative(MaterialDialog dialog) {
-                super.onNegative(dialog);
-                m.MAIN_ACTIVITY.history.clear(m.MAIN_ACTIVITY.HISTORY);
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                 DataUtils.clearHistory();
             }
         });
         if(m.theme1==1)
             a.theme(Theme.DARK);
 
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.MAIN_ACTIVITY.history,null,true);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toHFileArray(DataUtils.history),null,true);
         a.adapter(adapter, new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
@@ -1032,27 +1058,29 @@ public void showPackageDialog(final File f,final MainActivity m){
     }
 
     public void showHiddenDialog(final Main m) {
-          final ArrayList<String> paths = m.MAIN_ACTIVITY.history.readTable(m.MAIN_ACTIVITY.HIDDEN);
-            final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
+        final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(Color.parseColor(m.fabSkin));
         a.title(R.string.hiddenfiles);
         if(m.theme1==1)
             a.theme(Theme.DARK);
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toFileArray(paths),m.MAIN_ACTIVITY.history,null,false);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toHFileArray(DataUtils.getHiddenfiles()),null,false);
         a.adapter(adapter, new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
 
             }
         });
+        a.dividerColor(Color.GRAY);
         MaterialDialog x= a.build();
         adapter.updateDialog(x);
         x.show();
 
     }
-
+    public boolean isAtleastKitkat(){
+        return Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT;
+    }
     public void setPermissionsDialog(final View v,View but,final HFile file, final String f, final Main main) {
             final CheckBox readown=(CheckBox) v.findViewById(R.id.creadown);
             final CheckBox readgroup=(CheckBox) v.findViewById(R.id.creadgroup);
@@ -1105,7 +1133,7 @@ public void showPackageDialog(final File f,final MainActivity m){
 
                     String command = "chmod " + finalValue + " " + file.getPath();
                     if (file.isDirectory())
-                        command = "chmod -R " + finalValue + " " + file.getPath();
+                        command = "chmod -R " + finalValue + " \"" + file.getPath()+"\"";
                     Command com = new Command(1, command) {
                         @Override
                         public void commandOutput(int i, String s) {
@@ -1135,7 +1163,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             });
     }
 
-    public String[] parseName(String line) {
+    public BaseFile parseName(String line) {
         boolean linked = false;
         String name = "", link = "", size = "-1", date = "";
         String[] array = line.split(" ");
@@ -1149,7 +1177,6 @@ public void showPackageDialog(final File f,final MainActivity m){
         if(p!=-1){
         date = array[p - 1] + " | " + array[p];
         size = array[p - 2];}
-        else System.out.println("line"+line);
         if (!linked) {
             for (int i = p + 1; i < array.length; i++) {
                 name = name + " " + array[i];
@@ -1165,16 +1192,19 @@ public void showPackageDialog(final File f,final MainActivity m){
                 link = link + " " + array[i];
             }
         }
-        String size1 = size;
-        if (size.equals("")) {
-            size1 = "";
-        }
+        long Size = (size==null || size.trim().length()==0)?-1:Long.parseLong(size);
         if(date.trim().length()>0) {
             ParsePosition pos = new ParsePosition(0);
             SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
             Date stringDate = simpledateformat.parse(date, pos);
-            return new String[]{name, link, array[0], size, stringDate.getTime() + "", size1,""};
-        }else return new String[]{name, link, array[0], size,  new File("/").lastModified()+"", size1,""};
+            BaseFile baseFile=new BaseFile(name,array[0],stringDate.getTime(),Size,true);
+            baseFile.setLink(link);
+            return baseFile;
+        }else {
+            BaseFile baseFile= new BaseFile(name,array[0],new File("/").lastModified(),Size,true);
+            baseFile.setLink(link);
+            return baseFile;
+        }
 
     }
 

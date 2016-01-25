@@ -82,8 +82,7 @@ public class ProcessViewer extends Fragment {
             root.setBackgroundResource((R.color.holo_dark_background));
         rootView = (LinearLayout) root.findViewById(R.id.secondbut);
         //((MainActivity)getActivity()).getSupportActionBar().setTitle(utils.getString(getActivity(),R.string.processes));
-        mainActivity.toolbar.setTitle(utils.getString(getActivity(), R.string.processes));
-        mainActivity.tabsSpinner.setVisibility(View.GONE);
+        mainActivity.setActionBarTitle(utils.getString(getActivity(), R.string.processes));
         mainActivity.floatingActionButton.hideMenuButton(true);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         icons = new IconUtils(Sp, getActivity());

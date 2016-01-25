@@ -20,7 +20,6 @@
 package com.amaze.filemanager.services;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -32,22 +31,20 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.ZipViewer;
-import com.amaze.filemanager.utils.FileUtil;
+import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.stericson.RootTools.RootTools;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 
-import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile;
-
-public class DeleteTask extends AsyncTask<ArrayList<String>, String, Boolean> {
+public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> {
 
 
-    ArrayList<String> files;
+    ArrayList<BaseFile> files;
     ContentResolver contentResolver;
     Context cd;
     Futils utils = new Futils();
@@ -68,65 +65,17 @@ public class DeleteTask extends AsyncTask<ArrayList<String>, String, Boolean> {
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
-        Toast.makeText(cd, values[0], Toast.LENGTH_LONG).show();
+        Toast.makeText(cd, values[0], Toast.LENGTH_SHORT).show();
     }
 
-    protected Boolean doInBackground(ArrayList<String>... p1) {
+    protected Boolean doInBackground(ArrayList<BaseFile>... p1) {
         files = p1[0];
         boolean b = true;
-        if(files.get(0).startsWith("smb:/")){
-            for(String a:files)
-                try {
-                    new SmbFile(a).delete();
-                } catch (SmbException e) {
-                    b=false;
-                } catch (MalformedURLException e) {
-                b=false;
-                }
-        }
-        int mode=checkFolder(new File(files.get(0)).getParentFile(),cd);
-        if (mode==1) {
-            for(String f:files) {
-                try {
-
-                    if(!FileUtil.deleteFile(new File(f),cd))b=false;
-                } catch (Exception e) {
-                    b = false;
-                }
-            }
-            }
-         if ((!b || mode==0 || mode ==2) && rootMode)
-             for (String f : files) {
-                 try {
-                     b=RootTools.deleteFileOrDirectory(f, true);
-                 } catch (Exception e) {
-                     b = false;
-                 }
-            }
+        if(files.size()==0)return true;
+           for(BaseFile a:files)
+                    (a).delete(cd,rootMode);
 
         return b;
-    }
-    private int checkFolder(final File folder,Context context) {
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
-            if (!folder.exists() || !folder.isDirectory()) {
-                return 0;
-            }
-
-            if (!FileUtil.isWritableNormalOrSaf(folder,context)) {
-                return 2;
-            }
-            return 1;
-        }
-        else if (Build.VERSION.SDK_INT==19 && FileUtil.isOnExtSdCard(folder,context)) {
-            // Assume that Kitkat workaround works
-            return 1;
-        }
-        else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
-            return 1;
-        }
-        else {
-            return 0;
-        }
     }
 
     @Override
@@ -134,14 +83,14 @@ public class DeleteTask extends AsyncTask<ArrayList<String>, String, Boolean> {
         Intent intent = new Intent("loadlist");
         cd.sendBroadcast(intent);
 
-        if(!files.get(0).startsWith("smb:")) {
+        if(!files.get(0).isSmb()) {
             try {
-                for (String f : files) {
-                delete(cd,f);
+                for (BaseFile f : files) {
+                delete(cd,f.getPath());
                 }
             } catch (Exception e) {
-                for (String f : files) {
-                    utils.scanFile(f, cd);
+                for (BaseFile f : files) {
+                    utils.scanFile(f.getPath(), cd);
                 }
             }
         }if (!b) {
@@ -153,7 +102,7 @@ public class DeleteTask extends AsyncTask<ArrayList<String>, String, Boolean> {
             zipViewer.files.clear();
         }
     }
-    public void delete(final Context context, final String file) {
+     void delete(final Context context, final String file) {
         final String where = MediaStore.MediaColumns.DATA + "=?";
         final String[] selectionArgs = new String[] {
                 file
@@ -162,7 +111,6 @@ public class DeleteTask extends AsyncTask<ArrayList<String>, String, Boolean> {
         final Uri filesUri = MediaStore.Files.getContentUri("external");
         // Delete the entry from the media database. This will actually delete media files.
         contentResolver.delete(filesUri, where, selectionArgs);
-        // If the file is not a media file, create a new entry.
 
     }
 }

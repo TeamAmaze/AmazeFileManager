@@ -22,21 +22,19 @@
     <item
         android:id="@+id/save"
         android:title="@string/save"
+        android:visible="false"
         android:icon="@drawable/ic_action_save"
-        app:showAsAction="ifRoom|withText" />
-    <item
-        android:id="@+id/edit"
-        android:title="@string/edit"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/find"
         android:title="@string/find"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_action_search"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/details"
         android:title="@string/details"
         app:showAsAction="never" />
-    <!--<item
+    <item
         android:id="@+id/openwith"
-        android:title="@string/openwith" />-->
+        android:title="@string/openwith" />
 </menu>

@@ -2,9 +2,13 @@ package com.amaze.filemanager.fragments;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -14,15 +18,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.adapters.TabSpinnerAdapter;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.views.CustomViewPager;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
 
@@ -43,17 +50,21 @@ public class TabFragment extends android.support.v4.app.Fragment {
     String path;
     public int currenttab;
     MainActivity mainActivity;
-    TabSpinnerAdapter tabSpinnerAdapter;
     public int theme1;
     View buttons;
     View mToolBarContainer;
     boolean savepaths;
+    FragmentManager fragmentManager;
+    ImageView indicator1,indicator2;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment,
                 container, false);
+        fragmentManager=getActivity().getSupportFragmentManager();
         mToolBarContainer=getActivity().findViewById(R.id.lin);
+        indicator1=(ImageView)getActivity().findViewById(R.id.tab_indicator1);
+        indicator2=(ImageView)getActivity().findViewById(R.id.tab_indicator2);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         savepaths=Sp.getBoolean("savepaths", true);
         int theme=Integer.parseInt(Sp.getString("theme","0"));
@@ -73,13 +84,8 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
             public void onPageSelected(int p1) {
                mToolBarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-
+                updateIndicator(p1);
                 currenttab=p1;
-                try {
-                    updateSpinner();
-                } catch (Exception e) {
-                   // e.printStackTrace();
-                }
                 Fragment fragment=fragments.get(p1);
                 if(fragment!=null) {
                     String name = fragments.get(p1).getClass().getName();
@@ -105,21 +111,23 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 // TODO: Implement this method
             }
         });
+
+        mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
+                getActivity().getSupportFragmentManager());
         if (savedInstanceState == null) {
             int l=Sp.getInt("currenttab",1);
-            mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
-                    getActivity().getSupportFragmentManager());
             TabHandler tabHandler=new TabHandler(getActivity(),null,null,1);
             List<Tab> tabs1=tabHandler.getAllTabs();
             int i=tabs1.size();
             if(i==0) {
                 if (mainActivity.storage_count>1)
-                    addTab(new Tab(1,"",((EntryItem)mainActivity.list.get(1)).getPath(),"/"),1,"");
+                    addTab(new Tab(1,"",((EntryItem)DataUtils.list.get(1)).getPath(),"/"),1,"");
                 else
-                addTab(new Tab(1,"","/","/"
-                ),1,"");
-                String pa=((EntryItem)mainActivity.list.get(0)).getPath();
-                addTab(new Tab(2,"",pa,pa),2,"");
+                addTab(new Tab(1,"","/","/"),1,"");
+                if(!DataUtils.list.get(0).isSection()){
+                String pa=((EntryItem) DataUtils.list.get(0)).getPath();
+                addTab(new Tab(2,"",pa,pa),2,"");}
+                else     addTab(new Tab(2,"",((EntryItem)DataUtils.list.get(1)).getPath(),"/"),2,"");
             }
             else{
                 if(path!=null && path.length()!=0){
@@ -140,6 +148,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
                 try {
                     mViewPager.setCurrentItem(l,true);
+                    updateIndicator(mViewPager.getCurrentItem());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -147,8 +156,9 @@ public class TabFragment extends android.support.v4.app.Fragment {
         } else {
             fragments.clear();
                 try {
-                    fragments.add(0, getActivity().getSupportFragmentManager().getFragment(savedInstanceState, "tab"+0));
-                    fragments.add(1, getActivity().getSupportFragmentManager().getFragment(savedInstanceState, "tab"+1));
+                    if(fragmentManager==null)fragmentManager=getActivity().getSupportFragmentManager();
+                    fragments.add(0,fragmentManager.getFragment(savedInstanceState, "tab"+0));
+                    fragments.add(1, fragmentManager.getFragment(savedInstanceState, "tab"+1));
                 } catch (Exception e) {
                     e.printStackTrace();
             }
@@ -213,13 +223,6 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 i++;
             }
         }
-        try {
-            tabSpinnerAdapter=new TabSpinnerAdapter(mainActivity.getSupportActionBar().getThemedContext(), R.layout.rowlayout,items,mainActivity.tabsSpinner,this);
-            mainActivity.tabsSpinner.setAdapter(tabSpinnerAdapter);
-            mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
     String parseSmbPath(String a) {
         if (a.contains("@"))
@@ -245,15 +248,18 @@ public class TabFragment extends android.support.v4.app.Fragment {
         super.onSaveInstanceState(outState);
         try {
             int i = 0;
+            if(Sp!=null)
+            Sp.edit().putInt("currenttab",currenttab).commit();
             if (fragments != null && fragments.size() !=0) {
+                if(fragmentManager==null)return;
                 for (Fragment fragment : fragments) {
-                    getActivity().getSupportFragmentManager().putFragment(outState, "tab" + i, fragment);
+                    fragmentManager.putFragment(outState, "tab" + i, fragment);
                     i++;
                 }
                 outState.putInt("pos", mViewPager.getCurrentItem());
             }
-            Sp.edit().putInt("currenttab",currenttab).commit();
         } catch (Exception e) {
+            Logger.log(e,"puttingtosavedinstance",getActivity());
             e.printStackTrace();
         }
     }
@@ -305,7 +311,47 @@ public class TabFragment extends android.support.v4.app.Fragment {
         return fragments.get(mViewPager.getCurrentItem());
         else return null;
     }
-     void updateSpinner(){
-        mainActivity.tabsSpinner.setSelection(mViewPager.getCurrentItem());
+
+    void updateIndicator(int index) {
+        if (index != 0 && index != 1) return;
+        if (indicator1 == null || indicator2 == null) return;
+        /*if (!mainActivity.isDrawerLocked){
+            if (index == 0) {
+                indicator1.setImageResource(R.drawable.square_filled);
+                indicator2.setImageResource(R.drawable.square_hollow);
+                indicator1.setColorFilter(Color.parseColor(mainActivity.fabskin));
+                if(theme1==0)
+                indicator2.setColorFilter(Color.GRAY);
+                else
+                    indicator2.setColorFilter(null);
+
+            } else {
+                indicator2.setImageResource(R.drawable.square_filled);
+                indicator1.setImageResource(R.drawable.square_hollow);
+                indicator2.setColorFilter(Color.parseColor(mainActivity.fabskin));
+                if(theme1==0)
+                    indicator1.setColorFilter(Color.GRAY);
+                else
+                    indicator1.setColorFilter(null);
+            }
+
+        return;
+        }*/
+
+        if (index == 0) {
+            indicator1.setImageDrawable(new ColorDrawable(Color.parseColor(mainActivity.fabskin)));
+            indicator2.setImageDrawable(new ColorDrawable(Color.GRAY));
+            return;
+        } else {
+            indicator2.setImageDrawable(new ColorDrawable(Color.parseColor(mainActivity.fabskin)));
+            indicator1.setImageDrawable(new ColorDrawable(Color.GRAY));
+            return;
+        }
+
+    }
+    public Fragment getTab(int pos) {
+        if(fragments.size()==2 && pos<2)
+            return fragments.get(pos);
+        else return null;
     }
 }

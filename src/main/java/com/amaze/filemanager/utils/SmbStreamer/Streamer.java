@@ -18,6 +18,7 @@ public class Streamer extends StreamServer {
     public static final int PORT = 7871;
     public static final String URL = "http://127.0.0.1:" + PORT;
     private SmbFile file;
+    long length=0;
     protected List<SmbFile> extras; //those can be subtitles
     // private InputStream stream;
     // private long length;
@@ -45,9 +46,10 @@ public class Streamer extends StreamServer {
         return pattern.matcher(file.getName()).matches();
     }
 
-    public void setStreamSrc(SmbFile file,List<SmbFile> extraFiles) {
+    public void setStreamSrc(SmbFile file,List<SmbFile> extraFiles,long len) {
         this.file = file;
         this.extras = extraFiles;
+        this.length=len;
     }
 
     @Override
@@ -91,7 +93,7 @@ public class Streamer extends StreamServer {
                 // Change return code and add Content-Range header when skipping
                 // is requested
                 //source.open();
-                final StreamSource source = new StreamSource(sourceFile);
+                final StreamSource source = new StreamSource(sourceFile,length);
                 long fileLen = source.length();
                 if (range != null && startFrom > 0) {
                     if (startFrom >= fileLen) {

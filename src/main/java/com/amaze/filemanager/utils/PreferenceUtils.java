@@ -1,5 +1,6 @@
 package com.amaze.filemanager.utils;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 
@@ -11,7 +12,7 @@ import java.util.Random;
  * Created by Vishal on 12-05-2015.
  */
 public class PreferenceUtils {
-
+    static int primary=-1,accent=-1,folder=-1,theme=-1;
     public static int getStatusColor(String skin) {
         int c=darker(Color.parseColor(skin),0.6f);
         return c;
@@ -26,27 +27,120 @@ public class PreferenceUtils {
                 Math.max( (int)(g * factor), 0 ),
                 Math.max( (int)(b * factor), 0 ) );
     }
-    public static String getSkinColor(int i) {
-
-
-        return colors[i];
-    }
-
-    public static String getFabColor(int i) {
-
-
-                return colors[i];
-        }
     public static String random(SharedPreferences Sp) {
 
 
         Random random = new Random();
-        int pos = random.nextInt(colors.length - 1);
-        Sp.edit().putInt("skin_color_position", pos).commit();
-        return colors[pos];
+        int[] pos =combinations[ random.nextInt(combinations.length - 1)];
+        int primary=pos[0],accent=pos[1],icon=pos[2];
+        Sp.edit().putInt("skin_color_position", primary).commit();
+        Sp.edit().putInt("fab_skin_color_position", accent).commit();
+        Sp.edit().putInt("icon_skin_color_position", icon).commit();
+        return colors[primary];
+    }
+    public static int getAccent(SharedPreferences Sp){
+        if(accent==-1)
+        accent=Sp.getInt("fab_skin_color_position", 1);
+        return accent;
+    }
+    public static int getPrimaryColor(SharedPreferences Sp){
+        if(primary==-1)
+        primary=Sp.getInt("skin_color_position", 4);
+        return primary;
+    }
+    public static int getFolderColor(SharedPreferences Sp){
+        if(folder==-1) {
+            int icon = Sp.getInt("icon_skin_color_position", -1);
+            folder = icon == -1 ? Sp.getInt("skin_color_position", 4) : icon;
+        }
+        return folder;
+    }
+    public static String getPrimaryColorString(SharedPreferences Sp) {
+        return (colors[getPrimaryColor(Sp)]);
+    }
+    public static String getFolderColorString(SharedPreferences Sp) {
+        return (colors[getFolderColor(Sp)]);
+    }
+    public static String getAccentString(SharedPreferences Sp) {
+        return (colors[getAccent(Sp)]);
+    }
+    public static int getTheme(SharedPreferences Sp){
+        if(theme==-1){
+            int th = Integer.parseInt(Sp.getString("theme", "0"));
+            theme = th == 2 ? PreferenceUtils.hourOfDay() : th;
+        }
+        return theme;
+    }
+    public static void reset(){
+        primary=accent=folder=theme=-1;
+    }
+    public static int getPosition(String Sp){
+        int i=-1;
+        for(String s:colors){
+            i++;
+            if(s.equals(Sp))return i;
+        }
+        return -1;
+    }
+    public final static int[][] combinations=new int[][]{
+            //primary,accent,folder
+            {14,11,12},
+            {4,1,4},
+            {8,12,8},
+            {17,11,12},
+            {3,1,3},
+            {16,14,16},
+            {1,12,1},
+            {16,0,16},
+            {0,12,0},
+            {6,1,6},
+            {7,1,7}
+    };
+
+
+    public static float[] calculatevalues(String color) {
+        int c = Color.parseColor(color);
+        float r = (float) Color.red(c) / 255;
+        float g = (float) Color.green(c) / 255;
+        float b = (float) Color.blue(c) / 255;
+        return new float[]{r, g, b};
     }
 
-      public final static String[] colors = new String[]{
+    public static float[] calculatefilter(float[] values) {
+        float[] src = {
+
+                values[0], 0, 0, 0, 0,
+                0, values[1], 0, 0, 0,
+                0, 0, values[2], 0, 0,
+                0, 0, 0, 1, 0
+        };
+        return src;
+    }
+    public static String getSelectionColor(String skin) {
+
+        String[] colors = new String[]{
+                "#F44336", "#74e84e40",
+                "#e91e63", "#74ec407a",
+                "#9c27b0", "#74ab47bc",
+                "#673ab7", "#747e57c2",
+                "#3f51b5", "#745c6bc0",
+                "#2196F3", "#74738ffe",
+                "#03A9F4", "#7429b6f6",
+                "#00BCD4", "#7426c6da",
+                "#009688", "#7426a69a",
+                "#4CAF50", "#742baf2b",
+                "#8bc34a", "#749ccc65",
+                "#FFC107", "#74ffca28",
+                "#FF9800", "#74ffa726",
+                "#FF5722", "#74ff7043",
+                "#795548", "#748d6e63",
+                "#212121", "#79bdbdbd",
+                "#607d8b", "#7478909c",
+                "#004d40", "#740E5D50"
+        };
+        return colors[Arrays.asList(colors).indexOf(skin) + 1];
+    }
+        public final static String[] colors = new String[]{
                 "#F44336",
                 "#e91e63",
                 "#9c27b0",

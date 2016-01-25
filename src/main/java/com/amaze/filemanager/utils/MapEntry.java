@@ -7,9 +7,10 @@ import java.util.LinkedHashMap;
  */
 public class MapEntry implements LinkedHashMap.Entry {
 
-    private Integer key, value;
+    private KeyMapEntry key;
+    private Integer value;
 
-    public MapEntry(Integer key, Integer value) {
+    public MapEntry(KeyMapEntry key, Integer value) {
         this.key = key;
         this.value = value;
     }
@@ -27,5 +28,31 @@ public class MapEntry implements LinkedHashMap.Entry {
     public Object setValue(Object object) {
         // use constructor
         return null;
+    }
+
+    public static class KeyMapEntry implements LinkedHashMap.Entry {
+
+        private Integer key, value;
+
+        public KeyMapEntry(Integer key, Integer value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public Object getKey() {
+            return this.key;
+        }
+
+        @Override
+        public Object getValue() {
+            return this.value;
+        }
+
+        @Override
+        public Object setValue(Object object) {
+            // use constructor
+            return null;
+        }
     }
 }

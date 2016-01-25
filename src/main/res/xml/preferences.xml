@@ -38,19 +38,10 @@
             android:summary="@string/gplus_pic_summary"
             android:defaultValue="false"
             android:enabled="true"/>
-        <Preference
-            android:key="hidemode"
-            android:title="@string/hide_mode_title" />
         <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="true"
             android:key="showDividers"
             android:title="@string/showDividers" />
-        <com.amaze.filemanager.ui.views.CheckBx
-            android:defaultValue="false"
-            android:key="topFab"
-            android:enabled="false"
-            android:summary="@string/topFabS"
-            android:title="@string/topFab" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/general">
