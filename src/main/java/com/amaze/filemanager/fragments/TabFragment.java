@@ -248,6 +248,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
         super.onSaveInstanceState(outState);
         try {
             int i = 0;
+            if(Sp!=null)
             Sp.edit().putInt("currenttab",currenttab).commit();
             if (fragments != null && fragments.size() !=0) {
                 if(fragmentManager==null)return;

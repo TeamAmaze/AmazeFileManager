@@ -72,54 +72,10 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
         files = p1[0];
         boolean b = true;
         if(files.size()==0)return true;
-        if(files.get(0).isSmb()){
-            for(BaseFile a:files)
-                    (a).delete(cd);
-
-        }
-        int mode=checkFolder(new File(files.get(0).getPath()).getParentFile(),cd);
-        if (mode==1) {
-            for(BaseFile f:files) {
-                try {
-
-                    if(!FileUtil.deleteFile(new File(f.getPath()),cd))b=false;
-                } catch (Exception e) {
-                    b = false;
-                }
-            }
-            }
-         if ((!b || mode==0 || mode ==2) && rootMode)
-             for (BaseFile f : files) {
-                     RootTools.remount(f.getParent(),"rw");
-                     String s=RootHelper.runAndWait("rm -r \""+f.getPath()+"\"",true);
-                     RootTools.remount(f.getParent(),"ro");
-                     Boolean X=RootHelper.fileExists(f.getPath());
-                     if(X!=null && X==true)b=false;
-            }
+           for(BaseFile a:files)
+                    (a).delete(cd,rootMode);
 
         return b;
-    }
-    private int checkFolder(final File folder,Context context) {
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
-            if (!folder.exists() || !folder.isDirectory()) {
-                return 0;
-            }
-
-            if (!FileUtil.isWritableNormalOrSaf(folder,context)) {
-                return 2;
-            }
-            return 1;
-        }
-        else if (Build.VERSION.SDK_INT==19 && FileUtil.isOnExtSdCard(folder,context)) {
-            // Assume that Kitkat workaround works
-            return 1;
-        }
-        else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
-            return 1;
-        }
-        else {
-            return 0;
-        }
     }
 
     @Override

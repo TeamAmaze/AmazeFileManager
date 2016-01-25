@@ -3,8 +3,10 @@ package com.amaze.filemanager.ui.dialogs;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatEditText;
@@ -33,6 +35,8 @@ public class RenameBookmark extends DialogFragment {
     Futils utils;
     Context c;
     BookmarkCallback bookmarkCallback;
+    SharedPreferences Sp;
+    int studiomode=0;
     public static RenameBookmark getInstance(String name,String path,String fabskin,int theme1){
         RenameBookmark renameBookmark=new RenameBookmark();
         Bundle bundle=new Bundle();
@@ -53,6 +57,8 @@ public class RenameBookmark extends DialogFragment {
         fabskin=getArguments().getString("fabskin");
         theme1=getArguments().getInt("theme",0);
         utils=new Futils();
+        Sp=PreferenceManager.getDefaultSharedPreferences(c);
+        studiomode=Sp.getInt("studio", 0);
         if (DataUtils.containsBooks(new String[]{title, path}) != -1 || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
             final MaterialDialog materialDialog;
             String pa = path;
@@ -94,8 +100,8 @@ public class RenameBookmark extends DialogFragment {
                 }
             });
             final AppCompatEditText ip = (AppCompatEditText) v2.findViewById(R.id.editText);
-
-            if (path.startsWith("smb:/")) {
+            if(studiomode!=0){
+                if (path.startsWith("smb:/")) {
                 try {
                     jcifs.Config.registerSmbURLHandler();
                     URL a = new URL(path);
@@ -130,6 +136,7 @@ public class RenameBookmark extends DialogFragment {
                     else t2.setError("");
                 }
             });
+            }else t2.setVisibility(View.GONE);
             builder.onNeutral(new MaterialDialog.SingleButtonCallback() {
                 @Override
                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -142,7 +149,7 @@ public class RenameBookmark extends DialogFragment {
                 public void onClick(View v) {
                     String t = ip.getText().toString();
                     String name = con_name.getText().toString();
-                    if (t.startsWith("smb://")) {
+                    if (studiomode!=0 && t.startsWith("smb://")) {
                         try {
                             URL a = new URL(t);
                             String userinfo = a.getUserInfo();

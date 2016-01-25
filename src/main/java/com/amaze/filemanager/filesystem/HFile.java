@@ -7,6 +7,8 @@ import android.util.Log;
 
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Logger;
+import com.amaze.filemanager.utils.RootUtils;
+import com.stericson.RootTools.RootTools;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -367,7 +369,7 @@ public class HFile {
         } else
             FileUtil.mkdir(new File(path), context);
     }
-    public boolean delete(Context context){
+    public boolean delete(Context context,boolean rootmode){
         if (isSmb()) {
             try {
                 new SmbFile(path).delete();
@@ -377,7 +379,14 @@ public class HFile {
                 Logger.log(e,path,context);
             }
         } else {
-            return FileUtil.deleteFile(new File(path), context);
+            boolean b= FileUtil.deleteFile(new File(path), context);
+            if(!b && rootmode){
+                setMode(ROOT_MODE);
+                RootTools.remount(getParent(),"rw");
+                String s=RootHelper.runAndWait("rm -r \""+getPath()+"\"",true);
+                RootTools.remount(getParent(),"ro");
+            }
+
         }
         return !exists();
     }

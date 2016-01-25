@@ -26,6 +26,7 @@ import java.util.ArrayList;
 public class Logger {
 
     public static void log(final Exception s,final String s1, Context context) {
+        if(context==null)return;
         final File f = new File(context.getExternalFilesDir("internal"),"log.txt");
         new Thread(new Runnable() {
             @Override

@@ -68,7 +68,6 @@ public class Preffrag extends PreferenceFragment{
     String skin;
     private int COUNT = 0;
     private Toast toast;
-    private final String TAG = getClass().getName();
     CheckBx gplus;
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -287,7 +287,8 @@ public class RootHelper {
                 String cpath = getCommandLineString(path);
                 ls = runAndWait1("ls -l" + p + cpath, root);
                 if (ls != null) {
-                    for (String file : ls) {
+                    for (int i=0;i<ls.size();i++) {
+                        String file=ls.get(i);
                         if (!file.contains("Permission denied"))
                             try {
                                 BaseFile array = futils.parseName(file);
