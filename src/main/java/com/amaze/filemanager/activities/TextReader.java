@@ -705,16 +705,17 @@ public class TextReader extends AppCompatActivity
 
                     // highlighting previous element in list
                     Map.Entry keyValueNew = (Map.Entry) nodes.get(--mCurrent).getKey();
-                    mInput.getText().setSpan(new BackgroundColorSpan(getResources()
-                                    .getColor(R.color.search_text_highlight, getTheme())),
-                            (Integer) keyValueNew.getKey(),
-                            (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-
-                    // scrolling to the highlighted element
-                    DisplayMetrics displayMetrics = new DisplayMetrics();
-                    getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                    scrollView.scrollTo(0, (Integer) keyValueNew.getValue()
-                            + mInput.getLineHeight() - displayMetrics.heightPixels/2);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        mInput.getText().setSpan(new BackgroundColorSpan(getResources()
+                                        .getColor(R.color.search_text_highlight, getTheme())),
+                                (Integer) keyValueNew.getKey(),
+                                (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    } else {
+                        mInput.getText().setSpan(new BackgroundColorSpan(getResources()
+                                        .getColor(R.color.search_text_highlight)),
+                                (Integer) keyValueNew.getKey(),
+                                (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    }
                 }
                 break;
             case R.id.next:
@@ -732,10 +733,17 @@ public class TextReader extends AppCompatActivity
                     }
 
                     Map.Entry keyValueNew = (Map.Entry) nodes.get(++mCurrent).getKey();
-                    mInput.getText().setSpan(new BackgroundColorSpan(getResources()
-                                    .getColor(R.color.search_text_highlight, getTheme())),
-                            (Integer) keyValueNew.getKey(),
-                            (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        mInput.getText().setSpan(new BackgroundColorSpan(getResources()
+                                        .getColor(R.color.search_text_highlight, getTheme())),
+                                (Integer) keyValueNew.getKey(),
+                                (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    } else {
+                        mInput.getText().setSpan(new BackgroundColorSpan(getResources()
+                                        .getColor(R.color.search_text_highlight)),
+                                (Integer) keyValueNew.getKey(),
+                                (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    }
 
                     // scrolling to the highlighted element
                     DisplayMetrics displayMetrics = new DisplayMetrics();
