@@ -25,6 +25,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
+import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.views.CustomViewPager;
 import com.amaze.filemanager.utils.DataUtils;
@@ -339,12 +340,12 @@ public class TabFragment extends android.support.v4.app.Fragment {
         }*/
 
         if (index == 0) {
-            indicator1.setImageDrawable(new ColorDrawable(Color.parseColor(mainActivity.fabskin)));
-            indicator2.setImageDrawable(new ColorDrawable(Color.GRAY));
+            indicator1.setImageDrawable(new ColorCircleDrawable(Color.parseColor(mainActivity.fabskin)));
+            indicator2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
             return;
         } else {
-            indicator2.setImageDrawable(new ColorDrawable(Color.parseColor(mainActivity.fabskin)));
-            indicator1.setImageDrawable(new ColorDrawable(Color.GRAY));
+            indicator2.setImageDrawable(new ColorCircleDrawable(Color.parseColor(mainActivity.fabskin)));
+            indicator1.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
             return;
         }
 
