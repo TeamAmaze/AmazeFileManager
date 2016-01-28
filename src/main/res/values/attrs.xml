@@ -23,4 +23,13 @@
     <attr name="popup" format="reference" />
     <attr name="toolbar_theme" format="reference" />
     <attr name="ripple_color" format="color" />
+
+    <declare-styleable name="Indicator">
+        <attr name="dotDiameter" format="dimension" />
+        <attr name="dotGap" format="dimension" />
+        <attr name="animationDuration" format="integer" />
+        <attr name="pageIndicatorColor" format="color" />
+        <attr name="currentPageIndicatorColor" format="color" />
+    </declare-styleable>
+
 </resources>

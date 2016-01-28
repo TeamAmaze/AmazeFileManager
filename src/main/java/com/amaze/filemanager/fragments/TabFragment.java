@@ -28,6 +28,7 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.views.CustomViewPager;
+import com.amaze.filemanager.ui.views.Indicator;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Logger;
@@ -56,7 +57,8 @@ public class TabFragment extends android.support.v4.app.Fragment {
     View mToolBarContainer;
     boolean savepaths;
     FragmentManager fragmentManager;
-    ImageView indicator1,indicator2;
+    private Indicator indicator;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -64,13 +66,13 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 container, false);
         fragmentManager=getActivity().getSupportFragmentManager();
         mToolBarContainer=getActivity().findViewById(R.id.lin);
-        indicator1=(ImageView)getActivity().findViewById(R.id.tab_indicator1);
-        indicator2=(ImageView)getActivity().findViewById(R.id.tab_indicator2);
+        indicator = (Indicator) getActivity().findViewById(R.id.indicator);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         savepaths=Sp.getBoolean("savepaths", true);
         int theme=Integer.parseInt(Sp.getString("theme","0"));
         theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
         mViewPager = (CustomViewPager) rootView.findViewById(R.id.pager);
+
         if (getArguments() != null){
             path = getArguments().getString("path");
         }
@@ -172,6 +174,8 @@ public class TabFragment extends android.support.v4.app.Fragment {
             mSectionsPagerAdapter.notifyDataSetChanged();
 
         }
+
+        indicator.setViewPager(mViewPager);
 
         return rootView;
     }
@@ -315,8 +319,8 @@ public class TabFragment extends android.support.v4.app.Fragment {
 
     void updateIndicator(int index) {
         if (index != 0 && index != 1) return;
-        if (indicator1 == null || indicator2 == null) return;
-        /*if (!mainActivity.isDrawerLocked){
+        /*if (indicator1 == null || indicator2 == null) return;
+        *//*if (!mainActivity.isDrawerLocked){
             if (index == 0) {
                 indicator1.setImageResource(R.drawable.square_filled);
                 indicator2.setImageResource(R.drawable.square_hollow);
@@ -337,7 +341,7 @@ public class TabFragment extends android.support.v4.app.Fragment {
             }
 
         return;
-        }*/
+        }*//*
 
         if (index == 0) {
             indicator1.setImageDrawable(new ColorCircleDrawable(Color.parseColor(mainActivity.fabskin)));
@@ -347,9 +351,10 @@ public class TabFragment extends android.support.v4.app.Fragment {
             indicator2.setImageDrawable(new ColorCircleDrawable(Color.parseColor(mainActivity.fabskin)));
             indicator1.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
             return;
-        }
+        }*/
 
     }
+
     public Fragment getTab(int pos) {
         if(fragments.size()==2 && pos<2)
             return fragments.get(pos);
