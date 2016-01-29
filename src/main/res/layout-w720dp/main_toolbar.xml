@@ -25,24 +25,27 @@
     android:fitsSystemWindows="true"
     android:id="@+id/tab_frame"
     >
-    <FrameLayout
-        android:layout_marginLeft="@dimen/drawer_width"
-        android:layout_width="match_parent"
+
+    <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_frame"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/drawer_width"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/content_frame"
-            android:layout_width="match_parent"
-            android:clipToPadding="false"
-            android:layout_height="match_parent" />
-        <RelativeLayout
-            android:id="@+id/lin"
-            android:elevation="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
 
+
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
+        android:layout_height="match_parent" />
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:id="@+id/lin"
+        >
             <android.support.v7.widget.Toolbar
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -50,17 +53,11 @@
                 android:layout_height="?attr/actionBarSize"
                 android:layout_width="match_parent"
                 android:theme="?attr/toolbar_theme"
-                app:popupTheme="?attr/popup">
+                app:popupTheme="?attr/popup"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:contentInsetLeft="72dp"
+                app:contentInsetStart="72dp">
 
-                <Spinner
-                    android:id="@+id/tab_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingLeft="52dp"
-                    android:gravity="center_vertical"
-                    android:background="@null"
-                    android:minHeight="?android:attr/listPreferredItemHeightSmall"
-                    />
             </android.support.v7.widget.Toolbar>
 
             <FrameLayout
@@ -141,8 +138,27 @@
                 </LinearLayout>
 
             </FrameLayout>
-        </RelativeLayout>
+    </android.support.design.widget.AppBarLayout>
+        <LinearLayout
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:id="@+id/indicator_layout"
+            android:layout_height="2dp">
+            <ImageView
+                android:id="@+id/tab_indicator1"
+                android:layout_width="wrap_content"
+                android:minWidth="50dp"
+                android:layout_marginRight="2dp"
+                android:layout_height="match_parent" />
 
+            <ImageView
+                android:id="@+id/tab_indicator2"
+                android:layout_width="wrap_content"
+                android:minWidth="50dp"
+                android:layout_marginLeft="2dp"
+                android:layout_height="match_parent" />
+        </LinearLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -152,83 +168,6 @@
             android:clickable="true"
             android:background="#a6000000"/>
 
-        <com.github.clans.fab.FloatingActionMenu
-            android:id="@+id/menu_top"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left|top"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="108dp"
-            android:layout_marginLeft="11dp"
-            fab:menu_fab_size="mini"
-            android:elevation="6dp"
-            fab:menu_showShadow="true"
-            fab:menu_shadowColor="#66000000"
-            fab:menu_shadowRadius="2dp"
-            fab:menu_shadowXOffset="0dp"
-            fab:menu_shadowYOffset="1dp"
-            fab:menu_colorNormal="#DA4336"
-            fab:menu_colorPressed="#E75043"
-            fab:menu_colorRipple="#99FFFFFF"
-            fab:menu_animationDelayPerItem="50"
-            fab:menu_icon="@drawable/fab_add"
-            fab:menu_buttonSpacing="5dp"
-            fab:menu_labels_margin="10dp"
-            fab:menu_labels_showAnimation="@anim/fab_slide_in_from_right"
-            fab:menu_labels_hideAnimation="@anim/fab_slide_out_to_right"
-            fab:menu_labels_paddingTop="4dp"
-            fab:menu_labels_paddingRight="8dp"
-            fab:menu_labels_paddingBottom="4dp"
-            fab:menu_labels_paddingLeft="8dp"
-            fab:menu_labels_padding="8dp"
-            fab:menu_labels_textSize="14sp"
-            fab:menu_labels_cornerRadius="3dp"
-            fab:menu_labels_colorNormal="#333333"
-            fab:menu_labels_colorPressed="#444444"
-            fab:menu_labels_colorRipple="#66FFFFFF"
-            fab:menu_labels_showShadow="true"
-            fab:menu_labels_singleLine="true"
-            fab:menu_labels_ellipsize="none"
-            fab:menu_labels_maxLines="-1"
-            fab:menu_labels_style="@style/menu_labels_style_light"
-            fab:menu_labels_position="right"
-            fab:menu_openDirection="down"
-            fab:menu_backgroundColor="@android:color/transparent">
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_item_top"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/folder_fab"
-                fab:fab_size="mini"
-                fab:fab_label="@string/folder" />
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_item1_top"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_insert_drive_file_white_48dp"
-                fab:fab_size="mini"
-                fab:fab_label="@string/file" />
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_item2_top"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_settings_remote_white_48dp"
-                fab:fab_size="mini"
-                fab:fab_label="@string/smb_con" />
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_item3_top"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/drive"
-                fab:fab_size="mini"
-                fab:fab_label="Drive Connection" />
-
-        </com.github.clans.fab.FloatingActionMenu>
         <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/menu"
             android:layout_width="wrap_content"
@@ -305,7 +244,7 @@
                 fab:fab_size="mini"
                 fab:fab_label="Drive Connection" />
         </com.github.clans.fab.FloatingActionMenu>
-    </FrameLayout>
+    </android.support.design.widget.CoordinatorLayout>
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"

@@ -26,12 +26,15 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -54,7 +57,7 @@ import org.sufficientlysecure.donations.DonationsFragment;
 import java.util.Arrays;
 import java.util.Calendar;
 
-public class Preferences extends AppCompatActivity {
+public class Preferences extends AppCompatActivity  implements ActivityCompat.OnRequestPermissionsResultCallback  {
     int theme, skinStatusBar;
     String skin, fabSkin;
     int select=0;
@@ -62,7 +65,7 @@ public class Preferences extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(this);
-        fabSkin = PreferenceUtils.getFabColor(Sp.getInt("fab_skin_color_position", 1));
+        fabSkin = PreferenceUtils.getAccentString(Sp);
 
         int th = Integer.parseInt(Sp.getString("theme", "0"));
 
@@ -209,14 +212,14 @@ public class Preferences extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prefsfrag);
         Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
-        skin = PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
+        skin = PreferenceUtils.getPrimaryColorString(Sp);
         if (Build.VERSION.SDK_INT>=21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
             ((Activity)this).setTaskDescription(taskDescription);
         }
         skinStatusBar = PreferenceUtils.getStatusColor(skin);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+        getSupportActionBar().setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_HOME_AS_UP| android.support.v7.app.ActionBar.DISPLAY_SHOW_TITLE);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
         int sdk=Build.VERSION.SDK_INT;
 
@@ -330,4 +333,13 @@ public class Preferences extends AppCompatActivity {
                 break;
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == 66) {
+                p.invalidateGplus();
+            }
+
+        }
 }

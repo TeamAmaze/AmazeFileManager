@@ -17,7 +17,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<com.amaze.filemanager.ui.views.CustomViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+<com.amaze.filemanager.ui.views.CustomViewPager
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/pager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

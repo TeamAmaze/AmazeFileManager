@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.filesystem;
 
 /**
  * Created by Arpit on 04-06-2015.
@@ -26,7 +26,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
@@ -37,6 +36,7 @@ import android.util.Log;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.Futils;
 
 /**
  * Utility class for helping parsing file systems.
@@ -83,7 +83,7 @@ public abstract class FileUtil {
                 }
                 else if (Build.VERSION.SDK_INT==Build.VERSION_CODES.KITKAT) {
                     // Workaround for Kitkat ext SD card
-                    Uri uri = MediaStoreUtil.getUriFromFile(target.getAbsolutePath(),context);
+                    Uri uri = MediaStoreHack.getUriFromFile(target.getAbsolutePath(),context);
                     outStream = context.getContentResolver().openOutputStream(uri);
                 }
                 else {
@@ -134,7 +134,7 @@ public abstract class FileUtil {
         }
         return true;
     }
-    public static OutputStream getOutputStream(@NonNull final File target,Context context,long s) {
+    public static OutputStream getOutputStream(@NonNull final File target,Context context,long s)throws Exception {
 
         OutputStream outStream = null;
         try {
@@ -152,7 +152,7 @@ public abstract class FileUtil {
                 }
                 else if (Build.VERSION.SDK_INT==Build.VERSION_CODES.KITKAT) {
                     // Workaround for Kitkat ext SD card
-                return MediaStoreHack.getOutputStream(context,target,s);
+                return MediaStoreHack.getOutputStream(context,target.getPath());
                 }
 
 
@@ -191,7 +191,7 @@ public abstract class FileUtil {
             ContentResolver resolver = context.getContentResolver();
 
             try {
-                Uri uri = MediaStoreUtil.getUriFromFile(file.getAbsolutePath(),context);
+                Uri uri = MediaStoreHack.getUriFromFile(file.getAbsolutePath(),context);
                 resolver.delete(uri, null, null);
                 return !file.exists();
             }
@@ -204,27 +204,6 @@ public abstract class FileUtil {
         return !file.exists();
     }
 
-    /**
-     * Move a file. The target file may even be on external SD card.
-     *
-     * @param source
-     *            The source file
-     * @param target
-     *            The target file
-     * @return true if the copying was successful.
-     */
-    public static final boolean moveFile(@NonNull final File source,@NonNull final File target,Context context) {
-        // First try the normal rename.
-        if (source.renameTo(target)) {
-            return true;
-        }
-
-        boolean success = copyFile(source, target,context);
-        if (success) {
-            success = deleteFile(source,context);
-        }
-        return success;
-    }
 
     /**
      * Rename a folder. In case of extSdCard in Kitkat, the old folder stays in place, but files are moved.
@@ -319,7 +298,6 @@ public abstract class FileUtil {
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(file, context)) {
             DocumentFile document = getDocumentFile(file, true,context);
             // getDocumentFile implicitly creates the directory.
-
             return document.exists();
         }
 
@@ -580,8 +558,7 @@ public abstract class FileUtil {
         boolean result = document.canWrite() && file.exists();
 
         // Ensure that the dummy file is not remaining.
-        document.delete();
-
+        deleteFile(file,c);
         return result;
     }
 
@@ -591,7 +568,7 @@ public abstract class FileUtil {
      * @return A list of external SD card paths.
      */
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private static String[] getExtSdCardPaths(Context context) {
+    public static String[] getExtSdCardPaths(Context context) {
         List<String> paths = new ArrayList<String>();
         for (File file : context.getExternalFilesDirs("external")) {
             if (file != null && !file.equals(context.getExternalFilesDir("external"))) {
@@ -614,7 +591,30 @@ public abstract class FileUtil {
         if(paths.isEmpty())paths.add("/storage/sdcard1");
         return paths.toArray(new String[0]);
     }
-
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public static String[] getExtSdCardPathsForActivity(Context context) {
+        List<String> paths = new ArrayList<String>();
+        for (File file : context.getExternalFilesDirs("external")) {
+            if (file != null) {
+                int index = file.getAbsolutePath().lastIndexOf("/Android/data");
+                if (index < 0) {
+                    Log.w("AmazeFileUtils", "Unexpected external file dir: " + file.getAbsolutePath());
+                }
+                else {
+                    String path = file.getAbsolutePath().substring(0, index);
+                    try {
+                        path = new File(path).getCanonicalPath();
+                    }
+                    catch (IOException e) {
+                        // Keep non-canonical path.
+                    }
+                    paths.add(path);
+                }
+            }
+        }
+        if(paths.isEmpty())paths.add("/storage/sdcard1");
+        return paths.toArray(new String[0]);
+    }
     /**
      * Determine the main folder of the external SD card containing the given file.
      *

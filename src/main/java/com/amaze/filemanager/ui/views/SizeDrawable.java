@@ -6,9 +6,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
+import com.amaze.filemanager.R;
 
 
 /**
@@ -37,24 +39,25 @@ public class SizeDrawable extends View {
     public SizeDrawable(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         int strokeWidth = dpToPx(40);
-        rectF = new RectF(dpToPx(0), dpToPx(0), dpToPx(150), dpToPx(150));
+        rectF=new RectF(getLeft(),getTop(),getRight(),getBottom());
+        //rectF = new RectF(dpToPx(0), dpToPx(0), dpToPx(200), dpToPx(200));
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setColor(Color.parseColor("#0D47A1"));
-        mPaint.setStrokeCap(Paint.Cap.BUTT);
+        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setColor(ContextCompat.getColor(getContext(),R.color.accent_indigo));
+       // mPaint.setStrokeCap(Paint.Cap.BUTT);
         mPaint.setStrokeWidth(strokeWidth);
         mPaint1 = new Paint();
         mPaint1.setAntiAlias(true);
-        mPaint1.setStyle(Paint.Style.STROKE);
-        mPaint1.setColor(Color.parseColor("#E53935"));
-        mPaint1.setStrokeCap(Paint.Cap.BUTT);
+        mPaint1.setStyle(Paint.Style.FILL);
+        mPaint1.setColor(ContextCompat.getColor(getContext(),R.color.accent_red));
+      //  mPaint1.setStrokeCap(Paint.Cap.BUTT);
         mPaint1.setStrokeWidth(strokeWidth);
         mPaint2 = new Paint();
         mPaint2.setAntiAlias(true);
-        mPaint2.setStyle(Paint.Style.STROKE);
-        mPaint2.setColor(Color.parseColor("#4CAF50"));
-        mPaint2.setStrokeCap(Paint.Cap.BUTT);
+        mPaint2.setStyle(Paint.Style.FILL);
+        mPaint2.setColor(ContextCompat.getColor(getContext(),R.color.accent_green));
+       // mPaint2.setStrokeCap(Paint.Cap.BUTT);
         mPaint2.setStrokeWidth(strokeWidth);
         twenty = dpToPx(10);
     }
@@ -73,23 +76,23 @@ public class SizeDrawable extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        rectF.set(twenty, twenty, getWidth() - twenty, getHeight() - 2 * twenty);
-        canvas.drawLine((getWidth() - twenty)-2,0,(getWidth() - twenty),0,mPaint1);
-        if(angle2!=0)canvas.drawLine((getWidth() - twenty)*angle1,0,(getWidth() - twenty)*angle2,0,mPaint2);
-        canvas.drawLine(0, 0, (getWidth() - twenty) * angle, 0, mPaint);
-        if(angle1!=0)canvas.drawLine((getWidth() - twenty)*angle,0,(getWidth() - twenty)*angle1,0,mPaint1);
 
-        Paint paint = new Paint();
+       // canvas.drawLine((getWidth() - twenty)-2,0,(getWidth() - twenty),0,mPaint1);
+        if(angle2!=0)canvas.drawLine(0,getHeight()- (getHeight() * angle1),0,getHeight()-(getHeight()*angle2),mPaint2);
+        canvas.drawLine(0, getHeight(),0, getHeight()- (getHeight() * angle), mPaint);
+        if(angle1!=0)canvas.drawLine(0,getHeight()- (getHeight() * angle),0,getHeight()-(getHeight()*angle1),mPaint1);
+       /* Paint paint = new Paint();
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.STROKE);
         paint.setTextSize(20);
         canvas.drawText(Math.round(angle * 100)+"%",(getWidth() - twenty)*angle/2, 25,paint);
         if(angle1>0.20)canvas.drawText(Math.round((angle1-angle)*100)+"%",(getWidth() - twenty)*angle+(getWidth() - twenty)*(angle1-angle)/2, 25,paint);
         if(angle2>0.20)canvas.drawText(Math.round((angle2-angle1)*100)+"%",(getWidth() - twenty)*angle1+(getWidth() - twenty)*(angle2-angle1)/2, 25,paint);
-/*
-        canvas.drawArc(rectF, startangle, angle, false, mPaint);
-        canvas.drawArc(rectF, startangle1, angle1, false, mPaint1);
-        canvas.drawArc(rectF, startangle2, angle2, false, mPaint2);
+
+
+        canvas.drawArc(rectF, startangle, angle, true, mPaint);
+        canvas.drawArc(rectF, startangle1, angle1, true, mPaint1);
+        canvas.drawArc(rectF, startangle2, angle2, true, mPaint2);
 */
     }
 

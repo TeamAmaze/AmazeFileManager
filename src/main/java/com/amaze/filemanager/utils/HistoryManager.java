@@ -68,6 +68,26 @@ public class HistoryManager {
         }
         return false;
     }
+    public boolean rename(final String oldname, final String oldpath, final String path, final String name, final String table){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                ArrayList<String[]> arrayList=readTableSecondary(table);
+
+                for(int i=0;i<arrayList.size();i++){
+                    if(arrayList.get(i)[1].equals(oldpath) && arrayList.get(i)[0].equals(oldname)){
+                        try {
+                            removePath(oldname,oldpath,table );
+                            addPath(name,path,table,1);
+                        } catch (Exception e) {
+                        }
+                    }
+                }
+            }
+        }).start();
+        return false;
+    }
     public ArrayList<String> readTable(String table) {
         Cursor c = db.rawQuery("SELECT * FROM " + table, null);
         c.moveToLast();
@@ -122,6 +142,12 @@ public class HistoryManager {
     public void removePath(String path,String table){
         try {
             db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "'");
+        } catch (Exception e) {
+        }
+    }
+    public void removePath(String name,String path,String table){
+        try {
+            db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "' and NAME='"+name+"'");
         } catch (Exception e) {
         }
     }

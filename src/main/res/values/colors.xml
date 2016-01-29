@@ -33,6 +33,7 @@
     <color name="holo_dark_selection">#424242</color>
     <color name="divider">#e0e0e0</color>
     <color name="divider_dark">#474747</color>
+    <color name="search_text_highlight">#FF9632</color>
 
     <!-- primary color palatte -->
     <color name="primary_red">#F44336</color>
@@ -73,5 +74,9 @@
     <color name="accent_black">#212121</color>
     <color name="accent_blue_grey">#607d8b</color>
     <color name="accent_super_su">#004d40</color>
+
+    <!-- indicator -->
+    <color name="page_indicator_dark">#80333333</color>
+    <color name="page_indicator_dark_selected">#ff333333</color>
 
 </resources>

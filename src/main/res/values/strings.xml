@@ -124,7 +124,6 @@
     <string name="mountsystemsummary">Enable this if you want to edit System Files</string>
     <string name="mountsystem">Mount System Folders as Writable</string>
     <string name="rootfailure">Root Access not granted</string>
-    <string name="cut">Move</string>
     <string name="selectall">Select All</string>
     <string name="delete">Delete</string>
     <string name="setashome">Set As Home</string>
@@ -280,7 +279,6 @@
     <string name="portuguese_translation_title">Portuguese</string>
     <string name="polish_translation_title">Polish</string>
     <string name="korean_translation_title">Korean</string>
-    <string name="greek_translation_title">Greek</string>
     <string name="dutch_translation_title">Dutch</string>
 
     <string name="zip_viewer">Zip Viewer</string>
@@ -345,7 +343,7 @@
     <string name="needsaccesssummary">Please choose the root directory of \t</string>
     <string name="needsaccesssummary1">\tto grant write access to operate </string>
     <string name="smb_con">SMB Connection</string>
-    <string name="smb_server">Server: IP Addr. or IP Addr./SharedFolder</string>
+    <string name="smb_server">Server IP Address</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="anonymous">Anonymous</string>
@@ -371,5 +369,23 @@
     <string name="recent">Recent Files</string>
     <string name="edit">Edit</string>
     <string name="find">Find in page</string>
+    <string name="grant">Grant</string>
+    <string name="grantper">Grant permission</string>
+    <string name="grantfailed">Permission not granted</string>
+    <string name="granttext">App needs storage permission to continue. Canceling this dialog will exit the app.</string>
+    <string name="grantgplus">App needs permission for this feature. Canceling this dialog will uncheck this feature.</string>
+    <string name="operationunsuccesful">Operation Unsuccessful</string>
+    <string name="creatingfile">Creating File</string>
+    <string name="creatingfolder">Creating Folder</string>
+    <string name="renaming">Renaming</string>
+    <string name="cantbeempty">%s cannot be empty</string>
+    <string name="ip">Address</string>
+    <string name="connectionname">Connection name</string>
+    <string name="nodevicefound">No device found</string>
+    <string name="searchingdevices">Searching for devices</string>
+    <string name="path">Path</string>
+    <string name="renamebookmark">Modify Bookmark</string>
+    <string name="cut">Cut</string>
+    <string name="greek_translation_title">Греческий</string>
 </resources>
 

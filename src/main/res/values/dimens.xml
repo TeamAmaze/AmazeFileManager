@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="drawer_width">304dp</dimen>
+    <dimen name="fastscroller_track_height">70dp</dimen>
+    <dimen name="fastscroller_track_width">7dp</dimen>
+    <dimen name="fastscroller_track_padding">3dp</dimen>
+    <dimen name="padding_normal">16dp</dimen>
 </resources>

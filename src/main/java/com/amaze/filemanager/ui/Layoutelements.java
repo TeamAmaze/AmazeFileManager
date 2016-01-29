@@ -25,6 +25,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
 
 public class Layoutelements implements Parcelable {
@@ -87,7 +88,8 @@ public class Layoutelements implements Parcelable {
     private long date = 0,longSize=0;
     private String date1 = "";
     private boolean header;
-
+    //same as hfile.modes but different than openmode in Main.java
+    private int mode=0;
     public Layoutelements(Drawable imageId, String title, String desc, String permissions, String symlink, String size,long longSize,  boolean header, String date,boolean isDirectory) {
         this.imageId = imageId;
         this.title = title;
@@ -100,7 +102,7 @@ public class Layoutelements implements Parcelable {
         this.isDirectory = isDirectory;
         if (!date.trim().equals("")) {
             this.date = Long.parseLong(date);
-            this.date1 = new Futils().getdate(this.date, "MMM dd, yyyy", "15");
+            this.date1 = new Futils().getdate(this.date, "MMM dd, yyyy", "16");
         }
     }
 
@@ -130,8 +132,22 @@ public class Layoutelements implements Parcelable {
         return title.toString();
     }
 
+    public int getMode() {
+        return mode;
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
+    }
+
     public boolean isDirectory() {
     return isDirectory;}
+    public BaseFile generateBaseFile(){
+        BaseFile baseFile=new BaseFile(getDesc(),getPermissions(),getDate1(),longSize,isDirectory());
+        baseFile.setMode(mode);
+        baseFile.setName(title);
+        return baseFile;
+    }
 
     public String getSize() {
         return size;

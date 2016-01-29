@@ -43,12 +43,14 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.ui.Layoutelements;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.PreferenceUtils;
 
 import java.io.File;
@@ -216,18 +218,17 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                             case R.id.share:
                                 ArrayList<File> arrayList2=new ArrayList<File>();
                                 arrayList2.add(new File(rowItem.getDesc()));
-                                int color1= Color.parseColor(PreferenceUtils.getFabColor
-                                        (app.Sp.getInt("fab_skin_color_position", 1)));
+                                int color1= Color.parseColor(PreferenceUtils.getAccentString(app.Sp));
                                 utils.shareFiles(arrayList2,app.getActivity(),app.theme1,color1);
                                 return true;
                             case R.id.unins:
-                                final File f1 = new File(rowItem.getDesc());
+                                final BaseFile f1 = new BaseFile(rowItem.getDesc());
+                                f1.setMode(HFile.ROOT_MODE);
                                 ApplicationInfo info1=null;
                                 for(PackageInfo info:c){
                                     if(info.applicationInfo.publicSourceDir.equals(rowItem.getDesc()))info1=info.applicationInfo;
                                 }
-                                int color= Color.parseColor(PreferenceUtils.getFabColor
-                                        (app.Sp.getInt("fab_skin_color_position", 1)));
+                                int color= Color.parseColor(PreferenceUtils.getAccentString(app.Sp));
                                 //arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1),"", false));
                                 //utils.deleteFiles(arrayList, null, arrayList1);
                                 if ((info1.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
@@ -252,16 +253,19 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                                     @Override
                                                     public void onPositive(MaterialDialog materialDialog) {
 
-                                                        ArrayList<File> files = new ArrayList<File>();
+                                                        ArrayList<BaseFile> files = new ArrayList<>();
                                                         if (Build.VERSION.SDK_INT >= 21) {
                                                             String parent = f1.getParent();
-                                                            if (!parent.equals("app") && !parent.equals("priv-app"))
-                                                                files.add(new File(f1.getParent()));
+                                                            if (!parent.equals("app") && !parent.equals("priv-app")){
+                                                                BaseFile baseFile=new BaseFile(f1.getParent());
+                                                                baseFile.setMode(HFile.ROOT_MODE);
+                                                                files.add(baseFile);
+                                                            }
                                                             else files.add(f1);
                                                         } else {
                                                             files.add(f1);
                                                         }
-                                                        new DeleteTask(app.getActivity().getContentResolver(), app.getActivity()).execute(utils.toStringArray(files));
+                                                        new DeleteTask(app.getActivity().getContentResolver(), app.getActivity()).execute((files));
                                                     }
                                                 }).build().show();
                                     } else {
@@ -285,16 +289,16 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                             case R.id.backup:
                                 Toast.makeText(app.getActivity(), new Futils().getString(app.getActivity(), R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
                                 File f = new File(rowItem.getDesc());
-                                ArrayList<String> ab = new ArrayList<String>();
-                                ArrayList<String> names = new ArrayList<String>();
+                                ArrayList<BaseFile> ab = new ArrayList<>();
                                 File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");
                                 if(!dst.exists() || !dst.isDirectory())dst.mkdirs();
                                 Intent intent = new Intent(app.getActivity(), CopyService.class);
-                                ab.add(f.getPath());
-                                names.add(rowItem.getTitle() + "_" + rowItem.getSymlink() + ".apk");
+                                BaseFile baseFile=RootHelper.generateBaseFile(f,true);
+                                baseFile.setName(rowItem.getTitle() + "_" + rowItem.getSymlink() + ".apk");
+                                ab.add(baseFile);
                                 intent.putExtra("FILE_PATHS", ab);
-                                intent.putExtra("FILE_NAMES",names);
                                 intent.putExtra("COPY_DIRECTORY", dst.getPath());
+                                intent.putExtra("MODE",0);
                                 app.getActivity().startService(intent);
                                 return true;
 

@@ -22,7 +22,6 @@ package com.amaze.filemanager.activities;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -33,7 +32,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -50,7 +48,7 @@ import android.widget.ListView;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.DbViewerFragment;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.RootHelper;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
@@ -91,7 +89,7 @@ public class DbViewer extends AppCompatActivity {
         setContentView(R.layout.activity_db_viewer);
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        skin =PreferenceUtils.getSkinColor(Sp.getInt("skin_color_position", 4));
+        skin =PreferenceUtils.getPrimaryColorString(Sp);
         if (Build.VERSION.SDK_INT>=21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription
                     ("Amaze", ((BitmapDrawable) ContextCompat.getDrawable(this,R.mipmap

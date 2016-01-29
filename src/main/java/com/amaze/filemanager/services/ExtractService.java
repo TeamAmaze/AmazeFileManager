@@ -37,10 +37,9 @@ import android.util.Log;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.utils.DataPackage;
-import com.amaze.filemanager.utils.FileUtil;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.github.junrar.Archive;
-import com.github.junrar.exception.RarException;
 import com.github.junrar.rarfile.FileHeader;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -49,8 +48,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -208,7 +205,7 @@ public class ExtractService extends Service {
                 stopSelf(b);
         }
     private void unzipEntry(int id, ZipFile zipfile, ZipEntry entry, String outputDir)
-            throws IOException {
+            throws Exception {
         if (entry.isDirectory()) {
             createDir(new File(outputDir, entry.getName()));
             return;
@@ -221,7 +218,7 @@ public class ExtractService extends Service {
         BufferedInputStream inputStream = new BufferedInputStream(
                 zipfile.getInputStream(entry));
         BufferedOutputStream outputStream = new BufferedOutputStream(
-                FileUtil.getOutputStream(outputFile,cd,entry.getCompressedSize()));
+                FileUtil.getOutputStream(outputFile,cd,0));
         try {
             int len;
             byte buf[] = new byte[20480];
@@ -248,7 +245,7 @@ public class ExtractService extends Service {
         }
     }
     private void unzipRAREntry(int id,String a, Archive zipfile, FileHeader entry, String outputDir)
-            throws IOException, RarException {
+            throws Exception {
         String name=entry.getFileNameString();
         name=name.replaceAll("\\\\","/");
         if (entry.isDirectory()) {
@@ -289,7 +286,7 @@ public class ExtractService extends Service {
         }
     }
     private void unzipTAREntry(int id, TarArchiveInputStream zipfile, TarArchiveEntry entry, String outputDir,String string)
-            throws IOException, RarException {
+            throws Exception {
         String name=entry.getName();
         if (entry.isDirectory()) {
             createDir(new File(outputDir, name));

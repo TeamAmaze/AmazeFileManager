@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.filesystem;
 
 /**
  * Created by Arpit on 29-06-2015.
@@ -96,29 +96,43 @@ public class MediaStoreHack {
             return null;
         }
     }
+    public static OutputStream getOutputStream(Context context,String str) {
+        OutputStream outputStream = null;
+        Uri fileUri = getUriFromFile(str,context);
+        if (fileUri != null) {
+            try {
+                outputStream = context.getContentResolver().openOutputStream(fileUri);
+            } catch (Throwable th) {
+            }
+        }
+        return outputStream;
+    }
+    public static Uri getUriFromFile(final String path,Context context) {
+        ContentResolver resolver = context.getContentResolver();
+
+        Cursor filecursor = resolver.query(MediaStore.Files.getContentUri("external"),
+                new String[] { BaseColumns._ID }, MediaStore.MediaColumns.DATA + " = ?",
+                new String[] { path }, MediaStore.MediaColumns.DATE_ADDED + " desc");
+        filecursor.moveToFirst();
+
+        if (filecursor.isAfterLast()) {
+            filecursor.close();
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.DATA, path);
+            return resolver.insert(MediaStore.Files.getContentUri("external"), values);
+        }
+        else {
+            int imageId = filecursor.getInt(filecursor.getColumnIndex(BaseColumns._ID));
+            Uri uri = MediaStore.Files.getContentUri("external").buildUpon().appendPath(
+                    Integer.toString(imageId)).build();
+            filecursor.close();
+            return uri;
+        }
+    }
 
     /**
      * Returns an OutputStream to write to the file. The file will be truncated immediately.
      */
-    public static OutputStream getOutputStream(final Context context, final File file,
-                                               final long size) {
-        try {
-            final String where = MediaStore.MediaColumns.DATA + "=?";
-            final String[] selectionArgs = new String[] {
-                    file.getAbsolutePath()
-            };
-            final ContentResolver contentResolver = context.getContentResolver();
-            final Uri filesUri = MediaStore.Files.getContentUri("external");
-            contentResolver.delete(filesUri, where, selectionArgs);
-            final ContentValues values = new ContentValues();
-            values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
-            values.put(MediaStore.MediaColumns.SIZE, size);
-            final Uri uri = contentResolver.insert(filesUri, values);
-            return contentResolver.openOutputStream(uri);
-        } catch (final Throwable t) {
-            return null;
-        }
-    }
 
     private static int getTemporaryAlbumId(final Context context) {
         final File temporaryTrack;
@@ -241,7 +255,7 @@ public class MediaStoreHack {
     }
 
     public static boolean mkfile(final Context context, final File file) {
-        final OutputStream outputStream = getOutputStream(context, file, 0);
+        final OutputStream outputStream = getOutputStream(context, file.getPath());
         if (outputStream == null) {
             return false;
         }
