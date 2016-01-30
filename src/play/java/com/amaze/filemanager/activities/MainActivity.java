@@ -163,6 +163,7 @@ import java.util.regex.Pattern;
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,OnRequestPermissionsResultCallback,SmbConnectionListener,DataChangeListener,BookmarkCallback {
+
     final Pattern DIR_SEPARATOR = Pattern.compile("/");
     /* Request code used to invoke sign in user interactions. */
     static final int RC_SIGN_IN = 0;
@@ -233,6 +234,9 @@ public class MainActivity extends AppCompatActivity implements
     // string builder object variables for pathBar animations
     StringBuffer newPathBuilder, oldPathBuilder;
     AppBarLayout appBarLayout;
+
+    private static final int PATH_ANIM_START_DELAY = 500;
+    private static final int PATH_ANIM_END_DELAY = 500;
 
     /**
      * Called when the activity is first created.
@@ -1913,7 +1917,7 @@ public class MainActivity extends AppCompatActivity implements
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
-                    new CountDownTimer(500, 500) {
+                    new CountDownTimer(PATH_ANIM_END_DELAY, PATH_ANIM_END_DELAY) {
                         @Override
                         public void onTick(long millisUntilFinished) {
 
@@ -1948,7 +1952,7 @@ public class MainActivity extends AppCompatActivity implements
                     super.onAnimationCancel(animation);
                     //onAnimationEnd(animation);
                 }
-            }).setStartDelay(500).start();
+            }).setStartDelay(PATH_ANIM_START_DELAY).start();
         } else if (newPath.length() < oldPath.length() &&
                 oldPathBuilder.delete(newPath.length(), oldPath.length()).toString().equals(newPath)) {
 
@@ -1986,7 +1990,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
-            }).setStartDelay(500).start();
+            }).setStartDelay(PATH_ANIM_START_DELAY).start();
         } else if (oldPath.isEmpty()) {
 
             // case when app starts
@@ -2013,7 +2017,7 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
-                        new CountDownTimer(500, 500) {
+                        new CountDownTimer(PATH_ANIM_END_DELAY, PATH_ANIM_END_DELAY) {
 
                             @Override
                             public void onTick(long millisUntilFinished) {
@@ -2033,7 +2037,7 @@ public class MainActivity extends AppCompatActivity implements
                         super.onAnimationCancel(animation);
                         //onAnimationEnd(animation);
                     }
-                }).setStartDelay(500).start();
+                }).setStartDelay(PATH_ANIM_START_DELAY).start();
             }
 
         } else {
@@ -2070,7 +2074,7 @@ public class MainActivity extends AppCompatActivity implements
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
-                            new CountDownTimer(500, 500) {
+                            new CountDownTimer(PATH_ANIM_END_DELAY, PATH_ANIM_END_DELAY) {
 
                                 @Override
                                 public void onTick(long millisUntilFinished) {
@@ -2107,7 +2111,7 @@ public class MainActivity extends AppCompatActivity implements
                     super.onAnimationCancel(animation);
                     //onAnimationEnd(animation);
                 }
-            }).setStartDelay(500).start();
+            }).setStartDelay(PATH_ANIM_START_DELAY).start();
         }
     }
 
