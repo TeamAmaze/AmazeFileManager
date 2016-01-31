@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014-2015 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">Amaze File Manager</string>
+    <string name="drawer_open">Deschideţi sertarul de navigare</string>
+    <string name="drawer_close">Închideţi sertarul de navigare</string>
+    <string name="books">Marcaje</string>
+    <string name="icon">pictogramă</string>
+    <string name="efn">Introduceţi numele fişierului</string>
+    <string name="storage">Stocare</string>
+    <string name="gallery">Galerie</string>
+    <string name="apps">Gestionare aplicaţii</string>
+    <string name="bookmanag">Gestionare marcaje</string>
+    <string name="setting">Setări</string>
+    <string name="select">Selectaţi elementele</string>
+    <string name="pressagain">Apăsați din nou pentru a ieși</string>
+    <string name="open">Deschideţi</string>
+    <string name="backup">Backup</string>
+    <string name="uninstall">Dezinstalaţi</string>
+    <string name="play">Magazin Play</string>
+    <string name="properties">Proprietăţi</string>
+    <string name="copyingapk">Copiere apk în </string>
+    <string name="addbook">Adăugaţi marcaj</string>
+    <string name="addtobook">Adăugaţi în marcaje</string>
+    <string name="enterpath">Introduceţi calea</string>
+    <string name="cancel">ANULAŢI</string>
+    <string name="create">CREAŢI</string>
+    <string name="success">Succes</string>
+    <string name="filenotexists">Fişier inexistent</string>
+    <string name="loading">Încărcare...</string>
+    <string name="file_empty">Fişier gol</string>
+    <string name="error">Eroare</string>
+    <string name="cantlistfiles">Nu se pot lista fișierele fără acces root</string>
+    <string name="searchresults">Rezultatele căutării</string>
+    <string name="itemsselected">Elemente selectate</string>
+    <string name="newhomedirectory">Dosar Acasă nou</string>
+    <string name="rename">Redenumiţi</string>
+    <string name="save">Salvaţi</string>
+    <string name="renameerror">Redenumire nereuşită</string>
+    <string name="renamed">Redenumire reuşită</string>
+    <string name="bookmarksadded">Marcaje adăugate</string>
+    <string name="fileexist">Un fișier cu același nume există deja </string>
+    <string name="filecreated">Fişier creat</string>
+    <string name="searchpath">Cale de căutare</string>
+    <string name="search">CĂUTARE</string>
+    <string name="enterfile">Introduceţi numele fişierului</string>
+    <string name="name">Nume: </string>
+    <string name="date">Dată: </string>
+    <string name="location">Locaţie: </string>
+    <string name="size">Dimensiune dosar: </string>
+    <string name="totalitems">Elemente: </string>
+    <string name="enterzipname">Introduceţi numele fişierului Zip</string>
+    <string name="noappfound">Nu s-a găsit nicio aplicaţie pentru a deschide acest fișier</string>
+    <string name="copying">Copiere</string>
+    <string name="moving">Mutare</string>
+    <string name="add">Adăugaţi</string>
+    <string name="tab">Filă</string>
+    <string name="file">Fişier</string>
+    <string name="folder">Dosar</string>
+    <string name="newfolder">Dosar nou</string>
+    <string name="entername">Introduceţi numele</string>
+    <string name="extracting">Extragere</string>
+    <string name="zipping">Arhivare zip</string>
+    <string name="stopping">Oprire</string>
+    <string name="guide1">Bun venit la Amaze File Manager</string>
+    <string name="guide2">Atingeți banda albastră a afișa sau a ascunde Bara de cale</string>
+    <string name="guide3">Atingeți și mențineți orice fișier pentru mai multe opțiuni</string>
+    <string name="guide4">Ca copiere, mutare, proprietăți etc.</string>
+    <string name="guide5">Utilizați butonul Înapoi al dispozitivului pentru a ieși oricând din aplicație...</string>
+    <string name="guide6">..Și utilizaţi butonul săgeată spre stânga pentru navigare în managerul de fișiere</string>
+    <string name="maintab">Fila principală nu poate fi eliminată</string>
+    <string name="openparent">Deschideţi dosarul primar</string>
+    <string name="openwith">Deschideţi cu</string>
+    <string name="share">Distribuiţi</string>
+    <string name="about">Despre</string>
+    <string name="extract">Extrageţi</string>
+    <string name="compress">Arhivaţi</string>
+    <string name="yes">Da</string>
+    <string name="no">Nu</string>
+    <string name="confirm">Confirmaţi</string>
+    <string name="deleting">Ştergere</string>
+    <string name="questiondelete">Doriţi să ștergeți următoarele fișiere?</string>
+    <string name="questionset">Doriţi să setați calea actuală ca Dosar Acasă pentru această filă?</string>
+    <string name="viewmode">Mod vizualizare</string>
+    <string name="uimode">Mod UI</string>
+    <string name="directorysort">Mod sortare</string>
+    <string name="sortby">Sortare după</string>
+    <string name="theme">Temă</string>
+    <string name="skin">Skin</string>
+    <string name="random">Skin aleator</string>
+    <string name="random_summary">Setare culoare primară aleatorie la pornire</string>
+    <string name="colorize">Colorare pictograme</string>
+    <string name="colorize_summary">Setare culoare statică pentru pictograme. Nu se suprascrie preferinţa de culoare pentru pictograma dosarului.</string>
+    <string name="back">Înapoi</string>
+    <string name="home">Acasă</string>
+    <string name="paste">Lipire</string>
+    <string name="close">Închidere</string>
+    <string name="history">Istoric</string>
+    <string name="refresh">Reîmprospătare</string>
+    <string name="copy">Copiere</string>
+    <string name="rootmode">Root Explorer</string>
+    <string name="rootmodesummary">Doar pentru dispozitive cu acces root. Bifaţi numai dacă sunteți sigur.</string>
+    <string name="mountsystemsummary">Activați această opțiune dacă doriți să editați fișierele de sistem</string>
+    <string name="mountsystem">Montare dosare de sistem pentru scriere</string>
+    <string name="rootfailure">Accesul root nu a fost acordat</string>
+    <string name="cut">Mutare</string>
+    <string name="selectall">Selectaţi tot</string>
+    <string name="delete">Ştergere</string>
+    <string name="setashome">Setaţi ca Acasă</string>
+    <string name="sethome">Setaţi Dosarul Acasă</string>
+    <string name="foldercolor">Culoare dosar</string>
+    <string name="imagegallery">Galerie</string>
+    <string name="fileexplorer">File Explorer</string>
+    <string name="changegallerypath">Schimbaţi calea galeriei</string>
+    <string name="usedefaultgallerypath">Utilizaţi calea implicită a Galeriei</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <string name="simple">UI simplu</string>
+    <string name="card">UI card</string>
+    <!-- Theme -->
+    <string name="light">Material Light</string>
+    <string name="dark">Material Dark</string>
+    <string name="daytime">Daytime</string>
+    <!--Skin-->
+    <string name="red">Roşu</string>
+    <string name="pink">Roz</string>
+    <string name="purple">Violet</string>
+    <string name="deep_purple">Mov închis</string>
+    <string name="indigo">Indigo</string>
+    <string name="blue">Albastru</string>
+    <string name="light_blue">Albastru deschis</string>
+    <string name="cyan">Cyan</string>
+    <string name="teal">Teal</string>
+    <string name="green">Verde</string>
+    <string name="light_green">Verde deschis</string>
+    <string name="amber">Chihlimbar</string>
+    <string name="orange">Portocaliu</string>
+    <string name="deep_orange">Portocaliu închis</string>
+    <string name="brown">Maro</string>
+    <string name="black">Negru</string>
+    <string name="blue_grey">Albastru gri</string>
+    <string name="supersu">SuperSU</string>
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">Dosarele sus</string>
+    <string name="filesOnTop">Fişierele sus</string>
+    <string name="noneOnTop">Nimic sus</string>
+    <!--SortBy-->
+    <string name="sortName">Nume</string>
+    <string name="lastModified">Ultima modificare</string>
+    <string name="sortSize">Dimensiune</string>
+    <string name="sortNameDesc">Nume (Desc)</string>
+    <string name="lastModifiedDesc">Ultima modificare (Desc)</string>
+    <string name="sortSizeDesc">Dimensiune (Desc)</string>
+    <!--ListMode-->
+    <string name="detailedView">Vizualizare detaliată</string>
+    <string name="simpleView">Vizualizare Simplă</string>
+    <!--Folder-->
+    <string name="Yellow">Galben</string>
+    <string name="pick_a_file">Selectaţi un fişier</string>
+    <string name="process_viewer">Vizualizare proces</string>
+    <string name="in_safe">Spaţiu insuficient</string>
+    <string name="no_file_overwrite">Nu s-a suprascris fişierul</string>
+    <string name="skip">Omiteţi</string>
+    <string name="overwrite">Suprascriere</string>
+    <string name="cant_read_file">Nu se poate citi fişierul</string>
+    <string name="not_allowed">Nu este permis</string>
+    <string name="processes">Procesat</string>
+    <string name="searching">Căutare</string>
+    <string name="copying_fles">Copiere fişiere</string>
+    <string name="done">Finalizat</string>
+    <string name="Extracting_fles">Extragere fişiere</string>
+    <string name="Zipping_fles">Arhivare fişiere</string>
+    <string name="items">Elemente</string>
+    <string name="item">Element</string>
+    <string name="set">Setare</string>
+    <string name="enablerootmde">Activaţi modul Root</string>
+    <string name="goback">Înapoi</string>
+    <string name="foldercreated">Dosar creat</string>
+    <string name="newfile">Fişier nou</string>
+    <string name="nofiles">Niciun fişier</string>
+    <string name="tapnhold">Apăsați și țineți apăsat pe un fișier sau un dosar pentru mai multe opțiuni</string>
+    <string name="pathcopied">Cale copiată în clipboard</string>
+    <string name="used">"Utilizate de alții: "</string>
+    <string name="free">"Spaţiu disponibil: "</string>
+    <string name="atroot">Sunteți în root</string>
+    <string name="listview">Listă</string>
+    <string name="gridview">Grilă</string>
+    <string name="setlistview">Setare listă</string>
+    <string name="setgridview">Setare grilă</string>
+    <string name="permission">Permisiuni</string>
+    <string name="hide">Ascundeţi</string>
+    <string name="exit">Ieşire</string>
+    <string name="enternewname">Introduceţi numele nou</string>
+    <string name="doforall">Se execută pentru toate elementele</string>
+    <string name="gridcolumnno">Numărul de coloane din grilă</string>
+    <string name="randomDialog">Aleator</string>
+    <string name="setRandom">Modificările vor intra în vigoare după repornirea aplicației</string>
+    <string name="authors">Autori</string>
+    <string name="changelog">Istoric modificări</string>
+    <string name="fullChangelog">Istoric deplin al modificărilor</string>
+    <string name="ok">OK</string>
+    <string name="chooseUI">Selectaţi elementul UI</string>
+    <string name="ui">Interfaţă</string>
+    <string name="general">General</string>
+    <string name="thumbSummary">Se afişează miniaturile aplicațiilor și imaginilor</string>
+    <string name="thumb">Afişare miniaturi</string>
+    <string name="hidden">Afișare fișiere și dosare ascunse</string>
+    <string name="lastModifiedSummary">Se afişează data și ora când fișierul a fost modificat ultima dată</string>
+    <string name="lastModifiedPref">Afişare ultima modificare</string>
+    <string name="sizePrefSummary">Se afişează dimensiunea fișierelor și numărul de elemente în dosare</string>
+    <string name="sizePref">Afişare dimensiuni</string>
+    <string name="miscellaneous">Diverse</string>
+    <string name="rootPrefSummary">Se afişează permisiunile fișierelor și dosarelor</string>
+    <string name="rootPref">Afişare permisiuni</string>
+    <string name="aboutFileManager">Despre Amaze File Manager</string>
+    <string name="version">Versiune</string>
+    <string name="rate">Evaluaţi aplicaţia</string>
+    <string name="license">Licenţă Open Source</string>
+    <string name="feedback">Trimiteţi Feedback</string>
+    <string name="hiddenfiles">Fişiere ascunse</string>
+    <string name="type">Tip</string>
+    <string name="typeDesc">Tip (Desc)</string>
+    <string name="rootdirectory">Root</string>
+    <string name="new_string">Nou</string>
+    <string name="setringtone">Setaţi ca ton de apel</string>
+    <string name="copy_path">Copiaţi calea</string>
+    <string name="addshortcut">Adăugaţi o comandă rapidă</string>
+    <string name="unsavedchanges">Modificări nesalvate</string>
+    <string name="unsavedchangesdesc">Aveți modificări nesalvate, doriţi să le salvați înainte de a ieși?</string>
+    <string name="saving">Salvare</string>
+    <string name="packageinstaller">Instalare pachete</string>
+    <string name="view">Vizualizare</string>
+    <string name="install">Instalare</string>
+    <string name="archive">Arhivă</string>
+    <string name="archtext">Aceasta este o arhivă. Ce doriţi să faceţi?</string>
+    <string name="pitext">Acesta este un pachet de instalare. Ce doriţi să faceţi?</string>
+    <string name="xda_title">XDA</string>
+    <string name="xda_summary">Î. şi R., Ajutor şi Depanare</string>
+    <string name="invalid_dir">Dosar nevalid</string>
+    <string name="circularimages">Utilizați pictograme circulare pentru imagini și videoclipuri</string>
+    <string name="circularicons">Utilizați pictograme circulare</string>
+    <string name="back_title">Înapoi</string>
+    <string name="back_summary">Activaţi navigarea personalizată Înapoi în partea de sus a listei</string>
+    <string name="details">Detalii</string>
+    <string name="translators">Traducători</string>
+    <string name="german_translation_title">Germană</string>
+    <string name="italian_translation_title">Italiană</string>
+    <string name="french_translation_title">Franceză</string>
+    <string name="russian_translation_title">Rusă</string>
+    <string name="spanish_translation_title">Spaniolă</string>
+    <string name="basque_translation_title">Bască</string>
+    <string name="chinese_translation_title">Chineză</string>
+    <string name="serbian_translation_title">Sârbă</string>
+    <string name="turkish_translation_title">Turcă</string>
+    <string name="ukrainian_translation_title">Ucraineană</string>
+    <string name="portuguese_translation_title">Portugeză</string>
+    <string name="polish_translation_title">Poloneză</string>
+    <string name="korean_translation_title">Coreeană</string>
+    <string name="greek_translation_title">Greacă</string>
+    <string name="dutch_translation_title">Olandeză</string>
+	<string name="romanian_translation_title">Română</string>
+
+    <string name="zip_viewer">Vizualizator Zip</string>
+    <string name="unin_system_apk">Aceasta este o aplicație de sistem, ștergerea ei ar putea duce la instabilitatea sistemului.\nContinuaţi?</string>
+    <string name="warning">Avertizare</string>
+    <string name="donate">Donaţi</string>
+    <string name="archive_preferences">Preferinţe arhive</string>
+    <string name="archive_extract_folder">Dosar extragere arhivă</string>
+    <string name="zip_create_folder">Dosar creare Zip</string>
+    <string name="archive_summary">Fișierele arhivă vor fi extrase în acest dosar. Valoarea implicită este dosarul în care este arhiva în prezent</string>
+    <string name="zip_summary">Fișierele zip noi vor fi create în acest dosar. Valoarea implicită este dosarul în care fișierele sunt în prezent</string>
+    <string name="openas">Deschidere ca</string>
+    <string name="text">Text</string>
+    <string name="audio">Audio</string>
+    <string name="video">Videoclip</string>
+    <string name="other">Altele</string>
+    <string name="image">Imagine</string>
+    <string name="contributors">Contribuitori</string>
+    <string name="savepaths">Memorizare căi</string>
+    <string name="savepathsummary">La pornire, dosarul cel mai recent văzut pentru fiecare filă va fi afișat</string>
+    <string name="select_intent">Selectaţi</string>
+    <string name="md5copied">MD5 copiat în clipboard</string>
+    <string name="generating">Generare...</string>
+    <string name="tables">Tabele</string>
+    <string name="database">Bază de date</string>
+    <string name="colourednavigation">Bară de navigare colorată</string>
+    <string name="colourednavigationsum">Colorarea sau nu a barei de navigare de sistem împreună cu skin-ul</string>
+
+    <string name="fab_skin">Skin FAB</string>
+    <string name="gplus_pic_title">Conectare cu G+</string>
+    <string name="gplus_pic_summary">Se afişează imaginea de copertă G+ în sertar</string>
+    <string name="icon_credits">Grafică de &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
+
+    <string name="color_title">Culoare</string>
+    <string name="color_summary">Setaţi culoarea diferitelor componente UI</string>
+    <string name="primary_color_title">Culoare primară</string>
+    <string name="primary_color_summary">Setaţi culoarea elementelor UI mari</string>
+    <string name="accent_color_title">Culoare accent</string>
+    <string name="accent_color_summary">Setaţi culoarea FAB şi a altor elemente UI mici</string>
+    <string name="icon_color_title">Culoarea pictogramelor</string>
+    <string name="icon_color_summary">Setaţi culoarea pictogramelor</string>
+    <string name="hide_mode_title">Mod ascundere</string>
+    <string name="none">Nimic</string>
+    <string name="hide_toolbar">Se ascunde bara de instrumente</string>
+    <string name="hide_appbar">Se ascunde toată bara aplicaţiei</string>
+    <string name="choose_color">Selectaţi culoarea</string>
+    <string name="g_plus_community_title">Comunitatea G+</string>
+    <string name="hide_mode_nothing">Bara aplicaţiei rămâne intactă</string>
+    <string name="hide_mode_toolbar">Bara de instrumente se ascunde la derulare</string>
+    <string name="hide_mode_app_bar">Bara aplicaţiei se ascunde la derulare</string>
+    <string name="no_cover_photo">Nici o fotografie de copertă</string>
+    <string name="files">Fişiere</string>
+    <string name="directories">Dosare</string>
+    <string name="textreader">Reader text</string>
+    <string name="databasereader">Reader baze de date</string>
+    <string name="showDividers">Afişare divizoare</string>
+    <string name="topFab">FAB pe bara aplicaţiei</string>
+    <string name="topFabS">Dacă butonul + ar trebui să fie în partea de sus sau de jos. Aplicabil numai în cazul în care bara aplicaţiei nu se ascunde.</string>
+    <string name="needsaccess">Acces pentru scriere necesar</string>
+    <string name="needsaccesssummary">Selectaţi dosarul rădăcină pentru \t</string>
+    <string name="needsaccesssummary1">\tpt. a acorda acces de scriere pentru a funcționa </string>
+    <string name="smb_con">Conexiune SMB</string>
+    <string name="smb_server">Server: Adresă IP sau Adresă IP/DosarPartajat</string>
+    <string name="username">Nume utilizator</string>
+    <string name="password">Parolă</string>
+    <string name="anonymous">Anonim</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="extstorage">Stocare externă</string>
+    <string name="folders">Dosare</string>
+    <string name="videos">Videoclipuri</string>
+    <string name="apks">Apk-uri</string>
+    <string name="documents">Documente</string>
+    <string name="images">Imagini</string>
+    <string name="clear">Ştergeţi</string>
+    <string name="md5">"md5: "</string>
+    <string name="md5_2">Copiere md5</string>
+    <string name="total">"Total: "</string>
+    <string name="calculating">" calculare "</string>
+    <string name="sort">Sortare</string>
+    <string name="ascending">Ascendent</string>
+    <string name="descending">Descendent</string>
+    <string name="defualt">Implicit</string>
+    <string name="doit">Fă-o</string>
+    <string name="wanthelp"><u>Aveţi nevoie de ajutor?</u></string>
+    <string name="quick">Acces rapid</string>
+    <string name="recent">Fişiere recente</string>
+    <string name="edit">Editare</string>
+    <string name="find">Căutaţi în pagină</string>
+    <string name="grant">Acordaţi</string>
+    <string name="grantper">Acordaţi permisiunea</string>
+    <string name="grantfailed">Permisiun neacordată</string>
+    <string name="granttext">Aplicaţia necesită permisiunea de stocare pentru a continua. Anularea acestui dialog va închide aplicația.</string>
+    <string name="grantgplus">Aplicaţia necesită permisiune pentru această funcție. Anularea acestui dialog va debifa această opţiune.</string>
+    <string name="operationunsuccesful">Operaţie nereuşită</string>
+    <string name="creatingfile">Creare fişier</string>
+    <string name="creatingfolder">Creare dosar</string>
+    <string name="renaming">Redenumire</string>
+    <string name="cantbeempty">%s nu poate fi gol</string>
+    <string name="ip">Adresă</string>
+    <string name="connectionname">Nume conexiune</string>
+    <string name="nodevicefound">Niciun dispozitiv găsit</string>
+    <string name="searchingdevices">Căutare dispozitive</string>
+    <string name="path">Cale</string>
+    <string name="renamebookmark">Modificaţi marcajul</string>
+</resources>
+
