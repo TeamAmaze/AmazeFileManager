@@ -170,7 +170,6 @@
         android:layout_marginBottom="2dp"
         android:layout_marginLeft="10dp"
         fab:menu_fab_size="normal"
-        android:visibility="gone"
         fab:menu_showShadow="true"
         fab:menu_shadowColor="#66000000"
         fab:menu_shadowRadius="4dp"

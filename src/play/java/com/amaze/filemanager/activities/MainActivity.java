@@ -54,7 +54,6 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
@@ -63,11 +62,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -150,10 +146,6 @@ import com.stericson.RootTools.RootTools;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -259,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements
                 requestStoragePermission();
 
         mainActivityHelper = new MainActivityHelper(this);
-        intialiseFab();
+        initialiseFab();
 
         history = new HistoryManager(this, "Table2");
         history.initializeTable(DataUtils.HISTORY, 0);
@@ -538,6 +530,7 @@ public class MainActivity extends AppCompatActivity implements
                         fragmentTransaction.remove(zipViewer);
                         fragmentTransaction.commit();
                         supportInvalidateOptionsMenu();
+                        floatingActionButton.setVisibility(View.VISIBLE);
                         floatingActionButton.showMenuButton(true);
 
                     }
@@ -706,6 +699,7 @@ public class MainActivity extends AppCompatActivity implements
         transaction.addToBackStack("tabt" + 1);
         transaction.commitAllowingStateLoss();
         setActionBarTitle(null);
+        floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.showMenuButton(true);
         if (openzip && zippath != null) {
             if (zippath.endsWith(".zip") || zippath.endsWith(".apk")) openZip(zippath);
@@ -735,6 +729,7 @@ public class MainActivity extends AppCompatActivity implements
                 adapter.toggleChecked(select);
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
+                floatingActionButton.setVisibility(View.VISIBLE);
                 floatingActionButton.showMenuButton(true);
 
 
@@ -1087,6 +1082,16 @@ public class MainActivity extends AppCompatActivity implements
         newFilter.addDataScheme(ContentResolver.SCHEME_FILE);
         registerReceiver(mainActivityHelper.mNotificationReceiver, newFilter);
         registerReceiver(receiver2, new IntentFilter("general_communications"));
+        if (getSupportFragmentManager().findFragmentById(R.id.content_frame)
+                .getClass().getName().contains("TabFragment")) {
+
+            floatingActionButton.setVisibility(View.VISIBLE);
+            floatingActionButton.showMenuButton(false);
+        } else {
+
+            floatingActionButton.setVisibility(View.INVISIBLE);
+            floatingActionButton.hideMenuButton(false);
+        }
     }
 
     @Override
@@ -1794,14 +1799,12 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    void intialiseFab() {
+    void initialiseFab() {
         String folder_skin = PreferenceUtils.getFolderColorString(Sp);
         int fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
         int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
         floatingActionButton = (FloatingActionMenu) findViewById(R.id.menu);
-        floatingActionButton.setVisibility(View.VISIBLE);
-        floatingActionButton.showMenuButton(true);
         floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
         floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
 
@@ -1917,19 +1920,14 @@ public class MainActivity extends AppCompatActivity implements
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
-                    new CountDownTimer(PATH_ANIM_END_DELAY, PATH_ANIM_END_DELAY) {
+                    new Handler().postDelayed(new Runnable() {
                         @Override
-                        public void onTick(long millisUntilFinished) {
-
-                        }
-
-                        @Override
-                        public void onFinish() {
+                        public void run() {
 
                             animPath.setVisibility(View.GONE);
                             bapath.setText(newPath);
                         }
-                    }.start();
+                    }, PATH_ANIM_END_DELAY);
                 }
 
                 @Override
@@ -2017,19 +2015,13 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
-                        new CountDownTimer(PATH_ANIM_END_DELAY, PATH_ANIM_END_DELAY) {
-
+                        new Handler().postDelayed(new Runnable() {
                             @Override
-                            public void onTick(long millisUntilFinished) {
-
-                            }
-
-                            @Override
-                            public void onFinish() {
+                            public void run() {
                                 animPath.setVisibility(View.GONE);
                                 bapath.setText(newPath);
                             }
-                        }.start();
+                        }, PATH_ANIM_END_DELAY);
                     }
 
                     @Override
@@ -2074,20 +2066,13 @@ public class MainActivity extends AppCompatActivity implements
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
-                            new CountDownTimer(PATH_ANIM_END_DELAY, PATH_ANIM_END_DELAY) {
-
+                            new Handler().postDelayed(new Runnable() {
                                 @Override
-                                public void onTick(long millisUntilFinished) {
-
-                                }
-
-                                @Override
-                                public void onFinish() {
-
+                                public void run() {
                                     animPath.setVisibility(View.GONE);
                                     bapath.setText(newPath);
                                 }
-                            }.start();
+                            }, PATH_ANIM_END_DELAY);
                         }
 
                         @Override
@@ -2392,9 +2377,13 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void invalidateFab(int openmode) {
-        if (openmode == 2)
+        if (openmode == 2) {
+            floatingActionButton.setVisibility(View.INVISIBLE);
             floatingActionButton.hideMenuButton(true);
-        else floatingActionButton.showMenuButton(true);
+        } else {
+            floatingActionButton.setVisibility(View.VISIBLE);
+            floatingActionButton.showMenuButton(true);
+        }
     }
 
     public void renameBookmark(final String title, final String path) {

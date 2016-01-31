@@ -484,7 +484,7 @@ public class Main extends android.support.v4.app.Fragment {
             selection = false;
             if (MAIN_ACTIVITY.isDrawerLocked) MAIN_ACTIVITY.translateDrawerList(false);
 
-            MAIN_ACTIVITY.floatingActionButton.showMenuButton(true);
+            //MAIN_ACTIVITY.floatingActionButton.showMenuButton(true);
             if (!results) adapter.toggleChecked(false, CURRENT_PATH);
             else adapter.toggleChecked(false);
             MAIN_ACTIVITY.setPagingEnabled(true);
@@ -1036,7 +1036,7 @@ public class Main extends android.support.v4.app.Fragment {
                         }
                     });
                     if (buttons.getVisibility() == View.VISIBLE) MAIN_ACTIVITY.bbar(this);
-                    MAIN_ACTIVITY.invalidateFab(openMode);
+                    //MAIN_ACTIVITY.invalidateFab(openMode);
                 } catch (Exception e) {
                 }
             } else {//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();

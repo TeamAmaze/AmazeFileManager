@@ -214,7 +214,6 @@ public class ZipViewer extends Fragment {
             }
 
         }
-        mainActivity.floatingActionButton.hideMenuButton(true);
         String fileName=null;
         try {
             if (uri.getScheme().equals("file")) {
@@ -436,7 +435,7 @@ public class ZipViewer extends Fragment {
 
         // needed to remove any extracted file from cache, when onResume was not called
         // in case of opening any unknown file inside the zip
-        // bug : only deletes most recent openUnknown file from cache
+        // FIXME : only deletes most recent openUnknown file from cache
         if (files.size() == 1) {
 
             new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute((files));
@@ -450,6 +449,8 @@ public class ZipViewer extends Fragment {
 
             new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute((files));
         }
+
+        mainActivity.floatingActionButton.hideMenuButton(true);
     }
 
     void putDatatoSavedInstance(Bundle outState) {
@@ -542,7 +543,7 @@ public class ZipViewer extends Fragment {
 
     public void bbar() {
         if (current != null && current.length()!=0)
-            mainActivity.updatePath(current,  false,0,folder,file);
+            mainActivity.updatePath("/" + current,  false,0,folder,file);
         else     mainActivity.updatePath("/", false,0,folder,file);
 
 
