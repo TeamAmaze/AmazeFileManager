@@ -164,6 +164,9 @@
                 <Preference
                     android:title="@string/dutch_translation_title"
                     android:summary="@string/dutch_translation_summary" />
+                <Preference
+                    android:title="@string/romanian_translation_title"
+                    android:summary="@string/romanian_translation_summary" />
 
                 </PreferenceScreen>
             <Preference

@@ -279,6 +279,7 @@
     <string name="portuguese_translation_title">Portuguese</string>
     <string name="polish_translation_title">Polish</string>
     <string name="korean_translation_title">Korean</string>
+    <string name="greek_translation_title">Греческий</string>
     <string name="dutch_translation_title">Dutch</string>
     <string name="romanian_translation_title">Romanian</string>
 
@@ -387,6 +388,5 @@
     <string name="path">Path</string>
     <string name="renamebookmark">Modify Bookmark</string>
     <string name="cut">Cut</string>
-    <string name="greek_translation_title">Греческий</string>
 </resources>
 
