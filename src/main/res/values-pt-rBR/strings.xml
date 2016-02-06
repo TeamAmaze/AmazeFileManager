@@ -124,7 +124,6 @@
     <string name="mountsystemsummary">Ative isto se quiser editar arquivos do sistema</string>
     <string name="mountsystem">Permitir escrita nas pastas do sistema</string>    
     <string name="rootfailure">Acesso root não concedido</string>
-    <string name="cut">Mover</string>
     <string name="selectall">Selecionar tudo</string>
     <string name="delete">Excluir</string>
     <string name="setashome">Definir como pasta inicial</string>
@@ -278,11 +277,11 @@
     <string name="turkish_translation_title">Turco</string>
     <string name="ukrainian_translation_title">Ucraniano</string>
     <string name="portuguese_translation_title">Português</string>
-
     <string name="polish_translation_title">Polonês</string>
     <string name="korean_translation_title">Coreano</string>
     <string name="greek_translation_title">Grego</string>
     <string name="dutch_translation_title">Holandês</string>
+    <string name="romanian_translation_title">Romeno</string>
 
     <string name="zip_viewer">Visualizador de Zip</string>
     <string name="unin_system_apk">Este é um aplicativo de sistema e sua exclusão poderá deixar o sistema instável.\nContinuar?</string>
@@ -372,5 +371,22 @@
     <string name="recent">Arquivos recentes</string>
     <string name="edit">Editar</string>
     <string name="find">Procurar na página</string>
+    <string name="grant">Conceder</string>
+    <string name="grantper">Conceder permissão</string>
+    <string name="grantfailed">Permissão não concedida</string>
+    <string name="granttext">O app precisa de permissão de armazenamento para continuar. Cancelar este diálogo irá fechar o app.</string>
+    <string name="grantgplus">O app precisa de permissão para este recurso. Cancelar este diálogo irá desabilitar este recurso.</string>
+    <string name="operationunsuccesful">Operação sem sucesso</string>
+    <string name="creatingfile">Criando o arquivo</string>
+    <string name="creatingfolder">Criando a pasta</string>
+    <string name="renaming">Renomeando</string>
+    <string name="cantbeempty">%s não pode estar vazio</string>
+    <string name="ip">Endereço</string>
+    <string name="connectionname">Nome da conexão</string>
+    <string name="nodevicefound">Nenhum dispositivo encontrado</string>
+    <string name="searchingdevices">Procurando dispositivos</string>
+    <string name="path">Caminho</string>
+    <string name="renamebookmark">Modificar favorito</string>
+    <string name="cut">Recortar</string>  
 </resources>
 
