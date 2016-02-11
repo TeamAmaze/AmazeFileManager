@@ -32,7 +32,8 @@ import java.util.ArrayList;
  */
 public class AnimUtils {
 
-    private AnimUtils() { }
+    private AnimUtils() {
+    }
 
     private static Interpolator fastOutSlowIn;
     private static Interpolator fastOutLinearIn;
@@ -41,7 +42,7 @@ public class AnimUtils {
     public static Interpolator getFastOutSlowInInterpolator(Context context) {
         if (fastOutSlowIn == null) {
             fastOutSlowIn = AnimationUtils.loadInterpolator(context,
-                    android.R.interpolator.fast_out_slow_in);
+                    android.R.anim.overshoot_interpolator);
         }
         return fastOutSlowIn;
     }
