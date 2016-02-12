@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -139,10 +140,11 @@ public class Indicator extends View implements ViewPager.OnPageChangeListener,
         animDuration = (long) a.getInteger(R.styleable.Indicator_animationDuration,
                 DEFAULT_ANIM_DURATION);
         animHalfDuration = animDuration / 2;
-        unselectedColour = a.getColor( R.styleable.Indicator_pageIndicatorColor,
-                DEFAULT_UNSELECTED_COLOUR);
-        selectedColour = a.getColor( R.styleable.Indicator_currentPageIndicatorColor,
+        selectedColour = a.getColor(R.styleable.Indicator_currentPageIndicatorColor,
                 DEFAULT_SELECTED_COLOUR);
+        // half transparent accent color
+        unselectedColour = Color.argb(80, Color.red(selectedColour),
+                Color.green(selectedColour), Color.blue(selectedColour));
 
         a.recycle();
 
