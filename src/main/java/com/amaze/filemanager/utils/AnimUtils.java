@@ -42,7 +42,7 @@ public class AnimUtils {
     public static Interpolator getFastOutSlowInInterpolator(Context context) {
         if (fastOutSlowIn == null) {
             fastOutSlowIn = AnimationUtils.loadInterpolator(context,
-                    android.R.anim.overshoot_interpolator);
+                    android.R.interpolator.fast_out_slow_in);
         }
         return fastOutSlowIn;
     }

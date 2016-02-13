@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.amaze.filemanager.R;
@@ -202,6 +203,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         ViewHolder vh = new ViewHolder(v);
         if(zipViewer.mainActivity.theme1==1)
             vh.txtTitle.setTextColor(zipViewer.getActivity().getResources().getColor(android.R.color.white));
+        ImageButton about = (ImageButton) v.findViewById(R.id.properties);
+        about.setVisibility(View.INVISIBLE);
         return vh;
     }
 

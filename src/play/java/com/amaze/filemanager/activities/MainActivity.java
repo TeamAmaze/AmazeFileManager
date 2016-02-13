@@ -120,6 +120,7 @@ import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
 import com.amaze.filemanager.ui.icons.IconUtils;
+import com.amaze.filemanager.ui.views.Indicator;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.BookSorter;
@@ -227,8 +228,8 @@ public class MainActivity extends AppCompatActivity implements
     StringBuffer newPathBuilder, oldPathBuilder;
     AppBarLayout appBarLayout;
 
-    private static final int PATH_ANIM_START_DELAY = 500;
-    private static final int PATH_ANIM_END_DELAY = 500;
+    private final int PATH_ANIM_START_DELAY = 0;
+    private final int PATH_ANIM_END_DELAY = 0;
 
     /**
      * Called when the activity is first created.
