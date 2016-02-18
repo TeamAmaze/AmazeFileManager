@@ -247,8 +247,10 @@ public class Indicator extends View implements ViewPager.OnPageChangeListener,
         } else {
             currentPage = 0;
         }
-        if (dotCenterX != null) {
+        if (dotCenterX != null && dotCenterX.length!=0) {
             selectedDotX = dotCenterX[currentPage];
+        } else {
+            selectedDotX = 0;
         }
     }
 

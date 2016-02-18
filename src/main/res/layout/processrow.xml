@@ -62,8 +62,7 @@
             android:layout_toLeftOf="@id/delete_button"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="aaaaaaaaaaaaa" />
+            android:layout_height="match_parent" />
 
     </RelativeLayout>
 

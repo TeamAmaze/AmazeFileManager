@@ -110,6 +110,7 @@ public class ExtractService extends Service {
     }
 
     private final IBinder mBinder = new LocalBinder();
+
     public class LocalBinder extends Binder {
         public ExtractService getService() {
             // Return this instance of LocalService so clients can call public methods

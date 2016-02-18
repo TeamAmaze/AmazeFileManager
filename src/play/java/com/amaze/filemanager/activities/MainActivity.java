@@ -228,8 +228,8 @@ public class MainActivity extends AppCompatActivity implements
     StringBuffer newPathBuilder, oldPathBuilder;
     AppBarLayout appBarLayout;
 
-    private final int PATH_ANIM_START_DELAY = 0;
-    private final int PATH_ANIM_END_DELAY = 0;
+    private static final int PATH_ANIM_START_DELAY = 0;
+    private static final int PATH_ANIM_END_DELAY = 0;
 
     /**
      * Called when the activity is first created.
