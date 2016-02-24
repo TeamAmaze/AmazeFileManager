@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.filesystem.HFile;
@@ -148,7 +149,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                }
                try {
                    if (arrayList != null)
-                       list = ma.addTo(arrayList);
+                       list = addTo(arrayList);
                    else return new ArrayList<>();
                } catch (Exception e) {
                }
@@ -165,7 +166,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                    } else
                        arrayList = (RootHelper.getFilesList(path, ma.SHOW_HIDDEN));
                    openmode = 0;
-                   list = ma.addTo(arrayList);
+                   list = addTo(arrayList);
 
                } catch (Exception e) {
                    return null;
@@ -177,6 +178,46 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
 
     }
 
+    private ArrayList<Layoutelements> addTo(ArrayList<BaseFile> mFile) {
+        ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
+        for (int i = 0; i < mFile.size(); i++) {
+            BaseFile ele = mFile.get(i);
+            File f = new File(ele.getPath());
+            String size = "";
+            if (!DataUtils.hiddenfiles.contains(ele.getPath())) {
+                if (ele.isDirectory()) {
+                    size = "";
+                    Layoutelements layoutelements = ma.utils.newElement(ma.folder, f.getPath(), ele.getPermisson(), ele.getLink(), size, 0, true, false, ele.getDate() + "");
+                    layoutelements.setMode(ele.getMode());
+                    a.add(layoutelements);
+                    ma.folder_count++;
+                } else {
+                    long longSize = 0;
+                    try {
+                        if (ele.getSize() != -1) {
+                            longSize = Long.valueOf(ele.getSize());
+                            size = ma.utils.readableFileSize(longSize);
+                        } else {
+                            size = "";
+                            longSize = 0;
+                        }
+                    } catch (NumberFormatException e) {
+                        //e.printStackTrace();
+                    }
+                    try {
+                        Layoutelements layoutelements = ma.utils.newElement(Icons.loadMimeIcon(ma.getActivity(), f.getPath(), !ma.IS_LIST, ma.res), f.getPath(), ele.getPermisson(), ele.getLink(), size, longSize, false, false, ele.getDate() + "");
+                        layoutelements.setMode(ele.getMode());
+                        a.add(layoutelements);
+                        ma.file_count++;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return a;
+    }
+
     @Override
     // Once the image is downloaded, associates it to the imageView
     protected void onPostExecute(ArrayList<Layoutelements> bitmap) {
@@ -184,6 +225,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
             bitmap = null;
         }
         ma.createViews(bitmap, back, path, openmode, false, grid);
+        ma.mSwipeRefreshLayout.setRefreshing(false);
 
     }
 

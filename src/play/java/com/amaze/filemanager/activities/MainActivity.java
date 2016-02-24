@@ -1896,8 +1896,11 @@ public class MainActivity extends AppCompatActivity implements
         if (!results) {
             textView.setText(folder_count + " " + getResources().getString(R.string.folders) + "" +
                     " " + file_count + " " + getResources().getString(R.string.files));
+        } else {
+            bapath.setText(R.string.searchresults);
+            textView.setText(R.string.empty);
+            return;
         }
-        else textView.setText(R.string.searchresults);
         final String oldPath = bapath.getText().toString();
         if (oldPath != null && oldPath.equals(newPath)) return;
 

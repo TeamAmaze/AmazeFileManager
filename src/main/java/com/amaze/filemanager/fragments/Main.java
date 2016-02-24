@@ -137,7 +137,7 @@ public class Main extends android.support.v4.app.Fragment {
     public ArrayList<BaseFile> searchHelper = new ArrayList<>();
     public SearchTask searchTask;
     public int skinselection;
-    Resources res;
+    public Resources res;
     HashMap<String, Bundle> scrolls = new HashMap<String, Bundle>();
     Main ma = this;
     IconUtils icons;
@@ -152,7 +152,7 @@ public class Main extends android.support.v4.app.Fragment {
     DividerItemDecoration dividerItemDecoration;
     int hidemode;
     AppBarLayout mToolbarContainer;
-    TextView pathname;
+    TextView pathname, mFullPath;
     boolean stopAnims = true;
     View nofilesview;
     DisplayMetrics displayMetrics;
@@ -582,6 +582,7 @@ public class Main extends android.support.v4.app.Fragment {
         SHOW_THUMBS = Sp.getBoolean("showThumbs", true);
         res = getResources();
         pathname = (TextView) getActivity().findViewById(R.id.pathname);
+        mFullPath = (TextView) getActivity().findViewById(R.id.fullpath);
         goback = res.getString(R.string.goback);
         itemsstring = res.getString(R.string.items);
         apk = res.getDrawable(R.drawable.ic_doc_apk_grid);
@@ -757,7 +758,8 @@ public class Main extends android.support.v4.app.Fragment {
             if (savedInstanceState.getBoolean("results")) {
                 try {
                     createViews(LIST_ELEMENTS, true, (CURRENT_PATH), openMode, true, !IS_LIST);
-                    pathname.setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
+                    pathname.setText(ma.utils.getString(ma.getActivity(), R.string.empty));
+                    mFullPath.setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
                     results = true;
                 } catch (Exception e) {
                 }
@@ -986,7 +988,7 @@ public class Main extends android.support.v4.app.Fragment {
                 this.openMode = openMode;
                 if (openMode != 2)
                     DataUtils.addHistoryFile(f);
-                mSwipeRefreshLayout.setRefreshing(false);
+                //mSwipeRefreshLayout.setRefreshing(false);
                 try {
                     listView.setAdapter(adapter);
                     if (!addheader) {
@@ -1258,56 +1260,46 @@ public class Main extends android.support.v4.app.Fragment {
         return a;
     }
 
-    public ArrayList<Layoutelements> addTo(ArrayList<BaseFile> mFile) {
-        ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
-        if (searchHelper.size() > 500) searchHelper.clear();
-        for (int i = 0; i < mFile.size(); i++) {
-            BaseFile ele = mFile.get(i);
-            File f = new File(ele.getPath());
-            searchHelper.add(ele);
-            String size = "";
-            if (!DataUtils.hiddenfiles.contains(ele.getPath())) {
-                if (ele.isDirectory()) {
-                    size = "";
-                    Layoutelements layoutelements = utils.newElement(folder, f.getPath(), ele.getPermisson(), ele.getLink(), size, 0, true, false, ele.getDate() + "");
-                    layoutelements.setMode(ele.getMode());
-                    a.add(layoutelements);
-                    folder_count++;
-                } else {
-                    long longSize = 0;
-                    try {
-                        if (ele.getSize() != -1) {
-                            longSize = Long.valueOf(ele.getSize());
-                            size = utils.readableFileSize(longSize);
-                        } else {
-                            size = "";
-                            longSize = 0;
-                        }
-                    } catch (NumberFormatException e) {
-                        //e.printStackTrace();
+    // method to add search result entry to the LIST_ELEMENT arrayList
+    private void addTo(BaseFile mFile) {
+        File f = new File(mFile.getPath());
+        String size = "";
+        if (!DataUtils.hiddenfiles.contains(mFile.getPath())) {
+            if (mFile.isDirectory()) {
+                size = "";
+                Layoutelements layoutelements = utils.newElement(folder, f.getPath(), mFile.getPermisson(), mFile.getLink(), size, 0, true, false, mFile.getDate() + "");
+                layoutelements.setMode(mFile.getMode());
+                LIST_ELEMENTS.add(layoutelements);
+                folder_count++;
+            } else {
+                long longSize = 0;
+                try {
+                    if (mFile.getSize() != -1) {
+                        longSize = Long.valueOf(mFile.getSize());
+                        size = utils.readableFileSize(longSize);
+                    } else {
+                        size = "";
+                        longSize = 0;
                     }
-                    try {
-                        Layoutelements layoutelements = utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(), !IS_LIST, res), f.getPath(), ele.getPermisson(), ele.getLink(), size, longSize, false, false, ele.getDate() + "");
-                        layoutelements.setMode(ele.getMode());
-                        a.add(layoutelements);
-                        file_count++;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                } catch (NumberFormatException e) {
+                    //e.printStackTrace();
+                }
+                try {
+                    Layoutelements layoutelements = utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(), !IS_LIST, res), f.getPath(), mFile.getPermisson(), mFile.getLink(), size, longSize, false, false, mFile.getDate() + "");
+                    layoutelements.setMode(mFile.getMode());
+                    LIST_ELEMENTS.add(layoutelements);
+                    file_count++;
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
-        return a;
     }
-
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-
     }
-
 
     public void hide(String path) {
 
@@ -1348,22 +1340,25 @@ public class Main extends android.support.v4.app.Fragment {
         getActivity().sendBroadcast(addIntent);
     }
 
-    public void addSearchResult(ArrayList<BaseFile> a) {
+    // adds search results based on result boolean. If false, the adapter is initialised with initial
+    // values, if true, new values are added to the adapter.
+    public void addSearchResult(BaseFile a) {
         if (listView != null) {
+
+            // initially clearing the array for new result set
             if (!results) {
                 LIST_ELEMENTS.clear();
                 file_count = 0;
                 folder_count = 0;
             }
-            ArrayList<Layoutelements> arrayList1 = addTo(a);
-            if (arrayList1.size() > 0)
-                for (Layoutelements layoutelements : arrayList1)
-                    LIST_ELEMENTS.add(layoutelements);
+
+            // adding new value to LIST_ELEMENTS
+            addTo(a);
             if (!results) {
                 createViews(LIST_ELEMENTS, false, (CURRENT_PATH), openMode, true, !IS_LIST);
-            }
-            pathname.setText(R.string.searching);
-            if (results) {
+                pathname.setText(ma.utils.getString(ma.getActivity(), R.string.empty));
+                mFullPath.setText(ma.utils.getString(ma.getActivity(), R.string.searching));
+            } else {
                 adapter.addItem();
             }
             results = true;
@@ -1382,7 +1377,8 @@ public class Main extends android.support.v4.app.Fragment {
             @Override
             public void onPostExecute(Void c) {
                 createViews(LIST_ELEMENTS, true, (CURRENT_PATH), openMode, true, !IS_LIST);
-                pathname.setText(R.string.searchresults);
+                pathname.setText(ma.utils.getString(ma.getActivity(), R.string.empty));
+                mFullPath.setText(ma.utils.getString(ma.getActivity(), R.string.searchresults));
                 results = true;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

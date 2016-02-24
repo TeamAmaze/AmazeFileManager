@@ -77,7 +77,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         anim = /*main.IS_LIST?R.anim.fade_in_top:*/R.anim.fade_in_top;
     }
     public void addItem(){
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
+        notifyItemInserted(getItemCount());
 
     }
     public void toggleChecked(int position) {
@@ -120,6 +121,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             main.mActionMode = null;
         }
     }
+
     public void toggleChecked(boolean b) {
         int a=0;
         for (int i = a; i < items.size(); i++) {
