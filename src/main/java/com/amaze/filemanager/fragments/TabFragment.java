@@ -103,7 +103,8 @@ public class TabFragment extends android.support.v4.app.Fragment
                 else
                 {addTab(tabHandler.findTab(1),1,"");
                     addTab(tabHandler.findTab(2),2,"");
-                }}
+                }
+            }
 
 
 
@@ -135,6 +136,8 @@ public class TabFragment extends android.support.v4.app.Fragment
         }
 
         indicator.setViewPager(mViewPager);
+
+        mainActivity.mainFragment = (Main) getTab();
 
         return rootView;
     }

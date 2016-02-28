@@ -11,13 +11,11 @@ import java.util.ArrayList;
 /**
  * Created by chinmay on 6/9/2015.
  */
-public class SearchTask extends AsyncTask<String, BaseFile, Void> {
-    ArrayList<BaseFile> searchHelper;
+class SearchTask1 extends AsyncTask<String, BaseFile, Void> {
     Main main;
     String key;
 
-    public SearchTask(ArrayList<BaseFile> arrayList, Main main, String key) {
-        searchHelper = arrayList;
+    public SearchTask1(Main main, String key) {
         this.main = main;
         this.key = key;
     }

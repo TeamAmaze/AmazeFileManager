@@ -58,6 +58,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -103,6 +104,7 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
+import com.amaze.filemanager.fragments.AsyncHelper;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.fragments.TabFragment;
@@ -155,7 +157,9 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,OnRequestPermissionsResultCallback,SmbConnectionListener,DataChangeListener,BookmarkCallback {
+        GoogleApiClient.OnConnectionFailedListener,OnRequestPermissionsResultCallback,
+        SmbConnectionListener,DataChangeListener,BookmarkCallback,
+        AsyncHelper.HelperCallbacks {
 
     final Pattern DIR_SEPARATOR = Pattern.compile("/");
     /* Request code used to invoke sign in user interactions. */
@@ -231,6 +235,11 @@ public class MainActivity extends AppCompatActivity implements
     private static final int PATH_ANIM_START_DELAY = 0;
     private static final int PATH_ANIM_END_DELAY = 0;
 
+    // helper fragment for search task to hold activity instance even after config changes
+    public AsyncHelper mAsyncHelperFragment;
+    public static final String TAG_ASYNC_HELPER = "async_helper";
+    public Main mainFragment;
+
     /**
      * Called when the activity is first created.
      */
@@ -253,6 +262,12 @@ public class MainActivity extends AppCompatActivity implements
 
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
+
+        if(mAsyncHelperFragment!=null) {
+
+            FragmentManager fm = getSupportFragmentManager();
+            mAsyncHelperFragment = (AsyncHelper) fm.findFragmentByTag(TAG_ASYNC_HELPER);
+        }
 
         history = new HistoryManager(this, "Table2");
         history.initializeTable(DataUtils.HISTORY, 0);
@@ -366,7 +381,9 @@ public class MainActivity extends AppCompatActivity implements
             operation = savedInstanceState.getInt("operation");
             select = savedInstanceState.getInt("selectitem", 0);
             adapter.toggleChecked(select);
+            //mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
         }
+
         if (theme1 == 1) {
             mDrawerList.setBackgroundColor(ContextCompat.getColor(this, R.color.holo_dark_background));
         }
@@ -1060,6 +1077,9 @@ public class MainActivity extends AppCompatActivity implements
             outState.putParcelableArrayList("oparraylist", (oparrayList));
             outState.putInt("operation", operation);
         }
+        /*if (mainFragment!=null) {
+            outState.putParcelable("main_fragment", mainFragment);
+        }*/
     }
 
     @Override
@@ -1128,6 +1148,8 @@ public class MainActivity extends AppCompatActivity implements
             grid.end();
         if (history != null)
             history.end();
+        /*if (mainFragment!=null)
+            mainFragment=null;*/
     }
 
     public void updatepaths(int pos) {
@@ -2752,7 +2774,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onHiddenFileRemoved(String path) {
-        history.removePath(path,DataUtils.HIDDEN);
+        history.removePath(path, DataUtils.HIDDEN);
     }
 
     @Override
@@ -2781,7 +2803,33 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void modify(String oldpath, String oldname, String newPath, String newname) {
-        grid.rename(path,oldname, newPath,newname, DataUtils.BOOKS);
+        grid.rename(path, oldname, newPath, newname, DataUtils.BOOKS);
         refreshDrawer();
     }
+
+    @Override
+    public void onPreExecute() {
+
+        mainFragment.mSwipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void onPostExecute() {
+
+        mainFragment.onSearchCompleted();
+        mainFragment.mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onProgressUpdate(BaseFile val) {
+
+        mainFragment.addSearchResult(val);
+    }
+
+    @Override
+    public void onCancelled() {
+
+    }
+
+
 }
