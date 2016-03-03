@@ -147,14 +147,19 @@
             android:id="@+id/indicator_layout"
             android:layout_height="wrap_content">
 
-
-            <com.amaze.filemanager.ui.views.Indicator
-                android:id="@+id/indicator"
+            <ImageView
+                android:id="@+id/tab_indicator1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|center_horizontal"
-                android:layout_marginTop="@dimen/padding_normal"
-                app:currentPageIndicatorColor="?attr/colorAccent"/>
+                android:minWidth="50dp"
+                android:layout_marginRight="2dp"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:id="@+id/tab_indicator2"
+                android:layout_width="wrap_content"
+                android:minWidth="50dp"
+                android:layout_marginLeft="2dp"
+                android:layout_height="match_parent" />
         </LinearLayout>
         <View
         android:layout_width="match_parent"

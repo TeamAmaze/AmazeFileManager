@@ -2,6 +2,8 @@ package com.amaze.filemanager.fragments;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -14,11 +16,13 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
+import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.views.CustomViewPager;
 import com.amaze.filemanager.ui.views.Indicator;
@@ -51,7 +55,12 @@ public class TabFragment extends android.support.v4.app.Fragment
     View mToolBarContainer;
     boolean savepaths;
     FragmentManager fragmentManager;
+
+    // ink indicators for viewpager only for Lollipop+
     private Indicator indicator;
+
+    // views for circlular drawables below android lollipop
+    private ImageView circleDrawable1, circleDrawable2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,7 +69,15 @@ public class TabFragment extends android.support.v4.app.Fragment
                 container, false);
         fragmentManager=getActivity().getSupportFragmentManager();
         mToolBarContainer=getActivity().findViewById(R.id.lin);
-        indicator = (Indicator) getActivity().findViewById(R.id.indicator);
+
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+
+            indicator = (Indicator) getActivity().findViewById(R.id.indicator);
+        } else {
+            circleDrawable1 = (ImageView) getActivity().findViewById(R.id.tab_indicator1);
+            circleDrawable2 = (ImageView) getActivity().findViewById(R.id.tab_indicator2);
+        }
+
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         savepaths=Sp.getBoolean("savepaths", true);
         int theme=Integer.parseInt(Sp.getString("theme","0"));
@@ -112,6 +129,9 @@ public class TabFragment extends android.support.v4.app.Fragment
 
             try {
                 mViewPager.setCurrentItem(l,true);
+                if (circleDrawable1!=null && circleDrawable2 !=null) {
+                    updateIndicator(mViewPager.getCurrentItem());
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -135,7 +155,7 @@ public class TabFragment extends android.support.v4.app.Fragment
             mSectionsPagerAdapter.notifyDataSetChanged();
         }
 
-        indicator.setViewPager(mViewPager);
+        if (indicator!=null) indicator.setViewPager(mViewPager);
 
         mainActivity.mainFragment = (Main) getTab();
 
@@ -260,6 +280,8 @@ public class TabFragment extends android.support.v4.app.Fragment
                 }
             }
         }
+
+        if (circleDrawable1!=null && circleDrawable2!=null) updateIndicator(p1);
     }
 
     @Override
@@ -320,5 +342,20 @@ public class TabFragment extends android.support.v4.app.Fragment
         if(fragments.size()==2 && pos<2)
             return fragments.get(pos);
         else return null;
+    }
+
+    // updating indicator color as per the current viewpager tab
+    void updateIndicator(int index) {
+        if (index != 0 && index != 1) return;
+        if (index == 0) {
+            circleDrawable1.setImageDrawable(new ColorCircleDrawable(Color.parseColor(mainActivity.fabskin)));
+            circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
+            return;
+        } else {
+            circleDrawable1.setImageDrawable(new ColorCircleDrawable(Color.parseColor(mainActivity.fabskin)));
+            circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
+            return;
+        }
+
     }
 }
