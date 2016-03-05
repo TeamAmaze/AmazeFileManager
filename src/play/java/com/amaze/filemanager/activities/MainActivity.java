@@ -155,7 +155,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 
-public class MainActivity extends AppCompatActivity implements
+public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,OnRequestPermissionsResultCallback,
         SmbConnectionListener,DataChangeListener,BookmarkCallback,
@@ -168,25 +168,24 @@ public class MainActivity extends AppCompatActivity implements
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
     public ScrimInsetsRelativeLayout mDrawerLinear;
-    public String skin, path = "", launchPath;
+    public String  path = "", launchPath;
     public int theme;
     public ArrayList<BaseFile> COPY_PATH = null, MOVE_PATH = null;
     public FrameLayout frameLayout;
     public boolean mReturnIntent = false;
-    public int theme1;
-    public boolean rootmode, aBoolean, openzip = false;
+    public boolean  aBoolean, openzip = false;
     public boolean mRingtonePickerIntent = false, colourednavigation = false;
     public Toolbar toolbar;
     public int skinStatusBar;
     public int storage_count = 0;
-    public String fabskin;
+
     public FloatingActionMenu floatingActionButton;
     public LinearLayout pathbar;
     public FrameLayout buttonBarFrame;
     public boolean isDrawerLocked = false;
     HistoryManager history, grid;
     Futils utils;
-    public SharedPreferences Sp;
+
     MainActivity mainActivity = this;
     public DrawerAdapter adapter;
     IconUtils util;
@@ -246,20 +245,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Sp = PreferenceManager.getDefaultSharedPreferences(this);
         initialisePreferences();
-        setTheme();
+        DataUtils.registerOnDataChangedListener(this);
         setContentView(R.layout.main_toolbar);
         initialiseViews();
-        DataUtils.clear();
-        DataUtils.registerOnDataChangedListener(this);
         tabHandler = new TabHandler(this, null, null, 1);
         utils = new Futils();
-        //requesting storage permissions
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            if (!checkStoragePermission())
-                requestStoragePermission();
-
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
 
@@ -309,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onFinish() {
-                crossfadeInverse();
+                utils.crossfadeInverse(buttons,pathbar);
             }
         };
         path = getIntent().getStringExtra("path");
@@ -525,7 +516,7 @@ public class MainActivity extends AppCompatActivity implements
             if (name.contains("TabFragment")) {
                 if (floatingActionButton.isOpened()) {
                     floatingActionButton.close(true);
-                    revealShow(findViewById(R.id.fab_bg), false);
+                    utils.revealShow(findViewById(R.id.fab_bg), false);
                 } else {
                     TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
                     Fragment fragment1 = tabFragment.getTab();
@@ -922,7 +913,7 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.sethome:
                 if(ma==null)return super.onOptionsItemSelected(item);
                 final Main main = ma;
-                if (main.openMode != 0 || main.openMode != 3) {
+                if (main.openMode != 0 && main.openMode != 3) {
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
@@ -1142,8 +1133,9 @@ public class MainActivity extends AppCompatActivity implements
                 e.printStackTrace();
             }
         }
-        unbindDrive();
         DataUtils.clear();
+
+        unbindDrive();
         if (grid != null)
             grid.end();
         if (history != null)
@@ -1248,6 +1240,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         ArrayList<String[]> accounts=DataUtils.getAccounts();
         if (accounts != null && accounts.size() > 0) {
+            Collections.sort(accounts,new BookSorter());
             for (String[] file : accounts) {
                 list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.drive)));
             }
@@ -1256,7 +1249,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         ArrayList<String[]> books=DataUtils.getBooks();
         if (books != null && books.size() > 0) {
-
+            Collections.sort(books,new BookSorter());
             for (String[] file : books) {
                 list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
                         .folder_fab)));
@@ -1333,7 +1326,11 @@ public class MainActivity extends AppCompatActivity implements
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         super.onLoadingComplete(imageUri, view, loadedImage);
                         drawerHeaderParent.setBackgroundColor(Color.parseColor("#ffffff"));
-                        drawerHeaderView.setBackground(new BitmapDrawable(loadedImage));
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            drawerHeaderView.setBackground(new BitmapDrawable(loadedImage));
+                        }
+                        else     drawerHeaderView.setBackgroundDrawable(new BitmapDrawable(loadedImage));
+
                     }
 
                     @Override
@@ -1644,23 +1641,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     void initialisePreferences() {
-
-        int th = Integer.parseInt(Sp.getString("theme", "0"));
-        theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
-
-        boolean random = Sp.getBoolean("random_checkbox", false);
-        if (random)
-            skin = PreferenceUtils.random(Sp);
-        else
-            skin = PreferenceUtils.getPrimaryColorString(Sp);
-        fabskin = PreferenceUtils.getAccentString(Sp);
-        rootmode = Sp.getBoolean("rootmode", false);
-        if (rootmode) {
-            if (!RootTools.isAccessGiven()) {
-                rootmode = false;
-                Sp.edit().putBoolean("rootmode", false).commit();
-            }
-        }
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         hidemode = Sp.getInt("hidemode", 0);
         showHidden = Sp.getBoolean("showHidden", false);
@@ -1736,7 +1716,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 floatingActionButton.close(true);
-                revealShow(view, false);
+                utils.revealShow(view, false);
             }
         });
 
@@ -1836,8 +1816,8 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onMenuToggle(boolean b) {
                 View v = findViewById(R.id.fab_bg);
-                if (b) revealShow(v, true);
-                else revealShow(v, false);
+                if (b) utils.revealShow(v, true);
+                else utils.revealShow(v, false);
             }
         });
 
@@ -1848,7 +1828,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(0);
-                revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(findViewById(R.id.fab_bg), false);
                 floatingActionButton.close(true);
             }
         });
@@ -1859,7 +1839,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(1);
-                revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(findViewById(R.id.fab_bg), false);
                 floatingActionButton.close(true);
             }
         });
@@ -1870,7 +1850,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(2);
-                revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(findViewById(R.id.fab_bg), false);
                 floatingActionButton.close(true);
             }
         });
@@ -1881,7 +1861,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(3);
-                revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(findViewById(R.id.fab_bg), false);
                 floatingActionButton.close(true);
             }
         });
@@ -2133,7 +2113,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void initiatebbar() {
-        View pathbar = findViewById(R.id.pathbar);
+        final View pathbar = findViewById(R.id.pathbar);
         TextView textView = (TextView) findViewById(R.id.fullpath);
 
         pathbar.setOnClickListener(new View.OnClickListener() {
@@ -2142,7 +2122,7 @@ public class MainActivity extends AppCompatActivity implements
                 Main m = ((Main) getFragment().getTab());
                 if (m.openMode == 0) {
                     bbar(m);
-                    crossfade();
+                    utils.crossfade(buttons,pathbar);
                     timer.cancel();
                     timer.start();
                 }
@@ -2154,7 +2134,7 @@ public class MainActivity extends AppCompatActivity implements
                 Main m = ((Main) getFragment().getTab());
                 if (m.openMode == 0) {
                     bbar(m);
-                    crossfade();
+                    utils.crossfade(buttons,pathbar);
                     timer.cancel();
                     timer.start();
                 }
@@ -2163,203 +2143,6 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    public void crossfade() {
-
-        // Set the content view to 0% opacity but visible, so that it is visible
-        // (but fully transparent) during the animation.
-        buttons.setAlpha(0f);
-        buttons.setVisibility(View.VISIBLE);
-
-
-        // Animate the content view to 100% opacity, and clear any animation
-        // listener set on the view.
-        buttons.animate()
-                .alpha(1f)
-                .setDuration(100)
-                .setListener(null);
-        pathbar.animate()
-                .alpha(0f)
-                .setDuration(100)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        pathbar.setVisibility(View.GONE);
-                    }
-                });
-        // Animate the loading view to 0% opacity. After the animation ends,
-        // set its visibility to GONE as an optimization step (it won't
-        // participate in layout passes, etc.)
-
-    }
-
-    void crossfadeInverse() {
-
-
-        // Set the content view to 0% opacity but visible, so that it is visible
-        // (but fully transparent) during the animation.
-
-        pathbar.setAlpha(0f);
-        pathbar.setVisibility(View.VISIBLE);
-
-        // Animate the content view to 100% opacity, and clear any animation
-        // listener set on the view.
-        pathbar.animate()
-                .alpha(1f)
-                .setDuration(500)
-                .setListener(null);
-        buttons.animate()
-                .alpha(0f)
-                .setDuration(500)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        buttons.setVisibility(View.GONE);
-                    }
-                });
-        // Animate the loading view to 0% opacity. After the animation ends,
-        // set its visibility to GONE as an optimization step (it won't
-        // participate in layout passes, etc.)
-    }
-
-    void setTheme() {
-        if (Build.VERSION.SDK_INT >= 21) {
-
-            switch (fabskin) {
-                case "#F44336":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_red);
-                    else
-                        setTheme(R.style.pref_accent_dark_red);
-                    break;
-
-                case "#e91e63":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_pink);
-                    else
-                        setTheme(R.style.pref_accent_dark_pink);
-                    break;
-
-                case "#9c27b0":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_purple);
-                    else
-                        setTheme(R.style.pref_accent_dark_purple);
-                    break;
-
-                case "#673ab7":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_deep_purple);
-                    else
-                        setTheme(R.style.pref_accent_dark_deep_purple);
-                    break;
-
-                case "#3f51b5":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_indigo);
-                    else
-                        setTheme(R.style.pref_accent_dark_indigo);
-                    break;
-
-                case "#2196F3":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_blue);
-                    else
-                        setTheme(R.style.pref_accent_dark_blue);
-                    break;
-
-                case "#03A9F4":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_light_blue);
-                    else
-                        setTheme(R.style.pref_accent_dark_light_blue);
-                    break;
-
-                case "#00BCD4":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_cyan);
-                    else
-                        setTheme(R.style.pref_accent_dark_cyan);
-                    break;
-
-                case "#009688":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_teal);
-                    else
-                        setTheme(R.style.pref_accent_dark_teal);
-                    break;
-
-                case "#4CAF50":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_green);
-                    else
-                        setTheme(R.style.pref_accent_dark_green);
-                    break;
-
-                case "#8bc34a":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_light_green);
-                    else
-                        setTheme(R.style.pref_accent_dark_light_green);
-                    break;
-
-                case "#FFC107":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_amber);
-                    else
-                        setTheme(R.style.pref_accent_dark_amber);
-                    break;
-
-                case "#FF9800":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_orange);
-                    else
-                        setTheme(R.style.pref_accent_dark_orange);
-                    break;
-
-                case "#FF5722":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_deep_orange);
-                    else
-                        setTheme(R.style.pref_accent_dark_deep_orange);
-                    break;
-
-                case "#795548":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_brown);
-                    else
-                        setTheme(R.style.pref_accent_dark_brown);
-                    break;
-
-                case "#212121":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_black);
-                    else
-                        setTheme(R.style.pref_accent_dark_black);
-                    break;
-
-                case "#607d8b":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_blue_grey);
-                    else
-                        setTheme(R.style.pref_accent_dark_blue_grey);
-                    break;
-
-                case "#004d40":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_super_su);
-                    else
-                        setTheme(R.style.pref_accent_dark_super_su);
-                    break;
-            }
-        } else {
-            if (theme1 == 1) {
-                setTheme(R.style.appCompatDark);
-            } else {
-                setTheme(R.style.appCompatLight);
-            }
-        }
-
-    }
 
     public boolean copyToClipboard(Context context, String text) {
         try {
@@ -2374,33 +2157,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    void revealShow(final View view, boolean reveal) {
-
-        if (reveal) {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 0f, 1f);
-            animator.setDuration(300); //ms
-            animator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    view.setVisibility(View.VISIBLE);
-                }
-            });
-            animator.start();
-        } else {
-
-            ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0f);
-            animator.setDuration(300); //ms
-            animator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    view.setVisibility(View.GONE);
-                }
-            });
-            animator.start();
-
-        }
-
-    }
 
     public void invalidateFab(int openmode) {
         if (openmode == 2) {
@@ -2494,7 +2250,6 @@ public class MainActivity extends AppCompatActivity implements
                 mRingtonePickerIntent = true;
                 Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
             } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
-
                 // zip viewer intent
                 Uri uri = intent.getData();
                 zippath = uri.toString();
@@ -2666,46 +2421,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public boolean checkStoragePermission() {
 
-        // Verify that all required contact permissions have been granted.
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        return false;
-    }
-
-    void requestStoragePermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-            // Provide an additional rationale to the user if the permission was not granted
-            // and the user would benefit from additional context for the use of the permission.
-            // For example, if the request has been denied previously.
-            final MaterialDialog materialDialog = utils.showBasicDialog(this,fabskin,theme1, new String[]{getResources().getString(R.string.granttext), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel), null});
-            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ActivityCompat
-                            .requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
-                    materialDialog.dismiss();
-                }
-            });
-            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
-            materialDialog.setCancelable(false);
-            materialDialog.show();
-
-        } else {
-            // Contact permissions have not been granted yet. Request them directly.
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
-        }
-    }
     public void showSMBDialog(String name,String path,boolean edit){
         if(path.length()>0 && name.length()==0){
           int i=-1;
@@ -2720,12 +2436,10 @@ public class MainActivity extends AppCompatActivity implements
         bundle.putBoolean("edit",edit);
         smbConnectDialog.setArguments(bundle);
         smbConnectDialog.show(getFragmentManager(),"smbdailog");
-
     }
 
     @Override
     public void addConnection(boolean edit, String name, String path,String oldname,String oldPath) {
-
         try {
             String[] s=new String[]{name,path};
             if (!edit) {
@@ -2803,13 +2517,12 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void modify(String oldpath, String oldname, String newPath, String newname) {
-        grid.rename(path, oldname, newPath, newname, DataUtils.BOOKS);
+        grid.rename( oldname,oldpath, newPath, newname, DataUtils.BOOKS);
         refreshDrawer();
     }
 
     @Override
     public void onPreExecute() {
-
         mainFragment.mSwipeRefreshLayout.setRefreshing(true);
     }
 
@@ -2830,6 +2543,4 @@ public class MainActivity extends AppCompatActivity implements
     public void onCancelled() {
 
     }
-
-
 }

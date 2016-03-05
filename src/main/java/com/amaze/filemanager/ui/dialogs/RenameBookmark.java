@@ -117,7 +117,6 @@ public class RenameBookmark extends DialogFragment {
                     e.printStackTrace();
                 }
             }
-            ip.setText(pa);
             ip.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -137,6 +136,7 @@ public class RenameBookmark extends DialogFragment {
                 }
             });
             }else t2.setVisibility(View.GONE);
+            ip.setText(pa);
             builder.onNeutral(new MaterialDialog.SingleButtonCallback() {
                 @Override
                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {

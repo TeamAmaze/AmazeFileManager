@@ -58,11 +58,9 @@ import java.util.ArrayList;
 /**
  * Created by Vishal on 02-02-2015.
  */
-public class DbViewer extends AppCompatActivity {
+public class DbViewer extends BaseActivity {
 
-    private SharedPreferences Sp;
-    private String skin, path;
-    private boolean rootMode;
+    private String path;
     private ListView listView;
     private ArrayList<String> arrayList;
     private ArrayAdapter arrayAdapter;
@@ -71,16 +69,13 @@ public class DbViewer extends AppCompatActivity {
     boolean delete=false;
     public Toolbar toolbar;
     public SQLiteDatabase sqLiteDatabase;
-    public int theme, theme1, skinStatusBar;
+    public int  skinStatusBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        this.checkStorage=false;
         super.onCreate(savedInstanceState);
 
-        Sp = PreferenceManager.getDefaultSharedPreferences(this);
-        theme = Integer.parseInt(Sp.getString("theme", "0"));
-
-        theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
 
         if (theme1 == 1) {
             setTheme(R.style.appCompatDark);
@@ -101,8 +96,6 @@ public class DbViewer extends AppCompatActivity {
         skinStatusBar = PreferenceUtils.getStatusColor(skin);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        rootMode = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("rootmode", false);
         int sdk= Build.VERSION.SDK_INT;
         if(sdk==20 || sdk==19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
@@ -157,7 +150,7 @@ public class DbViewer extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (!file.canRead() && rootMode) {
+                if (!file.canRead() && rootmode) {
                     File file1=getExternalCacheDir();
                     if(file1!=null)file1=getCacheDir();
                     RootTools.remount(file.getParent(), "RW");
