@@ -145,14 +145,14 @@
             android:layout_marginBottom="2dp"
             android:id="@+id/indicator_layout"
             android:layout_height="2dp">
-            <ImageView
+            <android.support.v4.widget.CircleImageView
                 android:id="@+id/tab_indicator1"
                 android:layout_width="wrap_content"
                 android:minWidth="50dp"
                 android:layout_marginRight="2dp"
                 android:layout_height="match_parent" />
 
-            <ImageView
+            <android.support.v4.widget.CircleImageView
                 android:id="@+id/tab_indicator2"
                 android:layout_width="wrap_content"
                 android:minWidth="50dp"

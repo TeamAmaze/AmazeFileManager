@@ -421,10 +421,12 @@ public class Main extends android.support.v4.app.Fragment {
             if (openMode == 1)
                 smbPath = savedInstanceState.getString("SmbPath");
             LIST_ELEMENTS = savedInstanceState.getParcelableArrayList("list");
+            CURRENT_PATH = cur;
             folder_count = savedInstanceState.getInt("folder_count", 0);
             file_count = savedInstanceState.getInt("file_count", 0);
             results = savedInstanceState.getBoolean("results");
             adapter = (Recycleradapter) savedInstanceState.getParcelable("adapter");
+            MAIN_ACTIVITY.updatePath(CURRENT_PATH, results, openMode, folder_count, file_count);
             createViews(LIST_ELEMENTS, true, (CURRENT_PATH), openMode, true, !IS_LIST);
             if (savedInstanceState.getBoolean("selection")) {
 
