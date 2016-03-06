@@ -275,5 +275,22 @@
     <string name="gplus_pic_title">Mit G+ anmelden</string>
     <string name="install">Installieren</string>
     <string name="md5copied">MD5 in Zwischenablage kopiert</string>
+    <string name="anonymous">Anonymous</string>
+    <string name="apks">APKs</string>
+    <string name="archive_summary">Archiv-Dateien werden in dieses Verzeichnis entpackt. Standardmäßig ist dies dasjenige Verzeichnis, in welchem sich das Archiv befindet.</string>
+    <string name="archtext">Dies ist ein Archiv. Was möchten Sie durchführen?</string>
+    <string name="ascending">Aufsteigend</string>
+    <string name="archive">Archiv</string>
+    <string name="archive_extract_folder">Verzeichnis zum Entpacken von Archiven</string>
+    <string name="back_summary">Schalte Zurück-Schaltfläche am Listenkopf ein</string>
+    <string name="back_title">Zurück-Schaltfläche</string>
+    <string name="basque_translation_title">Baskisch</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="calculating">Berechne</string>
+    <string name="cantbeempty">%s darf nicht leer sein</string>
+    <string name="choose_color">Wähle eine Farbe</string>
+    <string name="circularicons">Runde Icons verwenden</string>
+    <string name="circularimages">Runde Icons für Bilder und Videos verwenden</string>
+    <string name="clear">Löschen</string>
 </resources>
 	
