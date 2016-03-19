@@ -20,6 +20,9 @@
 package com.amaze.filemanager.utils;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
@@ -283,6 +286,91 @@ public  final int READ = 4;
         }
     }
 
+    public void crossfade(View buttons,final View pathbar) {
+
+        // Set the content view to 0% opacity but visible, so that it is visible
+        // (but fully transparent) during the animation.
+        buttons.setAlpha(0f);
+        buttons.setVisibility(View.VISIBLE);
+
+
+        // Animate the content view to 100% opacity, and clear any animation
+        // listener set on the view.
+        buttons.animate()
+                .alpha(1f)
+                .setDuration(100)
+                .setListener(null);
+        pathbar.animate()
+                .alpha(0f)
+                .setDuration(100)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        pathbar.setVisibility(View.GONE);
+                    }
+                });
+        // Animate the loading view to 0% opacity. After the animation ends,
+        // set its visibility to GONE as an optimization step (it won't
+        // participate in layout passes, etc.)
+
+    }
+    public void revealShow(final View view, boolean reveal) {
+
+        if (reveal) {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 0f, 1f);
+            animator.setDuration(300); //ms
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    view.setVisibility(View.VISIBLE);
+                }
+            });
+            animator.start();
+        } else {
+
+            ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0f);
+            animator.setDuration(300); //ms
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    view.setVisibility(View.GONE);
+                }
+            });
+            animator.start();
+
+        }
+
+    }
+
+
+    public void crossfadeInverse(final View buttons,final View pathbar) {
+
+
+        // Set the content view to 0% opacity but visible, so that it is visible
+        // (but fully transparent) during the animation.
+
+        pathbar.setAlpha(0f);
+        pathbar.setVisibility(View.VISIBLE);
+
+        // Animate the content view to 100% opacity, and clear any animation
+        // listener set on the view.
+        pathbar.animate()
+                .alpha(1f)
+                .setDuration(500)
+                .setListener(null);
+        buttons.animate()
+                .alpha(0f)
+                .setDuration(500)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        buttons.setVisibility(View.GONE);
+                    }
+                });
+        // Animate the loading view to 0% opacity. After the animation ends,
+        // set its visibility to GONE as an optimization step (it won't
+        // participate in layout passes, etc.)
+    }
     public String getString(Context c, int a) {
         return c.getResources().getString(a);
     }

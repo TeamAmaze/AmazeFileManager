@@ -53,6 +53,7 @@ public class HistoryManager {
             db.execSQL("CREATE TABLE IF NOT EXISTS " + table + " (NAME VARCHAR,PATH VARCHAR)");
 
     }
+    //single column
     public boolean rename(String path,String name,String table){
     ArrayList<String[]> arrayList=readTableSecondary(table);
 
@@ -68,26 +69,7 @@ public class HistoryManager {
         }
         return false;
     }
-    public boolean rename(final String oldname, final String oldpath, final String path, final String name, final String table){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
 
-                ArrayList<String[]> arrayList=readTableSecondary(table);
-
-                for(int i=0;i<arrayList.size();i++){
-                    if(arrayList.get(i)[1].equals(oldpath) && arrayList.get(i)[0].equals(oldname)){
-                        try {
-                            removePath(oldname,oldpath,table );
-                            addPath(name,path,table,1);
-                        } catch (Exception e) {
-                        }
-                    }
-                }
-            }
-        }).start();
-        return false;
-    }
     public ArrayList<String> readTable(String table) {
         Cursor c = db.rawQuery("SELECT * FROM " + table, null);
         c.moveToLast();
@@ -100,21 +82,18 @@ public class HistoryManager {
         } while (c.moveToPrevious());
         return paths;
     }
-    public ArrayList<String[]> readTableSecondary(String table) {
-        Cursor c = db.rawQuery("SELECT * FROM " + table, null);
-        c.moveToLast();
-        ArrayList<String[]> paths = new ArrayList<String[]>();
-        do {
-            try {
-                paths.add(new String[]{c.getString(c.getColumnIndex("NAME")),c.getString(c.getColumnIndex("PATH"))});
-            } catch (Exception e) {
-            }
-        } while (c.moveToPrevious());
-        return paths;
+
+    public void removePath(String path,String table){
+        try {
+            db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "'");
+        } catch (Exception e) {
+        }
     }
+    //common
     public void clear(String table){
         db.execSQL("DELETE FROM "+table+" WHERE PATH is NOT NULL");
     }
+
     public void addPath(String name,String path,String table,int mode) {
 
         try {
@@ -139,23 +118,41 @@ public class HistoryManager {
             }
         }
     }
-    public void removePath(String path,String table){
-        try {
-            db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "'");
-        } catch (Exception e) {
-        }
-    }
-    public void removePath(String name,String path,String table){
-        try {
-            db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "' and NAME='"+name+"'");
-        } catch (Exception e) {
-        }
-    }
     public void end() {
         db.close();
     }
 
     public void open() {
         db = c.openOrCreateDatabase(dbname, c.MODE_PRIVATE, null);
+    }
+
+    //double columns
+    public void removePath(String name,String path,String table){
+        try {
+            db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "' and NAME='"+name+"'");
+        } catch (SQLException e) {
+        e.printStackTrace();
+        }
+    }
+    public boolean rename(final String oldname, final String oldpath, final String path, final String name, final String table){
+        try {
+            removePath(oldname,oldpath,table);
+            db.execSQL("INSERT INTO " + table + " VALUES" + "('"+name+"','" + path + "');");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public ArrayList<String[]> readTableSecondary(String table) {
+        Cursor c = db.rawQuery("SELECT * FROM " + table, null);
+        c.moveToLast();
+        ArrayList<String[]> paths = new ArrayList<String[]>();
+        do {
+            try {
+                paths.add(new String[]{c.getString(c.getColumnIndex("NAME")),c.getString(c.getColumnIndex("PATH"))});
+            } catch (Exception e) {
+            }
+        } while (c.moveToPrevious());
+        return paths;
     }
 }

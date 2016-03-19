@@ -3,8 +3,7 @@ package com.amaze.filemanager.fragments;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -16,10 +15,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -28,6 +25,7 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.views.CustomViewPager;
+import com.amaze.filemanager.ui.views.Indicator;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Logger;
@@ -41,7 +39,8 @@ import java.util.List;
 /**
  * Created by Arpit on 15-12-2014.
  */
-public class TabFragment extends android.support.v4.app.Fragment {
+public class TabFragment extends android.support.v4.app.Fragment
+        implements ViewPager.OnPageChangeListener {
 
     public  List<Fragment> fragments = new ArrayList<Fragment>();
     public ScreenSlidePagerAdapter mSectionsPagerAdapter;
@@ -56,7 +55,13 @@ public class TabFragment extends android.support.v4.app.Fragment {
     View mToolBarContainer;
     boolean savepaths;
     FragmentManager fragmentManager;
-    ImageView indicator1,indicator2;
+
+    // ink indicators for viewpager only for Lollipop+
+    private Indicator indicator;
+
+    // views for circlular drawables below android lollipop
+    private ImageView circleDrawable1, circleDrawable2;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -64,54 +69,28 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 container, false);
         fragmentManager=getActivity().getSupportFragmentManager();
         mToolBarContainer=getActivity().findViewById(R.id.lin);
-        indicator1=(ImageView)getActivity().findViewById(R.id.tab_indicator1);
-        indicator2=(ImageView)getActivity().findViewById(R.id.tab_indicator2);
+
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+
+            indicator = (Indicator) getActivity().findViewById(R.id.indicator);
+        } else {
+            circleDrawable1 = (ImageView) getActivity().findViewById(R.id.tab_indicator1);
+            circleDrawable2 = (ImageView) getActivity().findViewById(R.id.tab_indicator2);
+        }
+
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         savepaths=Sp.getBoolean("savepaths", true);
         int theme=Integer.parseInt(Sp.getString("theme","0"));
         theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
         mViewPager = (CustomViewPager) rootView.findViewById(R.id.pager);
+
         if (getArguments() != null){
             path = getArguments().getString("path");
         }
         buttons=getActivity().findViewById(R.id.buttons);
         mainActivity = ((MainActivity)getActivity());
         mainActivity.supportInvalidateOptionsMenu();
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-            public void onPageScrolled(int p1, float p2, int p3) {
-
-            }
-
-            public void onPageSelected(int p1) {
-               mToolBarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-                updateIndicator(p1);
-                currenttab=p1;
-                Fragment fragment=fragments.get(p1);
-                if(fragment!=null) {
-                    String name = fragments.get(p1).getClass().getName();
-                    if (name!=null && name.contains("Main")) {
-                        Main ma = ((Main) fragments.get(p1));
-                        if (ma.CURRENT_PATH != null) {
-                            try {
-                                mainActivity.updateDrawer(ma.CURRENT_PATH);
-                                mainActivity.updatePath(ma.CURRENT_PATH,  ma.results,ma.openMode,
-                                        ma.folder_count, ma.file_count);
-                                if (buttons.getVisibility() == View.VISIBLE) {
-                                    mainActivity.bbar(ma);
-                                }
-                            } catch (Exception e) {
-                                //       e.printStackTrace();5
-                            }
-                        }
-                    }
-                }
-            }
-
-            public void onPageScrollStateChanged(int p1) {
-                // TODO: Implement this method
-            }
-        });
+        mViewPager.addOnPageChangeListener(this);
 
         mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
                 getActivity().getSupportFragmentManager());
@@ -124,10 +103,10 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 if (mainActivity.storage_count>1)
                     addTab(new Tab(1,"",((EntryItem)DataUtils.list.get(1)).getPath(),"/"),1,"");
                 else
-                addTab(new Tab(1,"","/","/"),1,"");
+                    addTab(new Tab(1,"","/","/"),1,"");
                 if(!DataUtils.list.get(0).isSection()){
-                String pa=((EntryItem) DataUtils.list.get(0)).getPath();
-                addTab(new Tab(2,"",pa,pa),2,"");}
+                    String pa=((EntryItem) DataUtils.list.get(0)).getPath();
+                    addTab(new Tab(2,"",pa,pa),2,"");}
                 else     addTab(new Tab(2,"",((EntryItem)DataUtils.list.get(1)).getPath(),"/"),2,"");
             }
             else{
@@ -140,38 +119,45 @@ public class TabFragment extends android.support.v4.app.Fragment {
                 }
                 else
                 {addTab(tabHandler.findTab(1),1,"");
-                 addTab(tabHandler.findTab(2),2,"");
-            }}
+                    addTab(tabHandler.findTab(2),2,"");
+                }
+            }
 
 
 
             mViewPager.setAdapter(mSectionsPagerAdapter);
 
-                try {
-                    mViewPager.setCurrentItem(l,true);
+            try {
+                mViewPager.setCurrentItem(l,true);
+                if (circleDrawable1!=null && circleDrawable2 !=null) {
                     updateIndicator(mViewPager.getCurrentItem());
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         } else {
             fragments.clear();
-                try {
-                    if(fragmentManager==null)fragmentManager=getActivity().getSupportFragmentManager();
-                    fragments.add(0,fragmentManager.getFragment(savedInstanceState, "tab"+0));
-                    fragments.add(1, fragmentManager.getFragment(savedInstanceState, "tab"+1));
-                } catch (Exception e) {
-                    e.printStackTrace();
+            try {
+                if (fragmentManager == null)
+                    fragmentManager = getActivity().getSupportFragmentManager();
+                fragments.add(0, fragmentManager.getFragment(savedInstanceState, "tab" + 0));
+                fragments.add(1, fragmentManager.getFragment(savedInstanceState, "tab" + 1));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
                     getActivity().getSupportFragmentManager());
 
             mViewPager.setAdapter(mSectionsPagerAdapter);
-            int pos1=savedInstanceState.getInt("pos",0);
+            int pos1 = savedInstanceState.getInt("pos", 0);
             mViewPager.setCurrentItem(pos1);
             mSectionsPagerAdapter.notifyDataSetChanged();
-
         }
+
+        if (indicator!=null) indicator.setViewPager(mViewPager);
+
+        mainActivity.mainFragment = (Main) getTab();
 
         return rootView;
     }
@@ -264,6 +250,45 @@ public class TabFragment extends android.support.v4.app.Fragment {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int p1) {
+
+        mToolBarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+        currenttab=p1;
+        Fragment fragment=fragments.get(p1);
+        if(fragment!=null) {
+            String name = fragments.get(p1).getClass().getName();
+            if (name!=null && name.contains("Main")) {
+                Main ma = ((Main) fragments.get(p1));
+                if (ma.CURRENT_PATH != null) {
+                    try {
+                        mainActivity.updateDrawer(ma.CURRENT_PATH);
+                        mainActivity.updatePath(ma.CURRENT_PATH,  ma.results,ma.openMode,
+                                ma.folder_count, ma.file_count);
+                        if (buttons.getVisibility() == View.VISIBLE) {
+                            mainActivity.bbar(ma);
+                        }
+                    } catch (Exception e) {
+                        //       e.printStackTrace();5
+                    }
+                }
+            }
+        }
+
+        if (circleDrawable1!=null && circleDrawable2!=null) updateIndicator(p1);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
     public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
         @Override
@@ -313,46 +338,24 @@ public class TabFragment extends android.support.v4.app.Fragment {
         else return null;
     }
 
-    void updateIndicator(int index) {
-        if (index != 0 && index != 1) return;
-        if (indicator1 == null || indicator2 == null) return;
-        /*if (!mainActivity.isDrawerLocked){
-            if (index == 0) {
-                indicator1.setImageResource(R.drawable.square_filled);
-                indicator2.setImageResource(R.drawable.square_hollow);
-                indicator1.setColorFilter(Color.parseColor(mainActivity.fabskin));
-                if(theme1==0)
-                indicator2.setColorFilter(Color.GRAY);
-                else
-                    indicator2.setColorFilter(null);
-
-            } else {
-                indicator2.setImageResource(R.drawable.square_filled);
-                indicator1.setImageResource(R.drawable.square_hollow);
-                indicator2.setColorFilter(Color.parseColor(mainActivity.fabskin));
-                if(theme1==0)
-                    indicator1.setColorFilter(Color.GRAY);
-                else
-                    indicator1.setColorFilter(null);
-            }
-
-        return;
-        }*/
-
-        if (index == 0) {
-            indicator1.setImageDrawable(new ColorCircleDrawable(Color.parseColor(mainActivity.fabskin)));
-            indicator2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
-            return;
-        } else {
-            indicator2.setImageDrawable(new ColorCircleDrawable(Color.parseColor(mainActivity.fabskin)));
-            indicator1.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
-            return;
-        }
-
-    }
     public Fragment getTab(int pos) {
         if(fragments.size()==2 && pos<2)
             return fragments.get(pos);
         else return null;
+    }
+
+    // updating indicator color as per the current viewpager tab
+    void updateIndicator(int index) {
+        if (index != 0 && index != 1) return;
+        if (index == 0) {
+            circleDrawable1.setImageDrawable(new ColorCircleDrawable(Color.parseColor(mainActivity.fabskin)));
+            circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
+            return;
+        } else {
+            circleDrawable1.setImageDrawable(new ColorCircleDrawable(Color.parseColor(mainActivity.fabskin)));
+            circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
+            return;
+        }
+
     }
 }

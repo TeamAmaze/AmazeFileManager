@@ -139,7 +139,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                         else if (path.startsWith("smb:/")) {
                             m.showSMBDialog(item.getTitle(),path, true);
                         }
-                    }else if(position<m.storage_count ){
+                    } else if(position<m.storage_count ){
                         String path = ((EntryItem) getItem(position)).getPath();
                         if(!path.equals("/"))
                             new Futils().showProps(RootHelper.generateBaseFile(new File(path),true),m,m.theme1);

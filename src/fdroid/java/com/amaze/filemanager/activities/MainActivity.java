@@ -118,6 +118,7 @@ import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.BookSorter;
+import com.amaze.filemanager.utils.Constants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
@@ -275,10 +276,13 @@ public class MainActivity extends AppCompatActivity {
             }
             if (intent.getAction() != null)
                 if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
+                    String title = intent.getStringExtra(Constants.FILE_PICKER_TITLE_BUNDLE_KEY);
+                    if(title == null || title.length() == 0)
+                        title = utils.getString(con, R.string.pick_a_file);
 
                     // file picker intent
                     mReturnIntent = true;
-                    Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, title, Toast.LENGTH_LONG).show();
                 } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
                     // ringtone picker intent
                     mReturnIntent = true;

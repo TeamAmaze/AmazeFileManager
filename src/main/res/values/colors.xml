@@ -75,4 +75,12 @@
     <color name="accent_blue_grey">#607d8b</color>
     <color name="accent_super_su">#004d40</color>
 
+    <!-- indicator -->
+    <color name="page_indicator_dark">#80333333</color>
+    <color name="page_indicator_dark_selected">#ff333333</color>
+
+    <!-- cardview foreground and background -->
+    <color name="cardView_foreground">#202020</color>
+    <color name="cardView_background">#363F45</color>
+
 </resources>

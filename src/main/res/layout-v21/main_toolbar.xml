@@ -143,20 +143,15 @@
             android:layout_marginBottom="2dp"
             android:id="@+id/indicator_layout"
             android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/tab_indicator1"
-                android:layout_width="wrap_content"
-                android:minWidth="7dp"
-                android:minHeight="7dp"
-                android:layout_marginRight="2dp"
-                android:layout_height="wrap_content" />
 
-            <ImageView
-                android:id="@+id/tab_indicator2"
+            <com.amaze.filemanager.ui.views.Indicator
+                android:id="@+id/indicator"
                 android:layout_width="wrap_content"
-                android:minWidth="7dp"
-                android:minHeight="7dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center_horizontal"
+                android:layout_marginTop="@dimen/padding_normal"
+                app:currentPageIndicatorColor="?attr/colorAccent"
+                />
         </LinearLayout>
     <View
         android:layout_width="match_parent"
@@ -175,7 +170,6 @@
         android:layout_marginBottom="2dp"
         android:layout_marginLeft="10dp"
         fab:menu_fab_size="normal"
-        android:visibility="gone"
         fab:menu_showShadow="true"
         fab:menu_shadowColor="#66000000"
         fab:menu_shadowRadius="4dp"

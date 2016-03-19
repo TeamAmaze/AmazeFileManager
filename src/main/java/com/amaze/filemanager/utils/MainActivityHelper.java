@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +27,12 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
+import com.amaze.filemanager.fragments.AsyncHelper;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
-import com.amaze.filemanager.services.asynctasks.SearchTask;
 import com.amaze.filemanager.ui.dialogs.SmbSearchDialog;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 
@@ -197,7 +200,7 @@ public class MainActivityHelper {
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(toast!=null)toast.cancel();
+                        if (toast != null) toast.cancel();
                         Toast.makeText(mainActivity, (R.string.fileexist), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -213,25 +216,26 @@ public class MainActivityHelper {
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(toast!=null)toast.cancel();
+                        if (toast != null) toast.cancel();
                         mainActivity.oppathe = file.getPath();
-                        mainActivity.oppathe1=file1.getPath();
+                        mainActivity.oppathe1 = file1.getPath();
                         mainActivity.operation = DataUtils.RENAME;
                         guideDialogForLEXA(mainActivity.oppathe1);
-                    }});
+                    }
+                });
             }
 
             @Override
-            public void done(HFile hFile,final boolean b) {
+            public void done(HFile hFile, final boolean b) {
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(toast!=null)toast.cancel();
-                        if(b){
+                        if (toast != null) toast.cancel();
+                        if (b) {
                             Intent intent = new Intent("loadlist");
                             mainActivity.sendBroadcast(intent);
-                        }
-                        else Toast.makeText(context,R.string.operationunsuccesful,Toast.LENGTH_SHORT).show();
+                        } else
+                            Toast.makeText(context, R.string.operationunsuccesful, Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -439,9 +443,22 @@ public class MainActivityHelper {
                 if (a.length() == 0) {
                     return;
                 }
-                SearchTask task = new SearchTask(ma.searchHelper, ma, a);
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);
-                ma.searchTask = task;
+                /*SearchTask task = new SearchTask(ma.searchHelper, ma, a);
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);*/
+                //ma.searchTask = task;
+                mainActivity.mainFragment = (Main) mainActivity.getFragment().getTab();
+                FragmentManager fm = mainActivity.getSupportFragmentManager();
+                mainActivity.mAsyncHelperFragment = new AsyncHelper();
+
+                Bundle args = new Bundle();
+                args.putString("input", a);
+                args.putString("path", fpath);
+                args.putInt("open_mode", ma.openMode);
+                args.putBoolean("root_mode", ma.ROOT_MODE);
+
+                mainActivity.mAsyncHelperFragment.setArguments(args);
+                fm.beginTransaction().add(mainActivity.mAsyncHelperFragment,
+                        mainActivity.TAG_ASYNC_HELPER).commit();
 
             }
         });
