@@ -65,11 +65,16 @@ public class SearchAsyncHelper extends Fragment {
         mCallbacks = null;
     }
 
-    class SearchTask extends AsyncTask<String, BaseFile, Void> {
+    @Override
+    public void onPause() {
+        super.onPause();
+        mSearchTask.cancel(true);
+    }
+
+    public class SearchTask extends AsyncTask<String, BaseFile, Void> {
 
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();
 
             /*
             * Note that we need to check if the callbacks are null in each
@@ -103,6 +108,11 @@ public class SearchAsyncHelper extends Fragment {
         }
 
         @Override
+        protected void onCancelled() {
+            if (mCallbacks!=null) mCallbacks.onCancelled();
+        }
+
+        @Override
         public void onProgressUpdate(BaseFile... val) {
             if (!isCancelled() && mCallbacks!=null) {
                 mCallbacks.onProgressUpdate(val[0]);
@@ -130,8 +140,9 @@ public class SearchAsyncHelper extends Fragment {
                                     publishProgress(x);
                                 }
                             }
-                        }
+                        } else return;
                     }
+                else return;
             } else {
                 System.out
                         .println(file.getPath() + "Permission Denied");

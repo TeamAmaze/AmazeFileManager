@@ -226,9 +226,6 @@ public class MainActivity extends BaseActivity implements
 
     private static final int PATH_ANIM_START_DELAY = 0;
     private static final int PATH_ANIM_END_DELAY = 0;
-
-    // helper fragment for search task to hold activity instance even after config changes
-    public SearchAsyncHelper mSearchAsyncHelperFragment;
     public static final String TAG_ASYNC_HELPER = "async_helper";
     public Main mainFragment;
 
@@ -246,12 +243,6 @@ public class MainActivity extends BaseActivity implements
         utils = new Futils();
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
-
-        if(mSearchAsyncHelperFragment !=null) {
-
-            FragmentManager fm = getSupportFragmentManager();
-            mSearchAsyncHelperFragment = (SearchAsyncHelper) fm.findFragmentByTag(TAG_ASYNC_HELPER);
-        }
 
         history = new HistoryManager(this, "Table2");
         history.initializeTable(DataUtils.HISTORY, 0);
@@ -2535,5 +2526,8 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void onCancelled() {
 
+        mainFragment.createViews(mainFragment.LIST_ELEMENTS, false, mainFragment.CURRENT_PATH,
+                mainFragment.openMode, false, !mainFragment.IS_LIST);
+        mainFragment.mSwipeRefreshLayout.setRefreshing(false);
     }
 }
