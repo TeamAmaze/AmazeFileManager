@@ -5,8 +5,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -33,14 +31,13 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Arpit on 11-04-2015.
  */
 public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder>
-        implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder>, Parcelable {
+        implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
     Main main;
     ArrayList<Layoutelements> items;
     Context context;
@@ -54,7 +51,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     int grey_color;
     int c1,c2,c3,c4,c5,c6,c7,c8,c9,anim;
 
-    public Recycleradapter(Main m,ArrayList<Layoutelements> items,Context context){
+    public Recycleradapter(Main m, ArrayList<Layoutelements> items, Context context){
         this.main=m;
         this.items=items;
         this.context=context;
@@ -79,41 +76,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         grey_color=Color.parseColor("#ff666666");
         anim = /*main.IS_LIST?R.anim.fade_in_top:*/R.anim.fade_in_top;
     }
-
-    protected Recycleradapter(Parcel in) {
-        items = in.createTypedArrayList(Layoutelements.CREATOR);
-        myChecked = in.readSparseBooleanArray();
-        myanim = in.readSparseBooleanArray();
-        filetype = in.readInt();
-        column = in.readInt();
-        rowHeight = in.readInt();
-        topFab = in.readByte() != 0;
-        grey_color = in.readInt();
-        c1 = in.readInt();
-        c2 = in.readInt();
-        c3 = in.readInt();
-        c4 = in.readInt();
-        c5 = in.readInt();
-        c6 = in.readInt();
-        c7 = in.readInt();
-        c8 = in.readInt();
-        c9 = in.readInt();
-        anim = in.readInt();
-        offset = in.readInt();
-        stoppedAnimation = in.readByte() != 0;
-    }
-
-    public static final Creator<Recycleradapter> CREATOR = new Creator<Recycleradapter>() {
-        @Override
-        public Recycleradapter createFromParcel(Parcel in) {
-            return new Recycleradapter(in);
-        }
-
-        @Override
-        public Recycleradapter[] newArray(int size) {
-            return new Recycleradapter[size];
-        }
-    };
 
     public void addItem(){
         //notifyDataSetChanged();
@@ -198,35 +160,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         return b;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(items);
-        dest.writeSparseBooleanArray(myChecked);
-        dest.writeSparseBooleanArray(myanim);
-        dest.writeInt(filetype);
-        dest.writeInt(column);
-        dest.writeInt(rowHeight);
-        dest.writeByte((byte) (topFab ? 1 : 0));
-        dest.writeInt(grey_color);
-        dest.writeInt(c1);
-        dest.writeInt(c2);
-        dest.writeInt(c3);
-        dest.writeInt(c4);
-        dest.writeInt(c5);
-        dest.writeInt(c6);
-        dest.writeInt(c7);
-        dest.writeInt(c8);
-        dest.writeInt(c9);
-        dest.writeInt(anim);
-        dest.writeInt(offset);
-        dest.writeByte((byte) (stoppedAnimation ? 1 : 0));
-    }
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public RoundedImageView viewmageV;
@@ -267,7 +200,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         else  v= mInflater.inflate(R.layout.griditem, parent, false);
         ViewHolder vh = new ViewHolder(v);
         if(main.theme1==1)
-            vh.txtTitle.setTextColor(main.getActivity().getResources().getColor(android.R.color.white));
+            vh.txtTitle.setTextColor(main.MAIN_ACTIVITY.getResources().getColor(android.R.color.white));
         return vh;
     }
     int offset=0;

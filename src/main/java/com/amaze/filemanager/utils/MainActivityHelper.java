@@ -5,12 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,19 +19,17 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
-import com.amaze.filemanager.fragments.AsyncHelper;
+import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.ui.dialogs.SmbSearchDialog;
-import com.amaze.filemanager.ui.drawer.EntryItem;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -448,7 +443,7 @@ public class MainActivityHelper {
                 //ma.searchTask = task;
                 mainActivity.mainFragment = (Main) mainActivity.getFragment().getTab();
                 FragmentManager fm = mainActivity.getSupportFragmentManager();
-                mainActivity.mAsyncHelperFragment = new AsyncHelper();
+                mainActivity.mSearchAsyncHelperFragment = new SearchAsyncHelper();
 
                 Bundle args = new Bundle();
                 args.putString("input", a);
@@ -456,8 +451,8 @@ public class MainActivityHelper {
                 args.putInt("open_mode", ma.openMode);
                 args.putBoolean("root_mode", ma.ROOT_MODE);
 
-                mainActivity.mAsyncHelperFragment.setArguments(args);
-                fm.beginTransaction().add(mainActivity.mAsyncHelperFragment,
+                mainActivity.mSearchAsyncHelperFragment.setArguments(args);
+                fm.beginTransaction().add(mainActivity.mSearchAsyncHelperFragment,
                         mainActivity.TAG_ASYNC_HELPER).commit();
 
             }

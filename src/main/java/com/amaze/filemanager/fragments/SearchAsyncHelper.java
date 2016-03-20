@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by vishal on 26/2/16.
  */
-public class AsyncHelper extends Fragment {
+public class SearchAsyncHelper extends Fragment {
 
     private HelperCallbacks mCallbacks;
     private String mPath, mInput;
