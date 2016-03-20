@@ -45,12 +45,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ActionMode;
@@ -101,7 +98,6 @@ import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
-import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -425,7 +421,6 @@ public class Main extends android.support.v4.app.Fragment {
             folder_count = savedInstanceState.getInt("folder_count", 0);
             file_count = savedInstanceState.getInt("file_count", 0);
             results = savedInstanceState.getBoolean("results");
-            adapter = (Recycleradapter) savedInstanceState.getParcelable("adapter");
             MAIN_ACTIVITY.updatePath(CURRENT_PATH, results, openMode, folder_count, file_count);
             createViews(LIST_ELEMENTS, true, (CURRENT_PATH), openMode, true, !IS_LIST);
             if (savedInstanceState.getBoolean("selection")) {
@@ -466,7 +461,6 @@ public class Main extends android.support.v4.app.Fragment {
                 outState.putIntegerArrayList("position", adapter.getCheckedItemPositions());
             }
             outState.putBoolean("results", results);
-            outState.putParcelable("adapter", adapter);
             if (openMode == 1) {
                 outState.putString("SmbPath", smbPath);
             }
@@ -829,10 +823,10 @@ public class Main extends android.support.v4.app.Fragment {
     public void onListItemClicked(int position, View v) {
         if (position >= LIST_ELEMENTS.size()) return;
         if (results) {
-            if (MAIN_ACTIVITY.mAsyncHelperFragment != null) {
-                if (MAIN_ACTIVITY.mAsyncHelperFragment.mSearchTask.getStatus() == AsyncTask.Status.RUNNING)
-                    MAIN_ACTIVITY.mAsyncHelperFragment.mSearchTask.cancel(true);
-                MAIN_ACTIVITY.mAsyncHelperFragment = null;
+            if (MAIN_ACTIVITY.mSearchAsyncHelperFragment != null) {
+                if (MAIN_ACTIVITY.mSearchAsyncHelperFragment.mSearchTask.getStatus() == AsyncTask.Status.RUNNING)
+                    MAIN_ACTIVITY.mSearchAsyncHelperFragment.mSearchTask.cancel(true);
+                MAIN_ACTIVITY.mSearchAsyncHelperFragment = null;
             }
         }
         if (selection == true) {
@@ -1135,10 +1129,10 @@ public class Main extends android.support.v4.app.Fragment {
                 } else MAIN_ACTIVITY.exit();
             }
         } else {
-            if (MAIN_ACTIVITY.mAsyncHelperFragment != null) {
-                if (MAIN_ACTIVITY.mAsyncHelperFragment.mSearchTask.getStatus() == AsyncTask.Status.RUNNING)
-                    MAIN_ACTIVITY.mAsyncHelperFragment.mSearchTask.cancel(true);
-                MAIN_ACTIVITY.mAsyncHelperFragment = null;
+            if (MAIN_ACTIVITY.mSearchAsyncHelperFragment != null) {
+                if (MAIN_ACTIVITY.mSearchAsyncHelperFragment.mSearchTask.getStatus() == AsyncTask.Status.RUNNING)
+                    MAIN_ACTIVITY.mSearchAsyncHelperFragment.mSearchTask.cancel(true);
+                MAIN_ACTIVITY.mSearchAsyncHelperFragment = null;
             }
             loadlist(CURRENT_PATH, true, -1);
         }

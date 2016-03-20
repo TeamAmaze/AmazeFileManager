@@ -19,10 +19,8 @@
 
 package com.amaze.filemanager.activities;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -33,7 +31,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -51,18 +48,15 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -104,7 +98,7 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
-import com.amaze.filemanager.fragments.AsyncHelper;
+import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.fragments.TabFragment;
@@ -122,7 +116,6 @@ import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
 import com.amaze.filemanager.ui.icons.IconUtils;
-import com.amaze.filemanager.ui.views.Indicator;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.BookSorter;
@@ -159,7 +152,7 @@ public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,OnRequestPermissionsResultCallback,
         SmbConnectionListener,DataChangeListener,BookmarkCallback,
-        AsyncHelper.HelperCallbacks {
+        SearchAsyncHelper.HelperCallbacks {
 
     final Pattern DIR_SEPARATOR = Pattern.compile("/");
     /* Request code used to invoke sign in user interactions. */
@@ -235,7 +228,7 @@ public class MainActivity extends BaseActivity implements
     private static final int PATH_ANIM_END_DELAY = 0;
 
     // helper fragment for search task to hold activity instance even after config changes
-    public AsyncHelper mAsyncHelperFragment;
+    public SearchAsyncHelper mSearchAsyncHelperFragment;
     public static final String TAG_ASYNC_HELPER = "async_helper";
     public Main mainFragment;
 
@@ -254,10 +247,10 @@ public class MainActivity extends BaseActivity implements
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
 
-        if(mAsyncHelperFragment!=null) {
+        if(mSearchAsyncHelperFragment !=null) {
 
             FragmentManager fm = getSupportFragmentManager();
-            mAsyncHelperFragment = (AsyncHelper) fm.findFragmentByTag(TAG_ASYNC_HELPER);
+            mSearchAsyncHelperFragment = (SearchAsyncHelper) fm.findFragmentByTag(TAG_ASYNC_HELPER);
         }
 
         history = new HistoryManager(this, "Table2");
