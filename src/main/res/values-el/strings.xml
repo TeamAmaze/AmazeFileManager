@@ -57,7 +57,7 @@
     <string name="fileexist">Υπάρχει ήδη αρχείο με το ίδιο όνομα </string>
     <string name="filecreated">Το αρχείο δημιουργήθηκε</string>
     <string name="searchpath">Διαδρομή αναζήτησης</string>
-    <string name="search">ΑΝΑΖΗΤΗΣΗ</string>
+    <string name="search">Αναζητηση</string>
     <string name="enterfile">Εισάγετε όνομα αρχείου</string>
     <string name="name">Όνομα: </string>
     <string name="date">Ημερομηνία: </string>

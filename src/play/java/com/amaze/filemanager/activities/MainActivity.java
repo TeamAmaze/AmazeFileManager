@@ -23,6 +23,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -57,6 +58,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -753,6 +755,10 @@ public class MainActivity extends BaseActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.activity_extra, menu);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -973,9 +979,6 @@ public class MainActivity extends BaseActivity implements
 
                 }
                 ma.switchView();
-                break;
-            case R.id.search:
-                mainActivityHelper.search();
                 break;
             case R.id.paste:
                 String path = ma.CURRENT_PATH;
@@ -2247,6 +2250,9 @@ public class MainActivity extends BaseActivity implements
                 Uri uri = intent.getData();
                 zippath = uri.toString();
                 openZip(zippath);
+            } else if (intent.getAction().equals(Intent.ACTION_SEARCH)) {
+                String query = intent.getStringExtra(SearchManager.QUERY);
+                mainActivityHelper.search(query);
             }
     }
 

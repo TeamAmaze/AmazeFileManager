@@ -378,4 +378,7 @@
     <string name="username">Имя пользователя</string>
     <string name="videos">Видео</string>
     <string name="wanthelp"><u>Нужна помощь?</u></string>
+    <string name="polish_translation_title">Польский</string>
+    <string name="portuguese_translation_title">Португальский</string>
+    <string name="romanian_translation_title">Румынский</string>
 </resources>

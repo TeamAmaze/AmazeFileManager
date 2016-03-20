@@ -29,7 +29,8 @@
         android:id="@+id/search"
         android:title="@string/search"
         android:icon="@drawable/ic_action_search"
-        app:showAsAction="always" />
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView" />
     <item android:id="@+id/home"
         android:title="@string/home"
         app:showAsAction="ifRoom"

@@ -63,7 +63,7 @@
     <string name="fileexist">Izen bereko fitxategia existitzen da </string>
     <string name="filecreated">Fitxategia sortu da</string>
     <string name="searchpath">Bilaketaren bidea</string>
-    <string name="search">BILATU</string>
+    <string name="search">Bilatu</string>
     <string name="enterfile">Fitxategiaren izena sartu</string>
     <string name="name">Izena: </string>
     <string name="date">Data: </string>

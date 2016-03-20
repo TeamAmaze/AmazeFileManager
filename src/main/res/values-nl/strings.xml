@@ -63,7 +63,7 @@
     <string name="fileexist">Bestand met dezelfde naam bestaat al</string>
     <string name="filecreated">Bestand aangemaakt</string>
     <string name="searchpath">Pad zoeken</string>
-    <string name="search">ZOEKEN</string>
+    <string name="search">Zoeken</string>
     <string name="enterfile">Bestandsnaam invoeren</string>
     <string name="name">Naam: </string>
     <string name="date">Datum: </string>

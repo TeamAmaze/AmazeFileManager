@@ -411,55 +411,23 @@ public class MainActivityHelper {
             return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
         else return a;
     }
-    public void search() {
+    public void search(String query) {
         TabFragment tabFragment=mainActivity.getFragment();
         if(tabFragment==null)return;
         final Main ma = (Main) tabFragment.getTab();
         final String fpath = ma.CURRENT_PATH;
-        final MaterialDialog.Builder a = new MaterialDialog.Builder( mainActivity);
-        a.title(R.string.search);
-        a.input(utils.getString(mainActivity, R.string.enterfile), "", true, new MaterialDialog
-                .InputCallback() {
-            @Override
-            public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
-            }
-        });
-        if ( mainActivity.theme1 == 1) a.theme(Theme.DARK);
-        a.negativeText(R.string.cancel);
-        a.positiveText(R.string.search);
-        a.widgetColor(Color.parseColor(mainActivity.fabskin));
-        a.positiveColor(Color.parseColor(mainActivity.fabskin));
-        a.negativeColor(Color.parseColor(mainActivity.fabskin));
-        a.onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(MaterialDialog materialDialog, DialogAction dialogAction) {
-                materialDialog.dismiss();
-                String a = materialDialog.getInputEditText().getText().toString();
-                if (a.length() == 0) {
-                    return;
-                }
-                /*SearchTask task = new SearchTask(ma.searchHelper, ma, a);
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);*/
-                //ma.searchTask = task;
-                mainActivity.mainFragment = (Main) mainActivity.getFragment().getTab();
-                FragmentManager fm = mainActivity.getSupportFragmentManager();
-                mainActivity.mSearchAsyncHelperFragment = new SearchAsyncHelper();
+        mainActivity.mainFragment = (Main) mainActivity.getFragment().getTab();
+        FragmentManager fm = mainActivity.getSupportFragmentManager();
+        mainActivity.mSearchAsyncHelperFragment = new SearchAsyncHelper();
 
-                Bundle args = new Bundle();
-                args.putString("input", a);
-                args.putString("path", fpath);
-                args.putInt("open_mode", ma.openMode);
-                args.putBoolean("root_mode", ma.ROOT_MODE);
+        Bundle args = new Bundle();
+        args.putString("input", query);
+        args.putString("path", fpath);
+        args.putInt("open_mode", ma.openMode);
+        args.putBoolean("root_mode", ma.ROOT_MODE);
 
-                mainActivity.mSearchAsyncHelperFragment.setArguments(args);
-                fm.beginTransaction().add(mainActivity.mSearchAsyncHelperFragment,
-                        mainActivity.TAG_ASYNC_HELPER).commit();
-
-            }
-        });
-        MaterialDialog b = a.build();
-        if (ma.openMode==2) b.getActionButton(DialogAction.POSITIVE).setEnabled(false);
-        b.show();
+        mainActivity.mSearchAsyncHelperFragment.setArguments(args);
+        fm.beginTransaction().add(mainActivity.mSearchAsyncHelperFragment,
+                mainActivity.TAG_ASYNC_HELPER).commit();
     }
-
 }

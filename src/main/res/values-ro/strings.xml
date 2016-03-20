@@ -63,7 +63,7 @@
     <string name="fileexist">Un fișier cu același nume există deja </string>
     <string name="filecreated">Fişier creat</string>
     <string name="searchpath">Cale de căutare</string>
-    <string name="search">CĂUTARE</string>
+    <string name="search">Căutare</string>
     <string name="enterfile">Introduceţi numele fişierului</string>
     <string name="name">Nume: </string>
     <string name="date">Dată: </string>

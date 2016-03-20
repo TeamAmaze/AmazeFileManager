@@ -33,6 +33,7 @@
 
         <item name="android:textColorSecondary">#ffffff</item>
         <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
+        <item name="android:textColorHint">#ffffff</item>
         <item name="android:actionModeBackground">@color/holo_dark_action_mode</item>
     </style>
     <style name="custom_action_mode_light" parent="ThemeOverlay.AppCompat.Dark">
@@ -53,6 +54,7 @@
 
         <item name="android:textColorSecondary">#ffffff</item>
         <item name="android:textColorPrimary">#ffffff</item>
+        <item name="android:textColorHint">#ffffff</item>
         <item name="android:actionModeBackground">@color/holo_dark_action_mode</item>
     </style>
 

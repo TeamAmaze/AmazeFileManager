@@ -31,6 +31,7 @@
 
         <item name="android:textColorSecondary">#ffffff</item>
         <item name="android:textColorPrimary">#ffffff</item>
+        <item name="android:textColorHint">#ffffff</item>
     </style>
     <style name="custom_action_mode_light" parent="ThemeOverlay.AppCompat.Dark">
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
@@ -52,6 +53,7 @@
 
         <item name="android:textColorSecondary">#ffffff</item>
         <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
+        <item name="android:textColorHint">#ffffff</item>
     </style>
     <style name="custom_action_mode_dark" parent="ThemeOverlay.AppCompat.Dark">
         <item name="actionModeBackground">@color/holo_dark_action_mode</item>
