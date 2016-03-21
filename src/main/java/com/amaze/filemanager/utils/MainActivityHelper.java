@@ -101,12 +101,12 @@ public class MainActivityHelper {
         materialDialog.show();
     }
     void mkfile(final int openMode,final String path,final Main ma){
-        final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{utils.getString(mainActivity, R.string.entername), "",utils.getString(mainActivity,R.string.newfolder),utils.getString(mainActivity, R.string.create),utils.getString(mainActivity,R.string.cancel),null});
+        final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{utils.getString(mainActivity, R.string.entername), "",utils.getString(mainActivity,R.string.newfile),utils.getString(mainActivity, R.string.create),utils.getString(mainActivity,R.string.cancel),null});
         materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                mkDir(new HFile(openMode, path + "/" + a), ma);
+                mkFile(new HFile(openMode,path + "/" + a),ma);
                 materialDialog.dismiss();
             }
         });
