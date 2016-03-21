@@ -65,12 +65,6 @@ public class SearchAsyncHelper extends Fragment {
         mCallbacks = null;
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        mSearchTask.cancel(true);
-    }
-
     public class SearchTask extends AsyncTask<String, BaseFile, Void> {
 
         @Override
