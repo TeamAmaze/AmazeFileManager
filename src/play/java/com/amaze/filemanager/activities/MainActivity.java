@@ -23,6 +23,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -56,7 +57,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -226,11 +230,10 @@ public class MainActivity extends BaseActivity implements
 
     private static final int PATH_ANIM_START_DELAY = 0;
     private static final int PATH_ANIM_END_DELAY = 0;
-
-    // helper fragment for search task to hold activity instance even after config changes
-    public SearchAsyncHelper mSearchAsyncHelperFragment;
     public static final String TAG_ASYNC_HELPER = "async_helper";
     public Main mainFragment;
+
+    private int TOOLBAR_START_INSET;
 
     /**
      * Called when the activity is first created.
@@ -246,12 +249,6 @@ public class MainActivity extends BaseActivity implements
         utils = new Futils();
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
-
-        if(mSearchAsyncHelperFragment !=null) {
-
-            FragmentManager fm = getSupportFragmentManager();
-            mSearchAsyncHelperFragment = (SearchAsyncHelper) fm.findFragmentByTag(TAG_ASYNC_HELPER);
-        }
 
         history = new HistoryManager(this, "Table2");
         history.initializeTable(DataUtils.HISTORY, 0);
@@ -753,6 +750,28 @@ public class MainActivity extends BaseActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.activity_extra, menu);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
+
+        MenuItem search = menu.findItem(R.id.search);
+        MenuItemCompat.setOnActionExpandListener(search, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                /* Stretching the SearchView across width of the Toolbar */
+                toolbar.setContentInsetsRelative(0, 0);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                /* Restoring */
+                toolbar.setContentInsetsRelative(TOOLBAR_START_INSET, 0);
+                return true;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -973,9 +992,6 @@ public class MainActivity extends BaseActivity implements
 
                 }
                 ma.switchView();
-                break;
-            case R.id.search:
-                mainActivityHelper.search();
                 break;
             case R.id.paste:
                 String path = ma.CURRENT_PATH;
@@ -1684,6 +1700,8 @@ public class MainActivity extends BaseActivity implements
         mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
         mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
         toolbar = (Toolbar) findViewById(R.id.action_bar);
+        /* For SearchView, see onCreateOptionsMenu(Menu menu)*/
+        TOOLBAR_START_INSET = toolbar.getContentInsetStart();
         setSupportActionBar(toolbar);
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
@@ -2247,6 +2265,9 @@ public class MainActivity extends BaseActivity implements
                 Uri uri = intent.getData();
                 zippath = uri.toString();
                 openZip(zippath);
+            } else if (intent.getAction().equals(Intent.ACTION_SEARCH)) {
+                String query = intent.getStringExtra(SearchManager.QUERY);
+                mainActivityHelper.search(query);
             }
     }
 
@@ -2535,5 +2556,8 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void onCancelled() {
 
+        mainFragment.createViews(mainFragment.LIST_ELEMENTS, false, mainFragment.CURRENT_PATH,
+                mainFragment.openMode, false, !mainFragment.IS_LIST);
+        mainFragment.mSwipeRefreshLayout.setRefreshing(false);
     }
 }

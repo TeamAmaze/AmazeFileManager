@@ -55,7 +55,7 @@
     <string name="fileexist">Ya existe un archivo con el mismo nombre </string>
     <string name="filecreated">Archivo creado</string>
     <string name="searchpath">Ruta de búsqueda</string>
-    <string name="search">BUSCAR</string>
+    <string name="search">Buscar</string>
     <string name="enterfile">Introduce el nombre del archivo</string>
     <string name="name">Nombre </string>
     <string name="date">Fecha: </string>

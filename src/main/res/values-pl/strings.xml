@@ -63,7 +63,7 @@
     <string name="fileexist">Istnieje już plik o takiej nazwie </string>
     <string name="filecreated">Utworzono plik</string>
     <string name="searchpath">Szukaj ścieżki</string>
-    <string name="search">SZUKAJ</string>
+    <string name="search">Szukaj</string>
     <string name="enterfile">Wpisz nazwę pliku</string>
     <string name="name">Nazwa: </string>
     <string name="date">Data: </string>

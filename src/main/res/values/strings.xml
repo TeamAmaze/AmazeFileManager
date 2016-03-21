@@ -63,7 +63,6 @@
     <string name="fileexist">File with same name already exists </string>
     <string name="filecreated">File Created</string>
     <string name="searchpath">Search Path</string>
-    <string name="search">SEARCH</string>
     <string name="enterfile">Enter File Name</string>
     <string name="name">Name: </string>
     <string name="date">Date: </string>
@@ -389,5 +388,6 @@
     <string name="renamebookmark">Modify Bookmark</string>
     <string name="cut">Cut</string>
     <string name="empty"></string>
+    <string name="search">Search</string>
 </resources>
 

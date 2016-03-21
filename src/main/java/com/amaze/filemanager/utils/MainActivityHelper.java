@@ -5,8 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,13 @@ import java.util.ArrayList;
 public class MainActivityHelper {
     MainActivity mainActivity;
     Futils utils;
+
+    /*
+     * A static string which saves the last searched query. Used to retain search task after
+     * user presses back button from pressing on any list item of search results
+     */
+    public static String SEARCH_TEXT;
+
     public MainActivityHelper(MainActivity mainActivity){
         this.mainActivity=mainActivity;
         utils=new Futils();
@@ -97,7 +106,7 @@ public class MainActivityHelper {
             @Override
             public void onClick(View v) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                mkDir(new HFile(openMode,path + "/" + a),ma);
+                mkDir(new HFile(openMode, path + "/" + a), ma);
                 materialDialog.dismiss();
             }
         });
@@ -187,7 +196,7 @@ public class MainActivityHelper {
         mainActivity.startActivityForResult(intent, 3);
     }
     public void rename(int mode, String f, String f1, final Activity context, boolean rootmode) {
-        final Toast toast=Toast.makeText(context,R.string.renaming,Toast.LENGTH_LONG);
+        final Toast toast=Toast.makeText(context, R.string.renaming, Toast.LENGTH_LONG);
         toast.show();
         Operations.rename(new HFile(mode, f), new HFile(mode, f1), rootmode, context, new Operations.ErrorCallBack() {
             @Override
@@ -277,7 +286,7 @@ public class MainActivityHelper {
 
 
     public void mkFile(final HFile path,final Main ma) {
-        final Toast toast=Toast.makeText(ma.getActivity(),R.string.creatingfile,Toast.LENGTH_LONG);
+        final Toast toast=Toast.makeText(ma.getActivity(), R.string.creatingfile, Toast.LENGTH_LONG);
         toast.show();
         Operations.mkfile(path, ma.getActivity(), ma.ROOT_MODE, new Operations.ErrorCallBack() {
             @Override
@@ -330,7 +339,7 @@ public class MainActivityHelper {
         });
     }
     public void mkDir(final HFile path,final Main ma) {
-        final Toast toast=Toast.makeText(ma.getActivity(),R.string.creatingfolder,Toast.LENGTH_LONG);
+        final Toast toast=Toast.makeText(ma.getActivity(), R.string.creatingfolder, Toast.LENGTH_LONG);
         toast.show();
         Operations.mkdir(path, ma.getActivity(), ma.ROOT_MODE, new Operations.ErrorCallBack() {
             @Override
@@ -338,24 +347,25 @@ public class MainActivityHelper {
                 ma.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(toast!=null)toast.cancel();
+                        if (toast != null) toast.cancel();
                         Toast.makeText(mainActivity, (R.string.fileexist), Toast.LENGTH_SHORT).show();
-                        if(ma!=null && ma.getActivity()!=null)
-                        mkdir(file.getMode(),file.getPath(),ma);
+                        if (ma != null && ma.getActivity() != null)
+                            mkdir(file.getMode(), file.getPath(), ma);
                     }
                 });
             }
 
             @Override
             public void launchSAF(HFile file) {
-                if(toast!=null)toast.cancel();
+                if (toast != null) toast.cancel();
                 ma.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                mainActivity.oppathe = path.getPath();
-                mainActivity.operation = DataUtils.NEW_FOLDER;
-                guideDialogForLEXA(mainActivity.oppathe);
-            }});
+                        mainActivity.oppathe = path.getPath();
+                        mainActivity.operation = DataUtils.NEW_FOLDER;
+                        guideDialogForLEXA(mainActivity.oppathe);
+                    }
+                });
 
             }
 
@@ -365,20 +375,20 @@ public class MainActivityHelper {
             }
 
             @Override
-           public void done(HFile hFile,final boolean b) {
-            ma.getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+            public void done(HFile hFile, final boolean b) {
+                ma.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
 
-                    if(toast!=null)toast.cancel();
-                    if(b){
-                        ma.updateList();
+                        if (toast != null) toast.cancel();
+                        if (b) {
+                            ma.updateList();
+                        } else
+                            Toast.makeText(ma.getActivity(), R.string.operationunsuccesful, Toast.LENGTH_SHORT).show();
                     }
-                    else Toast.makeText(ma.getActivity(),R.string.operationunsuccesful,Toast.LENGTH_SHORT).show();
-                }
-            });
-           }
-       });
+                });
+            }
+        });
     }
 
     public void deleteFiles(ArrayList<BaseFile> files) {
@@ -411,55 +421,43 @@ public class MainActivityHelper {
             return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
         else return a;
     }
-    public void search() {
+    public void search(String query) {
         TabFragment tabFragment=mainActivity.getFragment();
         if(tabFragment==null)return;
         final Main ma = (Main) tabFragment.getTab();
         final String fpath = ma.CURRENT_PATH;
-        final MaterialDialog.Builder a = new MaterialDialog.Builder( mainActivity);
-        a.title(R.string.search);
-        a.input(utils.getString(mainActivity, R.string.enterfile), "", true, new MaterialDialog
-                .InputCallback() {
-            @Override
-            public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
-            }
-        });
-        if ( mainActivity.theme1 == 1) a.theme(Theme.DARK);
-        a.negativeText(R.string.cancel);
-        a.positiveText(R.string.search);
-        a.widgetColor(Color.parseColor(mainActivity.fabskin));
-        a.positiveColor(Color.parseColor(mainActivity.fabskin));
-        a.negativeColor(Color.parseColor(mainActivity.fabskin));
-        a.onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(MaterialDialog materialDialog, DialogAction dialogAction) {
-                materialDialog.dismiss();
-                String a = materialDialog.getInputEditText().getText().toString();
-                if (a.length() == 0) {
-                    return;
-                }
-                /*SearchTask task = new SearchTask(ma.searchHelper, ma, a);
+
+        /*SearchTask task = new SearchTask(ma.searchHelper, ma, query);
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);*/
-                //ma.searchTask = task;
-                mainActivity.mainFragment = (Main) mainActivity.getFragment().getTab();
-                FragmentManager fm = mainActivity.getSupportFragmentManager();
-                mainActivity.mSearchAsyncHelperFragment = new SearchAsyncHelper();
+        //ma.searchTask = task;
+        SEARCH_TEXT = query;
+        mainActivity.mainFragment = (Main) mainActivity.getFragment().getTab();
+        FragmentManager fm = mainActivity.getSupportFragmentManager();
+        SearchAsyncHelper fragment =
+                (SearchAsyncHelper) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
 
-                Bundle args = new Bundle();
-                args.putString("input", a);
-                args.putString("path", fpath);
-                args.putInt("open_mode", ma.openMode);
-                args.putBoolean("root_mode", ma.ROOT_MODE);
+        if (fragment != null) {
 
-                mainActivity.mSearchAsyncHelperFragment.setArguments(args);
-                fm.beginTransaction().add(mainActivity.mSearchAsyncHelperFragment,
-                        mainActivity.TAG_ASYNC_HELPER).commit();
+            if (fragment.mSearchTask.getStatus() == AsyncTask.Status.RUNNING) {
 
+                fragment.mSearchTask.cancel(true);
             }
-        });
-        MaterialDialog b = a.build();
-        if (ma.openMode==2) b.getActionButton(DialogAction.POSITIVE).setEnabled(false);
-        b.show();
+            fm.beginTransaction().remove(fragment).commit();
+        }
+
+        addSearchFragment(fm, new SearchAsyncHelper(), fpath, query, ma.openMode, ma.ROOT_MODE);
     }
 
+    public static void addSearchFragment(FragmentManager fragmentManager, Fragment fragment,
+                                         String path, String input, int openMode, boolean rootMode) {
+        Bundle args = new Bundle();
+        args.putString("input", input);
+        args.putString("path", path);
+        args.putInt("open_mode", openMode);
+        args.putBoolean("root_mode", rootMode);
+
+        fragment.setArguments(args);
+        fragmentManager.beginTransaction().add(fragment,
+                MainActivity.TAG_ASYNC_HELPER).commit();
+    }
 }

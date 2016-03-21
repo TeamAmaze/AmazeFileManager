@@ -48,6 +48,8 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ActionMode;
@@ -93,6 +95,7 @@ import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
@@ -159,6 +162,12 @@ public class Main extends android.support.v4.app.Fragment {
     private View rootView;
     private View actionModeView;
     private FastScroller fastScroller;
+
+    /*
+     * boolean identifying if the search task should be re-run on back press after pressing on
+     * any of the search result
+     */
+    private boolean mRetainSearchTask = false;
 
     public Main() {
 
@@ -422,7 +431,7 @@ public class Main extends android.support.v4.app.Fragment {
             file_count = savedInstanceState.getInt("file_count", 0);
             results = savedInstanceState.getBoolean("results");
             MAIN_ACTIVITY.updatePath(CURRENT_PATH, results, openMode, folder_count, file_count);
-            createViews(LIST_ELEMENTS, true, (CURRENT_PATH), openMode, true, !IS_LIST);
+            createViews(LIST_ELEMENTS, true, (CURRENT_PATH), openMode, results, !IS_LIST);
             if (savedInstanceState.getBoolean("selection")) {
 
                 for (int i : savedInstanceState.getIntegerArrayList("position")) {
@@ -823,11 +832,23 @@ public class Main extends android.support.v4.app.Fragment {
     public void onListItemClicked(int position, View v) {
         if (position >= LIST_ELEMENTS.size()) return;
         if (results) {
-            if (MAIN_ACTIVITY.mSearchAsyncHelperFragment != null) {
-                if (MAIN_ACTIVITY.mSearchAsyncHelperFragment.mSearchTask.getStatus() == AsyncTask.Status.RUNNING)
-                    MAIN_ACTIVITY.mSearchAsyncHelperFragment.mSearchTask.cancel(true);
-                MAIN_ACTIVITY.mSearchAsyncHelperFragment = null;
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            SearchAsyncHelper fragment = (SearchAsyncHelper) fragmentManager
+                    .findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
+            if (fragment != null) {
+
+                if (fragment.mSearchTask.getStatus() == AsyncTask.Status.RUNNING) {
+
+                    fragment.mSearchTask.cancel(true);
+                }
+                getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
             }
+
+            mRetainSearchTask = true;
+            results = false;
+        } else {
+            mRetainSearchTask = false;
+            MainActivityHelper.SEARCH_TEXT = null;
         }
         if (selection == true) {
             if (!LIST_ELEMENTS.get(position).getSize().equals(goback)) {
@@ -1108,8 +1129,11 @@ public class Main extends android.support.v4.app.Fragment {
             loadlist(home, false, 0);
             return;
         }
+
         File f = new File(CURRENT_PATH);
-        if (!results) {
+        if (!results && !mRetainSearchTask) {
+
+            // normal case
             if (selection) {
                 adapter.toggleChecked(false);
             } else {
@@ -1128,13 +1152,39 @@ public class Main extends android.support.v4.app.Fragment {
                     loadlist(f.getParent(), true, openMode);
                 } else MAIN_ACTIVITY.exit();
             }
+        } else if (!results && mRetainSearchTask) {
+
+            // case when we had pressed on an item from search results and wanna go back
+            // leads to resuming the search task
+
+            if (MainActivityHelper.SEARCH_TEXT!=null) {
+
+                // starting the search query again :O
+                MAIN_ACTIVITY.mainFragment = (Main) MAIN_ACTIVITY.getFragment().getTab();
+                FragmentManager fm = MAIN_ACTIVITY.getSupportFragmentManager();
+
+                // getting parent path to resume search from there
+                String parentPath = new File(CURRENT_PATH).getParent();
+                // don't fuckin' remove this line, we need to change
+                // the path back to parent on back press
+                CURRENT_PATH = parentPath;
+
+                MainActivityHelper.addSearchFragment(fm, new SearchAsyncHelper(),
+                        parentPath, MainActivityHelper.SEARCH_TEXT, openMode, ROOT_MODE);
+            } else loadlist(CURRENT_PATH, true, -1);
+
+            mRetainSearchTask = false;
         } else {
-            if (MAIN_ACTIVITY.mSearchAsyncHelperFragment != null) {
-                if (MAIN_ACTIVITY.mSearchAsyncHelperFragment.mSearchTask.getStatus() == AsyncTask.Status.RUNNING)
-                    MAIN_ACTIVITY.mSearchAsyncHelperFragment.mSearchTask.cancel(true);
-                MAIN_ACTIVITY.mSearchAsyncHelperFragment = null;
+            // to go back after search list have been popped
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            SearchAsyncHelper fragment = (SearchAsyncHelper) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
+            if (fragment != null) {
+                if (fragment.mSearchTask.getStatus() == AsyncTask.Status.RUNNING) {
+                    fragment.mSearchTask.cancel(true);
+                }
             }
-            loadlist(CURRENT_PATH, true, -1);
+            loadlist(new File(CURRENT_PATH).getPath(), true, -1);
+            results = false;
         }
     }
 
@@ -1359,18 +1409,22 @@ public class Main extends android.support.v4.app.Fragment {
             // adding new value to LIST_ELEMENTS
             addTo(a);
             if (!results) {
-                createViews(LIST_ELEMENTS, false, (CURRENT_PATH), openMode, true, !IS_LIST);
+                createViews(LIST_ELEMENTS, false, (CURRENT_PATH), openMode, false, !IS_LIST);
                 pathname.setText(MAIN_ACTIVITY.getString(R.string.empty));
                 mFullPath.setText(MAIN_ACTIVITY.getString(R.string.searching));
+                results = true;
             } else {
                 adapter.addItem();
             }
-            results = true;
             stopAnimation();
         }
     }
 
     public void onSearchCompleted() {
+        if (!results) {
+            // no results were found
+            LIST_ELEMENTS.clear();
+        }
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -1383,7 +1437,6 @@ public class Main extends android.support.v4.app.Fragment {
                 createViews(LIST_ELEMENTS, true, (CURRENT_PATH), openMode, true, !IS_LIST);
                 pathname.setText(MAIN_ACTIVITY.getString(R.string.empty));
                 mFullPath.setText(MAIN_ACTIVITY.getString(R.string.searchresults));
-                results = true;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }

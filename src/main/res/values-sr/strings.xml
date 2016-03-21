@@ -63,7 +63,7 @@
     <string name="fileexist">Фајл истог имена већ постоји </string>
     <string name="filecreated">Фајл направљен</string>
     <string name="searchpath">Путања претраге</string>
-    <string name="search">ТРАЖИ</string>
+    <string name="search">Тражи</string>
     <string name="enterfile">Унесите име фајла</string>
     <string name="name">Име: </string>
     <string name="date">Датум: </string>

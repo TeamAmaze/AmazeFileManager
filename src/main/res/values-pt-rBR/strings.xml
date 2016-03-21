@@ -63,7 +63,7 @@
     <string name="fileexist">Já existe um arquivo com este nome </string>
     <string name="filecreated">Arquivo criado</string>
     <string name="searchpath">Caminho de pesquisa</string>
-    <string name="search">PROCURAR</string>
+    <string name="search">Procurar</string>
     <string name="enterfile">Insira o nome do arquivo</string>
     <string name="name">Nome: </string>
     <string name="date">Data: </string>
