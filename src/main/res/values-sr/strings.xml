@@ -63,7 +63,6 @@
     <string name="fileexist">Фајл истог имена већ постоји </string>
     <string name="filecreated">Фајл направљен</string>
     <string name="searchpath">Путања претраге</string>
-    <string name="search">Тражи</string>
     <string name="enterfile">Унесите име фајла</string>
     <string name="name">Име: </string>
     <string name="date">Датум: </string>
@@ -101,6 +100,7 @@
     <string name="confirm">Потврда</string>
     <string name="deleting">Бришем</string>
     <string name="questiondelete">Желите ли заиста да обришете следеће ставке?</string>
+    <string name="questionset">Желите ли да поставите текућу путању као почетну за овај језичак?</string>
     <string name="viewmode">Режим приказа</string>
     <string name="uimode">Режим сучеља</string>
     <string name="directorysort">Режим ређања фасцикли</string>
@@ -123,7 +123,6 @@
     <string name="mountsystemsummary">Омогућите ово ако желите да уредите системске фајлове</string>
     <string name="mountsystem">Монтирај системске фасцикле за уписивање</string>
     <string name="rootfailure">Корени приступ није дозвољен</string>
-    <string name="cut">Исеци</string>
     <string name="selectall">Изабери све</string>
     <string name="delete">Обриши</string>
     <string name="setashome"> Постави за почетну фасциклу</string>
@@ -281,6 +280,7 @@
     <string name="korean_translation_title">Корејски</string>
     <string name="greek_translation_title">Грчки</string>
     <string name="dutch_translation_title">Холандски</string>
+    <string name="romanian_translation_title">Румунски</string>
 
     <string name="zip_viewer">Зип прегледач</string>
     <string name="unin_system_apk">Ово је системска апликација, уклањање може да доведе до нестабилности система.\nДа наставим?</string>
@@ -366,5 +366,28 @@
     <string name="defualt">Подразумевано</string>
     <string name="doit">Уради то</string>
     <string name="wanthelp"><u>Требате помоћ?</u></string>
+    <string name="quick">Брзи приступ</string>
+    <string name="recent">Недавни фајлови</string>
+    <string name="edit">Уреди</string>
+    <string name="find">Нађи на страници</string>
+    <string name="grant">Одобри</string>
+    <string name="grantper">Одобри дозволу</string>
+    <string name="grantfailed">Дозвола није одобрена</string>
+    <string name="granttext">Апликацији је потребна дозвола за складиште да настави. Отказивањем дијалога напустићете апликацију.</string>
+    <string name="grantgplus">Апликацији је потребна дозвола за ову функцију. Отказивањем дијалога искључићете ово.</string>
+    <string name="operationunsuccesful">Радња није успела</string>
+    <string name="creatingfile">Правим фајл</string>
+    <string name="creatingfolder">Правим фасциклу</string>
+    <string name="renaming">Преименујем</string>
+    <string name="cantbeempty">%s не може да буде празно</string>
+    <string name="ip">Адреса</string>
+    <string name="connectionname">Назив везе</string>
+    <string name="nodevicefound">Ниједан уређај није нађен</string>
+    <string name="searchingdevices">Тражим уређаје</string>
+    <string name="path">Путања</string>
+    <string name="renamebookmark">Измени обележивач</string>
+    <string name="cut">Исеци</string>
+    <string name="empty"></string>
+    <string name="search">Тражи</string>
 </resources>
 
