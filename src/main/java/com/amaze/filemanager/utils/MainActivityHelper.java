@@ -477,7 +477,7 @@ public class MainActivityHelper {
                 MainActivity.TAG_ASYNC_HELPER).commit();
     }
 
-    /*
+    /**
      * Validates file name at the time of creation
      * special reserved characters shall not be allowed in the file names
      * @param file the file which needs to be validated

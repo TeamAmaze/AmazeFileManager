@@ -97,19 +97,19 @@ public class TextReader extends BaseActivity
      ScrollView scrollView;
 
     /*
-    List maintaining the searched text's start/end index as key/value pair
+     * List maintaining the searched text's start/end index as key/value pair
      */
-    public ArrayList<MapEntry> nodes;
+    public ArrayList<MapEntry> nodes = new ArrayList<>();
 
     /*
-    variable to maintain the position of index
-    while pressing next/previous button in the searchBox
+     * variable to maintain the position of index
+     * while pressing next/previous button in the searchBox
      */
     private int mCurrent = -1;
 
     /*
-    variable to maintain line number of the searched phrase
-    further used to calculate the scroll position
+     * variable to maintain line number of the searched phrase
+     * further used to calculate the scroll position
      */
     public int mLine = 0;
 
@@ -455,16 +455,17 @@ public class TextReader extends BaseActivity
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
-        // clearing before adding new values
+        // condition to check if callback is called in search editText
         if (searchEditText != null && charSequence.hashCode() == searchEditText.getText().hashCode()) {
 
-            if (searchTextTask!=null)
-                searchTextTask.cancel(true);
+            // clearing before adding new values
+            if (searchTextTask!=null) searchTextTask.cancel(true);
 
             nodes.clear();
             mCurrent = -1;
             mLine = 0;
 
+            // clearing textView spans
             Thread clearSpans = new Thread(this);
             clearSpans.run();
         }
