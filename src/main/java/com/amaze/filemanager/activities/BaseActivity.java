@@ -34,6 +34,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         int th = Integer.parseInt(Sp.getString("theme", "0"));
+        // checking if theme should be set light/dark or automatic
         theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
         utils=new Futils();
         boolean random = Sp.getBoolean("random_checkbox", false);

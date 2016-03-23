@@ -154,8 +154,8 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,OnRequestPermissionsResultCallback,
-        SmbConnectionListener,DataChangeListener,BookmarkCallback,
+        GoogleApiClient.OnConnectionFailedListener, OnRequestPermissionsResultCallback,
+        SmbConnectionListener,DataChangeListener, BookmarkCallback,
         SearchAsyncHelper.HelperCallbacks {
 
     final Pattern DIR_SEPARATOR = Pattern.compile("/");

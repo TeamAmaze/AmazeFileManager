@@ -49,6 +49,16 @@ public class MainActivityHelper {
      */
     public static String SEARCH_TEXT;
 
+    // reserved characters by OS, shall not be allowed in file names
+    private static final String CONSTANT_FOREWARD_SLASH = "/";
+    private static final String CONSTANT_BACKWARD_SLASH = "\\";
+    private static final String CONSTANT_COLON = ":";
+    private static final String CONSTANT_ASTERISK = "*";
+    private static final String CONSTANT_QUESTION_MARK = "?";
+    private static final String CONSTANT_QUOTE = "\"";
+    private static final String CONSTANT_GREATER_THAN = ">";
+    private static final String CONSTANT_LESS_THAN = "<";
+
     public MainActivityHelper(MainActivity mainActivity){
         this.mainActivity=mainActivity;
         utils=new Futils();
@@ -94,7 +104,10 @@ public class MainActivityHelper {
             @Override
             public void onClick(View v) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                mkDir(new HFile(openMode,path + "/" + a),ma);
+                if (validateFileName(new HFile(openMode,path + "/" + a), true)) {
+
+                    mkDir(new HFile(openMode,path + "/" + a),ma);
+                } else Toast.makeText(mainActivity, R.string.invalid_name, Toast.LENGTH_SHORT).show();
                 materialDialog.dismiss();
             }
         });
@@ -106,7 +119,10 @@ public class MainActivityHelper {
             @Override
             public void onClick(View v) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                mkFile(new HFile(openMode,path + "/" + a),ma);
+                if (validateFileName(new HFile(openMode,path + "/" + a), false)) {
+
+                    mkFile(new HFile(openMode,path + "/" + a),ma);
+                } else Toast.makeText(mainActivity, R.string.invalid_name, Toast.LENGTH_SHORT).show();
                 materialDialog.dismiss();
             }
         });
@@ -459,5 +475,34 @@ public class MainActivityHelper {
         fragment.setArguments(args);
         fragmentManager.beginTransaction().add(fragment,
                 MainActivity.TAG_ASYNC_HELPER).commit();
+    }
+
+    /*
+     * Validates file name at the time of creation
+     * special reserved characters shall not be allowed in the file names
+     * @param file the file which needs to be validated
+     * @param isDir if the file is a directory, in case it shall not be named same as the parent
+     * @return boolean if the file name is valid or invalid
+     */
+    public static boolean validateFileName(HFile file, boolean isDir) {
+
+        StringBuilder builder = new StringBuilder(file.getPath());
+        String newName = builder.substring(builder.lastIndexOf("/")+1, builder.length());
+
+        if (newName.contains(CONSTANT_ASTERISK) || newName.contains(CONSTANT_BACKWARD_SLASH) ||
+                newName.contains(CONSTANT_COLON) || newName.contains(CONSTANT_FOREWARD_SLASH) ||
+                newName.contains(CONSTANT_GREATER_THAN) || newName.contains(CONSTANT_LESS_THAN) ||
+                newName.contains(CONSTANT_QUESTION_MARK) || newName.contains(CONSTANT_QUOTE)) {
+            return false;
+        } else if (isDir) {
+
+            // new directory name shall not be equal to parent directory name
+            StringBuilder parentPath = new StringBuilder(builder.substring(0,
+                    builder.length()-(newName.length()+1)));
+            String parentName = parentPath.substring(parentPath.lastIndexOf("/")+1,
+                    parentPath.length());
+            if (newName.equals(parentName)) return false;
+        }
+        return true;
     }
 }

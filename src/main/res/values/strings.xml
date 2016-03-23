@@ -389,5 +389,6 @@
     <string name="cut">Cut</string>
     <string name="empty"></string>
     <string name="search">Search</string>
+    <string name="invalid_name">Invalid Name</string>
 </resources>
 
