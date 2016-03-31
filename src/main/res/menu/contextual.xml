@@ -65,4 +65,10 @@
     <item
         android:id="@+id/addshortcut"
         android:title="@string/addshortcut" />
+
+    <item
+        android:id="@+id/ex"
+        android:title="@string/extract"
+        android:visible="false"
+        app:showAsAction="always"/>
 </menu>

@@ -24,10 +24,22 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
     ZipViewer zipViewer;
     String dir;
 
+    /**
+     * AsyncTask to load RAR file items.
+     * @param zipViewer the zipViewer fragment instance
+     * @param dir
+     */
     public RarHelperTask(ZipViewer zipViewer, String dir) {
 
         this.zipViewer = zipViewer;
         this.dir = dir;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+
+        zipViewer.swipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
@@ -64,13 +76,14 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
             }
         } catch (Exception e) {
         }
+        Collections.sort(elements, new FileListSorter());
         return elements;
     }
 
     @Override
     protected void onPostExecute(ArrayList<FileHeader> zipEntries) {
         super.onPostExecute(zipEntries);
-        Collections.sort(zipEntries, new FileListSorter());
+        zipViewer.swipeRefreshLayout.setRefreshing(false);
         zipViewer.createRarviews(zipEntries, dir);
     }
 

@@ -110,6 +110,7 @@ public class ZipViewer extends Fragment {
     int openmode;
     //0 for zip 1 for rar
     boolean stopAnims=true;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
@@ -315,6 +316,7 @@ public class ZipViewer extends Fragment {
             showOption(R.id.all, menu);
             hideOption(R.id.compress, menu);
             hideOption(R.id.hide, menu);
+            showOption(R.id.ex, menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
             ObjectAnimator anim = ObjectAnimator.ofInt(mainActivity.findViewById(R.id.buttonbarframe), "backgroundColor", Color.parseColor(skin), getResources().getColor(R.color.holo_dark_action_mode));
             anim.setDuration(0);
@@ -358,13 +360,17 @@ public class ZipViewer extends Fragment {
             return false;
         }
 
+        /**
+         * Method will extract only items selected by the user at a level in a rar hierarchy
+         */
         void exRar() {
             try {
                 Toast.makeText(getActivity(), new Futils().getString(getActivity(), R.string.extracting), Toast.LENGTH_SHORT).show();
                 FileOutputStream fileOutputStream;
+                String fileName = f.getName().substring(0, f.getName().lastIndexOf("."));
                 for (int i : rarAdapter.getCheckedItemPositions()) {
-                    if (!elements.get(i).isDirectory()) {
-                        File f1 = new File(f.getParent() +
+                    if (!elementsRar.get(i).isDirectory()) {
+                        File f1 = new File(f.getParent() + "/" + fileName +
                                 "/" + elementsRar.get(i).getFileNameString().trim().replaceAll("\\\\",
                                 "/"));
                         if (!f1.getParentFile().exists()) f1.getParentFile().mkdirs();
@@ -375,7 +381,7 @@ public class ZipViewer extends Fragment {
                         for (FileHeader v : archive.getFileHeaders()) {
                             if (v.getFileNameString().trim().contains(name + "\\") ||
                                     v.getFileNameString().trim().equals(name)) {
-                                File f2 = new File(f.getParent() +
+                                File f2 = new File(f.getParent() + "/" + fileName +
                                         "/" + v.getFileNameString().trim().replaceAll("\\\\", "/"));
                                 if (v.isDirectory()) f2.mkdirs();
                                 else {
@@ -393,6 +399,10 @@ public class ZipViewer extends Fragment {
                 e.printStackTrace();
             }
         }
+
+        /**
+         * Method will extract only items selected by the user at a level in a zip hierarchy
+         */
         void exZip(){
 
             try {
