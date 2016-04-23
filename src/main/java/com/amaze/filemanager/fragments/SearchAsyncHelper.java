@@ -1,6 +1,5 @@
 package com.amaze.filemanager.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 /**
  * Created by vishal on 26/2/16.
@@ -26,6 +26,21 @@ public class SearchAsyncHelper extends Fragment {
     private static final String KEY_INPUT = "input";
     private static final String KEY_OPEN_MODE = "open_mode";
     private static final String KEY_ROOT_MODE = "root_mode";
+
+    private static final String WILDCARD_ANY = "*";
+    private static final String WILDCARD_ANY_SINGLE = "?";
+    private static final String WILDCARD_SQUARE_OPEN = "[";
+    private static final String WILDCARD_SQUARE_CLOSE = "]";
+    private static final String WILDCARD_NOT = "!";
+
+    private static final String WILDCARD_PATTERN_ALPHANUMERIC = "[:alnum:]";
+    private static final String WILDCARD_PATTERN_ALPHABETIC_ALL = "[:alpha:]";
+    private static final String WILDCARD_PATTERN_NUMERALS = "[:digit:]";
+    private static final String WILDCARD_PATTERN_ALPHABETIC_UPPER = "[:upper:]";
+    private static final String WILDCARD_PATTERN_ALPHABETIC_LOWER = "[:lower:]";
+
+    private static final String ESCAPE_JAVA_REGEX_PERIOD = ".";
+    private static final String ESCAPE_JAVA_REGEX_PLUS = "+";
 
     // interface for activity to communicate with asynctask
     public interface HelperCallbacks {
@@ -81,7 +96,7 @@ public class SearchAsyncHelper extends Fragment {
             }
         }
 
-        // mcallbacks not checked for null because of possibility of
+        // mCallbacks not checked for null because of possibility of
         // race conditions b/t worker thread main thread
         @Override
         protected Void doInBackground(String... params) {
@@ -90,7 +105,11 @@ public class SearchAsyncHelper extends Fragment {
             HFile file=new HFile(mOpenMode, path);
             file.generateMode(getActivity());
             if(file.isSmb())return null;
-            search(file, mInput);
+            //search(file, mInput);
+
+            // compile the regular expression in the input
+            Pattern pattern = Pattern.compile(javaRegexToGrep(mInput));
+            searchRegEx(file, pattern);
             return null;
         }
 
@@ -113,7 +132,12 @@ public class SearchAsyncHelper extends Fragment {
             }
         }
 
-        public void search(HFile file, String text) {
+        /**
+         * Search for occurrences of a given text in file names
+         * @param file the current path
+         * @param text the searched text
+         */
+        private void search(HFile file, String text) {
 
             if (file.isDirectory()) {
                 ArrayList<BaseFile> f = file.listFiles(mRootMode);
@@ -141,6 +165,52 @@ public class SearchAsyncHelper extends Fragment {
                 System.out
                         .println(file.getPath() + "Permission Denied");
             }
+        }
+        private void searchRegEx(HFile file, Pattern pattern) {
+
+            if (file.isDirectory()) {
+                ArrayList<BaseFile> f = file.listFiles(mRootMode);
+
+                if (!isCancelled())
+                    for (BaseFile x : f) {
+                        if (!isCancelled()) {
+                            if (x.isDirectory()) {
+                                if (pattern.matcher(x.getName()).matches()) publishProgress(x);
+                                if (!isCancelled()) searchRegEx(x, pattern);
+
+                            } else {
+                                if (pattern.matcher(x.getName()).matches()) {
+                                    publishProgress(x);
+                                }
+                            }
+                        } else return;
+                    }
+                else return;
+            } else {
+                System.out
+                        .println(file.getPath() + "Permission Denied");
+            }
+        }
+
+        private String javaRegexToGrep(String originalString) {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for(int i=0; i<originalString.length(); i++) {
+                switch (originalString.charAt(i) + "") {
+                    case "*":
+                        stringBuilder.append("\\w*");
+                        break;
+                    case "?":
+                        stringBuilder.append("\\w");
+                        break;
+                    default:
+                        stringBuilder.append(originalString.charAt(i));
+                        break;
+                }
+            }
+
+            System.out.println(stringBuilder.toString());
+            return stringBuilder.toString();
         }
     }
 }

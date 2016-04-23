@@ -20,6 +20,7 @@
 package com.amaze.filemanager.activities;
 
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -44,12 +45,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -118,6 +123,8 @@ public class TextReader extends BaseActivity
     private static final String KEY_INDEX = "index";
     private static final String KEY_ORIGINAL_TEXT = "original";
 
+    private RelativeLayout searchViewLayout;
+
     Uri uri=null;
     public ImageButton upButton, downButton, closeButton;
 
@@ -130,10 +137,13 @@ public class TextReader extends BaseActivity
             getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         }
         setContentView(R.layout.search);
+        searchViewLayout = (RelativeLayout) findViewById(R.id.searchview);
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         skin = PreferenceUtils.getPrimaryColorString(Sp);
-        findViewById(R.id.lin).setBackgroundColor(Color.parseColor(skin));
+        //findViewById(R.id.lin).setBackgroundColor(Color.parseColor(skin));
+        toolbar.setBackgroundColor(Color.parseColor(skin));
+        searchViewLayout.setBackgroundColor(Color.parseColor(skin));
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
             ((Activity) this).setTaskDescription(taskDescription);
@@ -464,7 +474,8 @@ public class TextReader extends BaseActivity
                 }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
                 break;
             case R.id.find:
-                searchQueryInit(findViewById(R.id.searchview));
+                if (searchViewLayout.isShown()) hideSearchView();
+                else searchQueryInit();
                 break;
             default:
                 return false;
@@ -540,13 +551,12 @@ public class TextReader extends BaseActivity
 
         return stream;
     }
-    public boolean searchQueryInit(final View actionModeView) {
-        actionModeView.setVisibility(View.VISIBLE);
-        searchEditText = (EditText) actionModeView.findViewById(R.id.search_box);
+    public boolean searchQueryInit() {
+        searchEditText = (EditText) searchViewLayout.findViewById(R.id.search_box);
         searchEditText.setText("");
-        upButton = (ImageButton) actionModeView.findViewById(R.id.prev);
-        downButton = (ImageButton) actionModeView.findViewById(R.id.next);
-        closeButton = (ImageButton) actionModeView.findViewById(R.id.close);
+        upButton = (ImageButton) searchViewLayout.findViewById(R.id.prev);
+        downButton = (ImageButton) searchViewLayout.findViewById(R.id.next);
+        closeButton = (ImageButton) searchViewLayout.findViewById(R.id.close);
 
         searchEditText.addTextChangedListener(this);
         searchEditText.requestFocus();
@@ -556,8 +566,99 @@ public class TextReader extends BaseActivity
         downButton.setOnClickListener(this);
         downButton.setEnabled(false);
         closeButton.setOnClickListener(this);
+        revealSearchView();
 
         return true;
+    }
+
+    /**
+     * show search view with a circular reveal animation
+     */
+    void revealSearchView() {
+
+        int startRadius = 4;
+        int endRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        // hardcoded and completely random
+        int cx = metrics.widthPixels - 160;
+        int cy = toolbar.getBottom();
+        Animator animator = ViewAnimationUtils.createCircularReveal(searchViewLayout, cx, cy,
+                startRadius, endRadius);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.setDuration(600);
+        searchViewLayout.setVisibility(View.VISIBLE);
+        animator.start();
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+                searchEditText.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+    }
+
+    /**
+     * hide search view with a circular reveal animation
+     */
+    void hideSearchView() {
+
+        int endRadius = 4;
+        int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        // hardcoded and completely random
+        int cx = metrics.widthPixels - 160;
+        int cy = toolbar.getBottom();
+        Animator animator = ViewAnimationUtils.createCircularReveal(searchViewLayout, cx, cy,
+                startRadius, endRadius);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.setDuration(600);
+        animator.start();
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+                searchViewLayout.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
     }
 
     @Override

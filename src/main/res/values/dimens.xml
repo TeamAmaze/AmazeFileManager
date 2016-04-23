@@ -5,4 +5,8 @@
     <dimen name="fastscroller_track_width">7dp</dimen>
     <dimen name="fastscroller_track_padding">3dp</dimen>
     <dimen name="padding_normal">16dp</dimen>
+    <dimen name="search_view_margin">4dp</dimen>
+    <dimen name="search_view_edit_text_width">240dp</dimen>
+    <dimen name="search_view_back_margin_left_right">16dp</dimen>
+    <dimen name="search_view_info_margin_left_right">16dp</dimen>
 </resources>

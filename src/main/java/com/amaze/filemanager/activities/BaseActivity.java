@@ -26,6 +26,8 @@ import java.io.IOException;
 public class BaseActivity extends AppCompatActivity {
     public int theme1;
     public SharedPreferences Sp;
+
+    // Accent and Primary hex color string respectively
     public String fabskin,skin;
     Futils utils;
     boolean  rootmode,checkStorage=true;

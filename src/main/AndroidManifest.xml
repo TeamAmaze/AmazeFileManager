@@ -65,11 +65,6 @@
                 <data android:mimeType="application/x-rar-compressed"/><!--<category android:name="android.intent.category.OPENABLE" />-->
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
         </activity>
 		<activity
 			android:uiOptions="splitActionBarWhenNarrow"

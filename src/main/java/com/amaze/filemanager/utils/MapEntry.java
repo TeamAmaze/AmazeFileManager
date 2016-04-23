@@ -4,12 +4,18 @@ import java.util.LinkedHashMap;
 
 /**
  * Created by Vishal on 21/12/15.
+ * A helper class which provides data structure of key/value pair
  */
 public class MapEntry implements LinkedHashMap.Entry {
 
     private KeyMapEntry key;
     private Integer value;
 
+    /**
+     * Constructor to provide values to the pair
+     * @param key object of {@link KeyMapEntry} which is another key/value pair
+     * @param value integer object in the pair
+     */
     public MapEntry(KeyMapEntry key, Integer value) {
         this.key = key;
         this.value = value;

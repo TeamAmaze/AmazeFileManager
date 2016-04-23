@@ -23,7 +23,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -53,14 +52,12 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.MenuCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.SearchView;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -71,12 +68,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -102,9 +102,9 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
-import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
+import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
@@ -217,7 +217,7 @@ public class MainActivity extends BaseActivity implements
     TabHandler tabHandler;
     RelativeLayout drawerHeaderParent;
     static final int image_selector_request_code = 31;
-    // Check for user interaction for google+ api only once
+    // Check for user interaction for Google+ api only once
     boolean mGoogleApiKey = false;
     /* A flag indicating that a PendingIntent is in progress and prevents
    * us from starting further intents.
@@ -234,6 +234,9 @@ public class MainActivity extends BaseActivity implements
     public Main mainFragment;
 
     private int TOOLBAR_START_INSET;
+    private RelativeLayout searchViewLayout;
+    private AppCompatEditText searchViewEditText;
+    private int[] searchCoords = new int[2];
 
     /**
      * Called when the activity is first created.
@@ -503,7 +506,11 @@ public class MainActivity extends BaseActivity implements
 
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
             String name = fragment.getClass().getName();
-            if (name.contains("TabFragment")) {
+            if (searchViewLayout.isShown()) {
+                // hide search view if visible, with an animation
+                hideSearchView();
+
+            } else if (name.contains("TabFragment")) {
                 if (floatingActionButton.isOpened()) {
                     floatingActionButton.close(true);
                     utils.revealShow(findViewById(R.id.fab_bg), false);
@@ -750,7 +757,7 @@ public class MainActivity extends BaseActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.activity_extra, menu);
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        /*SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
@@ -759,18 +766,18 @@ public class MainActivity extends BaseActivity implements
         MenuItemCompat.setOnActionExpandListener(search, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                /* Stretching the SearchView across width of the Toolbar */
+                *//* Stretching the SearchView across width of the Toolbar *//*
                 toolbar.setContentInsetsRelative(0, 0);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                /* Restoring */
+                *//* Restoring *//*
                 toolbar.setContentInsetsRelative(TOOLBAR_START_INSET, 0);
                 return true;
             }
-        });
+        });*/
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -929,7 +936,9 @@ public class MainActivity extends BaseActivity implements
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
-                final MaterialDialog b = utils.showBasicDialog(mainActivity,fabskin,theme1, new String[]{getResources().getString(R.string.questionset), getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
+                final MaterialDialog b = utils.showBasicDialog(mainActivity,fabskin,theme1,
+                        new String[]{getResources().getString(R.string.questionset),
+                                getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
                 b.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -1015,8 +1024,92 @@ public class MainActivity extends BaseActivity implements
                 if (fragment1.getClass().getName().contains("ZipViewer"))
                     mainActivityHelper.extractFile(((ZipViewer) fragment1).f);
                 break;
+            case R.id.search:
+                //mainActivityHelper.search("LOL");
+                View searchItem = toolbar.findViewById(R.id.search);
+                searchItem.getLocationOnScreen(searchCoords);
+                if (!searchViewLayout.isShown()) revealSearchView();
+                else hideSearchView();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * show search view with a circular reveal animation
+     */
+    void revealSearchView() {
+
+        int startRadius = 16;
+        int endRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
+
+        Animator animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
+                searchCoords[0]+32, searchCoords[1]-16, startRadius, endRadius);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.setDuration(600);
+        searchViewLayout.setVisibility(View.VISIBLE);
+        animator.start();
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+                searchViewEditText.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchViewEditText, InputMethodManager.SHOW_IMPLICIT);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+    }
+
+    /**
+     * hide search view with a circular reveal animation
+     */
+    void hideSearchView() {
+
+        int endRadius = 16;
+        int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
+        Animator animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
+                searchCoords[0] + 32, searchCoords[1] - 16, startRadius, endRadius);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.setDuration(600);
+        animator.start();
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+                searchViewLayout.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
     }
 
     /*@Override
@@ -1811,6 +1904,23 @@ public class MainActivity extends BaseActivity implements
                 window.setNavigationBarColor(skinStatusBar);
 
         }
+        searchViewLayout = (RelativeLayout) findViewById(R.id.search_view);
+        searchViewEditText = (AppCompatEditText) findViewById(R.id.search_edit_text);
+        searchViewEditText.setOnKeyListener(new TextView.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    // Perform action on key press
+                    mainActivityHelper.search(searchViewEditText.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
+        searchViewEditText.setTextColor(Color.parseColor(fabskin));
+        searchViewEditText.setHintTextColor(Color.parseColor(fabskin));
     }
 
     void initialiseFab() {
@@ -2265,9 +2375,6 @@ public class MainActivity extends BaseActivity implements
                 Uri uri = intent.getData();
                 zippath = uri.toString();
                 openZip(zippath);
-            } else if (intent.getAction().equals(Intent.ACTION_SEARCH)) {
-                String query = intent.getStringExtra(SearchManager.QUERY);
-                mainActivityHelper.search(query);
             }
     }
 
@@ -2449,7 +2556,7 @@ public class MainActivity extends BaseActivity implements
         bundle.putString("path",path);
         bundle.putBoolean("edit",edit);
         smbConnectDialog.setArguments(bundle);
-        smbConnectDialog.show(getFragmentManager(),"smbdailog");
+        smbConnectDialog.show(getFragmentManager(), "smbdailog");
     }
 
     @Override
@@ -2512,7 +2619,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onBookAdded(String[] path, boolean refreshdrawer) {
-        grid.addPath(path[0],path[1],DataUtils.BOOKS,1);
+        grid.addPath(path[0], path[1], DataUtils.BOOKS, 1);
         if(refreshdrawer)
             refreshDrawer();
     }
@@ -2524,7 +2631,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void delete(String title, String path) {
-        grid.removePath(title,path,DataUtils.BOOKS);
+        grid.removePath(title, path, DataUtils.BOOKS);
         refreshDrawer();
 
     }

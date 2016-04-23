@@ -390,5 +390,8 @@
     <string name="empty"></string>
     <string name="search">Search</string>
     <string name="invalid_name">Invalid Name</string>
+    <string name="search_hint">Type to search&#8230;</string>
+    <string name="advanced_search">Advanced Search</string>
+    <string name="regular_expression">Regular Expression</string>
 </resources>
 

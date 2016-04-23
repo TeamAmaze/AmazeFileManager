@@ -95,6 +95,14 @@
 </PreferenceCategory>
     <PreferenceCategory android:title="@string/miscellaneous">
 
+        <PreferenceScreen
+            android:title="@string/advanced_search"
+            >
+            <com.amaze.filemanager.ui.views.CheckBx
+                android:title="@string/advanced_search"
+                />
+        </PreferenceScreen>
+
         <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="false"
             android:key="showPermissions"

@@ -50,14 +50,14 @@ public class MainActivityHelper {
     public static String SEARCH_TEXT;
 
     // reserved characters by OS, shall not be allowed in file names
-    private static final String CONSTANT_FOREWARD_SLASH = "/";
-    private static final String CONSTANT_BACKWARD_SLASH = "\\";
-    private static final String CONSTANT_COLON = ":";
-    private static final String CONSTANT_ASTERISK = "*";
-    private static final String CONSTANT_QUESTION_MARK = "?";
-    private static final String CONSTANT_QUOTE = "\"";
-    private static final String CONSTANT_GREATER_THAN = ">";
-    private static final String CONSTANT_LESS_THAN = "<";
+    private static final String FOREWARD_SLASH = "/";
+    private static final String BACKWARD_SLASH = "\\";
+    private static final String COLON = ":";
+    private static final String ASTERISK = "*";
+    private static final String QUESTION_MARK = "?";
+    private static final String QUOTE = "\"";
+    private static final String GREATER_THAN = ">";
+    private static final String LESS_THAN = "<";
 
     public MainActivityHelper(MainActivity mainActivity){
         this.mainActivity=mainActivity;
@@ -432,11 +432,17 @@ public class MainActivityHelper {
             mainActivity.startService(intent);
         } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
+
     public String parseSmbPath(String a) {
         if (a.contains("@"))
             return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
         else return a;
     }
+
+    /**
+     * Creates a fragment which will handle the search ASyncTask {@link SearchAsyncHelper}
+     * @param query the text query entered the by user
+     */
     public void search(String query) {
         TabFragment tabFragment=mainActivity.getFragment();
         if(tabFragment==null)return;
@@ -489,10 +495,10 @@ public class MainActivityHelper {
         StringBuilder builder = new StringBuilder(file.getPath());
         String newName = builder.substring(builder.lastIndexOf("/")+1, builder.length());
 
-        if (newName.contains(CONSTANT_ASTERISK) || newName.contains(CONSTANT_BACKWARD_SLASH) ||
-                newName.contains(CONSTANT_COLON) || newName.contains(CONSTANT_FOREWARD_SLASH) ||
-                newName.contains(CONSTANT_GREATER_THAN) || newName.contains(CONSTANT_LESS_THAN) ||
-                newName.contains(CONSTANT_QUESTION_MARK) || newName.contains(CONSTANT_QUOTE)) {
+        if (newName.contains(ASTERISK) || newName.contains(BACKWARD_SLASH) ||
+                newName.contains(COLON) || newName.contains(FOREWARD_SLASH) ||
+                newName.contains(GREATER_THAN) || newName.contains(LESS_THAN) ||
+                newName.contains(QUESTION_MARK) || newName.contains(QUOTE)) {
             return false;
         } else if (isDir) {
 
