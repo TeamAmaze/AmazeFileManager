@@ -20,27 +20,14 @@ public class SearchAsyncHelper extends Fragment {
     private String mPath, mInput;
     public SearchTask mSearchTask;
     private int mOpenMode;
-    private boolean mRootMode;
+    private boolean mRootMode, isRegexEnabled, isMatchesEnabled;
 
-    private static final String KEY_PATH = "path";
-    private static final String KEY_INPUT = "input";
-    private static final String KEY_OPEN_MODE = "open_mode";
-    private static final String KEY_ROOT_MODE = "root_mode";
-
-    private static final String WILDCARD_ANY = "*";
-    private static final String WILDCARD_ANY_SINGLE = "?";
-    private static final String WILDCARD_SQUARE_OPEN = "[";
-    private static final String WILDCARD_SQUARE_CLOSE = "]";
-    private static final String WILDCARD_NOT = "!";
-
-    private static final String WILDCARD_PATTERN_ALPHANUMERIC = "[:alnum:]";
-    private static final String WILDCARD_PATTERN_ALPHABETIC_ALL = "[:alpha:]";
-    private static final String WILDCARD_PATTERN_NUMERALS = "[:digit:]";
-    private static final String WILDCARD_PATTERN_ALPHABETIC_UPPER = "[:upper:]";
-    private static final String WILDCARD_PATTERN_ALPHABETIC_LOWER = "[:lower:]";
-
-    private static final String ESCAPE_JAVA_REGEX_PERIOD = ".";
-    private static final String ESCAPE_JAVA_REGEX_PLUS = "+";
+    public static final String KEY_PATH = "path";
+    public static final String KEY_INPUT = "input";
+    public static final String KEY_OPEN_MODE = "open_mode";
+    public static final String KEY_ROOT_MODE = "root_mode";
+    public static final String KEY_REGEX = "regex";
+    public static final String KEY_REGEX_MATCHES = "matches";
 
     // interface for activity to communicate with asynctask
     public interface HelperCallbacks {
@@ -67,6 +54,8 @@ public class SearchAsyncHelper extends Fragment {
         mInput = getArguments().getString(KEY_INPUT);
         mOpenMode = getArguments().getInt(KEY_OPEN_MODE);
         mRootMode = getArguments().getBoolean(KEY_ROOT_MODE);
+        isRegexEnabled = getArguments().getBoolean(KEY_REGEX);
+        isMatchesEnabled = getArguments().getBoolean(KEY_REGEX_MATCHES);
         mSearchTask = new SearchTask();
         mSearchTask.execute(mPath);
 
@@ -97,7 +86,7 @@ public class SearchAsyncHelper extends Fragment {
         }
 
         // mCallbacks not checked for null because of possibility of
-        // race conditions b/t worker thread main thread
+        // race conditions b/w worker thread main thread
         @Override
         protected Void doInBackground(String... params) {
 
@@ -105,11 +94,18 @@ public class SearchAsyncHelper extends Fragment {
             HFile file=new HFile(mOpenMode, path);
             file.generateMode(getActivity());
             if(file.isSmb())return null;
-            //search(file, mInput);
 
-            // compile the regular expression in the input
-            Pattern pattern = Pattern.compile(javaRegexToGrep(mInput));
-            searchRegEx(file, pattern);
+            // level 1
+            // if regex or not
+            if (!isRegexEnabled) search(file, path);
+            else {
+
+                // compile the regular expression in the input
+                Pattern pattern = Pattern.compile(bashRegexToJava(mInput));
+                // level 2
+                if (!isMatchesEnabled) searchRegExFind(file, pattern);
+                else searchRegExMatch(file, pattern);
+            }
             return null;
         }
 
@@ -133,11 +129,11 @@ public class SearchAsyncHelper extends Fragment {
         }
 
         /**
-         * Search for occurrences of a given text in file names
+         * Recursively search for occurrences of a given text in file names and publish the result
          * @param file the current path
-         * @param text the searched text
+         * @param query the searched text
          */
-        private void search(HFile file, String text) {
+        private void search(HFile file, String query) {
 
             if (file.isDirectory()) {
                 ArrayList<BaseFile> f = file.listFiles(mRootMode);
@@ -147,14 +143,14 @@ public class SearchAsyncHelper extends Fragment {
                         if (!isCancelled()) {
                             if (x.isDirectory()) {
                                 if (x.getName().toLowerCase()
-                                        .contains(text.toLowerCase())) {
+                                        .contains(query.toLowerCase())) {
                                     publishProgress(x);
                                 }
-                                if (!isCancelled()) search(x, text);
+                                if (!isCancelled()) search(x, query);
 
                             } else {
                                 if (x.getName().toLowerCase()
-                                        .contains(text.toLowerCase())) {
+                                        .contains(query.toLowerCase())) {
                                     publishProgress(x);
                                 }
                             }
@@ -166,7 +162,44 @@ public class SearchAsyncHelper extends Fragment {
                         .println(file.getPath() + "Permission Denied");
             }
         }
-        private void searchRegEx(HFile file, Pattern pattern) {
+
+        /**
+         * Recursively find a java regex pattern {@link Pattern} in the file names and publish the result
+         * @param file the current file
+         * @param pattern the compiled java regex
+         */
+        private void searchRegExFind(HFile file, Pattern pattern) {
+
+            if (file.isDirectory()) {
+                ArrayList<BaseFile> f = file.listFiles(mRootMode);
+
+                if (!isCancelled())
+                    for (BaseFile x : f) {
+                        if (!isCancelled()) {
+                            if (x.isDirectory()) {
+                                if (pattern.matcher(x.getName()).find()) publishProgress(x);
+                                if (!isCancelled()) searchRegExFind(x, pattern);
+
+                            } else {
+                                if (pattern.matcher(x.getName()).find()) {
+                                    publishProgress(x);
+                                }
+                            }
+                        } else return;
+                    }
+                else return;
+            } else {
+                System.out
+                        .println(file.getPath() + "Permission Denied");
+            }
+        }
+
+        /**
+         * Recursively match a java regex pattern {@link Pattern} with the file names and publish the result
+         * @param file the current file
+         * @param pattern the compiled java regex
+         */
+        private void searchRegExMatch(HFile file, Pattern pattern) {
 
             if (file.isDirectory()) {
                 ArrayList<BaseFile> f = file.listFiles(mRootMode);
@@ -176,7 +209,7 @@ public class SearchAsyncHelper extends Fragment {
                         if (!isCancelled()) {
                             if (x.isDirectory()) {
                                 if (pattern.matcher(x.getName()).matches()) publishProgress(x);
-                                if (!isCancelled()) searchRegEx(x, pattern);
+                                if (!isCancelled()) searchRegExMatch(x, pattern);
 
                             } else {
                                 if (pattern.matcher(x.getName()).matches()) {
@@ -192,7 +225,12 @@ public class SearchAsyncHelper extends Fragment {
             }
         }
 
-        private String javaRegexToGrep(String originalString) {
+        /**
+         * method converts bash style regular expression to java. See {@link Pattern}
+         * @param originalString
+         * @return converted string
+         */
+        private String bashRegexToJava(String originalString) {
             StringBuilder stringBuilder = new StringBuilder();
 
             for(int i=0; i<originalString.length(); i++) {

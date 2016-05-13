@@ -1043,8 +1043,11 @@ public class MainActivity extends BaseActivity implements
         int startRadius = 16;
         int endRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
 
-        Animator animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
-                searchCoords[0]+32, searchCoords[1]-16, startRadius, endRadius);
+        Animator animator = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
+                    searchCoords[0]+32, searchCoords[1]-16, startRadius, endRadius);
+        }
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
         searchViewLayout.setVisibility(View.VISIBLE);
@@ -1083,8 +1086,11 @@ public class MainActivity extends BaseActivity implements
 
         int endRadius = 16;
         int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
-        Animator animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
-                searchCoords[0] + 32, searchCoords[1] - 16, startRadius, endRadius);
+        Animator animator = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
+                    searchCoords[0]+32, searchCoords[1]-16, startRadius, endRadius);
+        }
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
         animator.start();

@@ -393,5 +393,9 @@
     <string name="search_hint">Type to search&#8230;</string>
     <string name="advanced_search">Advanced Search</string>
     <string name="regular_expression">Regular Expression</string>
+    <string name="regular_expression_summary">Search using a BASH style regular expression</string>
+    <string name="match_content">Match content</string>
+    <string name="match_content_summary">If set, regular expression will be matched with entire file name,
+        will look for occurrence otherwise.</string>
 </resources>
 

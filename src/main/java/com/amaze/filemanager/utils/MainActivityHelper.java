@@ -440,7 +440,7 @@ public class MainActivityHelper {
     }
 
     /**
-     * Creates a fragment which will handle the search ASyncTask {@link SearchAsyncHelper}
+     * Creates a fragment which will handle the search AsyncTask {@link SearchAsyncHelper}
      * @param query the text query entered the by user
      */
     public void search(String query) {
@@ -467,16 +467,32 @@ public class MainActivityHelper {
             fm.beginTransaction().remove(fragment).commit();
         }
 
-        addSearchFragment(fm, new SearchAsyncHelper(), fpath, query, ma.openMode, ma.ROOT_MODE);
+        addSearchFragment(fm, new SearchAsyncHelper(), fpath, query, ma.openMode, ma.ROOT_MODE,
+                mainActivity.Sp.getBoolean(SearchAsyncHelper.KEY_REGEX, false),
+                mainActivity.Sp.getBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, false));
     }
 
+    /**
+     * Adds a search fragment that can persist it's state on config change
+     * @param fragmentManager fragmentManager
+     * @param fragment current fragment
+     * @param path current path
+     * @param input query typed by user
+     * @param openMode dunno
+     * @param rootMode is root enabled
+     * @param regex is regular expression search enabled
+     * @param matches is matches enabled for patter matching
+     */
     public static void addSearchFragment(FragmentManager fragmentManager, Fragment fragment,
-                                         String path, String input, int openMode, boolean rootMode) {
+                                         String path, String input, int openMode, boolean rootMode,
+                                         boolean regex, boolean matches) {
         Bundle args = new Bundle();
-        args.putString("input", input);
-        args.putString("path", path);
-        args.putInt("open_mode", openMode);
-        args.putBoolean("root_mode", rootMode);
+        args.putString(SearchAsyncHelper.KEY_INPUT, input);
+        args.putString(SearchAsyncHelper.KEY_PATH, path);
+        args.putInt(SearchAsyncHelper.KEY_OPEN_MODE, openMode);
+        args.putBoolean(SearchAsyncHelper.KEY_ROOT_MODE, rootMode);
+        args.putBoolean(SearchAsyncHelper.KEY_REGEX, regex);
+        args.putBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, matches);
 
         fragment.setArguments(args);
         fragmentManager.beginTransaction().add(fragment,

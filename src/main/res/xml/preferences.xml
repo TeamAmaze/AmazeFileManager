@@ -99,7 +99,14 @@
             android:title="@string/advanced_search"
             >
             <com.amaze.filemanager.ui.views.CheckBx
-                android:title="@string/advanced_search"
+                android:key="regex"
+                android:title="@string/regular_expression"
+                android:summary="@string/regular_expression_summary"
+                />
+            <com.amaze.filemanager.ui.views.CheckBx
+                android:key="matches"
+                android:title="@string/match_content"
+                android:summary="@string/match_content_summary"
                 />
         </PreferenceScreen>
 

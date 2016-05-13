@@ -3,10 +3,8 @@ package com.amaze.filemanager.services.asynctasks;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -65,7 +63,6 @@ public class SearchTextTask extends AsyncTask<Editable, Void, ArrayList<MapEntry
 
             // comparing and incrementing line number
             if (searchSubString.contains("\n"))
-                Log.d(getClass().getName(), (++textReader.mLine) + "");
 
             // comparing and adding searched phrase to a list
             if (searchSubString.equalsIgnoreCase(params[0].toString())) {

@@ -48,7 +48,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -1175,7 +1174,9 @@ public class Main extends android.support.v4.app.Fragment {
                 CURRENT_PATH = parentPath;
 
                 MainActivityHelper.addSearchFragment(fm, new SearchAsyncHelper(),
-                        parentPath, MainActivityHelper.SEARCH_TEXT, openMode, ROOT_MODE);
+                        parentPath, MainActivityHelper.SEARCH_TEXT, openMode, ROOT_MODE,
+                        Sp.getBoolean(SearchAsyncHelper.KEY_REGEX, false),
+                        Sp.getBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, false));
             } else loadlist(CURRENT_PATH, true, -1);
 
             mRetainSearchTask = false;
