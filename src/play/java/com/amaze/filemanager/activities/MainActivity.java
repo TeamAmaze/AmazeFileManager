@@ -21,6 +21,7 @@ package com.amaze.filemanager.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -52,7 +53,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -1043,10 +1043,13 @@ public class MainActivity extends BaseActivity implements
         int startRadius = 16;
         int endRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
 
-        Animator animator = null;
+        Animator animator;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
                     searchCoords[0]+32, searchCoords[1]-16, startRadius, endRadius);
+        } else {
+            // TODO:ViewAnimationUtils.createCircularReveal
+            animator = new ObjectAnimator().ofFloat(searchViewLayout,"alpha",0f,1f);
         }
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
@@ -1086,10 +1089,13 @@ public class MainActivity extends BaseActivity implements
 
         int endRadius = 16;
         int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
-        Animator animator = null;
+        Animator animator;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
                     searchCoords[0]+32, searchCoords[1]-16, startRadius, endRadius);
+        }else {
+            // TODO: ViewAnimationUtils.createCircularReveal
+            animator = new ObjectAnimator().ofFloat(searchViewLayout,"alpha",1f,0f);
         }
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
