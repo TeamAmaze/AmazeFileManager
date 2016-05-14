@@ -46,20 +46,64 @@
         android:elevation="4dp"
         android:id="@+id/lin"
         >
-            <android.support.v7.widget.Toolbar
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/action_bar"
-                android:layout_height="?attr/actionBarSize"
                 android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
                 android:theme="?attr/toolbar_theme"
-                app:popupTheme="?attr/popup"
-                app:layout_scrollFlags="scroll|enterAlways"
                 app:contentInsetLeft="72dp"
-                app:contentInsetStart="72dp">
+                app:contentInsetStart="72dp"
+                app:popupTheme="?attr/popup">
 
             </android.support.v7.widget.Toolbar>
 
+            <RelativeLayout
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_margin="@dimen/search_view_margin"
+
+                android:background="@drawable/search_view_shape"
+                android:elevation="8dp"
+                android:gravity="center_vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/img_view_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="@dimen/search_view_back_margin_left_right"
+                    android:layout_marginRight="@dimen/search_view_back_margin_left_right"
+                    android:src="@drawable/ic_arrow_back_white_48dp" />
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/search_edit_text"
+                    android:layout_width="@dimen/search_view_edit_text_width"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@+id/img_view_back"
+                    android:hint="@string/search_hint"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="@dimen/search_view_info_margin_left_right"
+                    android:layout_marginRight="@dimen/search_view_info_margin_left_right"
+                    android:src="@android:drawable/ic_menu_info_details" />
+            </RelativeLayout>
+        </RelativeLayout>
             <FrameLayout
                 android:paddingRight="16dp"
                 android:id="@+id/buttonbarframe"
