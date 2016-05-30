@@ -1,6 +1,10 @@
-# AmazeFileManager [![Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=com.amaze.filemanager)[![F-Droid](https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Get_it_on_F-Droid.svg/130px-Get_it_on_F-Droid.svg.png)](https://f-droid.org/repository/browse/?fdid=com.amaze.filemanager)
+# Amaze File Manager
 
-Amaze File Manager source code
+[<img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png">](https://play.google.com/store/apps/details?id=com.amaze.filemanager)
+[<img alt="Get it on F-Droid" height="80" src="https://f-droid.org/badge/get-it-on.png">](https://f-droid.org/app/com.amaze.filemanager)
+
+Amaze File Manager source code.
+
 ###Overview:
 - Open Source, light and smooth
 - Based on Material Design guidelines
@@ -23,7 +27,7 @@ This app is still in beta stage, hence, you might face some bugs, lack of featur
 
 ###[XDA](http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314)
 
-###Team :
+###Team:
 - Arpit Khurana
 - Vishal Nehra
 
