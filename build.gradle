@@ -100,7 +100,7 @@ dependencies {
     playCompile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile project(':libs:StickyHeadersRecyclerView')
     compile 'com.github.clans:fab:1.6.1'
-    compile('com.github.afollestad.material-dialogs:core:0.8.5.8@aar') {
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.0@aar') {
         transitive = true
     }
 }

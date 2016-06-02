@@ -91,6 +91,7 @@ import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
+import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
@@ -434,7 +435,7 @@ public class Main extends android.support.v4.app.Fragment {
             if (savedInstanceState.getBoolean("selection")) {
 
                 for (int i : savedInstanceState.getIntegerArrayList("position")) {
-                    adapter.toggleChecked(i);
+                    adapter.toggleChecked(i, null);
                 }
             }
         }
@@ -828,9 +829,16 @@ public class Main extends android.support.v4.app.Fragment {
         ma.loadlist((ma.home), false, 0);
     }
 
-    public void onListItemClicked(int position, View v) {
+    /**
+     * method called when list item is clicked in the adapter
+     * @param position the {@link int} position of the list item
+     * @param imageView the check {@link RoundedImageView} that is to be animated
+     */
+    public void onListItemClicked(int position, ImageView imageView) {
         if (position >= LIST_ELEMENTS.size()) return;
         if (results) {
+
+            // check to initialize search results
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             SearchAsyncHelper fragment = (SearchAsyncHelper) fragmentManager
                     .findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
@@ -851,7 +859,8 @@ public class Main extends android.support.v4.app.Fragment {
         }
         if (selection == true) {
             if (!LIST_ELEMENTS.get(position).getSize().equals(goback)) {
-                adapter.toggleChecked(position);
+                // the first {goback} item if back navigation is enabled
+                adapter.toggleChecked(position, imageView);
             } else {
                 selection = false;
                 if (mActionMode != null)
