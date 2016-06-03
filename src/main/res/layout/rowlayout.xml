@@ -43,9 +43,9 @@
                 android:visibility="gone"
                 android:scaleType="centerCrop"
                 android:layout_gravity="center"
-                android:id="@+id/bicon"/>
+                android:id="@+id/apk_icon"/>
             <com.amaze.filemanager.ui.views.RoundedImageView
-                android:id="@+id/cicon"
+                android:id="@+id/picture_icon"
                 android:layout_width="@dimen/minimal_icon_size"
                 android:layout_height="@dimen/minimal_icon_size"
                 android:scaleType="centerCrop"
@@ -56,7 +56,7 @@
                 android:padding="8dp"
                 android:background="@drawable/circle_shape"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/icon"/>
+                android:id="@+id/generic_icon"/>
 
             <TextView
                 android:layout_width="@dimen/minimal_icon_size"

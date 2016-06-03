@@ -5,6 +5,8 @@ import android.graphics.drawable.GradientDrawable;
 
 /**
  * Created by vishal on 30/5/16.
+ * Class used to create background of check icon on selection with
+ * a Custom {@link Color} and Stroke (boundary)
  */
 public class CircleGradientDrawable extends GradientDrawable {
 

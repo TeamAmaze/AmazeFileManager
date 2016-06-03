@@ -30,12 +30,12 @@ import java.util.HashMap;
 
 public class Icons {
     private static HashMap<String, Integer> sMimeIcons = new HashMap<String, Integer>();
-private static void add(String mimeType, int resId) {
+    private static void add(String mimeType, int resId) {
         if (sMimeIcons.put(mimeType, resId) != null) {
             throw new RuntimeException(mimeType + " already registered!");
         }
     }
-static {
+    static {
         int icon;
 
         // Package
@@ -48,7 +48,7 @@ static {
         add("application/x-flac", icon);
 
         // Certificate
-    icon = R.drawable.ic_doc_certificate;
+        icon = R.drawable.ic_doc_certificate;
         add("application/pgp-keys", icon);
         add("application/pgp-signature", icon);
         add("application/x-pkcs12", icon);
@@ -201,10 +201,10 @@ static {
         Integer res = sMimeIcons.get(mimeType);
         if (res != null && res == R.drawable.ic_doc_text_am) return true;
         if(mimeType!=null && mimeType.contains("/")){
-        final String typeOnly = mimeType.split("/")[0];
-        if ("text".equals(typeOnly)) {
-        return true;}}
-            return false;
+            final String typeOnly = mimeType.split("/")[0];
+            if ("text".equals(typeOnly)) {
+                return true;}}
+        return false;
     }
     public static boolean isVideo(String name){
         String mimeType=MimeTypes.getMimeType(new File(name));
@@ -253,16 +253,16 @@ static {
         if (res != null && res == R.drawable.ic_doc_image) return true;
         return false;
     }
-public static boolean isgeneric(String name){
-    String mimeType = MimeTypes.getMimeType(new File(name));
-    if (mimeType == null) {
-        return true;
-    }
-    Integer resId = sMimeIcons.get(mimeType);
-if(resId==null){return true;}
+    public static boolean isgeneric(String name){
+        String mimeType = MimeTypes.getMimeType(new File(name));
+        if (mimeType == null) {
+            return true;
+        }
+        Integer resId = sMimeIcons.get(mimeType);
+        if(resId==null){return true;}
 
 
-    return false;}
+        return false;}
     public static Drawable loadMimeIcon(Context context, String path,boolean grid,final Resources res) {
         String mimeType = MimeTypes.getMimeType(new File(path));
         if (mimeType == null) {
@@ -278,7 +278,7 @@ if(resId==null){return true;}
 
         if (resId != null) {switch (resId){
             case R.drawable.ic_doc_apk_white: if(grid)resId=R.drawable.ic_doc_apk_grid;
-       break;/*
+                break;/*
             case R.drawable.ic_doc_audio_am: if(grid)resId=R.drawable.ic_doc_audio_am_grid;
                 break;
             case R.drawable.ic_doc_certificate: if(grid)resId=R.drawable.ic_doc_certificate_grid;
@@ -313,5 +313,6 @@ if(resId==null){return true;}
         } else if ("video".equals(typeOnly)) {
             /*if(grid)return res.getDrawable(R.drawable.ic_doc_video_am_grid);else*/ return res.getDrawable(R.drawable.ic_doc_video_am);
         }
-        /*if(grid)return res.getDrawable(R.drawable.ic_doc_generic_am_grid);else*/ return res.getDrawable(R.drawable.ic_doc_generic_am);}
+        /*if(grid)return res.getDrawable(R.drawable.ic_doc_generic_am_grid);else*/ return res.getDrawable(R.drawable.ic_doc_generic_am);
+    }
 }

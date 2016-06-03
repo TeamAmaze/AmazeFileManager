@@ -127,6 +127,9 @@ public class Main extends android.support.v4.app.Fragment {
     public LinearLayout pathbar;
     public int openMode = 0;
     public android.support.v7.widget.RecyclerView listView;
+    /**
+     * {@link Main#IS_LIST} boolean to identify if the view is a list or grid
+     */
     public boolean GO_BACK_ITEM, IS_LIST = true, SHOW_THUMBS, COLORISE_ICONS, SHOW_DIVIDERS;
     public IconHolder ic;
     public MainActivity MAIN_ACTIVITY;

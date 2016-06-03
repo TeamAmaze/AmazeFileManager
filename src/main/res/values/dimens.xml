@@ -11,12 +11,11 @@
     <dimen name="search_view_info_margin_left_right">16dp</dimen>
 
     <dimen name="minimal_material_padding">16dp</dimen>
-    <dimen name="check_icon_margin_bottom_right">8dp</dimen>
+    <dimen name="check_icon_margin_bottom_right">10dp</dimen>
     <dimen name="minimal_row_size">72dp</dimen>
     <dimen name="minimal_icon_size">40dp</dimen>
     <dimen name="minimal_icon_parent_width">56dp</dimen>
     <dimen name="tick_icon_size">20dp</dimen>
-    <dimen name="tick_icon_size_background">24dp</dimen>
     <dimen name="check_icon_padding">4dp</dimen>
     <dimen name="icon_margin_top">16dp</dimen>
     <dimen name="check_view_margin">2dp</dimen>
