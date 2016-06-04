@@ -839,6 +839,7 @@ public class Main extends android.support.v4.app.Fragment {
      */
     public void onListItemClicked(int position, ImageView imageView) {
         if (position >= LIST_ELEMENTS.size()) return;
+
         if (results) {
 
             // check to initialize search results
@@ -874,6 +875,9 @@ public class Main extends android.support.v4.app.Fragment {
         } else {
             if (!LIST_ELEMENTS.get(position).getSize().equals(goback)) {
 
+                // hiding search view if visible
+                if (MainActivity.isSearchViewEnabled)   MAIN_ACTIVITY.hideSearchView();
+                
                 String path;
                 Layoutelements l = LIST_ELEMENTS.get(position);
                 if (!l.hasSymlink()) {

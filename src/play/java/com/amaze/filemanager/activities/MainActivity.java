@@ -238,6 +238,8 @@ public class MainActivity extends BaseActivity implements
     private AppCompatEditText searchViewEditText;
     private int[] searchCoords = new int[2];
 
+    public static boolean isSearchViewEnabled = false;
+
     /**
      * Called when the activity is first created.
      */
@@ -1025,11 +1027,9 @@ public class MainActivity extends BaseActivity implements
                     mainActivityHelper.extractFile(((ZipViewer) fragment1).f);
                 break;
             case R.id.search:
-                //mainActivityHelper.search("LOL");
                 View searchItem = toolbar.findViewById(R.id.search);
                 searchItem.getLocationOnScreen(searchCoords);
-                if (!searchViewLayout.isShown()) revealSearchView();
-                else hideSearchView();
+                revealSearchView();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -1067,6 +1067,7 @@ public class MainActivity extends BaseActivity implements
                 searchViewEditText.requestFocus();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(searchViewEditText, InputMethodManager.SHOW_IMPLICIT);
+                isSearchViewEnabled = true;
             }
 
             @Override
@@ -1085,7 +1086,7 @@ public class MainActivity extends BaseActivity implements
     /**
      * hide search view with a circular reveal animation
      */
-    void hideSearchView() {
+    public void hideSearchView() {
 
         int endRadius = 16;
         int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
@@ -1110,6 +1111,7 @@ public class MainActivity extends BaseActivity implements
             public void onAnimationEnd(Animator animation) {
 
                 searchViewLayout.setVisibility(View.GONE);
+                isSearchViewEnabled = false;
             }
 
             @Override
@@ -1926,6 +1928,7 @@ public class MainActivity extends BaseActivity implements
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     // Perform action on key press
                     mainActivityHelper.search(searchViewEditText.getText().toString());
+                    hideSearchView();
                     return true;
                 }
                 return false;

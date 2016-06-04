@@ -22,13 +22,13 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
-import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.DataUtils;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
@@ -202,7 +202,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         public TextView date;
         public TextView perm;
         public View rl;
-        public TextView ext;
+        public TextView genericText;
         public ImageButton about;
         public ImageView checkImageView;
         public ViewHolder(View view) {
@@ -215,7 +215,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             date = (TextView) view.findViewById(R.id.date);
             txtDesc = (TextView) view.findViewById(R.id.secondLine);
             apkIcon = (ImageView) view.findViewById(R.id.apk_icon);
-            ext = (TextView) view.findViewById(R.id.generictext);
+            genericText = (TextView) view.findViewById(R.id.generictext);
             imageView1 = (ImageView) view.findViewById(R.id.icon_thumb);
             about=(ImageButton) view.findViewById(R.id.properties);
             checkImageView = (ImageView) view.findViewById(R.id.check_icon);
@@ -298,8 +298,10 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             });
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                holder.checkImageView.setBackground(new CircleGradientDrawable(main.fabSkin));
-            } else holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(main.fabSkin));
+                holder.checkImageView.setBackground(new CircleGradientDrawable(main.fabSkin,
+                        main.getResources().getDisplayMetrics()));
+            } else holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(main.fabSkin,
+                    main.getResources().getDisplayMetrics()));
 
             holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 
@@ -321,7 +323,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             else if (Icons.isVideo(rowItem.getDesc())) filetype = 2;
             holder.txtTitle.setText(rowItem.getTitle());
             holder.genericIcon.setImageDrawable(rowItem.getImageId());
-            holder.ext.setText("");
+            holder.genericText.setText("");
 
             if (holder.about != null) {
                 if(main.theme1==0)holder.about.setColorFilter(grey_color);
@@ -431,11 +433,10 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.rl.setSelected(false);
                 if (checked) {
                     holder.checkImageView.setVisibility(View.VISIBLE);
-                    if (filetype!=0 && filetype!=1 && filetype!=2) {
-
-                        // making sure the generic icon background color filter doesn't get changed
-                        // to grey on picture/video/apk icons when checked
-                        // so that user can still look at the thumbs even after selection
+                    // making sure the generic icon background color filter doesn't get changed
+                    // to grey on picture/video/apk/generic text icons when checked
+                    // so that user can still look at the thumbs even after selection
+                    if ((filetype!=0 && filetype!=1 && filetype!=2)) {
                         holder.apkIcon.setVisibility(View.GONE);
                         holder.pictureIcon.setVisibility(View.GONE);
                         holder.genericIcon.setVisibility(View.VISIBLE);
@@ -443,7 +444,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         gradientDrawable.setColor(c1);
                     }
                     holder.rl.setSelected(true);
-                    holder.ext.setText("");
+                    holder.genericText.setText("");
                 } else {
                     holder.checkImageView.setVisibility(View.INVISIBLE);
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
@@ -469,7 +470,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                             gradientDrawable.setColor(c9);
                             String ext = MimeTypes.getExtension(new File(rowItem.getDesc()).getName());
                             if (ext != null && ext.trim().length() != 0) {
-                                holder.ext.setText(ext);
+                                holder.genericText.setText(ext);
                                 holder.genericIcon.setImageDrawable(null);
                             }
                         } else {
