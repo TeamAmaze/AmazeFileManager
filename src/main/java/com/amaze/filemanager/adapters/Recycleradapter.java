@@ -88,11 +88,12 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     /**
      * called as to toggle selection of any item in adapter
      * @param position the position of the item
-     * @param imageView the check {@link RoundedImageView} that is to be animated
+     * @param imageView the check {@link CircleGradientDrawable} that is to be animated
      */
     public void toggleChecked(int position, ImageView imageView) {
         if(!stoppedAnimation)main.stopAnimation();
         if (myChecked.get(position)) {
+            // if the view at position is checked, un-check it
             myChecked.put(position, false);
 
             Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_out);
@@ -104,6 +105,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 // TODO: we don't have the check icon object probably because of config change
             }
         } else {
+            // if view is un-checked, check it
             myChecked.put(position, true);
 
             Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_in);
@@ -286,7 +288,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         if (!this.stoppedAnimation && !myanim.get(p))
         {
             animate(holder);
-            myanim.put(p,true);
+            myanim.put(p, true);
         }
         final Layoutelements rowItem = items.get(p);
         if (main.IS_LIST) {
@@ -299,9 +301,9 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 holder.checkImageView.setBackground(new CircleGradientDrawable(main.fabSkin,
-                        main.getResources().getDisplayMetrics()));
+                        main.theme1, main.getResources().getDisplayMetrics()));
             } else holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(main.fabSkin,
-                    main.getResources().getDisplayMetrics()));
+                    main.theme1, main.getResources().getDisplayMetrics()));
 
             holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 

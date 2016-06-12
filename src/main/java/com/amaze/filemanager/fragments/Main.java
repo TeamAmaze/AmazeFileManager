@@ -877,7 +877,7 @@ public class Main extends android.support.v4.app.Fragment {
 
                 // hiding search view if visible
                 if (MainActivity.isSearchViewEnabled)   MAIN_ACTIVITY.hideSearchView();
-                
+
                 String path;
                 Layoutelements l = LIST_ELEMENTS.get(position);
                 if (!l.hasSymlink()) {

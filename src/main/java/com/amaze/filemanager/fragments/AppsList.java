@@ -24,36 +24,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
-import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
-import com.amaze.filemanager.services.CopyService;
-import com.amaze.filemanager.services.DeleteTask;
+import com.amaze.filemanager.ui.Layoutelements;
+import com.amaze.filemanager.ui.icons.IconHolder;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.ui.icons.IconHolder;
-import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.utils.PreferenceUtils;
 
 import java.io.File;
@@ -105,16 +98,40 @@ public class AppsList extends ListFragment {
         theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
         vl.setDivider(null);
         if(theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
-         if(savedInstanceState==null)loadlist(false);
+        if(savedInstanceState==null)loadlist(false);
         else{
-        c=savedInstanceState.getParcelableArrayList("c");
-        a=savedInstanceState.getParcelableArrayList("list");
+            c=savedInstanceState.getParcelableArrayList("c");
+            a=savedInstanceState.getParcelableArrayList("list");
             adapter = new AppsAdapter(getActivity(), R.layout.rowlayout, a, app, c);
             setListAdapter(adapter);
             vl.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
 
         }
+        setHasOptionsMenu(true);
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.apps_list, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                Toast.makeText(getActivity(), getResources().getText(R.string.refresh),
+                        Toast.LENGTH_SHORT).show();
+
+                loadlist(false);
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public  void onDestroy(){
         super.onDestroy();
@@ -147,7 +164,7 @@ public class AppsList extends ListFragment {
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
             if (intent != null) {
-            loadlist(true);
+                loadlist(true);
             }}
     };
 
@@ -156,14 +173,16 @@ public class AppsList extends ListFragment {
     public void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
         if(vl!=null){
-        b.putParcelableArrayList("c",c);
-        b.putParcelableArrayList("list",a);
-        int index = vl.getFirstVisiblePosition();
-        View vi = vl.getChildAt(0);
-        int top = (vi == null) ? 0 : vi.getTop();
-        b.putInt("index", index);
-        b.putInt("top", top);
-    }}
+            b.putParcelableArrayList("c",c);
+            b.putParcelableArrayList("list",a);
+            int index = vl.getFirstVisiblePosition();
+            View vi = vl.getChildAt(0);
+            int top = (vi == null) ? 0 : vi.getTop();
+            b.putInt("index", index);
+            b.putInt("top", top);
+        }
+    }
+
     class LoadListTask extends AsyncTask<Void, Void, ArrayList<Layoutelements>> {
 
         protected ArrayList<Layoutelements> doInBackground(Void[] p1) {
@@ -175,7 +194,7 @@ public class AppsList extends ListFragment {
                 for (PackageInfo object : all_apps) {
                     File f=new File(object.applicationInfo.publicSourceDir);
                     a.add(new Layoutelements(ContextCompat.getDrawable(getActivity(),R.drawable.ic_doc_apk_grid), object.applicationInfo.loadLabel(p).toString(), object.applicationInfo.publicSourceDir, object.packageName, object.versionName, utils.readableFileSize(f.length()),f.length(), false, f.lastModified()+"", false));
-
+                    c.add(object);
                 }
                 Collections.sort(a, new FileListSorter(0, sortby, asc, false));
             } catch (Exception e) {
@@ -245,4 +264,5 @@ public class AppsList extends ListFragment {
             sortby = t - 3;
         }
 
-    }}
+    }
+}
