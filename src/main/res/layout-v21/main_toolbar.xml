@@ -323,6 +323,48 @@
             android:layout_above="@+id/appbutton"
             android:id="@+id/divider1"></ImageView>
         <RelativeLayout
+            android:id="@+id/ftpbutton"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingStart="16dp"
+            android:layout_above="@+id/appbutton"
+            android:background="@drawable/safr_ripple_white"
+            android:clickable="true">
+
+            <ImageView
+                android:id="@+id/ftpicon"
+                android:layout_width="24dp"
+                android:layout_height="48dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="32dp"
+                android:layout_marginRight="32dp"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp"
+                android:src="@drawable/ic_doc_apk"
+                android:contentDescription="@string/icon" />
+
+            <TextView
+                android:id="@+id/ftptext"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_toEndOf="@+id/ftpicon"
+                android:layout_toRightOf="@+id/ftpicon"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text="@string/ftp"
+                android:clickable="false"
+                android:textColor="@android:color/black"
+                android:gravity="center_vertical" />
+        </RelativeLayout>
+        <RelativeLayout
             android:id="@+id/appbutton"
             android:layout_width="fill_parent"
             android:layout_height="48dp"
