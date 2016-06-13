@@ -1046,6 +1046,8 @@ public class MainActivity extends BaseActivity implements
         int startRadius = 16;
         int endRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
 
+        searchViewEditText.setText("");
+
         Animator animator;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
