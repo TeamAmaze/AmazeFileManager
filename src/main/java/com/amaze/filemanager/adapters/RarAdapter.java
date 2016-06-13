@@ -9,6 +9,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import com.amaze.filemanager.services.asynctasks.ZipExtractTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.ui.ZipObj;
 import com.amaze.filemanager.ui.icons.Icons;
+import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
@@ -73,13 +75,38 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
     }
-    public void toggleChecked(int position) {
+
+    /**
+     * called as to toggle selection of any item in adapter
+     * @param position the position of the item
+     * @param imageView the circular {@link CircleGradientDrawable} that is to be animated
+     */
+    public void toggleChecked(int position, ImageView imageView) {
         zipViewer.stopAnim();
         stoppedAnimation=true;
         if (myChecked.get(position)) {
+            // if the view at position is checked, un-check it
             myChecked.put(position, false);
+            Animation checkOutAnimation = AnimationUtils.loadAnimation(c, R.anim.check_out);
+            if (imageView!=null) {
+
+                imageView.setAnimation(checkOutAnimation);
+            } else {
+
+                // TODO: we don't have the check icon object probably because of config change
+            }
         } else {
+            // if view is un-checked, check it
             myChecked.put(position, true);
+
+            Animation iconAnimation = AnimationUtils.loadAnimation(c, R.anim.check_in);
+            if (imageView!=null) {
+
+                imageView.setAnimation(iconAnimation);
+            } else {
+
+                // TODO: we don't have the check icon object probably because of config change
+            }
         }
 
         notifyDataSetChanged();
@@ -99,11 +126,11 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     public void toggleChecked(boolean b,String path) {
         int k=0;
-       // if(enter.get(0).getEntry()==null)k=1;
+        // if(enter.get(0).getEntry()==null)k=1;
         for (int i = k; i < (zipMode?enter1.size():enter.size()); i++) {
             myChecked.put(i, b);
+            notifyItemChanged(i);
         }
-        notifyDataSetChanged();
     }
 
     public ArrayList<Integer> getCheckedItemPositions() {
@@ -127,6 +154,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         public TextView date;
         public TextView perm;
         public View rl;
+        public ImageView checkImageView;
 
         public ViewHolder(View view) {
             super(view);
@@ -138,6 +166,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             date = (TextView) view.findViewById(R.id.date);
             txtDesc = (TextView) view.findViewById(R.id.secondLine);
             apkIcon=(ImageView)view.findViewById(R.id.apk_icon);
+            checkImageView = (ImageView) view.findViewById(R.id.check_icon);
         }
     }
 
@@ -150,12 +179,12 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             else if (enter.get(position).isDirectory()) return 'D';
             else return 'F';
         }
-    return -1;}
+        return -1;}
     long getHeaderid(int position) {
         if (position >= 0 && position < enter1.size())
-              if (enter1.get(position ) == null) return -1;
-                else if (enter1.get(position).isDirectory()) return 'D';
-                else return 'F';
+            if (enter1.get(position ) == null) return -1;
+            else if (enter1.get(position).isDirectory()) return 'D';
+            else return 'F';
 
         return -1;
     }
@@ -166,7 +195,9 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             super(view);
 
             ext = (TextView) view.findViewById(R.id.headertext);
-        }}
+        }
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
         View  view = mInflater.inflate(R.layout.listheader, viewGroup, false);
@@ -178,24 +209,24 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-    if(zipMode && i>=0){
-        HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
-        if(enter1.get(i)!=null && enter1.get(i).isDirectory())holder.ext.setText("Directories");
-        else holder.ext.setText("Files");
+        if(zipMode && i>=0){
+            HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
+            if(enter1.get(i)!=null && enter1.get(i).isDirectory())holder.ext.setText("Directories");
+            else holder.ext.setText("Files");
 
-    }
+        }
         else if(i>=0){
-        HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
-        if(enter.get(i)!=null && enter.get(i).isDirectory())holder.ext.setText(R.string.directories);
-        else holder.ext.setText(R.string.files);
-    }}
-
+            HeaderViewHolder holder=(HeaderViewHolder)viewHolder;
+            if(enter.get(i)!=null && enter.get(i).isDirectory())holder.ext.setText(R.string.directories);
+            else holder.ext.setText(R.string.files);
+        }
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType==0){
             View v= mInflater.inflate(R.layout.rowlayout, parent, false);
-            v.findViewById(R.id.icon).setVisibility(View.INVISIBLE);
+            v.findViewById(R.id.picture_icon).setVisibility(View.INVISIBLE);
             return new ViewHolder(v);
 
         }
@@ -243,6 +274,12 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         notifyDataSetChanged();
         enter1=arrayList;
     }
+
+    /**
+     * onBindViewHolder for zip files
+     * @param vholder the ViewHolder reference for instantiating views
+     * @param position1 the position of the view to bind
+     */
     void onBindView(RecyclerView.ViewHolder vholder,final int position1){
         final RarAdapter.ViewHolder holder = ((RarAdapter.ViewHolder)vholder);
         if (!this.stoppedAnimation)
@@ -252,6 +289,13 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         final ZipObj rowItem=enter1.get(position1);
         final int p=position1;
         GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            holder.checkImageView.setBackground(new CircleGradientDrawable(zipViewer.accentColor,
+                    zipViewer.theme1, zipViewer.getResources().getDisplayMetrics()));
+        } else holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(zipViewer.accentColor,
+                zipViewer.theme1, zipViewer.getResources().getDisplayMetrics()));
+
         if(rowItem.getEntry()==null){
             holder.genericIcon.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha));
             gradientDrawable.setColor(Color.parseColor("#757575"));
@@ -306,22 +350,17 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             public boolean onLongClick(View view) {
                 if(rowItem.getEntry()!=null) {
 
-                    final Animation animation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.holder_anim);
-
-                    holder.genericIcon.setAnimation(animation);
-                    toggleChecked(p);
+                    toggleChecked(p, holder.checkImageView);
                 }
                 return true;
             }
         });holder.genericIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if(rowItem.getEntry()!=null){
-                    final Animation animation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.holder_anim);
-
-                    holder.genericIcon.setAnimation(animation);
-                    toggleChecked(p);}
-
+                    toggleChecked(p, holder.checkImageView);
+                }
             }
         });
         Boolean checked = myChecked.get(p);
@@ -337,10 +376,11 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             }
             holder.rl.setSelected(false);
             if (checked) {
-                holder.genericIcon.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                //holder.genericIcon.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                holder.checkImageView.setVisibility(View.VISIBLE);
                 gradientDrawable.setColor(Color.parseColor("#757575"));
                 holder.rl.setSelected(true);
-            }
+            } else holder.checkImageView.setVisibility(View.INVISIBLE);
         }
         holder.rl.setOnClickListener(new View.OnClickListener() {
 
@@ -349,9 +389,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                     zipViewer.goBack();
                 else{
                     if(zipViewer.selection) {
-                        final Animation animation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.holder_anim);
-                        holder.genericIcon.setAnimation(animation);
-                        toggleChecked(p);
+
+                        toggleChecked(p, holder.checkImageView);
                     }
                     else {
                         final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
@@ -365,7 +404,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                         } else {
                             String x=rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1);
                             BaseFile file = new BaseFile(c.getCacheDir().getAbsolutePath() + "/" + x);
-                                  file  .setMode(HFile.LOCAL_MODE);
+                            file  .setMode(HFile.LOCAL_MODE);
                             zipViewer.files.clear();
                             zipViewer.files.add(0, file);
 
@@ -399,6 +438,13 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
         holder.genericIcon.setImageDrawable(Icons.loadMimeIcon(zipViewer.getActivity(), rowItem.getFileNameString(), false,zipViewer.res));
         holder.txtTitle.setText(rowItem.getFileNameString().substring(rowItem.getFileNameString().lastIndexOf("\\") + 1));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            holder.checkImageView.setBackground(new CircleGradientDrawable(zipViewer.accentColor,
+                    zipViewer.theme1, zipViewer.getResources().getDisplayMetrics()));
+        } else holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(zipViewer.accentColor,
+                zipViewer.theme1, zipViewer.getResources().getDisplayMetrics()));
+
         if (rowItem.isDirectory()) {
             holder.genericIcon.setImageDrawable(folder);
             gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));} else {
@@ -428,22 +474,18 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             @Override
             public boolean onLongClick(View view) {
 
-                final Animation animation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.holder_anim);
-                holder.genericIcon.setAnimation(animation);
-                toggleChecked(p);
+                toggleChecked(p, holder.checkImageView);
                 return true;
             }
         });
         holder.genericIcon.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View view) {
-                                                    final Animation animation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.holder_anim);
-                                                    holder.genericIcon.setAnimation(animation);
-                                                    toggleChecked(p);
-                                                }
+            @Override
+            public void onClick(View view) {
 
-                                            }
-        );
+                toggleChecked(p, holder.checkImageView);
+            }
+
+        });
         Boolean checked = myChecked.get(p);
         if (checked != null) {
 
@@ -456,18 +498,18 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             }
             holder.rl.setSelected(false);
             if (checked) {
-                holder.genericIcon.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                //holder.genericIcon.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                holder.checkImageView.setVisibility(View.VISIBLE);
                 gradientDrawable.setColor(Color.parseColor("#757575"));
                 holder.rl.setSelected(true);
-            }
+            } else holder.checkImageView.setVisibility(View.INVISIBLE);
         }
         holder.rl.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View p1) {
                 if(zipViewer.selection) {
-                    final Animation animation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.holder_anim);
-                    holder.genericIcon.setAnimation(animation);
-                    toggleChecked(p);
+
+                    toggleChecked(p, holder.checkImageView);
                 }
                 else {
 
@@ -482,7 +524,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                             FileHeader fileHeader = headerRequired(rowItem);
                             BaseFile file1 = new BaseFile(c.getCacheDir().getAbsolutePath()
                                     + "/" + fileHeader.getFileNameString());
-                                file1.setMode(HFile.LOCAL_MODE);
+                            file1.setMode(HFile.LOCAL_MODE);
                             zipViewer.files.clear();
                             zipViewer.files.add(0, file1);
                             new ZipExtractTask(zipViewer.archive, c.getCacheDir().getAbsolutePath(),
@@ -517,7 +559,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         }
         return null;
     }    @Override
-         public int getItemCount() {
+    public int getItemCount() {
         return zipMode?enter1.size():enter.size();
     }
 

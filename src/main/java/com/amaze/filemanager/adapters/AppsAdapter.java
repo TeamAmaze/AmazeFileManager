@@ -226,7 +226,9 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                 f1.setMode(HFile.ROOT_MODE);
                                 ApplicationInfo info1=null;
                                 for(PackageInfo info:c){
-                                    if(info.applicationInfo.publicSourceDir.equals(rowItem.getDesc()))info1=info.applicationInfo;
+                                    if(info.applicationInfo.publicSourceDir.equals(rowItem.getDesc())) {
+                                        info1=info.applicationInfo;
+                                    }
                                 }
                                 int color= Color.parseColor(PreferenceUtils.getAccentString(app.Sp));
                                 //arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1),"", false));

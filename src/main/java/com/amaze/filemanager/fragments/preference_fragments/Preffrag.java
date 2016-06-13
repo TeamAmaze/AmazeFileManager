@@ -32,18 +32,12 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.ArrayAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,15 +46,12 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.views.CheckBx;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.stericson.RootTools.RootTools;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class Preffrag extends PreferenceFragment{
     int theme;
@@ -331,14 +322,14 @@ public class Preffrag extends PreferenceFragment{
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto","arpitkh96@gmail.com", null));
+                        "mailto","vishalmeham2@gmail.com", null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
                 Toast.makeText(getActivity(),getActivity().getFilesDir().getPath(),Toast.LENGTH_SHORT).show();
                 File f=new File(getActivity().getExternalFilesDir("internal"),"log.txt");
                 if(f.exists()){
-                    emailIntent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(f));
+                    emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
                 }
-                startActivity(Intent.createChooser(emailIntent,getResources().getString(R.string.feedback)));
+                startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.feedback)));
                 return false;
             }
         });

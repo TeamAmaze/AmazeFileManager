@@ -82,7 +82,7 @@ public class ZipViewer extends Fragment {
     public Boolean selection = false;
     public String current;
     public Futils utils = new Futils();
-    public String skin, iconskin, year;
+    public String skin, accentColor, iconskin, year;
     public RarAdapter rarAdapter;
     public ActionMode mActionMode;
     public int skinselection;
@@ -110,6 +110,7 @@ public class ZipViewer extends Fragment {
     int openmode;
     //0 for zip 1 for rar
     boolean stopAnims=true;
+    public Integer theme, theme1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -189,7 +190,12 @@ public class ZipViewer extends Fragment {
         showDividers = Sp.getBoolean("showDividers", true);
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
         skin = PreferenceUtils.getPrimaryColorString(Sp);
+        accentColor = PreferenceUtils.getAccentString(Sp);
         iconskin = PreferenceUtils.getFolderColorString(Sp);
+
+        theme = Integer.parseInt(Sp.getString("theme", "0"));
+        theme1 = theme == 2 ? PreferenceUtils.hourOfDay() : theme;
+
         mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
         files = new ArrayList<>();

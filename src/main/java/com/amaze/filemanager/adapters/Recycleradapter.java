@@ -88,11 +88,12 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     /**
      * called as to toggle selection of any item in adapter
      * @param position the position of the item
-     * @param imageView the check {@link RoundedImageView} that is to be animated
+     * @param imageView the check {@link CircleGradientDrawable} that is to be animated
      */
     public void toggleChecked(int position, ImageView imageView) {
         if(!stoppedAnimation)main.stopAnimation();
         if (myChecked.get(position)) {
+            // if the view at position is checked, un-check it
             myChecked.put(position, false);
 
             Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_out);
@@ -104,6 +105,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 // TODO: we don't have the check icon object probably because of config change
             }
         } else {
+            // if view is un-checked, check it
             myChecked.put(position, true);
 
             Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_in);
@@ -205,6 +207,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         public TextView genericText;
         public ImageButton about;
         public ImageView checkImageView;
+        public ImageView checkImageViewGrid;
+
         public ViewHolder(View view) {
             super(view);
 
@@ -220,6 +224,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             about=(ImageButton) view.findViewById(R.id.properties);
             checkImageView = (ImageView) view.findViewById(R.id.check_icon);
             genericIcon = (ImageView) view.findViewById(R.id.generic_icon);
+            checkImageViewGrid = (ImageView) view.findViewById(R.id.check_icon_grid);
         }
     }
 
@@ -286,7 +291,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         if (!this.stoppedAnimation && !myanim.get(p))
         {
             animate(holder);
-            myanim.put(p,true);
+            myanim.put(p, true);
         }
         final Layoutelements rowItem = items.get(p);
         if (main.IS_LIST) {
@@ -299,9 +304,9 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 holder.checkImageView.setBackground(new CircleGradientDrawable(main.fabSkin,
-                        main.getResources().getDisplayMetrics()));
+                        main.theme1, main.getResources().getDisplayMetrics()));
             } else holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(main.fabSkin,
-                    main.getResources().getDisplayMetrics()));
+                    main.theme1, main.getResources().getDisplayMetrics()));
 
             holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 
@@ -498,11 +503,14 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                 holder.txtDesc.setText(rowItem.getSize());
         } else {
+            // view is a grid view
             Boolean checked = myChecked.get(p);
+
+            holder.checkImageViewGrid.setColorFilter(Color.parseColor(main.fabSkin));
             holder.rl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    main.onListItemClicked(p, holder.checkImageView);
+                    main.onListItemClicked(p, holder.checkImageViewGrid);
                 }
             });
 
@@ -512,7 +520,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                     if (!rowItem.getSize().equals(main.goback)) {
 
-                        toggleChecked(p, holder.checkImageView);
+                        toggleChecked(p, holder.checkImageViewGrid);
                     }
                     return true;
                 }
@@ -520,6 +528,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.txtTitle.setText(rowItem.getTitle());
             holder.imageView1.setVisibility(View.INVISIBLE);
             holder.genericIcon.setVisibility(View.VISIBLE);
+            holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
             holder.genericIcon.setImageDrawable(rowItem.getImageId());
 
             if (Icons.isPicture((rowItem.getDesc().toLowerCase())) || Icons.isVideo(rowItem.getDesc().toLowerCase())) {
@@ -563,10 +572,12 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                 if (checked) {
                     holder.genericIcon.setColorFilter(main.icon_skin_color);
-                    holder.genericIcon.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                    //holder.genericIcon.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
 
+                    holder.checkImageViewGrid.setVisibility(View.VISIBLE);
                     holder.rl.setBackgroundColor(Color.parseColor("#9f757575"));
                 } else {
+                    holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
                     if (main.theme1 == 0)
                         holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
                     else{
