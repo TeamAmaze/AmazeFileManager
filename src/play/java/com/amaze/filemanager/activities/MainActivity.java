@@ -51,6 +51,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
@@ -237,6 +238,8 @@ public class MainActivity extends BaseActivity implements
     private RelativeLayout searchViewLayout;
     private AppCompatEditText searchViewEditText;
     private int[] searchCoords = new int[2];
+    private View mFabBackground;
+    private CoordinatorLayout mScreenLayout;
 
     public static boolean isSearchViewEnabled = false;
 
@@ -1051,6 +1054,9 @@ public class MainActivity extends BaseActivity implements
             // TODO:ViewAnimationUtils.createCircularReveal
             animator = new ObjectAnimator().ofFloat(searchViewLayout,"alpha",0f,1f);
         }
+
+        utils.revealShow(mFabBackground, true);
+
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
         searchViewLayout.setVisibility(View.VISIBLE);
@@ -1098,6 +1104,8 @@ public class MainActivity extends BaseActivity implements
             // TODO: ViewAnimationUtils.createCircularReveal
             animator = new ObjectAnimator().ofFloat(searchViewLayout,"alpha",1f,0f);
         }
+
+        utils.revealShow(mFabBackground, false);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
         animator.start();
@@ -1781,11 +1789,13 @@ public class MainActivity extends BaseActivity implements
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
 
+        mScreenLayout = (CoordinatorLayout) findViewById(R.id.main_frame);
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
         buttonBarFrame.setBackgroundColor(Color.parseColor(skin));
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
+        mFabBackground = findViewById(R.id.fab_bg);
         drawerHeaderView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -1828,13 +1838,14 @@ public class MainActivity extends BaseActivity implements
         mDrawerList.addHeaderView(drawerHeaderLayout);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         View v = findViewById(R.id.fab_bg);
-        if (theme1 == 1)
-            v.setBackgroundColor(Color.parseColor("#a6ffffff"));
+        /*if (theme1 != 1)
+            v.setBackgroundColor(Color.parseColor("#a6ffffff"));*/
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 floatingActionButton.close(true);
                 utils.revealShow(view, false);
+                if (isSearchViewEnabled) hideSearchView();
             }
         });
 
