@@ -207,6 +207,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         public TextView genericText;
         public ImageButton about;
         public ImageView checkImageView;
+        public ImageView checkImageViewGrid;
+
         public ViewHolder(View view) {
             super(view);
 
@@ -222,6 +224,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             about=(ImageButton) view.findViewById(R.id.properties);
             checkImageView = (ImageView) view.findViewById(R.id.check_icon);
             genericIcon = (ImageView) view.findViewById(R.id.generic_icon);
+            checkImageViewGrid = (ImageView) view.findViewById(R.id.check_icon_grid);
         }
     }
 
@@ -500,11 +503,14 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                 holder.txtDesc.setText(rowItem.getSize());
         } else {
+            // view is a grid view
             Boolean checked = myChecked.get(p);
+
+            holder.checkImageViewGrid.setColorFilter(Color.parseColor(main.fabSkin));
             holder.rl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    main.onListItemClicked(p, holder.checkImageView);
+                    main.onListItemClicked(p, holder.checkImageViewGrid);
                 }
             });
 
@@ -514,7 +520,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                     if (!rowItem.getSize().equals(main.goback)) {
 
-                        toggleChecked(p, holder.checkImageView);
+                        toggleChecked(p, holder.checkImageViewGrid);
                     }
                     return true;
                 }
@@ -522,6 +528,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.txtTitle.setText(rowItem.getTitle());
             holder.imageView1.setVisibility(View.INVISIBLE);
             holder.genericIcon.setVisibility(View.VISIBLE);
+            holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
             holder.genericIcon.setImageDrawable(rowItem.getImageId());
 
             if (Icons.isPicture((rowItem.getDesc().toLowerCase())) || Icons.isVideo(rowItem.getDesc().toLowerCase())) {
@@ -565,10 +572,12 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                 if (checked) {
                     holder.genericIcon.setColorFilter(main.icon_skin_color);
-                    holder.genericIcon.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                    //holder.genericIcon.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
 
+                    holder.checkImageViewGrid.setVisibility(View.VISIBLE);
                     holder.rl.setBackgroundColor(Color.parseColor("#9f757575"));
                 } else {
+                    holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
                     if (main.theme1 == 0)
                         holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
                     else{

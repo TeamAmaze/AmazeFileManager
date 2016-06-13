@@ -19,10 +19,11 @@
             android:id="@+id/icon_frame"
             android:layout_marginBottom="6dp"
             android:background="#fff"
-            android:foregroundGravity="fill">
+            android:foregroundGravity="fill"
+            >
 
             <ImageView
-                android:id="@+id/icon"
+                android:id="@+id/generic_icon"
                 android:layout_width="65dp"
                 android:layout_height="65dp"
                 android:layout_gravity="center"
@@ -34,6 +35,20 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:contentDescription="@null" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/check_icon_grid"
+                    android:layout_width="@dimen/check_icon_size_grid"
+                    android:layout_height="@dimen/check_icon_size_grid"
+                    android:src="@drawable/ic_grid_selection_check"
+                    android:alpha="0.7"
+                    android:visibility="invisible" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/permis"
