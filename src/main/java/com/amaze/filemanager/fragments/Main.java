@@ -37,7 +37,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -127,10 +126,13 @@ public class Main extends android.support.v4.app.Fragment {
     public LinearLayout pathbar;
     public int openMode = 0;
     public android.support.v7.widget.RecyclerView listView;
+
+    public boolean GO_BACK_ITEM, SHOW_THUMBS, COLORISE_ICONS, SHOW_DIVIDERS;
+
     /**
      * {@link Main#IS_LIST} boolean to identify if the view is a list or grid
      */
-    public boolean GO_BACK_ITEM, IS_LIST = true, SHOW_THUMBS, COLORISE_ICONS, SHOW_DIVIDERS;
+    public boolean IS_LIST = true;
     public IconHolder ic;
     public MainActivity MAIN_ACTIVITY;
     public String skin, fabSkin, iconskin;
@@ -304,9 +306,8 @@ public class Main extends android.support.v4.app.Fragment {
         f = new HFile(HFile.UNKNOWN, CURRENT_PATH);
         f.generateMode(getActivity());
         MAIN_ACTIVITY.initiatebbar();
-        IS_LIST = savedInstanceState != null ? savedInstanceState.getBoolean("IS_LIST", IS_LIST) : IS_LIST;
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
-        if (theme1 == 1) {
+        /*if (theme1 == 1) {
 
             listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.holo_dark_background)));
         } else {
@@ -314,7 +315,11 @@ public class Main extends android.support.v4.app.Fragment {
             if (IS_LIST)
                 listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
 
-        }
+        }*/
+        if (theme1==0 && !IS_LIST)  listView.setBackgroundColor(getResources()
+                .getColor(R.color.grid_background_light));
+        else    listView.setBackgroundDrawable(null);
+
         listView.setHasFixedSize(true);
         columns = Integer.parseInt(Sp.getString("columns", "-1"));
         if (IS_LIST) {
@@ -365,19 +370,17 @@ public class Main extends android.support.v4.app.Fragment {
 
     void switchToGrid() {
         IS_LIST = false;
+
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
         fixIcons();
 
-        if (theme1 == 1) {
+        if (theme1==0) {
 
-            listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.holo_dark_background)));
-        } else {
-
-            if (IS_LIST)
-                listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
-            else listView.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#f2f2f2")));
+            // will always be grid, set alternate white background
+            listView.setBackgroundColor(getResources().getColor(R.color.grid_background_light));
         }
+
         if (mLayoutManagerGrid == null)
             if (columns == -1 || columns == 0)
                 mLayoutManagerGrid = new GridLayoutManager(getActivity(), 3);
@@ -387,22 +390,14 @@ public class Main extends android.support.v4.app.Fragment {
         adapter = null;
     }
 
-    void setBackground(Drawable drawable) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            listView.setBackground(drawable);
-        } else listView.setBackgroundDrawable(drawable);
-    }
-
     void switchToList() {
         IS_LIST = true;
-        if (theme1 == 1) {
-            setBackground(new ColorDrawable(getResources().getColor(R.color.holo_dark_background)));
-        } else {
 
-            if (IS_LIST)
-                setBackground(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
-            else setBackground(new ColorDrawable(Color.parseColor("#f2f2f2")));
+        if (theme1==0) {
+
+            listView.setBackgroundDrawable(null);
         }
+
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
         fixIcons();
@@ -462,7 +457,7 @@ public class Main extends android.support.v4.app.Fragment {
             int top = (vi == null) ? 0 : vi.getTop();
             outState.putInt("index", index);
             outState.putInt("top", top);
-            outState.putBoolean("IS_LIST", IS_LIST);
+            //outState.putBoolean("IS_LIST", IS_LIST);
             outState.putParcelableArrayList("list", LIST_ELEMENTS);
             outState.putString("CURRENT_PATH", CURRENT_PATH);
             outState.putBoolean("selection", selection);

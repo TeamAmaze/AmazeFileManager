@@ -333,6 +333,22 @@ public class MainActivity extends BaseActivity implements
 
         }
         updateDrawer();
+
+        // setting window background color instead of each item, in order to reduce pixel overdraw
+        if (theme1==0) {
+            /*if(Main.IS_LIST) {
+
+                getWindow().setBackgroundDrawableResource(android.R.color.white);
+            } else {
+
+                getWindow().setBackgroundDrawableResource(R.color.grid_background_light);
+            }*/
+            getWindow().setBackgroundDrawableResource(android.R.color.white);
+        }
+        else {
+            getWindow().setBackgroundDrawableResource(R.color.holo_dark_background);
+        }
+
         if (savedInstanceState == null) {
 
             if (openprocesses) {

@@ -31,8 +31,8 @@
             <color android:color="#EEEEEE" />
         </item>
 
-        <item>
+        <!--<item>
             <color android:color="#FFFFFF" />
-        </item>
+        </item>-->
 
 </selector>

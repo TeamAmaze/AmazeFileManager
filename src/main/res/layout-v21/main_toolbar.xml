@@ -311,7 +311,6 @@
             android:layout_above="@+id/divider1"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="#ffffff"
             android:choiceMode="singleChoice"
             android:scrollbars="none"
             android:dividerHeight="0dip" />
