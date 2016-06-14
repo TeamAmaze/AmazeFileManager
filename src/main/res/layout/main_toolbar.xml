@@ -167,18 +167,20 @@
                 />
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/search_edit_text"
-                android:layout_width="@dimen/search_view_edit_text_width"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@+id/img_view_back"
                 android:hint="@string/search_hint"
                 android:singleLine="true"
                 android:maxLines="1"
+                android:layout_toLeftOf="@+id/search_close_btn"
                 />
             <ImageView
+                android:id="@+id/search_close_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:src="@android:drawable/ic_menu_info_details"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="@dimen/search_view_info_margin_left_right"
                 android:layout_marginRight="@dimen/search_view_info_margin_left_right"

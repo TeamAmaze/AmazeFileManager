@@ -843,6 +843,7 @@ public class Main extends android.support.v4.app.Fragment {
         if (results) {
 
             // check to initialize search results
+            // if search task is been running, cancel it
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             SearchAsyncHelper fragment = (SearchAsyncHelper) fragmentManager
                     .findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
