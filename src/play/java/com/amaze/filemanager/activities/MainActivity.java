@@ -334,6 +334,22 @@ public class MainActivity extends BaseActivity implements
 
         }
         updateDrawer();
+
+        // setting window background color instead of each item, in order to reduce pixel overdraw
+        if (theme1==0) {
+            /*if(Main.IS_LIST) {
+
+                getWindow().setBackgroundDrawableResource(android.R.color.white);
+            } else {
+
+                getWindow().setBackgroundDrawableResource(R.color.grid_background_light);
+            }*/
+            getWindow().setBackgroundDrawableResource(android.R.color.white);
+        }
+        else {
+            getWindow().setBackgroundDrawableResource(R.color.holo_dark_background);
+        }
+
         if (savedInstanceState == null) {
 
             if (openprocesses) {
@@ -1032,6 +1048,7 @@ public class MainActivity extends BaseActivity implements
                 break;
             case R.id.search:
                 View searchItem = toolbar.findViewById(R.id.search);
+                searchViewEditText.setText("");
                 searchItem.getLocationOnScreen(searchCoords);
                 revealSearchView();
                 break;
@@ -1044,13 +1061,13 @@ public class MainActivity extends BaseActivity implements
      */
     void revealSearchView() {
 
-        int startRadius = 16;
-        int endRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
+        final int START_RADIUS = 16;
+        int endRadius = Math.max(toolbar.getWidth(), toolbar.getHeight());
 
         Animator animator;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
-                    searchCoords[0]+32, searchCoords[1]-16, startRadius, endRadius);
+                    searchCoords[0]+32, searchCoords[1]-16, START_RADIUS, endRadius);
         } else {
             // TODO:ViewAnimationUtils.createCircularReveal
             animator = new ObjectAnimator().ofFloat(searchViewLayout,"alpha",0f,1f);
@@ -1095,12 +1112,12 @@ public class MainActivity extends BaseActivity implements
      */
     public void hideSearchView() {
 
-        int endRadius = 16;
+        final int END_RADIUS = 16;
         int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
         Animator animator;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
-                    searchCoords[0]+32, searchCoords[1]-16, startRadius, endRadius);
+                    searchCoords[0]+32, searchCoords[1]-16, startRadius, END_RADIUS);
         }else {
             // TODO: ViewAnimationUtils.createCircularReveal
             animator = new ObjectAnimator().ofFloat(searchViewLayout,"alpha",1f,0f);
@@ -1121,6 +1138,8 @@ public class MainActivity extends BaseActivity implements
 
                 searchViewLayout.setVisibility(View.GONE);
                 isSearchViewEnabled = false;
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(searchViewEditText.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
             }
 
             @Override

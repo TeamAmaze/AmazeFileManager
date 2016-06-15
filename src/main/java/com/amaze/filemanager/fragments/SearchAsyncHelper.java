@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
@@ -97,7 +98,7 @@ public class SearchAsyncHelper extends Fragment {
 
             // level 1
             // if regex or not
-            if (!isRegexEnabled) search(file, path);
+            if (!isRegexEnabled) search(file, mInput);
             else {
 
                 // compile the regular expression in the input
@@ -247,7 +248,7 @@ public class SearchAsyncHelper extends Fragment {
                 }
             }
 
-            System.out.println(stringBuilder.toString());
+            Log.d(getClass().getSimpleName(), stringBuilder.toString());
             return stringBuilder.toString();
         }
     }

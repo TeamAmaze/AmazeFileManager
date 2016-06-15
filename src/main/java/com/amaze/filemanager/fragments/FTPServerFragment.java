@@ -29,7 +29,11 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import org.w3c.dom.Text;
 
 /**
+<<<<<<< HEAD
  * Created by yashwanthreddyg on 10-06-2016.
+=======
+ * Created by KH9151 on 10-06-2016.
+>>>>>>> e5a0d0bd685bba3a1322d7c0ff416f1334451f9b
  */
 public class FTPServerFragment extends Fragment {
 
@@ -164,12 +168,10 @@ public class FTPServerFragment extends Fragment {
         if(FTPService.isRunning()){
             statusText.setText(utils.getString(getContext(),R.string.ftp_status_running));
             ftpBtn.setText(utils.getString(getContext(),R.string.stop_ftp));
-            ftpAddrText.setText("ftp:/"+FTPService.getLocalInetAddress(getContext())+":"+FTPService.getPort());
         }
         else{
             statusText.setText(utils.getString(getContext(),R.string.ftp_status_not_running));
             ftpBtn.setText(utils.getString(getContext(),R.string.start_ftp));
-            ftpAddrText.setText("");
         }
     }
 }
