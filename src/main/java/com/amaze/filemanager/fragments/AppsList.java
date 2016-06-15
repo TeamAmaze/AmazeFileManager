@@ -105,7 +105,7 @@ public class AppsList extends ListFragment {
             adapter = new AppsAdapter(getActivity(), R.layout.rowlayout, a, app, c);
             setListAdapter(adapter);
             vl.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
-
+            vl.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
         }
         setHasOptionsMenu(true);
     }

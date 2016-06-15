@@ -31,6 +31,7 @@
     <string name="storage">Storage</string>
     <string name="gallery">Gallery</string>
     <string name="apps">App Manager</string>
+    <string name="ftp">FTP Server</string>
     <string name="bookmanag">Bookmarks Manager</string>
     <string name="setting">Settings</string>
     <string name="select">Select Item</string>
@@ -397,5 +398,10 @@
     <string name="match_content">Match content</string>
     <string name="match_content_summary">If set, regular expression will be matched with entire file name,
         will look for occurrence otherwise.</string>
+    <string name="start_ftp">Start</string>
+    <string name="stop_ftp">Stop</string>
+    <string name="ftp_status_running">Running</string>
+    <string name="ftp_status_not_running">Not Running</string>
+    <string name="ftp_no_wifi">Make sure you\'re connected to WiFi</string>
 </resources>
 
