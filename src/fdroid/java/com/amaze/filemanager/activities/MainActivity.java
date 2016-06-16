@@ -19,7 +19,6 @@
 
 package com.amaze.filemanager.activities;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -32,7 +31,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -49,16 +47,16 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -69,12 +67,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -100,8 +101,10 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
+import com.amaze.filemanager.fragments.FTPServerFragment;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
+import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
@@ -110,7 +113,9 @@ import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
+import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
+import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
@@ -118,8 +123,8 @@ import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.BookSorter;
-import com.amaze.filemanager.utils.Constants;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
@@ -137,7 +142,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity implements OnRequestPermissionsResultCallback,
+        SmbConnectionListener,DataChangeListener, BookmarkCallback,
+        SearchAsyncHelper.HelperCallbacks {
 
     final Pattern DIR_SEPARATOR = Pattern.compile("/");
     /* Request code used to invoke sign in user interactions. */
@@ -146,25 +153,24 @@ public class MainActivity extends AppCompatActivity {
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
     public ScrimInsetsRelativeLayout mDrawerLinear;
-    public String skin, path = "", launchPath;
+    public String  path = "", launchPath;
     public int theme;
     public ArrayList<BaseFile> COPY_PATH = null, MOVE_PATH = null;
     public FrameLayout frameLayout;
     public boolean mReturnIntent = false;
-    public int theme1;
-    public boolean rootmode, aBoolean, openzip = false;
+    public boolean  aBoolean, openzip = false;
     public boolean mRingtonePickerIntent = false, colourednavigation = false;
     public Toolbar toolbar;
     public int skinStatusBar;
     public int storage_count = 0;
-    public String fabskin;
+
     public FloatingActionMenu floatingActionButton;
     public LinearLayout pathbar;
     public FrameLayout buttonBarFrame;
     public boolean isDrawerLocked = false;
     HistoryManager history, grid;
     Futils utils;
-    public SharedPreferences Sp;
+
     MainActivity mainActivity = this;
     public DrawerAdapter adapter;
     IconUtils util;
@@ -197,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
     TabHandler tabHandler;
     RelativeLayout drawerHeaderParent;
     static final int image_selector_request_code = 31;
-    // Check for user interaction for google+ api only once
+    // Check for user interaction for Google+ api only once
     boolean mGoogleApiKey = false;
     /* A flag indicating that a PendingIntent is in progress and prevents
    * us from starting further intents.
@@ -205,8 +211,22 @@ public class MainActivity extends AppCompatActivity {
     boolean mIntentInProgress, showHidden = false;
 
     // string builder object variables for pathBar animations
-    StringBuilder newPathBuilder, oldPathBuilder;
+    StringBuffer newPathBuilder, oldPathBuilder;
     AppBarLayout appBarLayout;
+
+    private static final int PATH_ANIM_START_DELAY = 0;
+    private static final int PATH_ANIM_END_DELAY = 0;
+    public static final String TAG_ASYNC_HELPER = "async_helper";
+    public Main mainFragment;
+
+    private int TOOLBAR_START_INSET;
+    private RelativeLayout searchViewLayout;
+    private AppCompatEditText searchViewEditText;
+    private int[] searchCoords = new int[2];
+    private View mFabBackground;
+    private CoordinatorLayout mScreenLayout;
+
+    public static boolean isSearchViewEnabled = false;
 
     /**
      * Called when the activity is first created.
@@ -214,21 +234,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Sp = PreferenceManager.getDefaultSharedPreferences(this);
         initialisePreferences();
-        setTheme();
+        DataUtils.registerOnDataChangedListener(this);
         setContentView(R.layout.main_toolbar);
         initialiseViews();
-
         tabHandler = new TabHandler(this, null, null, 1);
         utils = new Futils();
-        //requesting storage permissions
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            if (!checkStoragePermission())
-                requestStoragePermission();
-
         mainActivityHelper = new MainActivityHelper(this);
-        intialiseFab();
+        initialiseFab();
 
         history = new HistoryManager(this, "Table2");
         history.initializeTable(DataUtils.HISTORY, 0);
@@ -247,8 +260,6 @@ public class MainActivity extends AppCompatActivity {
         DataUtils.setHiddenfiles(history.readTable(DataUtils.HIDDEN));
         DataUtils.setGridfiles(grid.readTable(DataUtils.GRID));
         DataUtils.setListfiles(grid.readTable(DataUtils.LIST));
-        // initialize g+ api client as per preferences
-        // no need in fdroid variant
 
 
         util = new IconUtils(Sp, this);
@@ -261,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                crossfadeInverse();
+                utils.crossfadeInverse(buttons,pathbar);
             }
         };
         path = getIntent().getStringExtra("path");
@@ -276,13 +287,10 @@ public class MainActivity extends AppCompatActivity {
             }
             if (intent.getAction() != null)
                 if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
-                    String title = intent.getStringExtra(Constants.FILE_PICKER_TITLE_BUNDLE_KEY);
-                    if(title == null || title.length() == 0)
-                        title = utils.getString(con, R.string.pick_a_file);
 
                     // file picker intent
                     mReturnIntent = true;
-                    Toast.makeText(this, title, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
                 } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
                     // ringtone picker intent
                     mReturnIntent = true;
@@ -299,6 +307,22 @@ public class MainActivity extends AppCompatActivity {
 
         }
         updateDrawer();
+
+        // setting window background color instead of each item, in order to reduce pixel overdraw
+        if (theme1==0) {
+            /*if(Main.IS_LIST) {
+
+                getWindow().setBackgroundDrawableResource(android.R.color.white);
+            } else {
+
+                getWindow().setBackgroundDrawableResource(R.color.grid_background_light);
+            }*/
+            getWindow().setBackgroundDrawableResource(android.R.color.white);
+        }
+        else {
+            getWindow().setBackgroundDrawableResource(R.color.holo_dark_background);
+        }
+
         if (savedInstanceState == null) {
 
             if (openprocesses) {
@@ -336,7 +360,9 @@ public class MainActivity extends AppCompatActivity {
             operation = savedInstanceState.getInt("operation");
             select = savedInstanceState.getInt("selectitem", 0);
             adapter.toggleChecked(select);
+            //mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
         }
+
         if (theme1 == 1) {
             mDrawerList.setBackgroundColor(ContextCompat.getColor(this, R.color.holo_dark_background));
         }
@@ -475,10 +501,14 @@ public class MainActivity extends AppCompatActivity {
 
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
             String name = fragment.getClass().getName();
-            if (name.contains("TabFragment")) {
+            if (searchViewLayout.isShown()) {
+                // hide search view if visible, with an animation
+                hideSearchView();
+
+            } else if (name.contains("TabFragment")) {
                 if (floatingActionButton.isOpened()) {
                     floatingActionButton.close(true);
-                    revealShow(findViewById(R.id.fab_bg), false);
+                    utils.revealShow(findViewById(R.id.fab_bg), false);
                 } else {
                     TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
                     Fragment fragment1 = tabFragment.getTab();
@@ -501,6 +531,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.remove(zipViewer);
                         fragmentTransaction.commit();
                         supportInvalidateOptionsMenu();
+                        floatingActionButton.setVisibility(View.VISIBLE);
                         floatingActionButton.showMenuButton(true);
 
                     }
@@ -669,6 +700,7 @@ public class MainActivity extends AppCompatActivity {
         transaction.addToBackStack("tabt" + 1);
         transaction.commitAllowingStateLoss();
         setActionBarTitle(null);
+        floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.showMenuButton(true);
         if (openzip && zippath != null) {
             if (zippath.endsWith(".zip") || zippath.endsWith(".apk")) openZip(zippath);
@@ -698,6 +730,7 @@ public class MainActivity extends AppCompatActivity {
                 adapter.toggleChecked(select);
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
+                floatingActionButton.setVisibility(View.VISIBLE);
                 floatingActionButton.showMenuButton(true);
 
 
@@ -719,6 +752,28 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.activity_extra, menu);
+        /*SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
+
+        MenuItem search = menu.findItem(R.id.search);
+        MenuItemCompat.setOnActionExpandListener(search, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                *//* Stretching the SearchView across width of the Toolbar *//*
+                toolbar.setContentInsetsRelative(0, 0);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                *//* Restoring *//*
+                toolbar.setContentInsetsRelative(TOOLBAR_START_INSET, 0);
+                return true;
+            }
+        });*/
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -872,11 +927,13 @@ public class MainActivity extends AppCompatActivity {
             case R.id.sethome:
                 if(ma==null)return super.onOptionsItemSelected(item);
                 final Main main = ma;
-                if (main.openMode != 0 || main.openMode != 3) {
+                if (main.openMode != 0 && main.openMode != 3) {
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
-                final MaterialDialog b = utils.showBasicDialog(mainActivity,fabskin,theme1, new String[]{getResources().getString(R.string.questionset), getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
+                final MaterialDialog b = utils.showBasicDialog(mainActivity,fabskin,theme1,
+                        new String[]{getResources().getString(R.string.questionset),
+                                getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
                 b.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -940,9 +997,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 ma.switchView();
                 break;
-            case R.id.search:
-                mainActivityHelper.search();
-                break;
             case R.id.paste:
                 String path = ma.CURRENT_PATH;
                 ArrayList<BaseFile> arrayList = new ArrayList<>();
@@ -965,8 +1019,112 @@ public class MainActivity extends AppCompatActivity {
                 if (fragment1.getClass().getName().contains("ZipViewer"))
                     mainActivityHelper.extractFile(((ZipViewer) fragment1).f);
                 break;
+            case R.id.search:
+                View searchItem = toolbar.findViewById(R.id.search);
+                searchViewEditText.setText("");
+                searchItem.getLocationOnScreen(searchCoords);
+                revealSearchView();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * show search view with a circular reveal animation
+     */
+    void revealSearchView() {
+
+        final int START_RADIUS = 16;
+        int endRadius = Math.max(toolbar.getWidth(), toolbar.getHeight());
+
+        Animator animator;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
+                    searchCoords[0]+32, searchCoords[1]-16, START_RADIUS, endRadius);
+        } else {
+            // TODO:ViewAnimationUtils.createCircularReveal
+            animator = new ObjectAnimator().ofFloat(searchViewLayout,"alpha",0f,1f);
+        }
+
+        utils.revealShow(mFabBackground, true);
+
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.setDuration(600);
+        searchViewLayout.setVisibility(View.VISIBLE);
+        animator.start();
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+                searchViewEditText.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchViewEditText, InputMethodManager.SHOW_IMPLICIT);
+                isSearchViewEnabled = true;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+    }
+
+    /**
+     * hide search view with a circular reveal animation
+     */
+    public void hideSearchView() {
+
+        final int END_RADIUS = 16;
+        int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
+        Animator animator;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
+                    searchCoords[0]+32, searchCoords[1]-16, startRadius, END_RADIUS);
+        }else {
+            // TODO: ViewAnimationUtils.createCircularReveal
+            animator = new ObjectAnimator().ofFloat(searchViewLayout,"alpha",1f,0f);
+        }
+
+        utils.revealShow(mFabBackground, false);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.setDuration(600);
+        animator.start();
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+                searchViewLayout.setVisibility(View.GONE);
+                isSearchViewEnabled = false;
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(searchViewEditText.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
     }
 
     /*@Override
@@ -1027,6 +1185,9 @@ public class MainActivity extends AppCompatActivity {
             outState.putParcelableArrayList("oparraylist", (oparrayList));
             outState.putInt("operation", operation);
         }
+        /*if (mainFragment!=null) {
+            outState.putParcelable("main_fragment", mainFragment);
+        }*/
     }
 
     @Override
@@ -1050,6 +1211,16 @@ public class MainActivity extends AppCompatActivity {
         newFilter.addDataScheme(ContentResolver.SCHEME_FILE);
         registerReceiver(mainActivityHelper.mNotificationReceiver, newFilter);
         registerReceiver(receiver2, new IntentFilter("general_communications"));
+        if (getSupportFragmentManager().findFragmentById(R.id.content_frame)
+                .getClass().getName().contains("TabFragment")) {
+
+            floatingActionButton.setVisibility(View.VISIBLE);
+            floatingActionButton.showMenuButton(false);
+        } else {
+
+            floatingActionButton.setVisibility(View.INVISIBLE);
+            floatingActionButton.hideMenuButton(false);
+        }
     }
 
     @Override
@@ -1079,12 +1250,15 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        unbindDrive();
         DataUtils.clear();
+
+        unbindDrive();
         if (grid != null)
             grid.end();
         if (history != null)
             history.end();
+        /*if (mainFragment!=null)
+            mainFragment=null;*/
     }
 
     public void updatepaths(int pos) {
@@ -1183,6 +1357,7 @@ public class MainActivity extends AppCompatActivity {
         }
         ArrayList<String[]> accounts=DataUtils.getAccounts();
         if (accounts != null && accounts.size() > 0) {
+            Collections.sort(accounts,new BookSorter());
             for (String[] file : accounts) {
                 list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.drive)));
             }
@@ -1191,7 +1366,7 @@ public class MainActivity extends AppCompatActivity {
         }
         ArrayList<String[]> books=DataUtils.getBooks();
         if (books != null && books.size() > 0) {
-
+            Collections.sort(books,new BookSorter());
             for (String[] file : books) {
                 list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
                         .folder_fab)));
@@ -1211,13 +1386,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-        if (requestCode == 3) {
+
+        if (requestCode == image_selector_request_code) {
+            if (Sp != null && intent != null && intent.getData() != null) {
+                if (Build.VERSION.SDK_INT >= 19)
+                    getContentResolver().takePersistableUriPermission(intent.getData(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                Sp.edit().putString("drawer_header_path", intent.getData().toString()).commit();
+                drawerHeaderView.setBackgroundDrawable(new BitmapDrawable(Sp.getString("drawer_header_path", null)));
+            }
+        } else if (requestCode == 3) {
             String p = Sp.getString("URI", null);
             Uri oldUri = null;
             if (p != null) oldUri = Uri.parse(p);
@@ -1240,8 +1418,8 @@ public class MainActivity extends AppCompatActivity {
             // After confirmation, update stored value of folder.
             // Persist access permissions.
             final int takeFlags = intent.getFlags()
-                    & (android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    | android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
             switch (operation) {
                 case DataUtils.DELETE://deletion
@@ -1425,23 +1603,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void initialisePreferences() {
-
-        int th = Integer.parseInt(Sp.getString("theme", "0"));
-        theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
-
-        boolean random = Sp.getBoolean("random_checkbox", false);
-        if (random)
-            skin = PreferenceUtils.random(Sp);
-        else
-            skin = PreferenceUtils.getPrimaryColorString(Sp);
-        fabskin = PreferenceUtils.getAccentString(Sp);
-        rootmode = Sp.getBoolean("rootmode", false);
-        if (rootmode) {
-            if (!RootTools.isAccessGiven()) {
-                rootmode = false;
-                Sp.edit().putBoolean("rootmode", false).commit();
-            }
-        }
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         hidemode = Sp.getInt("hidemode", 0);
         showHidden = Sp.getBoolean("showHidden", false);
@@ -1452,11 +1613,13 @@ public class MainActivity extends AppCompatActivity {
     void initialiseViews() {
         appBarLayout = (AppBarLayout) findViewById(R.id.lin);
 
+        mScreenLayout = (CoordinatorLayout) findViewById(R.id.main_frame);
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
         buttonBarFrame.setBackgroundColor(Color.parseColor(skin));
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
+        mFabBackground = findViewById(R.id.fab_bg);
         drawerHeaderView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -1478,6 +1641,8 @@ public class MainActivity extends AppCompatActivity {
         mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
         mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
         toolbar = (Toolbar) findViewById(R.id.action_bar);
+        /* For SearchView, see onCreateOptionsMenu(Menu menu)*/
+        TOOLBAR_START_INSET = toolbar.getContentInsetStart();
         setSupportActionBar(toolbar);
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
@@ -1497,13 +1662,14 @@ public class MainActivity extends AppCompatActivity {
         mDrawerList.addHeaderView(drawerHeaderLayout);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         View v = findViewById(R.id.fab_bg);
-        if (theme1 == 1)
-            v.setBackgroundColor(Color.parseColor("#a6ffffff"));
+        /*if (theme1 != 1)
+            v.setBackgroundColor(Color.parseColor("#a6ffffff"));*/
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 floatingActionButton.close(true);
-                revealShow(view, false);
+                utils.revealShow(view, false);
+                if (isSearchViewEnabled) hideSearchView();
             }
         });
 
@@ -1560,6 +1726,27 @@ public class MainActivity extends AppCompatActivity {
                 adapter.toggleChecked(false);
             }
         });
+
+        View ftpButton = findViewById(R.id.ftpbutton);
+        if (theme1 == 1) {
+            ftpButton.setBackgroundResource(R.drawable.safr_ripple_black);
+            ((ImageView) ftpButton.findViewById(R.id.ftpicon)).setImageResource(R.drawable.ic_ftp_dark);
+            ((TextView) ftpButton.findViewById(R.id.ftptext)).setTextColor(getResources().getColor(android.R.color.white));
+        }
+        ftpButton.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                transaction2.replace(R.id.content_frame, new FTPServerFragment());
+                findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                pending_fragmentTransaction = transaction2;
+                if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
+                else onDrawerClosed();
+                select = -2;
+                adapter.toggleChecked(false);
+            }
+        });
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
 
 
@@ -1586,16 +1773,32 @@ public class MainActivity extends AppCompatActivity {
                 window.setNavigationBarColor(skinStatusBar);
 
         }
+        searchViewLayout = (RelativeLayout) findViewById(R.id.search_view);
+        searchViewEditText = (AppCompatEditText) findViewById(R.id.search_edit_text);
+        searchViewEditText.setOnKeyListener(new TextView.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    // Perform action on key press
+                    mainActivityHelper.search(searchViewEditText.getText().toString());
+                    hideSearchView();
+                    return true;
+                }
+                return false;
+            }
+        });
+        searchViewEditText.setTextColor(Color.parseColor(fabskin));
+        searchViewEditText.setHintTextColor(Color.parseColor(fabskin));
     }
 
-    void intialiseFab() {
+    void initialiseFab() {
         String folder_skin = PreferenceUtils.getFolderColorString(Sp);
         int fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
         int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
         floatingActionButton = (FloatingActionMenu) findViewById(R.id.menu);
-        floatingActionButton.setVisibility(View.VISIBLE);
-        floatingActionButton.showMenuButton(true);
         floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
         floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
 
@@ -1604,8 +1807,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onMenuToggle(boolean b) {
                 View v = findViewById(R.id.fab_bg);
-                if (b) revealShow(v, true);
-                else revealShow(v, false);
+                if (b) utils.revealShow(v, true);
+                else utils.revealShow(v, false);
             }
         });
 
@@ -1616,7 +1819,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(0);
-                revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(findViewById(R.id.fab_bg), false);
                 floatingActionButton.close(true);
             }
         });
@@ -1627,7 +1830,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(1);
-                revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(findViewById(R.id.fab_bg), false);
                 floatingActionButton.close(true);
             }
         });
@@ -1638,7 +1841,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(2);
-                revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(findViewById(R.id.fab_bg), false);
                 floatingActionButton.close(true);
             }
         });
@@ -1649,7 +1852,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(3);
-                revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(findViewById(R.id.fab_bg), false);
                 floatingActionButton.close(true);
             }
         });
@@ -1686,34 +1889,49 @@ public class MainActivity extends AppCompatActivity {
         if (!results) {
             textView.setText(folder_count + " " + getResources().getString(R.string.folders) + "" +
                     " " + file_count + " " + getResources().getString(R.string.files));
+        } else {
+            bapath.setText(R.string.searchresults);
+            textView.setText(R.string.empty);
+            return;
         }
-        else textView.setText(R.string.searchresults);
         final String oldPath = bapath.getText().toString();
         if (oldPath != null && oldPath.equals(newPath)) return;
 
+        // implement animation while setting text
+        newPathBuilder = new StringBuffer().append(newPath);
+        oldPathBuilder = new StringBuffer().append(oldPath);
 
         final Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in);
         Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_out);
 
-        final StringBuilder stringBuilder = new StringBuilder();
-        if (newPath.length() >= oldPath.length()) {
+        if (newPath.length() > oldPath.length() &&
+                newPathBuilder.delete(oldPath.length(), newPath.length()).toString().equals(oldPath) &&
+                oldPath.length() != 0) {
+
             // navigate forward
-            stringBuilder.append(newPath);
-            stringBuilder.delete(0, oldPath.length());
+            newPathBuilder.delete(0, newPathBuilder.length());
+            newPathBuilder.append(newPath);
+            newPathBuilder.delete(0, oldPath.length());
             animPath.setAnimation(slideIn);
             animPath.animate().setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
-                    animPath.setVisibility(View.GONE);
-                    bapath.setText(newPath);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            animPath.setVisibility(View.GONE);
+                            bapath.setText(newPath);
+                        }
+                    }, PATH_ANIM_END_DELAY);
                 }
 
                 @Override
                 public void onAnimationStart(Animator animation) {
                     super.onAnimationStart(animation);
                     animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(stringBuilder.toString());
+                    animPath.setText(newPathBuilder.toString());
                     //bapath.setText(oldPath);
 
                     scroll.post(new Runnable() {
@@ -1723,11 +1941,20 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }
-            }).start();
-        } else if (newPath.length() <= oldPath.length()) {
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    super.onAnimationCancel(animation);
+                    //onAnimationEnd(animation);
+                }
+            }).setStartDelay(PATH_ANIM_START_DELAY).start();
+        } else if (newPath.length() < oldPath.length() &&
+                oldPathBuilder.delete(newPath.length(), oldPath.length()).toString().equals(newPath)) {
+
             // navigate backwards
-            stringBuilder.append(oldPath);
-            stringBuilder.delete(0, newPath.length());
+            oldPathBuilder.delete(0, oldPathBuilder.length());
+            oldPathBuilder.append(oldPath);
+            oldPathBuilder.delete(0, newPath.length());
             animPath.setAnimation(slideOut);
             animPath.animate().setListener(new AnimatorListenerAdapter() {
                 @Override
@@ -1748,7 +1975,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onAnimationStart(Animator animation) {
                     super.onAnimationStart(animation);
                     animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(stringBuilder.toString());
+                    animPath.setText(oldPathBuilder.toString());
                     bapath.setText(newPath);
 
                     scroll.post(new Runnable() {
@@ -1758,7 +1985,115 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }
-            }).start();
+            }).setStartDelay(PATH_ANIM_START_DELAY).start();
+        } else if (oldPath.isEmpty()) {
+
+            // case when app starts
+            // FIXME: COUNTER is incremented twice on app startup
+            COUNTER++;
+            if (COUNTER == 2) {
+
+                animPath.setAnimation(slideIn);
+                animPath.setText(newPath);
+                animPath.animate().setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        animPath.setVisibility(View.VISIBLE);
+                        bapath.setText("");
+                        scroll.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                scroll1.fullScroll(View.FOCUS_RIGHT);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                animPath.setVisibility(View.GONE);
+                                bapath.setText(newPath);
+                            }
+                        }, PATH_ANIM_END_DELAY);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        super.onAnimationCancel(animation);
+                        //onAnimationEnd(animation);
+                    }
+                }).setStartDelay(PATH_ANIM_START_DELAY).start();
+            }
+
+        } else {
+
+            // completely different path
+            // first slide out of old path followed by slide in of new path
+            animPath.setAnimation(slideOut);
+            animPath.animate().setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    super.onAnimationStart(animator);
+                    animPath.setVisibility(View.VISIBLE);
+                    animPath.setText(oldPath);
+                    bapath.setText("");
+
+                    scroll.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scroll1.fullScroll(View.FOCUS_LEFT);
+                        }
+                    });
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    super.onAnimationEnd(animator);
+
+                    //animPath.setVisibility(View.GONE);
+                    animPath.setText(newPath);
+                    bapath.setText("");
+                    animPath.setAnimation(slideIn);
+
+                    animPath.animate().setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    animPath.setVisibility(View.GONE);
+                                    bapath.setText(newPath);
+                                }
+                            }, PATH_ANIM_END_DELAY);
+                        }
+
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                            // we should not be having anything here in path bar
+                            animPath.setVisibility(View.VISIBLE);
+                            bapath.setText("");
+                            scroll.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    scroll1.fullScroll(View.FOCUS_RIGHT);
+                                }
+                            });
+                        }
+                    }).start();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    super.onAnimationCancel(animation);
+                    //onAnimationEnd(animation);
+                }
+            }).setStartDelay(PATH_ANIM_START_DELAY).start();
         }
     }
 
@@ -1769,7 +2104,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initiatebbar() {
-        View pathbar = findViewById(R.id.pathbar);
+        final View pathbar = findViewById(R.id.pathbar);
         TextView textView = (TextView) findViewById(R.id.fullpath);
 
         pathbar.setOnClickListener(new View.OnClickListener() {
@@ -1778,7 +2113,7 @@ public class MainActivity extends AppCompatActivity {
                 Main m = ((Main) getFragment().getTab());
                 if (m.openMode == 0) {
                     bbar(m);
-                    crossfade();
+                    utils.crossfade(buttons,pathbar);
                     timer.cancel();
                     timer.start();
                 }
@@ -1790,7 +2125,7 @@ public class MainActivity extends AppCompatActivity {
                 Main m = ((Main) getFragment().getTab());
                 if (m.openMode == 0) {
                     bbar(m);
-                    crossfade();
+                    utils.crossfade(buttons,pathbar);
                     timer.cancel();
                     timer.start();
                 }
@@ -1799,203 +2134,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void crossfade() {
-
-        // Set the content view to 0% opacity but visible, so that it is visible
-        // (but fully transparent) during the animation.
-        buttons.setAlpha(0f);
-        buttons.setVisibility(View.VISIBLE);
-
-
-        // Animate the content view to 100% opacity, and clear any animation
-        // listener set on the view.
-        buttons.animate()
-                .alpha(1f)
-                .setDuration(100)
-                .setListener(null);
-        pathbar.animate()
-                .alpha(0f)
-                .setDuration(100)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        pathbar.setVisibility(View.GONE);
-                    }
-                });
-        // Animate the loading view to 0% opacity. After the animation ends,
-        // set its visibility to GONE as an optimization step (it won't
-        // participate in layout passes, etc.)
-
-    }
-
-    void crossfadeInverse() {
-
-
-        // Set the content view to 0% opacity but visible, so that it is visible
-        // (but fully transparent) during the animation.
-
-        pathbar.setAlpha(0f);
-        pathbar.setVisibility(View.VISIBLE);
-
-        // Animate the content view to 100% opacity, and clear any animation
-        // listener set on the view.
-        pathbar.animate()
-                .alpha(1f)
-                .setDuration(500)
-                .setListener(null);
-        buttons.animate()
-                .alpha(0f)
-                .setDuration(500)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        buttons.setVisibility(View.GONE);
-                    }
-                });
-        // Animate the loading view to 0% opacity. After the animation ends,
-        // set its visibility to GONE as an optimization step (it won't
-        // participate in layout passes, etc.)
-    }
-
-    void setTheme() {
-        if (Build.VERSION.SDK_INT >= 21) {
-
-            switch (fabskin) {
-                case "#F44336":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_red);
-                    else
-                        setTheme(R.style.pref_accent_dark_red);
-                    break;
-
-                case "#e91e63":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_pink);
-                    else
-                        setTheme(R.style.pref_accent_dark_pink);
-                    break;
-
-                case "#9c27b0":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_purple);
-                    else
-                        setTheme(R.style.pref_accent_dark_purple);
-                    break;
-
-                case "#673ab7":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_deep_purple);
-                    else
-                        setTheme(R.style.pref_accent_dark_deep_purple);
-                    break;
-
-                case "#3f51b5":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_indigo);
-                    else
-                        setTheme(R.style.pref_accent_dark_indigo);
-                    break;
-
-                case "#2196F3":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_blue);
-                    else
-                        setTheme(R.style.pref_accent_dark_blue);
-                    break;
-
-                case "#03A9F4":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_light_blue);
-                    else
-                        setTheme(R.style.pref_accent_dark_light_blue);
-                    break;
-
-                case "#00BCD4":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_cyan);
-                    else
-                        setTheme(R.style.pref_accent_dark_cyan);
-                    break;
-
-                case "#009688":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_teal);
-                    else
-                        setTheme(R.style.pref_accent_dark_teal);
-                    break;
-
-                case "#4CAF50":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_green);
-                    else
-                        setTheme(R.style.pref_accent_dark_green);
-                    break;
-
-                case "#8bc34a":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_light_green);
-                    else
-                        setTheme(R.style.pref_accent_dark_light_green);
-                    break;
-
-                case "#FFC107":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_amber);
-                    else
-                        setTheme(R.style.pref_accent_dark_amber);
-                    break;
-
-                case "#FF9800":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_orange);
-                    else
-                        setTheme(R.style.pref_accent_dark_orange);
-                    break;
-
-                case "#FF5722":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_deep_orange);
-                    else
-                        setTheme(R.style.pref_accent_dark_deep_orange);
-                    break;
-
-                case "#795548":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_brown);
-                    else
-                        setTheme(R.style.pref_accent_dark_brown);
-                    break;
-
-                case "#212121":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_black);
-                    else
-                        setTheme(R.style.pref_accent_dark_black);
-                    break;
-
-                case "#607d8b":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_blue_grey);
-                    else
-                        setTheme(R.style.pref_accent_dark_blue_grey);
-                    break;
-
-                case "#004d40":
-                    if (theme1 == 0)
-                        setTheme(R.style.pref_accent_light_super_su);
-                    else
-                        setTheme(R.style.pref_accent_dark_super_su);
-                    break;
-            }
-        } else {
-            if (theme1 == 1) {
-                setTheme(R.style.appCompatDark);
-            } else {
-                setTheme(R.style.appCompatLight);
-            }
-        }
-
-    }
 
     public boolean copyToClipboard(Context context, String text) {
         try {
@@ -2010,38 +2148,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void revealShow(final View view, boolean reveal) {
-
-        if (reveal) {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 0f, 1f);
-            animator.setDuration(300); //ms
-            animator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    view.setVisibility(View.VISIBLE);
-                }
-            });
-            animator.start();
-        } else {
-
-            ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0f);
-            animator.setDuration(300); //ms
-            animator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    view.setVisibility(View.GONE);
-                }
-            });
-            animator.start();
-
-        }
-
-    }
 
     public void invalidateFab(int openmode) {
-        if (openmode == 2)
+        if (openmode == 2) {
+            floatingActionButton.setVisibility(View.INVISIBLE);
             floatingActionButton.hideMenuButton(true);
-        else floatingActionButton.showMenuButton(true);
+        } else {
+            floatingActionButton.setVisibility(View.VISIBLE);
+            floatingActionButton.showMenuButton(true);
+        }
     }
 
     public void renameBookmark(final String title, final String path) {
@@ -2126,7 +2241,6 @@ public class MainActivity extends AppCompatActivity {
                 mRingtonePickerIntent = true;
                 Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
             } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
-
                 // zip viewer intent
                 Uri uri = intent.getData();
                 zippath = uri.toString();
@@ -2258,46 +2372,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean checkStoragePermission() {
 
-        // Verify that all required contact permissions have been granted.
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        return false;
-    }
-
-    void requestStoragePermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-            // Provide an additional rationale to the user if the permission was not granted
-            // and the user would benefit from additional context for the use of the permission.
-            // For example, if the request has been denied previously.
-            final MaterialDialog materialDialog = utils.showBasicDialog(this,fabskin,theme1, new String[]{getResources().getString(R.string.granttext), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel), null});
-            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ActivityCompat
-                            .requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
-                    materialDialog.dismiss();
-                }
-            });
-            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
-            materialDialog.setCancelable(false);
-            materialDialog.show();
-
-        } else {
-            // Contact permissions have not been granted yet. Request them directly.
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
-        }
-    }
     public void showSMBDialog(String name,String path,boolean edit){
         if(path.length()>0 && name.length()==0){
             int i=-1;
@@ -2311,7 +2386,115 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString("path",path);
         bundle.putBoolean("edit",edit);
         smbConnectDialog.setArguments(bundle);
-        smbConnectDialog.show(getFragmentManager(),"smbdailog");
+        smbConnectDialog.show(getFragmentManager(), "smbdailog");
+    }
 
+    @Override
+    public void addConnection(boolean edit, String name, String path,String oldname,String oldPath) {
+        try {
+            String[] s=new String[]{name,path};
+            if (!edit) {
+                TabFragment fragment=getFragment();
+                if(fragment!=null) {
+                    Fragment fragment1=fragment.getTab();
+                    if(fragment1!=null){
+                        final Main ma = (Main) fragment1;
+                        ma.loadlist(path, false, -1);
+                    }}
+                DataUtils.addServer(new String[]{name,path});
+                refreshDrawer();
+                grid.addPath(name, path, DataUtils.SMB, 1);
+            } else {
+                int i=-1;
+                if ((i=DataUtils.containsServer(new String[]{oldname,oldPath})) != -1) {
+                    DataUtils.removeServer(i);
+                    mainActivity.grid.removePath(oldPath, DataUtils.SMB);
+                }
+                DataUtils.addServer(s);
+                Collections.sort(DataUtils.servers, new BookSorter());
+                mainActivity.refreshDrawer();
+                mainActivity.grid.addPath(s[0], s[1], DataUtils.SMB, 1);
+            }
+        } catch (Exception e) {
+            Toast.makeText(mainActivity, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteConnection(String name,String path) {
+        int i=-1;
+        if ((i=DataUtils.containsServer(new String[]{name,path})) != -1) {
+            DataUtils.removeServer(i);
+            grid.removePath(path, DataUtils.SMB);
+            refreshDrawer();
+        }
+
+    }
+
+    @Override
+    public void onHiddenFileAdded(String path) {
+        history.addPath(null,path,DataUtils.HIDDEN,0);
+    }
+
+    @Override
+    public void onHiddenFileRemoved(String path) {
+        history.removePath(path, DataUtils.HIDDEN);
+    }
+
+    @Override
+    public void onHistoryAdded(String path) {
+        history.addPath(null, path, DataUtils.HISTORY, 0);
+    }
+
+    @Override
+    public void onBookAdded(String[] path, boolean refreshdrawer) {
+        grid.addPath(path[0], path[1], DataUtils.BOOKS, 1);
+        if(refreshdrawer)
+            refreshDrawer();
+    }
+
+    @Override
+    public void onHistoryCleared() {
+        history.clear(DataUtils.HISTORY);
+    }
+
+    @Override
+    public void delete(String title, String path) {
+        grid.removePath(title, path, DataUtils.BOOKS);
+        refreshDrawer();
+
+    }
+
+    @Override
+    public void modify(String oldpath, String oldname, String newPath, String newname) {
+        grid.rename( oldname,oldpath, newPath, newname, DataUtils.BOOKS);
+        refreshDrawer();
+    }
+
+    @Override
+    public void onPreExecute() {
+        mainFragment.mSwipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void onPostExecute() {
+
+        mainFragment.onSearchCompleted();
+        mainFragment.mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onProgressUpdate(BaseFile val) {
+
+        mainFragment.addSearchResult(val);
+    }
+
+    @Override
+    public void onCancelled() {
+
+        mainFragment.createViews(mainFragment.LIST_ELEMENTS, false, mainFragment.CURRENT_PATH,
+                mainFragment.openMode, false, !mainFragment.IS_LIST);
+        mainFragment.mSwipeRefreshLayout.setRefreshing(false);
     }
 }

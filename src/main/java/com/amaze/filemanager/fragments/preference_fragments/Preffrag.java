@@ -78,6 +78,10 @@ public class Preffrag extends PreferenceFragment{
                 return false;
             }
         });
+
+        if (BuildConfig.IS_VERSION_FDROID)
+            findPreference("donate").setEnabled(false);
+
         findPreference("columns").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
