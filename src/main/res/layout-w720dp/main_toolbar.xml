@@ -339,7 +339,7 @@
                 android:paddingBottom="8dp"
                 android:src="@color/divider"
                 android:background="@android:color/transparent"
-                android:layout_above="@+id/appbutton"
+                android:layout_above="@+id/ftpbutton"
                 android:id="@+id/divider1"></ImageView>
             <RelativeLayout
                 android:id="@+id/ftpbutton"
