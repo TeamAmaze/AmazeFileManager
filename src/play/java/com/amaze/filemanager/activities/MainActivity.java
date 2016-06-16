@@ -854,7 +854,8 @@ public class MainActivity extends BaseActivity implements
             menu.findItem(R.id.extract).setVisible(false);
             invalidatePasteButton(menu.findItem(R.id.paste));
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
-        } else if (f.contains("AppsList") || f.contains("ProcessViewer")) {
+        } else if (f.contains("AppsList") || f.contains("ProcessViewer") ||
+                f.contains(FTPServerFragment.class.getName())) {
             appBarLayout.setExpanded(true);
             menu.findItem(R.id.sethome).setVisible(false);
             if (indicator_layout != null) indicator_layout.setVisibility(View.GONE);
