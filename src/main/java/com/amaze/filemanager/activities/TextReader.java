@@ -40,6 +40,7 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -84,7 +85,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class TextReader extends BaseActivity
-        implements TextWatcher, View.OnClickListener, Runnable {
+        implements TextWatcher, View.OnClickListener {
 
     String path;
     Futils utils = new Futils();
@@ -148,6 +149,20 @@ public class TextReader extends BaseActivity
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
             ((Activity) this).setTaskDescription(taskDescription);
         }
+
+        searchEditText = (EditText) searchViewLayout.findViewById(R.id.search_box);
+        upButton = (ImageButton) searchViewLayout.findViewById(R.id.prev);
+        downButton = (ImageButton) searchViewLayout.findViewById(R.id.next);
+        closeButton = (ImageButton) searchViewLayout.findViewById(R.id.close);
+
+        searchEditText.addTextChangedListener(this);
+
+        upButton.setOnClickListener(this);
+        //upButton.setEnabled(false);
+        downButton.setOnClickListener(this);
+        //downButton.setEnabled(false);
+        closeButton.setOnClickListener(this);
+
         skinStatusBar = PreferenceUtils.getStatusColor(skin);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -232,27 +247,11 @@ public class TextReader extends BaseActivity
     }
 
     @Override
-    public void run() {
-        BackgroundColorSpan[] colorSpans = mInput.getText().getSpans(0,
-                mInput.length(), BackgroundColorSpan.class);
-        for (BackgroundColorSpan colorSpan : colorSpans) {
-            mInput.getText().removeSpan(colorSpan);
-        }
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(KEY_MODIFIED_TEXT, mInput.getText().toString());
         outState.putInt(KEY_INDEX, mInput.getScrollY());
         outState.putString(KEY_ORIGINAL_TEXT, mOriginal);
-    }
-
-    public void onDestroyActionMode() {
-
-        // clearing all the spans
-        Thread clearSpans = new Thread(this);
-        clearSpans.run();
     }
 
     class a extends ScrollView {
@@ -475,7 +474,7 @@ public class TextReader extends BaseActivity
                 break;
             case R.id.find:
                 if (searchViewLayout.isShown()) hideSearchView();
-                else searchQueryInit();
+                else revealSearchView();
                 break;
             default:
                 return false;
@@ -492,13 +491,7 @@ public class TextReader extends BaseActivity
             // clearing before adding new values
             if (searchTextTask!=null) searchTextTask.cancel(true);
 
-            nodes.clear();
-            mCurrent = -1;
-            mLine = 0;
-
-            // clearing textView spans
-            Thread clearSpans = new Thread(this);
-            clearSpans.run();
+            cleanSpans();
         }
     }
 
@@ -551,25 +544,6 @@ public class TextReader extends BaseActivity
 
         return stream;
     }
-    public boolean searchQueryInit() {
-        searchEditText = (EditText) searchViewLayout.findViewById(R.id.search_box);
-        searchEditText.setText("");
-        upButton = (ImageButton) searchViewLayout.findViewById(R.id.prev);
-        downButton = (ImageButton) searchViewLayout.findViewById(R.id.next);
-        closeButton = (ImageButton) searchViewLayout.findViewById(R.id.close);
-
-        searchEditText.addTextChangedListener(this);
-        searchEditText.requestFocus();
-
-        upButton.setOnClickListener(this);
-        upButton.setEnabled(false);
-        downButton.setOnClickListener(this);
-        downButton.setEnabled(false);
-        closeButton.setOnClickListener(this);
-        revealSearchView();
-
-        return true;
-    }
 
     /**
      * show search view with a circular reveal animation
@@ -590,6 +564,7 @@ public class TextReader extends BaseActivity
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
         searchViewLayout.setVisibility(View.VISIBLE);
+        searchEditText.setText("");
         animator.start();
         animator.addListener(new Animator.AnimatorListener() {
             @Override
@@ -647,6 +622,9 @@ public class TextReader extends BaseActivity
             public void onAnimationEnd(Animator animation) {
 
                 searchViewLayout.setVisibility(View.GONE);
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(),
+                        InputMethodManager.HIDE_IMPLICIT_ONLY);
             }
 
             @Override
@@ -677,17 +655,15 @@ public class TextReader extends BaseActivity
 
                     // highlighting previous element in list
                     Map.Entry keyValueNew = (Map.Entry) nodes.get(--mCurrent).getKey();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        mInput.getText().setSpan(new BackgroundColorSpan(getResources()
-                                        .getColor(R.color.search_text_highlight, getTheme())),
-                                (Integer) keyValueNew.getKey(),
-                                (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                    } else {
-                        mInput.getText().setSpan(new BackgroundColorSpan(getResources()
-                                        .getColor(R.color.search_text_highlight)),
-                                (Integer) keyValueNew.getKey(),
-                                (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                    }
+                    mInput.getText().setSpan(new BackgroundColorSpan(getResources()
+                                    .getColor(R.color.search_text_highlight, getTheme())),
+                            (Integer) keyValueNew.getKey(),
+                            (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                    // scrolling to the highlighted element
+                    scrollView.scrollTo(0, (Integer) keyValueNew.getValue()
+                            + mInput.getLineHeight() + Math.round(mInput.getLineSpacingExtra())
+                            - getSupportActionBar().getHeight());
                 }
                 break;
             case R.id.next:
@@ -705,32 +681,39 @@ public class TextReader extends BaseActivity
                     }
 
                     Map.Entry keyValueNew = (Map.Entry) nodes.get(++mCurrent).getKey();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        mInput.getText().setSpan(new BackgroundColorSpan(getResources()
-                                        .getColor(R.color.search_text_highlight, getTheme())),
-                                (Integer) keyValueNew.getKey(),
-                                (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                    } else {
-                        mInput.getText().setSpan(new BackgroundColorSpan(getResources()
-                                        .getColor(R.color.search_text_highlight)),
-                                (Integer) keyValueNew.getKey(),
-                                (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                    }
+                    mInput.getText().setSpan(new BackgroundColorSpan(getResources()
+                                    .getColor(R.color.search_text_highlight, getTheme())),
+                            (Integer) keyValueNew.getKey(),
+                            (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
                     // scrolling to the highlighted element
-                    DisplayMetrics displayMetrics = new DisplayMetrics();
-                    getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
                     scrollView.scrollTo(0, (Integer) keyValueNew.getValue()
-                            + mInput.getLineHeight() - displayMetrics.heightPixels/2);
+                            + mInput.getLineHeight() + Math.round(mInput.getLineSpacingExtra())
+                            - getSupportActionBar().getHeight());
                 }
                 break;
             case R.id.close:
-                onDestroyActionMode();
                 // closeButton
                 findViewById(R.id.searchview).setVisibility(View.GONE);
+                cleanSpans();
                 break;
             default:
                 return;
+        }
+    }
+
+    private void cleanSpans() {
+
+        // resetting current highlight and line number
+        nodes.clear();
+        mCurrent = -1;
+        mLine = 0;
+
+        // clearing textView spans
+        BackgroundColorSpan[] colorSpans = mInput.getText().getSpans(0,
+                mInput.length(), BackgroundColorSpan.class);
+        for (BackgroundColorSpan colorSpan : colorSpans) {
+            mInput.getText().removeSpan(colorSpan);
         }
     }
 

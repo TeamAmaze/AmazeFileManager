@@ -1927,7 +1927,7 @@ public class MainActivity extends BaseActivity implements
         View ftpButton = findViewById(R.id.ftpbutton);
         if (theme1 == 1) {
             ftpButton.setBackgroundResource(R.drawable.safr_ripple_black);
-            ((ImageView) ftpButton.findViewById(R.id.ftpicon)).setImageResource(R.drawable.ic_doc_apk_white);
+            ((ImageView) ftpButton.findViewById(R.id.ftpicon)).setImageResource(R.drawable.ic_ftp_dark);
             ((TextView) ftpButton.findViewById(R.id.ftptext)).setTextColor(getResources().getColor(android.R.color.white));
         }
         ftpButton.setOnClickListener(new View.OnClickListener(){

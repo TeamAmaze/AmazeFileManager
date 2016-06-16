@@ -352,7 +352,7 @@
                 android:layout_marginRight="32dp"
                 android:paddingBottom="12dp"
                 android:paddingTop="12dp"
-                android:src="@drawable/ic_doc_apk"
+                android:src="@drawable/ic_ftp_light"
                 android:contentDescription="@string/icon" />
 
             <TextView
