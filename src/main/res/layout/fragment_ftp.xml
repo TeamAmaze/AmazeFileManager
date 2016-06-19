@@ -6,7 +6,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
+        android:text=""
         android:id="@+id/statusText"
         android:layout_above="@+id/startStopButton"
         android:layout_centerHorizontal="true"
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/primary_red"
-        android:text="Medium Text"
+        android:text=""
         android:id="@+id/warningText"
         android:layout_above="@+id/startStopButton"
         android:layout_centerHorizontal="true" />

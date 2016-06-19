@@ -3,6 +3,8 @@ package com.amaze.filemanager.services.ftpservice;
 /**
  * Created by yashwanthreddyg on 09-06-2016.
  */
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +13,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.util.Log;
 
 
@@ -68,7 +71,8 @@ public class FTPService extends Service implements Runnable{
                 return START_STICKY;
             }
         }
-        if(intent.getStringExtra("username")!=null && intent.getStringExtra("password")!=null){
+
+        if(intent != null && intent.getStringExtra("username")!=null && intent.getStringExtra("password")!=null){
             username = intent.getStringExtra("username");
             password = intent.getStringExtra("password");
             isPasswordProtected = true;
@@ -123,21 +127,6 @@ public class FTPService extends Service implements Runnable{
         fac.setPort(port);
 
         serverFactory.addListener("default",fac.createListener());
-//        try {
-//            server = serverFactory.createServer();
-//            if(isConnectedToLocalNetwork(getBaseContext()) && isConnectedToWifi(getBaseContext())){
-//                server.start();
-//                sendBroadcast(new Intent(FTPService.ACTION_STARTED));
-//            }
-//            else{
-//                sendBroadcast(new Intent(FTPService.ACTION_FAILEDTOSTART).putExtra("reason","Not Connected"));
-//                stopSelf();
-//            }
-//        } catch (FtpException e) {
-//
-//            sendBroadcast(new Intent(FTPService.ACTION_FAILEDTOSTART));
-//            e.printStackTrace();
-//        }
         try{
             server = serverFactory.createServer();
             server.start();
@@ -162,18 +151,33 @@ public class FTPService extends Service implements Runnable{
         }
         if (serverThread.isAlive()) {
             Log.w(TAG, "Server thread failed to exit");
-            // it may still exit eventually if we just leave the shouldExit flag set
         } else {
             Log.d(TAG, "serverThread join()ed ok");
             serverThread = null;
         }
         if(server!=null){
             server.stop();
-
             sendBroadcast(new Intent(FTPService.ACTION_STOPPED));
         }
         Log.d(TAG, "FTPServerService.onDestroy() finished");
     }
+
+    //Restart the service if the app is closed from the recent list
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+
+        super.onTaskRemoved(rootIntent);
+
+        Intent restartService = new Intent(getApplicationContext(), this.getClass());
+        restartService.setPackage(getPackageName());
+        PendingIntent restartServicePI = PendingIntent.getService(
+                getApplicationContext(), 1, restartService, PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager alarmService = (AlarmManager) getApplicationContext()
+                .getSystemService(Context.ALARM_SERVICE);
+        alarmService.set(AlarmManager.ELAPSED_REALTIME,
+                SystemClock.elapsedRealtime() + 2000, restartServicePI);
+    }
+
 
     public static boolean isRunning() {
         // return true if and only if a server Thread is running
