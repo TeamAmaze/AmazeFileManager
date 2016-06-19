@@ -38,8 +38,8 @@ public class FTPNotification extends BroadcastReceiver{
     @SuppressWarnings("NewApi")
     private void createNotification(Context context){
 
-        String ns = Context.NOTIFICATION_SERVICE;
-        NotificationManager nm = (NotificationManager) context.getSystemService(ns);
+        String notificationService = Context.NOTIFICATION_SERVICE;
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(notificationService);
 
         InetAddress address = FTPService.getLocalInetAddress(context);
 
@@ -65,7 +65,7 @@ public class FTPNotification extends BroadcastReceiver{
                 stopIntent, PendingIntent.FLAG_ONE_SHOT);
 
 
-        Notification.Builder nb = new Notification.Builder(context)
+        Notification.Builder notificationBuilder = new Notification.Builder(context)
                 .setContentTitle(contentTitle)
                 .setContentText(contentText)
                 .setContentIntent(contentIntent)
@@ -78,20 +78,20 @@ public class FTPNotification extends BroadcastReceiver{
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            nb.setVisibility(Notification.VISIBILITY_PUBLIC);
-            nb.setCategory(Notification.CATEGORY_SERVICE);
-            nb.setPriority(Notification.PRIORITY_MAX);
+            notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+            notificationBuilder.setCategory(Notification.CATEGORY_SERVICE);
+            notificationBuilder.setPriority(Notification.PRIORITY_MAX);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            nb.addAction(stopIcon, stopText, stopPendingIntent);
-            nb.setShowWhen(false);
-            notification = nb.build();
+            notificationBuilder.addAction(stopIcon, stopText, stopPendingIntent);
+            notificationBuilder.setShowWhen(false);
+            notification = notificationBuilder.build();
         } else {
-            notification = nb.getNotification();
+            notification = notificationBuilder.getNotification();
         }
 
         // Pass Notification to NotificationManager
-        nm.notify(NOTIFICATION_ID, notification);
+        notificationManager.notify(NOTIFICATION_ID, notification);
 
     }
 
