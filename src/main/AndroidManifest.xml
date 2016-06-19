@@ -130,6 +130,14 @@
                 <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_STOP_FTPSERVER" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name="com.amaze.filemanager.ui.notifications.FTPNotification"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STARTED" />
+                <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STOPPED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

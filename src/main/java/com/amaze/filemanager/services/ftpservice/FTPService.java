@@ -118,6 +118,7 @@ public class FTPService extends Service implements Runnable{
         }
         ListenerFactory fac = new ListenerFactory();
 
+        //check ports for availability
         for(int i=2211;i<65000;i++){
             if(isPortAvailable(i)) {
                 port = i;
@@ -198,6 +199,7 @@ public class FTPService extends Service implements Runnable{
         } catch (InterruptedException ignored) {
         }
     }
+
 
     public static boolean isConnectedToLocalNetwork(Context context) {
         boolean connected = false;

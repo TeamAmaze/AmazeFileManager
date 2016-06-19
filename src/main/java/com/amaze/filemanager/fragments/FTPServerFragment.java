@@ -64,7 +64,7 @@ public class FTPServerFragment extends Fragment {
             if(action == FTPService.ACTION_STARTED) {
                 statusText.setText(utils.getString(getContext(), R.string.ftp_status_running));
                 warningText.setText("");
-                ftpAddrText.setText("ftp:/"+FTPService.getLocalInetAddress(getContext())+":"+FTPService.getPort());
+                ftpAddrText.setText(getFTPAddressString());
                 ftpBtn.setText(utils.getString(getContext(),R.string.stop_ftp));
             }
             else if(action == FTPService.ACTION_FAILEDTOSTART){
@@ -164,11 +164,14 @@ public class FTPServerFragment extends Fragment {
         if(FTPService.isRunning()){
             statusText.setText(utils.getString(getContext(),R.string.ftp_status_running));
             ftpBtn.setText(utils.getString(getContext(),R.string.stop_ftp));
-            ftpAddrText.setText("ftp:/"+FTPService.getLocalInetAddress(getContext())+":"+FTPService.getPort());
+            ftpAddrText.setText(getFTPAddressString());
         }
         else{
             statusText.setText(utils.getString(getContext(),R.string.ftp_status_not_running));
             ftpBtn.setText(utils.getString(getContext(),R.string.start_ftp));
         }
+    }
+    private String getFTPAddressString(){
+        return "ftp://"+FTPService.getLocalInetAddress(getContext()).getHostAddress()+":"+FTPService.getPort();
     }
 }
