@@ -30,29 +30,27 @@ public class FTPNotification extends BroadcastReceiver{
                 createNotification(context);
                 break;
             case FTPService.ACTION_STOPPED:
-                removeNotifiation(context);
+                removeNotification(context);
                 break;
         }
     }
 
     @SuppressWarnings("NewApi")
     private void createNotification(Context context){
-        // Get NotificationManager reference
+
         String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager nm = (NotificationManager) context.getSystemService(ns);
 
-        // get ip address
         InetAddress address = FTPService.getLocalInetAddress(context);
 
         String iptext = "ftp://" + address.getHostAddress() + ":"
                 + FTPService.getPort() + "/";
 
-        // Instantiate a Notification
         int icon = R.drawable.ic_ftp_light;
         CharSequence tickerText = utils.getString(context,R.string.ftp_notif_starting);
         long when = System.currentTimeMillis();
 
-        // Define Notification's message and Intent
+
         CharSequence contentTitle = utils.getString(context,R.string.ftp_notif_title);
         CharSequence contentText = String.format(utils.getString(context,R.string.ftp_notif_text), iptext);
 
@@ -66,11 +64,6 @@ public class FTPNotification extends BroadcastReceiver{
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 0,
                 stopIntent, PendingIntent.FLAG_ONE_SHOT);
 
-//        int preferenceIcon = android.R.drawable.ic_menu_preferences;
-//        CharSequence preferenceText = context.getString(R.string.notif_settings_text);
-//        Intent preferenceIntent = new Intent(context, FsPreferenceActivity.class);
-//        preferenceIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//        PendingIntent preferencePendingIntent = PendingIntent.getActivity(context, 0, preferenceIntent, 0);
 
         Notification.Builder nb = new Notification.Builder(context)
                 .setContentTitle(contentTitle)
@@ -83,7 +76,7 @@ public class FTPNotification extends BroadcastReceiver{
 
         Notification notification = null;
 
-        // go from hight to low android version adding extra options
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             nb.setVisibility(Notification.VISIBILITY_PUBLIC);
             nb.setCategory(Notification.CATEGORY_SERVICE);
@@ -91,7 +84,6 @@ public class FTPNotification extends BroadcastReceiver{
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             nb.addAction(stopIcon, stopText, stopPendingIntent);
-//            nb.addAction(preferenceIcon, preferenceText, preferencePendingIntent);
             nb.setShowWhen(false);
             notification = nb.build();
         } else {
@@ -103,7 +95,7 @@ public class FTPNotification extends BroadcastReceiver{
 
     }
 
-    private void removeNotifiation(Context context){
+    private void removeNotification(Context context){
         String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager nm = (NotificationManager) context.getSystemService(ns);
         nm.cancelAll();
