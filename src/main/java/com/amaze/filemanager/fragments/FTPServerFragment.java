@@ -164,6 +164,7 @@ public class FTPServerFragment extends Fragment {
         if(FTPService.isRunning()){
             statusText.setText(utils.getString(getContext(),R.string.ftp_status_running));
             ftpBtn.setText(utils.getString(getContext(),R.string.stop_ftp));
+            ftpAddrText.setText("ftp:/"+FTPService.getLocalInetAddress(getContext())+":"+FTPService.getPort());
         }
         else{
             statusText.setText(utils.getString(getContext(),R.string.ftp_status_not_running));
