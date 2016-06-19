@@ -4,6 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -14,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -98,6 +102,19 @@ public class FTPServerFragment extends Fragment {
         ftpAddrText = (TextView) rootView.findViewById(R.id.ftpAddressText);
         ftpBtn = (Button) rootView.findViewById(R.id.startStopButton);
 
+        SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        int th = Integer.parseInt(Sp.getString("theme", "0"));
+        // checking if theme should be set light/dark or automatic
+        int theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
+        ImageView ftpImage = (ImageView)rootView.findViewById(R.id.ftp_image);
+
+        //light theme
+        if(theme1 == 0){
+            ftpImage.setImageResource(R.drawable.ic_ftp_light);
+        }else{
+            //dark
+            ftpImage.setImageResource(R.drawable.ic_ftp_dark);
+        }
         ftpBtn.setOnClickListener(new View.OnClickListener(){
 
             @Override
