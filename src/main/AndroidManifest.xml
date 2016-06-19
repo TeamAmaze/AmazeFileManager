@@ -126,8 +126,8 @@
             android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="me.yashwanth.simpleftpserver.ACTION_START_FTPSERVER" />
-                <action android:name="me.yashwanth.simpleftpserver.ACTION_STOP_FTPSERVER" />
+                <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_START_FTPSERVER" />
+                <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_STOP_FTPSERVER" />
             </intent-filter>
         </receiver>
     </application>

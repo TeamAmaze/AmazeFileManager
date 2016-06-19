@@ -41,13 +41,13 @@ public class FTPService extends Service implements Runnable{
     private static final String TAG = FTPService.class.getSimpleName();
     private static int port = 2211;;
     // Service will (global) broadcast when server start/stop
-    static public final String ACTION_STARTED = "me.yashwanth.simpleftpserver.FTPSERVER_STARTED";
-    static public final String ACTION_STOPPED = "me.yashwanth.simpleftpserver.FTPSERVER_STOPPED";
-    static public final String ACTION_FAILEDTOSTART = "me.yashwanth.simpleftpserver.FTPSERVER_FAILEDTOSTART";
+    static public final String ACTION_STARTED = "com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STARTED";
+    static public final String ACTION_STOPPED = "com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STOPPED";
+    static public final String ACTION_FAILEDTOSTART = "com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_FAILEDTOSTART";
 
     // RequestStartStopReceiver listens for these actions to start/stop this server
-    static public final String ACTION_START_FTPSERVER = "me.yashwanth.simpleftpserver.ACTION_START_FTPSERVER";
-    static public final String ACTION_STOP_FTPSERVER = "me.yashwanth.simpleftpserver.ACTION_STOP_FTPSERVER";
+    static public final String ACTION_START_FTPSERVER = "com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_START_FTPSERVER";
+    static public final String ACTION_STOP_FTPSERVER = "com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_STOP_FTPSERVER";
     private String username,password;
     private boolean isPasswordProtected = false;
     protected boolean shouldExit = false;
