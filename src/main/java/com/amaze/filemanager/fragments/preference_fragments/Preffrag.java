@@ -71,6 +71,7 @@ public class Preffrag extends PreferenceFragment{
 
         final int th1 = Integer.parseInt(sharedPref.getString("theme", "0"));
         theme = th1==2 ? PreferenceUtils.hourOfDay() : th1;
+
         findPreference("donate").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -79,6 +80,7 @@ public class Preffrag extends PreferenceFragment{
             }
         });
 
+        // hiding donate option from Fdroid version, due to possible unavailability of play services
         if (BuildConfig.IS_VERSION_FDROID)
             findPreference("donate").setEnabled(false);
 

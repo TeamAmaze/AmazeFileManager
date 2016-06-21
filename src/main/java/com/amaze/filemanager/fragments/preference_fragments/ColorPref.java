@@ -23,8 +23,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.views.CheckBx;
 import com.amaze.filemanager.utils.PreferenceUtils;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -67,9 +65,10 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         if (Build.VERSION.SDK_INT >= 21)
             preference8.setEnabled(true);
 
-    findPreference("skin").setOnPreferenceClickListener(this);
-        findPreference("fab_skin").setOnPreferenceClickListener(this);
-        findPreference("icon_skin").setOnPreferenceClickListener(this);
+        findPreference(PreferenceUtils.KEY_PRIMARY).setOnPreferenceClickListener(this);
+        findPreference(PreferenceUtils.KEY_PRIMARY_TWO).setOnPreferenceClickListener(this);
+        findPreference(PreferenceUtils.KEY_ACCENT).setOnPreferenceClickListener(this);
+        findPreference(PreferenceUtils.KEY_ICON_SKIN).setOnPreferenceClickListener(this);
     }
     @Override
     public boolean onPreferenceClick(final Preference preference) {
@@ -97,14 +96,21 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         String[] colors=PreferenceUtils.colors;
         List<String> arrayList = Arrays.asList(colors);
         switch (preference.getKey()) {
-            case "skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "skin_color_position",PreferenceUtils.getPrimaryColor(sharedPref));
+            case PreferenceUtils.KEY_PRIMARY:
+                adapter = new ColorAdapter(getActivity(), arrayList, PreferenceUtils.KEY_PRIMARY,
+                        PreferenceUtils.getPrimaryColor(sharedPref));
                 break;
-            case "fab_skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "fab_skin_color_position",fab_skin_pos);
+            case PreferenceUtils.KEY_PRIMARY_TWO:
+                adapter = new ColorAdapter(getActivity(), arrayList, PreferenceUtils.KEY_PRIMARY_TWO,
+                        PreferenceUtils.getPrimaryTwoColor(sharedPref));
                 break;
-            case "icon_skin":
-                adapter = new ColorAdapter(getActivity(), arrayList, "icon_skin_color_position",PreferenceUtils.getFolderColor(sharedPref));
+            case PreferenceUtils.KEY_ACCENT:
+                adapter = new ColorAdapter(getActivity(), arrayList, PreferenceUtils.KEY_ACCENT,
+                        fab_skin_pos);
+                break;
+            case PreferenceUtils.KEY_ICON_SKIN:
+                adapter = new ColorAdapter(getActivity(), arrayList, PreferenceUtils.KEY_ICON_SKIN,
+                        PreferenceUtils.getFolderColor(sharedPref));
                 break;
         }
         GridView v=(GridView)getActivity().getLayoutInflater().inflate(R.layout.dialog_grid,null);
@@ -118,14 +124,22 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
     class ColorAdapter extends ArrayAdapter<String> {
 
-        String pref;
-        int p;
+        String prefKey;
+        int pos;
         MaterialDialog b;
         public void updateMatDialog(MaterialDialog b){this.b=b;}
-        public ColorAdapter(Context context, List<String> arrayList, String pref, int pref1) {
+
+        /**
+         * Constructor for adapter that handles the view creation of color chooser dialog in preferences
+         * @param context the context
+         * @param arrayList array list of color hex values in form of string; for the views
+         * @param key the preference key for setting new selected color preference value
+         * @param pos the position of the selected value in the array
+         */
+        public ColorAdapter(Context context, List<String> arrayList, String key, int pos) {
             super(context, R.layout.rowlayout, arrayList);
-            this.pref = pref;
-            this.p=pref1;
+            this.prefKey = key;
+            this.pos=pos;
         }
 
         @Override
@@ -135,15 +149,15 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.dialog_grid_item, parent, false);
             ImageView imageView=(ImageView)rowView.findViewById(R.id.icon);
-            if(position==p)imageView.setImageResource((R.drawable.abc_ic_cab_done_holo_dark));
+            if(position==pos)imageView.setImageResource((R.drawable.ic_checkmark_selected));
             GradientDrawable gradientDrawable = (GradientDrawable) imageView.getBackground();
             gradientDrawable.setColor(Color.parseColor(getItem(position)));
             rowView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    p=position;
+                    pos=position;
                     notifyDataSetChanged();
-                    sharedPref.edit().putInt(pref, position).apply();
+                    sharedPref.edit().putInt(prefKey, position).apply();
                     if (b != null) b.dismiss();
                 }
             });

@@ -407,5 +407,7 @@
     <string name="ftp_notif_title">Amaze FTP Server running</string>
     <string name="ftp_notif_text">at %s</string>
     <string name="ftp_notif_stop_server">STOP</string>
+    <string name="primary_two_title">Primary color for second tab</string>
+    <string name="primary_two_summary">Set color to second tab</string>
 </resources>
 

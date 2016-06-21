@@ -28,7 +28,7 @@ public class BaseActivity extends AppCompatActivity {
     public SharedPreferences Sp;
 
     // Accent and Primary hex color string respectively
-    public String fabskin,skin;
+    public String fabskin,skin, skinTwo;
     Futils utils;
     boolean  rootmode,checkStorage=true;
     @Override
@@ -40,10 +40,15 @@ public class BaseActivity extends AppCompatActivity {
         theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
         utils=new Futils();
         boolean random = Sp.getBoolean("random_checkbox", false);
-        if (random)
+        if (random)  {
+
             skin = PreferenceUtils.random(Sp);
-        else
+            skinTwo = PreferenceUtils.random(Sp);
+        } else {
+
             skin = PreferenceUtils.getPrimaryColorString(Sp);
+            skinTwo = PreferenceUtils.getPrimaryTwoColorString(Sp);
+        }
         fabskin = PreferenceUtils.getAccentString(Sp);
         setTheme();
         rootmode = Sp.getBoolean("rootmode", false);
