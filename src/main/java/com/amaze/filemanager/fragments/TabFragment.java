@@ -1,8 +1,10 @@
 package com.amaze.filemanager.fragments;
 
+import android.animation.ArgbEvaluator;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -48,6 +50,8 @@ public class TabFragment extends android.support.v4.app.Fragment
     public CustomViewPager mViewPager;
     SharedPreferences Sp;
     String path;
+
+    // current visible tab, either 0 or 1
     public int currenttab;
     MainActivity mainActivity;
     public int theme1;
@@ -61,6 +65,14 @@ public class TabFragment extends android.support.v4.app.Fragment
 
     // views for circlular drawables below android lollipop
     private ImageView circleDrawable1, circleDrawable2;
+
+    // color drawable for action bar background
+    private ColorDrawable colorDrawable = new ColorDrawable();
+
+    // colors relative to current visible tab
+    private String startColor, endColor;
+
+    private String skin, skinTwo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,6 +92,7 @@ public class TabFragment extends android.support.v4.app.Fragment
 
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         savepaths=Sp.getBoolean("savepaths", true);
+
         int theme=Integer.parseInt(Sp.getString("theme","0"));
         theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
         mViewPager = (CustomViewPager) rootView.findViewById(R.id.pager);
@@ -95,7 +108,8 @@ public class TabFragment extends android.support.v4.app.Fragment
         mSectionsPagerAdapter = new ScreenSlidePagerAdapter(
                 getActivity().getSupportFragmentManager());
         if (savedInstanceState == null) {
-            int l=Sp.getInt("currenttab",1);
+            int l = Sp.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
+            currenttab = l;
             TabHandler tabHandler=new TabHandler(getActivity(),null,null,1);
             List<Tab> tabs1=tabHandler.getAllTabs();
             int i=tabs1.size();
@@ -151,11 +165,27 @@ public class TabFragment extends android.support.v4.app.Fragment
 
             mViewPager.setAdapter(mSectionsPagerAdapter);
             int pos1 = savedInstanceState.getInt("pos", 0);
+            currenttab = pos1;
             mViewPager.setCurrentItem(pos1);
             mSectionsPagerAdapter.notifyDataSetChanged();
         }
 
+
         if (indicator!=null) indicator.setViewPager(mViewPager);
+
+        boolean random = Sp.getBoolean("random_checkbox", false);
+        if (random)  {
+
+            skin = PreferenceUtils.random(Sp);
+            skinTwo = PreferenceUtils.random(Sp);
+        } else {
+
+            skin = PreferenceUtils.getPrimaryColorString(Sp);
+            skinTwo = PreferenceUtils.getPrimaryTwoColorString(Sp);
+        }
+
+        startColor = currenttab==1 ? skinTwo : skin;
+        endColor = currenttab==1 ? skin : skinTwo;
 
         mainActivity.mainFragment = (Main) getTab();
 
@@ -173,7 +203,7 @@ public class TabFragment extends android.support.v4.app.Fragment
     }
     @Override
     public void onDestroyView(){
-        Sp.edit().putInt("currenttab",currenttab).apply();
+        Sp.edit().putInt(PreferenceUtils.KEY_CURRENT_TAB, currenttab).apply();
         super.onDestroyView();
         try {
             if(tabHandler!=null)
@@ -236,7 +266,7 @@ public class TabFragment extends android.support.v4.app.Fragment
         try {
             int i = 0;
             if(Sp!=null)
-            Sp.edit().putInt("currenttab",currenttab).commit();
+            Sp.edit().putInt(PreferenceUtils.KEY_CURRENT_TAB, currenttab).commit();
             if (fragments != null && fragments.size() !=0) {
                 if(fragmentManager==null)return;
                 for (Fragment fragment : fragments) {
@@ -254,13 +284,30 @@ public class TabFragment extends android.support.v4.app.Fragment
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+        ArgbEvaluator evaluator = new ArgbEvaluator();
+
+        int color = (int) evaluator.evaluate(position+positionOffset,
+                Color.parseColor(startColor), Color.parseColor(endColor));
+
+        colorDrawable.setColor(color);
+        mainActivity.buttonBarFrame.setBackgroundColor(colorDrawable.getColor());
+        mainActivity.getSupportActionBar().setBackgroundDrawable(colorDrawable);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mainActivity.getWindow().setStatusBarColor(colorDrawable.getColor());
+        }
+        mainActivity.mDrawerLayout.setStatusBarBackgroundColor(colorDrawable.getColor());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mainActivity.getWindow().setNavigationBarColor(colorDrawable.getColor());
+        }
     }
 
     @Override
     public void onPageSelected(int p1) {
 
         mToolBarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+
         currenttab=p1;
+
         Fragment fragment=fragments.get(p1);
         if(fragment!=null) {
             String name = fragments.get(p1).getClass().getName();
@@ -286,7 +333,6 @@ public class TabFragment extends android.support.v4.app.Fragment
 
     @Override
     public void onPageScrollStateChanged(int state) {
-
     }
 
     public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {

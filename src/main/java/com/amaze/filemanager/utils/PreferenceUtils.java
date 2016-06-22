@@ -1,6 +1,5 @@
 package com.amaze.filemanager.utils;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 
@@ -12,7 +11,20 @@ import java.util.Random;
  * Created by Vishal on 12-05-2015.
  */
 public class PreferenceUtils {
-    static int primary=-1,accent=-1,folder=-1,theme=-1;
+
+    static int primary=-1,accent=-1,folder=-1,theme=-1, primaryTwo=-1;
+
+    public static final String KEY_PRIMARY_TWO = "skin_two";
+    public static final String KEY_PRIMARY = "skin";
+    public static final String KEY_ACCENT = "accent_skin";
+    public static final String KEY_ICON_SKIN = "icon_skin";
+    public static final String KEY_CURRENT_TAB = "current_tab";
+
+    public static final int DEFAULT_PRIMARY = 4;
+    public static final int DEFAULT_ACCENT = 1;
+    public static final int DEFAULT_ICON = -1;
+    public static final int DEFAULT_CURRENT_TAB = 1;
+
     public static int getStatusColor(String skin) {
         int c=darker(Color.parseColor(skin),0.6f);
         return c;
@@ -33,31 +45,52 @@ public class PreferenceUtils {
         Random random = new Random();
         int[] pos =combinations[ random.nextInt(combinations.length - 1)];
         int primary=pos[0],accent=pos[1],icon=pos[2];
-        Sp.edit().putInt("skin_color_position", primary).commit();
-        Sp.edit().putInt("fab_skin_color_position", accent).commit();
-        Sp.edit().putInt("icon_skin_color_position", icon).commit();
+        Sp.edit().putInt(KEY_PRIMARY, primary).commit();
+        Sp.edit().putInt(KEY_PRIMARY_TWO, primary).commit();
+        Sp.edit().putInt(KEY_ACCENT, accent).commit();
+        Sp.edit().putInt(KEY_ICON_SKIN, icon).commit();
         return colors[primary];
     }
     public static int getAccent(SharedPreferences Sp){
         if(accent==-1)
-        accent=Sp.getInt("fab_skin_color_position", 1);
+        accent=Sp.getInt(KEY_ACCENT, DEFAULT_ACCENT);
         return accent;
     }
+
     public static int getPrimaryColor(SharedPreferences Sp){
         if(primary==-1)
-        primary=Sp.getInt("skin_color_position", 4);
+        primary=Sp.getInt(KEY_PRIMARY, DEFAULT_PRIMARY);
         return primary;
     }
+
+    /**
+     * Get primary color of second tab from preferences
+     * @return the color position in color array; from the preferences
+     */
+    public static int getPrimaryTwoColor(SharedPreferences Sp) {
+        return primaryTwo==-1 ? Sp.getInt(KEY_PRIMARY_TWO, DEFAULT_PRIMARY) : null;
+    }
+
     public static int getFolderColor(SharedPreferences Sp){
-        if(folder==-1) {
-            int icon = Sp.getInt("icon_skin_color_position", -1);
-            folder = icon == -1 ? Sp.getInt("skin_color_position", 4) : icon;
+        if(folder==DEFAULT_ICON) {
+            int icon = Sp.getInt(KEY_ICON_SKIN, DEFAULT_ICON);
+            folder = icon == DEFAULT_ICON ? Sp.getInt(KEY_ACCENT, DEFAULT_ACCENT) : icon;
         }
         return folder;
     }
     public static String getPrimaryColorString(SharedPreferences Sp) {
         return (colors[getPrimaryColor(Sp)]);
     }
+
+    /**
+     * Get primary color of second tab from preferences
+     * @return the color string in hex from the {@link #colors} array
+     * based on color position from preferences
+     */
+    public static String getPrimaryTwoColorString(SharedPreferences Sp) {
+        return (colors[getPrimaryTwoColor(Sp)]);
+    }
+
     public static String getFolderColorString(SharedPreferences Sp) {
         return (colors[getFolderColor(Sp)]);
     }
@@ -72,7 +105,7 @@ public class PreferenceUtils {
         return theme;
     }
     public static void reset(){
-        primary=accent=folder=theme=-1;
+        primary=accent=folder=theme=primaryTwo=-1;
     }
     public static int getPosition(String Sp){
         int i=-1;

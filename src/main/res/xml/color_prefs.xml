@@ -7,7 +7,11 @@
             android:title="@string/primary_color_title"
             android:summary="@string/primary_color_summary" />
         <Preference
-            android:key="fab_skin"
+            android:key="skin_two"
+            android:title="@string/primary_two_title"
+            android:summary="@string/primary_two_summary" />
+        <Preference
+            android:key="accent_skin"
             android:title="@string/accent_color_title"
             android:summary="@string/accent_color_summary"/>
         <Preference
