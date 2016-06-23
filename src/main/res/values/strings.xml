@@ -403,6 +403,8 @@
     <string name="ftp_status_running">Running</string>
     <string name="ftp_status_not_running">Not Running</string>
     <string name="ftp_no_wifi">Make sure you\'re connected to WiFi</string>
+    <string name="domain">Domain</string>
+    <string name="invalid">Invalid %s</string>
     <string name="ftp_notif_starting">FTP Server is starting</string>
     <string name="ftp_notif_title">Amaze FTP Server running</string>
     <string name="ftp_notif_text">at %s</string>

@@ -7,7 +7,7 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         app:errorEnabled="true"
-        android:id="@+id/t1"
+        android:id="@+id/connectionTIL"
         android:layout_height="wrap_content">
     <android.support.v7.widget.AppCompatEditText
         android:layout_width="match_parent"
@@ -15,13 +15,13 @@
         android:ems="10"
         android:inputType="textUri"
         android:hint="@string/connectionname"
-        android:id="@+id/editText4"
+        android:id="@+id/connectionET"
         android:layout_gravity="center_horizontal" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:id="@+id/t2"
+        android:id="@+id/ipTIL"
         app:errorEnabled="true"
         android:layout_height="wrap_content">
     <android.support.v7.widget.AppCompatEditText
@@ -30,21 +30,37 @@
         android:ems="10"
         android:inputType="textUri"
         android:hint="@string/smb_server"
-        android:id="@+id/editText"
+        android:id="@+id/ipET"
         android:layout_gravity="center_horizontal" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
+        android:id="@+id/domainTIL"
         app:errorEnabled="true"
         android:layout_height="wrap_content">
+        <android.support.v7.widget.AppCompatEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textUri"
+            android:hint="@string/domain"
+            android:id="@+id/domainET"
+            android:layout_gravity="center_horizontal" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        app:errorEnabled="true"
+        android:layout_height="wrap_content"
+        android:id="@+id/usernameTIL" >
     <android.support.v7.widget.AppCompatEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:hint="@string/username"
         android:ems="10"
-        android:id="@+id/editText3" />
+        android:id="@+id/usernameET" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -57,7 +73,7 @@
         android:inputType="textPassword"
         android:ems="10"
         android:hint="@string/password"
-        android:id="@+id/editText2"
+        android:id="@+id/passwordET"
         android:layout_gravity="center_horizontal" />
 </android.support.design.widget.TextInputLayout>
     <android.support.v7.widget.AppCompatCheckBox
