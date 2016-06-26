@@ -23,7 +23,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
     <string name="app_name">فایل منیجر حیرت انگیز</string>
-    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_open">منوی کشویی را باز کنید</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="books">Bookmarks</string>
     <string name="icon">icon</string>
