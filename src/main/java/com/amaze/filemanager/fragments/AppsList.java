@@ -66,7 +66,6 @@ public class AppsList extends ListFragment {
     ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
     public int theme1;
     private MainActivity mainActivity;
-    public String fabSkin;
     int asc,sortby;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,7 +88,6 @@ public class AppsList extends ListFragment {
         mainActivity.floatingActionButton.hideMenuButton(true);
         mainActivity.buttonBarFrame.setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
-        fabSkin = mainActivity.fabskin;
         vl=getListView();
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         getSortModes();

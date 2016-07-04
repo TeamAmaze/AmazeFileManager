@@ -20,8 +20,6 @@
 package com.amaze.filemanager.fragments;
 
 
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -37,6 +35,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -64,7 +63,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -518,28 +516,8 @@ public class Main extends android.support.v4.app.Fragment {
                 showOption(R.id.openmulti, menu);
             //hideOption(R.id.setringtone,menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
-            /*if(Build.VERSION.SDK_INT<19)
-                getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);*/
-            // rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(res.getColor(R.color.toolbar_cab));
-            ObjectAnimator anim = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe),
-                        "backgroundColor", MainActivity.currentTab==1 ? skinTwoColor : skin_color,
-                        res.getColor(R.color.holo_dark_action_mode, getActivity().getTheme()));
-            } else {
-                anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe),
-                        "backgroundColor", MainActivity.currentTab==1 ? skinTwoColor : skin_color,
-                        res.getColor(R.color.holo_dark_action_mode));
-            }
-            anim.setDuration(0);
-            anim.setEvaluator(new ArgbEvaluator());
-            anim.start();
-            if (Build.VERSION.SDK_INT >= 21) {
 
-                Window window = getActivity().getWindow();
-                if (MAIN_ACTIVITY.colourednavigation)
-                    window.setNavigationBarColor(res.getColor(android.R.color.black));
-            }
+            MAIN_ACTIVITY.updateViews(new ColorDrawable(res.getColor(R.color.holo_dark_action_mode)));
 
             if (!MAIN_ACTIVITY.isDrawerLocked)
                 MAIN_ACTIVITY.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
@@ -814,24 +792,16 @@ public class Main extends android.support.v4.app.Fragment {
             if (!results) adapter.toggleChecked(false, CURRENT_PATH);
             else adapter.toggleChecked(false);
             MAIN_ACTIVITY.setPagingEnabled(true);
-            ObjectAnimator anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe),
-                    "backgroundColor", res.getColor(R.color.holo_dark_action_mode),
-                    MainActivity.currentTab==1 ? skinTwoColor : skin_color);
-            anim.setDuration(0);
-            anim.setEvaluator(new ArgbEvaluator());
-            anim.start();
-            if (Build.VERSION.SDK_INT >= 21) {
 
-                Window window = getActivity().getWindow();
-                if (MAIN_ACTIVITY.colourednavigation)
-                    window.setNavigationBarColor(MAIN_ACTIVITY.skinStatusBar);
-            }
+            MAIN_ACTIVITY.updateViews(new ColorDrawable(MainActivity.currentTab==1 ?
+                    skinTwoColor : skin_color));
 
             if (!MAIN_ACTIVITY.isDrawerLocked)
                 MAIN_ACTIVITY.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED,
                         MAIN_ACTIVITY.mDrawerLinear);
         }
     };
+
     private BroadcastReceiver receiver2 = new BroadcastReceiver() {
 
         @Override

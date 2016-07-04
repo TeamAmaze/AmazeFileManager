@@ -95,7 +95,6 @@ public class TextReader extends BaseActivity
     private String mOriginal;
     private Timer mTimer;
     private boolean mModified, isEditAllowed = true;
-    private int skinStatusBar;
     private android.support.v7.widget.Toolbar toolbar;
     //ArrayList<StringBuilder> texts;
     //static final int maxlength=200;
@@ -141,12 +140,13 @@ public class TextReader extends BaseActivity
         searchViewLayout = (RelativeLayout) findViewById(R.id.searchview);
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        skin = PreferenceUtils.getPrimaryColorString(Sp);
         //findViewById(R.id.lin).setBackgroundColor(Color.parseColor(skin));
-        toolbar.setBackgroundColor(Color.parseColor(skin));
-        searchViewLayout.setBackgroundColor(Color.parseColor(skin));
+        toolbar.setBackgroundColor(Color.parseColor(MainActivity.currentTab==1?skinTwo:skin));
+        searchViewLayout.setBackgroundColor(Color.parseColor(MainActivity.currentTab==1?skinTwo:skin));
         if (Build.VERSION.SDK_INT >= 21) {
-            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
+                    ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
+                    Color.parseColor(MainActivity.currentTab==1?skinTwo:skin));
             ((Activity) this).setTaskDescription(taskDescription);
         }
 
@@ -163,15 +163,15 @@ public class TextReader extends BaseActivity
         //downButton.setEnabled(false);
         closeButton.setOnClickListener(this);
 
-        skinStatusBar = PreferenceUtils.getStatusColor(skin);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color
+                .parseColor(MainActivity.currentTab==1?skinTwo:skin)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         int sdk = Build.VERSION.SDK_INT;
 
         if (sdk == 20 || sdk == 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintColor(Color.parseColor(skin));
+            tintManager.setStatusBarTintColor(Color.parseColor(MainActivity.currentTab==1?skinTwo:skin));
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.texteditor).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
@@ -180,9 +180,10 @@ public class TextReader extends BaseActivity
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor((PreferenceUtils.getStatusColor(skin)));
+            window.setStatusBarColor((PreferenceUtils.getStatusColor(MainActivity.currentTab==1?skinTwo:skin)));
             if (colourednavigation)
-                window.setNavigationBarColor((PreferenceUtils.getStatusColor(skin)));
+                window.setNavigationBarColor((PreferenceUtils
+                        .getStatusColor(MainActivity.currentTab==1?skinTwo:skin)));
 
         }
         mInput = (EditText) findViewById(R.id.fname);
@@ -273,8 +274,8 @@ public class TextReader extends BaseActivity
                     .content(R.string.unsavedchangesdesc)
                     .positiveText(R.string.yes)
                     .negativeText(R.string.no)
-                    .positiveColor(Color.parseColor(fabskin))
-                    .negativeColor(Color.parseColor(fabskin))
+                    .positiveColor(Color.parseColor(accentSkin))
+                    .negativeColor(Color.parseColor(accentSkin))
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {

@@ -46,6 +46,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.ui.views.CheckBx;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -56,7 +57,6 @@ import java.io.File;
 public class Preffrag extends PreferenceFragment{
     int theme;
     SharedPreferences sharedPref;
-    String skin;
     private int COUNT = 0;
     private Toast toast;
     CheckBx gplus;
@@ -168,8 +168,7 @@ public class Preffrag extends PreferenceFragment{
             public boolean onPreferenceClick(Preference preference) {
 
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                skin = PreferenceUtils.getPrimaryColorString(sharedPref);
-                int fab_skin = Color.parseColor(PreferenceUtils.getAccentString(sharedPref));
+                int fab_skin = Color.parseColor(BaseActivity.accentSkin);
                 if(theme==1)
                     a.theme(Theme.DARK);
 
@@ -202,13 +201,13 @@ public class Preffrag extends PreferenceFragment{
                 final Intent intent = new Intent(Intent.ACTION_VIEW);
 
                 TextView googlePlus1 = (TextView) view.findViewById(R.id.googlePlus1);
-                googlePlus1.setTextColor(Color.parseColor(skin));
+                googlePlus1.setTextColor(Color.parseColor(BaseActivity.accentSkin));
                 TextView googlePlus2 = (TextView) view.findViewById(R.id.googlePlus2);
-                googlePlus2.setTextColor(Color.parseColor(skin));
+                googlePlus2.setTextColor(Color.parseColor(BaseActivity.accentSkin));
                 TextView git1 = (TextView) view.findViewById(R.id.git1);
-                git1.setTextColor(Color.parseColor(skin));
+                git1.setTextColor(Color.parseColor(BaseActivity.accentSkin));
                 TextView git2 = (TextView) view.findViewById(R.id.git2);
-                git2.setTextColor(Color.parseColor(skin));
+                git2.setTextColor(Color.parseColor(BaseActivity.accentSkin));
 
                 googlePlus1.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -278,7 +277,7 @@ public class Preffrag extends PreferenceFragment{
                         getActivity().getString(R.string.changelog_change_1)));
                 a.negativeText(R.string.close);
                 a.positiveText(R.string.fullChangelog);
-                int fab_skin = Color.parseColor(PreferenceUtils.getAccentString(sharedPref));
+                int fab_skin = Color.parseColor(BaseActivity.accentSkin);
                 a.positiveColor(fab_skin);
                 a.negativeColor(fab_skin);
                 a.callback(new MaterialDialog.ButtonCallback() {
@@ -424,7 +423,7 @@ public class Preffrag extends PreferenceFragment{
             // and the user would benefit from additional context for the use of the permission.
             // For example, if the request has been denied previously.
 
-            String fab_skin = (PreferenceUtils.getAccentString(sharedPref));
+            String fab_skin = (BaseActivity.accentSkin);
             final MaterialDialog materialDialog=new Futils().showBasicDialog(getActivity(),fab_skin,theme, new String[]{getResources().getString(R.string.grantgplus), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel),null});
             materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override

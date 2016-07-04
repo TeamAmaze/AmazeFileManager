@@ -175,14 +175,16 @@ public class TabFragment extends android.support.v4.app.Fragment
 
         if (indicator!=null) indicator.setViewPager(mViewPager);
 
-        startColor = MainActivity.currentTab==1 ? BaseActivity.skinTwo : BaseActivity.skin;
-        endColor = MainActivity.currentTab==1 ? BaseActivity.skin : BaseActivity.skinTwo;
+        // color of viewpager when current tab is 0
+        startColor = BaseActivity.skin;
+        // color of viewpager when current tab is 1
+        endColor = BaseActivity.skinTwo;
 
         // update the views as there is any change in {@link MainActivity#currentTab}
         // probably due to config change
-        colorDrawable.setColor(Color.parseColor(MainActivity.currentTab==1 ?
+        /*colorDrawable.setColor(Color.parseColor(MainActivity.currentTab==1 ?
                 BaseActivity.skinTwo : BaseActivity.skin));
-        mainActivity.updateViews(colorDrawable);
+        mainActivity.updateViews(colorDrawable);*/
 
         mainActivity.mainFragment = (Main) getTab();
 
@@ -301,12 +303,6 @@ public class TabFragment extends android.support.v4.app.Fragment
         if (Sp!=null) Sp.edit().putInt(PreferenceUtils.KEY_CURRENT_TAB, MainActivity.currentTab).commit();
         Log.d(getClass().getSimpleName(), "Page Selected: " + MainActivity.currentTab);
 
-        if (state==0) {
-
-            startColor = MainActivity.currentTab==1 ? BaseActivity.skinTwo : BaseActivity.skin;
-            endColor = MainActivity.currentTab==1 ? BaseActivity.skin : BaseActivity.skinTwo;
-        }
-
         Fragment fragment=fragments.get(p1);
         if(fragment!=null) {
             String name = fragments.get(p1).getClass().getName();
@@ -330,11 +326,9 @@ public class TabFragment extends android.support.v4.app.Fragment
         if (circleDrawable1!=null && circleDrawable2!=null) updateIndicator(p1);
     }
 
-    int state=1;
     @Override
     public void onPageScrollStateChanged(int state) {
-        this.state = state;
-        Log.d(getClass().getSimpleName(), state + "");
+        // nothing to do
     }
 
     public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
@@ -396,11 +390,11 @@ public class TabFragment extends android.support.v4.app.Fragment
     void updateIndicator(int index) {
         if (index != 0 && index != 1) return;
         if (index == 0) {
-            circleDrawable1.setImageDrawable(new ColorCircleDrawable(Color.parseColor(mainActivity.fabskin)));
+            circleDrawable1.setImageDrawable(new ColorCircleDrawable(Color.parseColor(BaseActivity.accentSkin)));
             circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
             return;
         } else {
-            circleDrawable1.setImageDrawable(new ColorCircleDrawable(Color.parseColor(mainActivity.fabskin)));
+            circleDrawable1.setImageDrawable(new ColorCircleDrawable(Color.parseColor(BaseActivity.accentSkin)));
             circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
             return;
         }

@@ -28,7 +28,14 @@ public class PreferenceUtils {
     public static int getStatusColor(String skin) {
         int c=darker(Color.parseColor(skin),0.6f);
         return c;
-    }public static int darker (int color, float factor) {
+    }
+
+    public static int getStatusColor(int skin) {
+        int c=darker(skin,0.6f);
+        return c;
+    }
+
+    public static int darker (int color, float factor) {
         int a = Color.alpha(color);
         int r = Color.red( color );
         int g = Color.green( color );

@@ -34,6 +34,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.drawer.EntryItem;
@@ -41,7 +42,6 @@ import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.filesystem.HFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -83,8 +83,8 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
         }
         icons = new IconUtils(Sp, m);
         this.m = m;
-        fabskin=Color.parseColor(m.fabskin);
-        color = colors.get(m.fabskin);
+        fabskin=Color.parseColor(BaseActivity.accentSkin);
+        color = colors.get(BaseActivity.accentSkin);
         if (color == null) {
             color = colors.get("#e91e63");
         }
@@ -158,7 +158,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                     view.setBackgroundColor(Color.parseColor("#ffeeeeee"));
                 else view.setBackgroundColor(Color.parseColor("#ff424242"));
                 imageView.setColorFilter(fabskin);
-                txtTitle.setTextColor(Color.parseColor(m.fabskin));
+                txtTitle.setTextColor(Color.parseColor(BaseActivity.accentSkin));
             } else {
                 if (m.theme1 == 0) {
                     imageView.setColorFilter(Color.parseColor("#666666"));

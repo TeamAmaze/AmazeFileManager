@@ -20,6 +20,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
@@ -67,7 +68,7 @@ public class MainActivityHelper {
         MaterialDialog.Builder mat=new MaterialDialog.Builder(contextc);
         mat.title("Operation Unsuccessful");
         if(mainActivity.theme1==1)mat.theme(Theme.DARK);
-        mat.positiveColor(Color.parseColor(mainActivity.fabskin));
+        mat.positiveColor(Color.parseColor(BaseActivity.accentSkin));
         mat.positiveText(R.string.cancel);
         String content="Following files were not "+(move?"moved":"copied")+" successfully";
         int k=1;
@@ -190,8 +191,8 @@ public class MainActivityHelper {
         ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
         x.positiveText(R.string.open);
         x.negativeText(R.string.cancel);
-        x.positiveColor(Color.parseColor(mainActivity.fabskin));
-        x.negativeColor(Color.parseColor(mainActivity.fabskin));
+        x.positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        x.negativeColor(Color.parseColor(BaseActivity.accentSkin));
         x.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {

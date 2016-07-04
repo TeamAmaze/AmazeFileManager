@@ -5,32 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.services.ftpservice.FTPService;
-import com.amaze.filemanager.ui.icons.IconHolder;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
-
-import org.w3c.dom.Text;
 
 /**
  * Created by yashwanthreddyg on 10-06-2016.
@@ -41,7 +32,6 @@ public class FTPServerFragment extends Fragment {
     Button ftpBtn;
     Futils utils = new Futils();
     private MainActivity mainActivity;
-    public String fabSkin;
     private View rootView;
     private BroadcastReceiver mWifiReceiver = new  BroadcastReceiver() {
 
@@ -142,7 +132,6 @@ public class FTPServerFragment extends Fragment {
         mainActivity.floatingActionButton.hideMenuButton(true);
         mainActivity.buttonBarFrame.setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
-        fabSkin = mainActivity.fabskin;
     }
     @Override
     public  void onDestroy(){

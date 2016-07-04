@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.ui.views.CheckBx;
 import com.amaze.filemanager.utils.PreferenceUtils;
 
@@ -80,7 +81,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             a.theme(Theme.DARK);
 
         a.autoDismiss(true);
-        int fab_skin=Color.parseColor(PreferenceUtils.getAccentString(sharedPref));
+        int fab_skin=Color.parseColor(BaseActivity.accentSkin);
         int fab_skin_pos=PreferenceUtils.getAccent(sharedPref);
         a.positiveColor(fab_skin);
         a.neutralColor(fab_skin);

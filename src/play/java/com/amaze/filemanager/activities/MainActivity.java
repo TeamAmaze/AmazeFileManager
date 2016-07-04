@@ -964,7 +964,7 @@ public class MainActivity extends BaseActivity implements
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
-                final MaterialDialog b = utils.showBasicDialog(mainActivity,fabskin,theme1,
+                final MaterialDialog b = utils.showBasicDialog(mainActivity,BaseActivity.accentSkin,theme1,
                         new String[]{getResources().getString(R.string.questionset),
                                 getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
                 b.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -1994,8 +1994,8 @@ public class MainActivity extends BaseActivity implements
                 return false;
             }
         });
-        searchViewEditText.setTextColor(Color.parseColor(fabskin));
-        searchViewEditText.setHintTextColor(Color.parseColor(fabskin));
+        //searchViewEditText.setTextColor(Color.parseColor(BaseActivity.accentSkin));
+        searchViewEditText.setHintTextColor(Color.parseColor(BaseActivity.accentSkin));
     }
 
     /**
@@ -2018,7 +2018,8 @@ public class MainActivity extends BaseActivity implements
             // for lollipop devices, the status bar color
             mainActivity.getWindow().setStatusBarColor(colorDrawable.getColor());
             if (colourednavigation)
-                mainActivity.getWindow().setNavigationBarColor(colorDrawable.getColor());
+                mainActivity.getWindow().setNavigationBarColor(PreferenceUtils
+                        .getStatusColor(colorDrawable.getColor()));
         } else if (Build.VERSION.SDK_INT == 20 || Build.VERSION.SDK_INT == 19) {
 
             // for kitkat devices, the status bar color
@@ -2030,11 +2031,11 @@ public class MainActivity extends BaseActivity implements
 
     void initialiseFab() {
         String folder_skin = PreferenceUtils.getFolderColorString(Sp);
-        int fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
+        int fabSkinPressed = PreferenceUtils.getStatusColor(BaseActivity.accentSkin);
         int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
         floatingActionButton = (FloatingActionMenu) findViewById(R.id.menu);
-        floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
+        floatingActionButton.setMenuButtonColorNormal(Color.parseColor(BaseActivity.accentSkin));
         floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
 
         //if (theme1 == 1) floatingActionButton.setMen
@@ -2396,7 +2397,7 @@ public class MainActivity extends BaseActivity implements
 
     public void renameBookmark(final String title, final String path) {
         if (DataUtils.containsBooks(new String[]{title,path}) != -1 || DataUtils.containsAccounts(new String[]{title,path}) != -1) {
-            RenameBookmark renameBookmark=RenameBookmark.getInstance(title,path,fabskin,theme1);
+            RenameBookmark renameBookmark=RenameBookmark.getInstance(title,path,BaseActivity.accentSkin,theme1);
             if(renameBookmark!=null){
                 renameBookmark.show(getFragmentManager(),"renamedialog");
             }
