@@ -60,6 +60,9 @@ public class Preffrag extends PreferenceFragment{
     private int COUNT = 0;
     private Toast toast;
     CheckBx gplus;
+
+    private static final String URL_CHANGELOG = "https://github.com/arpitkh96/AmazeFileManager/commits/master";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -254,7 +257,10 @@ public class Preffrag extends PreferenceFragment{
             @Override
             public boolean onPreferenceClick(Preference preference) {
 
-                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(URL_CHANGELOG));
+                startActivity(intent);
+                /*MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
                 if(theme==1)a.theme(Theme.DARK);
                 a.title(R.string.changelog);
                 a.content(Html.fromHtml(getActivity().getString(R.string.changelog_version_9) +
@@ -294,7 +300,8 @@ public class Preffrag extends PreferenceFragment{
 
                         materialDialog.cancel();
                     }
-                }).build().show();
+                }).build().show();*/
+
                 return false;
             }
         });

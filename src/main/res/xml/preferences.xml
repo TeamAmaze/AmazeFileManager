@@ -128,7 +128,7 @@
             <Preference
                 android:key="studio"
                 android:title="@string/version"
-                android:summary="v3.0.2 Beta 7"/>
+                android:summary="v3.1"/>
             <Preference
                 android:key="authors"
                 android:title="@string/authors" />
@@ -186,7 +186,8 @@
                 </PreferenceScreen>
             <Preference
                 android:key="changelog"
-                android:title="@string/changelog" />
+                android:title="@string/changelog"
+                />
             <Preference
                 android:key="xda"
                 android:title="@string/xda_title"
@@ -212,7 +213,9 @@
             </PreferenceScreen>
         <Preference
             android:key="donate"
-            android:title="@string/donate" />
+            android:title="@string/donate"
+            android:enabled="false"
+            />
         <Preference
             android:key="feedback"
             android:title="@string/feedback" />

@@ -34,8 +34,8 @@ android {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 40
-        versionName "3.0.2 Beta 7"
+        versionCode 41
+        versionName "3.1"
     }
 
     signingConfigs {
@@ -107,10 +107,18 @@ dependencies {
 //        compile 'org.apache.mina:mina-core:2.0.13'
     //    compile 'org.apache.ftpserver:ftpserver-core:1.0.6'
     //    compile 'org.apache.ftpserver:ftplet-api:1.0.6'
-    compile files('libs/mina-core-2.0.13.jar')
-    compile files('libs/slf4j-api-1.7.21.jar')
-    compile files('libs/slf4j-simple-1.7.21.jar')
+
+    // https://mvnrepository.com/artifact/org.apache.mina/mina-core
+    compile group: 'org.apache.mina', name: 'mina-core', version: '2.0.13'
+
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
+
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21'
+
     compile files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
+
     compile files('libs/ftpserver-core-1.1.0-SNAPSHOT.jar')
 }
 
