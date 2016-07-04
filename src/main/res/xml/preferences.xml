@@ -128,7 +128,7 @@
             <Preference
                 android:key="studio"
                 android:title="@string/version"
-                android:summary="v3.0.2 Beta 6"/>
+                android:summary="v3.0.2 Beta 7"/>
             <Preference
                 android:key="authors"
                 android:title="@string/authors" />

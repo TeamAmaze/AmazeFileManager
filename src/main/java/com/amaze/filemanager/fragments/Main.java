@@ -75,6 +75,7 @@ import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.IMyAidlInterface;
 import com.amaze.filemanager.Loadlistener;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.Recycleradapter;
 import com.amaze.filemanager.database.Tab;
@@ -135,7 +136,7 @@ public class Main extends android.support.v4.app.Fragment {
     public boolean IS_LIST = true;
     public IconHolder ic;
     public MainActivity MAIN_ACTIVITY;
-    public String skin, skinTwo, fabSkin, iconskin;
+    public String fabSkin, iconskin;
     public float[] color;
     public ColorMatrixColorFilter colorMatrixColorFilter;
     public SwipeRefreshLayout mSwipeRefreshLayout;
@@ -169,7 +170,7 @@ public class Main extends android.support.v4.app.Fragment {
     private FastScroller fastScroller;
 
     // defines the current visible tab, default either 0 or 1
-    private int mCurrentTab;
+    //private int mCurrentTab;
 
     /*
      * boolean identifying if the search task should be re-run on back press after pressing on
@@ -192,14 +193,11 @@ public class Main extends android.support.v4.app.Fragment {
         tabHandler = new TabHandler(getActivity(), null, null, 1);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        mCurrentTab = Sp.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
-        skin = PreferenceUtils.getPrimaryColorString(Sp);
-        skinTwo = PreferenceUtils.getPrimaryTwoColorString(Sp);
         fabSkin = PreferenceUtils.getAccentString(Sp);
         int icon = Sp.getInt(PreferenceUtils.KEY_ICON_SKIN, PreferenceUtils.DEFAULT_ICON);
         iconskin = PreferenceUtils.getFolderColorString(Sp);
-        skin_color = Color.parseColor(skin);
-        skinTwoColor = Color.parseColor(skinTwo);
+        skin_color = Color.parseColor(BaseActivity.skin);
+        skinTwoColor = Color.parseColor(BaseActivity.skinTwo);
         icon_skin_color = Color.parseColor(iconskin);
         Calendar calendar = Calendar.getInstance();
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
@@ -278,7 +276,7 @@ public class Main extends android.support.v4.app.Fragment {
         goback = res.getString(R.string.goback);
         itemsstring = res.getString(R.string.items);
         apk = res.getDrawable(R.drawable.ic_doc_apk_grid);
-        mToolbarContainer.setBackgroundColor(mCurrentTab==1 ? skinTwoColor : skin_color);
+        mToolbarContainer.setBackgroundColor(MainActivity.currentTab==1 ? skinTwoColor : skin_color);
         //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
         return rootView;
     }
@@ -297,7 +295,8 @@ public class Main extends android.support.v4.app.Fragment {
         //MAIN_ACTIVITY = (MainActivity) getActivity();
         initNoFileLayout();
         utils = new Futils();
-        String x = PreferenceUtils.getSelectionColor(mCurrentTab==1 ? skinTwo : skin);
+        String x = PreferenceUtils.getSelectionColor(MainActivity.currentTab==1 ?
+                BaseActivity.skinTwo : BaseActivity.skin);
         skinselection = Color.parseColor(x);
         color = PreferenceUtils.calculatevalues(x);
         ColorMatrix colorMatrix = new ColorMatrix(PreferenceUtils.calculatefilter(color));
@@ -522,9 +521,16 @@ public class Main extends android.support.v4.app.Fragment {
             /*if(Build.VERSION.SDK_INT<19)
                 getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);*/
             // rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(res.getColor(R.color.toolbar_cab));
-            ObjectAnimator anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe),
-                    "backgroundColor", mCurrentTab==1 ? skinTwoColor : skin_color,
-                    res.getColor(R.color.holo_dark_action_mode));
+            ObjectAnimator anim = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe),
+                        "backgroundColor", MainActivity.currentTab==1 ? skinTwoColor : skin_color,
+                        res.getColor(R.color.holo_dark_action_mode, getActivity().getTheme()));
+            } else {
+                anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe),
+                        "backgroundColor", MainActivity.currentTab==1 ? skinTwoColor : skin_color,
+                        res.getColor(R.color.holo_dark_action_mode));
+            }
             anim.setDuration(0);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();
@@ -810,7 +816,7 @@ public class Main extends android.support.v4.app.Fragment {
             MAIN_ACTIVITY.setPagingEnabled(true);
             ObjectAnimator anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe),
                     "backgroundColor", res.getColor(R.color.holo_dark_action_mode),
-                    mCurrentTab==1 ? skinTwoColor : skin_color);
+                    MainActivity.currentTab==1 ? skinTwoColor : skin_color);
             anim.setDuration(0);
             anim.setEvaluator(new ArgbEvaluator());
             anim.start();

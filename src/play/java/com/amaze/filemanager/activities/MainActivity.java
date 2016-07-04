@@ -217,7 +217,7 @@ public class MainActivity extends BaseActivity implements
     CountDownTimer timer;
     IconUtils icons;
     TabHandler tabHandler;
-    RelativeLayout drawerHeaderParent;
+    public RelativeLayout drawerHeaderParent;
     static final int image_selector_request_code = 31;
     // Check for user interaction for Google+ api only once
     boolean mGoogleApiKey = false;
@@ -243,7 +243,7 @@ public class MainActivity extends BaseActivity implements
     private CoordinatorLayout mScreenLayout;
 
     // the current visible tab, either 0 or 1
-    private int mCurrentTab;
+    public static int currentTab;
 
     public static boolean isSearchViewEnabled = false;
 
@@ -435,7 +435,7 @@ public class MainActivity extends BaseActivity implements
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
-                    Color.parseColor((mCurrentTab==1 ? skinTwo : skin)));
+                    Color.parseColor((currentTab==1 ? skinTwo : skin)));
             ((Activity) this).setTaskDescription(taskDescription);
         }
     }
@@ -1487,14 +1487,14 @@ public class MainActivity extends BaseActivity implements
                     public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                         super.onLoadingFailed(imageUri, view, failReason);
                         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-                        drawerHeaderParent.setBackgroundColor(Color.parseColor((mCurrentTab==1 ? skinTwo : skin)));
+                        drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
                     }
 
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
                         super.onLoadingStarted(imageUri, view);
                         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-                        drawerHeaderParent.setBackgroundColor(Color.parseColor((mCurrentTab==1 ? skinTwo : skin)));
+                        drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
                     }
                 });
 
@@ -1517,7 +1517,7 @@ public class MainActivity extends BaseActivity implements
             } else {
                 Toast.makeText(this, getResources().getText(R.string.no_cover_photo), Toast.LENGTH_SHORT).show();
                 drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-                drawerHeaderParent.setBackgroundColor(Color.parseColor((mCurrentTab==1 ? skinTwo : skin)));
+                drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
             }
         }
     }
@@ -1795,8 +1795,8 @@ public class MainActivity extends BaseActivity implements
         hidemode = Sp.getInt("hidemode", 0);
         showHidden = Sp.getBoolean("showHidden", false);
         aBoolean = Sp.getBoolean("view", true);
-        mCurrentTab = Sp.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
-        skinStatusBar = (PreferenceUtils.getStatusColor((mCurrentTab==1 ? skinTwo : skin)));
+        currentTab = Sp.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
+        skinStatusBar = (PreferenceUtils.getStatusColor((currentTab==1 ? skinTwo : skin)));
     }
 
     void initialiseViews() {
@@ -1819,7 +1819,7 @@ public class MainActivity extends BaseActivity implements
         mScreenLayout = (CoordinatorLayout) findViewById(R.id.main_frame);
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
 
-        buttonBarFrame.setBackgroundColor(Color.parseColor(mCurrentTab==1 ? skinTwo : skin));
+        //buttonBarFrame.setBackgroundColor(Color.parseColor(currentTab==1 ? skinTwo : skin));
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
@@ -1854,10 +1854,10 @@ public class MainActivity extends BaseActivity implements
         if (theme1 == 1) mDrawerLinear.setBackgroundColor(Color.parseColor("#303030"));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((mCurrentTab==1 ? skinTwo : skin)));
+        //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-        drawerHeaderParent.setBackgroundColor(Color.parseColor((mCurrentTab==1 ? skinTwo : skin)));
+        //drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
         if (findViewById(R.id.tab_frame) != null) {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, mDrawerLinear);
             mDrawerLayout.setScrimColor(Color.TRANSPARENT);
@@ -1952,7 +1952,7 @@ public class MainActivity extends BaseActivity implements
                 adapter.toggleChecked(false);
             }
         });
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor((mCurrentTab==1 ? skinTwo : skin))));
+        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor((currentTab==1 ? skinTwo : skin))));
 
 
         // status bar0
@@ -1961,7 +1961,7 @@ public class MainActivity extends BaseActivity implements
         if (sdk == 20 || sdk == 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintColor(Color.parseColor((mCurrentTab==1 ? skinTwo : skin)));
+            //tintManager.setStatusBarTintColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             if (!isDrawerLocked) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
@@ -1996,6 +1996,36 @@ public class MainActivity extends BaseActivity implements
         });
         searchViewEditText.setTextColor(Color.parseColor(fabskin));
         searchViewEditText.setHintTextColor(Color.parseColor(fabskin));
+    }
+
+    /**
+     * Call this method when you need to update the MainActivity view components' colors based on
+     * update in the {@link MainActivity#currentTab}
+     * Warning - All the variables should be initialised before calling this method!
+     */
+    public void updateViews(ColorDrawable colorDrawable) {
+
+        // appbar view color
+        mainActivity.buttonBarFrame.setBackgroundColor(colorDrawable.getColor());
+        // action bar color
+        mainActivity.getSupportActionBar().setBackgroundDrawable(colorDrawable);
+        // drawer status bar I guess
+        mainActivity.mDrawerLayout.setStatusBarBackgroundColor(colorDrawable.getColor());
+        // drawer header background
+        mainActivity.drawerHeaderParent.setBackgroundColor(colorDrawable.getColor());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // for lollipop devices, the status bar color
+            mainActivity.getWindow().setStatusBarColor(colorDrawable.getColor());
+            if (colourednavigation)
+                mainActivity.getWindow().setNavigationBarColor(colorDrawable.getColor());
+        } else if (Build.VERSION.SDK_INT == 20 || Build.VERSION.SDK_INT == 19) {
+
+            // for kitkat devices, the status bar color
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintColor(colorDrawable.getColor());
+        }
     }
 
     void initialiseFab() {

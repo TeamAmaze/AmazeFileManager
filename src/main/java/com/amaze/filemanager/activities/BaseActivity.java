@@ -28,7 +28,8 @@ public class BaseActivity extends AppCompatActivity {
     public SharedPreferences Sp;
 
     // Accent and Primary hex color string respectively
-    public String fabskin,skin, skinTwo;
+    public String fabskin;
+    public static String skin, skinTwo;
     Futils utils;
     boolean  rootmode,checkStorage=true;
     @Override
