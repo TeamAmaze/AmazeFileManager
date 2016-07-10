@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014-2015 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">Amaze File Manager</string>
+    <string name="drawer_open">Mở ngăn kéo điều hướng</string>
+    <string name="drawer_close">Thoát ngăn kéo điều hướng</string>
+    <string name="books">Bookmark</string>
+    <string name="icon">biểu tượng</string>
+    <string name="efn">Nhập tên tệp</string>
+    <string name="storage">Lưu trữ</string>
+    <string name="gallery">Thư viện</string>
+    <string name="apps">Quản lý ứng dụng</string>
+    <string name="ftp">FTP Server</string>
+    <string name="bookmanag">Quản lý Bookmark</string>
+    <string name="setting">Thiết lập</string>
+    <string name="select">Chọn mục</string>
+    <string name="pressagain">Nhấn lần nữa để thoát</string>
+    <string name="open">Mở</string>
+    <string name="backup">Sao lưu</string>
+    <string name="uninstall">Gỡ bỏ</string>
+    <string name="play">Cửa hàng Play</string>
+    <string name="properties">Thuộc tính</string>
+    <string name="copyingapk">Đang sao chép apk đến </string>
+    <string name="addbook">Thêm Bookmark</string>
+    <string name="addtobook">Thêm vào Bookmark</string>
+    <string name="enterpath">Nhập đường dẫn</string>
+    <string name="cancel">Thoát</string>
+    <string name="create">Tạo</string>
+    <string name="success">Thành công</string>
+    <string name="filenotexists">Tệp không tồn tại</string>
+    <string name="loading">Đang nạp...</string>
+    <string name="file_empty">Tệp rỗng</string>
+    <string name="error">Lỗi</string>
+    <string name="cantlistfiles">Không thể liệt kê tệp tin mà không root</string>
+    <string name="searchresults">Kết quả tìm kiếm</string>
+    <string name="itemsselected">Các mục đã chọn</string>
+    <string name="newhomedirectory">Tạo danh mục nhà mới</string>
+    <string name="rename">Đổi tên</string>
+    <string name="save">Lưu</string>
+    <string name="renameerror">Đổi tên không thành công</string>
+    <string name="renamed">Đổi tên thành công</string>
+    <string name="bookmarksadded">Bookmark đã được thêm vào</string>
+    <string name="fileexist">Tệp có cùng tên đã tồn tại </string>
+    <string name="filecreated">Tệp đã được tại</string>
+    <string name="searchpath">Đường dẫn tìm kiếm</string>
+    <string name="enterfile">Nhập tên tệp</string>
+    <string name="name">Tên: </string>
+    <string name="date">Ngày: </string>
+    <string name="location">Vị trí: </string>
+    <string name="size">Kích thước thư mục: </string>
+    <string name="totalitems">Tất cả các mục: </string>
+    <string name="enterzipname">Nhập tên Zip</string>
+    <string name="noappfound">Không tìm thấy ứng dụng để mở tệp</string>
+    <string name="copying">Đang sao chép</string>
+    <string name="moving">Đang di dời</string>
+    <string name="add">Thêm</string>
+    <string name="tab">Thẻ</string>
+    <string name="file">Tệp</string>
+    <string name="folder">Thư mục</string>
+    <string name="newfolder">Thư mục mới</string>
+    <string name="entername">Nhập tên</string>
+    <string name="extracting">Đang giải nén</string>
+    <string name="zipping">Đang nén</string>
+    <string name="stopping">Đang ngừng</string>
+    <string name="guide1">Chào mừng bạn đến với Amaze File Manager</string>
+    <string name="guide2">Chạm vào dải màu xanh để hiển thị hoặc ẩn thanh đường dẫn</string>
+    <string name="guide3">Chạm và giữ bất kỳ tệp tin nào để có nhiều lựa chọn</string>
+    <string name="guide4">Như sao chép, di chuyển, thuộc tính,...</string>
+    <string name="guide5">Sử dụng nút Quay lại trên thiết bị của bạn để thoát ứng dụng bất kỳ lúc nào...</string>
+    <string name="guide6">..Và sử dụng nút mũi tên trái để điều hướng quản lý tệp</string>
+    <string name="maintab">Đã không thể gỡ bỏ thẻ chính</string>
+    <string name="openparent">Mở danh mục chính</string>
+    <string name="openwith">Mở bằng</string>
+    <string name="share">Chia sẻ</string>
+    <string name="about">Về</string>
+    <string name="extract">Giải nén</string>
+    <string name="compress">Nén</string>
+    <string name="yes">Có</string>
+    <string name="no">Không</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="deleting">Đang xóa</string>
+    <string name="questiondelete">Bạn có thực sự muốn xóa các tập tin sau đây?</string>
+    <string name="questionset">Bạn có muốn thiết lập đường dẫn hiện tại như nhà cho thẻ này?</string>
+    <string name="viewmode">Chế độ xem</string>
+    <string name="uimode">Chế độ UI</string>
+    <string name="directorysort">Chế độ sắp xếp danh mục</string>
+    <string name="sortby">Sắp xếp theo</string>
+    <string name="theme">Chủ đề</string>
+    <string name="skin">Giao diện</string>
+    <string name="random">Giao diện ngẫu nhiên</string>
+    <string name="random_summary">Thiết lập màu cơ bản ngẫu nhiên lúc khởi động</string>
+    <string name="colorize">Màu sắc hóa biểu tượng</string>
+    <string name="colorize_summary">Thiết lập màu sắc biểu tượng tĩnh. Đừng ghi đè tùy chọn biểu tượng màu danh mục.</string>
+    <string name="back">Quay lại</string>
+    <string name="home">Nhà</string>
+    <string name="paste">Dán</string>
+    <string name="close">Thoát</string>
+    <string name="history">Lịch sử</string>
+    <string name="refresh">Làm mới</string>
+    <string name="copy">Sao chép</string>
+    <string name="rootmode">Root Explorer</string>
+    <string name="rootmodesummary">Chỉ cho thiết bị đã được root. Chỉ kiểm tra khi bạn chắc chắn về nó.</string>
+    <string name="mountsystemsummary">Kích hoạt điều này nếu bạn muốn sửa tệp hệ thống</string>
+    <string name="mountsystem">Mount System Folders as Writable</string>
+    <string name="rootfailure">Truy cập root không được cấp phép</string>
+    <string name="selectall">Chọn hết</string>
+    <string name="delete">Xóa</string>
+    <string name="setashome">Đặt như nhà</string>
+    <string name="sethome">Đặt danh mục nhà</string>
+    <string name="foldercolor">Màu thư mục</string>
+    <string name="imagegallery">Thư viện hình ảnh</string>
+    <string name="fileexplorer">File Explorer</string>
+    <string name="changegallerypath">Thay đổi đường dẫn thư viện</string>
+    <string name="usedefaultgallerypath">Dùng đường dẫn thư viện hình ảnh mặc định</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <string name="simple">Đơn giản</string>
+    <string name="card">Thẻ</string>
+    <!-- Theme -->
+    <string name="light">Material Light</string>
+    <string name="dark">Material Dark</string>
+    <string name="daytime">Daytime</string>
+    <!--Skin-->
+    <string name="red">Red</string>
+    <string name="pink">Pink</string>
+    <string name="purple">Purple</string>
+    <string name="deep_purple">Deep Purple</string>
+    <string name="indigo">Indigo</string>
+    <string name="blue">Blue</string>
+    <string name="light_blue">Light Blue</string>
+    <string name="cyan">Cyan</string>
+    <string name="teal">Teal</string>
+    <string name="green">Green</string>
+    <string name="light_green">Light Green</string>
+    <string name="amber">Amber</string>
+    <string name="orange">Orange</string>
+    <string name="deep_orange">Deep Orange</string>
+    <string name="brown">Brown</string>
+    <string name="black">Black</string>
+    <string name="blue_grey">Blue Grey</string>
+    <string name="supersu">SuperSU</string>
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">Thư mục trên đầu</string>
+    <string name="filesOnTop">Tệp trên đầu</string>
+    <string name="noneOnTop">Không ở trên đầu</string>
+    <!--SortBy-->
+    <string name="sortName">Tên</string>
+    <string name="lastModified">Lần chỉnh sửa cuối</string>
+    <string name="sortSize">Kích thuớc</string>
+    <string name="sortNameDesc">Tên (Giảm dần)</string>
+    <string name="lastModifiedDesc">Lần chỉnh sửa cuối (Giảm dần)</string>
+    <string name="sortSizeDesc">Kích thuớc (Giảm dần)</string>
+    <!--ListMode-->
+    <string name="detailedView">Chi tiết</string>
+    <string name="simpleView">Đơn giản</string>
+    <!--Folder-->
+    <string name="Yellow">Yellow</string>
+    <string name="pick_a_file">Chọn một tệp</string>
+    <string name="process_viewer">Trình xem tiến trình</string>
+    <string name="in_safe">Không đủ bộ nhớ</string>
+    <string name="no_file_overwrite">Không có tệp ghi đè</string>
+    <string name="skip">Giữ</string>
+    <string name="overwrite">Ghi đè</string>
+    <string name="cant_read_file">Không thể đọc tệp</string>
+    <string name="not_allowed">Không được cho chép</string>
+    <string name="processes">Tiến trình</string>
+    <string name="searching">Đang tìm</string>
+    <string name="copying_fles">Đang sao chép tệp</string>
+    <string name="done">Hoàn tất</string>
+    <string name="Extracting_fles">Đang giải nén tệp</string>
+    <string name="Zipping_fles">Đang nén tệp</string>
+    <string name="items">Các mục</string>
+    <string name="item">Mục</string>
+    <string name="set">Đặt</string>
+    <string name="enablerootmde">Kích hoạt chế độ Root</string>
+    <string name="goback">Quay lại</string>
+    <string name="foldercreated">Thư mục đã được tạo</string>
+    <string name="newfile">Tệp mới</string>
+    <string name="nofiles">Không có tệp</string>
+    <string name="tapnhold">Chạm và giữ vào một tệp tin hoặc thư mục để có thêm lựa chọn</string>
+    <string name="pathcopied">Đường dẫn đã được sao chép đến clipboard</string>
+    <string name="used">Đã được dùng bởi:  </string>
+    <string name="free">Không gian trống:  </string>
+    <string name="atroot">Bạn đang ở chế độ root</string>
+    <string name="listview">Chế độ xem danh sách</string>
+    <string name="gridview">Chế độ xem lưới</string>
+    <string name="setlistview">Thiết lập chế độ xem danh sách</string>
+    <string name="setgridview">Thiết lập chế độ xem lưới</string>
+    <string name="permission">Cấp phép</string>
+    <string name="hide">Ẩn</string>
+    <string name="exit">Đóng</string>
+    <string name="enternewname">Nhập tên mới</string>
+    <string name="doforall">Làm cho tất cả các mục</string>
+    <string name="gridcolumnno">Số lượng cột trong chế độ lưới</string>
+    <string name="randomDialog">Ngẫu nhiên</string>
+    <string name="setRandom">Thay đổi sẽ được thay thế sau khi khởi động ứng dụng</string>
+    <string name="authors">Tác giả</string>
+    <string name="changelog">Bản ghi thay đổi</string>
+    <string name="fullChangelog">Bản ghi thay đổi đầy đủ</string>
+    <string name="ok">Đồng ý</string>
+    <string name="chooseUI">Chọn mục UI</string>
+    <string name="ui">Giao diện</string>
+    <string name="general">Thiết lập chung</string>
+    <string name="thumbSummary">Hiện ảnh thu nhỏ ứng dụng và hình ảnh</string>
+    <string name="thumb">Hiện ảnh thu nhỏ</string>
+    <string name="hidden">Hiển thi tệp và thư mục ẩn</string>
+    <string name="lastModifiedSummary">Hiển thị ngày và thời gian khi tệp tin được sửa đổi lần cuối</string>
+    <string name="lastModifiedPref">Hiện chỉnh sửa cuối</string>
+    <string name="sizePrefSummary">Hiện kích thước của tệp tin và số mục trong thư mục</string>
+    <string name="sizePref">Hiện kích thước</string>
+    <string name="miscellaneous">Chuyên sâu</string>
+    <string name="rootPrefSummary">Hiện cấp phép cho tệp và thư mục</string>
+    <string name="rootPref">Hiện cấp phép</string>
+    <string name="aboutFileManager">Về Amaze File Manager</string>
+    <string name="version">Phiên bản</string>
+    <string name="rate">Xếp hạng ứng dụng</string>
+    <string name="license">Giấy phép mã nguồn mở</string>
+    <string name="feedback">Gửi phản hồi</string>
+    <string name="hiddenfiles">Những tệp ẩn</string>
+    <string name="type">Loại</string>
+    <string name="typeDesc">Loại (Giảm dần)</string>
+    <string name="rootdirectory">Root</string>
+    <string name="new_string">Mới</string>
+    <string name="setringtone">Đặt làm nhạc chuông</string>
+    <string name="copy_path">Sao chép đường dẫn</string>
+    <string name="addshortcut">Thêm lối tắt</string>
+    <string name="unsavedchanges">Những thay đổi vẫn chưa được lưu</string>
+    <string name="unsavedchangesdesc">Bạn có thay đổi chưa được lưu, bạn có muốn lưu chúng trước khi thoát?</string>
+    <string name="saving">Đang lưu</string>
+    <string name="packageinstaller">Trình cài đặt gói</string>
+    <string name="view">Xem</string>
+    <string name="install">Cài đặt</string>
+    <string name="archive">Lưu trữ</string>
+    <string name="archtext">Đây là một gói lưu trữ. Hành động bạn muốn thực thi là gì?</string>
+    <string name="pitext">Đây là một gói cài đặt. Hành động bạn muốn thực thi là gì?</string>
+    <string name="xda_title">XDA</string>
+    <string name="xda_summary">H&amp;Đ, Hướng dẫn &amp; Gỡ rối</string>
+    <string name="invalid_dir">Thư mục không hợp lệ</string>
+    <string name="circularimages">Dùng biểu tượng hình tròn cho hình ảnh và video</string>
+    <string name="circularicons">Dùng biểu tượng hình tròn</string>
+    <string name="back_title">Điều hướng quay lại</string>
+    <string name="back_summary">Kích hoạt điều hướng qua lại tại đỉnh của danh sách</string>
+    <string name="details">Chi tiết</string>
+    <string name="translators">Phiên dịch viên</string>
+    <string name="german_translation_title">German</string>
+    <string name="italian_translation_title">Italian</string>
+    <string name="french_translation_title">French</string>
+    <string name="russian_translation_title">Russian</string>
+    <string name="spanish_translation_title">Spanish</string>
+    <string name="basque_translation_title">Basque</string>
+    <string name="chinese_translation_title">Chinese</string>
+    <string name="serbian_translation_title">Serbian</string>
+    <string name="turkish_translation_title">Turkish</string>
+    <string name="ukrainian_translation_title">Ukrainian</string>
+    <string name="portuguese_translation_title">Portuguese</string>
+    <string name="polish_translation_title">Polish</string>
+    <string name="korean_translation_title">Korean</string>
+    <string name="greek_translation_title">Греческий</string>
+    <string name="dutch_translation_title">Dutch</string>
+    <string name="romanian_translation_title">Romanian</string>
+
+    <string name="zip_viewer">Trình xem Zip</string>
+    <string name="unin_system_apk">Đây là một ứng dụng hệ thống, xóa nó có thể dẫn đến sự mất ổn định hệ thống.\nThực thi?</string>
+    <string name="warning">Cảnh báo</string>
+    <string name="donate">Ủng hộ</string>
+    <string name="archive_preferences">Tuỳ chọn lưu trữ</string>
+    <string name="archive_extract_folder">Thư mục lưu trữ giải nén</string>
+    <string name="zip_create_folder">Tạo thư mục Zip</string>
+    <string name="archive_summary">Tệp tin lưu trữ sẽ được giải nén vào thư mục này. Giá trị mặc định là thư mục mà tệp lưu trữ đã hiện diện</string>
+    <string name="zip_summary">Tệp zip sẽ được tạo trên thư mục này. Giá trị mặc định là thư mục mà tệp tin hiện diện</string>
+    <string name="openas">Mở dưới dạng</string>
+    <string name="text">Văn bản</string>
+    <string name="audio">Âm thanh</string>
+    <string name="video">Video</string>
+    <string name="other">Khác</string>
+    <string name="image">Hình ảnh</string>
+    <string name="contributors">Người đóng góp</string>
+    <string name="savepaths">Nhớ đường dẫn</string>
+    <string name="savepathsummary">Khi khởi chạy, các thư mục đã xem gần đây nhất cho mỗi thẻ sẽ được hiển thị</string>
+    <string name="select_intent">Chọn</string>
+    <string name="md5copied">MD5 đã được sao chép vào clipboard</string>
+    <string name="generating">Đang thực thi..</string>
+    <string name="tables">Bảng</string>
+    <string name="database">Dữ liệu</string>
+    <string name="colourednavigation">Thanh điều hướng đã được màu</string>
+    <string name="colourednavigationsum">Có hay không thanh điều hướng hệ thống được màu cùng với giao diện</string>
+
+    <string name="sd_card_grant_next">sd_card_grant_next</string>
+    <string name="sd_card_grant_first">sd_card_grant_first</string>
+    <string name="fab_skin">Giao diện FAB</string>
+    <string name="gplus_pic_title">Đăng nhập bằng G+</string>
+    <string name="gplus_pic_summary">Hiện ảnh bìa G + trong ngăn kéo</string>
+    <string name="icon_credits">Đồ họa bởi &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
+
+    <string name="color_title">Màu</string>
+    <string name="color_summary">Đặt màu cho các thành phần UI khác nhau</string>
+    <string name="primary_color_title">Màu nguyên thủy (Thẻ trái)</string>
+    <string name="primary_color_summary">Đặt màu sắc cho các yếu tố UI lớn cho các thẻ bên trái</string>
+    <string name="accent_color_title">Màu điểm nhấn</string>
+    <string name="accent_color_summary">Đặt màu cho FAB và các yếu tố UI nhỏ khác</string>
+    <string name="icon_color_title">Màu biểu tượng</string>
+    <string name="icon_color_summary">Đặt màu cho biểu tượng</string>
+    <string name="hide_mode_title">Chế độ ẩn</string>
+    <string name="none">None</string>
+    <string name="hide_toolbar">Ẩn thanh công cụ</string>
+    <string name="hide_appbar">Ẩn thanh ứng dụng</string>
+    <string name="choose_color">Chọn màu</string>
+    <string name="g_plus_community_title">Cộng đồng G+</string>
+    <string name="hide_mode_nothing">Thanh ứng dụng vẫn còn nguyên vẹn</string>
+    <string name="hide_mode_toolbar">Ẩn thanh công cụ khi cuộn</string>
+    <string name="hide_mode_app_bar">Ẩn thanh ứng dụng khi cuộn</string>
+    <string name="no_cover_photo">Không có ảnh bìa</string>
+    <string name="files">Tệp</string>
+    <string name="directories">Thư mục</string>
+    <string name="textreader">Trình đọc văn bản thô</string>
+    <string name="databasereader">Trình đọc dữ liệu</string>
+    <string name="showDividers">Hiện bộ chia</string>
+    <string name="topFab">FAB trên thanh ứng dụng</string>
+    <string name="topFabS">Cho dù nút + nên được ở trên hoặc dưới. Chỉ áp dụng nếu thanh ứng dụng không bị ẩn.</string>
+    <string name="needsaccess">Yêu cầu ghi truy cập</string>
+    <string name="needsaccesssummary">Vui lòng chọn thư mục gốc của \t</string>
+    <string name="needsaccesssummary1">\tđể ghi truy cập cho việc thao tác </string>
+    <string name="smb_con">Kết nối SMB</string>
+    <string name="smb_server">Địa chỉ IP máy chủ</string>
+    <string name="username">Tên người dùng</string>
+    <string name="password">Mật khẩu</string>
+    <string name="anonymous">Ẩn danh</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="extstorage">Bộ nhớ ngoài</string>
+    <string name="folders">Thư mục</string>
+    <string name="videos">Video</string>
+    <string name="apks">Các tệp Apk</string>
+    <string name="documents">Tài liệu</string>
+    <string name="images">Hình ảnh</string>
+    <string name="clear">Xóa</string>
+    <string name="md5">md5: </string>
+    <string name="md5_2">Sao chép md5</string>
+    <string name="total">Tổng cộng: </string>
+    <string name="calculating"> đang tính toán </string>
+    <string name="sort">Sắp xếp</string>
+    <string name="ascending">Tăng dần</string>
+    <string name="descending">Giảm dần</string>
+    <string name="defualt">Mặc định</string>
+    <string name="doit">Thực thi nó</string>
+    <string name="wanthelp"><u>Cần trợ giúp?</u></string>
+    <string name="quick">Truy cập nhanh</string>
+    <string name="recent">Các tệp gần đây</string>
+    <string name="edit">Sửa</string>
+    <string name="find">Tìm trong trang</string>
+    <string name="grant">Grant</string>
+    <string name="grantper">Cấp phép Grant</string>
+    <string name="grantfailed">Cấp phép chưa được cấp</string>
+    <string name="granttext">Ứng dụng cần sự cho phép lưu trữ để tiếp tục. Thoát hộp thoại này sẽ thoát khỏi ứng dụng.</string>
+    <string name="grantgplus">Ứng dụng cần sự cho phép cho tính năng này. Thoát hộp thoại này sẽ bỏ qua tính năng này.</string>
+    <string name="operationunsuccesful">Thao tác không thành công</string>
+    <string name="creatingfile">Đang tạo tệp tin</string>
+    <string name="creatingfolder">Đang tạo thư mục</string>
+    <string name="renaming">Đang đổi tên</string>
+    <string name="cantbeempty">%s không thể để trống</string>
+    <string name="ip">Địa chỉ</string>
+    <string name="connectionname">Tên kết nối</string>
+    <string name="nodevicefound">Không tìm thấy thiết bị</string>
+    <string name="searchingdevices">Đang tìm kiếm thiết bị</string>
+    <string name="path">Đường dẫn</string>
+    <string name="renamebookmark">Tùy chỉnh Bookmark</string>
+    <string name="cut">Cắt</string>
+    <string name="empty"></string>
+    <string name="search">Tìm kiếm</string>
+    <string name="invalid_name">Tên không hợp lệ</string>
+    <string name="search_hint">Gõ để tìm kiếm&#8230;</string>
+    <string name="advanced_search">Tìm kiếm nâng cao</string>
+    <string name="regular_expression">Cú pháp thường dùng</string>
+    <string name="regular_expression_summary">Tìm kiếm dùng một dạng cú pháp BASH thường dùng</string>
+    <string name="match_content">Khớp nội dung</string>
+    <string name="match_content_summary">Nếu đặt, cú pháp thường dùng sẽ được xuất hiện với toàn bộ tên tệp tin,
+        sẽ xem xét cho sự xuất hiện khác.</string>
+    <string name="start_ftp">Bắt đầu</string>
+    <string name="stop_ftp">Ngừng</string>
+    <string name="ftp_status_running">Đang chạy</string>
+    <string name="ftp_status_not_running">Chưa chạy</string>
+    <string name="ftp_no_wifi">Hãy chắc rằng bạn đã kết nối đến WiFi</string>
+    <string name="domain">Domain</string>
+    <string name="invalid">Invalid %s</string>
+    <string name="ftp_notif_starting">FTP Server đang bắt đầu</string>
+    <string name="ftp_notif_title">Amaze FTP Server đang chạy</string>
+    <string name="ftp_notif_text">tại %s</string>
+    <string name="ftp_notif_stop_server">Ngừng</string>
+    <string name="primary_two_title">Màu nguyên thủy (Thẻ phải)</string>
+    <string name="primary_two_summary">Đặt màu sắc cho các yếu tố UI lớn cho các thẻ bên phải</string>
+</resources>
+
