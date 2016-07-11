@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="changelog_version_1">&lt;font color="#5299f2">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_1">- Initial release&lt;br>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#5299f2">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Dec 04, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_2">- Fixed cut/paste&lt;br>
+                                      - Fixed text editor for root&lt;br>
+                                      - Added German, French, Italian, Russian and Chinese languages&lt;br>
+                                      - Added bookmarks to navigation drawer&lt;br>
+                                      - Added material dialogs&lt;br>
+                                      - more...&lt;br>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#5299f2">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Dec 13, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_3">- Added Spanish&lt;br>
+                                      - Various Zip Viewer fixes&lt;br>
+                                      - Can view apk and jar files&lt;br>
+                                      - Various text editor fixes&lt;br>
+                                      - more...&lt;br>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color="#5299f2">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Jan 17, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_4">    - Swipable tabs&lt;br>
+                                      - Fully revamped UI&lt;br>
+                                      - Speedy copy/paste/extract/compress operations&lt;br>
+                                      - Progress of operations in notifications&lt;br>
+                                      - Fixes for zip viewer and text editor&lt;br>
+                                      - Ability to uninstall system apps&lt;br>
+                                      - Improved searching of files&lt;br>
+                                      - Serbian,basque translations&lt;br>
+                                      - Added preference to disable go back list header&lt;br>
+                                      - Added preference to disable circular thumbnails&lt;br>
+                                      - Added preference to choose archive extract and compress directory&lt;br>
+                                      - Added preference to remember paths&lt;br>
+                                      - more...&lt;br>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#5299f2">&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Mar 08, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_5">- Implemented Database viewer&lt;br>
+                                      - Implemented rar viewer&lt;br>
+                                      - Improved notifications for operations&lt;br>
+                                      - Fixed drawer closing lag and improve layout&lt;br>
+                                      - New circular icon&lt;br>
+                                      - Introduced swipe(pull) to refresh&lt;br>
+                                      - Added recognition of usb drive for some devices&lt;br>
+                                      - Colored navigation bar for lollipop devices&lt;br>
+                                      - Ripple effect for lollipop devices&lt;br>
+                                      - Many UI improvements&lt;br>
+                                      - Many Bug fixes&lt;br>
+                                      - more...&lt;br>&lt;br></string>
+    <string name="changelog_version_6">&lt;font color="#5299f2">&lt;b>v2.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>May 25, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_6">- Redesigned UI as per material design guidelines&lt;br>
+                                      - New icon and graphics by CookIcons.co&lt;br>
+                                      - Improved animations for smoother experience&lt;br>
+                                      - Added custom primary, accent and icon colors to make UI dynamic&lt;br>
+                                      - Added headers and dividers in the list&lt;br>
+                                      - Drawer can now sync the G+ profile pic and cover pic&lt;br>
+                                      - Light and Dark themes are improved, looks more beautiful now!&lt;br>
+                                      - Removed Bookmark Manager from drawer, long click on Bookmark instead&lt;br>
+                                      - You can now enable toolbar hiding or app bar hiding as you scroll&lt;br>
+                                      - Lots of performance and bug fixes&lt;br>
+                                      - Many translation fixes&lt;br>
+                                      - more...&lt;br>&lt;br></string>
+    <string name="changelog_version_7">&lt;font color="#5299f2">&lt;b>v2.0.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>June 5, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_7">- Sort options for apps list&lt;br>
+                                      - Improved tab UI and drawer header&lt;br>
+                                      - Introducing lollipop external storage write access&lt;br>&lt;br>
+                                   </string>
+    <string name="changelog_version_8">
+        &lt;font color="#5299f2">&lt;b>v2.0.9&lt;/font>&lt;/b>&lt;br></string>
+    <string name="changelog_change_8">- Fixed fab for tablets&lt;br>
+                                      - Fixed Color settings&lt;br>
+                                      - New materialized fab&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>v2.0.8&lt;/font>&lt;/b>&lt;br>
+                                      - Fixed file sharing&lt;br>
+                                      - New faster method for file searching&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>v2.0.7b&lt;/font>&lt;/b>&lt;br>
+                                      - Minor bugfixes&lt;br>&lt;br>
+                                      &lt;font color="#5299f2">&lt;b>v2.0.7&lt;/font>&lt;/b>&lt;br>
+                                      - Minor fix for shortcuts&lt;br>
+                                      - Minor fix for root file deletion&lt;br>
+                                      - Improved Dialogs&lt;br>
+                                      (Now \'Hidden Items\' in menu will only be visible if \"Show hidden Files\" preference is enabled in
+                                                settings)- Sort options for apps list&lt;br>&lt;br>
+                                   </string>
+    <string name="changelog_version_9">
+        &lt;font color="#5299f2">&lt;b>v3.0.0&lt;/font>&lt;/b>&lt;br></string>
+    <string name="changelog_change_9">- Implemented windows(smb) file sharing&lt;br>
+                                      - Faster and better file sharing&lt;br>
+                                      - Added list animations&lt;br>
+                                      - Number of files and folders are shown instead of used
+        space&lt;br>
+                                      - GridView can now adjust number of columns on its
+        own even on rotation(Experimental)&lt;br>
+                                      - Separate Properties button for each file in landscape
+        mode and for tablets&lt;br>
+                                      - New Fab&lt;br>
+                                      - Improved structure of drawer&lt;br>
+                                      - New shortcuts in drawer to load all media
+        files(Images,Audio,Videos,Apks,Docs)&lt;br>
+                                      - Updated Translations&lt;br>
+                                      - Many Bug Fixes&lt;br>&lt;br>
+                                     </string>
+</resources>
