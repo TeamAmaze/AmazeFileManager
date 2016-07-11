@@ -20,99 +20,99 @@
 <resources
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
-    <string name="changelog_version_1">&lt;font color="#5299f2">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Nov 11, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_1">&lt;font color="#5299f2">&lt;b>v1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>11 tháng 11, 2014&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_1">- Initial release&lt;br>&lt;br></string>
-    <string name="changelog_version_2">&lt;font color="#5299f2">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Dec 04, 2014&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_2">- Fixed cut/paste&lt;br>
-                                      - Fixed text editor for root&lt;br>
-                                      - Added German, French, Italian, Russian and Chinese languages&lt;br>
-                                      - Added bookmarks to navigation drawer&lt;br>
-                                      - Added material dialogs&lt;br>
-                                      - more...&lt;br>&lt;br></string>
-    <string name="changelog_version_3">&lt;font color="#5299f2">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Dec 13, 2014&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_3">- Added Spanish&lt;br>
-                                      - Various Zip Viewer fixes&lt;br>
-                                      - Can view apk and jar files&lt;br>
-                                      - Various text editor fixes&lt;br>
-                                      - more...&lt;br>&lt;br></string>
-    <string name="changelog_version_4">&lt;font color="#5299f2">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Jan 17, 2015&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_4">    - Swipable tabs&lt;br>
-                                      - Fully revamped UI&lt;br>
-                                      - Speedy copy/paste/extract/compress operations&lt;br>
-                                      - Progress of operations in notifications&lt;br>
-                                      - Fixes for zip viewer and text editor&lt;br>
-                                      - Ability to uninstall system apps&lt;br>
-                                      - Improved searching of files&lt;br>
-                                      - Serbian,basque translations&lt;br>
-                                      - Added preference to disable go back list header&lt;br>
-                                      - Added preference to disable circular thumbnails&lt;br>
-                                      - Added preference to choose archive extract and compress directory&lt;br>
-                                      - Added preference to remember paths&lt;br>
-                                      - more...&lt;br>&lt;br></string>
-    <string name="changelog_version_5">&lt;font color="#5299f2">&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>Mar 08, 2015&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_5">- Implemented Database viewer&lt;br>
-                                      - Implemented rar viewer&lt;br>
-                                      - Improved notifications for operations&lt;br>
-                                      - Fixed drawer closing lag and improve layout&lt;br>
-                                      - New circular icon&lt;br>
-                                      - Introduced swipe(pull) to refresh&lt;br>
-                                      - Added recognition of usb drive for some devices&lt;br>
-                                      - Colored navigation bar for lollipop devices&lt;br>
-                                      - Ripple effect for lollipop devices&lt;br>
-                                      - Many UI improvements&lt;br>
-                                      - Many Bug fixes&lt;br>
-                                      - more...&lt;br>&lt;br></string>
-    <string name="changelog_version_6">&lt;font color="#5299f2">&lt;b>v2.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>May 25, 2015&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_6">- Redesigned UI as per material design guidelines&lt;br>
-                                      - New icon and graphics by CookIcons.co&lt;br>
-                                      - Improved animations for smoother experience&lt;br>
-                                      - Added custom primary, accent and icon colors to make UI dynamic&lt;br>
-                                      - Added headers and dividers in the list&lt;br>
-                                      - Drawer can now sync the G+ profile pic and cover pic&lt;br>
-                                      - Light and Dark themes are improved, looks more beautiful now!&lt;br>
-                                      - Removed Bookmark Manager from drawer, long click on Bookmark instead&lt;br>
-                                      - You can now enable toolbar hiding or app bar hiding as you scroll&lt;br>
-                                      - Lots of performance and bug fixes&lt;br>
-                                      - Many translation fixes&lt;br>
-                                      - more...&lt;br>&lt;br></string>
-    <string name="changelog_version_7">&lt;font color="#5299f2">&lt;b>v2.0.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>June 5, 2015&lt;/i>&lt;/font>&lt;br></string>
-    <string name="changelog_change_7">- Sort options for apps list&lt;br>
-                                      - Improved tab UI and drawer header&lt;br>
-                                      - Introducing lollipop external storage write access&lt;br>&lt;br>
+    <string name="changelog_version_2">&lt;font color="#5299f2">&lt;b>v1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>04 tháng 12, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_2">- Đã sửa cắt/sao chép&lt;br>
+                                      - Đã sửa trình sửa văn bản thô cho root&lt;br>
+                                      - Đã thêm ngôn ngữ Đức, Pháp, Ý, Nga và Trung Quốc&lt;br>
+                                      - Đã thêm bookmark cho ngăn kéo điều hướng&lt;br>
+                                      - Đã thêm material cho hộp thoại&lt;br>
+                                      - thêm nữa...&lt;br>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#5299f2">&lt;b>v1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>13 tháng 12, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_3">- Đã thêm tiếng Tây Ban Nha&lt;br>
+                                      - Sửa lỗi trình xem Zip&lt;br>
+                                      - Có thể xem tệp apk và jar&lt;br>
+                                      - Sửa lỗi trình xem văn bản thô&lt;br>
+                                      - thêm nữa....&lt;br>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color="#5299f2">&lt;b>v1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>17 tháng 1, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_4">    - Thẻ có thể Swip&lt;br>
+                                      - Hoàn thiện UI mới&lt;br>
+                                      - Tăng tốc thao tác sao chép/dán/giải nén/nén&lt;br>
+                                      - Thực thi thao tác trong thông báo&lt;br>
+                                      - Sửa lỗi cho trình xem zip và trình sửa văn bản thô&lt;br>
+                                      - Có khả năng gỡ bỏ ứng dụng hệ thống&lt;br>
+                                      - Cải thiện tìm kiếm tệp&lt;br>
+                                      - Ngôn ngữ Serb&lt;br>
+                                      - Thêm tùy chỉnh để vô hiệu hóa quay trở lại danh sách tiêu đề&lt;br>
+                                      - Thêm tùy chỉnh để vô hiệu hóa hình thu nhỏ hình tròn&lt;br>
+                                      - Thêm vào sở thích để lựa chọn giải nén lưu trữ và nén thư mục&lt;br>
+                                      - Thêm tùy chỉnh để nhớ đường dẫn&lt;br>
+                                      - thêm nữa....&lt;br>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#5299f2">&lt;b>v1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>08 tháng 3, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_5">- Bổ sung trình xem dữ liệu&lt;br>
+                                      - Bổ sung trình xem rar&lt;br>
+                                      - Cải thiện thông báo cho thao tác&lt;br>
+                                      - Đã sửa thoát tình trạng treo ngăn kéo và bố cục&lt;br>
+                                      - Biểu tượng hình tròn mới&lt;br>
+                                      - Đã giới thiệu khả năng swipe để làm mới&lt;br>
+                                      - Thêm nhận diện ổ usb cho một số thiết bị&lt;br>
+                                      - Màu thanh điều hướng cho các thiết bị lollipop&lt;br>
+                                      - Hiệu ứng gợn sóng cho các thiết bị lollipop&lt;br>
+                                      - Nhiều cải thiện cho UI&lt;br>
+                                      - Nhiều sửa lỗi&lt;br>
+                                      - thêm nữa....&lt;br>&lt;br></string>
+    <string name="changelog_version_6">&lt;font color="#5299f2">&lt;b>v2.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>25 tháng 5, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_6">- Thiết kệ lại UI thành material&lt;br>
+                                      - Đồ họa và biểu tượng bởi CookIcons.co&lt;br>
+                                      - Cải thiện hoạt họa cho trải nghiệm mượt hơn&lt;br>
+                                      - Thêm màu cơ bản, màu tối ưu và màu biểu tượng cho UI&lt;br>
+                                      - Thêm tiêu đề và các bộ chia trong danh sách&lt;br>
+                                      - Ngăn kéo giờ có thể đồng bộ hóa hình đại diện và hình hồ sơ G+&lt;br>
+                                      - Giao diện Light và Dark đã được cải thiện, xem đẹp hơn nhiều!&lt;br>
+                                      - Đã bỏ Trình quản lý Bookmark từ ngăn kéo, thay vào đó nhấn lâu vào Bookmark&lt;br>
+                                      - Bạn có thể kích hoạt ẩn thanh công cụ hoặc ẩn thanh ứng dụng khi bạn cuộn&lt;br>
+                                      - Sửa lỗi hiệu suất&lt;br>
+                                      - Sửa nhiều lỗi dịch thuật&lt;br>
+                                      - thêm nữa....&lt;br>&lt;br></string>
+    <string name="changelog_version_7">&lt;font color="#5299f2">&lt;b>v2.0.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>05 tháng 6, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_change_7">- Tùy chọn sắp xếp cho danh sách ứng dụng&lt;br>
+                                      - Cải thiện UI thẻ và tiêu đề ngăn kéo&lt;br>
+                                      - Giới thiệu ghi truy cập bộ nhớ ngoài lollipop&lt;br>&lt;br>
                                    </string>
     <string name="changelog_version_8">
         &lt;font color="#5299f2">&lt;b>v2.0.9&lt;/font>&lt;/b>&lt;br></string>
-    <string name="changelog_change_8">- Fixed fab for tablets&lt;br>
-                                      - Fixed Color settings&lt;br>
-                                      - New materialized fab&lt;br>&lt;br>
+    <string name="changelog_change_8">- Sửa thẻ cho máy tính bảng&lt;br>
+                                      - Sửa thiết lập màu&lt;br>
+                                      - Material mới fab&lt;br>&lt;br>
                                       &lt;font color="#5299f2">&lt;b>v2.0.8&lt;/font>&lt;/b>&lt;br>
-                                      - Fixed file sharing&lt;br>
-                                      - New faster method for file searching&lt;br>&lt;br>
+                                      - Sửa chia sẻ tệp&lt;br>
+                                      - Chế độ nhanh hơn cho tìm kiếm tệp tin&lt;br>&lt;br>
                                       &lt;font color="#5299f2">&lt;b>v2.0.7b&lt;/font>&lt;/b>&lt;br>
-                                      - Minor bugfixes&lt;br>&lt;br>
+                                      - Sửa những lỗi nhỏ&lt;br>&lt;br>
                                       &lt;font color="#5299f2">&lt;b>v2.0.7&lt;/font>&lt;/b>&lt;br>
-                                      - Minor fix for shortcuts&lt;br>
-                                      - Minor fix for root file deletion&lt;br>
-                                      - Improved Dialogs&lt;br>
-                                      (Now \'Hidden Items\' in menu will only be visible if \"Show hidden Files\" preference is enabled in
-                                                settings)- Sort options for apps list&lt;br>&lt;br>
+                                      - Sửa lỗi nhỏ cho lối tắt&lt;br>
+                                      - Sửa lỗi nhỏ cho xóa tệp root&lt;br>
+                                      - Cải thiện hộp thoại&lt;br>
+                                      (Bây giờ \'Ẩn mục\' ở menu sẽ được có thể thấy tùy chọn \"Ẩn tệp ẩn\" đã được kích hoạt trong
+                                                thiết lập)- Tùy chọn sắp xếp cho danh sách ứng dụng&lt;br>&lt;br>
                                    </string>
     <string name="changelog_version_9">
         &lt;font color="#5299f2">&lt;b>v3.0.0&lt;/font>&lt;/b>&lt;br></string>
-    <string name="changelog_change_9">- Implemented windows(smb) file sharing&lt;br>
-                                      - Faster and better file sharing&lt;br>
-                                      - Added list animations&lt;br>
-                                      - Number of files and folders are shown instead of used
-        space&lt;br>
-                                      - GridView can now adjust number of columns on its
-        own even on rotation(Experimental)&lt;br>
-                                      - Separate Properties button for each file in landscape
+    <string name="changelog_change_9">- Bổ sung cửa sổ chia sẻ tệp(smb)&lt;br>
+                                      - Chia sẻ tệp nhanh hơn và tốt hơn&lt;br>
+                                      - Thêm hoạt họa danh sách&lt;br>
+                                      - Số tệp và thư mục đả được thể hiện thay vì không gian
+        đã dùng&lt;br>
+                                      - Xem lưới có thể tùy chỉnh số lượng cột trên nó thậm chí
+        khi xoay màn hình(Thử nghiệm)&lt;br>
+                                      - Ngăn cách nút Thuộc tính cho mỗi tệp
         mode and for tablets&lt;br>
-                                      - New Fab&lt;br>
-                                      - Improved structure of drawer&lt;br>
-                                      - New shortcuts in drawer to load all media
-        files(Images,Audio,Videos,Apks,Docs)&lt;br>
-                                      - Updated Translations&lt;br>
-                                      - Many Bug Fixes&lt;br>&lt;br>
+                                      - Fab mới&lt;br>
+                                      - Cải thiện cấu trúc ngăn kéo&lt;br>
+                                      - Lối tắt mới trong ngăn kéo để nạp tất cả các tệp media
+        (Hình ảnh,Âm thanh,Video,Các tệp Apk,Tài liệu)&lt;br>
+                                      - Cập nhật bản dịch&lt;br>
+                                      - Sửa nhiều lỗi&lt;br>&lt;br>
                                      </string>
 </resources>

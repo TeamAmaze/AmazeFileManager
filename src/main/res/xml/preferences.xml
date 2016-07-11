@@ -182,6 +182,9 @@
                 <Preference
                     android:title="@string/romanian_translation_title"
                     android:summary="@string/romanian_translation_summary" />
+				<Preference
+                    android:title="@string/vietnamse_translation_title"
+                    android:summary="@string/vietnamese_translation_summary" />
 
                 </PreferenceScreen>
             <Preference
