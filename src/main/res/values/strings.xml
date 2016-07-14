@@ -282,9 +282,8 @@
     <string name="greek_translation_title">Греческий</string>
     <string name="dutch_translation_title">Dutch</string>
     <string name="romanian_translation_title">Romanian</string>
-	
-	
-
+	<string name="vietnamese_translation_title">Vietnamese</string>
+    
     <string name="zip_viewer">Zip Viewer</string>
     <string name="unin_system_apk">This is a system app, deleting it might lead to system un-stability.\nProceed?</string>
     <string name="warning">Warning</string>
