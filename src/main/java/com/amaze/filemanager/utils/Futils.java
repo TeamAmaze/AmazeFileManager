@@ -987,10 +987,10 @@ public void showPackageDialog(final File f,final MainActivity m){
         return item;
     }
 
-    public ArrayList<File> toFileArray(ArrayList<String> a) {
-        ArrayList<File> b = new ArrayList<File>();
+    public ArrayList<File> toFileArray(ArrayList<BaseFile> a) {
+        ArrayList<File> b = new ArrayList<>();
         for (int i = 0; i < a.size(); i++) {
-            b.add(new File(a.get(i)));
+            b.add(new File(a.get(i).getPath()));
         }
         return b;
     }

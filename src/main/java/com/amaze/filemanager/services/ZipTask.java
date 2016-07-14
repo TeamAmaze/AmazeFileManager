@@ -35,6 +35,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.Futils;
@@ -148,7 +149,7 @@ boolean foreground=true;
 
         protected Integer doInBackground(Bundle... p1) {
             int id = p1[0].getInt("id");
-            ArrayList<String> a = p1[0].getStringArrayList("files");
+            ArrayList<BaseFile> a = (ArrayList<BaseFile>) p1[0].getSerializable("files");
             name = p1[0].getString("name");
             new zip().execute(id, utils.toFileArray(a), name);
             // TODO: Implement this method

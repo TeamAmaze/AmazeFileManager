@@ -42,7 +42,7 @@ import java.util.List;
 public class FTPService extends Service implements Runnable{
 
     private static final String TAG = FTPService.class.getSimpleName();
-    private static int port = 2211;;
+    private static int port = 2211;
     // Service will (global) broadcast when server start/stop
     static public final String ACTION_STARTED = "com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STARTED";
     static public final String ACTION_STOPPED = "com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STOPPED";

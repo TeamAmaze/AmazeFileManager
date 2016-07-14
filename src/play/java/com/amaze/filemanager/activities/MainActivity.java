@@ -1994,7 +1994,8 @@ public class MainActivity extends BaseActivity implements
                 return false;
             }
         });
-        //searchViewEditText.setTextColor(Color.parseColor(BaseActivity.accentSkin));
+
+        searchViewEditText.setTextColor(getResources().getColor(android.R.color.black));
         searchViewEditText.setHintTextColor(Color.parseColor(BaseActivity.accentSkin));
     }
 

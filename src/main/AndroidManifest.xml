@@ -119,7 +119,7 @@
         <service
             android:name="com.amaze.filemanager.services.ftpservice.FTPService"
             android:enabled="true"
-            android:exported="false">
+            android:exported="true">
 
         </service>
         <receiver
