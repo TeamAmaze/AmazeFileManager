@@ -1797,6 +1797,7 @@ public class MainActivity extends BaseActivity implements
         aBoolean = Sp.getBoolean("view", true);
         currentTab = Sp.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
         skinStatusBar = (PreferenceUtils.getStatusColor((currentTab==1 ? skinTwo : skin)));
+        colourednavigation = Sp.getBoolean("colorednavigation", false);
     }
 
     void initialiseViews() {
@@ -1966,7 +1967,6 @@ public class MainActivity extends BaseActivity implements
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             if (!isDrawerLocked) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (Build.VERSION.SDK_INT >= 21) {
-            colourednavigation = Sp.getBoolean("colorednavigation", true);
 
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -1978,6 +1978,7 @@ public class MainActivity extends BaseActivity implements
                 window.setNavigationBarColor(skinStatusBar);
 
         }
+
         searchViewLayout = (RelativeLayout) findViewById(R.id.search_view);
         searchViewEditText = (AppCompatEditText) findViewById(R.id.search_edit_text);
         searchViewEditText.setOnKeyListener(new TextView.OnKeyListener() {

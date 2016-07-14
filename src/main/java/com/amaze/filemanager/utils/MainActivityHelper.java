@@ -145,9 +145,9 @@ public class MainActivityHelper {
                 SmbSearchDialog smbDialog=new SmbSearchDialog();
                 smbDialog.show(mainActivity.getFragmentManager(),"tab");
                 break;
-            case 3:
+            /*case 3:
                 mainActivity.bindDrive();
-                break;
+                break;*/
         }
     }
 

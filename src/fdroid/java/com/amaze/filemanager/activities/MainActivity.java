@@ -30,9 +30,11 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -90,8 +92,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.amaze.filemanager.IMyAidlInterface;
-import com.amaze.filemanager.Loadlistener;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.Tab;
@@ -184,7 +184,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     public int operation = -1;
     public ArrayList<BaseFile> oparrayList;
     public String oppathe, oppathe1;
-    IMyAidlInterface aidlInterface;
     MaterialDialog materialDialog;
     String newPath = null;
     boolean backPressedToExitOnce = false;
@@ -201,7 +200,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     CountDownTimer timer;
     IconUtils icons;
     TabHandler tabHandler;
-    RelativeLayout drawerHeaderParent;
+    public RelativeLayout drawerHeaderParent;
     static final int image_selector_request_code = 31;
     // Check for user interaction for Google+ api only once
     boolean mGoogleApiKey = false;
@@ -225,6 +224,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     private int[] searchCoords = new int[2];
     private View mFabBackground;
     private CoordinatorLayout mScreenLayout;
+
+    // the current visible tab, either 0 or 1
+    public static int currentTab;
 
     public static boolean isSearchViewEnabled = false;
 
@@ -260,7 +262,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         DataUtils.setHiddenfiles(history.readTable(DataUtils.HIDDEN));
         DataUtils.setGridfiles(grid.readTable(DataUtils.GRID));
         DataUtils.setListfiles(grid.readTable(DataUtils.LIST));
-
 
         util = new IconUtils(Sp, this);
         icons = new IconUtils(Sp, this);
@@ -403,7 +404,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         }
         //recents header color implementation
         if (Build.VERSION.SDK_INT >= 21) {
-            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
+                    ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
+                    Color.parseColor((currentTab==1 ? skinTwo : skin)));
             ((Activity) this).setTaskDescription(taskDescription);
         }
     }
@@ -932,7 +935,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
-                final MaterialDialog b = utils.showBasicDialog(mainActivity,fabskin,theme1,
+                final MaterialDialog b = utils.showBasicDialog(mainActivity,BaseActivity.accentSkin,theme1,
                         new String[]{getResources().getString(R.string.questionset),
                                 getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
                 b.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -1148,21 +1151,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
     boolean mbound = false;
 
-    public void bindDrive() {
-        Intent i = new Intent();
-        i.setClassName("com.amaze.filemanager.driveplugin", "com.amaze.filemanager.driveplugin.MainService");
-        try {
-            bindService((i), mConnection, Context.BIND_AUTO_CREATE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    void unbindDrive() {
-        if (mbound != false)
-            unbindService(mConnection);
-    }
-
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -1253,7 +1241,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         }
         DataUtils.clear();
 
-        unbindDrive();
+        //unbindDrive();
         if (grid != null)
             grid.end();
         if (history != null)
@@ -1388,13 +1376,11 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     }
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-
         if (requestCode == image_selector_request_code) {
             if (Sp != null && intent != null && intent.getData() != null) {
                 if (Build.VERSION.SDK_INT >= 19)
                     getContentResolver().takePersistableUriPermission(intent.getData(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 Sp.edit().putString("drawer_header_path", intent.getData().toString()).commit();
-                drawerHeaderView.setBackgroundDrawable(new BitmapDrawable(Sp.getString("drawer_header_path", null)));
             }
         } else if (requestCode == 3) {
             String p = Sp.getString("URI", null);
@@ -1607,8 +1593,11 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         hidemode = Sp.getInt("hidemode", 0);
         showHidden = Sp.getBoolean("showHidden", false);
-        skinStatusBar = (PreferenceUtils.getStatusColor(skin));
         aBoolean = Sp.getBoolean("view", true);
+        currentTab = Sp.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
+        skinStatusBar = (PreferenceUtils.getStatusColor((currentTab==1 ? skinTwo : skin)));
+
+        colourednavigation = Sp.getBoolean("colorednavigation", false);
     }
 
     void initialiseViews() {
@@ -1616,7 +1605,8 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
         mScreenLayout = (CoordinatorLayout) findViewById(R.id.main_frame);
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
-        buttonBarFrame.setBackgroundColor(Color.parseColor(skin));
+
+        //buttonBarFrame.setBackgroundColor(Color.parseColor(currentTab==1 ? skinTwo : skin));
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
@@ -1651,10 +1641,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         if (theme1 == 1) mDrawerLinear.setBackgroundColor(Color.parseColor("#303030"));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
+        //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-        drawerHeaderParent.setBackgroundColor(Color.parseColor(skin));
+        //drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
         if (findViewById(R.id.tab_frame) != null) {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, mDrawerLinear);
             mDrawerLayout.setScrimColor(Color.TRANSPARENT);
@@ -1748,7 +1738,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 adapter.toggleChecked(false);
             }
         });
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
+        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor((currentTab==1 ? skinTwo : skin))));
 
 
         // status bar0
@@ -1757,12 +1747,11 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         if (sdk == 20 || sdk == 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintColor(Color.parseColor(skin));
+            //tintManager.setStatusBarTintColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             if (!isDrawerLocked) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (Build.VERSION.SDK_INT >= 21) {
-            colourednavigation = Sp.getBoolean("colorednavigation", true);
 
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -1774,6 +1763,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 window.setNavigationBarColor(skinStatusBar);
 
         }
+
         searchViewLayout = (RelativeLayout) findViewById(R.id.search_view);
         searchViewEditText = (AppCompatEditText) findViewById(R.id.search_edit_text);
         searchViewEditText.setOnKeyListener(new TextView.OnKeyListener() {
@@ -1790,17 +1780,49 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 return false;
             }
         });
-        searchViewEditText.setTextColor(Color.parseColor(fabskin));
-        searchViewEditText.setHintTextColor(Color.parseColor(fabskin));
+
+        searchViewEditText.setTextColor(getResources().getColor(android.R.color.black));
+        searchViewEditText.setHintTextColor(Color.parseColor(BaseActivity.accentSkin));
+    }
+
+    /**
+     * Call this method when you need to update the MainActivity view components' colors based on
+     * update in the {@link MainActivity#currentTab}
+     * Warning - All the variables should be initialised before calling this method!
+     */
+    public void updateViews(ColorDrawable colorDrawable) {
+
+        // appbar view color
+        mainActivity.buttonBarFrame.setBackgroundColor(colorDrawable.getColor());
+        // action bar color
+        mainActivity.getSupportActionBar().setBackgroundDrawable(colorDrawable);
+        // drawer status bar I guess
+        mainActivity.mDrawerLayout.setStatusBarBackgroundColor(colorDrawable.getColor());
+        // drawer header background
+        mainActivity.drawerHeaderParent.setBackgroundColor(colorDrawable.getColor());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // for lollipop devices, the status bar color
+            mainActivity.getWindow().setStatusBarColor(colorDrawable.getColor());
+            if (mainActivity.colourednavigation)
+                mainActivity.getWindow().setNavigationBarColor(PreferenceUtils
+                        .getStatusColor(colorDrawable.getColor()));
+        } else if (Build.VERSION.SDK_INT == 20 || Build.VERSION.SDK_INT == 19) {
+
+            // for kitkat devices, the status bar color
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintColor(colorDrawable.getColor());
+        }
     }
 
     void initialiseFab() {
         String folder_skin = PreferenceUtils.getFolderColorString(Sp);
-        int fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
+        int fabSkinPressed = PreferenceUtils.getStatusColor(BaseActivity.accentSkin);
         int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
         floatingActionButton = (FloatingActionMenu) findViewById(R.id.menu);
-        floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
+        floatingActionButton.setMenuButtonColorNormal(Color.parseColor(BaseActivity.accentSkin));
         floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
 
         //if (theme1 == 1) floatingActionButton.setMen
@@ -2162,7 +2184,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
     public void renameBookmark(final String title, final String path) {
         if (DataUtils.containsBooks(new String[]{title,path}) != -1 || DataUtils.containsAccounts(new String[]{title,path}) != -1) {
-            RenameBookmark renameBookmark=RenameBookmark.getInstance(title,path,fabskin,theme1);
+            RenameBookmark renameBookmark=RenameBookmark.getInstance(title,path,BaseActivity.accentSkin,theme1);
             if(renameBookmark!=null){
                 renameBookmark.show(getFragmentManager(),"renamedialog");
             }
@@ -2268,61 +2290,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             mDrawerList.animate().translationY(toolbar.getHeight());
         else mDrawerList.setTranslationY(0);
     }
-
-    Loadlistener loadlistener = new Loadlistener.Stub() {
-        @Override
-        public void load(final List<Layoutelements> layoutelements, String driveId) throws RemoteException {
-            if (layoutelements == null && DataUtils.containsAccounts(driveId) == -1) {
-                DataUtils.addAcc(new String[]{driveId, driveId});
-                grid.addPath(driveId, driveId, DataUtils.DRIVE, 1);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        refreshDrawer();
-                    }
-                });
-                unbindDrive();
-
-            }
-        }
-
-        @Override
-        public void error(final String message, final int mode) throws RemoteException {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(mainActivity, "Error " + message + mode, Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    };
-    ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            aidlInterface = (IMyAidlInterface.Stub.asInterface(service));
-            mbound = true;
-            try {
-                aidlInterface.registerCallback(loadlistener);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            try {
-                aidlInterface.create();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mbound = false;
-            Log.d("DriveConnection", "DisConnected");
-            aidlInterface = null;
-        }
-    };
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
