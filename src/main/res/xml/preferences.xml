@@ -168,6 +168,9 @@
                     android:title="@string/portuguese_translation_title"
                     android:summary="@string/portuguese_translation_summary" />
                 <Preference
+                    android:title="@string/brazilian_portuguese_translation_title"
+                    android:summary="@string/brazilian_portuguese_translation_summary" />
+                <Preference
                     android:title="@string/polish_translation_title"
                     android:summary="@string/polish_translation_summary" />
                 <Preference
@@ -182,7 +185,7 @@
                 <Preference
                     android:title="@string/romanian_translation_title"
                     android:summary="@string/romanian_translation_summary" />
-				<Preference
+                <Preference
                     android:title="@string/vietnamese_translation_title"
                     android:summary="@string/vietnamese_translation_summary" />
 
