@@ -109,7 +109,7 @@
     <string name="theme">Motyw</string>
     <string name="skin">Skórka</string>
     <string name="random">Losowa skórka</string>
-    <string name="random_summary">Ustawia losowy kolor podstawowy przy uruchomieniu</string>
+    <string name="random_summary">Ustawia losowy kolor główny przy uruchomieniu</string>
     <string name="colorize">Koloruj ikony</string>
     <string name="colorize_summary">Ustawia statyczny kolor ikon. Nie nadpisuje preferowanego koloru ikon katalogów.</string>
     <string name="back">Wstecz</string>
