@@ -23,6 +23,16 @@ Amaze File Manager source code.
 ###Note
 - Basic r/w operations might not work on external memory on Kitkat devices. Don't use cut/paste from or to external SD Card. You might lose your files.
 
+Contributors
+-----
+Make sure to write your name and email id in format 
+Name<email>
+In the license declaration above every file you make change to. You won't be able to claim the license for changes made by you unless you do that.
+
+Also, I'd like to recommend reading 
+https://source.android.com/source/code-style.html
+Before making changes in code. Existing code itself might not follow this, but you don't have to do same mistakes we did a year ago! 
+
 This app is still in beta stage, hence, you might face some bugs, lack of features.
 
 ###Join [G+ community](https://plus.google.com/communities/113997576965363268101) to discuss and help in the improvment of app
