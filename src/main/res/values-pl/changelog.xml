@@ -20,22 +20,22 @@
 <resources
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
-    <string name="changelog_version_1">&lt;font color=\"#524ef8\">&lt;b>1.0&lt;/font>&lt;/b>&lt;i>&lt;font color=\"#5299f2\">&lt;br>11 Lis, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_1">&lt;font color="#524ef8">&lt;b>1.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>11 Lis, 2014&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_1">- Pierwsze wydanie&lt;br>&lt;br></string>
-    <string name="changelog_version_2">&lt;font color=\"#524ef8\">&lt;b>1.1&lt;/font>&lt;/b>&lt;i>&lt;font color=\"#5299f2\">&lt;br>04 Gru, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_2">&lt;font color="#524ef8">&lt;b>1.1&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>04 Gru, 2014&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_2">- Naprawiono kopiuj/wklej&lt;br>
                                       - Naprawiono edytor tekstu dla root\'a&lt;br>
                                       - Dodano języki niemiecki, francuski, włoski, rosyjski i chiński&lt;br>
                                       - Dodano zakładki do panelu nawigacji&lt;br>
                                       - Dodano okna dialogowe w stylu Material&lt;br>
                                       - więcej...&lt;br>&lt;br></string>
-    <string name="changelog_version_3">&lt;font color=\"#524ef8\">&lt;b>1.3&lt;/font>&lt;/b>&lt;i>&lt;font color=\"#5299f2\">&lt;br>13 Gru, 2014&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_3">&lt;font color="#524ef8">&lt;b>1.3&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>13 Gru, 2014&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_3">- Dodano hiszpański&lt;br>
                                       - Różne poprawki przeglądarki archiwów&lt;br>
                                       - Możliwość przeglądu plików apk i jar&lt;br>
                                       - Różne poprawki edytora tekstu&lt;br>
                                       - więcej...&lt;br>&lt;br></string>
-    <string name="changelog_version_4">&lt;font color=\"#524ef8\">&lt;b>1.4&lt;/font>&lt;/b>&lt;i>&lt;font color=\"#5299f2\">&lt;br>17 Sty, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_4">&lt;font color="#524ef8">&lt;b>1.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>17 Sty, 2015&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_4">    - Przesuwalne karty&lt;br>
                                       - W pełni przebudowany interfejs&lt;br>
                                       - Szybsze operacje kopiowania/wklejania/wypakowywania/kompresji&lt;br>
@@ -49,7 +49,7 @@
                                       - Dodano opcję do wybrania folderu wypakowywania i pakowania&lt;br>
                                       - Dodano opcję pamiętania ścieżek&lt;br>
                                       - więcej...&lt;br>&lt;br></string>
-    <string name="changelog_version_5">&lt;font color=\"#5299f2\">&lt;b>1.5&lt;/font>&lt;/b>&lt;i>&lt;font color=\"#5299f2\">&lt;br>08 Mar, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_5">&lt;font color="#5299f2">&lt;b>1.5&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>08 Mar, 2015&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_5">- Zaimplementowano przeglądarkę bazy danych&lt;br>
 - Zaimplementowano aplikację do wyświetlania archiwów rar&lt;br>
 - Ulepszono powiadomienia dla operacji&lt;br>
@@ -62,7 +62,7 @@
 - Wiele ulepszeń do interfejsu&lt;br>
 - Wiele poprawek błędów&lt;br>
 - więcej...&lt;br>&lt;br></string>
-    <string name="changelog_version_6">&lt;font color=\"#5299f2\">&lt;b>2.0&lt;/font>&lt;/b>&lt;i>&lt;font color=\"#5299f2\">&lt;br>25 Maj, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_6">&lt;font color="#5299f2">&lt;b>2.0&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>25 Maj, 2015&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_6">- Przeprojektowano interfejs zgodnie z wytycznymi Material Design&lt;br>
 - Nowe ikony i grafiki zrobione przez CookIcons.co&lt;br>
 - Ulepszono płynność animacji&lt;br>
@@ -75,28 +75,28 @@
 - Wiele poprawek błędów i wydajności.&lt;br>
 - Wiele poprawek tłumaczeń&lt;br>
 - więcej...&lt;br>&lt;br></string>
-    <string name="changelog_version_7">&lt;font color=\"#5299f2\">&lt;b>2.0.4&lt;/font>&lt;/b>&lt;i>&lt;font color=\"#5299f2\">&lt;br>5 Cze, 2015&lt;/i>&lt;/font>&lt;br></string>
+    <string name="changelog_version_7">&lt;font color="#5299f2">&lt;b>2.0.4&lt;/font>&lt;/b>&lt;i>&lt;font color="#5299f2">&lt;br>5 Cze, 2015&lt;/i>&lt;/font>&lt;br></string>
     <string name="changelog_change_7">- Opcje sortowania dla listy aplikacji&lt;br>
 - Ulepszono interfejs kart i nagłówek szuflady.&lt;br>
 - Wprowadzono dostęp do zapisu na zewnętrznej pamięci dla urządzeń z Lollipopem&lt;br>&lt;br>
                                    </string>
     <string name="changelog_version_8">
-&lt;font color=\"#5299f2\">&lt;b>2.0.9&lt;/font>&lt;/b>&lt;br></string>
+&lt;font color="#5299f2">&lt;b>2.0.9&lt;/font>&lt;/b>&lt;br></string>
     <string name="changelog_change_8">- Naprawiono karty dla tabletów&lt;br>
 - Naprawiono ustawienia koloru&lt;br>
 - Nowe karty w stylu Material Design&lt;br>&lt;br>
-&lt;font color=\"#5299f2\">&lt;b>2.0.8&lt;/font>&lt;/b>&lt;br>
+&lt;font color="#5299f2">&lt;b>2.0.8&lt;/font>&lt;/b>&lt;br>
 - Naprawiono udostępnianie plików&lt;br>
 - Nowa szybsza metoda wyszukiwania plików&lt;br>&lt;br>
-&lt;font color=\"#5299f2\">&lt;b>2.0.7b&lt;/font>&lt;/b>&lt;br>
+&lt;font color="#5299f2">&lt;b>2.0.7b&lt;/font>&lt;/b>&lt;br>
 - Drobne poprawki błędów&lt;br>&lt;br>
-&lt;font color=\"#5299f2\">&lt;b>2.0.7&lt;/font>&lt;/b>&lt;br>
+&lt;font color="#5299f2">&lt;b>2.0.7&lt;/font>&lt;/b>&lt;br>
 - Drobe poprawki błędów dla skrótów&lt;br>
 - Drobne poprawki błędów dla usunięcia pliku root&lt;br>
 - Ulepszono okna dialogowe&lt;br>
 (Teraz \'Ukryte elementy\' w menu będą widoczne tylko, jeśli opcja \'Pokaż ukryte pliki\' jest włączona w ustawieniach)- Opcje sortowania dla list aplikacji&lt;br>&lt;br>     </string>
     <string name="changelog_version_9">
-&lt;font color=\"#5299f2\">&lt;b>3.0.0&lt;/font>&lt;/b>&lt;br></string>
+&lt;font color="#5299f2">&lt;b>3.0.0&lt;/font>&lt;/b>&lt;br></string>
     <string name="changelog_change_9">- Zaimplementowano windowsowe udostępnianie plików (smb)&lt;br>
 - Szybsze i lepsze udostępnianie plików&lt;br>
 - Dodano listę animacji&lt;br>
