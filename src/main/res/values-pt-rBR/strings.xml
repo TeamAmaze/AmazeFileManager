@@ -60,7 +60,7 @@
     <string name="save">Salvar</string>
     <string name="renameerror">Nome não alterado</string>
     <string name="renamed">Nome alterado com sucesso</string>
-    <string name="bookmarksadded">Favoritos adicionados</string>
+    <string name="bookmarksadded">Favorito adicionado</string>
     <string name="fileexist">Já existe um arquivo com este nome </string>
     <string name="filecreated">Arquivo criado</string>
     <string name="searchpath">Caminho de pesquisa</string>
@@ -100,7 +100,7 @@
     <string name="no">Não</string>
     <string name="confirm">Confirmar</string>
     <string name="deleting">Excluindo</string>
-    <string name="questiondelete">Deseja realmente excluir os arquivos a seguir?</string>
+    <string name="questiondelete">Deseja excluir este(s) arquivo(s)?</string>
     <string name="questionset">Deseja definir o caminho atual como pasta inicial desta aba?</string>
     <string name="viewmode">Modo de exibição</string>
     <string name="uimode">Modo de interface</string>
@@ -260,7 +260,7 @@
     <string name="xda_title">XDA</string>
     <string name="xda_summary">Controle de qualidade, ajuda e resolução de problemas</string>
     <string name="invalid_dir">Pasta inválida</string>
-    <string name="circularimages">Usar ícones circulares para imagens e vídeos</string>
+    <string name="circularimages">Utiliza ícones circulares para imagens e vídeos</string>
     <string name="circularicons">Usar ícones circulares</string>
     <string name="back_title">Botão de navegação</string>
     <string name="back_summary">Coloca um botão de navegação no topo da lista</string>
@@ -289,9 +289,9 @@
     <string name="donate">Doação</string>
     <string name="archive_preferences">Preferências do arquivador</string>
     <string name="archive_extract_folder">Pasta de extração de arquivos</string>
-    <string name="zip_create_folder">Zip Create Folder</string>
+    <string name="zip_create_folder">Pasta de criação de arquivos Zip</string>
     <string name="archive_summary">Os arquivos do pacote serão extraídos nesta pasta. A pasta padrão é a de localização do arquivo</string>
-    <string name="zip_summary">Os novos arquivos zip serão criados nesta pasta. A pasta padrão e a de localização do arquivo</string>
+    <string name="zip_summary">Novos arquivos zip serão criados nesta pasta. A pasta padrão é a de localização do arquivo</string>
     <string name="openas">Abrir como</string>
     <string name="text">Texto</string>
     <string name="audio">Áudio</string>
@@ -396,12 +396,14 @@
     <string name="regular_expression">Expressão regular</string>
     <string name="regular_expression_summary">A pesquisa é feita usando expressão regular no estilo BASH</string>
     <string name="match_content">Corresponder com o conteúdo</string>
-    <string name="match_content_summary">Se estiver marcado, a expressão regular será comparada com todo o nome do arquivo, irá procurar pela ocorrência de outra forma.</string>
+    <string name="match_content_summary">Se estiver marcado, a expressão regular será comparada com todo o nome do arquivo, procurando pela ocorrência de outra forma.</string>
     <string name="start_ftp">Iniciar</string>
     <string name="stop_ftp">Parar</string>
     <string name="ftp_status_running">Em execução</string>
     <string name="ftp_status_not_running">Parado</string>
     <string name="ftp_no_wifi">Confirme se está conectado com Wi-Fi</string>
+    <string name="domain">Domínio</string>
+    <string name="invalid">Inválido %s</string>
     <string name="ftp_notif_starting">O servidor FTP está iniciando</string>
     <string name="ftp_notif_title">Servidor FTP Amaze em execução</string>
     <string name="ftp_notif_text">em %s</string>
