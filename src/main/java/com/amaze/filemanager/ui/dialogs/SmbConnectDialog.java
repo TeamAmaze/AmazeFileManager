@@ -181,6 +181,7 @@ public class SmbConnectDialog extends DialogFragment {
                     String inf = URLDecoder.decode(userinfo, "UTF-8");
                     int domainDelim = !inf.contains(";") ? 0 : inf.indexOf(';');
                     domainp = inf.substring(0,domainDelim);
+                    if(domainp!=null && domainp.length()>0)
                     inf = inf.substring(domainDelim+1);
                     userp = inf.substring(0, inf.indexOf(":"));
                     passp = inf.substring(inf.indexOf(":") + 1, inf.length());
@@ -253,7 +254,6 @@ public class SmbConnectDialog extends DialogFragment {
                 else {
                     String useru = user.getText().toString();
                     String passp = pass.getText().toString();
-
                     smbFile = connectingWithSmbServer(new String[]{ipa, useru, passp,domaind}, false);
                 }
                 if (smbFile == null) return;
@@ -286,7 +286,7 @@ public class SmbConnectDialog extends DialogFragment {
     public SmbFile connectingWithSmbServer(String[] auth, boolean anonym) {
         try {
             String yourPeerIP = auth[0], domain = auth[3];
-            String path = "smb://"+(android.text.TextUtils.isEmpty(domain) ? "" :( URLEncoder.encode(domain + ";","UTF-8")) )+ (anonym ? "" : (URLEncoder.encode(auth[1] + ":" + auth[2], "UTF-8") + "@")) + yourPeerIP + "/";
+            String path = "smb://"+ (anonym ? "" : (URLEncoder.encode(auth[1] + ":" + auth[2], "UTF-8") + "@")) + yourPeerIP + "/";
             SmbFile smbFile = new SmbFile(path);
             return smbFile;
         } catch (Exception e) {
