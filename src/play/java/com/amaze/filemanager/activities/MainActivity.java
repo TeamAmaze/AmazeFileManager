@@ -2685,7 +2685,7 @@ public class MainActivity extends BaseActivity implements
         try {
             String[] s=new String[]{name,path};
             if (!edit) {
-                if ((DataUtils.containsServer(s)) == -1) {
+                if ((DataUtils.containsServer(path)) == -1) {
                     DataUtils.addServer(new String[]{name, path});
                     refreshDrawer();
                     grid.addPath(name, path, DataUtils.SMB, 1);

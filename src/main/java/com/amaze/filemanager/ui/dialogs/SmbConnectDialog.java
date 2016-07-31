@@ -286,7 +286,7 @@ public class SmbConnectDialog extends DialogFragment {
     public SmbFile connectingWithSmbServer(String[] auth, boolean anonym) {
         try {
             String yourPeerIP = auth[0], domain = auth[3];
-            String path = "smb://"+ (anonym ? "" : (URLEncoder.encode(auth[1] + ":" + auth[2], "UTF-8") + "@")) + yourPeerIP + "/";
+            String path = "smb://"+(android.text.TextUtils.isEmpty(domain) ? "" :( URLEncoder.encode(domain + ";","UTF-8")) )+ (anonym ? "" : (URLEncoder.encode(auth[1] + ":" + auth[2], "UTF-8") + "@")) + yourPeerIP + "/";
             SmbFile smbFile = new SmbFile(path);
             return smbFile;
         } catch (Exception e) {

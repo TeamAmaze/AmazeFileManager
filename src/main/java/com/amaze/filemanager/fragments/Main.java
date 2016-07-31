@@ -1199,7 +1199,10 @@ public class Main extends android.support.v4.app.Fragment {
                 MAIN_ACTIVITY.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        MAIN_ACTIVITY.showSMBDialog("", smbPath, true);
+                        int i=-1;
+                        if((i=DataUtils.containsServer(smbPath))!=-1){
+                            MAIN_ACTIVITY.showSMBDialog(DataUtils.getServers().get(i)[0], smbPath, true);
+                        }
                     }
                 });
             } catch (Exception e) {
