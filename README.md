@@ -5,9 +5,8 @@
 [<img alt="Get it on AFH" height="80" width="207" src="https://www.androidfilehost.com/images/afh.png">](https://www.androidfilehost.com/?w=files&flid=73967)
 
 
-Amaze File Manager source code.
-
-###Overview:
+Overview
+---
 - Open Source, light and smooth
 - Based on Material Design guidelines
 - Basic features like cut, copy, delete, compress, extract etc. easily accessible
@@ -18,28 +17,45 @@ Amaze File Manager source code.
 - Quickly access history, access bookmarks or search for any file
 - Root explorer for advanced users
 - All features freely available without any ads
-- and the list goes on...
+- lots more...
 
-###Note
-- Basic r/w operations might not work on external memory on Kitkat devices. Don't use cut/paste from or to external SD Card. You might lose your files.
+Warning
+---
+
+Basic r/w operations might not work on external memory on Kitkat devices. Don't use cut/paste from or to external SD Card. You might lose your files.
+
+    You are using an open source project!
+        
+    We are not responsible for stealing nudes, dead SD cards,
+    thermonuclear war, or you getting fired because the files got wiped. Please
+    do some research if you have any concerns about features included in this app
+    before installing it! YOU are choosing to install this application, and if
+    you point the finger at us for messing up your files, We will laugh at you. 
+        
+    A lot.
 
 Contributors
 -----
-Make sure to write your name and email id in format 
-Name<email>
-In the license declaration above every file you make change to. You won't be able to claim the license for changes made by you unless you do that.
+Make sure to write your name and email id in format `Name<email>` in the license declaration above every file you make change to. 
 
-Also, I'd like to recommend reading 
-https://source.android.com/source/code-style.html
-Before making changes in code. Existing code itself might not follow this, but you don't have to do same mistakes we did a year ago! 
+You won't be able to claim the license for changes made by you unless you do that.
 
-This app is still in beta stage, hence, you might face some bugs, lack of features.
+Also, take a look at [this guide](https://source.android.com/source/code-style.html) before making changes in code. 
 
-###Join [G+ community](https://plus.google.com/communities/113997576965363268101) to discuss and help in the improvment of app
+Existing code itself might not follow this, but you don't have to do same mistakes we did a year ago! 
 
-###[XDA](http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314)
+Translators
+----
+Want to help translate Amaze to your language? Head over to [this link](https://www.transifex.com/amaze/amaze-file-manager-1/).
 
-###Team:
+Social
+---
+Join [G+ community](https://plus.google.com/communities/113997576965363268101) for discussions
+
+Head over to our XDA thread [here](http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314)
+
+Authors
+---
 - Arpit Khurana
 - Vishal Nehra
 
