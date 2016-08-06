@@ -26,7 +26,7 @@ Basic r/w operations might not work on external memory on Kitkat devices. Don't 
 
     You are using an open source project!
         
-    We are not responsible for stealing nudes, dead SD cards,
+    We are not responsible for stolen passwords, dead SD cards,
     thermonuclear war, or you getting fired because the files got wiped. Please
     do some research if you have any concerns about features included in this app
     before installing it! YOU are choosing to install this application, and if
