@@ -19,11 +19,12 @@
 
 package com.amaze.filemanager.activities;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -36,6 +37,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -51,16 +53,16 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.MenuCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.SearchView;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -71,12 +73,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -102,9 +107,10 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
-import com.amaze.filemanager.fragments.SearchAsyncHelper;
+import com.amaze.filemanager.fragments.FTPServerFragment;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
+import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
@@ -154,8 +160,8 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,OnRequestPermissionsResultCallback,
-        SmbConnectionListener,DataChangeListener,BookmarkCallback,
+        GoogleApiClient.OnConnectionFailedListener, OnRequestPermissionsResultCallback,
+        SmbConnectionListener, DataChangeListener, BookmarkCallback,
         SearchAsyncHelper.HelperCallbacks {
 
     final Pattern DIR_SEPARATOR = Pattern.compile("/");
@@ -165,12 +171,12 @@ public class MainActivity extends BaseActivity implements
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
     public ScrimInsetsRelativeLayout mDrawerLinear;
-    public String  path = "", launchPath;
+    public String path = "", launchPath;
     public int theme;
     public ArrayList<BaseFile> COPY_PATH = null, MOVE_PATH = null;
     public FrameLayout frameLayout;
     public boolean mReturnIntent = false;
-    public boolean  aBoolean, openzip = false;
+    public boolean aBoolean, openzip = false;
     public boolean mRingtonePickerIntent = false, colourednavigation = false;
     public Toolbar toolbar;
     public int skinStatusBar;
@@ -215,9 +221,9 @@ public class MainActivity extends BaseActivity implements
     CountDownTimer timer;
     IconUtils icons;
     TabHandler tabHandler;
-    RelativeLayout drawerHeaderParent;
+    public RelativeLayout drawerHeaderParent;
     static final int image_selector_request_code = 31;
-    // Check for user interaction for google+ api only once
+    // Check for user interaction for Google+ api only once
     boolean mGoogleApiKey = false;
     /* A flag indicating that a PendingIntent is in progress and prevents
    * us from starting further intents.
@@ -234,6 +240,16 @@ public class MainActivity extends BaseActivity implements
     public Main mainFragment;
 
     private int TOOLBAR_START_INSET;
+    private RelativeLayout searchViewLayout;
+    private AppCompatEditText searchViewEditText;
+    private int[] searchCoords = new int[2];
+    private View mFabBackground;
+    private CoordinatorLayout mScreenLayout;
+
+    // the current visible tab, either 0 or 1
+    public static int currentTab;
+
+    public static boolean isSearchViewEnabled = false;
 
     /**
      * Called when the activity is first created.
@@ -290,7 +306,7 @@ public class MainActivity extends BaseActivity implements
 
             @Override
             public void onFinish() {
-                utils.crossfadeInverse(buttons,pathbar);
+                utils.crossfadeInverse(buttons, pathbar);
             }
         };
         path = getIntent().getStringExtra("path");
@@ -325,6 +341,21 @@ public class MainActivity extends BaseActivity implements
 
         }
         updateDrawer();
+
+        // setting window background color instead of each item, in order to reduce pixel overdraw
+        if (theme1 == 0) {
+            /*if(Main.IS_LIST) {
+
+                getWindow().setBackgroundDrawableResource(android.R.color.white);
+            } else {
+
+                getWindow().setBackgroundDrawableResource(R.color.grid_background_light);
+            }*/
+            getWindow().setBackgroundDrawableResource(android.R.color.white);
+        } else {
+            getWindow().setBackgroundDrawableResource(R.color.holo_dark_background);
+        }
+
         if (savedInstanceState == null) {
 
             if (openprocesses) {
@@ -338,17 +369,16 @@ public class MainActivity extends BaseActivity implements
                 transaction.commit();
                 supportInvalidateOptionsMenu();
             } else {
-                if (path != null && path.length() > 0){
-                    HFile file = new HFile(HFile.UNKNOWN,path);
+                if (path != null && path.length() > 0) {
+                    HFile file = new HFile(HFile.UNKNOWN, path);
                     file.generateMode(this);
-                    if(file.isDirectory())
-                    goToMain(path);
-                    else{
+                    if (file.isDirectory())
+                        goToMain(path);
+                    else {
                         goToMain("");
                         utils.openFile(new File(path), this);
                     }
-                }
-                else {
+                } else {
                     goToMain("");
 
                 }
@@ -405,7 +435,9 @@ public class MainActivity extends BaseActivity implements
         }
         //recents header color implementation
         if (Build.VERSION.SDK_INT >= 21) {
-            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze", ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(), Color.parseColor(skin));
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
+                    ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
+                    Color.parseColor((currentTab == 1 ? skinTwo : skin)));
             ((Activity) this).setTaskDescription(taskDescription);
         }
     }
@@ -471,13 +503,13 @@ public class MainActivity extends BaseActivity implements
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkStoragePermission())
             rv.clear();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-        String strings[] = FileUtil.getExtSdCardPathsForActivity(this);
-        for (String s : strings) {
-            File f = new File(s);
-            if (!rv.contains(s) && utils.canListFiles(f))
-                rv.add(s);
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            String strings[] = FileUtil.getExtSdCardPathsForActivity(this);
+            for (String s : strings) {
+                File f = new File(s);
+                if (!rv.contains(s) && utils.canListFiles(f))
+                    rv.add(s);
+            }
         }
         rootmode = Sp.getBoolean("rootmode", false);
         if (rootmode)
@@ -503,7 +535,11 @@ public class MainActivity extends BaseActivity implements
 
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
             String name = fragment.getClass().getName();
-            if (name.contains("TabFragment")) {
+            if (searchViewLayout.isShown()) {
+                // hide search view if visible, with an animation
+                hideSearchView();
+
+            } else if (name.contains("TabFragment")) {
                 if (floatingActionButton.isOpened()) {
                     floatingActionButton.close(true);
                     utils.revealShow(findViewById(R.id.fab_bg), false);
@@ -710,7 +746,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void selectItem(final int i) {
-        ArrayList<Item> list=DataUtils.getList();
+        ArrayList<Item> list = DataUtils.getList();
         if (!list.get(i).isSection())
             if ((select == null || select >= list.size())) {
 
@@ -750,7 +786,7 @@ public class MainActivity extends BaseActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.activity_extra, menu);
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        /*SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
@@ -759,18 +795,18 @@ public class MainActivity extends BaseActivity implements
         MenuItemCompat.setOnActionExpandListener(search, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                /* Stretching the SearchView across width of the Toolbar */
+                *//* Stretching the SearchView across width of the Toolbar *//*
                 toolbar.setContentInsetsRelative(0, 0);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                /* Restoring */
+                *//* Restoring *//*
                 toolbar.setContentInsetsRelative(TOOLBAR_START_INSET, 0);
                 return true;
             }
-        });
+        });*/
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -825,7 +861,8 @@ public class MainActivity extends BaseActivity implements
             menu.findItem(R.id.extract).setVisible(false);
             invalidatePasteButton(menu.findItem(R.id.paste));
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
-        } else if (f.contains("AppsList") || f.contains("ProcessViewer")) {
+        } else if (f.contains("AppsList") || f.contains("ProcessViewer") ||
+                f.contains(FTPServerFragment.class.getName())) {
             appBarLayout.setExpanded(true);
             menu.findItem(R.id.sethome).setVisible(false);
             if (indicator_layout != null) indicator_layout.setVisibility(View.GONE);
@@ -908,28 +945,30 @@ public class MainActivity extends BaseActivity implements
         // Handle action buttons
         Main ma = null;
         try {
-            TabFragment tabFragment=getFragment();
-            if(tabFragment!=null)
-            ma = (Main)tabFragment .getTab();
+            TabFragment tabFragment = getFragment();
+            if (tabFragment != null)
+                ma = (Main) tabFragment.getTab();
         } catch (Exception e) {
         }
         switch (item.getItemId()) {
             case R.id.home:
-                if(ma!=null)
-                ma.home();
+                if (ma != null)
+                    ma.home();
                 break;
             case R.id.history:
-                if(ma!=null)
-                utils.showHistoryDialog(ma);
+                if (ma != null)
+                    utils.showHistoryDialog(ma);
                 break;
             case R.id.sethome:
-                if(ma==null)return super.onOptionsItemSelected(item);
+                if (ma == null) return super.onOptionsItemSelected(item);
                 final Main main = ma;
                 if (main.openMode != 0 && main.openMode != 3) {
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
-                final MaterialDialog b = utils.showBasicDialog(mainActivity,fabskin,theme1, new String[]{getResources().getString(R.string.questionset), getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
+                final MaterialDialog b = utils.showBasicDialog(mainActivity, BaseActivity.accentSkin, theme1,
+                        new String[]{getResources().getString(R.string.questionset),
+                                getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
                 b.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -951,11 +990,11 @@ public class MainActivity extends BaseActivity implements
 
                 break;
             case R.id.sortby:
-                if(ma!=null)
+                if (ma != null)
                     utils.showSortDialog(ma);
                 break;
             case R.id.dsort:
-                if(ma==null) return super.onOptionsItemSelected(item);
+                if (ma == null) return super.onOptionsItemSelected(item);
                 String[] sort = getResources().getStringArray(R.array.directorysortmode);
                 MaterialDialog.Builder a = new MaterialDialog.Builder(mainActivity);
                 if (theme == 1) a.theme(Theme.DARK);
@@ -980,12 +1019,12 @@ public class MainActivity extends BaseActivity implements
                         DataUtils.listfiles.remove(ma.CURRENT_PATH);
                         grid.removePath(ma.CURRENT_PATH, DataUtils.LIST);
                     }
-                    grid.addPath(null, ma.CURRENT_PATH,DataUtils. GRID, 0);
+                    grid.addPath(null, ma.CURRENT_PATH, DataUtils.GRID, 0);
                     DataUtils.gridfiles.add(ma.CURRENT_PATH);
                 } else {
                     if (DataUtils.gridfiles.contains(ma.CURRENT_PATH)) {
                         DataUtils.gridfiles.remove(ma.CURRENT_PATH);
-                        grid.removePath(ma.CURRENT_PATH,DataUtils. GRID);
+                        grid.removePath(ma.CURRENT_PATH, DataUtils.GRID);
                     }
                     grid.addPath(null, ma.CURRENT_PATH, DataUtils.LIST, 0);
                     DataUtils.listfiles.add(ma.CURRENT_PATH);
@@ -998,11 +1037,11 @@ public class MainActivity extends BaseActivity implements
                 ArrayList<BaseFile> arrayList = new ArrayList<>();
                 if (COPY_PATH != null) {
                     arrayList = COPY_PATH;
-                    new CopyFileCheck(ma, path, false,mainActivity,rootmode).executeOnExecutor(AsyncTask
+                    new CopyFileCheck(ma, path, false, mainActivity, rootmode).executeOnExecutor(AsyncTask
                             .THREAD_POOL_EXECUTOR, arrayList);
                 } else if (MOVE_PATH != null) {
                     arrayList = MOVE_PATH;
-                    new CopyFileCheck(ma, path, true,mainActivity,rootmode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                    new CopyFileCheck(ma, path, true, mainActivity, rootmode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
                             arrayList);
                 }
                 COPY_PATH = null;
@@ -1015,8 +1054,112 @@ public class MainActivity extends BaseActivity implements
                 if (fragment1.getClass().getName().contains("ZipViewer"))
                     mainActivityHelper.extractFile(((ZipViewer) fragment1).f);
                 break;
+            case R.id.search:
+                View searchItem = toolbar.findViewById(R.id.search);
+                searchViewEditText.setText("");
+                searchItem.getLocationOnScreen(searchCoords);
+                revealSearchView();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * show search view with a circular reveal animation
+     */
+    void revealSearchView() {
+
+        final int START_RADIUS = 16;
+        int endRadius = Math.max(toolbar.getWidth(), toolbar.getHeight());
+
+        Animator animator;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
+                    searchCoords[0] + 32, searchCoords[1] - 16, START_RADIUS, endRadius);
+        } else {
+            // TODO:ViewAnimationUtils.createCircularReveal
+            animator = new ObjectAnimator().ofFloat(searchViewLayout, "alpha", 0f, 1f);
+        }
+
+        utils.revealShow(mFabBackground, true);
+
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.setDuration(600);
+        searchViewLayout.setVisibility(View.VISIBLE);
+        animator.start();
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+                searchViewEditText.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchViewEditText, InputMethodManager.SHOW_IMPLICIT);
+                isSearchViewEnabled = true;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+    }
+
+    /**
+     * hide search view with a circular reveal animation
+     */
+    public void hideSearchView() {
+
+        final int END_RADIUS = 16;
+        int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
+        Animator animator;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
+                    searchCoords[0] + 32, searchCoords[1] - 16, startRadius, END_RADIUS);
+        } else {
+            // TODO: ViewAnimationUtils.createCircularReveal
+            animator = new ObjectAnimator().ofFloat(searchViewLayout, "alpha", 1f, 0f);
+        }
+
+        utils.revealShow(mFabBackground, false);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.setDuration(600);
+        animator.start();
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+                searchViewLayout.setVisibility(View.GONE);
+                isSearchViewEnabled = false;
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(searchViewEditText.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
     }
 
     /*@Override
@@ -1154,8 +1297,8 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void updatepaths(int pos) {
-            TabFragment tabFragment=getFragment();
-            if(tabFragment!=null)
+        TabFragment tabFragment = getFragment();
+        if (tabFragment != null)
             tabFragment.updatepaths(pos);
     }
 
@@ -1216,7 +1359,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void refreshDrawer() {
-        List<String> val=DataUtils.getStorages();
+        List<String> val = DataUtils.getStorages();
         if (val == null)
             val = getStorageDirectories();
         ArrayList<Item> list = new ArrayList<>();
@@ -1239,26 +1382,26 @@ public class MainActivity extends BaseActivity implements
             }
         }
         list.add(new SectionItem());
-        ArrayList<String[]> Servers=DataUtils.getServers();
-        if (Servers!=null && Servers.size() > 0) {
+        ArrayList<String[]> Servers = DataUtils.getServers();
+        if (Servers != null && Servers.size() > 0) {
             for (String[] file : Servers) {
                 list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_settings_remote_white_48dp)));
             }
 
             list.add(new SectionItem());
         }
-        ArrayList<String[]> accounts=DataUtils.getAccounts();
+        ArrayList<String[]> accounts = DataUtils.getAccounts();
         if (accounts != null && accounts.size() > 0) {
-            Collections.sort(accounts,new BookSorter());
+            Collections.sort(accounts, new BookSorter());
             for (String[] file : accounts) {
                 list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.drive)));
             }
 
             list.add(new SectionItem());
         }
-        ArrayList<String[]> books=DataUtils.getBooks();
+        ArrayList<String[]> books = DataUtils.getBooks();
         if (books != null && books.size() > 0) {
-            Collections.sort(books,new BookSorter());
+            Collections.sort(books, new BookSorter());
             for (String[] file : books) {
                 list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
                         .folder_fab)));
@@ -1303,7 +1446,6 @@ public class MainActivity extends BaseActivity implements
 
         if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
             Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-
             String accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
             Person.Image personImage;
             Person.Cover.CoverPhoto personCover;
@@ -1346,14 +1488,14 @@ public class MainActivity extends BaseActivity implements
                     public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                         super.onLoadingFailed(imageUri, view, failReason);
                         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-                        drawerHeaderParent.setBackgroundColor(Color.parseColor(skin));
+                        drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
                     }
 
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
                         super.onLoadingStarted(imageUri, view);
                         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-                        drawerHeaderParent.setBackgroundColor(Color.parseColor(skin));
+                        drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
                     }
                 });
 
@@ -1376,7 +1518,7 @@ public class MainActivity extends BaseActivity implements
             } else {
                 Toast.makeText(this, getResources().getText(R.string.no_cover_photo), Toast.LENGTH_SHORT).show();
                 drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-                drawerHeaderParent.setBackgroundColor(Color.parseColor(skin));
+                drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
             }
         }
     }
@@ -1397,7 +1539,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void onConnectionFailed(final ConnectionResult result) {
-        Log.d("G+", "Connection failed");
+        Log.d("G+", "Connection failed"+result.getErrorCode()+result.getErrorMessage());
         if (!mIntentInProgress && result.hasResolution()) {
             new Thread(new Runnable() {
                 @Override
@@ -1653,8 +1795,10 @@ public class MainActivity extends BaseActivity implements
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         hidemode = Sp.getInt("hidemode", 0);
         showHidden = Sp.getBoolean("showHidden", false);
-        skinStatusBar = (PreferenceUtils.getStatusColor(skin));
         aBoolean = Sp.getBoolean("view", true);
+        currentTab = Sp.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
+        skinStatusBar = (PreferenceUtils.getStatusColor((currentTab==1 ? skinTwo : skin)));
+        colourednavigation = Sp.getBoolean("colorednavigation", false);
     }
 
     void initialiseViews() {
@@ -1674,11 +1818,14 @@ public class MainActivity extends BaseActivity implements
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
 
+        mScreenLayout = (CoordinatorLayout) findViewById(R.id.main_frame);
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
-        buttonBarFrame.setBackgroundColor(Color.parseColor(skin));
+
+        //buttonBarFrame.setBackgroundColor(Color.parseColor(currentTab==1 ? skinTwo : skin));
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
+        mFabBackground = findViewById(R.id.fab_bg);
         drawerHeaderView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -1709,10 +1856,10 @@ public class MainActivity extends BaseActivity implements
         if (theme1 == 1) mDrawerLinear.setBackgroundColor(Color.parseColor("#303030"));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor(skin));
+        //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-        drawerHeaderParent.setBackgroundColor(Color.parseColor(skin));
+        //drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
         if (findViewById(R.id.tab_frame) != null) {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, mDrawerLinear);
             mDrawerLayout.setScrimColor(Color.TRANSPARENT);
@@ -1721,13 +1868,14 @@ public class MainActivity extends BaseActivity implements
         mDrawerList.addHeaderView(drawerHeaderLayout);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         View v = findViewById(R.id.fab_bg);
-        if (theme1 == 1)
-            v.setBackgroundColor(Color.parseColor("#a6ffffff"));
+        /*if (theme1 != 1)
+            v.setBackgroundColor(Color.parseColor("#a6ffffff"));*/
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 floatingActionButton.close(true);
                 utils.revealShow(view, false);
+                if (isSearchViewEnabled) hideSearchView();
             }
         });
 
@@ -1785,7 +1933,28 @@ public class MainActivity extends BaseActivity implements
                 adapter.toggleChecked(false);
             }
         });
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(skin)));
+
+        View ftpButton = findViewById(R.id.ftpbutton);
+        if (theme1 == 1) {
+            ftpButton.setBackgroundResource(R.drawable.safr_ripple_black);
+            ((ImageView) ftpButton.findViewById(R.id.ftpicon)).setImageResource(R.drawable.ic_ftp_dark);
+            ((TextView) ftpButton.findViewById(R.id.ftptext)).setTextColor(getResources().getColor(android.R.color.white));
+        }
+        ftpButton.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                transaction2.replace(R.id.content_frame, new FTPServerFragment());
+                findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                pending_fragmentTransaction = transaction2;
+                if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
+                else onDrawerClosed();
+                select = -2;
+                adapter.toggleChecked(false);
+            }
+        });
+        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor((currentTab==1 ? skinTwo : skin))));
 
 
         // status bar0
@@ -1794,12 +1963,11 @@ public class MainActivity extends BaseActivity implements
         if (sdk == 20 || sdk == 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintColor(Color.parseColor(skin));
+            //tintManager.setStatusBarTintColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             if (!isDrawerLocked) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (Build.VERSION.SDK_INT >= 21) {
-            colourednavigation = Sp.getBoolean("colorednavigation", true);
 
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -1811,15 +1979,78 @@ public class MainActivity extends BaseActivity implements
                 window.setNavigationBarColor(skinStatusBar);
 
         }
+
+        searchViewLayout = (RelativeLayout) findViewById(R.id.search_view);
+        searchViewEditText = (AppCompatEditText) findViewById(R.id.search_edit_text);
+        ImageButton clear=(ImageButton)findViewById(R.id.search_close_btn);
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchViewEditText.setText("");
+            }
+        });
+        findViewById(R.id.img_view_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideSearchView();
+            }
+        });
+        searchViewEditText.setOnKeyListener(new TextView.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN)) {
+                    // Perform action on key press
+                    mainActivityHelper.search(searchViewEditText.getText().toString());
+                    hideSearchView();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+    //    searchViewEditText.setTextColor(getResources().getColor(android.R.color.black));
+   //     searchViewEditText.setHintTextColor(Color.parseColor(BaseActivity.accentSkin));
+    }
+
+    /**
+     * Call this method when you need to update the MainActivity view components' colors based on
+     * update in the {@link MainActivity#currentTab}
+     * Warning - All the variables should be initialised before calling this method!
+     */
+    public void updateViews(ColorDrawable colorDrawable) {
+
+        // appbar view color
+        mainActivity.buttonBarFrame.setBackgroundColor(colorDrawable.getColor());
+        // action bar color
+        mainActivity.getSupportActionBar().setBackgroundDrawable(colorDrawable);
+        // drawer status bar I guess
+        mainActivity.mDrawerLayout.setStatusBarBackgroundColor(colorDrawable.getColor());
+        // drawer header background
+        mainActivity.drawerHeaderParent.setBackgroundColor(colorDrawable.getColor());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // for lollipop devices, the status bar color
+            mainActivity.getWindow().setStatusBarColor(colorDrawable.getColor());
+            if (colourednavigation)
+                mainActivity.getWindow().setNavigationBarColor(PreferenceUtils
+                        .getStatusColor(colorDrawable.getColor()));
+        } else if (Build.VERSION.SDK_INT == 20 || Build.VERSION.SDK_INT == 19) {
+
+            // for kitkat devices, the status bar color
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintColor(colorDrawable.getColor());
+        }
     }
 
     void initialiseFab() {
         String folder_skin = PreferenceUtils.getFolderColorString(Sp);
-        int fabSkinPressed = PreferenceUtils.getStatusColor(fabskin);
+        int fabSkinPressed = PreferenceUtils.getStatusColor(BaseActivity.accentSkin);
         int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
         floatingActionButton = (FloatingActionMenu) findViewById(R.id.menu);
-        floatingActionButton.setMenuButtonColorNormal(Color.parseColor(fabskin));
+        floatingActionButton.setMenuButtonColorNormal(Color.parseColor(BaseActivity.accentSkin));
         floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
 
         //if (theme1 == 1) floatingActionButton.setMen
@@ -2181,7 +2412,7 @@ public class MainActivity extends BaseActivity implements
 
     public void renameBookmark(final String title, final String path) {
         if (DataUtils.containsBooks(new String[]{title,path}) != -1 || DataUtils.containsAccounts(new String[]{title,path}) != -1) {
-            RenameBookmark renameBookmark=RenameBookmark.getInstance(title,path,fabskin,theme1);
+            RenameBookmark renameBookmark=RenameBookmark.getInstance(title,path,BaseActivity.accentSkin,theme1);
             if(renameBookmark!=null){
                 renameBookmark.show(getFragmentManager(),"renamedialog");
             }
@@ -2265,9 +2496,6 @@ public class MainActivity extends BaseActivity implements
                 Uri uri = intent.getData();
                 zippath = uri.toString();
                 openZip(zippath);
-            } else if (intent.getAction().equals(Intent.ACTION_SEARCH)) {
-                String query = intent.getStringExtra(SearchManager.QUERY);
-                mainActivityHelper.search(query);
             }
     }
 
@@ -2449,7 +2677,7 @@ public class MainActivity extends BaseActivity implements
         bundle.putString("path",path);
         bundle.putBoolean("edit",edit);
         smbConnectDialog.setArguments(bundle);
-        smbConnectDialog.show(getFragmentManager(),"smbdailog");
+        smbConnectDialog.show(getFragmentManager(), "smbdailog");
     }
 
     @Override
@@ -2457,21 +2685,24 @@ public class MainActivity extends BaseActivity implements
         try {
             String[] s=new String[]{name,path};
             if (!edit) {
-                TabFragment fragment=getFragment();
-                if(fragment!=null) {
-                    Fragment fragment1=fragment.getTab();
-                    if(fragment1!=null){
-                    final Main ma = (Main) fragment1;
-                    ma.loadlist(path, false, -1);
-                }}
-                DataUtils.addServer(new String[]{name,path});
-                refreshDrawer();
-                grid.addPath(name, path, DataUtils.SMB, 1);
+                if ((DataUtils.containsServer(path)) == -1) {
+                    DataUtils.addServer(new String[]{name, path});
+                    refreshDrawer();
+                    grid.addPath(name, path, DataUtils.SMB, 1);
+                    TabFragment fragment=getFragment();
+                    if(fragment!=null) {
+                        Fragment fragment1=fragment.getTab();
+                        if(fragment1!=null){
+                            final Main ma = (Main) fragment1;
+                            ma.loadlist(path, false, -1);
+                        }}
+                }
+                else Snackbar.make(frameLayout,"Connection already exists",Snackbar.LENGTH_SHORT).show();
             } else {
                 int i=-1;
                 if ((i=DataUtils.containsServer(new String[]{oldname,oldPath})) != -1) {
                     DataUtils.removeServer(i);
-                    mainActivity.grid.removePath(oldPath, DataUtils.SMB);
+                    mainActivity.grid.removePath(oldname,oldPath, DataUtils.SMB);
                 }
                 DataUtils.addServer(s);
                 Collections.sort(DataUtils.servers, new BookSorter());
@@ -2489,7 +2720,7 @@ public class MainActivity extends BaseActivity implements
         int i=-1;
         if ((i=DataUtils.containsServer(new String[]{name,path})) != -1) {
             DataUtils.removeServer(i);
-            grid.removePath(path, DataUtils.SMB);
+            grid.removePath(name,path, DataUtils.SMB);
             refreshDrawer();
         }
 
@@ -2512,7 +2743,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onBookAdded(String[] path, boolean refreshdrawer) {
-        grid.addPath(path[0],path[1],DataUtils.BOOKS,1);
+        grid.addPath(path[0], path[1], DataUtils.BOOKS, 1);
         if(refreshdrawer)
             refreshDrawer();
     }
@@ -2524,7 +2755,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void delete(String title, String path) {
-        grid.removePath(title,path,DataUtils.BOOKS);
+        grid.removePath(title, path, DataUtils.BOOKS);
         refreshDrawer();
 
     }

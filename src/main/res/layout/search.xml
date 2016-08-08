@@ -30,10 +30,10 @@
         android:layout_width="match_parent"
         android:id="@+id/lin"
         android:layout_height="wrap_content">
-    <include layout="@layout/toolbar"
-        android:layout_height="?actionBarSize"
-        android:layout_width="match_parent"
-        />
+        <include layout="@layout/toolbar"
+            android:layout_height="?actionBarSize"
+            android:layout_width="match_parent"
+            />
         <include layout="@layout/actionmode_textviewer"/>
     </LinearLayout>
     <View

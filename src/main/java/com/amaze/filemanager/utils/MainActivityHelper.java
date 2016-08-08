@@ -20,6 +20,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
@@ -49,6 +50,16 @@ public class MainActivityHelper {
      */
     public static String SEARCH_TEXT;
 
+    // reserved characters by OS, shall not be allowed in file names
+    private static final String FOREWARD_SLASH = "/";
+    private static final String BACKWARD_SLASH = "\\";
+    private static final String COLON = ":";
+    private static final String ASTERISK = "*";
+    private static final String QUESTION_MARK = "?";
+    private static final String QUOTE = "\"";
+    private static final String GREATER_THAN = ">";
+    private static final String LESS_THAN = "<";
+
     public MainActivityHelper(MainActivity mainActivity){
         this.mainActivity=mainActivity;
         utils=new Futils();
@@ -57,7 +68,7 @@ public class MainActivityHelper {
         MaterialDialog.Builder mat=new MaterialDialog.Builder(contextc);
         mat.title("Operation Unsuccessful");
         if(mainActivity.theme1==1)mat.theme(Theme.DARK);
-        mat.positiveColor(Color.parseColor(mainActivity.fabskin));
+        mat.positiveColor(Color.parseColor(BaseActivity.accentSkin));
         mat.positiveText(R.string.cancel);
         String content="Following files were not "+(move?"moved":"copied")+" successfully";
         int k=1;
@@ -94,19 +105,25 @@ public class MainActivityHelper {
             @Override
             public void onClick(View v) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                mkDir(new HFile(openMode,path + "/" + a),ma);
+                if (validateFileName(new HFile(openMode,path + "/" + a), true)) {
+
+                    mkDir(new HFile(openMode,path + "/" + a),ma);
+                } else Toast.makeText(mainActivity, R.string.invalid_name, Toast.LENGTH_SHORT).show();
                 materialDialog.dismiss();
             }
         });
         materialDialog.show();
     }
     void mkfile(final int openMode,final String path,final Main ma){
-        final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{utils.getString(mainActivity, R.string.entername), "",utils.getString(mainActivity,R.string.newfolder),utils.getString(mainActivity, R.string.create),utils.getString(mainActivity,R.string.cancel),null});
+        final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{utils.getString(mainActivity, R.string.entername), "",utils.getString(mainActivity,R.string.newfile),utils.getString(mainActivity, R.string.create),utils.getString(mainActivity,R.string.cancel),null});
         materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                mkDir(new HFile(openMode, path + "/" + a), ma);
+                if (validateFileName(new HFile(openMode,path + "/" + a), false)) {
+
+                    mkFile(new HFile(openMode,path + "/" + a),ma);
+                } else Toast.makeText(mainActivity, R.string.invalid_name, Toast.LENGTH_SHORT).show();
                 materialDialog.dismiss();
             }
         });
@@ -128,9 +145,9 @@ public class MainActivityHelper {
                 SmbSearchDialog smbDialog=new SmbSearchDialog();
                 smbDialog.show(mainActivity.getFragmentManager(),"tab");
                 break;
-            case 3:
+            /*case 3:
                 mainActivity.bindDrive();
-                break;
+                break;*/
         }
     }
 
@@ -174,8 +191,8 @@ public class MainActivityHelper {
         ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
         x.positiveText(R.string.open);
         x.negativeText(R.string.cancel);
-        x.positiveColor(Color.parseColor(mainActivity.fabskin));
-        x.negativeColor(Color.parseColor(mainActivity.fabskin));
+        x.positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        x.negativeColor(Color.parseColor(BaseActivity.accentSkin));
         x.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -416,11 +433,17 @@ public class MainActivityHelper {
             mainActivity.startService(intent);
         } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
+
     public String parseSmbPath(String a) {
         if (a.contains("@"))
             return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
         else return a;
     }
+
+    /**
+     * Creates a fragment which will handle the search AsyncTask {@link SearchAsyncHelper}
+     * @param query the text query entered the by user
+     */
     public void search(String query) {
         TabFragment tabFragment=mainActivity.getFragment();
         if(tabFragment==null)return;
@@ -445,19 +468,64 @@ public class MainActivityHelper {
             fm.beginTransaction().remove(fragment).commit();
         }
 
-        addSearchFragment(fm, new SearchAsyncHelper(), fpath, query, ma.openMode, ma.ROOT_MODE);
+        addSearchFragment(fm, new SearchAsyncHelper(), fpath, query, ma.openMode, ma.ROOT_MODE,
+                mainActivity.Sp.getBoolean(SearchAsyncHelper.KEY_REGEX, false),
+                mainActivity.Sp.getBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, false));
     }
 
+    /**
+     * Adds a search fragment that can persist it's state on config change
+     * @param fragmentManager fragmentManager
+     * @param fragment current fragment
+     * @param path current path
+     * @param input query typed by user
+     * @param openMode dunno
+     * @param rootMode is root enabled
+     * @param regex is regular expression search enabled
+     * @param matches is matches enabled for patter matching
+     */
     public static void addSearchFragment(FragmentManager fragmentManager, Fragment fragment,
-                                         String path, String input, int openMode, boolean rootMode) {
+                                         String path, String input, int openMode, boolean rootMode,
+                                         boolean regex, boolean matches) {
         Bundle args = new Bundle();
-        args.putString("input", input);
-        args.putString("path", path);
-        args.putInt("open_mode", openMode);
-        args.putBoolean("root_mode", rootMode);
+        args.putString(SearchAsyncHelper.KEY_INPUT, input);
+        args.putString(SearchAsyncHelper.KEY_PATH, path);
+        args.putInt(SearchAsyncHelper.KEY_OPEN_MODE, openMode);
+        args.putBoolean(SearchAsyncHelper.KEY_ROOT_MODE, rootMode);
+        args.putBoolean(SearchAsyncHelper.KEY_REGEX, regex);
+        args.putBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, matches);
 
         fragment.setArguments(args);
         fragmentManager.beginTransaction().add(fragment,
                 MainActivity.TAG_ASYNC_HELPER).commit();
+    }
+
+    /**
+     * Validates file name at the time of creation
+     * special reserved characters shall not be allowed in the file names
+     * @param file the file which needs to be validated
+     * @param isDir if the file is a directory, in case it shall not be named same as the parent
+     * @return boolean if the file name is valid or invalid
+     */
+    public static boolean validateFileName(HFile file, boolean isDir) {
+
+        StringBuilder builder = new StringBuilder(file.getPath());
+        String newName = builder.substring(builder.lastIndexOf("/")+1, builder.length());
+
+        if (newName.contains(ASTERISK) || newName.contains(BACKWARD_SLASH) ||
+                newName.contains(COLON) || newName.contains(FOREWARD_SLASH) ||
+                newName.contains(GREATER_THAN) || newName.contains(LESS_THAN) ||
+                newName.contains(QUESTION_MARK) || newName.contains(QUOTE)) {
+            return false;
+        } else if (isDir) {
+
+            // new directory name shall not be equal to parent directory name
+            StringBuilder parentPath = new StringBuilder(builder.substring(0,
+                    builder.length()-(newName.length()+1)));
+            String parentName = parentPath.substring(parentPath.lastIndexOf("/")+1,
+                    parentPath.length());
+            if (newName.equals(parentName)) return false;
+        }
+        return true;
     }
 }

@@ -234,7 +234,7 @@ public class RootHelper {
     }
     static boolean contains(String[] a,String name){
         for(String s:a){
-            Log.e("checking",s);
+            //Log.e("checking",s);
             if(s.equals(name))return true;
         }
         return false;

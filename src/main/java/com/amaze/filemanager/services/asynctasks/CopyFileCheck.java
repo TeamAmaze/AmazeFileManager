@@ -14,6 +14,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.CopyService;
@@ -133,15 +134,15 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
             textView.setText(utils.getString(con, R.string.fileexist) + "\n" + a.get(counter).getName());
             // checkBox
             final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
-            utils.setTint(checkBox, Color.parseColor(mainActivity.fabskin));
+            utils.setTint(checkBox, Color.parseColor(BaseActivity.accentSkin));
             if (mainActivity.theme1 == 1) x.theme(Theme.DARK);
             x.title(utils.getString(con, R.string.paste));
             x.positiveText(R.string.skip);
             x.negativeText(R.string.overwrite);
             x.neutralText(R.string.cancel);
-            x.positiveColor(Color.parseColor(mainActivity.fabskin));
-            x.negativeColor(Color.parseColor(mainActivity.fabskin));
-            x.neutralColor(Color.parseColor(mainActivity.fabskin));
+            x.positiveColor(Color.parseColor(BaseActivity.accentSkin));
+            x.negativeColor(Color.parseColor(BaseActivity.accentSkin));
+            x.neutralColor(Color.parseColor(BaseActivity.accentSkin));
             x.callback(new MaterialDialog.ButtonCallback() {
                 @Override
                 public void onPositive(MaterialDialog materialDialog) {

@@ -26,7 +26,10 @@ import java.io.IOException;
 public class BaseActivity extends AppCompatActivity {
     public int theme1;
     public SharedPreferences Sp;
-    public String fabskin,skin;
+
+    // Accent and Primary hex color string respectively
+    public static String accentSkin;
+    public static String skin, skinTwo;
     Futils utils;
     boolean  rootmode,checkStorage=true;
     @Override
@@ -34,14 +37,20 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
         int th = Integer.parseInt(Sp.getString("theme", "0"));
+        // checking if theme should be set light/dark or automatic
         theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
         utils=new Futils();
         boolean random = Sp.getBoolean("random_checkbox", false);
-        if (random)
+        if (random)  {
+
             skin = PreferenceUtils.random(Sp);
-        else
+            skinTwo = PreferenceUtils.random(Sp);
+        } else {
+
             skin = PreferenceUtils.getPrimaryColorString(Sp);
-        fabskin = PreferenceUtils.getAccentString(Sp);
+            skinTwo = PreferenceUtils.getPrimaryTwoColorString(Sp);
+        }
+        accentSkin = PreferenceUtils.getAccentString(Sp);
         setTheme();
         rootmode = Sp.getBoolean("rootmode", false);
         if (rootmode) {
@@ -86,7 +95,7 @@ public class BaseActivity extends AppCompatActivity {
             // Provide an additional rationale to the user if the permission was not granted
             // and the user would benefit from additional context for the use of the permission.
             // For example, if the request has been denied previously.
-            final MaterialDialog materialDialog = utils.showBasicDialog(this,fabskin,theme1, new String[]{getResources().getString(R.string.granttext), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel), null});
+            final MaterialDialog materialDialog = utils.showBasicDialog(this,accentSkin,theme1, new String[]{getResources().getString(R.string.granttext), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel), null});
             materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -112,7 +121,7 @@ public class BaseActivity extends AppCompatActivity {
     void setTheme() {
         if (Build.VERSION.SDK_INT >= 21) {
 
-            switch (fabskin) {
+            switch (accentSkin) {
                 case "#F44336":
                     if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_red);

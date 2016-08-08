@@ -31,8 +31,11 @@
                 <color android:color="#EEEEEE" />
             </item>
 
-            <item>
+            <!--<item>
                 <color android:color="#FFFFFF" />
+            </item>-->
+            <item android:state_pressed="true">
+                <color android:color="#FFFFFF"/>
             </item>
         </selector>
     </item>

@@ -27,7 +27,6 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -61,6 +60,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
@@ -158,16 +158,16 @@ public  final int READ = 4;
 
                     }
                 });
-            a.widgetColor(Color.parseColor(m.fabskin));
+            a.widgetColor(Color.parseColor(BaseActivity.accentSkin));
             if(m.theme1==1)
                 a.theme(Theme.DARK);
             a.title(texts[2]);
             a.positiveText(texts[3]);
-            a.positiveColor(Color.parseColor(m.fabskin));
+            a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
             a.neutralText(texts[4]);
             if(texts[5]!=(null)){
                 a.negativeText(texts[5]);
-                a.negativeColor(Color.parseColor(m.fabskin));
+                a.negativeColor(Color.parseColor(BaseActivity.accentSkin));
             }
             MaterialDialog dialog=a.build();
             return dialog;
@@ -929,9 +929,9 @@ public void showPackageDialog(final File f,final MainActivity m){
             .positiveText(R.string.install)
             .negativeText(R.string.view)
             .neutralText(R.string.cancel)
-            .positiveColor(Color.parseColor(m.fabskin))
-            .negativeColor(Color.parseColor(m.fabskin))
-            .neutralColor(Color.parseColor(m.fabskin))
+            .positiveColor(Color.parseColor(BaseActivity.accentSkin))
+            .negativeColor(Color.parseColor(BaseActivity.accentSkin))
+            .neutralColor(Color.parseColor(BaseActivity.accentSkin))
             .callback(new MaterialDialog.ButtonCallback() {
                 @Override
                 public void onPositive(MaterialDialog materialDialog) {
@@ -955,9 +955,9 @@ public void showPackageDialog(final File f,final MainActivity m){
                 .positiveText(R.string.extract)
                 .negativeText(R.string.view)
                 .neutralText(R.string.cancel)
-                .positiveColor(Color.parseColor(m.fabskin))
-                .negativeColor(Color.parseColor(m.fabskin))
-                .neutralColor(Color.parseColor(m.fabskin))
+                .positiveColor(Color.parseColor(BaseActivity.accentSkin))
+                .negativeColor(Color.parseColor(BaseActivity.accentSkin))
+                .neutralColor(Color.parseColor(BaseActivity.accentSkin))
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -987,10 +987,10 @@ public void showPackageDialog(final File f,final MainActivity m){
         return item;
     }
 
-    public ArrayList<File> toFileArray(ArrayList<String> a) {
-        ArrayList<File> b = new ArrayList<File>();
+    public ArrayList<File> toFileArray(ArrayList<BaseFile> a) {
+        ArrayList<File> b = new ArrayList<>();
         for (int i = 0; i < a.size(); i++) {
-            b.add(new File(a.get(i)));
+            b.add(new File(a.get(i).getPath()));
         }
         return b;
     }
@@ -1013,12 +1013,12 @@ public void showPackageDialog(final File f,final MainActivity m){
 
                     }
                 });
-        a.widgetColor(Color.parseColor(m.fabskin));
+        a.widgetColor(Color.parseColor(BaseActivity.accentSkin));
         if(m.theme1==1)
             a.theme(Theme.DARK);
         a.title(getString(m, R.string.enterzipname));
         a.positiveText(R.string.create);
-        a.positiveColor(Color.parseColor(m.fabskin));
+        a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
         a.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(MaterialDialog materialDialog, DialogAction dialogAction) {
@@ -1031,7 +1031,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             }
         });
         a.negativeText(getString(m, R.string.cancel));
-        a.negativeColor(Color.parseColor(m.fabskin));
+        a.negativeColor(Color.parseColor(BaseActivity.accentSkin));
         a.build().show();
     }
 
@@ -1047,8 +1047,8 @@ public void showPackageDialog(final File f,final MainActivity m){
                 return true;
             }
         });
-        a.positiveText(R.string.ascending).positiveColor(Color.parseColor(m.fabSkin));
-        a.negativeText(R.string.descending).negativeColor(Color.parseColor(m.fabSkin));
+        a.positiveText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        a.negativeText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog dialog) {
@@ -1087,8 +1087,8 @@ public void showPackageDialog(final File f,final MainActivity m){
                 return true;
             }
         });
-        a.positiveText(R.string.ascending).positiveColor(Color.parseColor(m.fabSkin));
-        a.negativeText(R.string.descending).negativeColor(Color.parseColor(m.fabSkin));
+        a.positiveText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        a.negativeText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog dialog) {
@@ -1117,9 +1117,9 @@ public void showPackageDialog(final File f,final MainActivity m){
     public void showHistoryDialog(final Main m) {
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
-        a.positiveColor(Color.parseColor(m.fabSkin));
+        a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
         a.negativeText(R.string.clear);
-        a.negativeColor(Color.parseColor(m.fabSkin));
+        a.negativeColor(Color.parseColor(BaseActivity.accentSkin));
         a.title(R.string.history);
         a.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
@@ -1148,7 +1148,7 @@ public void showPackageDialog(final File f,final MainActivity m){
     public void showHiddenDialog(final Main m) {
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
-        a.positiveColor(Color.parseColor(m.fabSkin));
+        a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
         a.title(R.string.hiddenfiles);
         if(m.theme1==1)
             a.theme(Theme.DARK);

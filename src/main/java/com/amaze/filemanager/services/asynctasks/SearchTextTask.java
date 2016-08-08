@@ -3,10 +3,8 @@ package com.amaze.filemanager.services.asynctasks;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -63,10 +61,6 @@ public class SearchTextTask extends AsyncTask<Editable, Void, ArrayList<MapEntry
 
             searchSubString = editText.subSequence(i, i + params[0].length()).toString();
 
-            // comparing and incrementing line number
-            if (searchSubString.contains("\n"))
-                Log.d(getClass().getName(), (++textReader.mLine) + "");
-
             // comparing and adding searched phrase to a list
             if (searchSubString.equalsIgnoreCase(params[0].toString())) {
 
@@ -89,29 +83,25 @@ public class SearchTextTask extends AsyncTask<Editable, Void, ArrayList<MapEntry
     protected void onPostExecute(final ArrayList<MapEntry> mapEntries) {
         super.onPostExecute(mapEntries);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (Map.Entry mapEntry : mapEntries) {
+        for (Map.Entry mapEntry : mapEntries) {
 
-                    Map.Entry keyMapEntry = (Map.Entry) mapEntry.getKey();
-                    mInput.getText().setSpan(textReader.theme1 == 0 ? new BackgroundColorSpan(Color.YELLOW) :
-                                    new BackgroundColorSpan(Color.LTGRAY),
-                            (Integer) keyMapEntry.getKey(), (Integer) keyMapEntry.getValue(),
-                            Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                }
+            Map.Entry keyMapEntry = (Map.Entry) mapEntry.getKey();
+            mInput.getText().setSpan(textReader.theme1 == 0 ? new BackgroundColorSpan(Color.YELLOW) :
+                            new BackgroundColorSpan(Color.LTGRAY),
+                    (Integer) keyMapEntry.getKey(), (Integer) keyMapEntry.getValue(),
+                    Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        }
 
-                if (mapEntries.size()!=0) {
-                    upButton.setEnabled(true);
-                    downButton.setEnabled(true);
+        if (mapEntries.size()!=0) {
+            upButton.setEnabled(true);
+            downButton.setEnabled(true);
 
-                    // downButton
-                    textReader.onClick(downButton);
-                } else {
-                    upButton.setEnabled(false);
-                    downButton.setEnabled(false);
-                }
-            }
-        }).run();
+            // downButton
+            textReader.onClick(downButton);
+        } else {
+            upButton.setEnabled(false);
+            downButton.setEnabled(false);
+        }
+
     }
 }

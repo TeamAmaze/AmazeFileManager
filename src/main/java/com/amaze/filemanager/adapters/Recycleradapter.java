@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -21,12 +22,13 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
-import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.DataUtils;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
@@ -82,15 +84,42 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         notifyItemInserted(getItemCount());
 
     }
-    public void toggleChecked(int position) {
+
+    /**
+     * called as to toggle selection of any item in adapter
+     * @param position the position of the item
+     * @param imageView the check {@link CircleGradientDrawable} that is to be animated
+     */
+    public void toggleChecked(int position, ImageView imageView) {
         if(!stoppedAnimation)main.stopAnimation();
         if (myChecked.get(position)) {
+            // if the view at position is checked, un-check it
             myChecked.put(position, false);
+
+            Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_out);
+            if (imageView!=null) {
+
+                imageView.setAnimation(iconAnimation);
+            } else {
+
+                // TODO: we don't have the check icon object probably because of config change
+            }
         } else {
+            // if view is un-checked, check it
             myChecked.put(position, true);
+
+            Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_in);
+            if (imageView!=null) {
+
+                imageView.setAnimation(iconAnimation);
+            } else {
+
+                // TODO: we don't have the check icon object probably because of config change
+            }
         }
 
         notifyDataSetChanged();
+        //notifyItemChanged(position);
         if (main.selection == false || main.mActionMode == null) {
             main.selection = true;
             /*main.mActionMode = main.getActivity().startActionMode(
@@ -111,8 +140,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         int a; if(path.equals("/") || !main.GO_BACK_ITEM)a=0;else a=1;
         for (int i = a; i < items.size(); i++) {
             myChecked.put(i, b);
+            notifyItemChanged(i);
         }
-        notifyDataSetChanged();
         if(main.mActionMode!=null)
             main.mActionMode.invalidate();
         if (getCheckedItemPositions().size() == 0) {
@@ -123,12 +152,17 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         }
     }
 
+    /**
+     * called when we would want to toggle check for all items in the adapter
+     * @param b if to toggle true or false
+     */
     public void toggleChecked(boolean b) {
         int a=0;
         for (int i = a; i < items.size(); i++) {
             myChecked.put(i, b);
+            notifyItemChanged(i);
         }
-        notifyDataSetChanged();
+
         if(main.mActionMode!=null)main.mActionMode.invalidate();
         if (getCheckedItemPositions().size() == 0) {
             main.selection = false;
@@ -162,30 +196,35 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public RoundedImageView viewmageV;
-        public ImageView imageView,apk;
+        public RoundedImageView pictureIcon;
+        public ImageView genericIcon, apkIcon;
         public ImageView imageView1;
         public TextView txtTitle;
         public TextView txtDesc;
         public TextView date;
         public TextView perm;
         public View rl;
-        public TextView ext;
+        public TextView genericText;
         public ImageButton about;
+        public ImageView checkImageView;
+        public ImageView checkImageViewGrid;
+
         public ViewHolder(View view) {
             super(view);
 
             txtTitle = (TextView) view.findViewById(R.id.firstline);
-            viewmageV = (RoundedImageView) view.findViewById(R.id.cicon);
-            imageView = (ImageView) view.findViewById(R.id.icon);
+            pictureIcon = (RoundedImageView) view.findViewById(R.id.picture_icon);
             rl = view.findViewById(R.id.second);
             perm = (TextView) view.findViewById(R.id.permis);
             date = (TextView) view.findViewById(R.id.date);
             txtDesc = (TextView) view.findViewById(R.id.secondLine);
-            apk = (ImageView) view.findViewById(R.id.bicon);
-            ext = (TextView) view.findViewById(R.id.generictext);
+            apkIcon = (ImageView) view.findViewById(R.id.apk_icon);
+            genericText = (TextView) view.findViewById(R.id.generictext);
             imageView1 = (ImageView) view.findViewById(R.id.icon_thumb);
             about=(ImageButton) view.findViewById(R.id.properties);
+            checkImageView = (ImageView) view.findViewById(R.id.check_icon);
+            genericIcon = (ImageView) view.findViewById(R.id.generic_icon);
+            checkImageViewGrid = (ImageView) view.findViewById(R.id.check_icon_grid);
         }
     }
 
@@ -239,7 +278,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder vholder,final int p) {
-        final Recycleradapter.ViewHolder holder = ((Recycleradapter.ViewHolder)vholder);
+        final ViewHolder holder = ((ViewHolder)vholder);
         if (main.IS_LIST) {
             if ( p == getItemCount() - 1) {
                 holder.rl.setMinimumHeight(rowHeight);
@@ -249,29 +288,34 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 return;
             }
         }
-        if(holder.imageView==null)return;
         if (!this.stoppedAnimation && !myanim.get(p))
         {
             animate(holder);
-            myanim.put(p,true);
+            myanim.put(p, true);
         }
         final Layoutelements rowItem = items.get(p);
         if (main.IS_LIST) {
             holder.rl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    main.onListItemClicked(p, v);
+                    main.onListItemClicked(p, holder.checkImageView);
                 }
             });
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                holder.checkImageView.setBackground(new CircleGradientDrawable(main.fabSkin,
+                        main.theme1, main.getResources().getDisplayMetrics()));
+            } else holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(main.fabSkin,
+                    main.theme1, main.getResources().getDisplayMetrics()));
 
             holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 
                 public boolean onLongClick(View p1) {
 
+                    // check if the item on which action is performed is not the first {goback} item
                     if (!rowItem.getSize().equals(main.goback)) {
-                        Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.holder_anim);
-                        holder.imageView.setAnimation(iconAnimation);
-                        toggleChecked(p);
+
+                        toggleChecked(p, holder.checkImageView);
                     }
 
                     return true;
@@ -283,99 +327,103 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             else if (Icons.isApk((rowItem.getDesc()))) filetype = 1;
             else if (Icons.isVideo(rowItem.getDesc())) filetype = 2;
             holder.txtTitle.setText(rowItem.getTitle());
-            holder.imageView.setImageDrawable(rowItem.getImageId());
-            holder.ext.setText("");
+            holder.genericIcon.setImageDrawable(rowItem.getImageId());
+            holder.genericText.setText("");
 
             if (holder.about != null) {
                 if(main.theme1==0)holder.about.setColorFilter(grey_color);
                 showPopup(holder.about,rowItem);
             }
-            holder.imageView.setOnClickListener(new View.OnClickListener() {
+            holder.genericIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(View v) {
 
-                    if (!rowItem.getSize().equals(main.goback)) {
+                    int id = v.getId();
+                    if (id == R.id.generic_icon || id == R.id.picture_icon
+                            || id == R.id.apk_icon) {
 
-                        Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.holder_anim);
-                        holder.imageView.setAnimation(iconAnimation);
-                        toggleChecked(p);
-                    } else main.goBack();
+                        // TODO: transform icon on press to the properties dialog with animation
+                        if (!rowItem.getSize().equals(main.goback)) {
+
+                            toggleChecked(p, holder.checkImageView);
+                        } else main.goBack();
+                    }
 
                 }
             });
-            holder.viewmageV.setOnClickListener(new View.OnClickListener() {
+
+            holder.pictureIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (!rowItem.getSize().equals(main.goback)) {
 
-                        Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.holder_anim);
-                        holder.imageView.setAnimation(iconAnimation);
-                        toggleChecked(p);
+                        toggleChecked(p, holder.checkImageView);
                     }
                     else main.goBack();
                 }
             });
-            holder.apk.setOnClickListener(new View.OnClickListener() {
+            holder.apkIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (!rowItem.getSize().equals(main.goback)) {
 
-                        Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.holder_anim);
-                        holder.imageView.setAnimation(iconAnimation);
-                        toggleChecked(p);
+                        toggleChecked(p, holder.checkImageView);
                     }
                     else main.goBack();
                 }
             });
-            holder.imageView.setVisibility(View.VISIBLE);
-            holder.viewmageV.setVisibility(View.INVISIBLE);
+            holder.genericIcon.setVisibility(View.VISIBLE);
+            holder.pictureIcon.setVisibility(View.INVISIBLE);
             if (filetype == 0) {
                 if (main.SHOW_THUMBS) {
+                    holder.genericIcon.setVisibility(View.GONE);
+
                     if (main.CIRCULAR_IMAGES) {
-                        holder.imageView.setVisibility(View.GONE);
-                        holder.apk.setVisibility(View.GONE);
-                        holder.viewmageV.setVisibility(View.VISIBLE);
-                        holder.viewmageV.setImageDrawable(main.DARK_IMAGE);
-                        main.ic.cancelLoad(holder.viewmageV);
-                        main.ic.loadDrawable(holder.viewmageV, (rowItem.getDesc()), null);
+                        holder.apkIcon.setVisibility(View.GONE);
+                        holder.pictureIcon.setVisibility(View.VISIBLE);
+                        holder.pictureIcon.setImageDrawable(main.DARK_IMAGE);
+                        main.ic.cancelLoad(holder.pictureIcon);
+                        main.ic.loadDrawable(holder.pictureIcon, (rowItem.getDesc()), null);
                     } else {
-                        holder.imageView.setVisibility(View.GONE);
-                        holder.apk.setVisibility(View.VISIBLE);
-                        holder.apk.setImageDrawable(main.DARK_IMAGE);
-                        main.ic.cancelLoad(holder.apk);
-                        main.ic.loadDrawable(holder.apk, (rowItem.getDesc()), null);
+                        holder.checkImageView.setVisibility(View.INVISIBLE);
+                        holder.apkIcon.setVisibility(View.VISIBLE);
+                        holder.apkIcon.setImageDrawable(main.DARK_IMAGE);
+                        main.ic.cancelLoad(holder.apkIcon);
+                        main.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
                     }
                 }
             } else if (filetype == 1) {
                 if (main.SHOW_THUMBS) {
-                    holder.viewmageV.setVisibility(View.GONE);
-                    holder.imageView.setVisibility(View.GONE);
-                    holder.apk.setVisibility(View.VISIBLE);
-                    holder.apk.setImageDrawable(main.apk);
-                    main.ic.cancelLoad(holder.apk);
-                    main.ic.loadDrawable(holder.apk, (rowItem.getDesc()), null);
+                    holder.genericIcon.setVisibility(View.GONE);
+                    holder.pictureIcon.setVisibility(View.GONE);
+                    holder.checkImageView.setVisibility(View.INVISIBLE);
+                    holder.apkIcon.setVisibility(View.VISIBLE);
+                    holder.apkIcon.setImageDrawable(main.apk);
+                    main.ic.cancelLoad(holder.apkIcon);
+                    main.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
                 }
 
             } else if (filetype == 2) {
                 if (main.SHOW_THUMBS) {
+                    holder.genericIcon.setVisibility(View.GONE);
                     if (main.CIRCULAR_IMAGES) {
-                        holder.imageView.setVisibility(View.GONE);
-                        holder.viewmageV.setVisibility(View.VISIBLE);
-                        holder.viewmageV.setImageDrawable(main.DARK_VIDEO);
-                        main.ic.cancelLoad(holder.viewmageV);
-                        main.ic.loadDrawable(holder.viewmageV,(rowItem.getDesc()), null);
+                        holder.checkImageView.setVisibility(View.INVISIBLE);
+                        holder.pictureIcon.setVisibility(View.VISIBLE);
+                        holder.pictureIcon.setImageDrawable(main.DARK_VIDEO);
+                        main.ic.cancelLoad(holder.pictureIcon);
+                        main.ic.loadDrawable(holder.pictureIcon,(rowItem.getDesc()), null);
                     } else {
-                        holder.imageView.setVisibility(View.GONE);
-                        holder.apk.setVisibility(View.VISIBLE);
-                        holder.apk.setImageDrawable(main.DARK_VIDEO);
-                        main.ic.cancelLoad(holder.apk);
-                        main.ic.loadDrawable(holder.apk, (rowItem.getDesc()), null);
+                        holder.checkImageView.setVisibility(View.INVISIBLE);
+                        holder.apkIcon.setVisibility(View.VISIBLE);
+                        holder.apkIcon.setImageDrawable(main.DARK_VIDEO);
+                        main.ic.cancelLoad(holder.apkIcon);
+                        main.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
                     }
                 }
             } else {
-                holder.viewmageV.setVisibility(View.GONE);
-                holder.apk.setVisibility(View.GONE);
-                holder.imageView.setVisibility(View.VISIBLE);
+                holder.pictureIcon.setVisibility(View.GONE);
+                holder.apkIcon.setVisibility(View.GONE);
+                holder.genericIcon.setVisibility(View.VISIBLE);
             }
             Boolean checked = myChecked.get(p);
             if (checked != null) {
@@ -389,16 +437,22 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 }
                 holder.rl.setSelected(false);
                 if (checked) {
-                    holder.apk.setVisibility(View.GONE);
-                    holder.viewmageV.setVisibility(View.GONE);
-                    holder.imageView.setVisibility(View.VISIBLE);
-                    holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
-                    GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
-                    gradientDrawable.setColor(c1);
+                    holder.checkImageView.setVisibility(View.VISIBLE);
+                    // making sure the generic icon background color filter doesn't get changed
+                    // to grey on picture/video/apk/generic text icons when checked
+                    // so that user can still look at the thumbs even after selection
+                    if ((filetype!=0 && filetype!=1 && filetype!=2)) {
+                        holder.apkIcon.setVisibility(View.GONE);
+                        holder.pictureIcon.setVisibility(View.GONE);
+                        holder.genericIcon.setVisibility(View.VISIBLE);
+                        GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
+                        gradientDrawable.setColor(c1);
+                    }
                     holder.rl.setSelected(true);
-                    holder.ext.setText("");
+                    holder.genericText.setText("");
                 } else {
-                    GradientDrawable gradientDrawable = (GradientDrawable) holder.imageView.getBackground();
+                    holder.checkImageView.setVisibility(View.INVISIBLE);
+                    GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
                     if (main.COLORISE_ICONS) {
                         if (rowItem.isDirectory())
                             gradientDrawable.setColor(main.icon_skin_color);
@@ -421,8 +475,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                             gradientDrawable.setColor(c9);
                             String ext = MimeTypes.getExtension(new File(rowItem.getDesc()).getName());
                             if (ext != null && ext.trim().length() != 0) {
-                                holder.ext.setText(ext);
-                                holder.imageView.setImageDrawable(null);
+                                holder.genericText.setText(ext);
+                                holder.genericIcon.setImageDrawable(null);
                             }
                         } else {
                             gradientDrawable.setColor(main.icon_skin_color);
@@ -449,11 +503,14 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                 holder.txtDesc.setText(rowItem.getSize());
         } else {
+            // view is a grid view
             Boolean checked = myChecked.get(p);
+
+            holder.checkImageViewGrid.setColorFilter(Color.parseColor(main.fabSkin));
             holder.rl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    main.onListItemClicked(p, v);
+                    main.onListItemClicked(p, holder.checkImageViewGrid);
                 }
             });
 
@@ -462,19 +519,20 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 public boolean onLongClick(View p1) {
 
                     if (!rowItem.getSize().equals(main.goback)) {
-                        Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.holder_anim);
-                        holder.imageView.setAnimation(iconAnimation);
-                        toggleChecked(p);
+
+                        toggleChecked(p, holder.checkImageViewGrid);
                     }
                     return true;
                 }
             });
             holder.txtTitle.setText(rowItem.getTitle());
             holder.imageView1.setVisibility(View.INVISIBLE);
-            holder.imageView.setVisibility(View.VISIBLE);
-            holder.imageView.setImageDrawable(rowItem.getImageId());
+            holder.genericIcon.setVisibility(View.VISIBLE);
+            holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
+            holder.genericIcon.setImageDrawable(rowItem.getImageId());
+
             if (Icons.isPicture((rowItem.getDesc().toLowerCase())) || Icons.isVideo(rowItem.getDesc().toLowerCase())) {
-                holder.imageView.setColorFilter(null);
+                holder.genericIcon.setColorFilter(null);
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
                 if (main.theme == 1)
@@ -482,47 +540,44 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 main.ic.cancelLoad(holder.imageView1);
                 main.ic.loadDrawable(holder.imageView1, (rowItem.getDesc()), null);
             } else if (Icons.isApk((rowItem.getDesc()))) {
-                holder.imageView.setColorFilter(null);
-                main.ic.cancelLoad(holder.imageView);
-                main.ic.loadDrawable(holder.imageView, (rowItem.getDesc()), null);
+                holder.genericIcon.setColorFilter(null);
+                main.ic.cancelLoad(holder.genericIcon);
+                main.ic.loadDrawable(holder.genericIcon, (rowItem.getDesc()), null);
             }
             if (rowItem.isDirectory())
-                holder.imageView.setColorFilter(main.icon_skin_color);
-
-            else if (Icons.isVideo(rowItem.getDesc()))
-                holder.imageView.setColorFilter(c2);
-
-            else if (Icons.isAudio(rowItem.getDesc()))
-                holder.imageView.setColorFilter(c3);
-
-            else if (Icons.isPdf(rowItem.getDesc()))
-                holder.imageView.setColorFilter(c4);
-
-            else if (Icons.isCode(rowItem.getDesc()))
-                holder.imageView.setColorFilter(c5);
-
-            else if (Icons.isText(rowItem.getDesc()))
-                holder.imageView.setColorFilter(c6);
-
-            else if (Icons.isArchive(rowItem.getDesc()))
-                holder.imageView.setColorFilter(c7);
-
-            else if (Icons.isgeneric(rowItem.getDesc()))
-                holder.imageView.setColorFilter(c9);
-
-            else if (Icons.isApk(rowItem.getDesc()) || Icons.isPicture(rowItem.getDesc()))
-                holder.imageView.setColorFilter(null);
-
-            else holder.imageView.setColorFilter(main.icon_skin_color);
+                holder.genericIcon.setColorFilter(main.icon_skin_color);
+                    else if (Icons.isVideo(rowItem.getDesc()))
+                holder.genericIcon.setColorFilter(c2);
+                    else if (Icons.isAudio(rowItem.getDesc()))
+                holder.genericIcon.setColorFilter(c3);
+                    else if (Icons.isPdf(rowItem.getDesc()))
+                holder.genericIcon.setColorFilter(c4);
+                    else if (Icons.isCode(rowItem.getDesc()))
+                holder.genericIcon.setColorFilter(c5);
+                    else if (Icons.isText(rowItem.getDesc()))
+                holder.genericIcon.setColorFilter(c6);
+                    else if (Icons.isArchive(rowItem.getDesc()))
+                holder.genericIcon.setColorFilter(c7);
+                    else if (Icons.isgeneric(rowItem.getDesc()))
+                holder.genericIcon.setColorFilter(c9);
+                    else if (Icons.isApk(rowItem.getDesc()) || Icons.isPicture(rowItem.getDesc()))
+                holder.genericIcon.setColorFilter(null);
+            else holder.genericIcon.setColorFilter(main.icon_skin_color);
             if (rowItem.getSize().equals(main.goback))
-                holder.imageView.setColorFilter(c1);
+                holder.genericIcon.setColorFilter(c1);
+
+
+
             if (checked != null) {
 
                 if (checked) {
-                    holder.imageView.setColorFilter(main.icon_skin_color);
-                    holder.imageView.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                    holder.genericIcon.setColorFilter(main.icon_skin_color);
+                    //holder.genericIcon.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+
+                    holder.checkImageViewGrid.setVisibility(View.VISIBLE);
                     holder.rl.setBackgroundColor(Color.parseColor("#9f757575"));
                 } else {
+                    holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
                     if (main.theme1 == 0)
                         holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
                     else{
@@ -570,8 +625,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     @Override
     public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
         View  view = mInflater.inflate(R.layout.listheader, viewGroup, false);
-        if(main.theme1==1)
-            view.setBackgroundResource(R.color.holo_dark_background);
+        /*if(main.theme1==1)
+            view.setBackgroundResource(R.color.holo_dark_background);*/
         HeaderViewHolder holder = new HeaderViewHolder(view);
         if (main.theme1==0)holder.ext.setTextColor(Color.parseColor("#8A000000"));
         else holder.ext.setTextColor(Color.parseColor("#B3ffffff"));

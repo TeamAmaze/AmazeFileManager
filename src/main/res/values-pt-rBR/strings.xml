@@ -31,6 +31,7 @@
     <string name="storage">Armazenamento</string>
     <string name="gallery">Galeria</string>
     <string name="apps">Gerenciador de Apps</string>
+    <string name="ftp">Servidor FTP</string>
     <string name="bookmanag">Gerenciador de Favoritos</string>
     <string name="setting">Configurações</string>
     <string name="select">Selecionar item</string>
@@ -51,7 +52,7 @@
     <string name="loading">Carregando...</string>
     <string name="file_empty">O arquivo está vazio</string>
     <string name="error">Erro</string>
-    <string name="cantlistfiles">Não é possível listar ficheiros sem root</string>
+    <string name="cantlistfiles">Não é possível listar arquivos sem root</string>
     <string name="searchresults">Resultados da pesquisa</string>
     <string name="itemsselected">Itens selecionados</string>
     <string name="newhomedirectory">Nova pasta Início</string>
@@ -63,7 +64,6 @@
     <string name="fileexist">Já existe um arquivo com este nome </string>
     <string name="filecreated">Arquivo criado</string>
     <string name="searchpath">Caminho de pesquisa</string>
-    <string name="search">Procurar</string>
     <string name="enterfile">Insira o nome do arquivo</string>
     <string name="name">Nome: </string>
     <string name="date">Data: </string>
@@ -95,7 +95,7 @@
     <string name="share">Compartilhar</string>
     <string name="about">Sobre</string>
     <string name="extract">Extrair</string>
-    <string name="compress">Comprimir</string>
+    <string name="compress">Compactar</string>
     <string name="yes">Sim</string>
     <string name="no">Não</string>
     <string name="confirm">Confirmar</string>
@@ -262,8 +262,8 @@
     <string name="invalid_dir">Pasta inválida</string>
     <string name="circularimages">Usar ícones circulares para imagens e vídeos</string>
     <string name="circularicons">Usar ícones circulares</string>
-    <string name="back_title">Botão de recuo</string>
-    <string name="back_summary">Coloca um botão para recuar no topo da lista</string>
+    <string name="back_title">Botão de navegação</string>
+    <string name="back_summary">Coloca um botão de navegação no topo da lista</string>
     <string name="details">Detalhes</string>
     <string name="translators">Tradutores</string>
     <string name="german_translation_title">Alemão</string>
@@ -313,13 +313,13 @@
     <string name="sd_card_grant_first">sd_card_grant_first</string>
     <string name="fab_skin">Visual do FAB</string>
     <string name="gplus_pic_title">Entrar com o G+</string>
-    <string name="gplus_pic_summary">Mostrar o ícone do G+ no menu de navegação</string>
+    <string name="gplus_pic_summary">Mostra o ícone do G+ no menu de navegação</string>
     <string name="icon_credits">Imagens criadas por &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
 
     <string name="color_title">Cor</string>
     <string name="color_summary">Define a cor dos componentes da interface</string>
-    <string name="primary_color_title">Cor primária</string>
-    <string name="primary_color_summary">Define a cor dos principais elementos</string>
+    <string name="primary_color_title">Cor primária (Aba esquerda)</string>
+    <string name="primary_color_summary">Define a cor dos principais elementos da aba esquerda</string>
     <string name="accent_color_title">Cor secundária</string>
     <string name="accent_color_summary">Define a cor do FAB e dos outros elementos da inteface</string>
     <string name="icon_color_title">Cor dos ícones</string>
@@ -345,7 +345,7 @@
     <string name="needsaccesssummary">Escolha a pasta raíz do \t</string>
     <string name="needsaccesssummary1">\tpara poder ter acesso de gravação para operar </string>
     <string name="smb_con">Conexão SMB</string>
-    <string name="smb_server">Servidor: Endereço IP ou endereço IP/Pasta_Compartilhada</string>
+    <string name="smb_server">Endereço IP do servidor</string>
     <string name="username">Usuário</string>
     <string name="password">Senha</string>
     <string name="anonymous">Anônimo</string>
@@ -387,6 +387,26 @@
     <string name="searchingdevices">Procurando dispositivos</string>
     <string name="path">Caminho</string>
     <string name="renamebookmark">Modificar favorito</string>
-    <string name="cut">Recortar</string>  
+    <string name="cut">Recortar</string>
+    <string name="empty"></string>
+    <string name="search">Procurar</string>
+    <string name="invalid_name">Nome inválido</string>
+    <string name="search_hint">Digite para procurar&#8230;</string>
+    <string name="advanced_search">Pesquisa avançada</string>
+    <string name="regular_expression">Expressão regular</string>
+    <string name="regular_expression_summary">A pesquisa é feita usando expressão regular no estilo BASH</string>
+    <string name="match_content">Corresponder com o conteúdo</string>
+    <string name="match_content_summary">Se estiver marcado, a expressão regular será comparada com todo o nome do arquivo, irá procurar pela ocorrência de outra forma.</string>
+    <string name="start_ftp">Iniciar</string>
+    <string name="stop_ftp">Parar</string>
+    <string name="ftp_status_running">Em execução</string>
+    <string name="ftp_status_not_running">Parado</string>
+    <string name="ftp_no_wifi">Confirme se está conectado com Wi-Fi</string>
+    <string name="ftp_notif_starting">O servidor FTP está iniciando</string>
+    <string name="ftp_notif_title">Servidor FTP Amaze em execução</string>
+    <string name="ftp_notif_text">em %s</string>
+    <string name="ftp_notif_stop_server">PARAR</string>
+    <string name="primary_two_title">Cor primária (Aba direita)</string>
+    <string name="primary_two_summary">Define a cor dos principais elementos da aba direita</string>
 </resources>
 

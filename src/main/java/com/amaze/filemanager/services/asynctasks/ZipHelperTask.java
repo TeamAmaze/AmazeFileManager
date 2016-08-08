@@ -25,9 +25,20 @@ public class ZipHelperTask extends AsyncTask<String, Void, ArrayList<ZipObj>> {
     ZipViewer zipViewer;
     String dir;
 
+    /**
+     * AsyncTask to load ZIP file items.
+     * @param zipViewer the zipViewer fragment instance
+     * @param dir
+     */
     public ZipHelperTask(ZipViewer zipViewer, String dir) {
         this.zipViewer = zipViewer;
         this.dir = dir;
+        zipViewer.swipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
         zipViewer.swipeRefreshLayout.setRefreshing(true);
     }
 

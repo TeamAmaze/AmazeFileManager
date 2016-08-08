@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:2.1.2'
     }
 }
 apply plugin: 'com.android.application'
@@ -17,7 +17,7 @@ repositories {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.1'
+    buildToolsVersion '23.0.3'
 
     packagingOptions {
         exclude 'proguard-project.txt'
@@ -34,8 +34,8 @@ android {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 36
-        versionName "3.0.2 beta_3"
+        versionCode 42
+        versionName "3.1.0 Beta 1"
     }
 
     signingConfigs {
@@ -89,20 +89,37 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
-    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:design:23.2.1'
     compile 'com.github.junrar:junrar:0.7'
     compile 'org.apache.commons:commons-compress:1.10'
-    compile 'com.android.support:appcompat-v7:23.1.0'
-    compile 'com.android.support:cardview-v7:23.1.0'
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:cardview-v7:23.2.1'
     // Google Play Services
     playCompile 'com.google.android.gms:play-services-plus:7.8.0'
     compile 'org.sufficientlysecure:donations:2.3'
     playCompile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile project(':libs:StickyHeadersRecyclerView')
     compile 'com.github.clans:fab:1.6.1'
-    compile('com.github.afollestad.material-dialogs:core:0.8.5.0@aar') {
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.5@aar') {
         transitive = true
     }
+    //FTP Server
+//        compile 'org.apache.mina:mina-core:2.0.13'
+    //    compile 'org.apache.ftpserver:ftpserver-core:1.0.6'
+    //    compile 'org.apache.ftpserver:ftplet-api:1.0.6'
+
+    // https://mvnrepository.com/artifact/org.apache.mina/mina-core
+    compile group: 'org.apache.mina', name: 'mina-core', version: '2.0.13'
+
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
+
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21'
+
+    compile files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
+
+    compile files('libs/ftpserver-core-1.1.0-SNAPSHOT.jar')
 }
 
 def Properties props = new Properties()

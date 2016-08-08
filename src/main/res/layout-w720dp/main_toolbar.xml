@@ -34,32 +34,34 @@
 
 
 
-    <FrameLayout
-        android:id="@+id/content_frame"
-        android:layout_width="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        <FrameLayout
+            android:id="@+id/content_frame"
+            android:layout_width="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
 
-        android:layout_height="match_parent" />
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="4dp"
-        android:id="@+id/lin"
-        >
+            android:layout_height="match_parent" />
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="4dp"
+            android:id="@+id/lin"
+            >
+
             <android.support.v7.widget.Toolbar
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/action_bar"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_width="match_parent"
+                android:minHeight="?attr/actionBarSize"
                 android:theme="?attr/toolbar_theme"
                 app:popupTheme="?attr/popup"
-                app:layout_scrollFlags="scroll|enterAlways"
                 app:contentInsetLeft="72dp"
-                app:contentInsetStart="72dp">
+                app:contentInsetStart="72dp"
+                app:layout_scrollFlags="scroll|enterAlways"
+                >
 
             </android.support.v7.widget.Toolbar>
-
             <FrameLayout
                 android:paddingRight="16dp"
                 android:id="@+id/buttonbarframe"
@@ -138,7 +140,53 @@
                 </LinearLayout>
 
             </FrameLayout>
-    </android.support.design.widget.AppBarLayout>
+        </android.support.design.widget.AppBarLayout>
+
+        <RelativeLayout
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@drawable/search_view_shape"
+
+            android:layout_margin="@dimen/search_view_margin"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            android:elevation="8dp"
+            >
+
+            <ImageView
+                android:id="@+id/img_view_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_back_white_48dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="@dimen/search_view_back_margin_left_right"
+                android:layout_marginRight="@dimen/search_view_back_margin_left_right"
+                />
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/search_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@+id/img_view_back"
+                android:hint="@string/search_hint"
+                android:inputType="textAutoComplete"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:layout_toLeftOf="@+id/search_close_btn"
+                />
+            <ImageView
+                android:id="@+id/search_close_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_clear_black"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="@dimen/search_view_info_margin_left_right"
+                android:layout_marginRight="@dimen/search_view_info_margin_left_right"
+                />
+        </RelativeLayout>
+
         <LinearLayout
             android:layout_gravity="bottom|center_horizontal"
             android:layout_width="wrap_content"
@@ -174,6 +222,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
+            app:layout_behavior="com.amaze.filemanager.ui.SnackBarBehavior"
             android:layout_marginRight="6dp"
             android:layout_marginBottom="2dp"
             android:layout_marginLeft="10dp"
@@ -292,8 +341,50 @@
                 android:paddingBottom="8dp"
                 android:src="@color/divider"
                 android:background="@android:color/transparent"
-                android:layout_above="@+id/appbutton"
+                android:layout_above="@+id/ftpbutton"
                 android:id="@+id/divider1"></ImageView>
+            <RelativeLayout
+                android:id="@+id/ftpbutton"
+                android:layout_width="fill_parent"
+                android:layout_height="48dp"
+                android:paddingEnd="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingStart="16dp"
+                android:layout_above="@+id/appbutton"
+                android:background="@drawable/safr_ripple_white"
+                android:clickable="true">
+
+                <ImageView
+                    android:id="@+id/ftpicon"
+                    android:layout_width="24dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginRight="32dp"
+                    android:paddingBottom="12dp"
+                    android:paddingTop="12dp"
+                    android:src="@drawable/ic_ftp_light"
+                    android:contentDescription="@string/icon" />
+
+                <TextView
+                    android:id="@+id/ftptext"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:layout_toEndOf="@+id/ftpicon"
+                    android:layout_toRightOf="@+id/ftpicon"
+                    android:textSize="14sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:text="@string/ftp"
+                    android:clickable="false"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical" />
+            </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/appbutton"
                 android:layout_width="fill_parent"

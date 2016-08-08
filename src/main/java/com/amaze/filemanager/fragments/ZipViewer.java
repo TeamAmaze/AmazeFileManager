@@ -19,8 +19,6 @@
 
 package com.amaze.filemanager.fragments;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +26,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,18 +52,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.RarAdapter;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.RarHelperTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
-import com.amaze.filemanager.ui.views.DividerItemDecoration;
-import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.ui.ZipObj;
-import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
+import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.PreferenceUtils;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
@@ -82,7 +82,7 @@ public class ZipViewer extends Fragment {
     public Boolean selection = false;
     public String current;
     public Futils utils = new Futils();
-    public String skin, iconskin, year;
+    public String skin, accentColor, iconskin, year;
     public RarAdapter rarAdapter;
     public ActionMode mActionMode;
     public int skinselection;
@@ -110,6 +110,8 @@ public class ZipViewer extends Fragment {
     int openmode;
     //0 for zip 1 for rar
     boolean stopAnims=true;
+    public Integer theme, theme1;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
@@ -188,8 +190,13 @@ public class ZipViewer extends Fragment {
         showDividers = Sp.getBoolean("showDividers", true);
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
         skin = PreferenceUtils.getPrimaryColorString(Sp);
+        accentColor = PreferenceUtils.getAccentString(Sp);
         iconskin = PreferenceUtils.getFolderColorString(Sp);
-        mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
+
+        theme = Integer.parseInt(Sp.getString("theme", "0"));
+        theme1 = theme == 2 ? PreferenceUtils.hourOfDay() : theme;
+
+        //mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
         files = new ArrayList<>();
         if (savedInstanceState == null && f != null) {
@@ -315,11 +322,9 @@ public class ZipViewer extends Fragment {
             showOption(R.id.all, menu);
             hideOption(R.id.compress, menu);
             hideOption(R.id.hide, menu);
+            showOption(R.id.ex, menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
-            ObjectAnimator anim = ObjectAnimator.ofInt(mainActivity.findViewById(R.id.buttonbarframe), "backgroundColor", Color.parseColor(skin), getResources().getColor(R.color.holo_dark_action_mode));
-            anim.setDuration(0);
-            anim.setEvaluator(new ArgbEvaluator());
-            anim.start();
+            mainActivity.updateViews(new ColorDrawable(getResources().getColor(R.color.holo_dark_action_mode)));
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
@@ -358,13 +363,17 @@ public class ZipViewer extends Fragment {
             return false;
         }
 
+        /**
+         * Method will extract only items selected by the user at a level in a rar hierarchy
+         */
         void exRar() {
             try {
                 Toast.makeText(getActivity(), new Futils().getString(getActivity(), R.string.extracting), Toast.LENGTH_SHORT).show();
                 FileOutputStream fileOutputStream;
+                String fileName = f.getName().substring(0, f.getName().lastIndexOf("."));
                 for (int i : rarAdapter.getCheckedItemPositions()) {
-                    if (!elements.get(i).isDirectory()) {
-                        File f1 = new File(f.getParent() +
+                    if (!elementsRar.get(i).isDirectory()) {
+                        File f1 = new File(f.getParent() + "/" + fileName +
                                 "/" + elementsRar.get(i).getFileNameString().trim().replaceAll("\\\\",
                                 "/"));
                         if (!f1.getParentFile().exists()) f1.getParentFile().mkdirs();
@@ -375,7 +384,7 @@ public class ZipViewer extends Fragment {
                         for (FileHeader v : archive.getFileHeaders()) {
                             if (v.getFileNameString().trim().contains(name + "\\") ||
                                     v.getFileNameString().trim().equals(name)) {
-                                File f2 = new File(f.getParent() +
+                                File f2 = new File(f.getParent() + "/" + fileName +
                                         "/" + v.getFileNameString().trim().replaceAll("\\\\", "/"));
                                 if (v.isDirectory()) f2.mkdirs();
                                 else {
@@ -393,6 +402,10 @@ public class ZipViewer extends Fragment {
                 e.printStackTrace();
             }
         }
+
+        /**
+         * Method will extract only items selected by the user at a level in a zip hierarchy
+         */
         void exZip(){
 
             try {
@@ -414,10 +427,8 @@ public class ZipViewer extends Fragment {
         public void onDestroyActionMode(ActionMode actionMode) {
             if (rarAdapter != null) rarAdapter.toggleChecked(false, "");
             selection = false;
-            ObjectAnimator anim = ObjectAnimator.ofInt(mainActivity.findViewById(R.id.buttonbarframe), "backgroundColor", getResources().getColor(R.color.holo_dark_action_mode), Color.parseColor(skin));
-            anim.setDuration(0);
-            anim.setEvaluator(new ArgbEvaluator());
-            anim.start();
+            mainActivity.updateViews(new ColorDrawable(Color.parseColor(MainActivity.currentTab==1 ?
+                    BaseActivity.skinTwo : BaseActivity.skin)));
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();

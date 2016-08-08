@@ -151,7 +151,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
                     public void onClick(View v) {
                         try {
                             new Futils().copyToClipboard(c, md5);
-                            Toast.makeText(c, c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(c, c.getResources().getString(R.string.md5copied), Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

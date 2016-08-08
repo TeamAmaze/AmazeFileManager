@@ -23,12 +23,14 @@ import jcifs.smb.SmbFile;
  * Created by arpitkh996 on 13-01-2016.
  */
 public class Operations {
+
     public interface ErrorCallBack{
         void exists(HFile file);
         void launchSAF(HFile file);
         void launchSAF(HFile file,HFile file1);
         void done(HFile hFile,boolean b);
     }
+
     public static void mkdir(final HFile file,final Context context,final boolean rootMode,@NonNull final ErrorCallBack errorCallBack){
         if(file==null || errorCallBack==null)return;
         new AsyncTask<Void,Void,Void>(){
@@ -45,8 +47,7 @@ public class Operations {
                         return null;
                     }
                     errorCallBack.done(file,file.exists());
-                }
-                else {
+                } else {
                     if (file.isLocal() || file.isRoot()) {
                         int mode = checkFolder(new File(file.getParent()), context);
                         if (mode == 2) {
@@ -104,8 +105,7 @@ public class Operations {
                         return null;
                     }
                     errorCallBack.done(file,file.exists());
-                }
-                else {
+                } else {
                     if (file.isLocal() || file.isRoot()) {
                         int mode = checkFolder(new File(file.getParent()), context);
                         if (mode == 2) {
@@ -170,7 +170,7 @@ public class Operations {
                         e.printStackTrace();
                     }
                     return null;
-                }else {
+                } else {
                         if(f1.exists()){
                             errorCallBack.launchSAF(f,f1);
                             return null;

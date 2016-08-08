@@ -20,8 +20,6 @@
 package com.amaze.filemanager.fragments;
 
 
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -48,7 +46,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -66,7 +63,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -77,6 +73,7 @@ import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.IMyAidlInterface;
 import com.amaze.filemanager.Loadlistener;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.Recycleradapter;
 import com.amaze.filemanager.database.Tab;
@@ -92,6 +89,7 @@ import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
+import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
@@ -127,14 +125,20 @@ public class Main extends android.support.v4.app.Fragment {
     public LinearLayout pathbar;
     public int openMode = 0;
     public android.support.v7.widget.RecyclerView listView;
-    public boolean GO_BACK_ITEM, IS_LIST = true, SHOW_THUMBS, COLORISE_ICONS, SHOW_DIVIDERS;
+
+    public boolean GO_BACK_ITEM, SHOW_THUMBS, COLORISE_ICONS, SHOW_DIVIDERS;
+
+    /**
+     * {@link Main#IS_LIST} boolean to identify if the view is a list or grid
+     */
+    public boolean IS_LIST = true;
     public IconHolder ic;
     public MainActivity MAIN_ACTIVITY;
-    public String skin, fabSkin, iconskin;
+    public String fabSkin, iconskin;
     public float[] color;
     public ColorMatrixColorFilter colorMatrixColorFilter;
     public SwipeRefreshLayout mSwipeRefreshLayout;
-    public int skin_color, icon_skin_color, theme1, theme, file_count, folder_count, columns;
+    public int skin_color, skinTwoColor, icon_skin_color, theme1, theme, file_count, folder_count, columns;
     public String smbPath;
     public ArrayList<BaseFile> searchHelper = new ArrayList<>();
     public int skinselection;
@@ -163,6 +167,9 @@ public class Main extends android.support.v4.app.Fragment {
     private View actionModeView;
     private FastScroller fastScroller;
 
+    // defines the current visible tab, default either 0 or 1
+    //private int mCurrentTab;
+
     /*
      * boolean identifying if the search task should be re-run on back press after pressing on
      * any of the search result
@@ -183,11 +190,12 @@ public class Main extends android.support.v4.app.Fragment {
         CURRENT_PATH = getArguments().getString("lastpath");
         tabHandler = new TabHandler(getActivity(), null, null, 1);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        skin = PreferenceUtils.getPrimaryColorString(Sp);
+
         fabSkin = PreferenceUtils.getAccentString(Sp);
-        int icon = Sp.getInt("icon_skin_color_position", -1);
+        int icon = Sp.getInt(PreferenceUtils.KEY_ICON_SKIN, PreferenceUtils.DEFAULT_ICON);
         iconskin = PreferenceUtils.getFolderColorString(Sp);
-        skin_color = Color.parseColor(skin);
+        skin_color = Color.parseColor(BaseActivity.skin);
+        skinTwoColor = Color.parseColor(BaseActivity.skinTwo);
         icon_skin_color = Color.parseColor(iconskin);
         Calendar calendar = Calendar.getInstance();
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
@@ -266,7 +274,7 @@ public class Main extends android.support.v4.app.Fragment {
         goback = res.getString(R.string.goback);
         itemsstring = res.getString(R.string.items);
         apk = res.getDrawable(R.drawable.ic_doc_apk_grid);
-        mToolbarContainer.setBackgroundColor(skin_color);
+        mToolbarContainer.setBackgroundColor(MainActivity.currentTab==1 ? skinTwoColor : skin_color);
         //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
         return rootView;
     }
@@ -285,7 +293,8 @@ public class Main extends android.support.v4.app.Fragment {
         //MAIN_ACTIVITY = (MainActivity) getActivity();
         initNoFileLayout();
         utils = new Futils();
-        String x = PreferenceUtils.getSelectionColor(skin);
+        String x = PreferenceUtils.getSelectionColor(MainActivity.currentTab==1 ?
+                BaseActivity.skinTwo : BaseActivity.skin);
         skinselection = Color.parseColor(x);
         color = PreferenceUtils.calculatevalues(x);
         ColorMatrix colorMatrix = new ColorMatrix(PreferenceUtils.calculatefilter(color));
@@ -301,9 +310,8 @@ public class Main extends android.support.v4.app.Fragment {
         f = new HFile(HFile.UNKNOWN, CURRENT_PATH);
         f.generateMode(getActivity());
         MAIN_ACTIVITY.initiatebbar();
-        IS_LIST = savedInstanceState != null ? savedInstanceState.getBoolean("IS_LIST", IS_LIST) : IS_LIST;
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
-        if (theme1 == 1) {
+        /*if (theme1 == 1) {
 
             listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.holo_dark_background)));
         } else {
@@ -311,7 +319,11 @@ public class Main extends android.support.v4.app.Fragment {
             if (IS_LIST)
                 listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
 
-        }
+        }*/
+        if (theme1==0 && !IS_LIST)  listView.setBackgroundColor(getResources()
+                .getColor(R.color.grid_background_light));
+        else    listView.setBackgroundDrawable(null);
+
         listView.setHasFixedSize(true);
         columns = Integer.parseInt(Sp.getString("columns", "-1"));
         if (IS_LIST) {
@@ -362,19 +374,17 @@ public class Main extends android.support.v4.app.Fragment {
 
     void switchToGrid() {
         IS_LIST = false;
+
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
         fixIcons();
 
-        if (theme1 == 1) {
+        if (theme1==0) {
 
-            listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.holo_dark_background)));
-        } else {
-
-            if (IS_LIST)
-                listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
-            else listView.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#f2f2f2")));
+            // will always be grid, set alternate white background
+            listView.setBackgroundColor(getResources().getColor(R.color.grid_background_light));
         }
+
         if (mLayoutManagerGrid == null)
             if (columns == -1 || columns == 0)
                 mLayoutManagerGrid = new GridLayoutManager(getActivity(), 3);
@@ -384,22 +394,14 @@ public class Main extends android.support.v4.app.Fragment {
         adapter = null;
     }
 
-    void setBackground(Drawable drawable) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            listView.setBackground(drawable);
-        } else listView.setBackgroundDrawable(drawable);
-    }
-
     void switchToList() {
         IS_LIST = true;
-        if (theme1 == 1) {
-            setBackground(new ColorDrawable(getResources().getColor(R.color.holo_dark_background)));
-        } else {
 
-            if (IS_LIST)
-                setBackground(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
-            else setBackground(new ColorDrawable(Color.parseColor("#f2f2f2")));
+        if (theme1==0) {
+
+            listView.setBackgroundDrawable(null);
         }
+
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
         fixIcons();
@@ -435,7 +437,7 @@ public class Main extends android.support.v4.app.Fragment {
             if (savedInstanceState.getBoolean("selection")) {
 
                 for (int i : savedInstanceState.getIntegerArrayList("position")) {
-                    adapter.toggleChecked(i);
+                    adapter.toggleChecked(i, null);
                 }
             }
         }
@@ -459,7 +461,7 @@ public class Main extends android.support.v4.app.Fragment {
             int top = (vi == null) ? 0 : vi.getTop();
             outState.putInt("index", index);
             outState.putInt("top", top);
-            outState.putBoolean("IS_LIST", IS_LIST);
+            //outState.putBoolean("IS_LIST", IS_LIST);
             outState.putParcelableArrayList("list", LIST_ELEMENTS);
             outState.putString("CURRENT_PATH", CURRENT_PATH);
             outState.putBoolean("selection", selection);
@@ -514,19 +516,8 @@ public class Main extends android.support.v4.app.Fragment {
                 showOption(R.id.openmulti, menu);
             //hideOption(R.id.setringtone,menu);
             mode.setTitle(utils.getString(getActivity(), R.string.select));
-            /*if(Build.VERSION.SDK_INT<19)
-                getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);*/
-            // rootView.findViewById(R.id.buttonbarframe).setBackgroundColor(res.getColor(R.color.toolbar_cab));
-            ObjectAnimator anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe), "backgroundColor", skin_color, res.getColor(R.color.holo_dark_action_mode));
-            anim.setDuration(0);
-            anim.setEvaluator(new ArgbEvaluator());
-            anim.start();
-            if (Build.VERSION.SDK_INT >= 21) {
 
-                Window window = getActivity().getWindow();
-                if (MAIN_ACTIVITY.colourednavigation)
-                    window.setNavigationBarColor(res.getColor(android.R.color.black));
-            }
+            MAIN_ACTIVITY.updateViews(new ColorDrawable(res.getColor(R.color.holo_dark_action_mode)));
 
             if (!MAIN_ACTIVITY.isDrawerLocked)
                 MAIN_ACTIVITY.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
@@ -801,22 +792,16 @@ public class Main extends android.support.v4.app.Fragment {
             if (!results) adapter.toggleChecked(false, CURRENT_PATH);
             else adapter.toggleChecked(false);
             MAIN_ACTIVITY.setPagingEnabled(true);
-            ObjectAnimator anim = ObjectAnimator.ofInt(getActivity().findViewById(R.id.buttonbarframe), "backgroundColor", res.getColor(R.color.holo_dark_action_mode), skin_color);
-            anim.setDuration(0);
-            anim.setEvaluator(new ArgbEvaluator());
-            anim.start();
-            if (Build.VERSION.SDK_INT >= 21) {
 
-                Window window = getActivity().getWindow();
-                if (MAIN_ACTIVITY.colourednavigation)
-                    window.setNavigationBarColor(MAIN_ACTIVITY.skinStatusBar);
-            }
+            MAIN_ACTIVITY.updateViews(new ColorDrawable(MainActivity.currentTab==1 ?
+                    skinTwoColor : skin_color));
 
             if (!MAIN_ACTIVITY.isDrawerLocked)
                 MAIN_ACTIVITY.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED,
                         MAIN_ACTIVITY.mDrawerLinear);
         }
     };
+
     private BroadcastReceiver receiver2 = new BroadcastReceiver() {
 
         @Override
@@ -829,9 +814,18 @@ public class Main extends android.support.v4.app.Fragment {
         ma.loadlist((ma.home), false, 0);
     }
 
-    public void onListItemClicked(int position, View v) {
+    /**
+     * method called when list item is clicked in the adapter
+     * @param position the {@link int} position of the list item
+     * @param imageView the check {@link RoundedImageView} that is to be animated
+     */
+    public void onListItemClicked(int position, ImageView imageView) {
         if (position >= LIST_ELEMENTS.size()) return;
+
         if (results) {
+
+            // check to initialize search results
+            // if search task is been running, cancel it
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             SearchAsyncHelper fragment = (SearchAsyncHelper) fragmentManager
                     .findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
@@ -852,7 +846,8 @@ public class Main extends android.support.v4.app.Fragment {
         }
         if (selection == true) {
             if (!LIST_ELEMENTS.get(position).getSize().equals(goback)) {
-                adapter.toggleChecked(position);
+                // the first {goback} item if back navigation is enabled
+                adapter.toggleChecked(position, imageView);
             } else {
                 selection = false;
                 if (mActionMode != null)
@@ -862,6 +857,9 @@ public class Main extends android.support.v4.app.Fragment {
 
         } else {
             if (!LIST_ELEMENTS.get(position).getSize().equals(goback)) {
+
+                // hiding search view if visible
+                if (MainActivity.isSearchViewEnabled)   MAIN_ACTIVITY.hideSearchView();
 
                 String path;
                 Layoutelements l = LIST_ELEMENTS.get(position);
@@ -1091,11 +1089,16 @@ public class Main extends android.support.v4.app.Fragment {
                     if (f.isDirectory() && !name.endsWith("/"))
                         name = name + "/";
 
-                if (openMode == 1)
-                    MAIN_ACTIVITY.mainActivityHelper.rename(openMode, f.getPath(), CURRENT_PATH + name, getActivity(), ROOT_MODE);
-                else
-                    MAIN_ACTIVITY.mainActivityHelper.rename(openMode, (f).getPath(), (CURRENT_PATH + "/" + name), getActivity(), ROOT_MODE);
+                if (MainActivityHelper.validateFileName(new HFile(openMode, CURRENT_PATH + "/" + name), false)) {
 
+                    if (openMode == 1)
+                        MAIN_ACTIVITY.mainActivityHelper.rename(openMode, f.getPath(), CURRENT_PATH + name, getActivity(), ROOT_MODE);
+                    else
+                        MAIN_ACTIVITY.mainActivityHelper.rename(openMode, (f).getPath(), (CURRENT_PATH + "/" + name), getActivity(), ROOT_MODE);
+
+                } else {
+                    Toast.makeText(MAIN_ACTIVITY, R.string.invalid_name, Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
@@ -1170,7 +1173,9 @@ public class Main extends android.support.v4.app.Fragment {
                 CURRENT_PATH = parentPath;
 
                 MainActivityHelper.addSearchFragment(fm, new SearchAsyncHelper(),
-                        parentPath, MainActivityHelper.SEARCH_TEXT, openMode, ROOT_MODE);
+                        parentPath, MainActivityHelper.SEARCH_TEXT, openMode, ROOT_MODE,
+                        Sp.getBoolean(SearchAsyncHelper.KEY_REGEX, false),
+                        Sp.getBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, false));
             } else loadlist(CURRENT_PATH, true, -1);
 
             mRetainSearchTask = false;
@@ -1194,7 +1199,10 @@ public class Main extends android.support.v4.app.Fragment {
                 MAIN_ACTIVITY.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        MAIN_ACTIVITY.showSMBDialog("", smbPath, true);
+                        int i=-1;
+                        if((i=DataUtils.containsServer(smbPath))!=-1){
+                            MAIN_ACTIVITY.showSMBDialog(DataUtils.getServers().get(i)[0], smbPath, true);
+                        }
                     }
                 });
             } catch (Exception e) {

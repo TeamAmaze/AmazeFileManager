@@ -121,7 +121,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
     }
 
     private class ViewHolder {
-        ImageView imageView;
+        ImageView apkIcon;
         TextView txtTitle;
         RelativeLayout rl;
         TextView txtDesc;
@@ -142,13 +142,13 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
             if (app.theme1!=0)
                 vholder.txtTitle.setTextColor(Color.WHITE);
-            vholder.imageView = (ImageView) view.findViewById(R.id.bicon);
+            vholder.apkIcon = (ImageView) view.findViewById(R.id.apk_icon);
             vholder.rl = (RelativeLayout) view.findViewById(R.id.second);
             vholder.txtDesc= (TextView) view.findViewById(R.id.date);
             vholder.about=(ImageButton)view.findViewById(R.id.properties);
-            vholder.imageView.setVisibility(View.VISIBLE);
-            view.findViewById(R.id.icon).setVisibility(View.GONE);
-            view.findViewById(R.id.cicon).setVisibility(View.GONE);
+            vholder.apkIcon.setVisibility(View.VISIBLE);
+            view.findViewById(R.id.generic_icon).setVisibility(View.GONE);
+            view.findViewById(R.id.picture_icon).setVisibility(View.GONE);
             view.setTag(vholder);
 
         } else {
@@ -156,9 +156,9 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
 
         }
         final ViewHolder holder = (ViewHolder) view.getTag();
-        holder.imageView.setImageDrawable(rowItem.getImageId());
-        app.ic.cancelLoad(holder.imageView);
-        app.ic.loadDrawable(holder.imageView,(rowItem.getDesc()),null);
+        holder.apkIcon.setImageDrawable(rowItem.getImageId());
+        app.ic.cancelLoad(holder.apkIcon);
+        app.ic.loadDrawable(holder.apkIcon,(rowItem.getDesc()),null);
         if (holder.about != null) {
             if(app.theme1==0)holder.about.setColorFilter(Color.parseColor("#ff666666"));
             showPopup(holder.about,rowItem);
@@ -226,7 +226,9 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                 f1.setMode(HFile.ROOT_MODE);
                                 ApplicationInfo info1=null;
                                 for(PackageInfo info:c){
-                                    if(info.applicationInfo.publicSourceDir.equals(rowItem.getDesc()))info1=info.applicationInfo;
+                                    if(info.applicationInfo.publicSourceDir.equals(rowItem.getDesc())) {
+                                        info1=info.applicationInfo;
+                                    }
                                 }
                                 int color= Color.parseColor(PreferenceUtils.getAccentString(app.Sp));
                                 //arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1),"", false));

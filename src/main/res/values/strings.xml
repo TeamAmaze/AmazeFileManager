@@ -31,6 +31,7 @@
     <string name="storage">Storage</string>
     <string name="gallery">Gallery</string>
     <string name="apps">App Manager</string>
+    <string name="ftp">FTP Server</string>
     <string name="bookmanag">Bookmarks Manager</string>
     <string name="setting">Settings</string>
     <string name="select">Select Item</string>
@@ -281,7 +282,8 @@
     <string name="greek_translation_title">Греческий</string>
     <string name="dutch_translation_title">Dutch</string>
     <string name="romanian_translation_title">Romanian</string>
-
+	<string name="vietnamese_translation_title">Vietnamese</string>
+    
     <string name="zip_viewer">Zip Viewer</string>
     <string name="unin_system_apk">This is a system app, deleting it might lead to system un-stability.\nProceed?</string>
     <string name="warning">Warning</string>
@@ -317,8 +319,8 @@
 
     <string name="color_title">Color</string>
     <string name="color_summary">Set color to various UI components</string>
-    <string name="primary_color_title">Primary Color</string>
-    <string name="primary_color_summary">Set color to large UI elements</string>
+    <string name="primary_color_title">Primary Color (Left Tab)</string>
+    <string name="primary_color_summary">Set color to large UI elements for the left tab</string>
     <string name="accent_color_title">Accent Color</string>
     <string name="accent_color_summary">Set color to FAB and other small UI elements</string>
     <string name="icon_color_title">Icon Color</string>
@@ -389,5 +391,26 @@
     <string name="cut">Cut</string>
     <string name="empty"></string>
     <string name="search">Search</string>
+    <string name="invalid_name">Invalid Name</string>
+    <string name="search_hint">Type to search&#8230;</string>
+    <string name="advanced_search">Advanced Search</string>
+    <string name="regular_expression">Regular Expression</string>
+    <string name="regular_expression_summary">Search using a BASH style regular expression</string>
+    <string name="match_content">Match content</string>
+    <string name="match_content_summary">If set, regular expression will be matched with entire file name,
+        will look for occurrence otherwise.</string>
+    <string name="start_ftp">Start</string>
+    <string name="stop_ftp">Stop</string>
+    <string name="ftp_status_running">Running</string>
+    <string name="ftp_status_not_running">Not Running</string>
+    <string name="ftp_no_wifi">Make sure you\'re connected to WiFi</string>
+    <string name="domain">Domain</string>
+    <string name="invalid">Invalid %s</string>
+    <string name="ftp_notif_starting">FTP Server is starting</string>
+    <string name="ftp_notif_title">Amaze FTP Server running</string>
+    <string name="ftp_notif_text">at %s</string>
+    <string name="ftp_notif_stop_server">STOP</string>
+    <string name="primary_two_title">Primary Color (Right Tab)</string>
+    <string name="primary_two_summary">Set color to large UI elements for the right tab</string>
 </resources>
 

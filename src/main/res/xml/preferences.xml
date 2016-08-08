@@ -95,6 +95,21 @@
 </PreferenceCategory>
     <PreferenceCategory android:title="@string/miscellaneous">
 
+        <PreferenceScreen
+            android:title="@string/advanced_search"
+            >
+            <com.amaze.filemanager.ui.views.CheckBx
+                android:key="regex"
+                android:title="@string/regular_expression"
+                android:summary="@string/regular_expression_summary"
+                />
+            <com.amaze.filemanager.ui.views.CheckBx
+                android:key="matches"
+                android:title="@string/match_content"
+                android:summary="@string/match_content_summary"
+                />
+        </PreferenceScreen>
+
         <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="false"
             android:key="showPermissions"
@@ -113,7 +128,7 @@
             <Preference
                 android:key="studio"
                 android:title="@string/version"
-                android:summary="v3.0.2 beta_3"/>
+                android:summary="v3.1.0 Beta 1"/>
             <Preference
                 android:key="authors"
                 android:title="@string/authors" />
@@ -153,6 +168,9 @@
                     android:title="@string/portuguese_translation_title"
                     android:summary="@string/portuguese_translation_summary" />
                 <Preference
+                    android:title="@string/brazilian_portuguese_translation_title"
+                    android:summary="@string/brazilian_portuguese_translation_summary" />
+                <Preference
                     android:title="@string/polish_translation_title"
                     android:summary="@string/polish_translation_summary" />
                 <Preference
@@ -167,11 +185,15 @@
                 <Preference
                     android:title="@string/romanian_translation_title"
                     android:summary="@string/romanian_translation_summary" />
+                <Preference
+                    android:title="@string/vietnamese_translation_title"
+                    android:summary="@string/vietnamese_translation_summary" />
 
                 </PreferenceScreen>
             <Preference
                 android:key="changelog"
-                android:title="@string/changelog" />
+                android:title="@string/changelog"
+                />
             <Preference
                 android:key="xda"
                 android:title="@string/xda_title"
@@ -197,7 +219,9 @@
             </PreferenceScreen>
         <Preference
             android:key="donate"
-            android:title="@string/donate" />
+            android:title="@string/donate"
+            android:enabled="false"
+            />
         <Preference
             android:key="feedback"
             android:title="@string/feedback" />

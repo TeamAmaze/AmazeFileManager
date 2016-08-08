@@ -24,7 +24,7 @@
     <string name="italian_translation_summary" translatable="false">Francesco Credidio, Federico Cappelletti</string>
     <string name="french_translation_summary" translatable="false">Nicolas PIMENTEL, Primokorn, Renaud ROLLAND</string>
     <string name="russian_translation_summary" translatable="false">Pablo Luchiano, Kim BeeJay, Yaroslav Pronin</string>
-    <string name="spanish_translation_summary" translatable="false">Jose Miguel Sarasola</string>
+    <string name="spanish_translation_summary" translatable="false">Jose Miguel Sarasola, Roberto M.F. (Roboe)</string>
     <string name="basque_translation_summary" translatable="false">Aitor Beriain</string>
     <string name="chinese_translation_summary" translatable="false">amtlib-dot-dll, Felix2yu, Charles Kane</string>
     <string name="serbian_translation_summary" translatable="false">Mladen Pejaković</string>
@@ -32,9 +32,10 @@
     <string name="ukrainian_translation_summary" translatable="false">Pablo Luchiano</string>
     <string name="portuguese_translation_summary" translatable="false">Sérgio Marques</string>
     <string name="brazilian_portuguese_translation_summary" translatable="false">André Marcelo Alvarenga</string>
-    <string name="polish_translation_summary" translatable="false">M. Kucharskov, P. Kowalczyk</string>
+    <string name="polish_translation_summary" translatable="false">M. Kucharskov, P. Kowalczyk, hawkeye116477</string>
     <string name="korean_translation_summary" translable="false" translatable="false">Park Kyungjin</string>
     <string name="greek_translation_summary" translable="false" translatable="false">Vasilis K.</string>
     <string name="dutch_translation_summary" translable="false" translatable="false">Robin van der Vliet</string>
     <string name="romanian_translation_summary" translable="false" translatable="false">Igor S.</string>
+    <string name="vietnamese_translation_summary" translable="false" translatable="false">ngoisaosang</string>
 </resources>
