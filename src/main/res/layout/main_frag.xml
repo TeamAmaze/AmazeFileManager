@@ -20,18 +20,20 @@
     -->
 
 <FrameLayout android:id="@+id/main_frag"
-             xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!--
      As the main content view, the view below consumes the entire
      space available using match_parent in both dimensions.
     -->
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
         android:id="@+id/activity_main_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:srl_direction="both">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/listView"
@@ -40,7 +42,7 @@
             android:divider="@null"
             android:scrollbars="none"/>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
 
     <com.amaze.filemanager.ui.views.FastScroller
         android:id="@+id/fastscroll"
