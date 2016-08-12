@@ -24,7 +24,7 @@ import java.io.IOException;
  * Created by arpitkh996 on 03-03-2016.
  */
 public class BaseActivity extends AppCompatActivity {
-    public int theme1;
+    public static int theme1;
     public SharedPreferences Sp;
 
     // Accent and Primary hex color string respectively
@@ -118,6 +118,7 @@ public class BaseActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
         }
     }
+
     void setTheme() {
         if (Build.VERSION.SDK_INT >= 21) {
 

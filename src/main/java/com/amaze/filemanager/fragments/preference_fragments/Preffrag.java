@@ -46,6 +46,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.AboutActivity;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.ui.views.CheckBx;
 import com.amaze.filemanager.utils.Futils;
@@ -55,6 +56,9 @@ import com.stericson.RootTools.RootTools;
 import java.io.File;
 
 public class Preffrag extends PreferenceFragment{
+
+    private static final CharSequence PREFERENCE_KEY_ABOUT = "about";
+
     int theme;
     SharedPreferences sharedPref;
     private int COUNT = 0;
@@ -346,6 +350,16 @@ public class Preffrag extends PreferenceFragment{
             }
         });
 
+        // About
+        Preference aboutPreference = findPreference(PREFERENCE_KEY_ABOUT);
+        aboutPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                startActivity(new Intent(getActivity(), AboutActivity.class));
+                return false;
+            }
+        });
+
         // rate
         Preference preference5 = (Preference) findPreference("rate");
         preference5.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -367,7 +381,9 @@ public class Preffrag extends PreferenceFragment{
                 if (COUNT >= 5) {
                     if (toast!=null)
                         toast.cancel();
-                    toast = Toast.makeText(getActivity(), "Studio Mode : " + COUNT, Toast.LENGTH_SHORT);
+                    toast = Toast.makeText(getActivity(),
+                            getActivity().getResources().getString(R.string.easter_egg_title) +
+                            " : " + COUNT, Toast.LENGTH_SHORT);
                     toast.show();
 
                     sharedPref.edit().putInt("studio", Integer.parseInt(Integer.toString(COUNT) + "000")).apply();

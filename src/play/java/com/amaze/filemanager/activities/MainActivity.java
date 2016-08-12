@@ -1585,8 +1585,8 @@ public class MainActivity extends BaseActivity implements
             }
         } else if (requestCode == 3) {
             String p = Sp.getString("URI", null);
-            Uri oldUri = null;
-            if (p != null) oldUri = Uri.parse(p);
+
+            Uri oldUri = p!=null ? Uri.parse(p): null;
             Uri treeUri = null;
             if (responseCode == Activity.RESULT_OK) {
                 // Get Uri from Storage Access Framework.

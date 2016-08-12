@@ -70,8 +70,6 @@
         <item name="color">@android:color/white</item>
     </style>
 
-
-
     <!-- styles for preferences -->
     <!-- light -->
     <style name="pref_accent_light_red" parent="appCompatLight">

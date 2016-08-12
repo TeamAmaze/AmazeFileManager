@@ -37,6 +37,8 @@
     <!-- TODO: replace this hardcoded color with default list item selection color -->
     <color name="check_background">#EEEEEE</color>
     <color name="grid_background_light">#f2f2f2</color>
+    <color name="black_trans">#14000000</color>
+    <color name="theme_dark_card">#0E141A</color>
 
     <!-- primary color palatte -->
     <color name="primary_red">#F44336</color>

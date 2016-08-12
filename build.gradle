@@ -93,6 +93,7 @@ dependencies {
     compile 'com.github.junrar:junrar:0.7'
     compile 'org.apache.commons:commons-compress:1.10'
     compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:palette-v7:23.0.1'
     compile 'com.android.support:cardview-v7:23.2.1'
     // Google Play Services
     playCompile 'com.google.android.gms:play-services-plus:7.8.0'
@@ -120,6 +121,8 @@ dependencies {
     compile files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
 
     compile files('libs/ftpserver-core-1.1.0-SNAPSHOT.jar')
+
+    compile 'com.jcraft:jsch:0.1.53'
 }
 
 def Properties props = new Properties()

@@ -182,11 +182,11 @@
                 <Preference
                     android:title="@string/romanian_translation_title"
                     android:summary="@string/romanian_translation_summary" />
-				<Preference
+                <Preference
                     android:title="@string/vietnamese_translation_title"
                     android:summary="@string/vietnamese_translation_summary" />
 
-                </PreferenceScreen>
+            </PreferenceScreen>
             <Preference
                 android:key="changelog"
                 android:title="@string/changelog"
@@ -213,7 +213,11 @@
             <Preference
                 android:key="os"
                 android:title="@string/license" />
-            </PreferenceScreen>
+        </PreferenceScreen>
+        <Preference
+            android:key="about"
+            android:title="@string/aboutFileManager"
+            />
         <Preference
             android:key="donate"
             android:title="@string/donate"
