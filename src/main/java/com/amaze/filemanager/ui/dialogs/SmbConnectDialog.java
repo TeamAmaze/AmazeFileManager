@@ -181,6 +181,7 @@ public class SmbConnectDialog extends DialogFragment {
                     String inf = URLDecoder.decode(userinfo, "UTF-8");
                     int domainDelim = !inf.contains(";") ? 0 : inf.indexOf(';');
                     domainp = inf.substring(0,domainDelim);
+                    if(domainp!=null && domainp.length()>0)
                     inf = inf.substring(domainDelim+1);
                     userp = inf.substring(0, inf.indexOf(":"));
                     passp = inf.substring(inf.indexOf(":") + 1, inf.length());
@@ -253,7 +254,6 @@ public class SmbConnectDialog extends DialogFragment {
                 else {
                     String useru = user.getText().toString();
                     String passp = pass.getText().toString();
-
                     smbFile = connectingWithSmbServer(new String[]{ipa, useru, passp,domaind}, false);
                 }
                 if (smbFile == null) return;

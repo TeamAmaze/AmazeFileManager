@@ -318,8 +318,8 @@
 
     <string name="color_title">Cor</string>
     <string name="color_summary">Define a cor dos componentes da interface</string>
-    <string name="primary_color_title">Cor primária</string>
-    <string name="primary_color_summary">Define a cor dos principais elementos</string>
+    <string name="primary_color_title">Cor primária (Aba esquerda)</string>
+    <string name="primary_color_summary">Define a cor dos principais elementos da aba esquerda</string>
     <string name="accent_color_title">Cor secundária</string>
     <string name="accent_color_summary">Define a cor do FAB e dos outros elementos da inteface</string>
     <string name="icon_color_title">Cor dos ícones</string>
@@ -406,7 +406,7 @@
     <string name="ftp_notif_title">Servidor FTP Amaze em execução</string>
     <string name="ftp_notif_text">em %s</string>
     <string name="ftp_notif_stop_server">PARAR</string>
-    <string name="primary_two_title">Cor primária da segunda aba</string>
-    <string name="primary_two_summary">Define a cor da segunda aba</string>
+    <string name="primary_two_title">Cor primária (Aba direita)</string>
+    <string name="primary_two_summary">Define a cor dos principais elementos da aba direita</string>
 </resources>
 

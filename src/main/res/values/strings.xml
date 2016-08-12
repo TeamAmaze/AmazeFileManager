@@ -279,10 +279,11 @@
     <string name="portuguese_translation_title">Portuguese</string>
     <string name="polish_translation_title">Polish</string>
     <string name="korean_translation_title">Korean</string>
-    <string name="greek_translation_title">Греческий</string>
+    <string name="greek_translation_title">Greek</string>
     <string name="dutch_translation_title">Dutch</string>
     <string name="romanian_translation_title">Romanian</string>
 	<string name="vietnamese_translation_title">Vietnamese</string>
+    <string name="brazilian_portuguese_translation_title">Brazilian portuguese</string>
     
     <string name="zip_viewer">Zip Viewer</string>
     <string name="unin_system_apk">This is a system app, deleting it might lead to system un-stability.\nProceed?</string>
@@ -301,7 +302,7 @@
     <string name="image">Image</string>
     <string name="contributors">Contributors</string>
     <string name="savepaths">Remember paths</string>
-    <string name="savepathsummary">When starting up,the most recently viewed folder for each tab will be displayed</string>
+    <string name="savepathsummary">When starting up, the most recently viewed folder for each tab will be displayed</string>
     <string name="select_intent">Select</string>
     <string name="md5copied">MD5 copied to clipboard</string>
     <string name="generating">Generating..</string>
@@ -385,7 +386,6 @@
     <string name="ip">Address</string>
     <string name="connectionname">Connection name</string>
     <string name="nodevicefound">No device found</string>
-    <string name="searchingdevices">Searching for devices</string>
     <string name="path">Path</string>
     <string name="renamebookmark">Modify Bookmark</string>
     <string name="cut">Cut</string>
@@ -422,9 +422,9 @@
         related to development</string>
     <string name="easter_egg_title">Studio Mode</string>
     <string name="paypal_copy_message">Paypal id copied to clipboard</string>
+    <string name="searchingdevices">Searching for devices</string>
 
     <string name="author_1" translatable="false">Arpit Khurana</string>
     <string name="author_2" translatable="false">Vishal Nehra</string>
-
 </resources>
 

@@ -101,6 +101,8 @@ dependencies {
     playCompile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile project(':libs:StickyHeadersRecyclerView')
     compile 'com.github.clans:fab:1.6.1'
+    // SwipeRefreshLayout with bottom swipe
+    compile 'com.github.orangegangsters:swipy:1.2.3@aar'
     compile('com.github.afollestad.material-dialogs:core:0.8.5.5@aar') {
         transitive = true
     }

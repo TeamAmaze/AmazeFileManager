@@ -31,6 +31,7 @@
     <string name="storage">Складиште</string>
     <string name="gallery">Галерија</string>
     <string name="apps">Апликације</string>
+    <string name="ftp">ФТП сервер</string>
     <string name="bookmanag">Менаџер обележивача</string>
     <string name="setting">Поставке</string>
     <string name="select">Изаберите ставку</string>
@@ -67,7 +68,7 @@
     <string name="name">Име: </string>
     <string name="date">Датум: </string>
     <string name="location">Локација: </string>
-    <string name="size">Величина: </string>
+    <string name="size">Величина фасцикле: </string>
     <string name="totalitems">Укупно ставки: </string>
     <string name="enterzipname">Унесите име архиве</string>
     <string name="noappfound">Нема апликације за отварање овог фајла</string>
@@ -202,8 +203,8 @@
     <string name="nofiles">Нема фајлова</string>
     <string name="tapnhold">Тапните и држите фајл или фасциклу за више могућности</string>
     <string name="pathcopied">Путања копирана на клипборд</string>
-    <string name="used">Искор:  </string>
-    <string name="free">Слобо:  </string>
+    <string name="used">Искоришћено:  </string>
+    <string name="free">Слободно:  </string>
     <string name="atroot">У кореној сте фасцикли</string>
     <string name="listview">Приказ списка</string>
     <string name="gridview">Приказ мреже</string>
@@ -281,6 +282,7 @@
     <string name="greek_translation_title">Грчки</string>
     <string name="dutch_translation_title">Холандски</string>
     <string name="romanian_translation_title">Румунски</string>
+    <string name="vietnamese_translation_title">Вијетнамски</string>
 
     <string name="zip_viewer">Зип прегледач</string>
     <string name="unin_system_apk">Ово је системска апликација, уклањање може да доведе до нестабилности система.\nДа наставим?</string>
@@ -317,8 +319,8 @@
 
     <string name="color_title">Боја</string>
     <string name="color_summary">Постављање боје разних УИ компоненти</string>
-    <string name="primary_color_title">Примарна боја</string>
-    <string name="primary_color_summary">Боја великих елемената УИ-ја</string>
+    <string name="primary_color_title">Примарна боја (леви језичак)</string>
+    <string name="primary_color_summary">Боја великих УИ елемената за леви језичак</string>
     <string name="accent_color_title">Боја наглашавања</string>
     <string name="accent_color_summary">Боја ФАБ-а и других мањих елемената УИ-ја</string>
     <string name="icon_color_title">Боја икона</string>
@@ -389,5 +391,26 @@
     <string name="cut">Исеци</string>
     <string name="empty"></string>
     <string name="search">Тражи</string>
+    <string name="invalid_name">Неисправноп име</string>
+    <string name="search_hint">Унесите појам&#8230;</string>
+    <string name="advanced_search">Напредна претрага</string>
+    <string name="regular_expression">Регуларни израз</string>
+    <string name="regular_expression_summary">Претрага помоћу БАСХ регуларних израза</string>
+    <string name="match_content">Поклапај садржај</string>
+    <string name="match_content_summary">Ако је постављено, регуларни израз ће поклапати читав назив фајла,
+        у супротном ће тражити појављивања.</string>
+    <string name="start_ftp">Покрени</string>
+    <string name="stop_ftp">Заустави</string>
+    <string name="ftp_status_running">Покренут</string>
+    <string name="ftp_status_not_running">Није покренут</string>
+    <string name="ftp_no_wifi">Потврдите да сте повезани на бежичну мрежу</string>
+    <string name="domain">Домен</string>
+    <string name="invalid">Неисправно %s</string>
+    <string name="ftp_notif_starting">ФТП сервер се покреће</string>
+    <string name="ftp_notif_title">Амејз ФТП сервер је покренут</string>
+    <string name="ftp_notif_text">на %s</string>
+    <string name="ftp_notif_stop_server">ЗАУСТАВИ</string>
+    <string name="primary_two_title">Примарна боја (десни језичак)</string>
+    <string name="primary_two_summary">Боја великих УИ елемената за десни језичак</string>
 </resources>
 

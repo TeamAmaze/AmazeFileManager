@@ -340,11 +340,6 @@ public class Preffrag extends PreferenceFragment{
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto","vishalmeham2@gmail.com", null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
-                Toast.makeText(getActivity(),getActivity().getFilesDir().getPath(),Toast.LENGTH_SHORT).show();
-                File f=new File(getActivity().getExternalFilesDir("internal"),"log.txt");
-                if(f.exists()){
-                    emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
-                }
                 startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.feedback)));
                 return false;
             }
