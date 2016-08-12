@@ -1539,7 +1539,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void onConnectionFailed(final ConnectionResult result) {
-        Log.d("G+", "Connection failed"+result.getErrorCode()+result.getErrorMessage());
+        Log.d("G+", "Connection failed"+result.getErrorCode()+result.getErrorCode());
         if (!mIntentInProgress && result.hasResolution()) {
             new Thread(new Runnable() {
                 @Override
