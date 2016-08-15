@@ -93,7 +93,7 @@ public class SmbSearchDialog extends DialogFragment {
                 }
                 }
         });
-        builder.positiveText("Use custom IP");
+        builder.positiveText(R.string.use_custom_ip);
         builder.positiveColor(fabskin);
         computers.add(new Computer("-1", "-1"));
         listviewadapter = new Listviewadapter(getActivity(), R.layout.smb_computers_row, computers);
