@@ -140,7 +140,7 @@ public class FastScroller extends FrameLayout {
         if (recyclerView != null) {
             int itemCount = recyclerView.getAdapter().getItemCount();
             int targetPos = (int) Futils.getValueInRange(0, itemCount - 1, (int) (relativePos * (float) itemCount));
-            recyclerView.scrollToPosition(targetPos);
+            recyclerView.smoothScrollToPosition(targetPos);
         }
     }
 
