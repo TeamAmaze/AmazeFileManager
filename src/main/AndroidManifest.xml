@@ -73,6 +73,10 @@
             android:label="@string/setting"
             android:name=".activities.Preferences" 
 			android:theme="@style/appCompatLight">
+	    <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
            
         </activity>
 		<activity
