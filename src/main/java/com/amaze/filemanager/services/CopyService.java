@@ -366,15 +366,17 @@ public class CopyService extends Service {
             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         void copy(InputStream stream,OutputStream outputStream,long size,int id,String name,boolean move) throws IOException {
-            long  fileBytes = 0l;
             BufferHandler bufferHandler=new BufferHandler();
             ReadThread thread=new ReadThread(bufferHandler,stream);
             WriteThread thread1=new WriteThread(bufferHandler,outputStream);
             thread.start();
             thread1.start();
+            int i=1;
             while(bufferHandler.writing){
                 try {
-                    Thread.sleep(1000);
+                    if(i>5)i=5;
+                    Thread.sleep(i*100);
+                    i++;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

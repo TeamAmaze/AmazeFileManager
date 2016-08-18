@@ -12,6 +12,11 @@ public class ReadThread extends Thread{
     BufferHandler bufferHandler;
     InputStream inputStream;
     BufferedInputStream in;
+    /**
+     * Read input stream into memory and store into bufferhandler
+     * @param bufferHandler To store the read buffers into memory and provide them to write thread
+     * @param inputStream stream to read from
+     */
     public ReadThread(BufferHandler bufferHandler, InputStream inputStream) throws NullPointerException {
         this.bufferHandler = bufferHandler;
         this.inputStream = inputStream;
@@ -33,7 +38,6 @@ public class ReadThread extends Thread{
                     if ((length = in.read(buffer = new byte[1024 * 60])) > 0) {
                         bufferHandler.add(buffer, length);
                     } else break;
-
                 }
             }
             in.close();

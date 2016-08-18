@@ -3,7 +3,9 @@ package com.amaze.filemanager.services;
 /**
  * Created by arpitkh996 on 17-08-2016.
  */
-
+/**
+ * Stores data bytes to be written along with length of bytes
+ */
 public class DataPacket {
     byte[] bytes;
     int length;

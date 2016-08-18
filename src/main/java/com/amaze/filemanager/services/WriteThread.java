@@ -16,6 +16,11 @@ public class WriteThread extends Thread {
     float length=0;
     float lastwritten;
     long lasttime;
+    /**
+     * Write bytes from bufferhandler into outputstream
+     * @param bufferHandler To store the read buffers from memory and write into the file
+     * @param outputStream stream to write into
+     */
     public WriteThread(BufferHandler bufferHandler, OutputStream outputStream) throws NullPointerException {
         this.bufferHandler = bufferHandler;
         this.outputStream = outputStream;
