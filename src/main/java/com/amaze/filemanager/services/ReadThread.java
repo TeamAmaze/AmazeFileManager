@@ -1,5 +1,7 @@
 package com.amaze.filemanager.services;
 
+import android.util.Log;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;

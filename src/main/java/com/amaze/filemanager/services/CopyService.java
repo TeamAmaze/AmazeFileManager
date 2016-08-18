@@ -219,7 +219,7 @@ public class CopyService extends Service {
             toDelete=new ArrayList<>();
         }
 
-        long getTotalBytes(final ArrayList<BaseFile> files) {
+        long getTotalBytes(final ArrayList<BaseFile> files, final ProgressHandler progressHandler) {
             calculatingTotalSize=true;
             new Thread(new Runnable() {
                 @Override
@@ -234,6 +234,7 @@ public class CopyService extends Service {
                                 totalBytes = totalBytes + f1.length();
                             }
                         }
+                        progressHandler.setTotalSize(totalBytes);
                     } catch (Exception e) {
                     }
                     Copy.this.totalBytes=totalBytes;
@@ -245,7 +246,14 @@ public class CopyService extends Service {
         }
         public void execute(int id, final ArrayList<BaseFile> files, final String FILE2, final boolean move,int mode) {
             if (utils.checkFolder((FILE2), c) == 1) {
-                getTotalBytes(files);
+                ProgressHandler progressHandler=new ProgressHandler(-1);
+                progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
+                    @Override
+                    public void onProgressed(String f, float p, float speed,float avg) {
+                        System.out.println(f+" Progress "+p+" Speed "+speed+" Avg Speed "+avg);
+                    }
+                });
+                getTotalBytes(files, progressHandler);
                 for (int i = 0; i < files.size(); i++) {
                     BaseFile f1 = (files.get(i));
                     Log.e("Copy","basefile\t"+f1.getPath());
@@ -257,7 +265,7 @@ public class CopyService extends Service {
                                 continue;
                             }
                             HFile hFile=new HFile(mode,FILE2, files.get(i).getName(),f1.isDirectory());
-                            copyFiles((f1),hFile , id, move);
+                            copyFiles((f1),hFile, progressHandler, id, move);
                         }
                         else{
                             break;
@@ -305,7 +313,7 @@ public class CopyService extends Service {
             return b;
         }
 
-        private void copyFiles(final BaseFile sourceFile,final HFile targetFile,final int id,final boolean move) throws IOException {
+        private void copyFiles(final BaseFile sourceFile,final HFile targetFile,ProgressHandler progressHandler,final int id,final boolean move) throws IOException {
             Log.e("Copy",sourceFile.getPath());
             if (sourceFile.isDirectory()) {
                 if(!hash.get(id))return;
@@ -321,13 +329,15 @@ public class CopyService extends Service {
                 ArrayList<BaseFile> filePaths = sourceFile.listFiles(false);
                 for (BaseFile file : filePaths) {
                     HFile destFile = new HFile(targetFile.getMode(),targetFile.getPath(), file.getName(),file.isDirectory());
-                    copyFiles(file, destFile, id, move);
+                    copyFiles(file, destFile,progressHandler, id, move);
                 }
                 if(!hash.get(id))return;
                 fileVerifier.add(new FileBundle(sourceFile,targetFile,move));
             } else {
                 if (!hash.get(id)) return;
                 long size = sourceFile.length();
+                progressHandler.setFileName(sourceFile.getName());
+                progressHandler.setCurrentFileSize(size);
                 InputStream in = sourceFile.getInputStream();
                 OutputStream out = targetFile.getOutputStream(c);
                 if (in == null || out == null) {
@@ -337,40 +347,18 @@ public class CopyService extends Service {
                     return;
                 }
                 if (!hash.get(id)) return;
-                copy(in, out, size, id, sourceFile.getName(), move);
+                copy(in,out,progressHandler);
                 fileVerifier.add(new FileBundle(sourceFile,targetFile,move));
             }
         }
-        long time=System.nanoTime()/500000000;
-        AsyncTask asyncTask;
 
-        void calculateProgress(final String name, final long fileBytes, final int id, final long
-                size, final boolean move) {
-            if (asyncTask != null && asyncTask.getStatus() == AsyncTask.Status.RUNNING)
-                asyncTask.cancel(true);
-                asyncTask = new AsyncTask<Void, Void, Void>() {
-                int p1, p2;
-
-                @Override
-                protected Void doInBackground(Void... voids) {
-                    p1 = (int) ((copiedBytes / (float) totalBytes) * 100);
-                    p2 = (int) ((fileBytes / (float) size) * 100);
-                    if(calculatingTotalSize)p1=0;
-                    return null;
-                }
-
-                @Override
-                public void onPostExecute(Void v) {
-                    publishResults(name, p1, p2, id, totalBytes, copiedBytes, false, move);
-                }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
-        void copy(InputStream stream,OutputStream outputStream,long size,int id,String name,boolean move) throws IOException {
+        void copy(InputStream stream,OutputStream outputStream,ProgressHandler progressHandler) throws IOException {
             BufferHandler bufferHandler=new BufferHandler();
             ReadThread thread=new ReadThread(bufferHandler,stream);
-            WriteThread thread1=new WriteThread(bufferHandler,outputStream);
+            WriteThread thread1=new WriteThread(bufferHandler,outputStream,progressHandler);
             thread.start();
             thread1.start();
+            //start with shorter wait times if small file other wise increase time upto 1sec to limit cpu usage
             int i=1;
             while(bufferHandler.writing){
                 try {
@@ -383,7 +371,8 @@ public class CopyService extends Service {
             }
         }
 
-    }    }
+    }
+    }
 
 
     void generateNotification(ArrayList<HFile> failedOps,boolean move) {

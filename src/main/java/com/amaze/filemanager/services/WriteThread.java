@@ -1,5 +1,7 @@
 package com.amaze.filemanager.services;
 
+import android.util.Log;
+
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,17 +15,20 @@ public class WriteThread extends Thread {
     BufferHandler bufferHandler;
     OutputStream outputStream;
     BufferedOutputStream out;
-    float length=0;
-    float lastwritten;
-    long lasttime;
+    long length=0;
+    long lastwritten;
+    long lasttime,elapsedTime;
+    ProgressHandler progressHandler;
     /**
      * Write bytes from bufferhandler into outputstream
      * @param bufferHandler To store the read buffers from memory and write into the file
      * @param outputStream stream to write into
+     * @param progressHandler Handle progress
      */
-    public WriteThread(BufferHandler bufferHandler, OutputStream outputStream) throws NullPointerException {
+    public WriteThread(BufferHandler bufferHandler, OutputStream outputStream,ProgressHandler progressHandler) throws NullPointerException {
         this.bufferHandler = bufferHandler;
         this.outputStream = outputStream;
+        this.progressHandler=progressHandler;
         out = new BufferedOutputStream(outputStream);
         if (outputStream == null) {
             bufferHandler.setWriting(false);
@@ -46,8 +51,8 @@ public class WriteThread extends Thread {
                 try {
                     out.write(bytes);
                     this.length+=length;
-                    if(System.currentTimeMillis()/1000-lasttime>=1){
-                        System.out.println("Written "+(this.length/1024/1024)+" Speed "+((this.length-lastwritten))/1024/1024);
+                    if((elapsedTime=System.currentTimeMillis()/1000-lasttime)>=1){
+                        progressHandler.addSize(this.length-lastwritten,(float)(this.length-lastwritten)/elapsedTime/1024/1024);
                         lasttime=System.currentTimeMillis()/1000;
                         lastwritten=this.length;
                     }
