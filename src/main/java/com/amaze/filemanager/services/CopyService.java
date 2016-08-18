@@ -367,30 +367,18 @@ public class CopyService extends Service {
         }
         void copy(InputStream stream,OutputStream outputStream,long size,int id,String name,boolean move) throws IOException {
             long  fileBytes = 0l;
-            BufferedInputStream in = new BufferedInputStream(stream);
-            BufferedOutputStream out=new BufferedOutputStream(outputStream);
-            byte[] buffer = new byte[1024*60];
-            int length;
-            //copy the file content in bytes
-            while ((length = in.read(buffer)) > 0) {
-                boolean b = hash.get(id);
-                if (b) {
-                    out.write(buffer, 0, length);
-                    copiedBytes += length;
-                    fileBytes += length;
-                    long time1=System.nanoTime()/500000000;
-                    if(((int)time1)>((int)(time))){
-                        calculateProgress(name,fileBytes,id,size,move);
-                        time=System.nanoTime()/500000000;
-                    }
-
-                } else {
-                    break;
-                }}
-            in.close();
-            out.close();
-            stream.close();
-            outputStream.close();
+            BufferHandler bufferHandler=new BufferHandler();
+            ReadThread thread=new ReadThread(bufferHandler,stream);
+            WriteThread thread1=new WriteThread(bufferHandler,outputStream);
+            thread.start();
+            thread1.start();
+            while(bufferHandler.writing){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }    }
