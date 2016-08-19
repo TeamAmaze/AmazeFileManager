@@ -137,7 +137,6 @@ public class CopyService extends Service {
     public class DoInBackground extends AsyncTask<Bundle, Void, Integer> {
         ArrayList<BaseFile> files;
         boolean move;
-        FileVerifier fileVerifier;
         Copy copy;
         public DoInBackground() {
         }
@@ -157,15 +156,6 @@ public class CopyService extends Service {
         @Override
         public void onPostExecute(Integer b) {
             publishResults("", 0, 0, b, 0, 0, true, move);
-            if(fileVerifier!=null && fileVerifier.isRunning()){
-                while (fileVerifier.isRunning()){
-                    try {
-                        Thread.sleep(2000);
-                     } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
             generateNotification(copy.failedFOps,move);
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
@@ -187,34 +177,10 @@ public class CopyService extends Service {
         ArrayList<HFile> failedFOps;
         ArrayList<BaseFile> toDelete;
         boolean copy_successful;
+        ReadThread readThread;
+        WriteThread writeThread;
         public Copy() {
             copy_successful=true;
-            fileVerifier = new FileVerifier(c,rootmode, new FileVerifierInterface() {
-                @Override
-                public void addFailedFile(HFile a) {
-                    failedFOps.add(a);
-                }
-
-                @Override
-                public boolean contains(String path) {
-                    for (HFile a : failedFOps)
-                        if (a.getPath().equals(path)) return true;
-                    return false;
-                }
-
-                @Override
-                public boolean containsDirectory(String path) {
-                    for (HFile a : failedFOps)
-                        if (a.getPath().contains(path))
-                            return true;
-                    return false;
-                }
-
-                @Override
-                public void setCopySuccessful(boolean b) {
-                    copy_successful = b;
-                }
-            });
             failedFOps=new ArrayList<>();
             toDelete=new ArrayList<>();
         }
@@ -244,13 +210,15 @@ public class CopyService extends Service {
 
             return totalBytes;
         }
-        public void execute(int id, final ArrayList<BaseFile> files, final String FILE2, final boolean move,int mode) {
+        public void execute(final int id, final ArrayList<BaseFile> files, final String FILE2, final boolean move,int mode) {
             if (utils.checkFolder((FILE2), c) == 1) {
-                ProgressHandler progressHandler=new ProgressHandler(-1);
+                final ProgressHandler progressHandler=new ProgressHandler(-1);
+                BufferHandler bufferHandler=new BufferHandler(c);
                 progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
                     @Override
-                    public void onProgressed(String f, float p, float speed,float avg) {
-                        System.out.println(f+" Progress "+p+" Speed "+speed+" Avg Speed "+avg);
+                    public void onProgressed(String fileName, float p1, float p2, float speed, float avg) {
+                        publishResults(fileName, (int) p1, (int) p2, id, progressHandler.totalSize, progressHandler.writtenSize, false, move);
+                        System.out.println(new File(fileName).getName() + " Progress " + p1 + " Secondary Progress " + p2 + " Speed " + speed + " Avg Speed " + avg);
                     }
                 });
                 getTotalBytes(files, progressHandler);
@@ -265,7 +233,7 @@ public class CopyService extends Service {
                                 continue;
                             }
                             HFile hFile=new HFile(mode,FILE2, files.get(i).getName(),f1.isDirectory());
-                            copyFiles((f1),hFile, progressHandler, id, move);
+                            copyFiles((f1),hFile, bufferHandler,progressHandler, id, move);
                         }
                         else{
                             break;
@@ -279,7 +247,16 @@ public class CopyService extends Service {
                         break;
                     }
                 }
-
+                int i=1;
+                while(bufferHandler.writing){
+                    try {
+                        if(i>5)i=5;
+                        Thread.sleep(i*100);
+                        i++;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             } else if (rootmode) {
                 boolean m = true;
                 for (int i = 0; i < files.size(); i++) {
@@ -313,7 +290,7 @@ public class CopyService extends Service {
             return b;
         }
 
-        private void copyFiles(final BaseFile sourceFile,final HFile targetFile,ProgressHandler progressHandler,final int id,final boolean move) throws IOException {
+        private void copyFiles(final BaseFile sourceFile,final HFile targetFile,BufferHandler bufferHandler,ProgressHandler progressHandler,final int id,final boolean move) throws IOException {
             Log.e("Copy",sourceFile.getPath());
             if (sourceFile.isDirectory()) {
                 if(!hash.get(id))return;
@@ -329,47 +306,24 @@ public class CopyService extends Service {
                 ArrayList<BaseFile> filePaths = sourceFile.listFiles(false);
                 for (BaseFile file : filePaths) {
                     HFile destFile = new HFile(targetFile.getMode(),targetFile.getPath(), file.getName(),file.isDirectory());
-                    copyFiles(file, destFile,progressHandler, id, move);
+                    copyFiles(file, destFile,bufferHandler,progressHandler, id, move);
                 }
                 if(!hash.get(id))return;
-                fileVerifier.add(new FileBundle(sourceFile,targetFile,move));
             } else {
                 if (!hash.get(id)) return;
-                long size = sourceFile.length();
-                progressHandler.setFileName(sourceFile.getName());
-                progressHandler.setCurrentFileSize(size);
-                InputStream in = sourceFile.getInputStream();
-                OutputStream out = targetFile.getOutputStream(c);
-                if (in == null || out == null) {
-                    Log.e("Copy","streams null");
-                    failedFOps.add(sourceFile);
-                    copy_successful = false;
-                    return;
+                System.out.println("Copy start for "+targetFile.getName());
+                bufferHandler.addFile(sourceFile, targetFile);
+                if(readThread==null){
+                    readThread=new ReadThread(bufferHandler,progressHandler);
+                    readThread.start();
                 }
-                if (!hash.get(id)) return;
-                copy(in,out,progressHandler);
-                fileVerifier.add(new FileBundle(sourceFile,targetFile,move));
+                if(writeThread==null){
+                    writeThread=new WriteThread(bufferHandler,progressHandler);
+                    writeThread.start();
+                }
             }
         }
 
-        void copy(InputStream stream,OutputStream outputStream,ProgressHandler progressHandler) throws IOException {
-            BufferHandler bufferHandler=new BufferHandler();
-            ReadThread thread=new ReadThread(bufferHandler,stream);
-            WriteThread thread1=new WriteThread(bufferHandler,outputStream,progressHandler);
-            thread.start();
-            thread1.start();
-            //start with shorter wait times if small file other wise increase time upto 1sec to limit cpu usage
-            int i=1;
-            while(bufferHandler.writing){
-                try {
-                    if(i>5)i=5;
-                    Thread.sleep(i*100);
-                    i++;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
 
     }
     }
@@ -418,7 +372,7 @@ public class CopyService extends Service {
             }
             //for processviewer
             DataPackage intent = new DataPackage();
-            intent.setName(a);
+            intent.setName(new File(a).getName());
             intent.setTotal(total);
             intent.setDone(done);
             intent.setId(id);

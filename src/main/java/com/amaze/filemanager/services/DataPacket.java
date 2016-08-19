@@ -9,10 +9,19 @@ package com.amaze.filemanager.services;
 public class DataPacket {
     byte[] bytes;
     int length;
-
-    public DataPacket(int length, byte[] bytes) {
+    String name;
+    public DataPacket(String name,int length, byte[] bytes) {
         this.length = length;
         this.bytes = bytes;
+        this.name=name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public byte[] getBytes() {
