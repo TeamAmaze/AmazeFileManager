@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
+    Translated by M. Kucharskov <M.Kucharskov@gmail.com>, P. Kowalczyk <p.d.kowalczyk@wp.pl>, hawkeye116477 <hawkeye116477@gmail.com>.
+
     Copyright (C) 2014-2015 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
-    This file is part of Amaze File Manager (translated by M. Kucharskov <M.Kucharskov@gmail.com>, P. Kowalczyk <p.d.kowalczyk@wp.pl>, hawkeye116477 <hawkeye116477@gmail.com>)
+    This file is part of Amaze File Manager.
 
     Amaze File Manager is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,9 +32,9 @@
     <string name="efn">Wpisz nazwę pliku</string>
     <string name="storage">Pamięć</string>
     <string name="gallery">Galeria</string>
-    <string name="apps">Menadżer aplikacji</string>
+    <string name="apps">Menedżer aplikacji</string>
     <string name="ftp">Serwer FTP</string>
-    <string name="bookmanag">Menadżer zakładek</string>
+    <string name="bookmanag">Menedżer zakładek</string>
     <string name="setting">Ustawienia</string>
     <string name="select">Wybierz element</string>
     <string name="pressagain">Naciśnij ponownie, aby wyjść</string>
@@ -88,7 +90,7 @@
     <string name="guide3">Dotknij i przytrzymaj dowolny plik, aby wyświetlić więcej opcji...</string>
     <string name="guide4">Takich jak kopiowanie, przenoszenie, właściwości itd</string>
     <string name="guide5">Użyj przycisku wstecz Twojego urządzenia, aby wyjść w dowolnym czasie...</string>
-    <string name="guide6">..oraz używaj przycisku lewej strzałki do nawigacji w menadżerze plików</string>
+    <string name="guide6">..oraz używaj przycisku lewej strzałki do nawigacji w menedżerze plików</string>
     <string name="maintab">Nie można usunąć głównej zakładki</string>
     <string name="openparent">Otwórz folder nadrzędny</string>
     <string name="openwith">Otwórz za pomocą</string>
@@ -130,9 +132,9 @@
     <string name="sethome">Ustaw katalog domowy</string>
     <string name="foldercolor">Kolor folderów</string>
     <string name="imagegallery">Galeria obrazów</string>
-    <string name="fileexplorer">Menadżer plikow</string>
+    <string name="fileexplorer">Menedżer plików</string>
     <string name="changegallerypath">Zmień ścieżkę galerii</string>
-    <string name="usedefaultgallerypath">Użyj domyślnej ściezki galerii obrazów</string>
+    <string name="usedefaultgallerypath">Użyj domyślnej ścieżki galerii obrazów</string>
 
     <!-- New -->
     <!-- Array -->
@@ -192,7 +194,7 @@
     <string name="copying_fles">Kopiowanie plików</string>
     <string name="done">Gotowe</string>
     <string name="Extracting_fles">Wypakowywanie plików</string>
-    <string name="Zipping_fles">Pakowywanie plików</string>
+    <string name="Zipping_fles">Kompresowanie plików</string>
     <string name="items">Elementy</string>
     <string name="item">Element</string>
     <string name="set">Ustaw</string>
@@ -283,9 +285,10 @@
     <string name="dutch_translation_title">Niderlandzki</string>
     <string name="romanian_translation_title">Rumuński</string>
 	<string name="vietnamese_translation_title">Wietnamski</string>
+    <string name="brazilian_portuguese_translation_title">Portugalski (Brazylia)</string>
     
     <string name="zip_viewer">Przeglądarka archiwum</string>
-    <string name="unin_system_apk">To jest aplikacja systemowa, usunięcie jej może prowadzić do niestabliności systemu.\nKontynuować?</string>
+    <string name="unin_system_apk">To jest aplikacja systemowa, usunięcie jej może doprowadzić do niestabilności systemu.\nKontynuować?</string>
     <string name="warning">Ostrzeżenie</string>
     <string name="donate">Dotacja</string>
     <string name="archive_preferences">Ustawienia archiwum</string>
@@ -300,7 +303,7 @@
     <string name="other">Inne</string>
     <string name="image">Obraz</string>
     <string name="contributors">Współtwórcy</string>
-    <string name="savepaths">Pamietaj ścieżki</string>
+    <string name="savepaths">Pamiętaj ścieżki</string>
     <string name="savepathsummary">Podczas uruchamiania dla każdej zakładki zostanie wyświetlony najczęściej przeglądany folder</string>
     <string name="select_intent">Wybierz</string>
     <string name="md5copied">MD5 skopiowano do schowka</string>
@@ -315,19 +318,19 @@
     <string name="fab_skin">Skórka FAB</string>
     <string name="gplus_pic_title">Zaloguj z G+</string>
     <string name="gplus_pic_summary">Wyświetlaj okładkę G+ w szufladzie</string>
-    <string name="icon_credits">Grafika z &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
+    <string name="icon_credits">Grafika od &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
 
     <string name="color_title">Kolor</string>
     <string name="color_summary">Ustaw kolor różnych elementów interfejsu</string>
     <string name="primary_color_title">Kolor główny (Lewa karta)</string>
-    <string name="primary_color_summary">Ustaw kolor dla dużych elementów interfesju graficznego lewej karty</string>
+    <string name="primary_color_summary">Ustaw kolor dla dużych elementów interfejsu graficznego lewej karty</string>
     <string name="accent_color_title">Kolor akcentów</string>
-    <string name="accent_color_summary">Ustaw kolor dla FAB i małych elementów interfesju</string>
+    <string name="accent_color_summary">Ustaw kolor dla FAB i małych elementów interfejsu</string>
     <string name="icon_color_title">Kolor ikon</string>
     <string name="icon_color_summary">Ustaw kolor dla ikon</string>
     <string name="hide_mode_title">Tryb ukrywania</string>
     <string name="none">Nic</string>
-    <string name="hide_toolbar">Ukryj pasek narzedzi</string>
+    <string name="hide_toolbar">Ukryj pasek narzędzi</string>
     <string name="hide_appbar">Ukryj cały pasek aplikacji</string>
     <string name="choose_color">Wybierz kolor</string>
     <string name="g_plus_community_title">Społeczność G+</string>
@@ -343,7 +346,7 @@
     <string name="topFab">FAB w pasku aplikacji</string>
     <string name="topFabS">Określa czy przycisk + powinien być na górze, czy na dole. Stosowane, jeżeli pasek aplikacji nie jest ukryty.</string>
     <string name="needsaccess">Wymagany dostęp zapisu</string>
-    <string name="needsaccesssummary">Prosze wybrać główny katalog dla \t</string>
+    <string name="needsaccesssummary">Proszę wybrać główny katalog dla \t</string>
     <string name="needsaccesssummary1">\taby przyznać dostęp zapisu dla operacji.</string>
     <string name="smb_con">Połączenie SMB</string>
     <string name="smb_server">Adres IP serwera</string>
@@ -385,7 +388,6 @@
     <string name="ip">Adres</string>
     <string name="connectionname">Nazwa połączenia</string>
     <string name="nodevicefound">Nie znaleziono żadnego urządzenia</string>
-    <string name="searchingdevices">Szukanie urządzeń</string>
     <string name="path">Ścieżka</string>
     <string name="renamebookmark">Modyfikuj zakładkę</string>
     <string name="cut">Wytnij</string>
@@ -411,4 +413,20 @@
     <string name="ftp_notif_stop_server">ZATRZYMAJ</string>
     <string name="primary_two_title">Kolor główny (Prawa karta)</string>
     <string name="primary_two_summary">Ustaw kolor dla dużych elementów interfejsu graficznego prawej karty</string>
+    <string name="g_plus">Google Plus</string>
+    <string name="support_development">Wesprzyj rozwój</string>
+    <string name="report_bugs_title">Zgłoś błędy</string>
+    <string name="report_bugs_summary">Zgłoś błędy lub poproś o nową funkcję</string>
+    <string name="translate_title">Przetłumacz</string>
+    <string name="translate_summary">Przetłumacz Amaze na swój język</string>
+    <string name="g_plus_community_summary">Weź udział w beta testach i dyskusjach
+związanych z rozwojem</string>
+    <string name="easter_egg_title">Tryb Studio</string>
+    <string name="paypal_copy_message">Identyfikator Paypal skopiowany do schowka</string>
+    <string name="searchingdevices">Szukanie urządzeń</string>
+    <string name="use_custom_ip">Używaj niestandardowego adresu IP</string>
+    
+    <string name="author_1" translatable="false">Arpit Khurana</string>
+    <string name="author_2" translatable="false">Vishal Nehra</string>
 </resources>
+
