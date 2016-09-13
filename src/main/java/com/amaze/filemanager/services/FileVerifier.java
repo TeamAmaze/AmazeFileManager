@@ -118,21 +118,7 @@ public class FileVerifier extends Thread {
     boolean checkNonRootFiles(HFile hFile1, HFile hFile2) {
         long l1 = hFile1.length(), l2 = hFile2.length();
         if (hFile2.exists() && ((l1 != -1 && l2 != -1) ? l1 == l2 : true)) {
-            //after basic checks try checksum if possible
-            InputStream inputStream = hFile1.getInputStream();
-            InputStream inputStream1 = hFile2.getInputStream();
-            if (inputStream == null || inputStream1 == null) return true;
-            String md5, md5_1;
-            try {
-                md5 = getMD5Checksum(inputStream);
-                md5_1 = getMD5Checksum(inputStream1);
-                if (md5 != null && md5_1 != null && md5.length() > 0 && md5_1.length() > 0) {
-                    if (md5.equals(md5_1)) return true;
-                    else return false;
-                } else return true;
-            } catch (Exception e) {
-                return true;
-            }
+             return true;
         }
         return false;
     }
