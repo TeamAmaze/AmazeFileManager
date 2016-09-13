@@ -77,7 +77,7 @@ public class FTPServerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
+        setHasOptionsMenu(true);
 
     }
 
@@ -85,8 +85,7 @@ public class FTPServerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_ftp,container,false);
-//        return inflater.inflate(R.layout.article_view, container, false);
+        rootView = inflater.inflate(R.layout.fragment_ftp, container, false);
         statusText =(TextView) rootView.findViewById(R.id.statusText);
         warningText = (TextView) rootView.findViewById(R.id.warningText);
         ftpAddrText = (TextView) rootView.findViewById(R.id.ftpAddressText);
@@ -105,6 +104,7 @@ public class FTPServerFragment extends Fragment {
             //dark
             ftpImage.setImageResource(R.drawable.ic_ftp_dark);
         }
+
         ftpBtn.setOnClickListener(new View.OnClickListener(){
 
             @Override

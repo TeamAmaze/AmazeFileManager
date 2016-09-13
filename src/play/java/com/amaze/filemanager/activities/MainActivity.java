@@ -41,6 +41,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.usb.UsbManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -1256,6 +1257,11 @@ public class MainActivity extends BaseActivity implements
             floatingActionButton.setVisibility(View.INVISIBLE);
             floatingActionButton.hideMenuButton(false);
         }
+
+        // Registering intent filter for OTG
+        IntentFilter otgFilter = new IntentFilter();
+        otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
     }
 
     @Override

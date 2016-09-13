@@ -43,6 +43,7 @@ public class FTPService extends Service implements Runnable{
 
     private static final String TAG = FTPService.class.getSimpleName();
     private static int port = 2211;
+
     // Service will (global) broadcast when server start/stop
     static public final String ACTION_STARTED = "com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STARTED";
     static public final String ACTION_STOPPED = "com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STOPPED";
@@ -51,14 +52,14 @@ public class FTPService extends Service implements Runnable{
     // RequestStartStopReceiver listens for these actions to start/stop this server
     static public final String ACTION_START_FTPSERVER = "com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_START_FTPSERVER";
     static public final String ACTION_STOP_FTPSERVER = "com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_STOP_FTPSERVER";
-    private String username,password;
+
+    private String username, password;
     private boolean isPasswordProtected = false;
     protected boolean shouldExit = false;
 
-
-
     private FtpServer server;
     protected static Thread serverThread = null;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         shouldExit = false;
