@@ -35,7 +35,10 @@
     <uses-sdk 
         android:minSdkVersion="14" 
         android:targetSdkVersion="21" />
-
+        
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
     <application
         android:icon="@mipmap/ic_launcher"
         tools:replace="android:label"
