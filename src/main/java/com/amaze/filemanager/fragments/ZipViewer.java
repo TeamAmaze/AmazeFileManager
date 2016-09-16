@@ -67,8 +67,6 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
-import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
-import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
@@ -100,7 +98,7 @@ public class ZipViewer extends Fragment {
     public RecyclerView listView;
     View rootView;
     boolean addheader = true;
-    public SwipyRefreshLayout swipeRefreshLayout;
+    public SwipeRefreshLayout swipeRefreshLayout;
     StickyRecyclerHeadersDecoration headersDecor;
     LinearLayoutManager mLayoutManager;
     DividerItemDecoration dividerItemDecoration;
@@ -134,10 +132,10 @@ public class ZipViewer extends Fragment {
                 return false;
             }
         });
-        swipeRefreshLayout = (SwipyRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRefresh(SwipyRefreshLayoutDirection direction) {
+            public void onRefresh() {
                 refresh();
             }
         });

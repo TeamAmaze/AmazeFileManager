@@ -33,6 +33,7 @@ public class FTPServerFragment extends Fragment {
     Futils utils = new Futils();
     private MainActivity mainActivity;
     private View rootView;
+
     private BroadcastReceiver mWifiReceiver = new  BroadcastReceiver() {
 
         @Override
@@ -74,6 +75,7 @@ public class FTPServerFragment extends Fragment {
             }
         }
     };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,10 +140,16 @@ public class FTPServerFragment extends Fragment {
         super.onDestroy();
     }
 
+    /**
+     * Sends a broadcast to start ftp server
+     */
     private void startServer() {
         getContext().sendBroadcast(new Intent(FTPService.ACTION_START_FTPSERVER));
     }
 
+    /**
+     * Sends a broadcast to stop ftp server
+     */
     private void stopServer() {
         getContext().sendBroadcast(new Intent(FTPService.ACTION_STOP_FTPSERVER));
     }
@@ -166,6 +174,10 @@ public class FTPServerFragment extends Fragment {
         getContext().unregisterReceiver(mWifiReceiver);
         getContext().unregisterReceiver(ftpReceiver);
     }
+
+    /**
+     * Update UI widgets based on connection status
+     */
     private void updateStatus(){
         if(FTPService.isRunning()){
             statusText.setText(utils.getString(getContext(),R.string.ftp_status_running));
@@ -177,6 +189,11 @@ public class FTPServerFragment extends Fragment {
             ftpBtn.setText(utils.getString(getContext(),R.string.start_ftp));
         }
     }
+
+    /**
+     *
+     * @return address at which server is running
+     */
     private String getFTPAddressString(){
         return "ftp://"+FTPService.getLocalInetAddress(getContext()).getHostAddress()+":"+FTPService.getPort();
     }

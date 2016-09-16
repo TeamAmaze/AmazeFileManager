@@ -29,11 +29,10 @@
      As the main content view, the view below consumes the entire
      space available using match_parent in both dimensions.
     -->
-    <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
+    <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/activity_main_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srl_direction="both">
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/listView"
@@ -42,7 +41,7 @@
             android:divider="@null"
             android:scrollbars="none"/>
 
-    </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <com.amaze.filemanager.ui.views.FastScroller
         android:id="@+id/fastscroll"
