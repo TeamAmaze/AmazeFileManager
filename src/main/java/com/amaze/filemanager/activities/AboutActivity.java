@@ -64,6 +64,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     private static final String URL_REPO_XDA = "http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314";
     private static final String URL_REPO_RATE = "market://details?id=com.amaze.filemanager";
     private static final String TAG_CLIPBOARD_DONATE = "donate_id";
+    private static final String URL_DONATE_2 = "https://www.paypal.me/vishalnehra";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -257,10 +258,10 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                 break;
 
             case R.id.text_view_author_2_donate:
-                ClipboardManager clipManager2 = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                ClipData clip2 = ClipData.newPlainText(TAG_CLIPBOARD_DONATE, URL_AUTHOR_2_PAYPAL);
-                clipManager2.setPrimaryClip(clip2);
-                Toast.makeText(this, R.string.paypal_copy_message, Toast.LENGTH_LONG).show();
+
+                Intent donate2Intent = new Intent(Intent.ACTION_VIEW);
+                donate2Intent.setData(Uri.parse(URL_DONATE_2));
+                startActivity(donate2Intent);
                 break;
 
             case R.id.relative_layout_translate:

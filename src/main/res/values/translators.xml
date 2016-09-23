@@ -20,6 +20,8 @@
 <resources
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
+
+    <!-- Non-translatable strings, must not be defined in any other language -->
     <string name="german_translation_summary" translatable="false">Patrick Mertens, Unpublished, Dennis Rüdiger</string>
     <string name="italian_translation_summary" translatable="false">Francesco Credidio, Federico Cappelletti</string>
     <string name="french_translation_summary" translatable="false">Nicolas PIMENTEL, Primokorn, Renaud ROLLAND</string>
@@ -38,5 +40,7 @@
     <string name="dutch_translation_summary" translable="false" translatable="false">Robin van der Vliet</string>
     <string name="romanian_translation_summary" translable="false" translatable="false">Igor S.</string>
 	<string name="vietnamese_translation_summary" translable="false" translatable="false">ngoisaosang</string>
-    <string name="app_version" translatable="false">v3.1.0 Beta 1</string>
+    <string name="app_version" translatable="false">v3.1.0 Beta 2</string>
+    <string name="author_1" translatable="false">Arpit Khurana</string>
+    <string name="author_2" translatable="false">Vishal Nehra</string>
 </resources>

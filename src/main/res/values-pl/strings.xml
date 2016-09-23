@@ -423,8 +423,5 @@ związanych z rozwojem</string>
     <string name="paypal_copy_message">Identyfikator Paypal skopiowany do schowka</string>
     <string name="searchingdevices">Szukanie urządzeń</string>
     <string name="use_custom_ip">Używaj niestandardowego adresu IP</string>
-    
-    <string name="author_1" translatable="false">Arpit Khurana</string>
-    <string name="author_2" translatable="false">Vishal Nehra</string>
 </resources>
 

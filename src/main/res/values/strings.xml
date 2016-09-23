@@ -424,8 +424,5 @@
     <string name="paypal_copy_message">Paypal id copied to clipboard</string>
     <string name="searchingdevices">Searching for devices</string>
     <string name="use_custom_ip">Use custom IP</string>
-    
-    <string name="author_1" translatable="false">Arpit Khurana</string>
-    <string name="author_2" translatable="false">Vishal Nehra</string>
 </resources>
 
