@@ -152,7 +152,7 @@ public class DbViewer extends BaseActivity {
                 File file1=getExternalCacheDir();
                 if(file1==null)file1=getCacheDir();
 
-                if (!file.canRead() && rootmode) {
+                if (!file.canRead() && BaseActivity.rootMode) {
                     RootTools.copyFile(pathFile.getPath(),new File(file1.getPath(),file.getName()).getPath(), true,false);
                     pathFile=new File(file1.getPath(),file.getName());
                     RootHelper.runAndWait("chmod 777 " + pathFile.getPath(), true);

@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.Main;
@@ -651,7 +652,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.about:
-                                main.utils.showProps((rowItem).generateBaseFile(), rowItem.getPermissions(), main, main.ROOT_MODE);
+                                main.utils.showProps((rowItem).generateBaseFile(), rowItem.getPermissions(), main, BaseActivity.rootMode);
                                 return true;
                             case R.id.share:
                                 ArrayList<File> arrayList = new ArrayList<File>();

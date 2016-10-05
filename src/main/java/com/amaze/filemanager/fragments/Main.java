@@ -121,7 +121,7 @@ public class Main extends android.support.v4.app.Fragment {
     public LinearLayout buttons;
     public int sortby, dsort, asc;
     public String home, CURRENT_PATH = "", year, goback;
-    public boolean selection, results = false, ROOT_MODE, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS, SHOW_SIZE, SHOW_LAST_MODIFIED;
+    public boolean selection, results = false, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS, SHOW_SIZE, SHOW_LAST_MODIFIED;
     public LinearLayout pathbar;
     public int openMode = 0;
     public android.support.v7.widget.RecyclerView listView;
@@ -299,7 +299,6 @@ public class Main extends android.support.v4.app.Fragment {
         color = PreferenceUtils.calculatevalues(x);
         ColorMatrix colorMatrix = new ColorMatrix(PreferenceUtils.calculatefilter(color));
         colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
-        ROOT_MODE = Sp.getBoolean("rootmode", false);
         SHOW_HIDDEN = Sp.getBoolean("showHidden", false);
         COLORISE_ICONS = Sp.getBoolean("coloriseIcons", true);
         folder = res.getDrawable(R.drawable.ic_grid_folder_new);
@@ -662,7 +661,7 @@ public class Main extends android.support.v4.app.Fragment {
                 case R.id.about:
                     Layoutelements x;
                     x = LIST_ELEMENTS.get((plist.get(0)));
-                    utils.showProps((x).generateBaseFile(), x.getPermissions(), ma, ROOT_MODE);
+                    utils.showProps((x).generateBaseFile(), x.getPermissions(), ma, BaseActivity.rootMode);
                     mode.finish();
                     return true;
                 /*case R.id.setringtone:
@@ -1092,9 +1091,9 @@ public class Main extends android.support.v4.app.Fragment {
                 if (MainActivityHelper.validateFileName(new HFile(openMode, CURRENT_PATH + "/" + name), false)) {
 
                     if (openMode == 1)
-                        MAIN_ACTIVITY.mainActivityHelper.rename(openMode, f.getPath(), CURRENT_PATH + name, getActivity(), ROOT_MODE);
+                        MAIN_ACTIVITY.mainActivityHelper.rename(openMode, f.getPath(), CURRENT_PATH + name, getActivity(), BaseActivity.rootMode);
                     else
-                        MAIN_ACTIVITY.mainActivityHelper.rename(openMode, (f).getPath(), (CURRENT_PATH + "/" + name), getActivity(), ROOT_MODE);
+                        MAIN_ACTIVITY.mainActivityHelper.rename(openMode, (f).getPath(), (CURRENT_PATH + "/" + name), getActivity(), BaseActivity.rootMode);
 
                 } else {
                     Toast.makeText(MAIN_ACTIVITY, R.string.invalid_name, Toast.LENGTH_SHORT).show();
@@ -1173,7 +1172,7 @@ public class Main extends android.support.v4.app.Fragment {
                 CURRENT_PATH = parentPath;
 
                 MainActivityHelper.addSearchFragment(fm, new SearchAsyncHelper(),
-                        parentPath, MainActivityHelper.SEARCH_TEXT, openMode, ROOT_MODE,
+                        parentPath, MainActivityHelper.SEARCH_TEXT, openMode, BaseActivity.rootMode,
                         Sp.getBoolean(SearchAsyncHelper.KEY_REGEX, false),
                         Sp.getBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, false));
             } else loadlist(CURRENT_PATH, true, -1);
@@ -1436,7 +1435,7 @@ public class Main extends android.support.v4.app.Fragment {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                Collections.sort(LIST_ELEMENTS, new FileListSorter(dsort, sortby, asc, ROOT_MODE));
+                Collections.sort(LIST_ELEMENTS, new FileListSorter(dsort, sortby, asc, BaseActivity.rootMode));
                 return null;
             }
 

@@ -512,8 +512,7 @@ public class MainActivity extends BaseActivity implements
                     rv.add(s);
             }
         }
-        rootmode = Sp.getBoolean("rootmode", false);
-        if (rootmode)
+        if (BaseActivity.rootMode)
             rv.add("/");
         File usb = getUsbDrive();
         if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
@@ -539,7 +538,6 @@ public class MainActivity extends BaseActivity implements
             if (searchViewLayout.isShown()) {
                 // hide search view if visible, with an animation
                 hideSearchView();
-
             } else if (name.contains("TabFragment")) {
                 if (floatingActionButton.isOpened()) {
                     floatingActionButton.close(true);
@@ -591,7 +589,7 @@ public class MainActivity extends BaseActivity implements
     public void exit() {
         if (backPressedToExitOnce) {
             finish();
-            if (rootmode) {
+            if (BaseActivity.rootMode) {
                 try {
                     RootTools.closeAllShells();
                 } catch (IOException e) {
@@ -1038,11 +1036,11 @@ public class MainActivity extends BaseActivity implements
                 ArrayList<BaseFile> arrayList = new ArrayList<>();
                 if (COPY_PATH != null) {
                     arrayList = COPY_PATH;
-                    new CopyFileCheck(ma, path, false, mainActivity, rootmode).executeOnExecutor(AsyncTask
+                    new CopyFileCheck(ma, path, false, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask
                             .THREAD_POOL_EXECUTOR, arrayList);
                 } else if (MOVE_PATH != null) {
                     arrayList = MOVE_PATH;
-                    new CopyFileCheck(ma, path, true, mainActivity, rootmode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                    new CopyFileCheck(ma, path, true, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
                             arrayList);
                 }
                 COPY_PATH = null;
@@ -1132,6 +1130,7 @@ public class MainActivity extends BaseActivity implements
             animator = new ObjectAnimator().ofFloat(searchViewLayout, "alpha", 1f, 0f);
         }
 
+        // removing background fade view
         utils.revealShow(mFabBackground, false);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
@@ -1284,7 +1283,7 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (rootmode) {
+        if (BaseActivity.rootMode) {
             try {
                 RootTools.closeAllShells();
             } catch (IOException e) {
@@ -1634,7 +1633,7 @@ public class MainActivity extends BaseActivity implements
                     mainActivityHelper.mkDir(RootHelper.generateBaseFile(new File(oppathe),true), ma1);
                     break;
                 case DataUtils.RENAME:
-                    mainActivityHelper.rename(HFile.LOCAL_MODE,(oppathe), (oppathe1),mainActivity,rootmode);
+                    mainActivityHelper.rename(HFile.LOCAL_MODE,(oppathe), (oppathe1),mainActivity,BaseActivity.rootMode);
                     Main ma2 = ((Main) getFragment().getTab());
                     ma2.updateList();
                     break;
@@ -2004,7 +2003,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && isSearchViewEnabled) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN)) {
                     // Perform action on key press
                     mainActivityHelper.search(searchViewEditText.getText().toString());
                     hideSearchView();

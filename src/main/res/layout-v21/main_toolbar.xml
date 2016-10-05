@@ -169,7 +169,7 @@
                 android:inputType="textAutoComplete"
                 android:maxLines="1"
                 android:layout_toLeftOf="@+id/search_close_btn"
-                app:theme="@style/appCompatLight"
+                android:theme="@style/appCompatLight"
                 android:textColorHint="?colorAccent"
                 />
             <ImageButton

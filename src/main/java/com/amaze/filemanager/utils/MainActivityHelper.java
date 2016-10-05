@@ -305,7 +305,7 @@ public class MainActivityHelper {
     public void mkFile(final HFile path,final Main ma) {
         final Toast toast=Toast.makeText(ma.getActivity(), R.string.creatingfile, Toast.LENGTH_LONG);
         toast.show();
-        Operations.mkfile(path, ma.getActivity(), ma.ROOT_MODE, new Operations.ErrorCallBack() {
+        Operations.mkfile(path, ma.getActivity(), BaseActivity.rootMode, new Operations.ErrorCallBack() {
             @Override
             public void exists(final HFile file) {
                 ma.getActivity().runOnUiThread(new Runnable() {
@@ -358,7 +358,7 @@ public class MainActivityHelper {
     public void mkDir(final HFile path,final Main ma) {
         final Toast toast=Toast.makeText(ma.getActivity(), R.string.creatingfolder, Toast.LENGTH_LONG);
         toast.show();
-        Operations.mkdir(path, ma.getActivity(), ma.ROOT_MODE, new Operations.ErrorCallBack() {
+        Operations.mkdir(path, ma.getActivity(), BaseActivity.rootMode, new Operations.ErrorCallBack() {
             @Override
             public void exists(final HFile file) {
                 ma.getActivity().runOnUiThread(new Runnable() {
@@ -468,7 +468,7 @@ public class MainActivityHelper {
             fm.beginTransaction().remove(fragment).commit();
         }
 
-        addSearchFragment(fm, new SearchAsyncHelper(), fpath, query, ma.openMode, ma.ROOT_MODE,
+        addSearchFragment(fm, new SearchAsyncHelper(), fpath, query, ma.openMode, BaseActivity.rootMode,
                 mainActivity.Sp.getBoolean(SearchAsyncHelper.KEY_REGEX, false),
                 mainActivity.Sp.getBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, false));
     }

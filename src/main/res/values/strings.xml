@@ -49,7 +49,7 @@
     <string name="create">CREATE</string>
     <string name="success">Success</string>
     <string name="filenotexists">File Not Exists</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading&#8230;</string>
     <string name="file_empty">File is empty</string>
     <string name="error">Error</string>
     <string name="cantlistfiles">Can\'t list files without root</string>
@@ -87,7 +87,7 @@
     <string name="guide2">Touch the blue strip to show or hide PathBar</string>
     <string name="guide3">Touch and hold any file for more options</string>
     <string name="guide4">Like copy,move,properties etc</string>
-    <string name="guide5">Use Back Button of your device to exit app anytime...</string>
+    <string name="guide5">Use Back Button of your device to exit app anytime&#8230;</string>
     <string name="guide6">..And use left arrow button for navigation in file manager</string>
     <string name="maintab">Main Tab can\'t be removed</string>
     <string name="openparent">Open Parent Directory</string>
@@ -424,5 +424,6 @@
     <string name="paypal_copy_message">Paypal id copied to clipboard</string>
     <string name="searchingdevices">Searching for devices</string>
     <string name="use_custom_ip">Use custom IP</string>
+    <string name="bookmark_lost">Bookmark not found, recreating&#8230;</string>
 </resources>
 

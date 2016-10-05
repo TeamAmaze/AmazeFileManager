@@ -32,10 +32,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
@@ -120,6 +123,12 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             view.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View p1) {
+                    EntryItem item = (EntryItem) getItem(position);
+
+                    if(DataUtils.containsBooks(new String[]{item.getTitle(),item.getPath()})!=-1){
+
+                        checkForPath(item.getPath());
+                    }
                     m.selectItem(position);
                 }
                 // TODO: Implement this method
@@ -170,6 +179,41 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             }
 
             return view;
+        }
+    }
+
+    /**
+     * Checks whether path for exists
+     * If path is not found, empty directory is created
+     * @param path
+     */
+    void checkForPath(String path) {
+        if (!new File(path).exists()) {
+
+            Toast.makeText(getContext(), getContext().getString(R.string.bookmark_lost), Toast.LENGTH_SHORT).show();
+            Operations.mkdir(RootHelper.generateBaseFile(new File(path), true), getContext(),
+                    BaseActivity.rootMode, new Operations.ErrorCallBack() {
+                        @Override
+                        public void exists(HFile file) {
+
+                            return;
+                        }
+
+                        @Override
+                        public void launchSAF(HFile file) {
+
+                        }
+
+                        @Override
+                        public void launchSAF(HFile file, HFile file1) {
+
+                        }
+
+                        @Override
+                        public void done(HFile hFile, boolean b) {
+
+                        }
+                    });
         }
     }
 

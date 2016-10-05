@@ -25,6 +25,7 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.filesystem.BaseFile;
@@ -156,8 +157,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
            } else {
                try {
                    ArrayList<BaseFile> arrayList;
-                   if (ma.ROOT_MODE) {
-                       arrayList = RootHelper.getFilesList(path, ma.ROOT_MODE, ma.SHOW_HIDDEN, new RootHelper.GetModeCallBack() {
+                   if (BaseActivity.rootMode) {
+                       arrayList = RootHelper.getFilesList(path, BaseActivity.rootMode, ma.SHOW_HIDDEN, new RootHelper.GetModeCallBack() {
                            @Override
                            public void getMode(int mode) {
                                openmode = mode;
@@ -173,7 +174,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                }
            }
            if (list != null && !(openmode == 2 && ((path).equals("5") || (path).equals("6"))))
-               Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, ma.ROOT_MODE));
+               Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, BaseActivity.rootMode));
            return list;
 
     }

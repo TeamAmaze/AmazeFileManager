@@ -30,8 +30,9 @@ public class BaseActivity extends AppCompatActivity {
     // Accent and Primary hex color string respectively
     public static String accentSkin;
     public static String skin, skinTwo;
+    public static boolean rootMode;
     Futils utils;
-    boolean  rootmode,checkStorage=true;
+    boolean checkStorage=true;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,10 +53,10 @@ public class BaseActivity extends AppCompatActivity {
         }
         accentSkin = PreferenceUtils.getAccentString(Sp);
         setTheme();
-        rootmode = Sp.getBoolean("rootmode", false);
-        if (rootmode) {
+        rootMode = Sp.getBoolean("rootmode", false);
+        if (rootMode) {
             if (!RootTools.isAccessGiven()) {
-                rootmode = false;
+                rootMode = false;
                 Sp.edit().putBoolean("rootmode", false).commit();
             }
         }
@@ -69,7 +70,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (rootmode) {
+        if (rootMode) {
             try {
                 RootTools.closeAllShells();
             } catch (IOException e) {

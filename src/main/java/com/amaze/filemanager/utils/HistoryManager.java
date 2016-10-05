@@ -39,7 +39,13 @@ public class HistoryManager {
         this.dbname=dbname;
         open();
         String sd = Environment.getExternalStorageDirectory() + "/";
-        a = new String[]{sd + Environment.DIRECTORY_DCIM, sd + Environment.DIRECTORY_DOWNLOADS, sd + Environment.DIRECTORY_MOVIES, sd + Environment.DIRECTORY_MUSIC, sd + Environment.DIRECTORY_PICTURES};
+        a = new String[] {
+                sd + Environment.DIRECTORY_DCIM,
+                sd + Environment.DIRECTORY_DOWNLOADS,
+                sd + Environment.DIRECTORY_MOVIES,
+                sd + Environment.DIRECTORY_MUSIC,
+                sd + Environment.DIRECTORY_PICTURES
+        };
     }
     public void make(String table){
         for(String d:a){
