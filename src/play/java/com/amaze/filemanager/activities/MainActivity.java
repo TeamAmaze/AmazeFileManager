@@ -1983,12 +1983,11 @@ public class MainActivity extends BaseActivity implements
             } else window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             if (colourednavigation)
                 window.setNavigationBarColor(skinStatusBar);
-
         }
 
         searchViewLayout = (RelativeLayout) findViewById(R.id.search_view);
         searchViewEditText = (AppCompatEditText) findViewById(R.id.search_edit_text);
-        ImageButton clear=(ImageButton)findViewById(R.id.search_close_btn);
+        ImageView clear=(ImageView) findViewById(R.id.search_close_btn);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -2005,7 +2004,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN)) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && isSearchViewEnabled) {
                     // Perform action on key press
                     mainActivityHelper.search(searchViewEditText.getText().toString());
                     hideSearchView();
