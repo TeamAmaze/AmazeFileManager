@@ -117,19 +117,20 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                 // TODO: we don't have the check icon object probably because of config change
             }
+            if (main.mActionMode==null||main.selection==false) {
+                // start actionmode if not already started
+                // null condition if there is config change
+                main.selection=true;
+                main.mActionMode = main.MAIN_ACTIVITY.startSupportActionMode(main.mActionModeCallback);
+            }
         }
 
         notifyDataSetChanged();
         //notifyItemChanged(position);
-        if (main.selection == false || main.mActionMode == null) {
-            main.selection = true;
-            /*main.mActionMode = main.getActivity().startActionMode(
-                    main.mActionModeCallback);*/
-            main.mActionMode = main.MAIN_ACTIVITY.startSupportActionMode(main.mActionModeCallback);
-
-        }
-        if(main.mActionMode!=null && main.selection)
+        if(main.mActionMode!=null && main.selection) {
+            // we have the actionmode visible, invalidate it's views
             main.mActionMode.invalidate();
+        }
         if (getCheckedItemPositions().size() == 0) {
             main.selection = false;
             main.mActionMode.finish();

@@ -518,9 +518,12 @@ public class Main extends android.support.v4.app.Fragment {
 
             MAIN_ACTIVITY.updateViews(new ColorDrawable(res.getColor(R.color.holo_dark_action_mode)));
 
-            if (!MAIN_ACTIVITY.isDrawerLocked)
-                MAIN_ACTIVITY.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+            // do not allow drawer to open when item gets selected
+            if (!MAIN_ACTIVITY.isDrawerLocked) {
+
+                MAIN_ACTIVITY.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED,
                         MAIN_ACTIVITY.mDrawerLinear);
+            }
             return true;
         }
 
@@ -795,9 +798,10 @@ public class Main extends android.support.v4.app.Fragment {
             MAIN_ACTIVITY.updateViews(new ColorDrawable(MainActivity.currentTab==1 ?
                     skinTwoColor : skin_color));
 
-            if (!MAIN_ACTIVITY.isDrawerLocked)
+            if (!MAIN_ACTIVITY.isDrawerLocked) {
                 MAIN_ACTIVITY.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED,
                         MAIN_ACTIVITY.mDrawerLinear);
+            }
         }
     };
 

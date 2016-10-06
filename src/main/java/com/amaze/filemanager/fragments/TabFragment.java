@@ -291,7 +291,11 @@ public class TabFragment extends android.support.v4.app.Fragment
 
         colorDrawable.setColor(color);
 
-        mainActivity.updateViews(colorDrawable);
+        if (mainActivity.mainFragment!=null & !mainActivity.mainFragment.selection) {
+            // we do not want to update toolbar colors when action mode is activated
+            // during the config change
+            mainActivity.updateViews(colorDrawable);
+        }
     }
 
     @Override
