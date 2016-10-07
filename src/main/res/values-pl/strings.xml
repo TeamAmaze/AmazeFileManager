@@ -49,7 +49,7 @@
     <string name="create">UTWÓRZ</string>
     <string name="success">Powodzenie</string>
     <string name="filenotexists">Plik nie istnieje</string>
-    <string name="loading">Ładowanie...</string>
+    <string name="loading">Ładowanie&#8230;</string>
     <string name="file_empty">Plik jest pusty</string>
     <string name="error">Błąd</string>
     <string name="cantlistfiles">Nie można wyświetlić plików bez uprawnień root\'a</string>
@@ -87,7 +87,7 @@
     <string name="guide2">Dotknij niebieskiego paska, aby pokazać lub ukryć ścieżkę</string>
     <string name="guide3">Dotknij i przytrzymaj dowolny plik, aby wyświetlić więcej opcji...</string>
     <string name="guide4">Takich jak kopiowanie, przenoszenie, właściwości itd</string>
-    <string name="guide5">Użyj przycisku wstecz Twojego urządzenia, aby wyjść w dowolnym czasie...</string>
+    <string name="guide5">Użyj przycisku wstecz Twojego urządzenia, aby zamknąć aplikację w każdej chwili&#8230;</string>
     <string name="guide6">..oraz używaj przycisku lewej strzałki do nawigacji w menedżerze plików</string>
     <string name="maintab">Nie można usunąć głównej zakładki</string>
     <string name="openparent">Otwórz folder nadrzędny</string>
@@ -423,5 +423,6 @@ związanych z rozwojem</string>
     <string name="paypal_copy_message">Identyfikator Paypal skopiowany do schowka</string>
     <string name="searchingdevices">Szukanie urządzeń</string>
     <string name="use_custom_ip">Używaj niestandardowego adresu IP</string>
+    <string name="bookmark_lost">Zakładka nie znaleziona, odtwarzanie&#8230;</string>
 </resources>
 
