@@ -35,6 +35,7 @@ import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -982,7 +983,7 @@ public void showPackageDialog(final File f,final MainActivity m){
 
     }
 
-    public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size,long longSize,boolean directorybool,boolean b,String date) {
+    public Layoutelements newElement(BitmapDrawable i, String d, String permissions, String symlink, String size, long longSize, boolean directorybool, boolean b, String date) {
         Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size,longSize,b,date,directorybool);
         return item;
     }

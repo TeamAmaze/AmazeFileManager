@@ -328,6 +328,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) filetype = 0;
             else if (Icons.isApk((rowItem.getDesc()))) filetype = 1;
             else if (Icons.isVideo(rowItem.getDesc())) filetype = 2;
+            else if (Icons.isgeneric(rowItem.getDesc())) filetype = 3;
             holder.txtTitle.setText(rowItem.getTitle());
             holder.genericIcon.setImageDrawable(rowItem.getImageId());
             holder.genericText.setText("");
@@ -374,8 +375,16 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     else main.goBack();
                 }
             });
+
+            // resetting icons visibility
             holder.genericIcon.setVisibility(View.VISIBLE);
             holder.pictureIcon.setVisibility(View.INVISIBLE);
+            holder.apkIcon.setVisibility(View.INVISIBLE);
+            holder.checkImageView.setVisibility(View.INVISIBLE);
+
+            // setting icons for various cases
+            // apkIcon holder refers to square/non-circular drawable
+            // pictureIcon is circular drawable
             if (filetype == 0) {
                 if (main.SHOW_THUMBS) {
                     holder.genericIcon.setVisibility(View.GONE);
@@ -387,7 +396,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         main.ic.cancelLoad(holder.pictureIcon);
                         main.ic.loadDrawable(holder.pictureIcon, (rowItem.getDesc()), null);
                     } else {
-                        holder.checkImageView.setVisibility(View.INVISIBLE);
                         holder.apkIcon.setVisibility(View.VISIBLE);
                         holder.apkIcon.setImageDrawable(main.DARK_IMAGE);
                         main.ic.cancelLoad(holder.apkIcon);
@@ -398,7 +406,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 if (main.SHOW_THUMBS) {
                     holder.genericIcon.setVisibility(View.GONE);
                     holder.pictureIcon.setVisibility(View.GONE);
-                    holder.checkImageView.setVisibility(View.INVISIBLE);
                     holder.apkIcon.setVisibility(View.VISIBLE);
                     holder.apkIcon.setImageDrawable(main.apk);
                     main.ic.cancelLoad(holder.apkIcon);
@@ -409,19 +416,35 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 if (main.SHOW_THUMBS) {
                     holder.genericIcon.setVisibility(View.GONE);
                     if (main.CIRCULAR_IMAGES) {
-                        holder.checkImageView.setVisibility(View.INVISIBLE);
                         holder.pictureIcon.setVisibility(View.VISIBLE);
                         holder.pictureIcon.setImageDrawable(main.DARK_VIDEO);
                         main.ic.cancelLoad(holder.pictureIcon);
                         main.ic.loadDrawable(holder.pictureIcon,(rowItem.getDesc()), null);
                     } else {
-                        holder.checkImageView.setVisibility(View.INVISIBLE);
                         holder.apkIcon.setVisibility(View.VISIBLE);
                         holder.apkIcon.setImageDrawable(main.DARK_VIDEO);
                         main.ic.cancelLoad(holder.apkIcon);
                         main.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
                     }
                 }
+            } else if (filetype == 3) {
+
+                // if the file type is any unknown variable
+                String ext = !new File(rowItem.getDesc()).isDirectory()
+                        ? MimeTypes.getExtension(rowItem.getTitle()) : null;
+                if (ext != null && ext.trim().length() != 0) {
+                    holder.genericText.setText(ext);
+                    holder.genericIcon.setImageDrawable(null);
+                    //holder.genericIcon.setVisibility(View.INVISIBLE);
+                } else {
+
+                    // we could not find the extension, set a generic file type icon
+                    // probably a directory
+                    holder.genericIcon.setVisibility(View.VISIBLE);
+                }
+                holder.pictureIcon.setVisibility(View.GONE);
+                holder.apkIcon.setVisibility(View.GONE);
+
             } else {
                 holder.pictureIcon.setVisibility(View.GONE);
                 holder.apkIcon.setVisibility(View.GONE);
@@ -451,7 +474,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         gradientDrawable.setColor(c1);
                     }
                     holder.rl.setSelected(true);
-                    holder.genericText.setText("");
+                    //holder.genericText.setText("");
                 } else {
                     holder.checkImageView.setVisibility(View.INVISIBLE);
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
@@ -475,11 +498,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                             gradientDrawable.setColor(c8);
                         else if (Icons.isgeneric(rowItem.getDesc())) {
                             gradientDrawable.setColor(c9);
-                            String ext = MimeTypes.getExtension(new File(rowItem.getDesc()).getName());
-                            if (ext != null && ext.trim().length() != 0) {
-                                holder.genericText.setText(ext);
-                                holder.genericIcon.setImageDrawable(null);
-                            }
                         } else {
                             gradientDrawable.setColor(main.icon_skin_color);
                         }

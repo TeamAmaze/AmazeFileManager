@@ -21,7 +21,8 @@ package com.amaze.filemanager.ui.icons;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 
 import com.amaze.filemanager.R;
 
@@ -262,14 +263,16 @@ public class Icons {
         if(resId==null){return true;}
 
 
-        return false;}
-    public static Drawable loadMimeIcon(Context context, String path,boolean grid,final Resources res) {
+        return false;
+    }
+
+    public static BitmapDrawable loadMimeIcon(Context context, String path, boolean grid, final Resources res) {
         String mimeType = MimeTypes.getMimeType(new File(path));
         if (mimeType == null) {
             /* if(grid)
             return res.getDrawable(R.drawable.ic_doc_generic_am_grid);
 */
-            return res.getDrawable(R.drawable.ic_doc_generic_am);
+            return new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_generic_am));
         }
 
 
@@ -298,21 +301,31 @@ public class Icons {
             case R.drawable.ic_doc_text_am: if(grid)resId=R.drawable.ic_doc_text_am_grid;
                 break;
         }*/
-            return res.getDrawable(resId);
-        }
 
+            return new BitmapDrawable(res, BitmapFactory.decodeResource(res, resId));
+        }
 
         // Otherwise look for partial match
         final String typeOnly = mimeType.split("/")[0];
+
         if ("audio".equals(typeOnly)) {
-           /* if(grid)return res.getDrawable(R.drawable.ic_doc_audio_am_grid);else*/ return res.getDrawable(R.drawable.ic_doc_audio_am);
+           /* if(grid)return res.getDrawable(R.drawable.ic_doc_audio_am_grid);else*/
+            return new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_audio_am));
+
         } else if ("image".equals(typeOnly)) {
-            if(grid)return res.getDrawable(R.drawable.ic_doc_image_grid);else return res.getDrawable(R.drawable.ic_doc_image);
+
+            if (grid) return new BitmapDrawable(res,
+                    BitmapFactory.decodeResource(res, R.drawable.ic_doc_image_grid));
+            else return new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_image));
         } else if ("text".equals(typeOnly)) {
-            /*if(grid)return res.getDrawable(R.drawable.ic_doc_text_am_grid);else*/ return res.getDrawable(R.drawable.ic_doc_text_am);
+
+            /*if(grid)return res.getDrawable(R.drawable.ic_doc_text_am_grid);else*/
+            return new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_text_am));
         } else if ("video".equals(typeOnly)) {
-            /*if(grid)return res.getDrawable(R.drawable.ic_doc_video_am_grid);else*/ return res.getDrawable(R.drawable.ic_doc_video_am);
+            /*if(grid)return res.getDrawable(R.drawable.ic_doc_video_am_grid);else*/
+            return new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_video_am));
         }
-        /*if(grid)return res.getDrawable(R.drawable.ic_doc_generic_am_grid);else*/ return res.getDrawable(R.drawable.ic_doc_generic_am);
+        /*if(grid)return res.getDrawable(R.drawable.ic_doc_generic_am_grid);else*/
+        return new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_generic_am));
     }
 }

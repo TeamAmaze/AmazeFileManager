@@ -136,6 +136,11 @@ public final class MimeTypes {
     }
 
 
+    /**
+     * Get Mime Type of a file
+     * @param file the file of which mime type to get
+     * @return Mime type in form of String
+     */
     public static String getMimeType(File file) {
         if (file.isDirectory()) {
             return null;
@@ -144,6 +149,7 @@ public final class MimeTypes {
         String type = "*/*";
         final String extension = getExtension(file.getName());
 
+        // mapping extension to system mime types
         if (extension != null && !extension.isEmpty()) {
             final String extensionLowerCase = extension.toLowerCase(Locale
                     .getDefault());
@@ -162,6 +168,12 @@ public final class MimeTypes {
     }
 
 
+    /**
+     * Helper method for {@link #getMimeType(File)}
+     * to calculate the last '.' extension of files
+     * @param a the name of file
+     * @return extension extracted from name
+     */
     public static String getExtension(String a) {
         if(a.contains("."))
         return a.substring(a.lastIndexOf(".") + 1).toLowerCase();

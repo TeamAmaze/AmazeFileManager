@@ -27,12 +27,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
-import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -191,7 +192,12 @@ public class AppsList extends ListFragment {
                 c = new ArrayList<>();
                 for (PackageInfo object : all_apps) {
                     File f=new File(object.applicationInfo.publicSourceDir);
-                    a.add(new Layoutelements(ContextCompat.getDrawable(getActivity(),R.drawable.ic_doc_apk_grid), object.applicationInfo.loadLabel(p).toString(), object.applicationInfo.publicSourceDir, object.packageName, object.versionName, utils.readableFileSize(f.length()),f.length(), false, f.lastModified()+"", false));
+
+                    a.add(new Layoutelements(new BitmapDrawable(getActivity().getResources(),
+                            BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.ic_doc_apk_grid)),
+                            object.applicationInfo.loadLabel(p).toString(), object.applicationInfo.publicSourceDir,
+                            object.packageName, object.versionName, utils.readableFileSize(f.length()),f.length(), false,
+                            f.lastModified()+"", false));
                     c.add(object);
                 }
                 Collections.sort(a, new FileListSorter(0, sortby, asc, false));

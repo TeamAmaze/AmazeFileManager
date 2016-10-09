@@ -32,11 +32,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -117,7 +119,7 @@ public class Main extends android.support.v4.app.Fragment {
     public Futils utils;
     public ActionMode mActionMode;
     public SharedPreferences Sp;
-    public Drawable folder, apk, DARK_IMAGE, DARK_VIDEO;
+    public BitmapDrawable folder, apk, DARK_IMAGE, DARK_VIDEO;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
     public String home, CURRENT_PATH = "", year, goback;
@@ -273,7 +275,7 @@ public class Main extends android.support.v4.app.Fragment {
         mFullPath = (TextView) getActivity().findViewById(R.id.fullpath);
         goback = res.getString(R.string.goback);
         itemsstring = res.getString(R.string.items);
-        apk = res.getDrawable(R.drawable.ic_doc_apk_grid);
+        apk = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_apk_grid));
         mToolbarContainer.setBackgroundColor(MainActivity.currentTab==1 ? skinTwoColor : skin_color);
         //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
         return rootView;
@@ -301,10 +303,10 @@ public class Main extends android.support.v4.app.Fragment {
         colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
         SHOW_HIDDEN = Sp.getBoolean("showHidden", false);
         COLORISE_ICONS = Sp.getBoolean("coloriseIcons", true);
-        folder = res.getDrawable(R.drawable.ic_grid_folder_new);
+        folder = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_grid_folder_new));
         getSortModes();
-        DARK_IMAGE = res.getDrawable(R.drawable.ic_doc_image_dark);
-        DARK_VIDEO = res.getDrawable(R.drawable.ic_doc_video_dark);
+        DARK_IMAGE = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_image_dark));
+        DARK_VIDEO = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_video_dark));
         this.setRetainInstance(false);
         f = new HFile(HFile.UNKNOWN, CURRENT_PATH);
         f.generateMode(getActivity());
@@ -375,7 +377,7 @@ public class Main extends android.support.v4.app.Fragment {
         IS_LIST = false;
 
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
-        folder = res.getDrawable(R.drawable.ic_grid_folder_new);
+        folder = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_grid_folder_new));
         fixIcons();
 
         if (theme1==0) {
@@ -402,7 +404,7 @@ public class Main extends android.support.v4.app.Fragment {
         }
 
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
-        folder = res.getDrawable(R.drawable.ic_grid_folder_new);
+        folder = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_grid_folder_new));
         fixIcons();
         if (mLayoutManager == null)
             mLayoutManager = new LinearLayoutManager(getActivity());
@@ -986,8 +988,13 @@ public class Main extends android.support.v4.app.Fragment {
             if (bitmap != null) {
                 if (GO_BACK_ITEM)
                     if (!f.equals("/") && (openMode == 0 || openMode == 3)) {
-                        if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))
-                            bitmap.add(0, utils.newElement(res.getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha), "..", "", "", goback, 0, false, true, ""));
+                        if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback)) {
+
+                            Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                            bitmap.add(0,
+                                    utils.newElement(new BitmapDrawable(res, iconBitmap),
+                                            "..", "", "", goback, 0, false, true, ""));
+                        }
                     }
 
                 if (bitmap.size() == 0 && !results) {
@@ -1288,8 +1295,9 @@ public class Main extends android.support.v4.app.Fragment {
 
     void fixIcons() {
         for (Layoutelements layoutelements : LIST_ELEMENTS) {
-            Drawable ic = layoutelements.isDirectory() ? folder : Icons.loadMimeIcon(getActivity(), layoutelements.getDesc(), !IS_LIST, res);
-            layoutelements.setImageId(ic);
+            BitmapDrawable iconDrawable = layoutelements.isDirectory() ?
+                    folder : Icons.loadMimeIcon(getActivity(), layoutelements.getDesc(), !IS_LIST, res);
+            layoutelements.setImageId(iconDrawable);
         }
     }
 

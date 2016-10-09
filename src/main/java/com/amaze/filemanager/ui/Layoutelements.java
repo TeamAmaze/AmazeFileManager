@@ -72,13 +72,13 @@ public class Layoutelements implements Parcelable {
         p1.writeInt(isDirectory?1:0);
         p1.writeLong(date);
         p1.writeInt(header ? 1 : 0);
-        p1.writeParcelable(((BitmapDrawable) imageId).getBitmap(), p2);
+        p1.writeParcelable(imageId.getBitmap(), p2);
         p1.writeString(date1);
         p1.writeLong(longSize);
         // TODO: Implement this method
     }
 
-    private Drawable imageId;
+    private BitmapDrawable imageId;
     private String title;
     private String desc;
     private String permissions;
@@ -90,7 +90,7 @@ public class Layoutelements implements Parcelable {
     private boolean header;
     //same as hfile.modes but different than openmode in Main.java
     private int mode=0;
-    public Layoutelements(Drawable imageId, String title, String desc, String permissions, String symlink, String size,long longSize,  boolean header, String date,boolean isDirectory) {
+    public Layoutelements(BitmapDrawable imageId, String title, String desc, String permissions, String symlink, String size,long longSize,  boolean header, String date,boolean isDirectory) {
         this.imageId = imageId;
         this.title = title;
         this.desc = desc;
@@ -122,7 +122,7 @@ public class Layoutelements implements Parcelable {
         return imageId;
     }
 
-    public void setImageId(Drawable imageId){this.imageId=imageId;}
+    public void setImageId(BitmapDrawable imageId){this.imageId=imageId;}
     public String getDesc() {
         return desc.toString();
     }
