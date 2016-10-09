@@ -75,13 +75,13 @@
     </style>
 
     <!-- about activity -->
-    <style name="aboutLight" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="aboutLight" parent="appCompatLight">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">false</item>
         <item name="android:fitsSystemWindows">true</item>
     </style>
     <!-- about activity dark -->
-    <style name="aboutDark" parent="Theme.AppCompat.NoActionBar">
+    <style name="aboutDark" parent="appCompatDark">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">false</item>
         <item name="android:fitsSystemWindows">true</item>
