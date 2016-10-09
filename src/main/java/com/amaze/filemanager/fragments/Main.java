@@ -506,7 +506,10 @@ public class Main extends android.support.v4.app.Fragment {
 
             MAIN_ACTIVITY.setPagingEnabled(false);
             MAIN_ACTIVITY.floatingActionButton.hideMenuButton(true);
-            if (MAIN_ACTIVITY.isDrawerLocked) MAIN_ACTIVITY.translateDrawerList(true);
+
+            // translates the drawable content down
+            // if (MAIN_ACTIVITY.isDrawerLocked) MAIN_ACTIVITY.translateDrawerList(true);
+
             // assumes that you have "contexual.xml" menu resources
             inflater.inflate(R.menu.contextual, menu);
             initMenu(menu);
@@ -790,7 +793,9 @@ public class Main extends android.support.v4.app.Fragment {
         public void onDestroyActionMode(ActionMode mode) {
             mActionMode = null;
             selection = false;
-            if (MAIN_ACTIVITY.isDrawerLocked) MAIN_ACTIVITY.translateDrawerList(false);
+
+            // translates the drawer content up
+            //if (MAIN_ACTIVITY.isDrawerLocked) MAIN_ACTIVITY.translateDrawerList(false);
 
             MAIN_ACTIVITY.floatingActionButton.showMenuButton(true);
             if (!results) adapter.toggleChecked(false, CURRENT_PATH);
