@@ -49,7 +49,6 @@
     <string name="create">CRIAR</string>
     <string name="success">Sucesso</string>
     <string name="filenotexists">O arquivo não existe</string>
-    <string name="loading">Carregando...</string>
     <string name="file_empty">O arquivo está vazio</string>
     <string name="error">Erro</string>
     <string name="cantlistfiles">Não é possível listar arquivos sem root</string>
@@ -73,7 +72,7 @@
     <string name="enterzipname">Insira o nome do Zip</string>
     <string name="noappfound">Nenhum aplicativo encontrado para abrir este arquivo</string>
     <string name="copying">Copiando</string>
-    <string name="moving">Movendo</string>    
+    <string name="moving">Movendo</string>
     <string name="add">Adicionar</string>
     <string name="tab">Aba</string>
     <string name="file">Arquivo</string>
@@ -87,7 +86,6 @@
     <string name="guide2">Toque na faixa azul para mostrar/ocultar a barra de caminho</string>
     <string name="guide3">Toque longo no arquivo para mais opções</string>
     <string name="guide4">Por exemplo: copiar, mover, propriedades, etc.</string>
-    <string name="guide5">Use o botão Voltar do seu aparelho para sair do aplicativo...</string>
     <string name="guide6">... E use o botão de seta à esquerda para navegar no gerenciador de arquivos</string>
     <string name="maintab">A aba principal não pode ser removida</string>
     <string name="openparent">Abrir pasta superior</string>
@@ -122,7 +120,7 @@
     <string name="rootmode">Explorador de Root</string>
     <string name="rootmodesummary">Para aparelhos com root. Assinale apenas se souber o que está fazendo.</string>
     <string name="mountsystemsummary">Ative isto se quiser editar arquivos do sistema</string>
-    <string name="mountsystem">Permitir escrita nas pastas do sistema</string>    
+    <string name="mountsystem">Permitir escrita nas pastas do sistema</string>
     <string name="rootfailure">Acesso root não concedido</string>
     <string name="selectall">Selecionar tudo</string>
     <string name="delete">Excluir</string>
@@ -236,15 +234,15 @@
     <string name="rootPrefSummary">Mostra as permissões dos arquivos e pastas</string>
     <string name="rootPref">Mostrar permissões</string>
     <string name="aboutFileManager">Sobre o Gerenciador de Arquivos Amaze</string>
-    <string name="version">Versão</string>    
+    <string name="version">Versão</string>
     <string name="rate">Avaliar o aplicativo</string>
     <string name="license">Licenças Open Source</string>
     <string name="feedback">Enviar comentários</string>
-    <string name="hiddenfiles">Ocultar arquivos</string>    
+    <string name="hiddenfiles">Ocultar arquivos</string>
     <string name="type">Tipo</string>
     <string name="typeDesc">Tipo (Decrescente)</string>
     <string name="rootdirectory">Raiz</string>
-    <string name="new_string">Novo</string>    
+    <string name="new_string">Novo</string>
     <string name="setringtone">Definir como toque</string>
     <string name="copy_path">Copiar caminho</string>
     <string name="addshortcut">Adicionar atalho</string>
@@ -257,7 +255,6 @@
     <string name="archive">Pacote</string>
     <string name="archtext">Isto é um pacote. Qual ação gostaria de efetuar?</string>
     <string name="pitext">Isto é um instalador de pacote. Qual ação gostaria de efetuar?</string>
-    <string name="xda_title">XDA</string>
     <string name="xda_summary">Controle de qualidade, ajuda e resolução de problemas</string>
     <string name="invalid_dir">Pasta inválida</string>
     <string name="circularimages">Usar ícones circulares para imagens e vídeos</string>
@@ -279,11 +276,9 @@
     <string name="portuguese_translation_title">Português</string>
     <string name="polish_translation_title">Polonês</string>
     <string name="korean_translation_title">Coreano</string>
-    <string name="greek_translation_title">Grego</string>
     <string name="dutch_translation_title">Holandês</string>
     <string name="romanian_translation_title">Romeno</string>
-
-    <string name="zip_viewer">Visualizador de Zip</string>
+	<string name="zip_viewer">Visualizador de Zip</string>
     <string name="unin_system_apk">Este é um aplicativo de sistema e sua exclusão poderá deixar o sistema instável.\nContinuar?</string>
     <string name="warning">Aviso</string>
     <string name="donate">Doação</string>
@@ -300,7 +295,6 @@
     <string name="image">Imagem</string>
     <string name="contributors">Colaboradores</string>
     <string name="savepaths">Memorizar caminhos</string>
-    <string name="savepathsummary">Ao iniciar, será apresentada a última pasta aberta em cada aba</string>
     <string name="select_intent">Selecionar</string>
     <string name="md5copied">MD5 copiado para a área de transferência</string>
     <string name="generating">Gerando..</string>
@@ -318,8 +312,8 @@
 
     <string name="color_title">Cor</string>
     <string name="color_summary">Define a cor dos componentes da interface</string>
-    <string name="primary_color_title">Cor primária (Aba esquerda)</string>
-    <string name="primary_color_summary">Define a cor dos principais elementos da aba esquerda</string>
+    <string name="primary_color_title">Cor primária</string>
+    <string name="primary_color_summary">Define a cor dos principais elementos</string>
     <string name="accent_color_title">Cor secundária</string>
     <string name="accent_color_summary">Define a cor do FAB e dos outros elementos da inteface</string>
     <string name="icon_color_title">Cor dos ícones</string>
@@ -329,7 +323,6 @@
     <string name="hide_toolbar">Ocultar barra de ferramentas</string>
     <string name="hide_appbar">Ocultar barra do aplicativo</string>
     <string name="choose_color">Escolha a cor</string>
-    <string name="g_plus_community_title">Comunidade do G+</string>
     <string name="hide_mode_nothing">A barra do aplicativo fica inalterada</string>
     <string name="hide_mode_toolbar">Ocultar barra de ferramentas ao deslocar</string>
     <string name="hide_mode_app_bar">Ocultar barra do aplicativo ao deslocar</string>
@@ -384,7 +377,6 @@
     <string name="ip">Endereço</string>
     <string name="connectionname">Nome da conexão</string>
     <string name="nodevicefound">Nenhum dispositivo encontrado</string>
-    <string name="searchingdevices">Procurando dispositivos</string>
     <string name="path">Caminho</string>
     <string name="renamebookmark">Modificar favorito</string>
     <string name="cut">Recortar</string>
@@ -406,7 +398,8 @@
     <string name="ftp_notif_title">Servidor FTP Amaze em execução</string>
     <string name="ftp_notif_text">em %s</string>
     <string name="ftp_notif_stop_server">PARAR</string>
-    <string name="primary_two_title">Cor primária (Aba direita)</string>
-    <string name="primary_two_summary">Define a cor dos principais elementos da aba direita</string>
-</resources>
+    <string name="primary_two_title">Cor primária da segunda aba</string>
+    <string name="primary_two_summary">Define a cor da segunda aba</string>
+    <string name="searchingdevices">Procurando dispositivos</string>
+    </resources>
 

@@ -49,7 +49,6 @@
     <string name="create">Tạo</string>
     <string name="success">Thành công</string>
     <string name="filenotexists">Tệp không tồn tại</string>
-    <string name="loading">Đang nạp...</string>
     <string name="file_empty">Tệp rỗng</string>
     <string name="error">Lỗi</string>
     <string name="cantlistfiles">Không thể liệt kê tệp tin mà không root</string>
@@ -87,7 +86,6 @@
     <string name="guide2">Chạm vào dải màu xanh để hiển thị hoặc ẩn thanh đường dẫn</string>
     <string name="guide3">Chạm và giữ bất kỳ tệp tin nào để có nhiều lựa chọn</string>
     <string name="guide4">Như sao chép, di chuyển, thuộc tính,...</string>
-    <string name="guide5">Sử dụng nút Quay lại trên thiết bị của bạn để thoát ứng dụng bất kỳ lúc nào...</string>
     <string name="guide6">..Và sử dụng nút mũi tên trái để điều hướng quản lý tệp</string>
     <string name="maintab">Đã không thể gỡ bỏ thẻ chính</string>
     <string name="openparent">Mở danh mục chính</string>
@@ -257,7 +255,6 @@
     <string name="archive">Lưu trữ</string>
     <string name="archtext">Đây là một gói lưu trữ. Hành động bạn muốn thực thi là gì?</string>
     <string name="pitext">Đây là một gói cài đặt. Hành động bạn muốn thực thi là gì?</string>
-    <string name="xda_title">XDA</string>
     <string name="xda_summary">H&amp;Đ, Hướng dẫn &amp; Gỡ rối</string>
     <string name="invalid_dir">Thư mục không hợp lệ</string>
     <string name="circularimages">Dùng biểu tượng hình tròn cho hình ảnh và video</string>
@@ -279,11 +276,9 @@
     <string name="portuguese_translation_title">Portuguese</string>
     <string name="polish_translation_title">Polish</string>
     <string name="korean_translation_title">Korean</string>
-    <string name="greek_translation_title">Греческий</string>
     <string name="dutch_translation_title">Dutch</string>
     <string name="romanian_translation_title">Romanian</string>
-
-    <string name="zip_viewer">Trình xem Zip</string>
+	<string name="zip_viewer">Trình xem Zip</string>
     <string name="unin_system_apk">Đây là một ứng dụng hệ thống, xóa nó có thể dẫn đến sự mất ổn định hệ thống.\nThực thi?</string>
     <string name="warning">Cảnh báo</string>
     <string name="donate">Ủng hộ</string>
@@ -300,7 +295,6 @@
     <string name="image">Hình ảnh</string>
     <string name="contributors">Người đóng góp</string>
     <string name="savepaths">Nhớ đường dẫn</string>
-    <string name="savepathsummary">Khi khởi chạy, các thư mục đã xem gần đây nhất cho mỗi thẻ sẽ được hiển thị</string>
     <string name="select_intent">Chọn</string>
     <string name="md5copied">MD5 đã được sao chép vào clipboard</string>
     <string name="generating">Đang thực thi..</string>
@@ -329,7 +323,6 @@
     <string name="hide_toolbar">Ẩn thanh công cụ</string>
     <string name="hide_appbar">Ẩn thanh ứng dụng</string>
     <string name="choose_color">Chọn màu</string>
-    <string name="g_plus_community_title">Cộng đồng G+</string>
     <string name="hide_mode_nothing">Thanh ứng dụng vẫn còn nguyên vẹn</string>
     <string name="hide_mode_toolbar">Ẩn thanh công cụ khi cuộn</string>
     <string name="hide_mode_app_bar">Ẩn thanh ứng dụng khi cuộn</string>
@@ -384,7 +377,6 @@
     <string name="ip">Địa chỉ</string>
     <string name="connectionname">Tên kết nối</string>
     <string name="nodevicefound">Không tìm thấy thiết bị</string>
-    <string name="searchingdevices">Đang tìm kiếm thiết bị</string>
     <string name="path">Đường dẫn</string>
     <string name="renamebookmark">Tùy chỉnh Bookmark</string>
     <string name="cut">Cắt</string>
@@ -411,5 +403,6 @@
     <string name="ftp_notif_stop_server">Ngừng</string>
     <string name="primary_two_title">Màu nguyên thủy (Thẻ phải)</string>
     <string name="primary_two_summary">Đặt màu sắc cho các yếu tố UI lớn cho các thẻ bên phải</string>
-</resources>
+    <string name="searchingdevices">Đang tìm kiếm thiết bị</string>
+    </resources>
 

@@ -31,6 +31,7 @@
     <string name="storage">Opslag</string>
     <string name="gallery">Galerij</string>
     <string name="apps">Applicatiebeheerder</string>
+    <string name="ftp">FTP Server</string>
     <string name="bookmanag">Bladwijzerbeheerder</string>
     <string name="setting">Instellingen</string>
     <string name="select">Item selecteren</string>
@@ -48,7 +49,6 @@
     <string name="create">AANMAKEN</string>
     <string name="success">Succes</string>
     <string name="filenotexists">Bestand bestaat niet</string>
-    <string name="loading">Laden...</string>
     <string name="file_empty">Bestand is leeg</string>
     <string name="error">Fout</string>
     <string name="cantlistfiles">Kan geen bestandenlijst maken zonder root-toegang</string>
@@ -63,7 +63,6 @@
     <string name="fileexist">Bestand met dezelfde naam bestaat al</string>
     <string name="filecreated">Bestand aangemaakt</string>
     <string name="searchpath">Pad zoeken</string>
-    <string name="search">Zoeken</string>
     <string name="enterfile">Bestandsnaam invoeren</string>
     <string name="name">Naam: </string>
     <string name="date">Datum: </string>
@@ -87,7 +86,6 @@
     <string name="guide2">Druk op de blauwe strip om de padbalk weer te geven of te verbergen</string>
     <string name="guide3">Druk en houd een bestand ingedrukt voor meer opties</string>
     <string name="guide4">Zoals kopiëren, verplaatsen, eigenschappen, enz.</string>
-    <string name="guide5">Gebruik de terugknop van je apparaat om de app op elk moment af te sluiten...</string>
     <string name="guide6">... En gebruik de knop met de pijl naar links voor navigatie in de bestandsbeheerder</string>
     <string name="maintab">Hoofdtabblad kan niet worden verwijderd</string>
     <string name="openparent">Open bovenliggende map</string>
@@ -123,7 +121,6 @@
     <string name="mountsystemsummary">Schakel dit in als je systeembestanden wilt bewerken</string>
     <string name="mountsystem">Systeemmappen schrijfbaar aankoppelen</string>
     <string name="rootfailure">Root-toegang niet verleend</string>
-    <string name="cut">Verplaatsen</string>
     <string name="selectall">Alles selecteren</string>
     <string name="delete">Verwijderen</string>
     <string name="setashome">Instellen als persoonlijke map</string>
@@ -257,7 +254,6 @@
     <string name="archive">Archief</string>
     <string name="archtext">Dit is een archief. Welke actie wil je uitvoeren?</string>
     <string name="pitext">Dit is een pakketinstallatieprogramma. Welke actie wil je uitvoeren?</string>
-    <string name="xda_title">XDA</string>
     <string name="xda_summary">Veelgestelde vragen, help &amp; probleemoplossing</string>
     <string name="invalid_dir">Ongeldige map</string>
     <string name="circularimages">Ronde pictogrammen gebruiken voor afbeeldingen en video\'s</string>
@@ -279,9 +275,9 @@
     <string name="portuguese_translation_title">Portugees</string>
     <string name="polish_translation_title">Pools</string>
     <string name="korean_translation_title">Koreaans</string>
-    <string name="greek_translation_title">Grieks</string>
     <string name="dutch_translation_title">Nederlands</string>
-
+    <string name="romanian_translation_title">Roemeens</string>
+	<string name="vietnamese_translation_title">Vietnamees</string>
     <string name="zip_viewer">Zip openen</string>
     <string name="unin_system_apk">Dit is een systeemapp. Het verwijderen kan leiden tot instabiliteit van het systeem.\nDoorgaan?</string>
     <string name="warning">Waarschuwing</string>
@@ -299,7 +295,6 @@
     <string name="image">Afbeelding</string>
     <string name="contributors">Bijdragers</string>
     <string name="savepaths">Paden onthouden</string>
-    <string name="savepathsummary">Tijdens het opstarten wordt de meest recent bekeken map voor elk tabblad weergegeven</string>
     <string name="select_intent">Selecteren</string>
     <string name="md5copied">MD5-hash gekopieerd naar het klembord</string>
     <string name="generating">Genereren...</string>
@@ -328,7 +323,6 @@
     <string name="hide_toolbar">Werkbalk verbergen</string>
     <string name="hide_appbar">Hele appbalk verbergen</string>
     <string name="choose_color">Kleur kiezen</string>
-    <string name="g_plus_community_title">Google+-gemeenschap</string>
     <string name="hide_mode_nothing">Appbalk blijft intact</string>
     <string name="hide_mode_toolbar">Werkbalk verbergt tijdens het scrollen</string>
     <string name="hide_mode_app_bar">Appbalk verbergt tijdens het scrollen</string>
@@ -366,5 +360,33 @@
     <string name="defualt">Standaard</string>
     <string name="doit">Doe het</string>
     <string name="wanthelp"><u>Hulp nodig?</u></string>
-</resources>
+    <string name="recent">Recente bestanden</string>
+    <string name="edit">Bewerken</string>
+    <string name="find">Zoeken in pagina</string>
+    <string name="grantper">Toestemming geven</string>
+    <string name="grantfailed">Geen toestemming verleend</string>
+    <string name="granttext">De app heeft opslag-rechten nodig om te functioneren. Als u op annuleren drukt, wordt de app afgesloten.</string>
+    <string name="grantgplus">De app heeft rechten nodig voor deze functie. Als u op annuleren drukt, wordt deze functie uitgeschakeld.</string>
+    <string name="operationunsuccesful">Uitvoeren mislukt</string>
+    <string name="creatingfile">Bestand aanmaken</string>
+    <string name="creatingfolder">Map aanmaken</string>
+    <string name="renaming">Hernoemen</string>
+    <string name="cantbeempty">%s mag niet leeg zijn</string>
+    <string name="ip">Adres</string>
+    <string name="connectionname">Naam van de verbinding</string>
+    <string name="nodevicefound">Geen apparaat gevonden</string>
+    <string name="path">Locatie</string>
+    <string name="renamebookmark">Bladwijzer aanpassen</string>
+    <string name="cut">Verplaatsen</string>
+    <string name="empty"></string>
+    <string name="search">Zoeken</string>
+    <string name="invalid_name">Ongeldige naam</string>
+    <string name="search_hint">Type om te zoeken&#8230;</string>
+    <string name="advanced_search">Geavanceerd zoeken</string>
+    <string name="start_ftp">Start</string>
+    <string name="stop_ftp">Stop</string>
+    <string name="domain">Domein</string>
+    <string name="ftp_notif_starting">FTP server wordt gestart</string>
+    <string name="searchingdevices">Zoeken naar apparaten</string>
+    </resources>
 
