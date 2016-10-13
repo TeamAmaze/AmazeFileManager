@@ -1040,6 +1040,30 @@
                             android:textSize="@dimen/material_generic_title_summary"
                             />
                     </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/material_generic_list_item"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        android:gravity="center_vertical"
+                        >
+
+                        <TextView
+                            android:id="@+id/text_view_translator_18_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/japanese_translation_title"
+                            android:textSize="@dimen/material_generic_title"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/text_view_translator_18_title"
+                            android:text="@string/japanese_translation_summary"
+                            android:textSize="@dimen/material_generic_title_summary"
+                            />
+                    </RelativeLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Copyright (C) 2014-2015 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+    Copyright (C) 2014-2016 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>, M. Kucharskov <M.Kucharskov@gmail.com>, P. Kowalczyk <p.d.kowalczyk@wp.pl>, Bartosz <hawkeye116477@gmail.com>
 
     This file is part of Amaze File Manager.
 
@@ -49,6 +49,7 @@
     <string name="create">UTWÓRZ</string>
     <string name="success">Powodzenie</string>
     <string name="filenotexists">Plik nie istnieje</string>
+    <string name="loading">Ładowanie&#8230;</string>
     <string name="file_empty">Plik jest pusty</string>
     <string name="error">Błąd</string>
     <string name="cantlistfiles">Nie można wyświetlić plików bez uprawnień root\'a</string>
@@ -86,6 +87,7 @@
     <string name="guide2">Dotknij niebieskiego paska, aby pokazać lub ukryć ścieżkę</string>
     <string name="guide3">Dotknij i przytrzymaj dowolny plik, aby wyświetlić więcej opcji...</string>
     <string name="guide4">Takich jak kopiowanie, przenoszenie, właściwości itd</string>
+    <string name="guide5">Użyj przycisku wstecz Twojego urządzenia, aby zamknąć aplikację w każdej chwili&#8230;</string>
     <string name="guide6">..oraz używaj przycisku lewej strzałki do nawigacji w menedżerze plików</string>
     <string name="maintab">Nie można usunąć głównej zakładki</string>
     <string name="openparent">Otwórz folder nadrzędny</string>
@@ -255,6 +257,7 @@
     <string name="archive">Archiwum</string>
     <string name="archtext">To jest archiwum. Jaką akcję chcesz wykonać?</string>
     <string name="pitext">To jest instalator pakietu. Jaką akcję chcesz wykonać?</string>
+    <string name="xda_title">XDA</string>
     <string name="xda_summary">Q&amp;A, Pomoc &amp; Rozwiązywanie problemów</string>
     <string name="invalid_dir">Nieprawidłowy katalog</string>
     <string name="circularimages">Użyj okrągłych ikon dla obrazów i wideo</string>
@@ -276,9 +279,12 @@
     <string name="portuguese_translation_title">Portugalski</string>
     <string name="polish_translation_title">Polski</string>
     <string name="korean_translation_title">Koreański</string>
+    <string name="greek_translation_title">Grecki</string>
     <string name="dutch_translation_title">Niderlandzki</string>
     <string name="romanian_translation_title">Rumuński</string>
-	<string name="vietnamese_translation_title">Wietnamski</string>
+    <string name="vietnamese_translation_title">Wietnamski</string>
+    <string name="brazilian_portuguese_translation_title">Portugalski (Brazylia)</string>
+
     <string name="zip_viewer">Przeglądarka archiwum</string>
     <string name="unin_system_apk">To jest aplikacja systemowa, usunięcie jej może doprowadzić do niestabilności systemu.\nKontynuować?</string>
     <string name="warning">Ostrzeżenie</string>
@@ -296,6 +302,7 @@
     <string name="image">Obraz</string>
     <string name="contributors">Współtwórcy</string>
     <string name="savepaths">Pamiętaj ścieżki</string>
+    <string name="savepathsummary">Podczas uruchamiania dla każdej zakładki zostanie wyświetlony najczęściej przeglądany folder</string>
     <string name="select_intent">Wybierz</string>
     <string name="md5copied">MD5 skopiowano do schowka</string>
     <string name="generating">Generowanie..</string>
@@ -324,6 +331,7 @@
     <string name="hide_toolbar">Ukryj pasek narzędzi</string>
     <string name="hide_appbar">Ukryj cały pasek aplikacji</string>
     <string name="choose_color">Wybierz kolor</string>
+    <string name="g_plus_community_title">Społeczność G+</string>
     <string name="hide_mode_nothing">Pasek aplikacji pozostaje nienaruszony</string>
     <string name="hide_mode_toolbar">Pasek narzędzi ukrywany przy przewijaniu</string>
     <string name="hide_mode_app_bar">Pasek aplikacji ukrywany przy przewijaniu</string>
@@ -403,6 +411,17 @@
     <string name="ftp_notif_stop_server">ZATRZYMAJ</string>
     <string name="primary_two_title">Kolor główny (Prawa karta)</string>
     <string name="primary_two_summary">Ustaw kolor dla dużych elementów interfejsu graficznego prawej karty</string>
+    <string name="g_plus">Google Plus</string>
+    <string name="support_development">Wesprzyj rozwój</string>
+    <string name="report_bugs_title">Zgłoś błędy</string>
+    <string name="report_bugs_summary">Zgłoś błędy lub poproś o nową funkcję</string>
+    <string name="translate_title">Przetłumacz</string>
+    <string name="translate_summary">Przetłumacz Amaze na swój język</string>
+    <string name="g_plus_community_summary">Weź udział w beta testach i dyskusjach
+związanych z rozwojem</string>
+    <string name="easter_egg_title">Tryb Studio</string>
+    <string name="paypal_copy_message">Identyfikator Paypal skopiowany do schowka</string>
     <string name="searchingdevices">Szukanie urządzeń</string>
-    </resources>
-
+    <string name="use_custom_ip">Używaj niestandardowego adresu IP</string>
+    <string name="bookmark_lost">Zakładka nie znaleziona, odtwarzanie&#8230;</string>
+</resources>

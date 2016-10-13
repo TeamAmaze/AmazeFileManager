@@ -40,6 +40,7 @@
     <string name="dutch_translation_summary" translable="false" translatable="false">Robin van der Vliet</string>
     <string name="romanian_translation_summary" translable="false" translatable="false">Igor S.</string>
 	<string name="vietnamese_translation_summary" translable="false" translatable="false">ngoisaosang</string>
+    <string name="japanese_translation_summary" translatable="false">Naofumi Fukue</string>
     <string name="app_version" translatable="false">v3.1.2 Beta 2</string>
     <string name="author_1" translatable="false">Arpit Khurana</string>
     <string name="author_2" translatable="false">Vishal Nehra</string>
