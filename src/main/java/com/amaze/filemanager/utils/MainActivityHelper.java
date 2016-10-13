@@ -99,6 +99,13 @@ public class MainActivityHelper {
             }
         }
     };
+
+    /**
+     * Prompt a dialog to user to input directory name
+     * @param openMode
+     * @param path current path at which directory to create
+     * @param ma {@link Main} current fragment
+     */
     void mkdir(final int openMode,final String path,final Main ma){
         final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{utils.getString(mainActivity, R.string.entername), "",utils.getString(mainActivity,R.string.newfolder),utils.getString(mainActivity, R.string.create),utils.getString(mainActivity,R.string.cancel),null});
         materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -114,6 +121,13 @@ public class MainActivityHelper {
         });
         materialDialog.show();
     }
+
+    /**
+     * Prompt a dialog to user to input file name
+     * @param openMode
+     * @param path current path at which file to create
+     * @param ma {@link Main} current fragment
+     */
     void mkfile(final int openMode,final String path,final Main ma){
         final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{utils.getString(mainActivity, R.string.entername), "",utils.getString(mainActivity,R.string.newfile),utils.getString(mainActivity, R.string.create),utils.getString(mainActivity,R.string.cancel),null});
         materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -129,6 +143,7 @@ public class MainActivityHelper {
         });
         materialDialog.show();
     }
+
     public void add(int pos) {
         final Main ma = (Main) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
         switch (pos) {
@@ -313,8 +328,10 @@ public class MainActivityHelper {
                     public void run() {
                         if(toast!=null)toast.cancel();
                         Toast.makeText(mainActivity, (R.string.fileexist), Toast.LENGTH_SHORT).show();
-                        if(ma!=null && ma.getActivity()!=null)
-                            mkfile(file.getMode(),file.getPath(),ma);
+                        if(ma!=null && ma.getActivity()!=null) {
+                            // retry with dialog prompted again
+                            mkfile(file.getMode(),file.getParent(),ma);
+                        }
 
                     }
                 });
@@ -355,6 +372,7 @@ public class MainActivityHelper {
             }
         });
     }
+
     public void mkDir(final HFile path,final Main ma) {
         final Toast toast=Toast.makeText(ma.getActivity(), R.string.creatingfolder, Toast.LENGTH_LONG);
         toast.show();
@@ -366,8 +384,10 @@ public class MainActivityHelper {
                     public void run() {
                         if (toast != null) toast.cancel();
                         Toast.makeText(mainActivity, (R.string.fileexist), Toast.LENGTH_SHORT).show();
-                        if (ma != null && ma.getActivity() != null)
-                            mkdir(file.getMode(), file.getPath(), ma);
+                        if (ma != null && ma.getActivity() != null) {
+                            // retry with dialog prompted again
+                            mkdir(file.getMode(), file.getParent(), ma);
+                        }
                     }
                 });
             }
