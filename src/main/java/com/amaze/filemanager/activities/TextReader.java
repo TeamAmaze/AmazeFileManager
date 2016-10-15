@@ -88,7 +88,6 @@ public class TextReader extends BaseActivity
         implements TextWatcher, View.OnClickListener {
 
     String path;
-    Futils utils = new Futils();
     Context c = this;
     public EditText mInput, searchEditText;
     private java.io.File mFile;

@@ -176,7 +176,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     public FrameLayout buttonBarFrame;
     public boolean isDrawerLocked = false;
     HistoryManager history, grid;
-    Futils utils;
 
     MainActivity mainActivity = this;
     public DrawerAdapter adapter;
@@ -249,7 +248,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         setContentView(R.layout.main_toolbar);
         initialiseViews();
         tabHandler = new TabHandler(this, null, null, 1);
-        utils = new Futils();
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
 

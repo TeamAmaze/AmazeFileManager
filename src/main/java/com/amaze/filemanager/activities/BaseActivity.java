@@ -31,7 +31,7 @@ public class BaseActivity extends AppCompatActivity {
     public static String accentSkin;
     public static String skin, skinTwo;
     public static boolean rootMode;
-    Futils utils;
+    Futils utils = new Futils();
     boolean checkStorage=true;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,6 @@ public class BaseActivity extends AppCompatActivity {
         int th = Integer.parseInt(Sp.getString("theme", "0"));
         // checking if theme should be set light/dark or automatic
         theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
-        utils=new Futils();
         boolean random = Sp.getBoolean("random_checkbox", false);
         if (random)  {
 
