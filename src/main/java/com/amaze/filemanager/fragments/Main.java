@@ -122,7 +122,7 @@ public class Main extends android.support.v4.app.Fragment {
     public BitmapDrawable folder, apk, DARK_IMAGE, DARK_VIDEO;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
-    public String home, CURRENT_PATH = "", year, goback;
+    public String home, CURRENT_PATH = "", goback;
     public boolean selection, results = false, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS, SHOW_SIZE, SHOW_LAST_MODIFIED;
     public LinearLayout pathbar;
     public int openMode = 0;
@@ -199,8 +199,6 @@ public class Main extends android.support.v4.app.Fragment {
         skin_color = Color.parseColor(BaseActivity.skin);
         skinTwoColor = Color.parseColor(BaseActivity.skinTwo);
         icon_skin_color = Color.parseColor(iconskin);
-        Calendar calendar = Calendar.getInstance();
-        year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         theme1 = theme == 2 ? PreferenceUtils.hourOfDay() : theme;
         hidemode = Sp.getInt("hidemode", 0);
