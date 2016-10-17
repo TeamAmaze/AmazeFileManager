@@ -23,9 +23,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -46,6 +44,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.DbViewerFragment;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
@@ -87,18 +86,17 @@ public class DbViewer extends BaseActivity {
                     ("Amaze", ((BitmapDrawable) ContextCompat.getDrawable(this,R.mipmap
                             .ic_launcher))
                             .getBitmap(),
-                            Color.parseColor(MainActivity.currentTab==1?skinTwo:skin));
+                            getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
             ((Activity)this).setTaskDescription(taskDescription);
         }
         getSupportActionBar()
-                .setBackgroundDrawable(new ColorDrawable(Color
-                        .parseColor(MainActivity.currentTab==1?skinTwo:skin)));
+                .setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         int sdk= Build.VERSION.SDK_INT;
         if(sdk==20 || sdk==19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintColor(Color.parseColor(MainActivity.currentTab==1?skinTwo:skin));
+            tintManager.setStatusBarTintColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.parentdb).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
@@ -107,9 +105,9 @@ public class DbViewer extends BaseActivity {
             Window window =getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(PreferenceUtils.getStatusColor(MainActivity.currentTab==1?skinTwo:skin));
+            window.setStatusBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
             if(colourednavigation)
-                window.setNavigationBarColor((PreferenceUtils.getStatusColor(MainActivity.currentTab==1?skinTwo:skin)));
+                window.setNavigationBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
 
         }
 

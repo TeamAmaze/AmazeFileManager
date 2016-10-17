@@ -35,6 +35,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.color.ColorUsage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -176,9 +177,9 @@ public class TabFragment extends android.support.v4.app.Fragment
         if (indicator!=null) indicator.setViewPager(mViewPager);
 
         // color of viewpager when current tab is 0
-        startColor = BaseActivity.skin;
+        startColor = mainActivity.getColorPreference().getColorAsString(ColorUsage.PRIMARY);
         // color of viewpager when current tab is 1
-        endColor = BaseActivity.skinTwo;
+        endColor = mainActivity.getColorPreference().getColorAsString(ColorUsage.PRIMARY_TWO);
 
         // update the views as there is any change in {@link MainActivity#currentTab}
         // probably due to config change

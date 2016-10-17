@@ -46,13 +46,13 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     Context context;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     private SparseBooleanArray myanim = new SparseBooleanArray();
-    ColorMatrixColorFilter colorMatrixColorFilter;
+//    ColorMatrixColorFilter colorMatrixColorFilter;
     LayoutInflater mInflater;
     int filetype=-1;
     int column,rowHeight;
     boolean topFab;
     int grey_color;
-    int c1,c2,c3,c4,c5,c6,c7,c8,c9,anim;
+    private int c1,c2,c3,c4,c5,c6,c7,c8,c9,anim;
 
     public Recycleradapter(Main m, ArrayList<Layoutelements> items, Context context){
         this.main=m;
@@ -62,7 +62,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             myChecked.put(i, false);
             myanim.put(i,false);
         }
-        colorMatrixColorFilter=main.colorMatrixColorFilter;
+//        colorMatrixColorFilter=main.colorMatrixColorFilter;
         mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         c1=Color.parseColor("#757575");

@@ -16,6 +16,8 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.color.ColorPreference;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.stericson.RootTools.RootTools;
 
 import java.io.IOException;
@@ -24,33 +26,37 @@ import java.io.IOException;
  * Created by arpitkh996 on 03-03-2016.
  */
 public class BaseActivity extends AppCompatActivity {
+    private ColorPreference colorPreference;
+
     public static int theme1;
     public SharedPreferences Sp;
 
     // Accent and Primary hex color string respectively
+    @Deprecated
     public static String accentSkin;
-    public static String skin, skinTwo;
     public static boolean rootMode;
     Futils utils = new Futils();
     boolean checkStorage=true;
+
+    public ColorPreference getColorPreference() {
+        return colorPreference;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
+        colorPreference = ColorPreference.loadFromPreferences(this, Sp);
+
         int th = Integer.parseInt(Sp.getString("theme", "0"));
         // checking if theme should be set light/dark or automatic
         theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
-        boolean random = Sp.getBoolean("random_checkbox", false);
-        if (random)  {
-
-            skin = PreferenceUtils.random(Sp);
-            skinTwo = PreferenceUtils.random(Sp);
-        } else {
-
-            skin = PreferenceUtils.getPrimaryColorString(Sp);
-            skinTwo = PreferenceUtils.getPrimaryTwoColorString(Sp);
+        if (Sp.getBoolean("random_checkbox", false)) {
+            getColorPreference().randomize()
+                                .saveToPreferences(Sp);
         }
-        accentSkin = PreferenceUtils.getAccentString(Sp);
+
+        accentSkin = getColorPreference().getColorAsString(ColorUsage.ACCENT);
         setTheme();
         rootMode = Sp.getBoolean("rootmode", false);
         if (rootMode) {

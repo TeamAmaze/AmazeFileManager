@@ -25,7 +25,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -52,7 +51,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.RarAdapter;
 import com.amaze.filemanager.filesystem.BaseFile;
@@ -65,6 +63,7 @@ import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
@@ -85,7 +84,6 @@ public class ZipViewer extends Fragment {
     public String skin, accentColor, iconskin, year;
     public RarAdapter rarAdapter;
     public ActionMode mActionMode;
-    public int skinselection;
     public boolean coloriseIcons, showSize, showLastModified, gobackitem;
     SharedPreferences Sp;
     ZipViewer zipViewer = this;
@@ -189,9 +187,9 @@ public class ZipViewer extends Fragment {
         showLastModified = Sp.getBoolean("showLastModified", true);
         showDividers = Sp.getBoolean("showDividers", true);
         year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
-        skin = PreferenceUtils.getPrimaryColorString(Sp);
-        accentColor = PreferenceUtils.getAccentString(Sp);
-        iconskin = PreferenceUtils.getFolderColorString(Sp);
+        skin = mainActivity.getColorPreference().getColorAsString(ColorUsage.PRIMARY);
+        accentColor = mainActivity.getColorPreference().getColorAsString(ColorUsage.ACCENT);
+        iconskin = mainActivity.getColorPreference().getColorAsString(ColorUsage.ICON_SKIN);
 
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         theme1 = theme == 2 ? PreferenceUtils.hourOfDay() : theme;
@@ -427,8 +425,7 @@ public class ZipViewer extends Fragment {
         public void onDestroyActionMode(ActionMode actionMode) {
             if (rarAdapter != null) rarAdapter.toggleChecked(false, "");
             selection = false;
-            mainActivity.updateViews(new ColorDrawable(Color.parseColor(MainActivity.currentTab==1 ?
-                    BaseActivity.skinTwo : BaseActivity.skin)));
+            mainActivity.updateViews(mainActivity.getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
@@ -607,7 +604,7 @@ public class ZipViewer extends Fragment {
         }
         final FastScroller fastScroller=(FastScroller)rootView.findViewById(R.id.fastscroll);
         fastScroller.setRecyclerView(listView,1);
-        fastScroller.setPressedHandleColor(Color.parseColor(PreferenceUtils.getAccentString(Sp)));
+        fastScroller.setPressedHandleColor(mainActivity.getColorPreference().getColor(ColorUsage.ACCENT));
         ((AppBarLayout)mToolbarContainer).addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {

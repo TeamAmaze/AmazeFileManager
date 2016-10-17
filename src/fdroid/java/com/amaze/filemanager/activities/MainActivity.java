@@ -19,7 +19,6 @@
 
 package com.amaze.filemanager.activities;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -31,13 +30,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -57,7 +53,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -132,10 +127,10 @@ import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -410,7 +405,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
-                    Color.parseColor((currentTab == 1 ? skinTwo : skin)));
+                    getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
             ((Activity) this).setTaskDescription(taskDescription);
         }
     }
@@ -1629,7 +1624,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         showHidden = Sp.getBoolean("showHidden", false);
         aBoolean = Sp.getBoolean("view", true);
         currentTab = Sp.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
-        skinStatusBar = (PreferenceUtils.getStatusColor((currentTab==1 ? skinTwo : skin)));
+        skinStatusBar = PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab)));
         colourednavigation = Sp.getBoolean("colorednavigation", false);
     }
 
@@ -1868,9 +1863,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     }
 
     void initialiseFab() {
-        String folder_skin = PreferenceUtils.getFolderColorString(Sp);
-        int fabSkinPressed = PreferenceUtils.getStatusColor(BaseActivity.accentSkin);
-        int folderskin = Color.parseColor(folder_skin);
+        String folder_skin = getColorPreference().getColorAsString(ColorUsage.ICON_SKIN);
+        int fabSkinPressed = PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.ACCENT));
+        int folderskin = getColorPreference().getColor(ColorUsage.ACCENT);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
         floatingActionButton = (FloatingActionMenu) findViewById(R.id.menu);
         floatingActionButton.setMenuButtonColorNormal(Color.parseColor(BaseActivity.accentSkin));
