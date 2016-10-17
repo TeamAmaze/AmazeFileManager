@@ -217,13 +217,13 @@ public class HFile {
         long size = 0l;
         if (isSmb()) {
             try {
-                size = new Futils().folderSize(new SmbFile(path));
+                size = Futils.folderSize(new SmbFile(path));
             } catch (MalformedURLException e) {
                 size = 0l;
                 e.printStackTrace();
             }
         } else
-            size = new Futils().folderSize(new File(path));
+            size = Futils.folderSize(new File(path));
         return size;
     }
 

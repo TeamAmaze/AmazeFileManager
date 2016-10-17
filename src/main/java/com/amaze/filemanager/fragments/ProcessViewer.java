@@ -53,15 +53,12 @@ import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 public class ProcessViewer extends Fragment {
 
     LinearLayout rootView;
     boolean mBound = false;
-    Futils utils = new Futils();
     ArrayList<Integer> CopyIds = new ArrayList<Integer>();
     ArrayList<Integer> CancelledCopyIds = new ArrayList<Integer>();
     ArrayList<Integer> ExtractIds = new ArrayList<Integer>();
@@ -85,7 +82,7 @@ public class ProcessViewer extends Fragment {
             root.setBackgroundResource((R.color.cardView_background));
         rootView = (LinearLayout) root.findViewById(R.id.secondbut);
         //((MainActivity)getActivity()).getSupportActionBar().setTitle(utils.getString(getActivity(),R.string.processes));
-        mainActivity.setActionBarTitle(utils.getString(getActivity(), R.string.processes));
+        mainActivity.setActionBarTitle(getResources().getString(R.string.processes));
         mainActivity.floatingActionButton.hideMenuButton(true);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         icons = new IconUtils(Sp, getActivity());
@@ -271,9 +268,9 @@ public class ProcessViewer extends Fragment {
                         long total = b.getTotal();
                         long done = b.getDone();
                         boolean move = b.isMove();
-                        String text = utils.getString(getActivity(), R.string.copying) + "\n" + name + "\n" + utils.readableFileSize(done) + "/" + utils.readableFileSize(total) + "\n" + p1 + "%";
+                        String text = getResources().getString(R.string.copying) + "\n" + name + "\n" + Futils.readableFileSize(done) + "/" + Futils.readableFileSize(total) + "\n" + p1 + "%";
                         if (move) {
-                            text = utils.getString(getActivity(), R.string.moving) + "\n" + name + "\n" + utils.readableFileSize(done) + "/" + utils.readableFileSize(total) + "\n" + p1 + "%";
+                            text = getResources().getString(R.string.moving) + "\n" + name + "\n" + Futils.readableFileSize(done) + "/" + Futils.readableFileSize(total) + "\n" + p1 + "%";
                         }
                         ((TextView) process.findViewById(R.id.progressText)).setText(text);
                         ProgressBar p = (ProgressBar) process.findViewById(R.id.progressBar1);
@@ -309,7 +306,7 @@ public class ProcessViewer extends Fragment {
                     cancel.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.stopping), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
                             Intent i = new Intent("copycancel");
                             i.putExtra("id", id1);
                             getActivity().sendBroadcast(i);
@@ -325,9 +322,9 @@ public class ProcessViewer extends Fragment {
                     int p1 = b.getP1();
                     int p2 = b.getP2();
 
-                    String text = utils.getString(getActivity(), R.string.copying) + "\n" + name;
+                    String text = getResources().getString(R.string.copying) + "\n" + name;
                     if (move) {
-                        text = utils.getString(getActivity(), R.string.moving) + "\n" + name;
+                        text = getResources().getString(R.string.moving) + "\n" + name;
                     }
                     progressText.setText(text);
                     ProgressBar p = (ProgressBar) root.findViewById(R.id.progressBar1);
@@ -360,7 +357,7 @@ public class ProcessViewer extends Fragment {
                     long p2 = dataPackage.getDone();
                     ProgressBar p = (ProgressBar) process.findViewById(R.id.progressBar1);
                     if (p1 <= 100) {
-                        ((TextView) process.findViewById(R.id.progressText)).setText(utils.getString(getActivity(), R.string.extracting) + "\n" + name + "\n" + p1 + "%" + "\n" + utils.readableFileSize(p2) + "/" + utils.readableFileSize(p3));
+                        ((TextView) process.findViewById(R.id.progressText)).setText(getResources().getString(R.string.extracting) + "\n" + name + "\n" + p1 + "%" + "\n" + Futils.readableFileSize(p2) + "/" + Futils.readableFileSize(p3));
 
                         p.setProgress(p1);
                     }
@@ -390,7 +387,7 @@ public class ProcessViewer extends Fragment {
                 cancel.setOnClickListener(new View.OnClickListener() {
 
                     public void onClick(View p1) {
-                        Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.stopping), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
                         Intent i = new Intent("excancel");
                         i.putExtra("id", id);
                         getActivity().sendBroadcast(i);
@@ -406,7 +403,7 @@ public class ProcessViewer extends Fragment {
                 int p1 = dataPackage.getP1();
 
 
-                ((TextView) root.findViewById(R.id.progressText)).setText(utils.getString(getActivity(), R.string.extracting) + "\n" + name);
+                ((TextView) root.findViewById(R.id.progressText)).setText(getResources().getString(R.string.extracting) + "\n" + name);
                 ProgressBar p = (ProgressBar) root.findViewById(R.id.progressBar1);
                 p.setProgress(p1);
                 ExtractIds.add(id);
@@ -431,7 +428,7 @@ public class ProcessViewer extends Fragment {
 
                     ProgressBar p = (ProgressBar) process.findViewById(R.id.progressBar1);
                     if (p1 <= 100) {
-                        ((TextView) process.findViewById(R.id.progressText)).setText(utils.getString(getActivity(), R.string.zipping) + "\n" + name + "\n" + p1 + "%");
+                        ((TextView) process.findViewById(R.id.progressText)).setText(getResources().getString(R.string.zipping) + "\n" + name + "\n" + p1 + "%");
 
                         p.setProgress(p1);
                     }
@@ -461,7 +458,7 @@ public class ProcessViewer extends Fragment {
                 cancel.setOnClickListener(new View.OnClickListener() {
 
                     public void onClick(View p1) {
-                        Toast.makeText(getActivity(), utils.getString(getActivity(), R.string.stopping), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
                         Intent i = new Intent("zipcancel");
                         i.putExtra("id", id);
                         getActivity().sendBroadcast(i);
@@ -477,7 +474,7 @@ public class ProcessViewer extends Fragment {
                 int p1 = dataPackage.getP1();
 
 
-                ((TextView) root.findViewById(R.id.progressText)).setText(utils.getString(getActivity(), R.string.zipping) + "\n" + name);
+                ((TextView) root.findViewById(R.id.progressText)).setText(getResources().getString(R.string.zipping) + "\n" + name);
                 ProgressBar p = (ProgressBar) root.findViewById(R.id.progressBar1);
                 p.setProgress(p1);
 

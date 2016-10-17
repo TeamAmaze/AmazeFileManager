@@ -52,6 +52,7 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,15 +60,17 @@ import java.util.HashMap;
 import java.util.List;
 
 public class AppsAdapter extends ArrayAdapter<Layoutelements> {
+    private UtilitiesProviderInterface utilsProvider;
     Context context;
     List<Layoutelements> items;
     public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
     AppsList app;
     ArrayList<PackageInfo> c = new ArrayList<PackageInfo>();
 
-    public AppsAdapter(Context context, int resourceId,
+    public AppsAdapter(Context context, UtilitiesProviderInterface utilsProvider, int resourceId,
                        List<Layoutelements> items, AppsList app, ArrayList<PackageInfo> c) {
         super(context, resourceId, items);
+        this.utilsProvider = utilsProvider;
         this.context = context;
         this.items = items;
         this.app = app;
@@ -174,7 +177,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                 if (i1 != null)
                     app.startActivity(i1);
                 else
-                    Toast.makeText(app.getActivity(), new Futils().getString(app.getActivity(), R.string.not_allowed), Toast.LENGTH_LONG).show();
+                    Toast.makeText(app.getActivity(), app.getResources().getString(R.string.not_allowed), Toast.LENGTH_LONG).show();
                 // TODO: Implement this method
             }
         });
@@ -199,7 +202,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
         return view;
     }
     void showPopup(View v,final Layoutelements rowItem){
-        final Futils utils=new Futils();
+        final Futils utils = utilsProvider.getFutils();
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -213,7 +216,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                 if (i1!= null)
                                     app.startActivity(i1);
                                 else
-                                    Toast.makeText(app.getActivity(),new Futils().getString(app.getActivity(),R.string.not_allowed), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(app.getActivity(),app.getResources().getString(R.string.not_allowed), Toast.LENGTH_LONG).show();
                                 return true;
                             case R.id.share:
                                 ArrayList<File> arrayList2=new ArrayList<File>();
@@ -239,12 +242,12 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                         MaterialDialog.Builder builder1 = new MaterialDialog.Builder(app.getActivity());
                                         if(app.theme1==1)
                                             builder1.theme(Theme.DARK);
-                                        builder1.content(utils.getString(app.getActivity(), R.string.unin_system_apk))
-                                                .title(utils.getString(app.getActivity(), R.string.warning))
+                                        builder1.content(app.getResources().getString( R.string.unin_system_apk))
+                                                .title(app.getResources().getString( R.string.warning))
                                                 .negativeColor(color)
                                                 .positiveColor(color)
-                                                .negativeText(utils.getString(app.getActivity(), R.string.no))
-                                                .positiveText(utils.getString(app.getActivity(), R.string.yes))
+                                                .negativeText(app.getResources().getString( R.string.no))
+                                                .positiveText(app.getResources().getString( R.string.yes))
                                                 .callback(new MaterialDialog.ButtonCallback() {
                                                     @Override
                                                     public void onNegative(MaterialDialog materialDialog) {
@@ -289,7 +292,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                         Uri.parse("package:" + rowItem.getPermissions())));
                                 return true;
                             case R.id.backup:
-                                Toast.makeText(app.getActivity(), new Futils().getString(app.getActivity(), R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
+                                Toast.makeText(app.getActivity(), app.getResources().getString( R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
                                 File f = new File(rowItem.getDesc());
                                 ArrayList<BaseFile> ab = new ArrayList<>();
                                 File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");

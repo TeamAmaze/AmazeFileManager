@@ -24,7 +24,6 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -34,16 +33,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.ActionMode;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -64,7 +59,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.services.asynctasks.SearchTextTask;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -84,9 +78,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TextReader extends BaseActivity
-        implements TextWatcher, View.OnClickListener {
-
+public class TextReader extends BaseActivity implements TextWatcher, View.OnClickListener {
     String path;
     Context c = this;
     public EditText mInput, searchEditText;
@@ -464,12 +456,12 @@ public class TextReader extends BaseActivity
                 if(mFile.canRead()){
                     HFile hFile=new HFile(HFile.LOCAL_MODE,mFile.getPath());
                     hFile.generateMode(this);
-                    utils.showProps(hFile, this, theme1);
+                    getFutils().showProps(hFile, this, theme1);
                 }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
                 break;
             case R.id.openwith:
                 if(mFile.canRead()){
-                    utils.openunknown(mFile, c, false);
+                    getFutils().openunknown(mFile, c, false);
                 }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
                 break;
             case R.id.find:

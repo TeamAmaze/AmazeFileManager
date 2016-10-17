@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -23,7 +22,7 @@ import java.io.IOException;
 /**
  * Created by arpitkh996 on 03-03-2016.
  */
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends BasicActivity {
     public static int theme1;
     public SharedPreferences Sp;
 
@@ -31,7 +30,6 @@ public class BaseActivity extends AppCompatActivity {
     public static String accentSkin;
     public static String skin, skinTwo;
     public static boolean rootMode;
-    Futils utils = new Futils();
     boolean checkStorage=true;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,7 +93,7 @@ public class BaseActivity extends AppCompatActivity {
             // Provide an additional rationale to the user if the permission was not granted
             // and the user would benefit from additional context for the use of the permission.
             // For example, if the request has been denied previously.
-            final MaterialDialog materialDialog = utils.showBasicDialog(this,accentSkin,theme1, new String[]{getResources().getString(R.string.granttext), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel), null});
+            final MaterialDialog materialDialog = Futils.showBasicDialog(this,accentSkin,theme1, new String[]{getResources().getString(R.string.granttext), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel), null});
             materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

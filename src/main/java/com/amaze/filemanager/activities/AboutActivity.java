@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -34,7 +33,7 @@ import java.util.Random;
 /**
  * Created by vishal on 27/7/16.
  */
-public class AboutActivity extends AppCompatActivity implements View.OnClickListener {
+public class AboutActivity extends BasicActivity implements View.OnClickListener {
 
     private static final int HEADER_HEIGHT = 1024;
     private static final int HEADER_WIDTH = 500;

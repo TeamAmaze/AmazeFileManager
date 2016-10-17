@@ -30,8 +30,9 @@ import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.github.junrar.rarfile.FileHeader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
@@ -42,6 +43,7 @@ import java.util.zip.ZipFile;
 public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder>
         implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
     Context c;
+    private UtilitiesProviderInterface utilsProvider;
     Drawable folder, unknown;
     ArrayList<FileHeader> enter;
     ArrayList<ZipObj> enter1;
@@ -49,7 +51,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     LayoutInflater mInflater;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     boolean zipMode=false;
-    public RarAdapter(Context c,ArrayList<FileHeader> enter, ZipViewer zipViewer) {
+    public RarAdapter(Context c, UtilitiesProviderInterface utilsProvider, ArrayList<FileHeader> enter, ZipViewer zipViewer) {
+        this.utilsProvider = utilsProvider;
         this.enter = enter;
         for (int i = 0; i < enter.size(); i++) {
             myChecked.put(i, false);
@@ -307,7 +310,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             holder.genericIcon.setImageDrawable(Icons.loadMimeIcon(zipViewer.getActivity(), rowItem.getName(), false,zipViewer.res));
             final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
             if (zipViewer.showLastModified)
-                holder.date.setText(new Futils().getdate(rowItem.getTime(), "MMM dd, yyyy", zipViewer.year));
+                holder.date.setText(Futils.getdate(rowItem.getTime(), "MMM dd, yyyy", zipViewer.year));
             if (rowItem.isDirectory()) {
                 holder.genericIcon.setImageDrawable(folder);
                 gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
@@ -320,7 +323,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                     }
                 } } else {
                 if (zipViewer.showSize)
-                    holder.txtDesc.setText(new Futils().readableFileSize(rowItem.getSize()));
+                    holder.txtDesc.setText(Futils.readableFileSize(rowItem.getSize()));
                 holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/") + 1));
                 if (zipViewer.coloriseIcons) {
                     if (Icons.isVideo(rowItem.getName()) || Icons.isPicture(rowItem.getName()))
@@ -410,7 +413,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
                             try {
                                 ZipFile zipFile = new ZipFile(zipViewer.f);
-                                new ZipExtractTask(zipFile, c.getCacheDir().getAbsolutePath(), zipViewer.getActivity(), x,true,rowItem.getEntry()).execute();
+                                new ZipExtractTask(utilsProvider, zipFile, c.getCacheDir().getAbsolutePath(), zipViewer.getActivity(), x,true,rowItem.getEntry()).execute();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -527,7 +530,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                             file1.setMode(HFile.LOCAL_MODE);
                             zipViewer.files.clear();
                             zipViewer.files.add(0, file1);
-                            new ZipExtractTask(zipViewer.archive, c.getCacheDir().getAbsolutePath(),
+                            new ZipExtractTask(utilsProvider, zipViewer.archive, c.getCacheDir().getAbsolutePath(),
                                     zipViewer.mainActivity, fileHeader.getFileNameString(), false, fileHeader).execute();
                         }
 

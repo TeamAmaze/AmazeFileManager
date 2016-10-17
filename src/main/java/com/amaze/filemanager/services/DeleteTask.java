@@ -24,7 +24,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.widget.Toast;
@@ -32,22 +31,14 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.Futils;
 
-import com.amaze.filemanager.filesystem.RootHelper;
-import com.stericson.RootTools.RootTools;
-
-import java.io.File;
 import java.util.ArrayList;
 
 public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> {
-
-
     ArrayList<BaseFile> files;
     ContentResolver contentResolver;
     Context cd;
-    Futils utils = new Futils();
     boolean rootMode;
     ZipViewer zipViewer;
 
@@ -90,13 +81,13 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
                 }
             } catch (Exception e) {
                 for (BaseFile f : files) {
-                    utils.scanFile(f.getPath(), cd);
+                    Futils.scanFile(f.getPath(), cd);
                 }
             }
         }if (!b) {
-            Toast.makeText(cd, utils.getString(cd, R.string.error), Toast.LENGTH_SHORT).show();
+            Toast.makeText(cd, cd.getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
         } else if (zipViewer==null) {
-            Toast.makeText(cd, utils.getString(cd, R.string.done), Toast.LENGTH_SHORT).show();
+            Toast.makeText(cd, cd.getResources().getString(R.string.done), Toast.LENGTH_SHORT).show();
         }
         if (zipViewer!=null) {
             zipViewer.files.clear();

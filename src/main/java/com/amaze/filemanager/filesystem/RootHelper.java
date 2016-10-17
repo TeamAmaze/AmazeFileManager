@@ -248,7 +248,7 @@ public class RootHelper {
             for (String s : ls) {
                 if (contains(s.split(" "),name)) {
                     try {
-                        BaseFile path = new Futils().parseName(s);
+                        BaseFile path = Futils.parseName(s);
                         if (path.getPermisson().trim().startsWith("d")) return true;
                         else if (path.getPermisson().trim().startsWith("l")) {
                             if(count>5)
@@ -279,7 +279,6 @@ public class RootHelper {
         String p = " ";
         int mode=0;
         if (showHidden) p = "a ";
-        Futils futils = new Futils();
         ArrayList<BaseFile> a = new ArrayList<>();
         ArrayList<String> ls = new ArrayList<>();
         if (root) {
@@ -291,7 +290,7 @@ public class RootHelper {
                         String file=ls.get(i);
                         if (!file.contains("Permission denied"))
                             try {
-                                BaseFile array = futils.parseName(file);
+                                BaseFile array = Futils.parseName(file);
                                 array.setMode(BaseFile.ROOT_MODE);
                                 if (array != null) {
                                     array.setName(array.getPath());
@@ -309,21 +308,21 @@ public class RootHelper {
                     }
                     mode=3;
                 }
-            } else if (futils.canListFiles(new File(path))) {
+            } else if (Futils.canListFiles(new File(path))) {
                 a = getFilesList(path, showHidden);
                 mode=0;
             } else {
                 mode=0;
                 a = new ArrayList<>();
             }
-        } else if (futils.canListFiles(new File(path))) {
+        } else if (Futils.canListFiles(new File(path))) {
             a = getFilesList( path, showHidden);
             mode=0;
         } else {
             mode=0;
             a = new ArrayList<>();
         }
-        if (a.size() == 0 && futils.canListFiles(new File(path))) {
+        if (a.size() == 0 && Futils.canListFiles(new File(path))) {
             a = getFilesList( path, showHidden);
             mode=0;
         }

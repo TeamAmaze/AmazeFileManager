@@ -218,7 +218,7 @@ public class Preffrag extends PreferenceFragment{
             // For example, if the request has been denied previously.
 
             String fab_skin = (BaseActivity.accentSkin);
-            final MaterialDialog materialDialog=new Futils().showBasicDialog(getActivity(),fab_skin,theme, new String[]{getResources().getString(R.string.grantgplus), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel),null});
+            final MaterialDialog materialDialog=Futils.showBasicDialog(getActivity(),fab_skin,theme, new String[]{getResources().getString(R.string.grantgplus), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel),null});
             materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

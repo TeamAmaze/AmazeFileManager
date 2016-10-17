@@ -32,6 +32,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -63,8 +64,8 @@ import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.ui.ZipObj;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
@@ -75,13 +76,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class ZipViewer extends Fragment {
-
+    private UtilitiesProviderInterface utilsProvider;
     public String s;
     public File f;
     public ArrayList<BaseFile> files;
     public Boolean selection = false;
     public String current;
-    public Futils utils = new Futils();
     public String skin, accentColor, iconskin, year;
     public RarAdapter rarAdapter;
     public ActionMode mActionMode;
@@ -111,6 +111,12 @@ public class ZipViewer extends Fragment {
     //0 for zip 1 for rar
     boolean stopAnims=true;
     public Integer theme, theme1;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        utilsProvider = (UtilitiesProviderInterface) getActivity();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -323,7 +329,7 @@ public class ZipViewer extends Fragment {
             hideOption(R.id.compress, menu);
             hideOption(R.id.hide, menu);
             showOption(R.id.ex, menu);
-            mode.setTitle(utils.getString(getActivity(), R.string.select));
+            mode.setTitle(getResources().getString(R.string.select));
             mainActivity.updateViews(new ColorDrawable(getResources().getColor(R.color.holo_dark_action_mode)));
             if (Build.VERSION.SDK_INT >= 21) {
 
@@ -368,7 +374,7 @@ public class ZipViewer extends Fragment {
          */
         void exRar() {
             try {
-                Toast.makeText(getActivity(), new Futils().getString(getActivity(), R.string.extracting), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getResources().getString(R.string.extracting), Toast.LENGTH_SHORT).show();
                 FileOutputStream fileOutputStream;
                 String fileName = f.getName().substring(0, f.getName().lastIndexOf("."));
                 for (int i : rarAdapter.getCheckedItemPositions()) {
@@ -409,7 +415,7 @@ public class ZipViewer extends Fragment {
         void exZip(){
 
             try {
-                Toast.makeText(getActivity(), new Futils().getString(getActivity(), R.string.extracting), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getResources().getString(R.string.extracting), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), ExtractService.class);
                 ArrayList<String> a = new ArrayList<String>();
                 for (int i : rarAdapter.getCheckedItemPositions()) {
@@ -577,8 +583,7 @@ public class ZipViewer extends Fragment {
 
     public void createRarviews(ArrayList<FileHeader> zipEntries, String dir) {
         if(rarAdapter==null){
-            zipViewer.rarAdapter = new RarAdapter(zipViewer.getActivity(),
-                    zipEntries, zipViewer);
+            zipViewer.rarAdapter = new RarAdapter(zipViewer.getActivity(), utilsProvider, zipEntries, zipViewer);
             zipViewer.listView.setAdapter(zipViewer.rarAdapter);
         }else
         rarAdapter.generate(zipEntries);
