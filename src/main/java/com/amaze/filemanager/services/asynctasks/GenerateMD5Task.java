@@ -64,22 +64,19 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
             new AsyncTask<Void, Void, long[]>() {
                 @Override
                 protected long[] doInBackground(Void... voids) {
-                    Futils futils = new Futils();
-                    long[] longs = futils.getSpaces(g.f);
-                    return longs;
+                    return Futils.getSpaces(g.f);
                 }
 
                 @Override
                 protected void onPostExecute(long[] longs) {
                     super.onPostExecute(longs);
-                    Futils futils = new Futils();
                     if (longs[0] != -1 && longs[0] != 0) {
                         float r1 = (longs[0] - longs[1]) * 360 / longs[0];
                         float r2 = (longs[2]) * 360 / longs[0];
-                        t1.setText(futils.readableFileSize(longs[0]));
-                        t2.setText(futils.readableFileSize(longs[1]));
-                        t3.setText(futils.readableFileSize(longs[0] - longs[1] - longs[2]));
-                        t4.setText(futils.readableFileSize(longs[2]));
+                        t1.setText(Futils.readableFileSize(longs[0]));
+                        t2.setText(Futils.readableFileSize(longs[1]));
+                        t3.setText(Futils.readableFileSize(longs[0] - longs[1] - longs[2]));
+                        t4.setText(Futils.readableFileSize(longs[2]));
 
                         CircleAnimation animation = new CircleAnimation(g.sizeDrawable, r1, r2);
                         animation.setDuration(Math.round(r1 * 5));
@@ -115,12 +112,11 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... params) {
         String param = params[0];
-        Futils futils = new Futils();
         if (f.isDirectory()) {
             int x = f.listFiles(false).size();
-            items = x + " " + futils.getString(c, x == 0 ? R.string.item : R.string.items);
+            items = x + " " + c.getResources().getString(x == 0 ? R.string.item : R.string.items);
         } else {
-            items = futils.readableFileSize(f.length());
+            items = Futils.readableFileSize(f.length());
         }
         publishProgress("");
         String md5 = "";
@@ -150,7 +146,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
                     @Override
                     public void onClick(View v) {
                         try {
-                            new Futils().copyToClipboard(c, md5);
+                            Futils.copyToClipboard(c, md5);
                             Toast.makeText(c, c.getResources().getString(R.string.md5copied), Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
                             e.printStackTrace();

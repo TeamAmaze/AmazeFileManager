@@ -49,7 +49,6 @@ public class TabFragment extends android.support.v4.app.Fragment
 
     public  List<Fragment> fragments = new ArrayList<Fragment>();
     public ScreenSlidePagerAdapter mSectionsPagerAdapter;
-    Futils utils = new Futils();
     public CustomViewPager mViewPager;
     SharedPreferences Sp;
     String path;

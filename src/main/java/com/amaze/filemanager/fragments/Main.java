@@ -96,6 +96,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
+import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
@@ -111,10 +112,11 @@ import jcifs.smb.SmbFile;
 
 
 public class Main extends android.support.v4.app.Fragment {
+    private UtilitiesProviderInterface utilsProvider;
+    private Futils utils;
 
     public ArrayList<Layoutelements> LIST_ELEMENTS;
     public Recycleradapter adapter;
-    public Futils utils;
     public ActionMode mActionMode;
     public SharedPreferences Sp;
     public BitmapDrawable folder, apk, DARK_IMAGE, DARK_VIDEO;
@@ -189,6 +191,9 @@ public class Main extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MAIN_ACTIVITY = (MainActivity) getActivity();
+        utilsProvider = MAIN_ACTIVITY;
+        utils = utilsProvider.getFutils();
+
         setRetainInstance(true);
         no = getArguments().getInt("no", 1);
         home = getArguments().getString("home");
@@ -294,8 +299,6 @@ public class Main extends android.support.v4.app.Fragment {
         setHasOptionsMenu(false);
         //MAIN_ACTIVITY = (MainActivity) getActivity();
         initNoFileLayout();
-        utils = new Futils();
-
         SHOW_HIDDEN = Sp.getBoolean("showHidden", false);
         COLORISE_ICONS = Sp.getBoolean("coloriseIcons", true);
         folder = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_grid_folder_new));
@@ -514,7 +517,7 @@ public class Main extends android.support.v4.app.Fragment {
             if (MAIN_ACTIVITY.mReturnIntent)
                 showOption(R.id.openmulti, menu);
             //hideOption(R.id.setringtone,menu);
-            mode.setTitle(utils.getString(getActivity(), R.string.select));
+            mode.setTitle(getResources().getString(R.string.select));
 
             MAIN_ACTIVITY.updateViews(new ColorDrawable(res.getColor(R.color.holo_dark_action_mode)));
 
@@ -939,7 +942,7 @@ public class Main extends android.support.v4.app.Fragment {
             bindDrive(path);
         else */
         if (loadList != null) loadList.cancel(true);
-        loadList = new LoadList(back, ma.getActivity(), ma, openMode);
+        loadList = new LoadList(ma.getActivity(), utilsProvider, back, ma, openMode);
         loadList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
 
     }
@@ -1012,8 +1015,7 @@ public class Main extends android.support.v4.app.Fragment {
                     switchToGrid();
                 else if (!grid && !IS_LIST) switchToList();
                 if (adapter == null)
-                    adapter = new Recycleradapter(ma,
-                            bitmap, ma.getActivity());
+                    adapter = new Recycleradapter(ma, utilsProvider, bitmap, ma.getActivity());
                 else {
                     adapter.generate(LIST_ELEMENTS);
                 }
@@ -1090,7 +1092,7 @@ public class Main extends android.support.v4.app.Fragment {
             }
         });
         if (theme1 == 1) a.theme(Theme.DARK);
-        a.title(utils.getString(getActivity(), R.string.rename));
+        a.title(getResources().getString(R.string.rename));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -1321,7 +1323,7 @@ public class Main extends android.support.v4.app.Fragment {
             } else {
                 file_count++;
                 try {
-                    Layoutelements layoutelements = new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(), !IS_LIST, res), name, mFile[i].getPath(), "", "", utils.readableFileSize(mFile[i].length()), mFile[i].length(), false, mFile[i].lastModified() + "", false);
+                    Layoutelements layoutelements = new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(), !IS_LIST, res), name, mFile[i].getPath(), "", "", Futils.readableFileSize(mFile[i].length()), mFile[i].length(), false, mFile[i].lastModified() + "", false);
                     layoutelements.setMode(1);
                     searchHelper.add(layoutelements.generateBaseFile());
                     a.add(layoutelements);
@@ -1349,7 +1351,7 @@ public class Main extends android.support.v4.app.Fragment {
                 try {
                     if (mFile.getSize() != -1) {
                         longSize = Long.valueOf(mFile.getSize());
-                        size = utils.readableFileSize(longSize);
+                        size = Futils.readableFileSize(longSize);
                     } else {
                         size = "";
                         longSize = 0;
@@ -1386,7 +1388,7 @@ public class Main extends android.support.v4.app.Fragment {
                     e.printStackTrace();
                 }
             }
-            utils.scanFile(path, getActivity());
+            Futils.scanFile(path, getActivity());
         }
 
     }

@@ -47,7 +47,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import org.sufficientlysecure.donations.DonationsFragment;
 
-public class Preferences extends BaseActivity  implements ActivityCompat.OnRequestPermissionsResultCallback  {
+public class Preferences extends BaseActivity implements ActivityCompat.OnRequestPermissionsResultCallback  {
     int select=0;
     public int changed=0;
     @Override

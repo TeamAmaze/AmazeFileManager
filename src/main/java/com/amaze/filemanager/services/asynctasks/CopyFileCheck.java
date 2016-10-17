@@ -36,7 +36,6 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
     Boolean move;
     ArrayList<BaseFile> ab, a, b, lol;
     int counter = 0;
-    Futils utils;
     MainActivity mainActivity;
     Context con;
     boolean rootmode=false;
@@ -48,7 +47,6 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
         mainActivity=context;
         con=context;
         openMode=ma.openMode;
-        utils=new Futils();
         this.rootmode=rootMode;
         a = new ArrayList<>();
         b = new ArrayList<>();
@@ -89,7 +87,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
                     }
                 }
             }
-        } else publishProgress(utils.getString(con, R.string.in_safe));
+        } else publishProgress(con.getResources().getString(R.string.in_safe));
 
         return a;
     }
@@ -121,7 +119,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
                 }
             } else {
 
-                Toast.makeText(mainActivity, utils.getString(con, R.string.no_file_overwrite), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mainActivity, con.getResources().getString(R.string.no_file_overwrite), Toast.LENGTH_SHORT).show();
             }
         } else {
 
@@ -131,12 +129,12 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
             x.customView(view, true);
             // textView
             TextView textView = (TextView) view.findViewById(R.id.textView);
-            textView.setText(utils.getString(con, R.string.fileexist) + "\n" + a.get(counter).getName());
+            textView.setText(con.getResources().getString(R.string.fileexist) + "\n" + a.get(counter).getName());
             // checkBox
             final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
-            utils.setTint(checkBox, Color.parseColor(BaseActivity.accentSkin));
+            Futils.setTint(checkBox, Color.parseColor(BaseActivity.accentSkin));
             if (mainActivity.theme1 == 1) x.theme(Theme.DARK);
-            x.title(utils.getString(con, R.string.paste));
+            x.title(con.getResources().getString(R.string.paste));
             x.positiveText(R.string.skip);
             x.negativeText(R.string.overwrite);
             x.neutralText(R.string.cancel);

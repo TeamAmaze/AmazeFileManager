@@ -19,7 +19,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.Futils;
 
 import java.net.URL;
 import java.net.URLDecoder;
@@ -32,7 +31,6 @@ public class RenameBookmark extends DialogFragment {
     String title,path,user="",pass="",ipp="";
     String fabskin;
     int theme1;
-    Futils utils;
     Context c;
     BookmarkCallback bookmarkCallback;
     SharedPreferences Sp;
@@ -56,7 +54,6 @@ public class RenameBookmark extends DialogFragment {
         path=getArguments().getString("path");
         fabskin=getArguments().getString("fabskin");
         theme1=getArguments().getInt("theme",0);
-        utils=new Futils();
         Sp=PreferenceManager.getDefaultSharedPreferences(c);
         studiomode=Sp.getInt("studio", 0);
         if (DataUtils.containsBooks(new String[]{title, path}) != -1 || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
@@ -79,8 +76,8 @@ public class RenameBookmark extends DialogFragment {
             final TextInputLayout t2 = (TextInputLayout) v2.findViewById(R.id.t2);
             final AppCompatEditText con_name = (AppCompatEditText) v2.findViewById(R.id.editText4);
             con_name.setText(title);
-            final String s1 = String.format(getString(R.string.cantbeempty), utils.getString(c, R.string.name));
-            final String s2 = String.format(getString(R.string.cantbeempty), utils.getString(c, R.string.path));
+            final String s1 = String.format(getString(R.string.cantbeempty), c.getResources().getString(R.string.name));
+            final String s2 = String.format(getString(R.string.cantbeempty), c.getResources().getString(R.string.path));
             con_name.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {

@@ -78,9 +78,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TextReader extends BaseActivity
-        implements TextWatcher, View.OnClickListener {
-
+public class TextReader extends BaseActivity implements TextWatcher, View.OnClickListener {
     String path;
     Context c = this;
     public EditText mInput, searchEditText;
@@ -456,12 +454,12 @@ public class TextReader extends BaseActivity
                 if(mFile.canRead()){
                     HFile hFile=new HFile(HFile.LOCAL_MODE,mFile.getPath());
                     hFile.generateMode(this);
-                    utils.showProps(hFile, this, theme1);
+                    getFutils().showProps(hFile, this, theme1);
                 }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
                 break;
             case R.id.openwith:
                 if(mFile.canRead()){
-                    utils.openunknown(mFile, c, false);
+                    getFutils().openunknown(mFile, c, false);
                 }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
                 break;
             case R.id.find:

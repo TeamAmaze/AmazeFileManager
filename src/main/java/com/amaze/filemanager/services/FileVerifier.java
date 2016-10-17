@@ -5,7 +5,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.Futils;
 
@@ -21,13 +20,11 @@ import jcifs.smb.SmbException;
  */
 public class FileVerifier extends Thread {
     ArrayList<FileBundle> arrayList = new ArrayList<>();
-    Futils utils;
     Context c;
     boolean rootmode;
     FileVerifierInterface fileVerifierInterface;
     boolean running=true;
     public FileVerifier(Context context,boolean rootmode, FileVerifierInterface fileVerifierInterface) {
-        utils = new Futils();
         c = context;
         this.rootmode=rootmode;
         this.fileVerifierInterface = fileVerifierInterface;
@@ -82,7 +79,7 @@ public class FileVerifier extends Thread {
             return;
         }
         if (!targetFile.isSmb())
-            utils.scanFile(targetFile.getPath(), c);
+            Futils.scanFile(targetFile.getPath(), c);
         if (!checkNonRootFiles(sourceFile, targetFile)) {
             fileVerifierInterface.addFailedFile(sourceFile);
             fileVerifierInterface.setCopySuccessful(false);
