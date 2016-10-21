@@ -31,6 +31,7 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.io.File;
@@ -41,28 +42,31 @@ import java.util.ArrayList;
  */
 public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder>
         implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
+    private UtilitiesProviderInterface utilsProvider;
+
     Main main;
     ArrayList<Layoutelements> items;
     Context context;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     private SparseBooleanArray myanim = new SparseBooleanArray();
-    ColorMatrixColorFilter colorMatrixColorFilter;
+//    ColorMatrixColorFilter colorMatrixColorFilter;
     LayoutInflater mInflater;
     int filetype=-1;
     int column,rowHeight;
     boolean topFab;
     int grey_color;
-    int c1,c2,c3,c4,c5,c6,c7,c8,c9,anim;
+    private int c1,c2,c3,c4,c5,c6,c7,c8,c9,anim;
 
-    public Recycleradapter(Main m, ArrayList<Layoutelements> items, Context context){
+    public Recycleradapter(Main m, UtilitiesProviderInterface utilsProvider, ArrayList<Layoutelements> items, Context context){
         this.main=m;
+        this.utilsProvider = utilsProvider;
         this.items=items;
         this.context=context;
         for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, false);
             myanim.put(i,false);
         }
-        colorMatrixColorFilter=main.colorMatrixColorFilter;
+//        colorMatrixColorFilter=main.colorMatrixColorFilter;
         mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         c1=Color.parseColor("#757575");
@@ -671,12 +675,12 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.about:
-                                main.utils.showProps((rowItem).generateBaseFile(), rowItem.getPermissions(), main, BaseActivity.rootMode);
+                                utilsProvider.getFutils().showProps((rowItem).generateBaseFile(), rowItem.getPermissions(), main, BaseActivity.rootMode);
                                 return true;
                             case R.id.share:
                                 ArrayList<File> arrayList = new ArrayList<File>();
                                 arrayList.add(new File(rowItem.getDesc()));
-                                main.utils.shareFiles(arrayList, main.MAIN_ACTIVITY, main.theme1, Color.parseColor(main.fabSkin));
+                                utilsProvider.getFutils().shareFiles(arrayList, main.MAIN_ACTIVITY, main.theme1, Color.parseColor(main.fabSkin));
                                 return true;
                             case R.id.rename:
                                 main.rename(rowItem.generateBaseFile());
@@ -703,7 +707,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                             case R.id.book:
                                     DataUtils.addBook(new String[]{rowItem.getTitle(),rowItem.getDesc()},true);
                                 main.MAIN_ACTIVITY.updateDrawer();
-                                Toast.makeText(main.getActivity(), main.utils.getString(main.getActivity(), R.string.bookmarksadded), Toast.LENGTH_LONG).show();
+                                Toast.makeText(main.getActivity(), main.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                                 return true;
 
                         }

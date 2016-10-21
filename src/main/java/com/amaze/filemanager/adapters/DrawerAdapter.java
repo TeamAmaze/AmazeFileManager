@@ -44,7 +44,7 @@ import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,6 +52,7 @@ import java.util.HashMap;
 
 public class DrawerAdapter extends ArrayAdapter<Item> {
     private final Context context;
+    private UtilitiesProviderInterface utilsProvider;
     private final ArrayList<Item> values;
     private RelativeLayout l;
     MainActivity m;
@@ -75,8 +76,9 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
     }
     LayoutInflater inflater;
     int fabskin;
-    public DrawerAdapter(Context context, ArrayList<Item> values, MainActivity m, SharedPreferences Sp) {
+    public DrawerAdapter(Context context, UtilitiesProviderInterface utilsProvider, ArrayList<Item> values, MainActivity m, SharedPreferences Sp) {
         super(context, R.layout.drawerrow, values);
+        this.utilsProvider = utilsProvider;
 
         this.context = context;
         this.values = values;
@@ -151,7 +153,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                     } else if(position<m.storage_count ){
                         String path = ((EntryItem) getItem(position)).getPath();
                         if(!path.equals("/"))
-                            new Futils().showProps(RootHelper.generateBaseFile(new File(path),true),m,m.theme1);
+                            utilsProvider.getFutils().showProps(RootHelper.generateBaseFile(new File(path),true),m,m.theme1);
                     }
 
                     // return true to denote no further processing

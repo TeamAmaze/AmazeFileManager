@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -16,6 +15,8 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.color.ColorPreference;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.stericson.RootTools.RootTools;
 
 import java.io.IOException;
@@ -23,35 +24,37 @@ import java.io.IOException;
 /**
  * Created by arpitkh996 on 03-03-2016.
  */
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends BasicActivity {
+    private ColorPreference colorPreference;
+
     public static int theme1;
     public SharedPreferences Sp;
 
     // Accent and Primary hex color string respectively
+    @Deprecated
     public static String accentSkin;
-    public static String skin, skinTwo;
     public static boolean rootMode;
-    Futils utils;
     boolean checkStorage=true;
+
+    public ColorPreference getColorPreference() {
+        return colorPreference;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
+        colorPreference = ColorPreference.loadFromPreferences(this, Sp);
+
         int th = Integer.parseInt(Sp.getString("theme", "0"));
         // checking if theme should be set light/dark or automatic
         theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
-        utils=new Futils();
-        boolean random = Sp.getBoolean("random_checkbox", false);
-        if (random)  {
-
-            skin = PreferenceUtils.random(Sp);
-            skinTwo = PreferenceUtils.random(Sp);
-        } else {
-
-            skin = PreferenceUtils.getPrimaryColorString(Sp);
-            skinTwo = PreferenceUtils.getPrimaryTwoColorString(Sp);
+        if (Sp.getBoolean("random_checkbox", false)) {
+            getColorPreference().randomize()
+                                .saveToPreferences(Sp);
         }
-        accentSkin = PreferenceUtils.getAccentString(Sp);
+
+        accentSkin = getColorPreference().getColorAsString(ColorUsage.ACCENT);
         setTheme();
         rootMode = Sp.getBoolean("rootmode", false);
         if (rootMode) {
@@ -96,7 +99,7 @@ public class BaseActivity extends AppCompatActivity {
             // Provide an additional rationale to the user if the permission was not granted
             // and the user would benefit from additional context for the use of the permission.
             // For example, if the request has been denied previously.
-            final MaterialDialog materialDialog = utils.showBasicDialog(this,accentSkin,theme1, new String[]{getResources().getString(R.string.granttext), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel), null});
+            final MaterialDialog materialDialog = Futils.showBasicDialog(this,accentSkin,theme1, new String[]{getResources().getString(R.string.granttext), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel), null});
             materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

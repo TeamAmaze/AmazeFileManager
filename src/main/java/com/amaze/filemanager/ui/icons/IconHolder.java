@@ -253,7 +253,6 @@ public class IconHolder {
         return bitsat;
         }
 
-    Futils futils=new Futils();
 		public Bitmap loadImage(String path) throws OutOfMemoryError{
 			Bitmap bitsat;
 
@@ -263,7 +262,7 @@ public class IconHolder {
 				options.inJustDecodeBounds = true;
 				Bitmap b = BitmapFactory.decodeFile(path, options);
 				
-				options.inSampleSize =futils .calculateInSampleSize(options, px, px);
+				options.inSampleSize = Futils.calculateInSampleSize(options, px, px);
 
 				// Decode bitmap with inSampleSize set
 				options.inJustDecodeBounds = false;

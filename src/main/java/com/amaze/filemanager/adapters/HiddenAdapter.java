@@ -18,7 +18,9 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
+import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 
 
 import java.io.File;
@@ -29,6 +31,8 @@ import java.util.ArrayList;
  * Created by Arpit on 16-11-2014.
  */
 public class HiddenAdapter extends ArrayAdapter<HFile> {
+    private Futils utils;
+
     /*Shortcuts s;*/
     Main context;Context c;
     public ArrayList<HFile> items;
@@ -36,8 +40,9 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
     boolean hide;
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public HiddenAdapter(Context c,Main context, int resourceId, ArrayList<HFile> items,MaterialDialog materialDialog,boolean hide) {
+    public HiddenAdapter(Context c,Main context, Futils utils,  int resourceId, ArrayList<HFile> items,MaterialDialog materialDialog,boolean hide) {
         super(c, resourceId, items);
+        this.utils = utils;
         this.c=c;
         this.context = context;
         this.items = items;
@@ -116,7 +121,7 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
                                 context.getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        context.utils.openFile(new File(f.getPath()), (MainActivity) context.getActivity());
+                                        utils.openFile(new File(f.getPath()), (MainActivity) context.getActivity());
                                     }
                                 });
                             }

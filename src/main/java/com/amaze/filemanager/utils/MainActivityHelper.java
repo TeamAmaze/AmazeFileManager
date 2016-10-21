@@ -41,8 +41,8 @@ import java.util.ArrayList;
  * Created by root on 11/22/15.
  */
 public class MainActivityHelper {
-    MainActivity mainActivity;
-    Futils utils;
+    private MainActivity mainActivity;
+    private Futils utils;
 
     /*
      * A static string which saves the last searched query. Used to retain search task after
@@ -61,8 +61,8 @@ public class MainActivityHelper {
     private static final String LESS_THAN = "<";
 
     public MainActivityHelper(MainActivity mainActivity){
-        this.mainActivity=mainActivity;
-        utils=new Futils();
+        this.mainActivity = mainActivity;
+        this.utils = mainActivity.getFutils();
     }
     public void showFailedOperationDialog(ArrayList<BaseFile> failedOps, boolean move, Context contextc){
         MaterialDialog.Builder mat=new MaterialDialog.Builder(contextc);
@@ -107,7 +107,7 @@ public class MainActivityHelper {
      * @param ma {@link Main} current fragment
      */
     void mkdir(final int openMode,final String path,final Main ma){
-        final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{utils.getString(mainActivity, R.string.entername), "",utils.getString(mainActivity,R.string.newfolder),utils.getString(mainActivity, R.string.create),utils.getString(mainActivity,R.string.cancel),null});
+        final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{mainActivity.getResources().getString(R.string.entername), "",mainActivity.getResources().getString(R.string.newfolder),mainActivity.getResources().getString(R.string.create),mainActivity.getResources().getString(R.string.cancel),null});
         materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,7 +129,7 @@ public class MainActivityHelper {
      * @param ma {@link Main} current fragment
      */
     void mkfile(final int openMode,final String path,final Main ma){
-        final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{utils.getString(mainActivity, R.string.entername), "",utils.getString(mainActivity,R.string.newfile),utils.getString(mainActivity, R.string.create),utils.getString(mainActivity,R.string.cancel),null});
+        final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{mainActivity.getResources().getString(R.string.entername), "",mainActivity.getResources().getString(R.string.newfile),mainActivity.getResources().getString(R.string.create),mainActivity.getResources().getString(R.string.cancel),null});
         materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,7 +202,7 @@ public class MainActivityHelper {
         x.customView(view, true);
         // textView
         TextView textView = (TextView) view.findViewById(R.id.description);
-        textView.setText(utils.getString(mainActivity, R.string.needsaccesssummary) + path + utils.getString(mainActivity, R.string.needsaccesssummary1));
+        textView.setText(mainActivity.getResources().getString(R.string.needsaccesssummary) + path + mainActivity.getResources().getString(R.string.needsaccesssummary1));
         ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
         x.positiveText(R.string.open);
         x.negativeText(R.string.cancel);

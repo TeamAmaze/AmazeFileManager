@@ -19,7 +19,6 @@
 
 package com.amaze.filemanager.activities;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -31,13 +30,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -57,7 +53,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -132,10 +127,10 @@ import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -176,7 +171,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     public FrameLayout buttonBarFrame;
     public boolean isDrawerLocked = false;
     HistoryManager history, grid;
-    Futils utils;
 
     MainActivity mainActivity = this;
     public DrawerAdapter adapter;
@@ -249,7 +243,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         setContentView(R.layout.main_toolbar);
         initialiseViews();
         tabHandler = new TabHandler(this, null, null, 1);
-        utils = new Futils();
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
 
@@ -281,7 +274,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
             @Override
             public void onFinish() {
-                utils.crossfadeInverse(buttons, pathbar);
+                getFutils().crossfadeInverse(buttons, pathbar);
             }
         };
         path = getIntent().getStringExtra("path");
@@ -299,12 +292,12 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
                     // file picker intent
                     mReturnIntent = true;
-                    Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getResources().getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
                 } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
                     // ringtone picker intent
                     mReturnIntent = true;
                     mRingtonePickerIntent = true;
-                    Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getResources().getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
                 } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
 
                     // zip viewer intent
@@ -351,7 +344,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                         goToMain(path);
                     else {
                         goToMain("");
-                        utils.openFile(new File(path), this);
+                        getFutils().openFile(new File(path), this);
                     }
                 } else {
                     goToMain("");
@@ -412,7 +405,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
-                    Color.parseColor((currentTab == 1 ? skinTwo : skin)));
+                    getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
             ((Activity) this).setTaskDescription(taskDescription);
         }
     }
@@ -482,7 +475,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             String strings[] = FileUtil.getExtSdCardPathsForActivity(this);
             for (String s : strings) {
                 File f = new File(s);
-                if (!rv.contains(s) && utils.canListFiles(f))
+                if (!rv.contains(s) && Futils.canListFiles(f))
                     rv.add(s);
             }
         }
@@ -515,7 +508,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             } else if (name.contains("TabFragment")) {
                 if (floatingActionButton.isOpened()) {
                     floatingActionButton.close(true);
-                    utils.revealShow(findViewById(R.id.fab_bg), false);
+                    getFutils().revealShow(findViewById(R.id.fab_bg), false);
                 } else {
                     TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
                     Fragment fragment1 = tabFragment.getTab();
@@ -572,7 +565,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             }
         } else {
             this.backPressedToExitOnce = true;
-            showToast(utils.getString(this, R.string.pressagain));
+            showToast(getResources().getString(R.string.pressagain));
             new Handler().postDelayed(new Runnable() {
 
                 @Override
@@ -663,7 +656,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         list.add(new EntryItem(getResources().getString(R.string.documents), "3", ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
         list.add(new EntryItem(getResources().getString(R.string.apks), "4", ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
         DataUtils.setList(list);
-        adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
+        adapter = new DrawerAdapter(this, this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
     }
 
@@ -930,7 +923,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 break;
             case R.id.history:
                 if (ma != null)
-                    utils.showHistoryDialog(ma);
+                    getFutils().showHistoryDialog(ma);
                 break;
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -939,7 +932,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
-                final MaterialDialog b = utils.showBasicDialog(mainActivity, BaseActivity.accentSkin, theme1,
+                final MaterialDialog b = Futils.showBasicDialog(mainActivity, BaseActivity.accentSkin, theme1,
                         new String[]{getResources().getString(R.string.questionset),
                                 getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
                 b.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -959,12 +952,12 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             case R.id.item10:
                 Fragment fragment = getDFragment();
                 if (fragment.getClass().getName().contains("AppsList"))
-                    utils.showSortDialog((AppsList) fragment);
+                    getFutils().showSortDialog((AppsList) fragment);
 
                 break;
             case R.id.sortby:
                 if (ma != null)
-                    utils.showSortDialog(ma);
+                    getFutils().showSortDialog(ma);
                 break;
             case R.id.dsort:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -984,7 +977,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 a.build().show();
                 break;
             case R.id.hiddenitems:
-                utils.showHiddenDialog(ma);
+                getFutils().showHiddenDialog(ma);
                 break;
             case R.id.view:
                 if (ma.IS_LIST) {
@@ -1054,7 +1047,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             animator = new ObjectAnimator().ofFloat(searchViewLayout, "alpha", 0f, 1f);
         }
 
-        utils.revealShow(mFabBackground, true);
+        getFutils().revealShow(mFabBackground, true);
 
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
@@ -1105,7 +1098,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         }
 
         // removing background fade view
-        utils.revealShow(mFabBackground, false);
+        getFutils().revealShow(mFabBackground, false);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
         animator.start();
@@ -1395,7 +1388,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         list.add(new EntryItem(getResources().getString(R.string.documents), "3", ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
         list.add(new EntryItem(getResources().getString(R.string.apks), "4", ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
         DataUtils.setList(list);
-        adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
+        adapter = new DrawerAdapter(con, this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
 
     }
@@ -1488,7 +1481,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             buttons.removeAllViews();
             buttons.setMinimumHeight(pathbar.getHeight());
             Drawable arrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
-            Bundle b = utils.getPaths(text, this);
+            Bundle b = getFutils().getPaths(text, this);
             ArrayList<String> names = b.getStringArrayList("names");
             ArrayList<String> rnames = new ArrayList<String>();
 
@@ -1631,7 +1624,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         showHidden = Sp.getBoolean("showHidden", false);
         aBoolean = Sp.getBoolean("view", true);
         currentTab = Sp.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
-        skinStatusBar = (PreferenceUtils.getStatusColor((currentTab==1 ? skinTwo : skin)));
+        skinStatusBar = PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab)));
         colourednavigation = Sp.getBoolean("colorednavigation", false);
     }
 
@@ -1700,7 +1693,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             @Override
             public void onClick(View view) {
                 floatingActionButton.close(true);
-                utils.revealShow(view, false);
+                getFutils().revealShow(view, false);
                 if (isSearchViewEnabled) hideSearchView();
             }
         });
@@ -1870,13 +1863,14 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     }
 
     void initialiseFab() {
-        String folder_skin = PreferenceUtils.getFolderColorString(Sp);
-        int fabSkinPressed = PreferenceUtils.getStatusColor(BaseActivity.accentSkin);
-        int folderskin = Color.parseColor(folder_skin);
+        String folder_skin = getColorPreference().getColorAsString(ColorUsage.ICON_SKIN);
+        int fabSkinPressed = PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.ACCENT));
+        int folderskin = getColorPreference().getColor(ColorUsage.ACCENT);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
         floatingActionButton = (FloatingActionMenu) findViewById(R.id.menu);
         floatingActionButton.setMenuButtonColorNormal(Color.parseColor(BaseActivity.accentSkin));
         floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
+        final Futils utils = getFutils();
 
         //if (theme1 == 1) floatingActionButton.setMen
         floatingActionButton.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
@@ -2189,7 +2183,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 Main m = ((Main) getFragment().getTab());
                 if (m.openMode == 0) {
                     bbar(m);
-                    utils.crossfade(buttons,pathbar);
+                    getFutils().crossfade(buttons,pathbar);
                     timer.cancel();
                     timer.start();
                 }
@@ -2201,7 +2195,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 Main m = ((Main) getFragment().getTab());
                 if (m.openMode == 0) {
                     bbar(m);
-                    utils.crossfade(buttons,pathbar);
+                    getFutils().crossfade(buttons,pathbar);
                     timer.cancel();
                     timer.start();
                 }
@@ -2255,7 +2249,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 HFile hFile = new HFile(HFile.UNKNOWN,pending_path);
                 hFile.generateMode(this);
                 if (hFile.isSimpleFile()) {
-                    utils.openFile(new File(pending_path), mainActivity);
+                    getFutils().openFile(new File(pending_path), mainActivity);
                     pending_path = null;
                     return;
                 }
@@ -2288,7 +2282,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     Main m = ((Main) getFragment().getTab());
                     m.loadlist(path, false, 0);
                 } else goToMain(path);
-            } else utils.openFile(new File(path), mainActivity);
+            } else getFutils().openFile(new File(path), mainActivity);
         } else if (i.getStringArrayListExtra("failedOps") != null) {
             ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra("failedOps");
             if (failedOps != null) {
@@ -2310,12 +2304,12 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
                 // file picker intent
                 mReturnIntent = true;
-                Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getResources().getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
             } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
                 // ringtone picker intent
                 mReturnIntent = true;
                 mRingtonePickerIntent = true;
-                Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getResources().getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
             } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
                 // zip viewer intent
                 Uri uri = intent.getData();

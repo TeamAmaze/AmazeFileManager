@@ -23,18 +23,16 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -43,26 +41,19 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.RegisterCallback;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.services.FileVerifier.FileVerifierInterface;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.stericson.RootTools.RootTools;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import jcifs.smb.SmbException;
 
 public class CopyService extends Service {
     HashMap<Integer, Boolean> hash = new HashMap<Integer, Boolean>();
@@ -71,11 +62,9 @@ public class CopyService extends Service {
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
     Context c;
-    Futils utils ;
     @Override
     public void onCreate() {
         c = getApplicationContext();
-        utils=new Futils();
         SharedPreferences Sp=PreferenceManager.getDefaultSharedPreferences(this);
         rootmode=Sp.getBoolean("rootmode",false);
         registerReceiver(receiver3, new IntentFilter("copycancel"));
@@ -210,8 +199,34 @@ public class CopyService extends Service {
 
             return totalBytes;
         }
+
+        public int checkFolder(final String f,Context context) {
+            if(f==null)return 0;
+            if(f.startsWith("smb://"))return 1;
+            File folder=new File(f);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
+                if (!folder.exists() || !folder.isDirectory()) {
+                    return 0;
+                }
+
+                // On Android 5, trigger storage access framework.
+                if (FileUtil.isWritableNormalOrSaf(folder, context)) {
+                    return 1;
+
+                }
+            } else if (Build.VERSION.SDK_INT == 19 && FileUtil.isOnExtSdCard(folder, context)) {
+                // Assume that Kitkat workaround works
+                return 1;
+            } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+                return 1;
+            } else {
+                return 0;
+            }
+            return 0;
+        }
+
         public void execute(final int id, final ArrayList<BaseFile> files, final String FILE2, final boolean move,int mode) {
-            if (utils.checkFolder((FILE2), c) == 1) {
+            if (checkFolder((FILE2), c) == 1) {
                 final ProgressHandler progressHandler=new ProgressHandler(-1);
                 BufferHandler bufferHandler=new BufferHandler(c);
                 progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
@@ -286,7 +301,7 @@ public class CopyService extends Service {
             boolean b = RootTools.copyFile(RootHelper.getCommandLineString(path), RootHelper.getCommandLineString(FILE2)+"/"+name, true, true);
             if (!b && path.contains("/0/"))
                 b = RootTools.copyFile(RootHelper.getCommandLineString(path.replace("/0/", "/legacy/")), RootHelper.getCommandLineString(FILE2)+"/"+name, true, true);
-            utils.scanFile(FILE2 + "/" + name, c);
+            Futils.scanFile(FILE2 + "/" + name, c);
             return b;
         }
 
@@ -355,8 +370,8 @@ public class CopyService extends Service {
             mBuilder.setOngoing(true);
             int title = R.string.copying;
             if (move) title = R.string.moving;
-            mBuilder.setContentTitle(utils.getString(c, title));
-            mBuilder.setContentText(new File(a).getName() + " " + utils.readableFileSize(done) + "/" + utils.readableFileSize(total));
+            mBuilder.setContentTitle(c.getResources().getString(title));
+            mBuilder.setContentText(new File(a).getName() + " " + Futils.readableFileSize(done) + "/" + Futils.readableFileSize(total));
             int id1 = Integer.parseInt("456" + id);
             mNotifyManager.notify(id1, mBuilder.build());
             if (p1 == 100 || total == 0) {

@@ -37,6 +37,7 @@ import android.util.Log;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.Futils;
+import com.stericson.RootTools.RootTools;
 
 /**
  * Utility class for helping parsing file systems.
@@ -204,6 +205,18 @@ public abstract class FileUtil {
         return !file.exists();
     }
 
+    private static boolean rename(File f, String name,boolean root) {
+        String newname = f.getParent() + "/" + name;
+        if(f.getParentFile().canWrite()){
+            return f.renameTo(new File(newname));}
+        else if(root) {
+            RootTools.remount(f.getPath(),"rw");
+            RootHelper.runAndWait("mv " + f.getPath() + " " + newname, true);
+            RootTools.remount(f.getPath(),"ro");
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Rename a folder. In case of extSdCard in Kitkat, the old folder stays in place, but files are moved.
@@ -216,7 +229,7 @@ public abstract class FileUtil {
      */
     public static final boolean renameFolder(@NonNull final File source,@NonNull final File target,Context context) {
         // First try the normal rename.
-        if (new Futils().rename(source, target.getName(), false)) {
+        if (rename(source, target.getName(), false)) {
             return true;
         }
         if (target.exists()) {

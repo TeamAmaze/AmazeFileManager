@@ -35,8 +35,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.media.RingtoneManager;
@@ -98,12 +96,13 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
+import com.amaze.filemanager.utils.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -113,16 +112,17 @@ import jcifs.smb.SmbFile;
 
 
 public class Main extends android.support.v4.app.Fragment {
+    private UtilitiesProviderInterface utilsProvider;
+    private Futils utils;
 
     public ArrayList<Layoutelements> LIST_ELEMENTS;
     public Recycleradapter adapter;
-    public Futils utils;
     public ActionMode mActionMode;
     public SharedPreferences Sp;
     public BitmapDrawable folder, apk, DARK_IMAGE, DARK_VIDEO;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
-    public String home, CURRENT_PATH = "", year, goback;
+    public String home, CURRENT_PATH = "", goback;
     public boolean selection, results = false, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS, SHOW_SIZE, SHOW_LAST_MODIFIED;
     public LinearLayout pathbar;
     public int openMode = 0;
@@ -136,14 +136,10 @@ public class Main extends android.support.v4.app.Fragment {
     public boolean IS_LIST = true;
     public IconHolder ic;
     public MainActivity MAIN_ACTIVITY;
-    public String fabSkin, iconskin;
-    public float[] color;
-    public ColorMatrixColorFilter colorMatrixColorFilter;
     public SwipeRefreshLayout mSwipeRefreshLayout;
-    public int skin_color, skinTwoColor, icon_skin_color, theme1, theme, file_count, folder_count, columns;
+    public int file_count, folder_count, columns;
     public String smbPath;
     public ArrayList<BaseFile> searchHelper = new ArrayList<>();
-    public int skinselection;
     public Resources res;
     HashMap<String, Bundle> scrolls = new HashMap<String, Bundle>();
     Main ma = this;
@@ -169,6 +165,15 @@ public class Main extends android.support.v4.app.Fragment {
     private View actionModeView;
     private FastScroller fastScroller;
 
+    // ATTRIBUTES FOR APPEARANCE AND COLORS
+    public String fabSkin, iconskin;
+    public float[] color;
+    public int skin_color;
+    public int skinTwoColor;
+    public int icon_skin_color;
+    public int theme1;
+    public int theme;
+
     // defines the current visible tab, default either 0 or 1
     //private int mCurrentTab;
 
@@ -186,24 +191,24 @@ public class Main extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MAIN_ACTIVITY = (MainActivity) getActivity();
+        utilsProvider = MAIN_ACTIVITY;
+        utils = utilsProvider.getFutils();
+
         setRetainInstance(true);
         no = getArguments().getInt("no", 1);
         home = getArguments().getString("home");
         CURRENT_PATH = getArguments().getString("lastpath");
         tabHandler = new TabHandler(getActivity(), null, null, 1);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        hidemode = Sp.getInt("hidemode", 0);
 
-        fabSkin = PreferenceUtils.getAccentString(Sp);
-        int icon = Sp.getInt(PreferenceUtils.KEY_ICON_SKIN, PreferenceUtils.DEFAULT_ICON);
-        iconskin = PreferenceUtils.getFolderColorString(Sp);
-        skin_color = Color.parseColor(BaseActivity.skin);
-        skinTwoColor = Color.parseColor(BaseActivity.skinTwo);
+        fabSkin = MAIN_ACTIVITY.getColorPreference().getColorAsString(ColorUsage.ACCENT);
+        iconskin = MAIN_ACTIVITY.getColorPreference().getColorAsString(ColorUsage.ICON_SKIN);
+        skin_color = MAIN_ACTIVITY.getColorPreference().getColor(ColorUsage.PRIMARY);
+        skinTwoColor = MAIN_ACTIVITY.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
         icon_skin_color = Color.parseColor(iconskin);
-        Calendar calendar = Calendar.getInstance();
-        year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
         theme = Integer.parseInt(Sp.getString("theme", "0"));
         theme1 = theme == 2 ? PreferenceUtils.hourOfDay() : theme;
-        hidemode = Sp.getInt("hidemode", 0);
 
         SHOW_PERMISSIONS = Sp.getBoolean("showPermissions", false);
         SHOW_SIZE = Sp.getBoolean("showFileSize", false);
@@ -294,13 +299,6 @@ public class Main extends android.support.v4.app.Fragment {
         setHasOptionsMenu(false);
         //MAIN_ACTIVITY = (MainActivity) getActivity();
         initNoFileLayout();
-        utils = new Futils();
-        String x = PreferenceUtils.getSelectionColor(MainActivity.currentTab==1 ?
-                BaseActivity.skinTwo : BaseActivity.skin);
-        skinselection = Color.parseColor(x);
-        color = PreferenceUtils.calculatevalues(x);
-        ColorMatrix colorMatrix = new ColorMatrix(PreferenceUtils.calculatefilter(color));
-        colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
         SHOW_HIDDEN = Sp.getBoolean("showHidden", false);
         COLORISE_ICONS = Sp.getBoolean("coloriseIcons", true);
         folder = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_grid_folder_new));
@@ -519,7 +517,7 @@ public class Main extends android.support.v4.app.Fragment {
             if (MAIN_ACTIVITY.mReturnIntent)
                 showOption(R.id.openmulti, menu);
             //hideOption(R.id.setringtone,menu);
-            mode.setTitle(utils.getString(getActivity(), R.string.select));
+            mode.setTitle(getResources().getString(R.string.select));
 
             MAIN_ACTIVITY.updateViews(new ColorDrawable(res.getColor(R.color.holo_dark_action_mode)));
 
@@ -944,7 +942,7 @@ public class Main extends android.support.v4.app.Fragment {
             bindDrive(path);
         else */
         if (loadList != null) loadList.cancel(true);
-        loadList = new LoadList(back, ma.getActivity(), ma, openMode);
+        loadList = new LoadList(ma.getActivity(), utilsProvider, back, ma, openMode);
         loadList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
 
     }
@@ -1017,8 +1015,7 @@ public class Main extends android.support.v4.app.Fragment {
                     switchToGrid();
                 else if (!grid && !IS_LIST) switchToList();
                 if (adapter == null)
-                    adapter = new Recycleradapter(ma,
-                            bitmap, ma.getActivity());
+                    adapter = new Recycleradapter(ma, utilsProvider, bitmap, ma.getActivity());
                 else {
                     adapter.generate(LIST_ELEMENTS);
                 }
@@ -1095,7 +1092,7 @@ public class Main extends android.support.v4.app.Fragment {
             }
         });
         if (theme1 == 1) a.theme(Theme.DARK);
-        a.title(utils.getString(getActivity(), R.string.rename));
+        a.title(getResources().getString(R.string.rename));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -1326,7 +1323,7 @@ public class Main extends android.support.v4.app.Fragment {
             } else {
                 file_count++;
                 try {
-                    Layoutelements layoutelements = new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(), !IS_LIST, res), name, mFile[i].getPath(), "", "", utils.readableFileSize(mFile[i].length()), mFile[i].length(), false, mFile[i].lastModified() + "", false);
+                    Layoutelements layoutelements = new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(), !IS_LIST, res), name, mFile[i].getPath(), "", "", Futils.readableFileSize(mFile[i].length()), mFile[i].length(), false, mFile[i].lastModified() + "", false);
                     layoutelements.setMode(1);
                     searchHelper.add(layoutelements.generateBaseFile());
                     a.add(layoutelements);
@@ -1354,7 +1351,7 @@ public class Main extends android.support.v4.app.Fragment {
                 try {
                     if (mFile.getSize() != -1) {
                         longSize = Long.valueOf(mFile.getSize());
-                        size = utils.readableFileSize(longSize);
+                        size = Futils.readableFileSize(longSize);
                     } else {
                         size = "";
                         longSize = 0;
@@ -1391,7 +1388,7 @@ public class Main extends android.support.v4.app.Fragment {
                     e.printStackTrace();
                 }
             }
-            utils.scanFile(path, getActivity());
+            Futils.scanFile(path, getActivity());
         }
 
     }

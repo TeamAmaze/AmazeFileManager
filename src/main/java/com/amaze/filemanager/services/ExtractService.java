@@ -56,7 +56,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 public class ExtractService extends Service {
     public final String EXTRACT_CONDITION = "EXTRACT_CONDITION";
-    Futils utils = new Futils();
 
     Context cd;
     // Binder given to clients
@@ -134,12 +133,12 @@ public class ExtractService extends Service {
             mBuilder.setContentTitle(getResources().getString(R.string.extracting));
             mBuilder.setProgress(100, p1, false);
             mBuilder.setOngoing(true);
-            mBuilder.setContentText(new File(a).getName() + " " + utils.readableFileSize(done) + "/" + utils.readableFileSize(total));
+            mBuilder.setContentText(new File(a).getName() + " " + Futils.readableFileSize(done) + "/" + Futils.readableFileSize(total));
             int id1=Integer.parseInt("123"+id);
             mNotifyManager.notify(id1, mBuilder.build());
             if(p1==100){
                 mBuilder.setContentTitle("Extract completed");
-                mBuilder.setContentText(new File(a).getName() + " " + utils.readableFileSize(total));
+                mBuilder.setContentText(new File(a).getName() + " " + Futils.readableFileSize(total));
                 mBuilder.setProgress(0, 0, false);
                 mBuilder.setOngoing(false);
                 mNotifyManager.notify(id1, mBuilder.build());
