@@ -127,6 +127,7 @@ import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
+import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -475,7 +476,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             String strings[] = FileUtil.getExtSdCardPathsForActivity(this);
             for (String s : strings) {
                 File f = new File(s);
-                if (!rv.contains(s) && Futils.canListFiles(f))
+                if (!rv.contains(s) && getFutils().canListFiles(f))
                     rv.add(s);
             }
         }
@@ -932,7 +933,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
-                final MaterialDialog b = Futils.showBasicDialog(mainActivity, BaseActivity.accentSkin, theme1,
+                final MaterialDialog b = getFutils().showBasicDialog(mainActivity, BaseActivity.accentSkin, theme1,
                         new String[]{getResources().getString(R.string.questionset),
                                 getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
                 b.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {

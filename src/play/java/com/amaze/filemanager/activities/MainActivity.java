@@ -19,7 +19,6 @@
 
 package com.amaze.filemanager.activities;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -37,7 +36,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -57,7 +55,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -136,6 +133,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
@@ -263,7 +261,7 @@ public class MainActivity extends BaseActivity implements
         setContentView(R.layout.main_toolbar);
         initialiseViews();
         tabHandler = new TabHandler(this, null, null, 1);
-        utils = new Futils();
+        utils = getFutils();
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
 
@@ -325,12 +323,12 @@ public class MainActivity extends BaseActivity implements
 
                     // file picker intent
                     mReturnIntent = true;
-                    Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
                 } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
                     // ringtone picker intent
                     mReturnIntent = true;
                     mRingtonePickerIntent = true;
-                    Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
                 } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
 
                     // zip viewer intent
@@ -438,7 +436,7 @@ public class MainActivity extends BaseActivity implements
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
-                    Color.parseColor((currentTab == 1 ? skinTwo : skin)));
+                    getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
             ((Activity) this).setTaskDescription(taskDescription);
         }
     }
@@ -598,7 +596,7 @@ public class MainActivity extends BaseActivity implements
             }
         } else {
             this.backPressedToExitOnce = true;
-            showToast(utils.getString(this, R.string.pressagain));
+            showToast(getString(R.string.pressagain));
             new Handler().postDelayed(new Runnable() {
 
                 @Override
@@ -689,7 +687,7 @@ public class MainActivity extends BaseActivity implements
         list.add(new EntryItem(getResources().getString(R.string.documents), "3", ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
         list.add(new EntryItem(getResources().getString(R.string.apks), "4", ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
         DataUtils.setList(list);
-        adapter = new DrawerAdapter(this, list, MainActivity.this, Sp);
+        adapter = new DrawerAdapter(this, this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
     }
 
@@ -1421,7 +1419,7 @@ public class MainActivity extends BaseActivity implements
         list.add(new EntryItem(getResources().getString(R.string.documents), "3", ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
         list.add(new EntryItem(getResources().getString(R.string.apks), "4", ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
         DataUtils.setList(list);
-        adapter = new DrawerAdapter(con, list, MainActivity.this, Sp);
+        adapter = new DrawerAdapter(this, this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
 
     }
@@ -1493,14 +1491,14 @@ public class MainActivity extends BaseActivity implements
                     public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                         super.onLoadingFailed(imageUri, view, failReason);
                         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-                        drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
+                        drawerHeaderParent.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
                     }
 
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
                         super.onLoadingStarted(imageUri, view);
                         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-                        drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
+                        drawerHeaderParent.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
                     }
                 });
 
@@ -1523,7 +1521,7 @@ public class MainActivity extends BaseActivity implements
             } else {
                 Toast.makeText(this, getResources().getText(R.string.no_cover_photo), Toast.LENGTH_SHORT).show();
                 drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-                drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
+                drawerHeaderParent.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
             }
         }
     }
@@ -1802,7 +1800,7 @@ public class MainActivity extends BaseActivity implements
         showHidden = Sp.getBoolean("showHidden", false);
         aBoolean = Sp.getBoolean("view", true);
         currentTab = Sp.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
-        skinStatusBar = (PreferenceUtils.getStatusColor((currentTab==1 ? skinTwo : skin)));
+        skinStatusBar = (PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
         colourednavigation = Sp.getBoolean("colorednavigation", false);
     }
 
@@ -2055,7 +2053,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     void initialiseFab() {
-        String folder_skin = PreferenceUtils.getFolderColorString(Sp);
+        String folder_skin = getColorPreference().getColorAsString(ColorUsage.ICON_SKIN);
         int fabSkinPressed = PreferenceUtils.getStatusColor(BaseActivity.accentSkin);
         int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
@@ -2495,12 +2493,12 @@ public class MainActivity extends BaseActivity implements
 
                 // file picker intent
                 mReturnIntent = true;
-                Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
             } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
                 // ringtone picker intent
                 mReturnIntent = true;
                 mRingtonePickerIntent = true;
-                Toast.makeText(this, utils.getString(con, R.string.pick_a_file), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
             } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
                 // zip viewer intent
                 Uri uri = intent.getData();
