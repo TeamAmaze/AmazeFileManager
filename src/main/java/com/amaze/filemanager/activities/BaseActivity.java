@@ -15,7 +15,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.stericson.RootTools.RootTools;
 
@@ -25,8 +24,6 @@ import java.io.IOException;
  * Created by arpitkh996 on 03-03-2016.
  */
 public class BaseActivity extends BasicActivity {
-    private ColorPreference colorPreference;
-
     public static int theme1;
     public SharedPreferences Sp;
 
@@ -36,15 +33,10 @@ public class BaseActivity extends BasicActivity {
     public static boolean rootMode;
     boolean checkStorage=true;
 
-    public ColorPreference getColorPreference() {
-        return colorPreference;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
-        colorPreference = ColorPreference.loadFromPreferences(this, Sp);
 
         int th = Integer.parseInt(Sp.getString("theme", "0"));
         // checking if theme should be set light/dark or automatic
