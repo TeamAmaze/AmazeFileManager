@@ -273,7 +273,6 @@ public class CopyService extends Service {
                     }
                 }
             } else if (rootmode) {
-                boolean m = true;
                 for (int i = 0; i < files.size(); i++) {
                     String path=files.get(i).getPath();
                     String name=files.get(i).getName();
@@ -282,19 +281,21 @@ public class CopyService extends Service {
                         failedFOps.add(files.get(i));
                     }
                 }
-                if (move && m) {
-                    ArrayList<BaseFile> toDelete=new ArrayList<>();
-                    for(BaseFile a:files){
-                        if(!failedFOps.contains(a))
-                            toDelete.add(a);
-                    }
-                    new DeleteTask(getContentResolver(), c).execute((toDelete));
-                }
 
 
             } else {
-                for(BaseFile f:files)
-                    failedFOps.add(f);
+                for(BaseFile f:files) failedFOps.add(f);
+                return;
+            }
+
+            // making sure to delete files after copy operation is done
+            if (move) {
+                ArrayList<BaseFile> toDelete=new ArrayList<>();
+                for(BaseFile a:files){
+                    if(!failedFOps.contains(a))
+                        toDelete.add(a);
+                }
+                new DeleteTask(getContentResolver(), c).execute((toDelete));
             }
         }
         boolean copyRoot(String path,String name,String FILE2,boolean move){
