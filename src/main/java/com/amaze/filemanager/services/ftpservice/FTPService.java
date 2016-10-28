@@ -8,12 +8,14 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 
@@ -40,8 +42,31 @@ import java.util.Enumeration;
 import java.util.List;
 
 public class FTPService extends Service implements Runnable{
+    public static final int DEFAULT_PORT = 2211;
+    public static final boolean DEFAULT_AUTO_PORT = true;
+    public static final String PORT_PREFERENCE_KEY = "ftpPort";
+    public static final String AUTO_PORT_PREFERENCE_KEY = "autoFtpPort";
+
+    public static int getDefaultPortFromPreferences(SharedPreferences preferences){
+        try {
+            return Integer.parseInt(preferences.getString(PORT_PREFERENCE_KEY, Integer.toString(DEFAULT_PORT)));
+        } catch (ClassCastException ex){
+            Log.e("FtpService", "Default port preference is not an int. Using default.");
+            return DEFAULT_PORT;
+        }
+    }
+
+    public static boolean isPortSelectedAutomatically(SharedPreferences preferences) {
+        try {
+            return preferences.getBoolean(AUTO_PORT_PREFERENCE_KEY, DEFAULT_AUTO_PORT);
+        } catch (ClassCastException ex){
+            Log.e("FtpService", "Automatic port selection preference value is not a booolean. Using default.");
+            return DEFAULT_AUTO_PORT;
+        }
+    }
 
     private static final String TAG = FTPService.class.getSimpleName();
+    /** TODO: 25/10/16 This is ugly */
     private static int port = 2211;
 
     // Service will (global) broadcast when server start/stop
@@ -92,6 +117,8 @@ public class FTPService extends Service implements Runnable{
 
     @Override
     public void run() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         FtpServerFactory serverFactory = new FtpServerFactory();
         ConnectionConfigFactory connectionConfigFactory = new ConnectionConfigFactory();
         connectionConfigFactory.setAnonymousLoginEnabled(true);
@@ -119,12 +146,16 @@ public class FTPService extends Service implements Runnable{
         }
         ListenerFactory fac = new ListenerFactory();
 
-        //check ports for availability
-        for(int i=2211;i<65000;i++){
-            if(isPortAvailable(i)) {
-                port = i;
-                break;
+        if(isPortSelectedAutomatically(preferences)) {
+            //check ports for availability
+            for (int i = 2211; i < 65000; i++) {
+                if (isPortAvailable(i)) {
+                    port = i;
+                    break;
+                }
             }
+        } else {
+            port = getDefaultPortFromPreferences(preferences);
         }
         fac.setPort(port);
 
