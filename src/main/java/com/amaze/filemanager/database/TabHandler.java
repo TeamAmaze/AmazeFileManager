@@ -49,9 +49,9 @@ public class TabHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String CREATE_TAB_TABLE = "CREATE TABLE " + TABLE_TAB + "("
-                +  COLUMN_TAB_NO
+                + COLUMN_TAB_NO
                 + " INTEGER PRIMARY KEY,"
-                + COLUMN_PATH + " TEXT,"+COLUMN_HOME+" TEXT" + ")";
+                + COLUMN_PATH + " TEXT," + COLUMN_HOME + " TEXT" + ")";
         sqLiteDatabase.execSQL(CREATE_TAB_TABLE);
     }
 
@@ -70,18 +70,20 @@ public class TabHandler extends SQLiteOpenHelper {
         sqLiteDatabase.insert(TABLE_TAB, null, contentValues);
         sqLiteDatabase.close();
     }
- public void clear(){
-     try {
-         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-         sqLiteDatabase.delete(TABLE_TAB,COLUMN_TAB_NO+" = ?",new String[]{""+1});
-         sqLiteDatabase.delete(TABLE_TAB, COLUMN_TAB_NO + " = ?", new String[]{"" + 2});
-     sqLiteDatabase.close();
-     } catch (NumberFormatException e) {
-         e.printStackTrace();
-     }
+
+    public void clear() {
+        try {
+            SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+            sqLiteDatabase.delete(TABLE_TAB, COLUMN_TAB_NO + " = ?", new String[]{"" + 1});
+            sqLiteDatabase.delete(TABLE_TAB, COLUMN_TAB_NO + " = ?", new String[]{"" + 2});
+            sqLiteDatabase.close();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
 
 
- }
+    }
+
     public Tab findTab(int tabNo) {
         String query = "Select * FROM " + TABLE_TAB + " WHERE " + COLUMN_TAB_NO + "= \"" + tabNo + "\"";
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
@@ -108,7 +110,7 @@ public class TabHandler extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
         // Looping through all rows and adding them to list
-        if (cursor.getCount()>0 && cursor.moveToFirst()) {
+        if (cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
                 Tab tab = new Tab();
                 tab.setTab((cursor.getInt(0)));
@@ -117,10 +119,12 @@ public class TabHandler extends SQLiteOpenHelper {
                 //Adding them to list
                 tabList.add(tab);
             } while (cursor.moveToNext());
-        }sqLiteDatabase.close();
+        }
+        sqLiteDatabase.close();
         return tabList;
     }
-    public void close(){
+
+    public void close() {
         try {
             getWritableDatabase().close();
         } catch (Exception e) {
