@@ -42,8 +42,8 @@ public class TabHandler extends SQLiteOpenHelper {
     private static final String COLUMN_PATH = "path";
     private static final String COLUMN_HOME = "home";
 
-    public TabHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, DATABASE_NAME, factory, DATABASE_VERSION);
+    public TabHandler(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
