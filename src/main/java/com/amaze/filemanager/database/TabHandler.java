@@ -80,8 +80,6 @@ public class TabHandler extends SQLiteOpenHelper {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public Tab findTab(int tabNo) {
@@ -108,19 +106,27 @@ public class TabHandler extends SQLiteOpenHelper {
         String query = "Select * FROM " + TABLE_TAB;
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
-        // Looping through all rows and adding them to list
-        if (cursor.getCount() > 0 && cursor.moveToFirst()) {
-            do {
-                Tab tab = new Tab();
-                tab.setTab((cursor.getInt(0)));
-                tab.setPath(cursor.getString(1));
-                tab.setHome(cursor.getString(2));
-                //Adding them to list
-                tabList.add(tab);
-            } while (cursor.moveToNext());
+        Cursor cursor = null;
+        try {
+            cursor = sqLiteDatabase.rawQuery(query, null);
+            // Looping through all rows and adding them to list
+            if (cursor.getCount() > 0 && cursor.moveToFirst()) {
+                do {
+                    Tab tab = new Tab();
+                    tab.setTab((cursor.getInt(0)));
+                    tab.setPath(cursor.getString(1));
+                    tab.setHome(cursor.getString(2));
+                    //Adding them to list
+                    tabList.add(tab);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
         sqLiteDatabase.close();
+
         return tabList;
     }
 
