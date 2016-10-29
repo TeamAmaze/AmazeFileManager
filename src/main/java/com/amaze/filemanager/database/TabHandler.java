@@ -37,10 +37,11 @@ public class TabHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "explorer.db";
     private static final String TABLE_TAB = "tab";
 
-    public static final String COLUMN_TAB_NO = "tab_no";
-    public static final String COLUMN_LABEL = "label";
-    public static final String COLUMN_PATH = "path";
-    public static final String COLUMN_HOME = "home";
+    private static final String COLUMN_TAB_NO = "tab_no";
+    private static final String COLUMN_LABEL = "label";
+    private static final String COLUMN_PATH = "path";
+    private static final String COLUMN_HOME = "home";
+
     public TabHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
     }
