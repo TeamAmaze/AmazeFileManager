@@ -199,7 +199,6 @@ public class Main extends android.support.v4.app.Fragment {
         no = getArguments().getInt("no", 1);
         home = getArguments().getString("home");
         CURRENT_PATH = getArguments().getString("lastpath");
-        tabHandler = new TabHandler(getActivity(), null, null, 1);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         hidemode = Sp.getInt("hidemode", 0);
 
@@ -1288,12 +1287,6 @@ public class Main extends android.support.v4.app.Fragment {
     @Override
     public void onStop() {
         super.onStop();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        tabHandler.close();
     }
 
     void fixIcons() {
