@@ -56,7 +56,6 @@ public class TabFragment extends android.support.v4.app.Fragment
     // current visible tab, either 0 or 1
     //public int currenttab;
     MainActivity mainActivity;
-    public int theme1;
     View buttons;
     View mToolBarContainer;
     boolean savepaths;
@@ -95,8 +94,6 @@ public class TabFragment extends android.support.v4.app.Fragment
         savepaths=Sp.getBoolean("savepaths", true);
         coloredNavigation = Sp.getBoolean("colorednavigation", true);
 
-        int theme=Integer.parseInt(Sp.getString("theme","0"));
-        theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
         mViewPager = (CustomViewPager) rootView.findViewById(R.id.pager);
 
         if (getArguments() != null){

@@ -110,7 +110,6 @@ public class ZipViewer extends Fragment {
     int openmode;
     //0 for zip 1 for rar
     boolean stopAnims=true;
-    public Integer theme, theme1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -198,9 +197,6 @@ public class ZipViewer extends Fragment {
         skin = mainActivity.getColorPreference().getColorAsString(ColorUsage.PRIMARY);
         accentColor = mainActivity.getColorPreference().getColorAsString(ColorUsage.ACCENT);
         iconskin = mainActivity.getColorPreference().getColorAsString(ColorUsage.ICON_SKIN);
-
-        theme = Integer.parseInt(Sp.getString("theme", "0"));
-        theme1 = theme == 2 ? PreferenceUtils.hourOfDay() : theme;
 
         //mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
