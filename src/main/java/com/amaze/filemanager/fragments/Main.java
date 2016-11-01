@@ -310,15 +310,7 @@ public class Main extends android.support.v4.app.Fragment {
         f.generateMode(getActivity());
         MAIN_ACTIVITY.initiatebbar();
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
-        /*if (theme1 == 1) {
 
-            listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.holo_dark_background)));
-        } else {
-
-            if (IS_LIST)
-                listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
-
-        }*/
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT) && !IS_LIST)  listView.setBackgroundColor(getResources()
                 .getColor(R.color.grid_background_light));
         else    listView.setBackgroundDrawable(null);

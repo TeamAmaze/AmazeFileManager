@@ -1932,8 +1932,7 @@ public class MainActivity extends BaseActivity implements
         mDrawerList.addHeaderView(drawerHeaderLayout);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         View v = findViewById(R.id.fab_bg);
-        /*if (theme1 != 1)
-            v.setBackgroundColor(Color.parseColor("#a6ffffff"));*/
+
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -2116,7 +2115,6 @@ public class MainActivity extends BaseActivity implements
         floatingActionButton.setMenuButtonColorNormal(Color.parseColor(BaseActivity.accentSkin));
         floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
 
-        //if (theme1 == 1) floatingActionButton.setMen
         floatingActionButton.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
             public void onMenuToggle(boolean b) {
