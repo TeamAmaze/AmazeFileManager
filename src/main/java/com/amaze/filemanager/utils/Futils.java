@@ -780,11 +780,6 @@ public class Futils {
         new GenerateMD5Task(materialDialog, (f), name, parent, size, items, date, c, v).execute(f.getPath());
     }
 
-    @Deprecated
-    public void showProps(final HFile f, final Activity c, int theme1) {
-        showProps(f, c, AppTheme.fromIndex(theme1));
-    }
-
     public static boolean copyToClipboard(Context context, String text) {
         try {
             android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context
