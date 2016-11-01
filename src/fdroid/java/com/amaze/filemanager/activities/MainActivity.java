@@ -2233,7 +2233,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
     public void renameBookmark(final String title, final String path) {
         if (DataUtils.containsBooks(new String[]{title,path}) != -1 || DataUtils.containsAccounts(new String[]{title,path}) != -1) {
-            RenameBookmark renameBookmark=RenameBookmark.getInstance(title,path,BaseActivity.accentSkin,getAppTheme());
+            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, BaseActivity.accentSkin);
             if(renameBookmark!=null){
                 renameBookmark.show(getFragmentManager(),"renamedialog");
             }
