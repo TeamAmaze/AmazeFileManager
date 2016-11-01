@@ -239,14 +239,13 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                     // system package
                                     if(app.Sp.getBoolean("rootmode",false)) {
                                         MaterialDialog.Builder builder1 = new MaterialDialog.Builder(app.getActivity());
-                                        if(utilsProvider.getAppTheme().equals(AppTheme.DARK))
-                                            builder1.theme(Theme.DARK);
-                                        builder1.content(app.getResources().getString( R.string.unin_system_apk))
-                                                .title(app.getResources().getString( R.string.warning))
+                                        builder1.theme(utilsProvider.getAppTheme().getMaterialDialogTheme())
+                                                .content(app.getResources().getString(R.string.unin_system_apk))
+                                                .title(app.getResources().getString(R.string.warning))
                                                 .negativeColor(color)
                                                 .positiveColor(color)
-                                                .negativeText(app.getResources().getString( R.string.no))
-                                                .positiveText(app.getResources().getString( R.string.yes))
+                                                .negativeText(app.getResources().getString(R.string.no))
+                                                .positiveText(app.getResources().getString(R.string.yes))
                                                 .callback(new MaterialDialog.ButtonCallback() {
                                                     @Override
                                                     public void onNegative(MaterialDialog materialDialog) {

@@ -26,6 +26,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.ui.views.CheckBx;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.color.ColorUsage;
 
@@ -35,23 +36,22 @@ import java.util.List;
  * Created by Arpit on 21-06-2015.
  */
 public class ColorPref extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+    private UtilitiesProviderInterface utilsProvider;
 
     SharedPreferences sharedPref;
-    int theme;
     com.amaze.filemanager.activities.Preferences preferences;
     BaseActivity activity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        utilsProvider = (UtilitiesProviderInterface) getActivity();
         activity = (BaseActivity) getActivity();
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.color_prefs);
         preferences = (com.amaze.filemanager.activities.Preferences) getActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final int th1 = Integer.parseInt(sharedPref.getString("theme", "0"));
-        theme = th1 == 2 ? PreferenceUtils.hourOfDay() : th1;
 
         final CheckBx checkBoxPreference = (CheckBx) findPreference("random_checkbox");
         checkBoxPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -96,7 +96,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                     .positiveText(R.string.cancel)
                     .title(R.string.choose_color)
-                    .theme(theme == 1 ? Theme.DARK : Theme.LIGHT)
+                    .theme(utilsProvider.getAppTheme().getMaterialDialogTheme())
                     .autoDismiss(true)
                     .positiveColor(fab_skin)
                     .neutralColor(fab_skin)

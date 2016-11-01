@@ -25,6 +25,7 @@ import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -38,6 +39,8 @@ import jcifs.smb.SmbFile;
  * Created by arpitkh996 on 17-01-2016.
  */
 public class SmbConnectDialog extends DialogFragment {
+    private UtilitiesProviderInterface utilsProvider;
+
 
     public interface SmbConnectionListener{
         void addConnection(boolean edit,String name,String path,String oldname,String oldPath);
@@ -46,6 +49,13 @@ public class SmbConnectDialog extends DialogFragment {
     Context context;
     SmbConnectionListener smbConnectionListener;
     String emptyAddress, emptyName,invalidDomain,invalidUsername;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        utilsProvider = (UtilitiesProviderInterface) getActivity();
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final boolean edit=getArguments().getBoolean("edit",false);
@@ -209,7 +219,7 @@ public class SmbConnectDialog extends DialogFragment {
             con_name.requestFocus();
         }
         ba3.customView(v2, true);
-        if (PreferenceUtils.getTheme(sharedPreferences) == 1) ba3.theme(Theme.DARK);
+        ba3.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
         ba3.neutralText(R.string.cancel);
         ba3.positiveText(R.string.create);
         if (edit) ba3.negativeText(R.string.delete);

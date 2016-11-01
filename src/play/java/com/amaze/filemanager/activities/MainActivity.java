@@ -173,7 +173,6 @@ public class MainActivity extends BaseActivity implements
     public ListView mDrawerList;
     public ScrimInsetsRelativeLayout mDrawerLinear;
     public String path = "", launchPath;
-    public int theme;
     public ArrayList<BaseFile> COPY_PATH = null, MOVE_PATH = null;
     public FrameLayout frameLayout;
     public boolean mReturnIntent = false;
@@ -1005,7 +1004,7 @@ public class MainActivity extends BaseActivity implements
                 if (ma == null) return super.onOptionsItemSelected(item);
                 String[] sort = getResources().getStringArray(R.array.directorysortmode);
                 MaterialDialog.Builder a = new MaterialDialog.Builder(mainActivity);
-                if (theme == 1) a.theme(Theme.DARK);
+                a.theme(getAppTheme().getMaterialDialogTheme());
                 a.title(R.string.directorysort);
                 int current = Integer.parseInt(Sp.getString("dirontop", "0"));
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
@@ -1850,7 +1849,6 @@ public class MainActivity extends BaseActivity implements
     }
 
     void initialisePreferences() {
-        theme = Integer.parseInt(Sp.getString("theme", "0"));
         hidemode = Sp.getInt("hidemode", 0);
         showHidden = Sp.getBoolean("showHidden", false);
         aBoolean = Sp.getBoolean("view", true);

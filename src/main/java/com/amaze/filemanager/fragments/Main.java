@@ -1098,7 +1098,7 @@ public class Main extends android.support.v4.app.Fragment {
 
             }
         });
-        if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) a.theme(Theme.DARK);
+        a.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
         a.title(getResources().getString(R.string.rename));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
