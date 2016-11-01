@@ -31,6 +31,7 @@ import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.theme.AppTheme;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.io.File;
@@ -243,7 +244,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
         View v;if(main.IS_LIST) v= mInflater.inflate(R.layout.rowlayout, parent, false);
         else  v= mInflater.inflate(R.layout.griditem, parent, false);
         ViewHolder vh = new ViewHolder(v);
-        if(main.theme1==1)
+        if(utilsProvider.getAppTheme().equals(AppTheme.DARK))
             vh.txtTitle.setTextColor(main.MAIN_ACTIVITY.getResources().getColor(android.R.color.white));
         return vh;
     }
@@ -309,9 +310,9 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 holder.checkImageView.setBackground(new CircleGradientDrawable(main.fabSkin,
-                        main.theme1, main.getResources().getDisplayMetrics()));
+                        utilsProvider.getAppTheme(), main.getResources().getDisplayMetrics()));
             } else holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(main.fabSkin,
-                    main.theme1, main.getResources().getDisplayMetrics()));
+                    utilsProvider.getAppTheme(), main.getResources().getDisplayMetrics()));
 
             holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 
@@ -337,7 +338,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.genericText.setText("");
 
             if (holder.about != null) {
-                if(main.theme1==0)holder.about.setColorFilter(grey_color);
+                if(utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
+                    holder.about.setColorFilter(grey_color);
                 showPopup(holder.about,rowItem, p);
             }
             holder.genericIcon.setOnClickListener(new View.OnClickListener() {
@@ -456,7 +458,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             Boolean checked = myChecked.get(p);
             if (checked != null) {
 
-                if (main.theme1 == 0) {
+                if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
 
                     holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
                 } else {
@@ -558,7 +560,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.genericIcon.setColorFilter(null);
                 holder.imageView1.setVisibility(View.VISIBLE);
                 holder.imageView1.setImageDrawable(null);
-                if (main.theme == 1)
+                if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
                     holder.imageView1.setBackgroundColor(Color.BLACK);
                 main.ic.cancelLoad(holder.imageView1);
                 main.ic.loadDrawable(holder.imageView1, (rowItem.getDesc()), null);
@@ -601,7 +603,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     holder.rl.setBackgroundColor(Color.parseColor("#9f757575"));
                 } else {
                     holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
-                    if (main.theme1 == 0)
+                    if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
                         holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
                     else{
                         holder.rl.setBackgroundResource(R.drawable.ic_grid_card_background_dark);
@@ -611,7 +613,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             }
 
             if (holder.about != null) {
-                if(main.theme1==0)holder.about.setColorFilter(grey_color);
+                if(utilsProvider.getAppTheme().equals(AppTheme.LIGHT))holder.about.setColorFilter(grey_color);
                 showPopup(holder.about,rowItem, p);
             }
             if (main.SHOW_LAST_MODIFIED)
@@ -648,10 +650,10 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     @Override
     public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
         View  view = mInflater.inflate(R.layout.listheader, viewGroup, false);
-        /*if(main.theme1==1)
+        /*if(utilsProvider.getAppTheme().equals(AppTheme.DARK))
             view.setBackgroundResource(R.color.holo_dark_background);*/
         HeaderViewHolder holder = new HeaderViewHolder(view);
-        if (main.theme1==0)holder.ext.setTextColor(Color.parseColor("#8A000000"));
+        if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))holder.ext.setTextColor(Color.parseColor("#8A000000"));
         else holder.ext.setTextColor(Color.parseColor("#B3ffffff"));
         return holder;
     }
@@ -674,12 +676,12 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.about:
-                                utilsProvider.getFutils().showProps((rowItem).generateBaseFile(), rowItem.getPermissions(), main, BaseActivity.rootMode);
+                                utilsProvider.getFutils().showProps((rowItem).generateBaseFile(), rowItem.getPermissions(), main, BaseActivity.rootMode, utilsProvider.getAppTheme());
                                 return true;
                             case R.id.share:
                                 ArrayList<File> arrayList = new ArrayList<File>();
                                 arrayList.add(new File(rowItem.getDesc()));
-                                utilsProvider.getFutils().shareFiles(arrayList, main.MAIN_ACTIVITY, main.theme1, Color.parseColor(main.fabSkin));
+                                utilsProvider.getFutils().shareFiles(arrayList, main.MAIN_ACTIVITY, utilsProvider.getAppTheme(), Color.parseColor(main.fabSkin));
                                 return true;
                             case R.id.rename:
                                 main.rename(rowItem.generateBaseFile());
@@ -711,7 +713,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                             case R.id.delete:
                                 ArrayList<Integer> positions = new ArrayList<Integer>();
                                 positions.add(position);
-                                utilsProvider.getFutils().deleteFiles(main.LIST_ELEMENTS, main, positions);
+                                utilsProvider.getFutils().deleteFiles(main.LIST_ELEMENTS, main, positions, utilsProvider.getAppTheme());
                                 return true;
                             case R.id.open_with:
                                 utilsProvider.getFutils().openWith(new File(rowItem.getDesc()), main.getActivity());

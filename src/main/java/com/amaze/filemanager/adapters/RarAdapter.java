@@ -298,9 +298,9 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             holder.checkImageView.setBackground(new CircleGradientDrawable(zipViewer.accentColor,
-                    zipViewer.theme1, zipViewer.getResources().getDisplayMetrics()));
+                    utilsProvider.getAppTheme(), zipViewer.getResources().getDisplayMetrics()));
         } else holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(zipViewer.accentColor,
-                zipViewer.theme1, zipViewer.getResources().getDisplayMetrics()));
+                utilsProvider.getAppTheme(), zipViewer.getResources().getDisplayMetrics()));
 
         if(rowItem.getEntry()==null){
             holder.genericIcon.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha));
@@ -447,9 +447,9 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             holder.checkImageView.setBackground(new CircleGradientDrawable(zipViewer.accentColor,
-                    zipViewer.theme1, zipViewer.getResources().getDisplayMetrics()));
+                    utilsProvider.getAppTheme(), zipViewer.getResources().getDisplayMetrics()));
         } else holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(zipViewer.accentColor,
-                zipViewer.theme1, zipViewer.getResources().getDisplayMetrics()));
+                utilsProvider.getAppTheme(), zipViewer.getResources().getDisplayMetrics()));
 
         if (rowItem.isDirectory()) {
             holder.genericIcon.setImageDrawable(folder);

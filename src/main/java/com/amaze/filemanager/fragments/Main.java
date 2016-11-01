@@ -102,6 +102,7 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.theme.AppTheme;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
@@ -175,8 +176,6 @@ public class Main extends android.support.v4.app.Fragment {
     public int skin_color;
     public int skinTwoColor;
     public int icon_skin_color;
-    public int theme1;
-    public int theme;
 
     // defines the current visible tab, default either 0 or 1
     //private int mCurrentTab;
@@ -210,8 +209,6 @@ public class Main extends android.support.v4.app.Fragment {
         skin_color = MAIN_ACTIVITY.getColorPreference().getColor(ColorUsage.PRIMARY);
         skinTwoColor = MAIN_ACTIVITY.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
         icon_skin_color = Color.parseColor(iconskin);
-        theme = Integer.parseInt(Sp.getString("theme", "0"));
-        theme1 = theme == 2 ? PreferenceUtils.hourOfDay() : theme;
 
         SHOW_PERMISSIONS = Sp.getBoolean("showPermissions", false);
         SHOW_SIZE = Sp.getBoolean("showFileSize", false);
@@ -322,7 +319,7 @@ public class Main extends android.support.v4.app.Fragment {
                 listView.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.background_light)));
 
         }*/
-        if (theme1==0 && !IS_LIST)  listView.setBackgroundColor(getResources()
+        if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT) && !IS_LIST)  listView.setBackgroundColor(getResources()
                 .getColor(R.color.grid_background_light));
         else    listView.setBackgroundDrawable(null);
 
@@ -381,7 +378,7 @@ public class Main extends android.support.v4.app.Fragment {
         folder = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_grid_folder_new));
         fixIcons();
 
-        if (theme1==0) {
+        if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
 
             // will always be grid, set alternate white background
             listView.setBackgroundColor(getResources().getColor(R.color.grid_background_light));
@@ -399,7 +396,7 @@ public class Main extends android.support.v4.app.Fragment {
     void switchToList() {
         IS_LIST = true;
 
-        if (theme1==0) {
+        if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
 
             listView.setBackgroundDrawable(null);
         }
@@ -670,7 +667,7 @@ public class Main extends android.support.v4.app.Fragment {
                 case R.id.about:
                     Layoutelements x;
                     x = LIST_ELEMENTS.get((plist.get(0)));
-                    utils.showProps((x).generateBaseFile(), x.getPermissions(), ma, BaseActivity.rootMode);
+                    utils.showProps((x).generateBaseFile(), x.getPermissions(), ma, BaseActivity.rootMode, utilsProvider.getAppTheme());
                     mode.finish();
                     return true;
                 /*case R.id.setringtone:
@@ -703,7 +700,7 @@ public class Main extends android.support.v4.app.Fragment {
                     }
                     return true;*/
                 case R.id.delete:
-                    utils.deleteFiles(LIST_ELEMENTS, ma, plist);
+                    utils.deleteFiles(LIST_ELEMENTS, ma, plist, utilsProvider.getAppTheme());
 
 
                     return true;
@@ -716,8 +713,7 @@ public class Main extends android.support.v4.app.Fragment {
                         Toast.makeText(getActivity(), getResources().getString(R.string.share_limit),
                                 Toast.LENGTH_SHORT).show();
                     else
-                        utils.shareFiles(arrayList, getActivity(), theme1, Color.parseColor
-                                (fabSkin));
+                        utils.shareFiles(arrayList, getActivity(), utilsProvider.getAppTheme(), Color.parseColor(fabSkin));
                     return true;
                 case R.id.openparent:
                     loadlist(new File(LIST_ELEMENTS.get(plist.get(0)).getDesc()).getParent(), false, OpenMode.FILE);
@@ -958,7 +954,7 @@ public class Main extends android.support.v4.app.Fragment {
 
     void initNoFileLayout() {
         nofilesview = rootView.findViewById(R.id.nofilelayout);
-        if (theme1 == 0)
+        if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
             ((ImageView) nofilesview.findViewById(R.id.image)).setColorFilter(Color.parseColor("#666666"));
         else {
             nofilesview.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
@@ -1110,7 +1106,7 @@ public class Main extends android.support.v4.app.Fragment {
 
             }
         });
-        if (theme1 == 1) a.theme(Theme.DARK);
+        if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) a.theme(Theme.DARK);
         a.title(getResources().getString(R.string.rename));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override

@@ -965,7 +965,7 @@ public class MainActivity extends BaseActivity implements
                 break;
             case R.id.history:
                 if (ma != null)
-                    utils.showHistoryDialog(ma);
+                    utils.showHistoryDialog(ma, getAppTheme());
                 break;
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -999,7 +999,7 @@ public class MainActivity extends BaseActivity implements
                 break;
             case R.id.sortby:
                 if (ma != null)
-                    utils.showSortDialog(ma);
+                    utils.showSortDialog(ma, getAppTheme());
                 break;
             case R.id.dsort:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -1019,7 +1019,7 @@ public class MainActivity extends BaseActivity implements
                 a.build().show();
                 break;
             case R.id.hiddenitems:
-                utils.showHiddenDialog(ma);
+                utils.showHiddenDialog(ma, getAppTheme());
                 break;
             case R.id.view:
                 if (ma.IS_LIST) {

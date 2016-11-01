@@ -925,7 +925,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 break;
             case R.id.history:
                 if (ma != null)
-                    getFutils().showHistoryDialog(ma);
+                    getFutils().showHistoryDialog(ma, getAppTheme());
                 break;
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -959,7 +959,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 break;
             case R.id.sortby:
                 if (ma != null)
-                    getFutils().showSortDialog(ma);
+                    getFutils().showSortDialog(ma, getAppTheme());
                 break;
             case R.id.dsort:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -979,7 +979,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 a.build().show();
                 break;
             case R.id.hiddenitems:
-                getFutils().showHiddenDialog(ma);
+                getFutils().showHiddenDialog(ma, getAppTheme());
                 break;
             case R.id.view:
                 if (ma.IS_LIST) {
