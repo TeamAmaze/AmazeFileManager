@@ -314,6 +314,7 @@ public class PreferenceUtils {
             "<br><br></code></p>" +
             "</body></html>";
 
+    @Deprecated
     public static int hourOfDay() {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);

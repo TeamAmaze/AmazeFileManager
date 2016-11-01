@@ -45,6 +45,7 @@ import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -101,13 +102,13 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (values.get(position).isSection()) {
             ImageView view = new ImageView(context);
-            if (m.theme1==0)
+            if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
                 view.setImageResource(R.color.divider);
             else
                 view.setImageResource(R.color.divider_dark);
             view.setClickable(false);
             view.setFocusable(false);
-            if(m.theme1==0)
+            if(utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
             view.setBackgroundColor(Color.WHITE);
             else view.setBackgroundResource(R.color.background_material_dark);
             view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, m.dpToPx(17)));
@@ -117,7 +118,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             View  view = inflater.inflate(R.layout.drawerrow, parent, false);
             final TextView txtTitle=(TextView) view.findViewById(R.id.firstline);
             final ImageView imageView=(ImageView) view.findViewById(R.id.icon);
-            if (m.theme1 == 0) {
+            if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
                 view.setBackgroundResource(R.drawable.safr_ripple_white);
             } else {
                 view.setBackgroundResource(R.drawable.safr_ripple_black);
@@ -153,7 +154,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                     } else if(position<m.storage_count ){
                         String path = ((EntryItem) getItem(position)).getPath();
                         if(!path.equals("/"))
-                            utilsProvider.getFutils().showProps(RootHelper.generateBaseFile(new File(path),true),m,m.theme1);
+                            utilsProvider.getFutils().showProps(RootHelper.generateBaseFile(new File(path), true), m, utilsProvider.getAppTheme());
                     }
 
                     // return true to denote no further processing
@@ -165,13 +166,13 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             imageView.setImageDrawable(getDrawable(position));
             imageView.clearColorFilter();
             if (myChecked.get(position)) {
-                if (m.theme1 == 0)
+                if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
                     view.setBackgroundColor(Color.parseColor("#ffeeeeee"));
                 else view.setBackgroundColor(Color.parseColor("#ff424242"));
                 imageView.setColorFilter(fabskin);
                 txtTitle.setTextColor(Color.parseColor(BaseActivity.accentSkin));
             } else {
-                if (m.theme1 == 0) {
+                if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
                     imageView.setColorFilter(Color.parseColor("#666666"));
                     txtTitle.setTextColor(m.getResources().getColor(android.R.color.black));
                 } else {

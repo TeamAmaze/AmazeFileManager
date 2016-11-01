@@ -65,6 +65,7 @@ import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.theme.AppTheme;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
@@ -128,7 +129,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (theme1 == 1) {
+        if (getAppTheme().equals(AppTheme.DARK)) {
             getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         }
         setContentView(R.layout.search);
@@ -221,7 +222,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         getSupportActionBar().setTitle(fileName);
         mInput.addTextChangedListener(this);
         try {
-            if (theme1 == 1)
+            if (getAppTheme().equals(AppTheme.DARK))
                 mInput.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (Exception e) {
@@ -458,7 +459,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 if(mFile.canRead()){
                     HFile hFile=new HFile(OpenMode.FILE,mFile.getPath());
                     hFile.generateMode(this);
-                    getFutils().showProps(hFile, this, theme1);
+                    getFutils().showProps(hFile, this, getAppTheme());
                 }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
                 break;
             case R.id.openwith:
@@ -656,7 +657,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
                     // setting older span back before setting new one
                     Map.Entry keyValueOld = (Map.Entry) nodes.get(mCurrent).getKey();
-                    mInput.getText().setSpan(theme1 == 0 ? new BackgroundColorSpan(Color.YELLOW) :
+                    mInput.getText().setSpan(getAppTheme().equals(AppTheme.LIGHT) ? new BackgroundColorSpan(Color.YELLOW) :
                                     new BackgroundColorSpan(Color.LTGRAY),
                             (Integer) keyValueOld.getKey(),
                             (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -681,7 +682,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                     if (mCurrent!=-1) {
 
                         Map.Entry keyValueOld = (Map.Entry) nodes.get(mCurrent).getKey();
-                        mInput.getText().setSpan(theme1 == 0 ? new BackgroundColorSpan(Color.YELLOW) :
+                        mInput.getText().setSpan(getAppTheme().equals(AppTheme.LIGHT) ? new BackgroundColorSpan(Color.YELLOW) :
                                         new BackgroundColorSpan(Color.LTGRAY),
                                 (Integer) keyValueOld.getKey(),
                                 (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);

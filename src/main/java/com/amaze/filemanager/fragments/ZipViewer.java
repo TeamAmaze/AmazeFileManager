@@ -66,6 +66,7 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
@@ -182,7 +183,7 @@ public class ZipViewer extends Fragment {
         listView.setLayoutManager(mLayoutManager);
         res = getResources();
         mainActivity.supportInvalidateOptionsMenu();
-        if (mainActivity.theme1 == 1)
+        if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
             rootView.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         else
             listView.setBackgroundColor(getResources().getColor(android.R.color.background_light));

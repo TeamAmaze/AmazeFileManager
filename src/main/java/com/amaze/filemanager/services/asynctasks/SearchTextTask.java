@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 
 import com.amaze.filemanager.activities.TextReader;
 import com.amaze.filemanager.utils.MapEntry;
+import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -86,7 +87,7 @@ public class SearchTextTask extends AsyncTask<Editable, Void, ArrayList<MapEntry
         for (Map.Entry mapEntry : mapEntries) {
 
             Map.Entry keyMapEntry = (Map.Entry) mapEntry.getKey();
-            mInput.getText().setSpan(textReader.theme1 == 0 ? new BackgroundColorSpan(Color.YELLOW) :
+            mInput.getText().setSpan(textReader.getAppTheme().equals(AppTheme.LIGHT) ? new BackgroundColorSpan(Color.YELLOW) :
                             new BackgroundColorSpan(Color.LTGRAY),
                     (Integer) keyMapEntry.getKey(), (Integer) keyMapEntry.getValue(),
                     Spanned.SPAN_INCLUSIVE_INCLUSIVE);

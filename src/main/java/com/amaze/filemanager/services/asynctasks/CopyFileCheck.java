@@ -23,6 +23,7 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -134,7 +135,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
             // checkBox
             final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
             Futils.setTint(checkBox, Color.parseColor(BaseActivity.accentSkin));
-            if (mainActivity.theme1 == 1) x.theme(Theme.DARK);
+            x.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
             x.title(con.getResources().getString(R.string.paste));
             x.positiveText(R.string.skip);
             x.negativeText(R.string.overwrite);

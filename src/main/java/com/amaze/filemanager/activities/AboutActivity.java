@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.util.Random;
 
@@ -69,7 +70,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (BaseActivity.theme1 == 1) {
+        if (getAppTheme().equals(AppTheme.DARK)) {
             setTheme(R.style.aboutDark);
         } else {
             setTheme(R.style.aboutLight);
@@ -191,7 +192,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
      * Method switches icon resources as per current theme
      */
     private void switchIcons() {
-        if (BaseActivity.theme1==1) {
+        if (getAppTheme().equals(AppTheme.DARK)) {
             // dark theme
             mAuthorsDivider.setBackgroundColor(getResources().getColor(R.color.divider_dark));
         }
@@ -228,7 +229,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 break;
 
             case R.id.relative_layout_licenses:
-                final Dialog dialog = new Dialog(this, BaseActivity.theme1==0 ?
+                final Dialog dialog = new Dialog(this, getAppTheme().equals(AppTheme.LIGHT) ?
                         android.R.style.Theme_Holo_Light_DialogWhenLarge_NoActionBar :
                         android.R.style.Theme_Holo_DialogWhenLarge_NoActionBar);
                 final View dialog_view = getLayoutInflater().inflate(R.layout.open_source_licenses, null);

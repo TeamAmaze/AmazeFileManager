@@ -52,6 +52,7 @@ import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.util.ArrayList;
 
@@ -78,7 +79,7 @@ public class ProcessViewer extends Fragment {
 
 
         mainActivity = (MainActivity) getActivity();
-        if (mainActivity.theme1 == 1)
+        if (mainActivity.getAppTheme().equals(AppTheme.DARK))
             root.setBackgroundResource((R.color.cardView_background));
         rootView = (LinearLayout) root.findViewById(R.id.secondbut);
         //((MainActivity)getActivity()).getSupportActionBar().setTitle(utils.getString(getActivity(),R.string.processes));
@@ -290,7 +291,7 @@ public class ProcessViewer extends Fragment {
                     if (move) {
                         icon = icons.getCutDrawable();
                     }
-                    if (mainActivity.theme1 == 1) {
+                    if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
 
                         cancel.setImageResource(R.drawable.ic_action_cancel);
                         root.setCardBackgroundColor(R.color.cardView_foreground);
@@ -370,7 +371,7 @@ public class ProcessViewer extends Fragment {
                 ImageButton cancel = (ImageButton) root.findViewById(R.id.delete_button);
                 TextView progressText = (TextView) root.findViewById(R.id.progressText);
 
-                if (mainActivity.theme1 == 1) {
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
 
                     root.setCardBackgroundColor(R.color.cardView_foreground);
                     root.setCardElevation(0f);
@@ -441,7 +442,7 @@ public class ProcessViewer extends Fragment {
                 ImageButton cancel = (ImageButton) root.findViewById(R.id.delete_button);
                 TextView progressText = (TextView) root.findViewById(R.id.progressText);
 
-                if (mainActivity.theme1 == 1) {
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
 
                     root.setCardBackgroundColor(R.color.cardView_foreground);
                     root.setCardElevation(0f);

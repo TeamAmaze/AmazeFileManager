@@ -19,6 +19,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.net.URL;
 import java.net.URLDecoder;
@@ -35,16 +36,18 @@ public class RenameBookmark extends DialogFragment {
     BookmarkCallback bookmarkCallback;
     SharedPreferences Sp;
     int studiomode=0;
-    public static RenameBookmark getInstance(String name,String path,String fabskin,int theme1){
-        RenameBookmark renameBookmark=new RenameBookmark();
-        Bundle bundle=new Bundle();
-        bundle.putString("title",name);
-        bundle.putString("path",path);
-        bundle.putString("fabskin",fabskin);
-        bundle.putInt("theme",theme1);
+
+    public static RenameBookmark getInstance(String name, String path, String fabskin, AppTheme appTheme) {
+        RenameBookmark renameBookmark = new RenameBookmark();
+        Bundle bundle = new Bundle();
+        bundle.putString("title", name);
+        bundle.putString("path", path);
+        bundle.putString("fabskin", fabskin);
+        bundle.putInt("theme", appTheme.getId());
         renameBookmark.setArguments(bundle);
         return renameBookmark;
     }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         c=getActivity();

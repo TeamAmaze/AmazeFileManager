@@ -34,6 +34,7 @@ import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.rarfile.FileHeader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
@@ -237,7 +238,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         }
         View v= mInflater.inflate(R.layout.rowlayout,parent, false);
         ViewHolder vh = new ViewHolder(v);
-        if(zipViewer.mainActivity.theme1==1)
+        if(utilsProvider.getAppTheme().equals(AppTheme.DARK))
             vh.txtTitle.setTextColor(zipViewer.getActivity().getResources().getColor(android.R.color.white));
         ImageButton about = (ImageButton) v.findViewById(R.id.properties);
         about.setVisibility(View.INVISIBLE);
@@ -371,7 +372,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         Boolean checked = myChecked.get(p);
         if (checked != null) {
 
-            if (zipViewer.mainActivity.theme1 == 0) {
+            if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
 
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
             } else {
@@ -494,7 +495,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         Boolean checked = myChecked.get(p);
         if (checked != null) {
 
-            if (zipViewer.mainActivity.theme1 == 0) {
+            if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
 
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
             } else {

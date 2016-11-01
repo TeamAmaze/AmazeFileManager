@@ -135,6 +135,7 @@ import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
@@ -347,7 +348,7 @@ public class MainActivity extends BaseActivity implements
         updateDrawer();
 
         // setting window background color instead of each item, in order to reduce pixel overdraw
-        if (theme1 == 0) {
+        if (getAppTheme().equals(AppTheme.LIGHT)) {
             /*if(Main.IS_LIST) {
 
                 getWindow().setBackgroundDrawableResource(android.R.color.white);
@@ -399,7 +400,7 @@ public class MainActivity extends BaseActivity implements
             //mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
         }
 
-        if (theme1 == 1) {
+        if (getAppTheme().equals(AppTheme.DARK)) {
             mDrawerList.setBackgroundColor(ContextCompat.getColor(this, R.color.holo_dark_background));
         }
         mDrawerList.setDivider(null);
@@ -973,7 +974,7 @@ public class MainActivity extends BaseActivity implements
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
-                final MaterialDialog b = utils.showBasicDialog(mainActivity, BaseActivity.accentSkin, theme1,
+                final MaterialDialog b = Futils.showBasicDialog(mainActivity, BaseActivity.accentSkin, getAppTheme(),
                         new String[]{getResources().getString(R.string.questionset),
                                 getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
                 b.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -1910,7 +1911,7 @@ public class MainActivity extends BaseActivity implements
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
         mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
-        if (theme1 == 1) mDrawerLinear.setBackgroundColor(Color.parseColor("#303030"));
+        if (getAppTheme().equals(AppTheme.DARK)) mDrawerLinear.setBackgroundColor(Color.parseColor("#303030"));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
@@ -1949,14 +1950,14 @@ public class MainActivity extends BaseActivity implements
         scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
         ImageView divider = (ImageView) findViewById(R.id.divider1);
-        if (theme1 == 0)
+        if (getAppTheme().equals(AppTheme.LIGHT))
             divider.setImageResource(R.color.divider);
         else
             divider.setImageResource(R.color.divider_dark);
 
         setDrawerHeaderBackground();
         View settingsbutton = findViewById(R.id.settingsbutton);
-        if (theme1 == 1) {
+        if (getAppTheme().equals(AppTheme.DARK)) {
             settingsbutton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) settingsbutton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
             ((TextView) settingsbutton.findViewById(R.id.settingtext)).setTextColor(getResources().getColor(android.R.color.white));
@@ -1977,7 +1978,7 @@ public class MainActivity extends BaseActivity implements
 
         });
         View appbutton = findViewById(R.id.appbutton);
-        if (theme1 == 1) {
+        if (getAppTheme().equals(AppTheme.DARK)) {
             appbutton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) appbutton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_doc_apk_white);
             ((TextView) appbutton.findViewById(R.id.apptext)).setTextColor(getResources().getColor(android.R.color.white));
@@ -1998,7 +1999,7 @@ public class MainActivity extends BaseActivity implements
         });
 
         View ftpButton = findViewById(R.id.ftpbutton);
-        if (theme1 == 1) {
+        if (getAppTheme().equals(AppTheme.DARK)) {
             ftpButton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) ftpButton.findViewById(R.id.ftpicon)).setImageResource(R.drawable.ic_ftp_dark);
             ((TextView) ftpButton.findViewById(R.id.ftptext)).setTextColor(getResources().getColor(android.R.color.white));
@@ -2473,10 +2474,10 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void renameBookmark(final String title, final String path) {
-        if (DataUtils.containsBooks(new String[]{title, path}) != -1 || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
-            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, BaseActivity.accentSkin, theme1);
-            if (renameBookmark != null) {
-                renameBookmark.show(getFragmentManager(), "renamedialog");
+        if (DataUtils.containsBooks(new String[]{title,path}) != -1 || DataUtils.containsAccounts(new String[]{title,path}) != -1) {
+            RenameBookmark renameBookmark=RenameBookmark.getInstance(title,path,BaseActivity.accentSkin,getAppTheme());
+            if(renameBookmark!=null){
+                renameBookmark.show(getFragmentManager(),"renamedialog");
             }
         }
     }
