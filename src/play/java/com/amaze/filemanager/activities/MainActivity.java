@@ -994,7 +994,7 @@ public class MainActivity extends BaseActivity implements
             case R.id.item10:
                 Fragment fragment = getDFragment();
                 if (fragment.getClass().getName().contains("AppsList"))
-                    utils.showSortDialog((AppsList) fragment);
+                    utils.showSortDialog((AppsList) fragment, getAppTheme());
 
                 break;
             case R.id.sortby:
