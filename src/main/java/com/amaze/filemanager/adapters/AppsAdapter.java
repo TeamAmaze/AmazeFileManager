@@ -53,6 +53,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -143,7 +144,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
             view = mInflater.inflate(R.layout.rowlayout, null);
             final ViewHolder vholder = new ViewHolder();
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
-            if (app.theme1!=0)
+            if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
                 vholder.txtTitle.setTextColor(Color.WHITE);
             vholder.apkIcon = (ImageView) view.findViewById(R.id.apk_icon);
             vholder.rl = (RelativeLayout) view.findViewById(R.id.second);
@@ -163,7 +164,8 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
         app.ic.cancelLoad(holder.apkIcon);
         app.ic.loadDrawable(holder.apkIcon,(rowItem.getDesc()),null);
         if (holder.about != null) {
-            if(app.theme1==0)holder.about.setColorFilter(Color.parseColor("#ff666666"));
+            if(utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
+                holder.about.setColorFilter(Color.parseColor("#ff666666"));
             showPopup(holder.about,rowItem);
         }
         holder.txtTitle.setText(rowItem.getTitle());
@@ -189,14 +191,11 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
             if (checked) {
                 holder.rl.setBackgroundColor(Color.parseColor("#5f33b5e5"));
             } else {
-                    if (app.theme1 == 0) {
-
-                        holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
-                    } else {
-
-                        holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
-                    }
-
+                if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
+                    holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
+                } else {
+                    holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
+                }
             }
         }
         return view;
@@ -222,7 +221,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                 ArrayList<File> arrayList2=new ArrayList<File>();
                                 arrayList2.add(new File(rowItem.getDesc()));
                                 int color1= Color.parseColor(PreferenceUtils.getAccentString(app.Sp));
-                                utils.shareFiles(arrayList2,app.getActivity(),app.theme1,color1);
+                                utils.shareFiles(arrayList2, app.getActivity(), utilsProvider.getAppTheme(), color1);
                                 return true;
                             case R.id.unins:
                                 final BaseFile f1 = new BaseFile(rowItem.getDesc());
@@ -240,7 +239,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                     // system package
                                     if(app.Sp.getBoolean("rootmode",false)) {
                                         MaterialDialog.Builder builder1 = new MaterialDialog.Builder(app.getActivity());
-                                        if(app.theme1==1)
+                                        if(utilsProvider.getAppTheme().equals(AppTheme.DARK))
                                             builder1.theme(Theme.DARK);
                                         builder1.content(app.getResources().getString( R.string.unin_system_apk))
                                                 .title(app.getResources().getString( R.string.warning))

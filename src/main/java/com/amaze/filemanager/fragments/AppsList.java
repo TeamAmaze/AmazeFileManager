@@ -50,6 +50,7 @@ import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -66,7 +67,6 @@ public class AppsList extends ListFragment {
     ListView vl;
     public IconHolder ic;
     ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
-    public int theme1;
     private MainActivity mainActivity;
     int asc,sortby;
     @Override
@@ -96,10 +96,9 @@ public class AppsList extends ListFragment {
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         getSortModes();
         ListView vl = getListView();
-        int theme=Integer.parseInt(Sp.getString("theme","0"));
-        theme1 = theme==2 ? PreferenceUtils.hourOfDay() : theme;
         vl.setDivider(null);
-        if(theme1==1)getActivity().getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+        if(utilsProvider.getAppTheme().equals(AppTheme.DARK))
+            getActivity().getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         if(savedInstanceState==null)loadlist(false);
         else{
             c=savedInstanceState.getParcelableArrayList("c");

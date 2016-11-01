@@ -307,6 +307,10 @@ public class Futils {
     }
 
     public void shareFiles(ArrayList<File> a, Activity c,int theme,int fab_skin) {
+        shareFiles(a,c, AppTheme.fromIndex(theme), fab_skin);
+    }
+
+    public void shareFiles(ArrayList<File> a, Activity c,AppTheme appTheme,int fab_skin) {
         ArrayList<Uri> uris = new ArrayList<Uri>();
         boolean b = true;
         for (File f : a) {
@@ -325,11 +329,12 @@ public class Futils {
             mime = "*/*";
         try {
 
-            new ShareTask(c,uris,theme,fab_skin).execute(mime);
+            new ShareTask(c,uris,appTheme,fab_skin).execute(mime);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     public static String readableFileSize(long size) {
         if (size <= 0)
             return "0 B";
@@ -1100,11 +1105,11 @@ public class Futils {
         a.build().show();
     }
 
-    public void showSortDialog(final AppsList m) {
+    public void showSortDialog(final AppsList m, AppTheme appTheme) {
         String[] sort = m.getResources().getStringArray(R.array.sortbyApps);
         int current = Integer.parseInt(m.Sp.getString("sortbyApps", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-        if(m.theme1==1)a.theme(Theme.DARK);
+        a.theme(appTheme.getMaterialDialogTheme());
         a.items(sort).itemsCallbackSingleChoice(current > 2 ? current - 3 : current, new MaterialDialog.ListCallbackSingleChoice() {
             @Override
             public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {

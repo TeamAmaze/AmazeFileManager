@@ -2,7 +2,6 @@ package com.amaze.filemanager.utils.share;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,19 +22,18 @@ import java.util.ArrayList;
 
 public class ShareAdapter extends ArrayAdapter<Intent> {
 
+
     MaterialDialog b;
     ArrayList<String> labels;
     IconHolder iconHolder;
     ArrayList<Drawable> arrayList;
-    int theme;
     public void updateMatDialog(MaterialDialog b){this.b=b;}
-    public ShareAdapter(Context context, ArrayList<Intent> arrayList,ArrayList<String> labels,
-                        ArrayList<Drawable>  arrayList1,int theme) {
+
+    public ShareAdapter(Context context, ArrayList<Intent> arrayList, ArrayList<String> labels, ArrayList<Drawable> arrayList1) {
         super(context, R.layout.rowlayout, arrayList);
-        this.labels=labels;
-        iconHolder=new IconHolder(context,true,true);
-        this.arrayList=arrayList1;
-        this.theme=theme;
+        this.labels = labels;
+        iconHolder = new IconHolder(context, true, true);
+        this.arrayList = arrayList1;
     }
 
     @Override
