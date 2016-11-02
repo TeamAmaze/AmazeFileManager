@@ -1,7 +1,5 @@
 package com.amaze.filemanager.services;
 
-import java.util.ArrayList;
-
 /**
  * Created by arpitkh96 on 18/8/16.
  */
@@ -16,13 +14,13 @@ public class ProgressHandler {
         this.totalSize = totalSize;
     }
 
-    void addWrittenLength(long length, float speed) {
+    public void addWrittenLength(long length, float speed) {
         writtenSize += length;
         this.speed = speed;
         calculateProgress();
     }
 
-    void addReadLength(int length){
+    public void addReadLength(int length){
         readSize+=length;
     }
     public void setTotalSize(Long totalSize) {

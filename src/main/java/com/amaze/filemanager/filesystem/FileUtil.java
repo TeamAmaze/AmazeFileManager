@@ -5,19 +5,6 @@ package com.amaze.filemanager.filesystem;
  */
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -36,8 +23,20 @@ import android.util.Log;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.icons.MimeTypes;
-import com.amaze.filemanager.utils.Futils;
 import com.stericson.RootTools.RootTools;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utility class for helping parsing file systems.
@@ -155,9 +154,6 @@ public abstract class FileUtil {
                     // Workaround for Kitkat ext SD card
                 return MediaStoreHack.getOutputStream(context,target.getPath());
                 }
-
-
-
             }
         }
         catch (Exception e) {
