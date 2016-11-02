@@ -50,16 +50,6 @@ public class MainActivityHelper {
      */
     public static String SEARCH_TEXT;
 
-    // reserved characters by OS, shall not be allowed in file names
-    private static final String FOREWARD_SLASH = "/";
-    private static final String BACKWARD_SLASH = "\\";
-    private static final String COLON = ":";
-    private static final String ASTERISK = "*";
-    private static final String QUESTION_MARK = "?";
-    private static final String QUOTE = "\"";
-    private static final String GREATER_THAN = ">";
-    private static final String LESS_THAN = "<";
-
     public MainActivityHelper(MainActivity mainActivity){
         this.mainActivity = mainActivity;
         this.utils = mainActivity.getFutils();
@@ -112,7 +102,8 @@ public class MainActivityHelper {
             @Override
             public void onClick(View v) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                if (validateFileName(new HFile(openMode,path + "/" + a), true)) {
+                if (!isNewDirectoryRecursive(new HFile(openMode,path + "/" + a), true) &&
+                        Operations.isFileNameValid(a)) {
 
                     mkDir(new HFile(openMode,path + "/" + a),ma);
                 } else Toast.makeText(mainActivity, R.string.invalid_name, Toast.LENGTH_SHORT).show();
@@ -134,7 +125,7 @@ public class MainActivityHelper {
             @Override
             public void onClick(View v) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                if (validateFileName(new HFile(openMode,path + "/" + a), false)) {
+                if (Operations.isFileNameValid(a)) {
 
                     mkFile(new HFile(openMode,path + "/" + a),ma);
                 } else Toast.makeText(mainActivity, R.string.invalid_name, Toast.LENGTH_SHORT).show();
@@ -521,31 +512,23 @@ public class MainActivityHelper {
     }
 
     /**
-     * Validates file name at the time of creation
-     * special reserved characters shall not be allowed in the file names
-     * @param file the file which needs to be validated
-     * @param isDir if the file is a directory, in case it shall not be named same as the parent
-     * @return boolean if the file name is valid or invalid
+     * Check whether creation of new directory is inside the same directory with a same name or not
+     * Directory inside the same directory with similar filename shall not be allowed
+     * @param file
+     * @param isDir
+     * @return
      */
-    public static boolean validateFileName(HFile file, boolean isDir) {
+    private static boolean isNewDirectoryRecursive(HFile file, boolean isDir) {
+        if (!isDir) return false;
 
         StringBuilder builder = new StringBuilder(file.getPath());
         String newName = builder.substring(builder.lastIndexOf("/")+1, builder.length());
 
-        if (newName.contains(ASTERISK) || newName.contains(BACKWARD_SLASH) ||
-                newName.contains(COLON) || newName.contains(FOREWARD_SLASH) ||
-                newName.contains(GREATER_THAN) || newName.contains(LESS_THAN) ||
-                newName.contains(QUESTION_MARK) || newName.contains(QUOTE)) {
-            return false;
-        } else if (isDir) {
-
-            // new directory name shall not be equal to parent directory name
-            StringBuilder parentPath = new StringBuilder(builder.substring(0,
-                    builder.length()-(newName.length()+1)));
-            String parentName = parentPath.substring(parentPath.lastIndexOf("/")+1,
-                    parentPath.length());
-            if (newName.equals(parentName)) return false;
-        }
-        return true;
+        StringBuilder parentPath = new StringBuilder(builder.substring(0,
+                builder.length()-(newName.length()+1)));
+        String parentName = parentPath.substring(parentPath.lastIndexOf("/")+1,
+                parentPath.length());
+        if (newName.equals(parentName)) return true;
+        else return false;
     }
 }

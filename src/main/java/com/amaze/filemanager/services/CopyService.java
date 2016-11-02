@@ -42,6 +42,7 @@ import com.amaze.filemanager.RegisterCallback;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.filesystem.HFile;
@@ -329,8 +330,11 @@ public class CopyService extends Service {
 
                     if (!targetFile.exists()) targetFile.mkdir(c);
 
-                    // return when trying to copy a directory inside it's own tree
-                    if(!targetFile.exists() || targetFile.getPath().contains(sourceFile.getPath())){
+                    // various checks - 1. target file is able to be created or not
+                    // 2. source file and target file doesn't end up in loop
+                    // 3. source file has a valid name or not
+                    if(!targetFile.exists() || !Operations.isFileNameValid(sourceFile.getName())
+                            || Operations.isCopyLoopPossible(sourceFile, targetFile)){
                         Log.e("Copy","cant make dir");
                         failedFOps.add(sourceFile);
                         copy_successful=false;
@@ -375,7 +379,6 @@ public class CopyService extends Service {
             }
         }
     }
-
 
     void generateNotification(ArrayList<HFile> failedOps,boolean move) {
         if(failedOps.size()==0)return;
