@@ -102,7 +102,7 @@ public class MainActivityHelper {
             @Override
             public void onClick(View v) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                if (!isNewDirectoryRecursive(new HFile(openMode,path + "/" + a), true) &&
+                if (!isNewDirectoryRecursive(new HFile(openMode,path + "/" + a)) &&
                         Operations.isFileNameValid(a)) {
 
                     mkDir(new HFile(openMode,path + "/" + a),ma);
@@ -515,11 +515,10 @@ public class MainActivityHelper {
      * Check whether creation of new directory is inside the same directory with a same name or not
      * Directory inside the same directory with similar filename shall not be allowed
      * @param file
-     * @param isDir
      * @return
      */
-    private static boolean isNewDirectoryRecursive(HFile file, boolean isDir) {
-        if (!isDir) return false;
+    public static boolean isNewDirectoryRecursive(HFile file) {
+        if (!file.isDirectory()) return false;
 
         StringBuilder builder = new StringBuilder(file.getPath());
         String newName = builder.substring(builder.lastIndexOf("/")+1, builder.length());

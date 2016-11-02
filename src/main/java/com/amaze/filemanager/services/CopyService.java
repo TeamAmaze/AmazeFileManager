@@ -155,8 +155,7 @@ public class CopyService extends Service {
             for(int a:hash.keySet()){
                 if(hash.get(a))stop=false;
             }
-            if(!stop)
-                stopSelf(b);
+            if(!stop) stopSelf(b);
             else stopSelf();
 
         }
@@ -350,6 +349,12 @@ public class CopyService extends Service {
                     if(!hash.get(id))return;
                 } else {
                     if (!hash.get(id)) return;
+                    if(!Operations.isFileNameValid(sourceFile.getName())){
+                        failedFOps.add(sourceFile);
+                        copy_successful=false;
+                        return;
+                    }
+
                     System.out.println("Copy start for "+targetFile.getName());
                     if (sourceFile.getSize()>1024 * 60) {
 

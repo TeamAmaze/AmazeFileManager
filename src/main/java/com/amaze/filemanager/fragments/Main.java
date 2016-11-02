@@ -81,6 +81,7 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
+import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.icons.IconHolder;
@@ -1101,8 +1102,8 @@ public class Main extends android.support.v4.app.Fragment {
                     if (f.isDirectory() && !name.endsWith("/"))
                         name = name + "/";
 
-                if (MainActivityHelper.validateFileName(new HFile(openMode, CURRENT_PATH + "/" + name), false)) {
-
+                if (!MainActivityHelper.isNewDirectoryRecursive(new HFile(openMode, CURRENT_PATH + "/" + name)) &&
+                        Operations.isFileNameValid(name)) {
                     if (openMode == 1)
                         MAIN_ACTIVITY.mainActivityHelper.rename(openMode, f.getPath(), CURRENT_PATH + name, getActivity(), BaseActivity.rootMode);
                     else
