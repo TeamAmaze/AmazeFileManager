@@ -15,7 +15,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.stericson.RootTools.RootTools;
 
@@ -25,8 +24,6 @@ import java.io.IOException;
  * Created by arpitkh996 on 03-03-2016.
  */
 public class BaseActivity extends BasicActivity {
-    private ColorPreference colorPreference;
-
     public static int theme1;
     public SharedPreferences Sp;
 
@@ -36,15 +33,10 @@ public class BaseActivity extends BasicActivity {
     public static boolean rootMode;
     boolean checkStorage=true;
 
-    public ColorPreference getColorPreference() {
-        return colorPreference;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
-        colorPreference = ColorPreference.loadFromPreferences(this, Sp);
 
         int th = Integer.parseInt(Sp.getString("theme", "0"));
         // checking if theme should be set light/dark or automatic
@@ -126,7 +118,7 @@ public class BaseActivity extends BasicActivity {
     void setTheme() {
         if (Build.VERSION.SDK_INT >= 21) {
 
-            switch (accentSkin) {
+            switch (accentSkin.toUpperCase()) {
                 case "#F44336":
                     if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_red);
@@ -134,28 +126,28 @@ public class BaseActivity extends BasicActivity {
                         setTheme(R.style.pref_accent_dark_red);
                     break;
 
-                case "#e91e63":
+                case "#E91E63":
                     if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_pink);
                     else
                         setTheme(R.style.pref_accent_dark_pink);
                     break;
 
-                case "#9c27b0":
+                case "#9C27B0":
                     if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_purple);
                     else
                         setTheme(R.style.pref_accent_dark_purple);
                     break;
 
-                case "#673ab7":
+                case "#673AB7":
                     if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_deep_purple);
                     else
                         setTheme(R.style.pref_accent_dark_deep_purple);
                     break;
 
-                case "#3f51b5":
+                case "#3F51B5":
                     if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_indigo);
                     else
@@ -197,7 +189,7 @@ public class BaseActivity extends BasicActivity {
                         setTheme(R.style.pref_accent_dark_green);
                     break;
 
-                case "#8bc34a":
+                case "#8BC34A":
                     if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_light_green);
                     else
@@ -239,14 +231,14 @@ public class BaseActivity extends BasicActivity {
                         setTheme(R.style.pref_accent_dark_black);
                     break;
 
-                case "#607d8b":
+                case "#607D8B":
                     if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_blue_grey);
                     else
                         setTheme(R.style.pref_accent_dark_blue_grey);
                     break;
 
-                case "#004d40":
+                case "#004D40":
                     if (theme1 == 0)
                         setTheme(R.style.pref_accent_light_super_su);
                     else

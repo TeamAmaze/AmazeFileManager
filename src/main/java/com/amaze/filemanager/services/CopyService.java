@@ -389,18 +389,25 @@ public class CopyService extends Service {
         if(failedOps.size()==0)return;
         mNotifyManager.cancelAll();
         NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(c);
-        mBuilder.setContentTitle("Operation Unsuccessful");
+        mBuilder.setContentTitle(c.getString(R.string.operationunsuccesful));
         mBuilder.setContentText("Some files weren't %s successfully".replace("%s",move?"moved":"copied"));
+        mBuilder.setAutoCancel(true);
+
         Intent intent= new Intent(this, MainActivity.class);
         intent.putExtra("failedOps",failedOps);
         intent.putExtra("move",move);
+
         PendingIntent pIntent = PendingIntent.getActivity(this, 101, intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
         mBuilder.setContentIntent(pIntent);
         mBuilder.setSmallIcon(R.drawable.ic_content_copy_white_36dp);
+
         mNotifyManager.notify(741,mBuilder.build());
+
         intent=new Intent("general_communications");
         intent.putExtra("failedOps",failedOps);
         intent.putExtra("move",move);
+
         sendBroadcast(intent);
     }
 

@@ -48,6 +48,14 @@ Translators
 ----
 Want to help translate Amaze to your language? Head over to [this link](https://www.transifex.com/amaze/amaze-file-manager-1/).
 
+Vendors/Developers
+----
+The device vendors/ROM developers are free to include Amaze apk pre-installed in system. There is no fee required, neither are any royality/credits elsewhere.
+
+We strongly recommend using apk signed by us (either Play Store version or from AFH link above) so that users would be able to update directly from Play Store after distribution. Furthermore, a change in digital signature will break certain critical features too. 
+    
+Lastly, just to remind, license allows distribution only when source is not modified. If you do modify our code, you must make it open-source somewhere before distributing.
+
 Social
 ---
 Join [G+ community](https://plus.google.com/communities/113997576965363268101) for discussions

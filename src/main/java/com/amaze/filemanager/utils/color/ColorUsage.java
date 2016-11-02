@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import com.amaze.filemanager.R;
 
 /**
- * Created by Remi Piotaix <remi.piotaix@gmail.com> on 2016-10-15.
+ * A ColorUsage is a key used to index color preferences in {@link ColorPreference}
  */
 public enum ColorUsage {
     PRIMARY("skin", R.color.primary_indigo),
@@ -16,6 +16,9 @@ public enum ColorUsage {
     ICON_SKIN("icon_skin", R.color.primary_pink),
     CURRENT_TAB("current_tab", R.color.primary_pink);
 
+    /**
+     * The String representation of the ColorUsage
+     */
     private String usage;
     @ColorRes
     private int defaultColor;
@@ -25,6 +28,10 @@ public enum ColorUsage {
         this.defaultColor = defaultColor;
     }
 
+    /**
+     * @param name The string repersentation of the ColorUsage
+     * @return The ColorUsage with the given string representation, null if it does not exist.
+     */
     @Nullable
     public static ColorUsage fromString(@NonNull String name) {
         switch (name) {
@@ -52,8 +59,15 @@ public enum ColorUsage {
         return defaultColor;
     }
 
+    /**
+     * Syntactic sugar to ease the retrieval of primary colors ColorUsage.
+     * If the index is out of bounds, the first primary color is returned as default.
+     *
+     * @param num The primary color index
+     * @return The ColorUsage for the given primary color.
+     */
     @NonNull
     public static ColorUsage getPrimary(int num) {
-        return num == 1 ? PRIMARY : PRIMARY_TWO;
+        return num == 2 ? PRIMARY_TWO : PRIMARY;
     }
 }
