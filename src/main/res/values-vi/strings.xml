@@ -31,7 +31,7 @@
     <string name="storage">Lưu trữ</string>
     <string name="gallery">Thư viện</string>
     <string name="apps">Quản lý ứng dụng</string>
-    <string name="ftp">FTP Server</string>
+    <string name="ftp">Máy chủ FTP</string>
     <string name="bookmanag">Quản lý Bookmark</string>
     <string name="setting">Thiết lập</string>
     <string name="select">Chọn mục</string>
@@ -117,10 +117,10 @@
     <string name="history">Lịch sử</string>
     <string name="refresh">Làm mới</string>
     <string name="copy">Sao chép</string>
-    <string name="rootmode">Root Explorer</string>
+    <string name="rootmode">Trình khai phá Root</string>
     <string name="rootmodesummary">Chỉ cho thiết bị đã được root. Chỉ kiểm tra khi bạn chắc chắn về nó.</string>
     <string name="mountsystemsummary">Kích hoạt điều này nếu bạn muốn sửa tệp hệ thống</string>
-    <string name="mountsystem">Mount System Folders as Writable</string>
+    <string name="mountsystem">Phân giải thư mục hệ thống dạng có thể ghi</string>
     <string name="rootfailure">Truy cập root không được cấp phép</string>
     <string name="selectall">Chọn hết</string>
     <string name="delete">Xóa</string>
@@ -128,7 +128,7 @@
     <string name="sethome">Đặt danh mục nhà</string>
     <string name="foldercolor">Màu thư mục</string>
     <string name="imagegallery">Thư viện hình ảnh</string>
-    <string name="fileexplorer">File Explorer</string>
+    <string name="fileexplorer">Trình khai phá tệp</string>
     <string name="changegallerypath">Thay đổi đường dẫn thư viện</string>
     <string name="usedefaultgallerypath">Dùng đường dẫn thư viện hình ảnh mặc định</string>
 
@@ -143,23 +143,23 @@
     <string name="dark">Material Dark</string>
     <string name="daytime">Daytime</string>
     <!--Skin-->
-    <string name="red">Red</string>
-    <string name="pink">Pink</string>
-    <string name="purple">Purple</string>
-    <string name="deep_purple">Deep Purple</string>
-    <string name="indigo">Indigo</string>
-    <string name="blue">Blue</string>
-    <string name="light_blue">Light Blue</string>
+    <string name="red">Đỏ</string>
+    <string name="pink">Hồng</string>
+    <string name="purple">Tím</string>
+    <string name="deep_purple">Tím đậm</string>
+    <string name="indigo">Chàm</string>
+    <string name="blue">Xanh da trời</string>
+    <string name="light_blue">Xanh da trời nhạt</string>
     <string name="cyan">Cyan</string>
     <string name="teal">Teal</string>
-    <string name="green">Green</string>
-    <string name="light_green">Light Green</string>
-    <string name="amber">Amber</string>
-    <string name="orange">Orange</string>
-    <string name="deep_orange">Deep Orange</string>
-    <string name="brown">Brown</string>
-    <string name="black">Black</string>
-    <string name="blue_grey">Blue Grey</string>
+    <string name="green">Xanh lá</string>
+    <string name="light_green">Xanh lá nhạt</string>
+    <string name="amber">Hổ phách</string>
+    <string name="orange">Cam</string>
+    <string name="deep_orange">Cam đậm</string>
+    <string name="brown">Nâu</string>
+    <string name="black">Đen</string>
+    <string name="blue_grey">Xanh xám</string>
     <string name="supersu">SuperSU</string>
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Thư mục trên đầu</string>
@@ -176,7 +176,7 @@
     <string name="detailedView">Chi tiết</string>
     <string name="simpleView">Đơn giản</string>
     <!--Folder-->
-    <string name="Yellow">Yellow</string>
+    <string name="Yellow">Vàng</string>
     <string name="pick_a_file">Chọn một tệp</string>
     <string name="process_viewer">Trình xem tiến trình</string>
     <string name="in_safe">Không đủ bộ nhớ</string>
@@ -346,7 +346,7 @@
     <string name="extstorage">Bộ nhớ ngoài</string>
     <string name="folders">Thư mục</string>
     <string name="videos">Video</string>
-    <string name="apks">Các tệp Apk</string>
+    <string name="apks">Các tệp apk</string>
     <string name="documents">Tài liệu</string>
     <string name="images">Hình ảnh</string>
     <string name="clear">Xóa</string>
@@ -395,8 +395,8 @@
     <string name="ftp_status_running">Đang chạy</string>
     <string name="ftp_status_not_running">Chưa chạy</string>
     <string name="ftp_no_wifi">Hãy chắc rằng bạn đã kết nối đến WiFi</string>
-    <string name="domain">Domain</string>
-    <string name="invalid">Invalid %s</string>
+    <string name="domain">Tên miền</string>
+    <string name="invalid">%s không có giá trị</string>
     <string name="ftp_notif_starting">FTP Server đang bắt đầu</string>
     <string name="ftp_notif_title">Amaze FTP Server đang chạy</string>
     <string name="ftp_notif_text">tại %s</string>
