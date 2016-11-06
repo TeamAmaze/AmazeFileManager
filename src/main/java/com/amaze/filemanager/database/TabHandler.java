@@ -37,20 +37,21 @@ public class TabHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "explorer.db";
     private static final String TABLE_TAB = "tab";
 
-    public static final String COLUMN_TAB_NO = "tab_no";
-    public static final String COLUMN_LABEL = "label";
-    public static final String COLUMN_PATH = "path";
-    public static final String COLUMN_HOME = "home";
-    public TabHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, DATABASE_NAME, factory, DATABASE_VERSION);
+    private static final String COLUMN_TAB_NO = "tab_no";
+    private static final String COLUMN_LABEL = "label";
+    private static final String COLUMN_PATH = "path";
+    private static final String COLUMN_HOME = "home";
+
+    public TabHandler(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String CREATE_TAB_TABLE = "CREATE TABLE " + TABLE_TAB + "("
-                +  COLUMN_TAB_NO
+                + COLUMN_TAB_NO
                 + " INTEGER PRIMARY KEY,"
-                + COLUMN_PATH + " TEXT,"+COLUMN_HOME+" TEXT" + ")";
+                + COLUMN_PATH + " TEXT," + COLUMN_HOME + " TEXT" + ")";
         sqLiteDatabase.execSQL(CREATE_TAB_TABLE);
     }
 
@@ -69,18 +70,18 @@ public class TabHandler extends SQLiteOpenHelper {
         sqLiteDatabase.insert(TABLE_TAB, null, contentValues);
         sqLiteDatabase.close();
     }
- public void clear(){
-     try {
-         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-         sqLiteDatabase.delete(TABLE_TAB,COLUMN_TAB_NO+" = ?",new String[]{""+1});
-         sqLiteDatabase.delete(TABLE_TAB, COLUMN_TAB_NO + " = ?", new String[]{"" + 2});
-     sqLiteDatabase.close();
-     } catch (NumberFormatException e) {
-         e.printStackTrace();
-     }
 
+    public void clear() {
+        try {
+            SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+            sqLiteDatabase.delete(TABLE_TAB, COLUMN_TAB_NO + " = ?", new String[]{"" + 1});
+            sqLiteDatabase.delete(TABLE_TAB, COLUMN_TAB_NO + " = ?", new String[]{"" + 2});
+            sqLiteDatabase.close();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+    }
 
- }
     public Tab findTab(int tabNo) {
         String query = "Select * FROM " + TABLE_TAB + " WHERE " + COLUMN_TAB_NO + "= \"" + tabNo + "\"";
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
@@ -105,21 +106,31 @@ public class TabHandler extends SQLiteOpenHelper {
         String query = "Select * FROM " + TABLE_TAB;
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
-        // Looping through all rows and adding them to list
-        if (cursor.getCount()>0 && cursor.moveToFirst()) {
-            do {
-                Tab tab = new Tab();
-                tab.setTab((cursor.getInt(0)));
-                tab.setPath(cursor.getString(1));
-                tab.setHome(cursor.getString(2));
-                //Adding them to list
-                tabList.add(tab);
-            } while (cursor.moveToNext());
-        }sqLiteDatabase.close();
+        Cursor cursor = null;
+        try {
+            cursor = sqLiteDatabase.rawQuery(query, null);
+            // Looping through all rows and adding them to list
+            if (cursor.getCount() > 0 && cursor.moveToFirst()) {
+                do {
+                    Tab tab = new Tab();
+                    tab.setTab((cursor.getInt(0)));
+                    tab.setPath(cursor.getString(1));
+                    tab.setHome(cursor.getString(2));
+                    //Adding them to list
+                    tabList.add(tab);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        sqLiteDatabase.close();
+
         return tabList;
     }
-    public void close(){
+
+    public void close() {
         try {
             getWritableDatabase().close();
         } catch (Exception e) {
