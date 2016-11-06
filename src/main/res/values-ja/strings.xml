@@ -49,6 +49,7 @@
     <string name="create">作成</string>
     <string name="success">成功</string>
     <string name="filenotexists">ファイルは存在しません</string>
+    <string name="loading">読み込み中&#8230;</string>
     <string name="file_empty">ファイルは空です</string>
     <string name="error">エラー</string>
     <string name="cantlistfiles">root がないとファイルを一覧表示できません</string>
@@ -86,6 +87,7 @@
     <string name="guide2">青いストリップをタッチするとパスバーを表示または非表示します</string>
     <string name="guide3">ファイルを長押しすると追加のオプション</string>
     <string name="guide4">コピー、移動、プロパティなど</string>
+    <string name="guide5">お使いのデバイスの戻るボタンを使用すると、いつでもアプリを終了します&#8230;</string>
     <string name="guide6">..そして、ファイルマネージャのナビゲーションに左矢印ボタンを使用します</string>
     <string name="maintab">メインタブを削除することはできません</string>
     <string name="openparent">親ディレクトリーを開く</string>
@@ -255,6 +257,7 @@
     <string name="archive">アーカイブ</string>
     <string name="archtext">これはアーカイブです。どのようなアクションを実行したいですか?</string>
     <string name="pitext">これはパッケージインストーラです。どのようなアクションを実行したいですか?</string>
+    <string name="xda_title">XDA スレッド</string>
     <string name="xda_summary">Q&amp;A, ヘルプ &amp; トラブルシューティング</string>
     <string name="invalid_dir">無効なディレクトリー</string>
     <string name="circularimages">画像やビデオに丸いアイコンを使用します</string>
@@ -276,9 +279,12 @@
     <string name="portuguese_translation_title">ポルトガル語</string>
     <string name="polish_translation_title">ポーランド語</string>
     <string name="korean_translation_title">韓国語</string>
+    <string name="greek_translation_title">ギリシャ語</string>
     <string name="dutch_translation_title">オランダ語</string>
     <string name="romanian_translation_title">ルーマニア語</string>
-	<string name="vietnamese_translation_title">ベトナム語</string>
+    <string name="vietnamese_translation_title">ベトナム語</string>
+    <string name="brazilian_portuguese_translation_title">ブラジルのポルトガル語</string>
+
     <string name="zip_viewer">Zip ビューアー</string>
     <string name="unin_system_apk">これはシステムアプリです。削除するとシステムが不安定になる可能性があります。\\n続行しますか?</string>
     <string name="warning">警告</string>
@@ -296,6 +302,7 @@
     <string name="image">画像</string>
     <string name="contributors">貢献者</string>
     <string name="savepaths">パスを保存する</string>
+    <string name="savepathsummary">起動時に、それぞれのタブで最近表示したフォルダーが表示されます</string>
     <string name="select_intent">選択</string>
     <string name="md5copied">MD5 をクリップボードにコピーしました</string>
     <string name="generating">生成中..</string>
@@ -324,6 +331,7 @@
     <string name="hide_toolbar">ツールバーを非表示</string>
     <string name="hide_appbar">すべてのアプリバーを非表示</string>
     <string name="choose_color">色を選択</string>
+    <string name="g_plus_community_title">G+ コミュニティに参加</string>
     <string name="hide_mode_nothing">アプリバーをそのまま残す</string>
     <string name="hide_mode_toolbar">スクロール時にツールバーを非表示</string>
     <string name="hide_mode_app_bar">スクロール時にアプリバーを非表示</string>
@@ -404,6 +412,17 @@
     <string name="ftp_notif_stop_server">停止</string>
     <string name="primary_two_title">プライマリー色 (右タブ)</string>
     <string name="primary_two_summary">右タブの大きな UI エレメントに色を設定します</string>
+    <string name="g_plus">Google+</string>
+    <string name="support_development">開発をサポート</string>
+    <string name="report_bugs_title">バグを報告</string>
+    <string name="report_bugs_summary">バグを報告したり、新しい機能をリクエストします</string>
+    <string name="translate_title">翻訳</string>
+    <string name="translate_summary">Amaze をお使いの言語に翻訳します</string>
+    <string name="g_plus_community_summary">ベータテストに参加して
+開発に関連する議論をします</string>
+    <string name="easter_egg_title">スタジオモード</string>
+    <string name="paypal_copy_message">Paypal ID をクリップボードにコピーしました</string>
     <string name="searchingdevices">デバイスの検索中</string>
-    </resources>
-
+    <string name="use_custom_ip">カスタム IP を使用する</string>
+    <string name="bookmark_lost">ブックマークが見つかりません。再作成中&#8230;</string>
+</resources>

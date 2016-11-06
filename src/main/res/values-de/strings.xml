@@ -49,6 +49,7 @@
     <string name="create">Erstellen</string>
     <string name="success">Erfolgreich</string>
     <string name="filenotexists">Datei existiert nicht</string>
+    <string name="loading">Lade&#8230;</string>
     <string name="file_empty">Datei ist leer</string>
     <string name="error">Fehler</string>
     <string name="cantlistfiles">Kann Dateien ohne Root-Rechte nicht auflisten</string>
@@ -86,6 +87,7 @@
     <string name="guide2">Tippe den blauen Balken um die Pfadanzeige anzuzeigen oder zu verstecken.</string>
     <string name="guide3">Berühre und halte irgendeine Datei für mehr Optionen...</string>
     <string name="guide4">Wie Kopieren, Verschieben, Eigenschaften, etc.</string>
+    <string name="guide5">Benutze den Zurück-Knopf, um die App jederzeit zu verlassen&#8230;</string>
     <string name="guide6">..Und den Pfeil nach links zur Navigation in der App.</string>
     <string name="maintab">Letzter Tab kann nicht entfernt werden!</string>
     <string name="openparent">Öffne übergeordnetes Verzeichnis</string>
@@ -192,6 +194,7 @@
     <string name="Extracting_fles">Extrahiere Dateien</string>
     <string name="Zipping_fles">Komprimiere Dateien</string>
     <string name="items">Elemente</string>
+    <string name="item">Objekt</string>
     <string name="set">Setzen</string>
     <string name="enablerootmde">Root-Modus aktivieren</string>
     <string name="goback">Zurück</string>
@@ -239,6 +242,7 @@
     <string name="feedback">Feedback senden</string>
     <string name="hiddenfiles">Versteckte Dateien</string>
     <string name="type">Typ</string>
+    <string name="typeDesc">Typ (Desc)</string>
     <string name="rootdirectory">Root</string>
     <string name="new_string">Neu</string>
     <string name="setringtone">Als Klingelton verwenden</string>
@@ -253,6 +257,7 @@
     <string name="archive">Archiv</string>
     <string name="archtext">Dies ist ein Archiv. Was möchten Sie durchführen?</string>
     <string name="pitext">Dies ist ein Installer für Pakete. Was möchten Sie tun?</string>
+    <string name="xda_title">XDA Thread</string>
     <string name="xda_summary">Q&amp;A, Help &amp; Fehlerbehebung</string>
     <string name="invalid_dir">Ungültiges Verzeichnis</string>
     <string name="circularimages">Runde Icons für Bilder und Videos verwenden</string>
@@ -274,9 +279,12 @@
     <string name="portuguese_translation_title">Portugiesisch</string>
     <string name="polish_translation_title">Polnisch</string>
     <string name="korean_translation_title">Koreanisch</string>
+    <string name="greek_translation_title">Griechisch</string>
     <string name="dutch_translation_title">Niederländisch</string>
     <string name="romanian_translation_title">Rumänisch</string>
 	<string name="vietnamese_translation_title">Vietnamesisch</string>
+    <string name="brazilian_portuguese_translation_title">Brasilianisches Portugiesisch</string>
+    
     <string name="zip_viewer">Zip Betrachter</string>
     <string name="unin_system_apk">Das ist eine Systemanwendung. Das Löschen könnte zu einer Instabilität des Systems führen. Ausführen?</string>
     <string name="warning">Warnung</string>
@@ -294,6 +302,7 @@
     <string name="image">Bild</string>
     <string name="contributors">Mitwirkende</string>
     <string name="savepaths">Merke Pfad</string>
+    <string name="savepathsummary">Beim Start zeigt jeder Reiter den zuletzt aufgerufenen Ordner an</string>
     <string name="select_intent">Auswählen</string>
     <string name="md5copied">MD5 in Zwischenablage kopiert</string>
     <string name="generating">Generiere...</string>
@@ -312,7 +321,7 @@
     <string name="color_title">Farbe</string>
     <string name="color_summary">Farbe für diverse Elemente setzen</string>
     <string name="primary_color_title">Primärfarbe</string>
-    <string name="primary_color_summary">Farbe für große Elemente setzen.</string>
+    <string name="primary_color_summary">Farbe für große Elemente des linken Reiters setzen</string>
     <string name="accent_color_title">Akzentfarbe</string>
     <string name="accent_color_summary">Setze Farbe des FAB und anderen kleinen UI Elementen</string>
     <string name="icon_color_title">Farbe der Icons</string>
@@ -322,6 +331,7 @@
     <string name="hide_toolbar">Werkzeugleiste verstecken</string>
     <string name="hide_appbar">Komplette App-Leiste verstecken</string>
     <string name="choose_color">Wähle eine Farbe</string>
+    <string name="g_plus_community_title">Trete der G+ Community bei</string>
     <string name="hide_mode_nothing">App-Bar bleibt unverändert</string>
     <string name="hide_mode_toolbar">Werkzeugleiste wird beim Scrollen versteckt</string>
     <string name="hide_mode_app_bar">App-Leiste wird beim Scrollen versteckt</string>
@@ -363,8 +373,11 @@
     <string name="recent">Kürzlich verwendete Dateien</string>
     <string name="edit">Bearbeiten</string>
     <string name="find">Auf der Seite suchen</string>
+    <string name="grant">Gewähren</string>
     <string name="grantper">Erlaubnis erteilen</string>
     <string name="grantfailed">Erlaubnis nicht erteilen</string>
+    <string name="granttext">Zum Fortfahren benötigt die App Zugriffsrechte für den Speicherplatz. Der Abbruch dieses Dialogs führt zum Beenden der App.</string>
+    <string name="grantgplus">Die App benötigt die entsprechende Berechtigung. Der Abbruch dieses Dialogs führt zur Deaktivierung dieser Funktion.</string>
     <string name="operationunsuccesful">Vorgang erfolgreich</string>
     <string name="creatingfile">Erstelle Datei</string>
     <string name="creatingfolder">Erstelle Verzeichnis</string>
@@ -382,6 +395,10 @@
     <string name="search_hint">Eingeben zum Suchen&#8230;</string>
     <string name="advanced_search">Erweiterte Suche</string>
     <string name="regular_expression">Reguläre Ausdrücke</string>
+    <string name="regular_expression_summary">Suche mithilfe eines Regulären Ausdrucks im Stile von BASH </string>
+    <string name="match_content">Zeige entsprechenden Inhalt an</string>
+    <string name="match_content_summary">Falls gesetzt wird der Reguläre Ausdruck auf den gesamten Dateinamen angewendet,
+andernfalls wird nach Treffern gesucht.</string>
     <string name="start_ftp">Start</string>
     <string name="stop_ftp">Stopp</string>
     <string name="ftp_status_running">Läuft</string>
@@ -391,9 +408,22 @@
     <string name="invalid">Ungültig %s</string>
     <string name="ftp_notif_starting">FTP Server startet</string>
     <string name="ftp_notif_title">Amaze FTP Server startet</string>
+    <string name="ftp_notif_text">bei %s</string>
     <string name="ftp_notif_stop_server">STOPP</string>
     <string name="primary_two_title">Primärfarbe (rechter Tab)</string>
     <string name="primary_two_summary">Setze Farbe für große UI Elemente in dem rechten Tab</string>
+    <string name="g_plus">Google Plus</string>
+    <string name="support_development">Unterstütze die Entwicklung</string>
+    <string name="report_bugs_title">Melde Fehler</string>
+    <string name="report_bugs_summary">Melde Fehler oder schlage neue Funktionen vor</string>
+    <string name="translate_title">Übersetzen</string>
+    <string name="translate_summary">Übersetze Amaze in deine Sprache</string>
+    <string name="g_plus_community_summary">Mach mit bei Beta-Tests und Diskussionen
+rund um die Entwicklung</string>
+    <string name="easter_egg_title">Studio-Modus</string>
+    <string name="paypal_copy_message">Paypal ID in die Zwischenablage kopiert</string>
     <string name="searchingdevices">Suche nach Geräten</string>
-    </resources>
+    <string name="use_custom_ip">Verwende benutzerdefinierte IP</string>
+    <string name="bookmark_lost">Lesezeichen nicht gefunden, erstelle erneut&#8230;</string>
+</resources>
 

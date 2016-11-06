@@ -43,12 +43,13 @@
     <string name="properties">Propriétés</string>
     <string name="copyingapk">Copier l\'APK vers</string>
     <string name="addbook">Ajouter un favori</string>
-    <string name="addtobook">Ajouter au favori</string>
+    <string name="addtobook">Ajouter aux favoris</string>
     <string name="enterpath">Entrer le chemin</string>
     <string name="cancel">ANNULER</string>
     <string name="create">CREER</string>
     <string name="success">Succès</string>
     <string name="filenotexists">Le fichier n\'existe pas</string>
+    <string name="loading">Chargement&#8230;</string>
     <string name="file_empty">Le fichier est vide</string>
     <string name="error">Erreur</string>
     <string name="cantlistfiles">Impossible de lister les fichiers sans le mode root</string>
@@ -86,6 +87,7 @@
     <string name="guide2">Toucher le bandeau bleu pour afficher ou masquer la barre de répertoires</string>
     <string name="guide3">Appuyer et maintenir n\'importe quel fichier pour plus d\'options...</string>
     <string name="guide4">Comme copier, déplacer, propriétés, etc</string>
+    <string name="guide5">Utiliser le bouton Retour de votre appareil pour sortir de l\'application à n\'importe quel moment&#8230;</string>
     <string name="guide6">..Et utiliser la flèche de gauche pour naviguer dans le gestionnaire de fichiers</string>
     <string name="maintab">L\'onglet Principal ne peut pas être déplacé</string>
     <string name="openparent">Ouvrir le répertoire Parent</string>
@@ -255,6 +257,7 @@
     <string name="archive">Archiver</string>
     <string name="archtext">Ceci est une archive. Quelle action souhaitez-vous faire ?</string>
     <string name="pitext">Ceci est un programme d\'installation. Quelle action souhaitez-vous faire ?</string>
+    <string name="xda_title">Forum XDA</string>
     <string name="xda_summary">Questions/Réponses, Support</string>
     <string name="invalid_dir">Emplacement invalide</string>
     <string name="circularimages">Utiliser des icônes circulaires pour les images et vidéos</string>
@@ -276,9 +279,12 @@
     <string name="portuguese_translation_title">Portugais</string>
     <string name="polish_translation_title">Polonais</string>
     <string name="korean_translation_title">Coréen</string>
+    <string name="greek_translation_title">Grec</string>
     <string name="dutch_translation_title">Néerlandais</string>
     <string name="romanian_translation_title">Roumain</string>
-	<string name="vietnamese_translation_title">vietnamien</string>
+    <string name="vietnamese_translation_title">vietnamien</string>
+    <string name="brazilian_portuguese_translation_title">Portugais brésilien</string>
+
     <string name="zip_viewer">Visionneur ZIP</string>
     <string name="unin_system_apk">Ceci est une application système, sa suppression pourrait conduire à une instabilité du système.\nPoursuivre ?</string>
     <string name="warning">Attention</string>
@@ -296,6 +302,7 @@
     <string name="image">Image</string>
     <string name="contributors">Contributeurs</string>
     <string name="savepaths">Se souvenir des chemins</string>
+    <string name="savepathsummary">Au démarrage, le dernier dossier visité sera affiché sur chaque onglet</string>
     <string name="select_intent">Sélectionner</string>
     <string name="md5copied">Le MD5 est copié dans le presse-papiers</string>
     <string name="generating">Génération..</string>
@@ -314,7 +321,7 @@
     <string name="color_title">Couleur</string>
     <string name="color_summary">Définir une couleur aux divers éléments de l\'UI</string>
     <string name="primary_color_title">Couleur Primaire</string>
-    <string name="primary_color_summary">Définir une couleur aux grands ensembles de l\'UI 
+    <string name="primary_color_summary">Définir une couleur aux grands ensembles de l\'UI
 pour l\'onglet de gauche</string>
     <string name="accent_color_title">Couleur accentuée</string>
     <string name="accent_color_summary">Définir la couleur du FAB et d\'autres petits éléments de l\'UI</string>
@@ -325,6 +332,7 @@ pour l\'onglet de gauche</string>
     <string name="hide_toolbar">Masquer la barre d\'outils</string>
     <string name="hide_appbar">Masquer l\'ensemble de la barre d\'accès</string>
     <string name="choose_color">Choisir la couleur</string>
+    <string name="g_plus_community_title">Rejoignez la communauté G+</string>
     <string name="hide_mode_nothing">La barre d\'accès reste intacte</string>
     <string name="hide_mode_toolbar">La barre d\'outils se masque au défilement</string>
     <string name="hide_mode_app_bar">La barre d\'accès se masque au défilement</string>
@@ -390,7 +398,7 @@ pour l\'onglet de gauche</string>
     <string name="regular_expression">Expression rationelle</string>
     <string name="regular_expression_summary">Rechercher en utilisant une expression rationelle de style BASH</string>
     <string name="match_content">Rechercher le contenu</string>
-    <string name="match_content_summary">Si défini, l\'expression rationelle sera comparée avec le nom 
+    <string name="match_content_summary">Si défini, l\'expression rationelle sera comparée avec le nom
 de fichier complet, autrement, une instance sera recherchée.</string>
     <string name="start_ftp">Démarrer</string>
     <string name="stop_ftp">Arrêter</string>
@@ -404,8 +412,13 @@ de fichier complet, autrement, une instance sera recherchée.</string>
     <string name="ftp_notif_text">À %s</string>
     <string name="ftp_notif_stop_server">ARRÊT</string>
     <string name="primary_two_title">Couleur Primaire (Onglet Droit)</string>
-    <string name="primary_two_summary">Assigner la couleur des grands ensembles de l\'IU 
+    <string name="primary_two_summary">Assigner la couleur des grands ensembles de l\'IU
 pour l\'onglet de droite.</string>
+    <string name="g_plus">Google Plus</string>
+    <string name="report_bugs_title">Signaler un bug</string>
+    <string name="report_bugs_summary">Signaler un bug ou demander une nouvelle fonctionnalité</string>
+    <string name="translate_title">Traduire</string>
+    <string name="translate_summary">Traduire Amaze dans votre langue</string>
+    <string name="paypal_copy_message">Id Paypal copié dans le presse-papiers</string>
     <string name="searchingdevices">Recherche d\'appareils</string>
-    </resources>
-
+</resources>

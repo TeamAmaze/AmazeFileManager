@@ -278,7 +278,7 @@
     <string name="korean_translation_title">Coreano</string>
     <string name="dutch_translation_title">Holandês</string>
     <string name="romanian_translation_title">Romeno</string>
-	<string name="zip_viewer">Visualizador de Zip</string>
+    <string name="zip_viewer">Visualizador de Zip</string>
     <string name="unin_system_apk">Este é um aplicativo de sistema e sua exclusão poderá deixar o sistema instável.\nContinuar?</string>
     <string name="warning">Aviso</string>
     <string name="donate">Doação</string>
@@ -401,5 +401,4 @@
     <string name="primary_two_title">Cor primária da segunda aba</string>
     <string name="primary_two_summary">Define a cor da segunda aba</string>
     <string name="searchingdevices">Procurando dispositivos</string>
-    </resources>
-
+</resources>
