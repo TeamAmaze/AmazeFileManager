@@ -6,7 +6,7 @@ import android.net.Uri;
  * Created by vishal on 7/11/16.
  */
 
-public class OtgCRUG {
+public class OtgCRUD {
 
     private Uri otgUri = null;
 
@@ -14,7 +14,7 @@ public class OtgCRUG {
      * Default constructor
      * @param uri the uri pointing to content provider for OTG
      */
-    public OtgCRUG(Uri uri) {
+    public OtgCRUD(Uri uri) {
         this.otgUri = uri;
     }
 }

@@ -265,7 +265,7 @@ public class CopyService extends Service {
                         }
                     }
                     int i=1;
-                    while(bufferHandler.writing){
+                    while(bufferHandler.writing && copyThread.thread == null){
                         try {
                             if(i>5)i=5;
                             Thread.sleep(i*100);
@@ -278,8 +278,10 @@ public class CopyService extends Service {
                     // waiting for generic copy thread to finish before returning from this point
                     try {
 
-                        copyThread.thread.join();
-                        Log.d(getClass().getSimpleName(), "Thread alive: " + copyThread.thread.isAlive());
+                        if (copyThread.thread!=null) {
+                            copyThread.thread.join();
+                            Log.d(getClass().getSimpleName(), "Thread alive: " + copyThread.thread.isAlive());
+                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                         // thread interrupted for some reason, probably already been handled

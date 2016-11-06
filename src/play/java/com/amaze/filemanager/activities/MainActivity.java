@@ -133,7 +133,6 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.broadcast.receivers.OtgBroadcastReceiver;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -264,7 +263,7 @@ public class MainActivity extends BaseActivity implements
         DataUtils.registerOnDataChangedListener(this);
         setContentView(R.layout.main_toolbar);
         initialiseViews();
-        tabHandler = new TabHandler(this, null, null, 1);
+        tabHandler = new TabHandler(this);
         utils = getFutils();
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
