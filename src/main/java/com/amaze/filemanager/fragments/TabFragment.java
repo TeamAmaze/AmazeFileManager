@@ -112,7 +112,7 @@ public class TabFragment extends android.support.v4.app.Fragment
         if (savedInstanceState == null) {
             int l = Sp.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
             MainActivity.currentTab = l;
-            TabHandler tabHandler=new TabHandler(getActivity(),null,null,1);
+            TabHandler tabHandler=new TabHandler(getActivity());
             List<Tab> tabs1=tabHandler.getAllTabs();
             int i=tabs1.size();
             if(i==0) {
@@ -216,7 +216,7 @@ public class TabFragment extends android.support.v4.app.Fragment
 
     public void updatepaths(int pos) {
         if(tabHandler==null)
-        tabHandler = new TabHandler(getActivity(), null, null, 1);
+        tabHandler = new TabHandler(getActivity());
         int i=1;
         ArrayList<String> items=new ArrayList<String>();
 

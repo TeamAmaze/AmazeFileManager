@@ -243,7 +243,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         DataUtils.registerOnDataChangedListener(this);
         setContentView(R.layout.main_toolbar);
         initialiseViews();
-        tabHandler = new TabHandler(this, null, null, 1);
+        tabHandler = new TabHandler(this);
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
 
