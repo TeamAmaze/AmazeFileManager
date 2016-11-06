@@ -133,6 +133,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.broadcast.receivers.OtgBroadcastReceiver;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -244,6 +245,9 @@ public class MainActivity extends BaseActivity implements
     private int[] searchCoords = new int[2];
     private View mFabBackground;
     private CoordinatorLayout mScreenLayout;
+
+    private static final int REQUEST_CODE_SAF = 223;
+    private static final String KEY_PREF_OTG = "uri_usb_otg";
 
     // the current visible tab, either 0 or 1
     public static int currentTab;
@@ -514,6 +518,8 @@ public class MainActivity extends BaseActivity implements
             rv.add("/");
         File usb = getUsbDrive();
         if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
+
+        if (Sp.getString(KEY_PREF_OTG, null)!=null) rv.add("OTG");
         return rv;
     }
 
@@ -1228,6 +1234,7 @@ public class MainActivity extends BaseActivity implements
         super.onPause();
         unregisterReceiver(mainActivityHelper.mNotificationReceiver);
         unregisterReceiver(receiver2);
+        unregisterReceiver(mOtgReceiver);
         killToast();
     }
 
@@ -1259,7 +1266,26 @@ public class MainActivity extends BaseActivity implements
         IntentFilter otgFilter = new IntentFilter();
         otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        registerReceiver(mOtgReceiver, otgFilter);
     }
+
+    BroadcastReceiver mOtgReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
+                // start system request for storage access framework
+                Toast.makeText(getApplicationContext(),
+                        "Give OTG access permission", Toast.LENGTH_LONG).show();
+                Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                startActivityForResult(safIntent, REQUEST_CODE_SAF);
+            } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
+
+                //resetting otg provider address
+                Sp.edit().putString(KEY_PREF_OTG, null).apply();
+                updateDrawer();
+            }
+        }
+    };
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -1647,6 +1673,10 @@ public class MainActivity extends BaseActivity implements
                     mainActivityHelper.compressFiles(new File(oppathe), oparrayList);
             }
             operation = -1;
+        } else if (requestCode == REQUEST_CODE_SAF && responseCode == Activity.RESULT_OK) {
+            // otg access
+            Sp.edit().putString(KEY_PREF_OTG, intent.getData().toString()).apply();
+            updateDrawer();
         }
     }
 
