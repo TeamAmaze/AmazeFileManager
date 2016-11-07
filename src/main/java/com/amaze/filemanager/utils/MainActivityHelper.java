@@ -271,21 +271,28 @@ public class MainActivityHelper {
     }
 
     public int checkFolder(final File folder, Context context) {
-        boolean lol= Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP,ext=FileUtil.isOnExtSdCard(folder, context);
-        if (lol && ext) {
-            if (!folder.exists() || !folder.isDirectory()) {
-                return 0;
-            }
+        boolean lol= Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+        if (lol) {
+            if (FileUtil.isOnExtSdCard(folder, context)) {
+                if (!folder.exists() || !folder.isDirectory()) {
+                    return 0;
+                }
 
-            // On Android 5, trigger storage access framework.
-            if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
-                guideDialogForLEXA(folder.getPath());
-                return 2;
-            }
-            return 1;
-        } else if (Build.VERSION.SDK_INT == 19 && FileUtil.isOnExtSdCard(folder, context)) {
-            // Assume that Kitkat workaround works
-            return 1;
+                // On Android 5, trigger storage access framework.
+                if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
+                    guideDialogForLEXA(folder.getPath());
+                    return 2;
+                }
+                return 1;
+            } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) return 1;
+            else return 0;
+        } else if (Build.VERSION.SDK_INT == 19) {
+            if (FileUtil.isOnExtSdCard(folder, context)) {
+
+                // Assume that Kitkat workaround works
+                return 1;
+            } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) return 1;
+            else return 0;
         } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
             return 1;
         } else {
