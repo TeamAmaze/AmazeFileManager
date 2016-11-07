@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.github.junrar.Archive;
 import com.github.junrar.exception.RarException;
@@ -68,7 +69,7 @@ public class ZipExtractTask extends AsyncTask<Void, Void, Void> {
         String cmd = "chmod 777 " + output.getPath();
         Log.d("change permissions", cmd);
         RootHelper.runAndWait(cmd, false);
-        utilsProvider.getFutils().openFile(output, (MainActivity) zipViewer);
+        new Futils().openFile(output, (MainActivity) zipViewer);
 }
     
 private void unzipEntry1(ZipFile zipfile, ZipEntry entry, String outputDir)
