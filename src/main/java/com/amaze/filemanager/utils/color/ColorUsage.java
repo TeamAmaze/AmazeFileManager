@@ -68,6 +68,6 @@ public enum ColorUsage {
      */
     @NonNull
     public static ColorUsage getPrimary(int num) {
-        return num == 2 ? PRIMARY_TWO : PRIMARY;
+        return num == 1 ? PRIMARY_TWO : PRIMARY;
     }
 }
