@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 
 import com.amaze.filemanager.utils.Logger;
+import com.amaze.filemanager.utils.OpenMode;
 import com.stericson.RootTools.RootTools;
 
 import java.io.File;
@@ -65,7 +66,7 @@ public class Operations {
                         if (mode == 1 || mode == 0)
                             FileUtil.mkdir(file.getFile(), context);
                         if (!file.exists() && rootMode) {
-                            file.setMode(HFile.ROOT_MODE);
+                            file.setMode(OpenMode.DRIVE);
                             if (file.exists()) errorCallBack.exists(file);
                             boolean remount = false;
                             try {
@@ -126,7 +127,7 @@ public class Operations {
                             } catch (IOException e) {
                             }
                         if (!file.exists() && rootMode) {
-                            file.setMode(HFile.ROOT_MODE);
+                            file.setMode(OpenMode.DRIVE);
                             if (file.exists()) errorCallBack.exists(file);
                             boolean remount = false;
                             try {
@@ -187,7 +188,7 @@ public class Operations {
                     File file = new File(f.getPath());
                     File file1 = new File(f1.getPath());
                         switch (f.getMode()){
-                            case HFile.LOCAL_MODE:
+                            case FILE:
                                 int mode = checkFolder(file.getParentFile(), context);
                                 if (mode == 2) {
                                     errorCallBack.launchSAF(f,f1);
@@ -200,22 +201,22 @@ public class Operations {
                                         } catch (Exception e) {
                                             Logger.log(e,f.getPath()+"\n"+f1.getPath(),context);
                                         }
-                                       f.setMode(HFile.ROOT_MODE);
-                                      f1.setMode(HFile.ROOT_MODE);
+                                       f.setMode(OpenMode.DRIVE);
+                                      f1.setMode(OpenMode.DRIVE);
                                       a=  !file.exists() && file1.exists();
                                     }
                                     errorCallBack.done(f1,a);
                                     return null;
                                 }
                                 break;
-                            case HFile.ROOT_MODE:
+                            case DRIVE:
                                 try {
                                     renameRoot(file, file1.getName());
                                 } catch (Exception e) {
                                     Logger.log(e,f.getPath()+"\n"+f1.getPath(),context);
                                 }
-                                f.setMode(HFile.ROOT_MODE);
-                                f1.setMode(HFile.ROOT_MODE);
+                                f.setMode(OpenMode.DRIVE);
+                                f1.setMode(OpenMode.DRIVE);
                                 boolean a=  !file.exists() && file1.exists();
                                 errorCallBack.done(f1,a);
                                 break;

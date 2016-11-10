@@ -95,6 +95,7 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MainActivityHelper;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
@@ -126,7 +127,7 @@ public class Main extends android.support.v4.app.Fragment {
     public String home, CURRENT_PATH = "", goback;
     public boolean selection, results = false, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS, SHOW_SIZE, SHOW_LAST_MODIFIED;
     public LinearLayout pathbar;
-    public int openMode = 0;
+    public OpenMode openMode = OpenMode.FILE;
     public android.support.v7.widget.RecyclerView listView;
 
     public boolean GO_BACK_ITEM, SHOW_THUMBS, COLORISE_ICONS, SHOW_DIVIDERS;
@@ -306,7 +307,7 @@ public class Main extends android.support.v4.app.Fragment {
         DARK_IMAGE = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_image_dark));
         DARK_VIDEO = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_video_dark));
         this.setRetainInstance(false);
-        f = new HFile(HFile.UNKNOWN, CURRENT_PATH);
+        f = new HFile(OpenMode.UNKNOWN, CURRENT_PATH);
         f.generateMode(getActivity());
         MAIN_ACTIVITY.initiatebbar();
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
@@ -423,8 +424,8 @@ public class Main extends android.support.v4.app.Fragment {
             b.putInt("top", savedInstanceState.getInt("top"));
             scrolls.put(cur, b);
 
-            openMode = savedInstanceState.getInt("openMode", 0);
-            if (openMode == 1)
+            openMode = OpenMode.getOpenMode(savedInstanceState.getInt("openMode", 0));
+            if (openMode == OpenMode.SMB)
                 smbPath = savedInstanceState.getString("SmbPath");
             LIST_ELEMENTS = savedInstanceState.getParcelableArrayList("list");
             CURRENT_PATH = cur;
@@ -464,14 +465,14 @@ public class Main extends android.support.v4.app.Fragment {
             outState.putParcelableArrayList("list", LIST_ELEMENTS);
             outState.putString("CURRENT_PATH", CURRENT_PATH);
             outState.putBoolean("selection", selection);
-            outState.putInt("openMode", openMode);
+            outState.putInt("openMode", openMode.getId());
             outState.putInt("folder_count", folder_count);
             outState.putInt("file_count", file_count);
             if (selection) {
                 outState.putIntegerArrayList("position", adapter.getCheckedItemPositions());
             }
             outState.putBoolean("results", results);
-            if (openMode == 1) {
+            if (openMode == OpenMode.SMB) {
                 outState.putString("SmbPath", smbPath);
             }
         }
@@ -541,7 +542,7 @@ public class Main extends android.support.v4.app.Fragment {
             textView1.setOnClickListener(null);
             mode.setTitle(positions.size() + "");
             hideOption(R.id.openmulti, menu);
-            if (openMode == 1) {
+            if (openMode == OpenMode.SMB) {
                 hideOption(R.id.addshortcut, menu);
                 hideOption(R.id.openwith, menu);
                 hideOption(R.id.share, menu);
@@ -710,13 +711,14 @@ public class Main extends android.support.v4.app.Fragment {
                         arrayList.add(new File(LIST_ELEMENTS.get(i).getDesc()));
                     }
                     if (arrayList.size() > 100)
-                        Toast.makeText(getActivity(), "Can't share more than 100 files", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.share_limit),
+                                Toast.LENGTH_SHORT).show();
                     else
                         utils.shareFiles(arrayList, getActivity(), theme1, Color.parseColor
                                 (fabSkin));
                     return true;
                 case R.id.openparent:
-                    loadlist(new File(LIST_ELEMENTS.get(plist.get(0)).getDesc()).getParent(), false, 0);
+                    loadlist(new File(LIST_ELEMENTS.get(plist.get(0)).getDesc()).getParent(), false, OpenMode.FILE);
                     return true;
                 case R.id.all:
                     if (adapter.areAllChecked(CURRENT_PATH)) {
@@ -819,7 +821,7 @@ public class Main extends android.support.v4.app.Fragment {
     };
 
     public void home() {
-        ma.loadlist((ma.home), false, 0);
+        ma.loadlist((ma.home), false, OpenMode.FILE);
     }
 
     /**
@@ -882,7 +884,7 @@ public class Main extends android.support.v4.app.Fragment {
                     computeScroll();
                     loadlist(path, false, openMode);
                 } else {
-                    if (l.getMode() == HFile.SMB_MODE)
+                    if (l.getMode() == OpenMode.SMB)
                         try {
                             SmbFile smbFile = new SmbFile(l.getDesc());
                             launch(smbFile, l.getlongSize());
@@ -908,7 +910,7 @@ public class Main extends android.support.v4.app.Fragment {
     public void updateTabWithDb(Tab tab) {
         CURRENT_PATH = tab.getPath();
         home = tab.getHome();
-        loadlist(CURRENT_PATH, false, -1);
+        loadlist(CURRENT_PATH, false, OpenMode.UNKNOWN);
     }
 
     private void returnIntentResults(File file) {
@@ -934,7 +936,7 @@ public class Main extends android.support.v4.app.Fragment {
 
     LoadList loadList;
 
-    public void loadlist(String path, boolean back, int openMode) {
+    public void loadlist(String path, boolean back, OpenMode openMode) {
         if (mActionMode != null) {
             mActionMode.finish();
         }
@@ -985,12 +987,21 @@ public class Main extends android.support.v4.app.Fragment {
             return grid;
     }
 
-    public void createViews(ArrayList<Layoutelements> bitmap, boolean back, String f, int
+    /**
+     * Loading adapter after getting a list of elements
+     * @param bitmap the list of objects for the adapter
+     * @param back
+     * @param path the path for the adapter
+     * @param openMode the type of file being created
+     * @param results is the list of elements a result from search
+     * @param grid whether to set grid view or list view
+     */
+    public void createViews(ArrayList<Layoutelements> bitmap, boolean back, String path, OpenMode
             openMode, boolean results, boolean grid) {
         try {
             if (bitmap != null) {
                 if (GO_BACK_ITEM)
-                    if (!f.equals("/") && (openMode == 0 || openMode == 3)) {
+                    if (!path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.DRIVE)) {
                         if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback)) {
 
                             Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
@@ -1021,8 +1032,8 @@ public class Main extends android.support.v4.app.Fragment {
                 }
                 stopAnims = true;
                 this.openMode = openMode;
-                if (openMode != 2)
-                    DataUtils.addHistoryFile(f);
+                if (openMode != OpenMode.CUSTOM)
+                    DataUtils.addHistoryFile(path);
                 //mSwipeRefreshLayout.setRefreshing(false);
                 try {
                     listView.setAdapter(adapter);
@@ -1039,7 +1050,7 @@ public class Main extends android.support.v4.app.Fragment {
                         addheader = false;
                     }
                     if (!results) this.results = false;
-                    CURRENT_PATH = f;
+                    CURRENT_PATH = path;
                     if (back) {
                         if (scrolls.containsKey(CURRENT_PATH)) {
                             Bundle b = scrolls.get(CURRENT_PATH);
@@ -1075,7 +1086,7 @@ public class Main extends android.support.v4.app.Fragment {
                 } catch (Exception e) {
                 }
             } else {//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
-                loadlist(home, true, 0);
+                loadlist(home, true, OpenMode.FILE);
             }
         } catch (Exception e) {
         }
@@ -1103,7 +1114,7 @@ public class Main extends android.support.v4.app.Fragment {
 
                 if (!MainActivityHelper.isNewDirectoryRecursive(new HFile(openMode, CURRENT_PATH + "/" + name)) &&
                         Operations.isFileNameValid(name)) {
-                    if (openMode == 1)
+                    if (openMode == OpenMode.FILE)
                         MAIN_ACTIVITY.mainActivityHelper.rename(openMode, f.getPath(), CURRENT_PATH + name, getActivity(), BaseActivity.rootMode);
                     else
                         MAIN_ACTIVITY.mainActivityHelper.rename(openMode, (f).getPath(), (CURRENT_PATH + "/" + name), getActivity(), BaseActivity.rootMode);
@@ -1140,8 +1151,8 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
     public void goBack() {
-        if (openMode == 2) {
-            loadlist(home, false, 0);
+        if (openMode == OpenMode.CUSTOM) {
+            loadlist(home, false, OpenMode.FILE);
             return;
         }
 
@@ -1152,12 +1163,12 @@ public class Main extends android.support.v4.app.Fragment {
             if (selection) {
                 adapter.toggleChecked(false);
             } else {
-                if (openMode == 1)
+                if (openMode == OpenMode.SMB)
                     try {
                         if (!smbPath.equals(CURRENT_PATH)) {
                             String path = (new SmbFile(CURRENT_PATH).getParent());
                             loadlist((path), true, openMode);
-                        } else loadlist(home, false, 0);
+                        } else loadlist(home, false, OpenMode.FILE);
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
@@ -1188,7 +1199,7 @@ public class Main extends android.support.v4.app.Fragment {
                         parentPath, MainActivityHelper.SEARCH_TEXT, openMode, BaseActivity.rootMode,
                         Sp.getBoolean(SearchAsyncHelper.KEY_REGEX, false),
                         Sp.getBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, false));
-            } else loadlist(CURRENT_PATH, true, -1);
+            } else loadlist(CURRENT_PATH, true, OpenMode.UNKNOWN);
 
             mRetainSearchTask = false;
         } else {
@@ -1200,7 +1211,7 @@ public class Main extends android.support.v4.app.Fragment {
                     fragment.mSearchTask.cancel(true);
                 }
             }
-            loadlist(new File(CURRENT_PATH).getPath(), true, -1);
+            loadlist(new File(CURRENT_PATH).getPath(), true, OpenMode.UNKNOWN);
             results = false;
         }
     }
@@ -1224,8 +1235,8 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
     public void goBackItemClick() {
-        if (openMode == 2) {
-            loadlist(home, false, 0);
+        if (openMode == OpenMode.CUSTOM) {
+            loadlist(home, false, OpenMode.FILE);
             return;
         }
         File f = new File(CURRENT_PATH);
@@ -1233,12 +1244,12 @@ public class Main extends android.support.v4.app.Fragment {
             if (selection) {
                 adapter.toggleChecked(false);
             } else {
-                if (openMode == 1)
+                if (openMode == OpenMode.SMB)
                     try {
                         if (!CURRENT_PATH.equals(smbPath)) {
                             String path = (new SmbFile(CURRENT_PATH).getParent());
-                            loadlist((path), true, 1);
-                        } else loadlist(home, false, 0);
+                            loadlist((path), true, OpenMode.SMB);
+                        } else loadlist(home, false, OpenMode.FILE);
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
@@ -1311,14 +1322,14 @@ public class Main extends android.support.v4.app.Fragment {
             if (mFile[i].isDirectory()) {
                 folder_count++;
                 Layoutelements layoutelements = new Layoutelements(folder, name, mFile[i].getPath(), "", "", "", 0, false, mFile[i].lastModified() + "", true);
-                layoutelements.setMode(1);
+                layoutelements.setMode(OpenMode.SMB);
                 searchHelper.add(layoutelements.generateBaseFile());
                 a.add(layoutelements);
             } else {
                 file_count++;
                 try {
                     Layoutelements layoutelements = new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(), !IS_LIST, res), name, mFile[i].getPath(), "", "", Futils.readableFileSize(mFile[i].length()), mFile[i].length(), false, mFile[i].lastModified() + "", false);
-                    layoutelements.setMode(1);
+                    layoutelements.setMode(OpenMode.SMB);
                     searchHelper.add(layoutelements.generateBaseFile());
                     a.add(layoutelements);
                 } catch (Exception e) {
@@ -1377,7 +1388,7 @@ public class Main extends android.support.v4.app.Fragment {
             File f1 = new File(path + "/" + ".nomedia");
             if (!f1.exists()) {
                 try {
-                    MAIN_ACTIVITY.mainActivityHelper.mkFile(new HFile(HFile.LOCAL_MODE, f1.getPath()), this);
+                    MAIN_ACTIVITY.mainActivityHelper.mkFile(new HFile(OpenMode.FILE, f1.getPath()), this);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

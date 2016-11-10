@@ -19,11 +19,8 @@
 
 package com.amaze.filemanager.filesystem;
 
-import android.util.Log;
-
-import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.OpenMode;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
 
@@ -173,7 +170,7 @@ public class RootHelper {
                     if (!x.isDirectory()) size = x.length();
                     BaseFile baseFile=new BaseFile(x.getPath(), parseFilePermission(x), x.lastModified() , size, x.isDirectory());
                     baseFile.setName(x.getName());
-                    baseFile.setMode(BaseFile.LOCAL_MODE);
+                    baseFile.setMode(OpenMode.FILE);
                     if (showHidden) {
                         files.add(baseFile);
                     } else {
@@ -196,7 +193,7 @@ public class RootHelper {
             size = x.length();
         BaseFile baseFile=new BaseFile(x.getPath(), parseFilePermission(x), x.lastModified() , size, x.isDirectory());
         baseFile.setName(x.getName());
-        baseFile.setMode(HFile.LOCAL_MODE);
+        baseFile.setMode(OpenMode.FILE);
         if (showHidden) {
             return (baseFile);
         } else if (!x.isHidden()) {
@@ -273,11 +270,11 @@ public class RootHelper {
         else return new File(path.getPath()).isDirectory();
     }
     public interface GetModeCallBack{
-        void getMode(int mode);
+        void getMode(OpenMode mode);
     }
     public static ArrayList<BaseFile> getFilesList(String path, boolean root, boolean showHidden,GetModeCallBack getModeCallBack) {
         String p = " ";
-        int mode=0;
+        OpenMode mode=OpenMode.FILE;
         if (showHidden) p = "a ";
         ArrayList<BaseFile> a = new ArrayList<>();
         ArrayList<String> ls = new ArrayList<>();
@@ -291,7 +288,7 @@ public class RootHelper {
                         if (!file.contains("Permission denied"))
                             try {
                                 BaseFile array = Futils.parseName(file);
-                                array.setMode(BaseFile.ROOT_MODE);
+                                array.setMode(OpenMode.DRIVE);
                                 if (array != null) {
                                     array.setName(array.getPath());
                                     array.setPath( path + "/" + array.getPath());
@@ -306,25 +303,25 @@ public class RootHelper {
                             }
 
                     }
-                    mode=3;
+                    mode=OpenMode.DRIVE;
                 }
             } else if (Futils.canListFiles(new File(path))) {
                 a = getFilesList(path, showHidden);
-                mode=0;
+                mode = OpenMode.FILE;
             } else {
-                mode=0;
+                mode = OpenMode.FILE;
                 a = new ArrayList<>();
             }
         } else if (Futils.canListFiles(new File(path))) {
             a = getFilesList( path, showHidden);
-            mode=0;
+            mode=OpenMode.FILE;
         } else {
-            mode=0;
+            mode=OpenMode.FILE;
             a = new ArrayList<>();
         }
         if (a.size() == 0 && Futils.canListFiles(new File(path))) {
             a = getFilesList( path, showHidden);
-            mode=0;
+            mode=OpenMode.FILE;
         }
         if(getModeCallBack!=null)getModeCallBack.getMode(mode);
         return a;

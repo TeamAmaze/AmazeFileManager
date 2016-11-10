@@ -22,6 +22,7 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.utils.OpenMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
     MainActivity mainActivity;
     Context con;
     boolean rootmode=false;
-    int openMode=0;
+    OpenMode openMode=OpenMode.FILE;
     public CopyFileCheck(Main main, String path, Boolean move, MainActivity context,boolean rootMode) {
         this.ma = main;
         this.path = path;

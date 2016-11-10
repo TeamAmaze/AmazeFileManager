@@ -59,6 +59,7 @@ import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.services.asynctasks.SearchTextTask;
 import com.amaze.filemanager.utils.MapEntry;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -452,7 +453,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 break;
             case R.id.details:
                 if(mFile.canRead()){
-                    HFile hFile=new HFile(HFile.LOCAL_MODE,mFile.getPath());
+                    HFile hFile=new HFile(OpenMode.FILE,mFile.getPath());
                     hFile.generateMode(this);
                     getFutils().showProps(hFile, this, theme1);
                 }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();

@@ -27,6 +27,7 @@ import android.os.Parcelable;
 
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.OpenMode;
 
 public class Layoutelements implements Parcelable {
     public Layoutelements(Parcel im) {
@@ -89,7 +90,7 @@ public class Layoutelements implements Parcelable {
     private String date1 = "";
     private boolean header;
     //same as hfile.modes but different than openmode in Main.java
-    private int mode=0;
+    private OpenMode mode=OpenMode.FILE;
     public Layoutelements(BitmapDrawable imageId, String title, String desc, String permissions, String symlink, String size,long longSize,  boolean header, String date,boolean isDirectory) {
         this.imageId = imageId;
         this.title = title;
@@ -132,11 +133,11 @@ public class Layoutelements implements Parcelable {
         return title.toString();
     }
 
-    public int getMode() {
+    public OpenMode getMode() {
         return mode;
     }
 
-    public void setMode(int mode) {
+    public void setMode(OpenMode mode) {
         this.mode = mode;
     }
 

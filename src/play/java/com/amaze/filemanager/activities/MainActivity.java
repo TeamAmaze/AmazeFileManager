@@ -132,6 +132,7 @@ import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.github.clans.fab.FloatingActionButton;
@@ -372,7 +373,7 @@ public class MainActivity extends BaseActivity implements
                 supportInvalidateOptionsMenu();
             } else {
                 if (path != null && path.length() > 0) {
-                    HFile file = new HFile(HFile.UNKNOWN, path);
+                    HFile file = new HFile(OpenMode.UNKNOWN, path);
                     file.generateMode(this);
                     if (file.isDirectory())
                         goToMain(path);
@@ -964,7 +965,7 @@ public class MainActivity extends BaseActivity implements
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
                 final Main main = ma;
-                if (main.openMode != 0 && main.openMode != 3) {
+                if (main.openMode != OpenMode.FILE && main.openMode != OpenMode.DRIVE) {
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
@@ -1649,20 +1650,21 @@ public class MainActivity extends BaseActivity implements
                     startService(intent1);
                     break;
                 case DataUtils.MOVE://moving
-                    new MoveFiles((oparrayList), ((Main) getFragment().getTab()), ((Main) getFragment().getTab()).getActivity(),0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                    new MoveFiles((oparrayList), ((Main) getFragment().getTab()),
+                            ((Main) getFragment().getTab()).getActivity(),OpenMode.FILE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     break;
                 case DataUtils.NEW_FOLDER://mkdir
                     Main ma1 = ((Main) getFragment().getTab());
                     mainActivityHelper.mkDir(RootHelper.generateBaseFile(new File(oppathe),true), ma1);
                     break;
                 case DataUtils.RENAME:
-                    mainActivityHelper.rename(HFile.LOCAL_MODE,(oppathe), (oppathe1),mainActivity,BaseActivity.rootMode);
+                    mainActivityHelper.rename(OpenMode.FILE,(oppathe), (oppathe1),mainActivity,BaseActivity.rootMode);
                     Main ma2 = ((Main) getFragment().getTab());
                     ma2.updateList();
                     break;
                 case DataUtils.NEW_FILE:
                     Main ma3 = ((Main) getFragment().getTab());
-                    mainActivityHelper.mkFile(new HFile(HFile.LOCAL_MODE,oppathe), ma3);
+                    mainActivityHelper.mkFile(new HFile(OpenMode.FILE,oppathe), ma3);
 
                     break;
                 case DataUtils.EXTRACT:
@@ -2161,14 +2163,14 @@ public class MainActivity extends BaseActivity implements
         }).run();
     }
 
-    public void updatePath(@NonNull final String news, boolean results, int
+    public void updatePath(@NonNull final String news, boolean results, OpenMode
             openmode, int folder_count, int file_count) {
 
         if (news.length() == 0) return;
         if (news == null) return;
-        if (openmode == 1 && news.startsWith("smb:/"))
+        if (openmode == OpenMode.SMB && news.startsWith("smb:/"))
             newPath = mainActivityHelper.parseSmbPath(news);
-        else if (openmode == 2)
+        else if (openmode == OpenMode.CUSTOM)
             newPath = mainActivityHelper.getIntegralNames(news);
         else newPath = news;
         final TextView bapath = (TextView) pathbar.findViewById(R.id.fullpath);
@@ -2399,7 +2401,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View view) {
                 Main m = ((Main) getFragment().getTab());
-                if (m.openMode == 0) {
+                if (m.openMode == OpenMode.FILE) {
                     bbar(m);
                     utils.crossfade(buttons,pathbar);
                     timer.cancel();
@@ -2411,7 +2413,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View view) {
                 Main m = ((Main) getFragment().getTab());
-                if (m.openMode == 0) {
+                if (m.openMode == OpenMode.FILE) {
                     bbar(m);
                     utils.crossfade(buttons,pathbar);
                     timer.cancel();
@@ -2464,7 +2466,7 @@ public class MainActivity extends BaseActivity implements
         if (pending_path != null) {
             try {
 
-                HFile hFile = new HFile(HFile.UNKNOWN,pending_path);
+                HFile hFile = new HFile(OpenMode.UNKNOWN,pending_path);
                 hFile.generateMode(this);
                 if (hFile.isSimpleFile()) {
                     utils.openFile(new File(pending_path), mainActivity);
@@ -2478,7 +2480,7 @@ public class MainActivity extends BaseActivity implements
                 }
                 Main main = ((Main) m.getTab());
                 if (main != null)
-                    main.loadlist(pending_path, false, -1);
+                    main.loadlist(pending_path, false, OpenMode.UNKNOWN);
             } catch (ClassCastException e) {
                 select = null;
                 goToMain("");
@@ -2498,7 +2500,7 @@ public class MainActivity extends BaseActivity implements
                 Fragment f = getDFragment();
                 if ((f.getClass().getName().contains("TabFragment"))) {
                     Main m = ((Main) getFragment().getTab());
-                    m.loadlist(path, false, 0);
+                    m.loadlist(path, false, OpenMode.FILE);
                 } else goToMain(path);
             } else utils.openFile(new File(path), mainActivity);
         } else if (i.getStringArrayListExtra("failedOps") != null) {
@@ -2731,7 +2733,7 @@ public class MainActivity extends BaseActivity implements
                         Fragment fragment1=fragment.getTab();
                         if(fragment1!=null){
                             final Main ma = (Main) fragment1;
-                            ma.loadlist(path, false, -1);
+                            ma.loadlist(path, false, OpenMode.UNKNOWN);
                         }}
                 }
                 else Snackbar.make(frameLayout,"Connection already exists",Snackbar.LENGTH_SHORT).show();

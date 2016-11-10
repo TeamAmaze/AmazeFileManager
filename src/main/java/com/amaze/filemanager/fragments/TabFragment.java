@@ -31,9 +31,9 @@ import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.views.CustomViewPager;
 import com.amaze.filemanager.ui.views.Indicator;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.MainActivityHelper;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 
@@ -232,7 +232,7 @@ public class TabFragment extends android.support.v4.app.Fragment
                             .folder_count,m.file_count);
                     mainActivity.updateDrawer(m.CURRENT_PATH);
                 }
-                if(m.openMode==0) {
+                if(m.openMode==OpenMode.FILE) {
                     tabHandler.addTab(new Tab(i, m.CURRENT_PATH, m.CURRENT_PATH, m.home));
                 }else
                     tabHandler.addTab(new Tab(i, m.home, m.home, m.home));
@@ -246,15 +246,15 @@ public class TabFragment extends android.support.v4.app.Fragment
             return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
         else return a;
     }
-    String parsePathForName(String path,int openmode){
+    String parsePathForName(String path,OpenMode openmode){
         Resources resources=getActivity().getResources();
         if("/".equals(path))
             return resources.getString(R.string.rootdirectory);
-        else if(openmode==1 && path.startsWith("smb:/"))
+        else if(openmode==OpenMode.SMB && path.startsWith("smb:/"))
             return (new File(parseSmbPath(path)).getName());
         else if("/storage/emulated/0".equals(path))
             return resources.getString(R.string.storage);
-        else if(openmode==2)
+        else if(openmode==OpenMode.CUSTOM)
             return new MainActivityHelper(mainActivity).getIntegralNames(path);
         else
             return new File(path).getName();

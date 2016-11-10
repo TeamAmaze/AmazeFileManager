@@ -96,7 +96,7 @@ public class MainActivityHelper {
      * @param path current path at which directory to create
      * @param ma {@link Main} current fragment
      */
-    void mkdir(final int openMode,final String path,final Main ma){
+    void mkdir(final OpenMode openMode,final String path,final Main ma){
         final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{mainActivity.getResources().getString(R.string.entername), "",mainActivity.getResources().getString(R.string.newfolder),mainActivity.getResources().getString(R.string.create),mainActivity.getResources().getString(R.string.cancel),null});
         materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,7 +119,7 @@ public class MainActivityHelper {
      * @param path current path at which file to create
      * @param ma {@link Main} current fragment
      */
-    void mkfile(final int openMode,final String path,final Main ma){
+    void mkfile(final OpenMode openMode,final String path,final Main ma){
         final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{mainActivity.getResources().getString(R.string.entername), "",mainActivity.getResources().getString(R.string.newfile),mainActivity.getResources().getString(R.string.create),mainActivity.getResources().getString(R.string.cancel),null});
         materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,7 +218,7 @@ public class MainActivityHelper {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         mainActivity.startActivityForResult(intent, 3);
     }
-    public void rename(int mode, String f, String f1, final Activity context, boolean rootmode) {
+    public void rename(OpenMode mode, String f, String f1, final Activity context, boolean rootmode) {
         final Toast toast=Toast.makeText(context, R.string.renaming, Toast.LENGTH_LONG);
         toast.show();
         Operations.rename(new HFile(mode, f), new HFile(mode, f1), rootmode, context, new Operations.ErrorCallBack() {
@@ -497,18 +497,18 @@ public class MainActivityHelper {
      * @param fragment current fragment
      * @param path current path
      * @param input query typed by user
-     * @param openMode dunno
+     * @param openMode defines the file type
      * @param rootMode is root enabled
      * @param regex is regular expression search enabled
      * @param matches is matches enabled for patter matching
      */
     public static void addSearchFragment(FragmentManager fragmentManager, Fragment fragment,
-                                         String path, String input, int openMode, boolean rootMode,
+                                         String path, String input, OpenMode openMode, boolean rootMode,
                                          boolean regex, boolean matches) {
         Bundle args = new Bundle();
         args.putString(SearchAsyncHelper.KEY_INPUT, input);
         args.putString(SearchAsyncHelper.KEY_PATH, path);
-        args.putInt(SearchAsyncHelper.KEY_OPEN_MODE, openMode);
+        args.putInt(SearchAsyncHelper.KEY_OPEN_MODE, openMode.getId());
         args.putBoolean(SearchAsyncHelper.KEY_ROOT_MODE, rootMode);
         args.putBoolean(SearchAsyncHelper.KEY_REGEX, regex);
         args.putBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, matches);

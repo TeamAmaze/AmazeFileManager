@@ -832,27 +832,7 @@ public void openWith(final File f,final Context c) {
 public static void showSMBHelpDialog(Context m,String acc){
 
     MaterialDialog.Builder b=new MaterialDialog.Builder(m);
-    b.content(Html.fromHtml("<html>\n" +
-            "<body>\n" +
-            "<center>\n" +
-            "<h1>How to access shared windows folder on android (smb)</h1>\n" +
-            "</center>\n" +
-            "<ol>\n" +
-            "<li>\n" +
-            "<b>Enable File Sharing</b>\n" +
-            "<br>Open the Control Panel, click Choose homegroup and sharing options under Network and Internet, and click Change advanced sharing settings. Enable the file and printer sharing feature.\n" +
-            "</li><br><li><b>Additional File Sharing settings</b><br>You may also want to configure the other advanced sharing settings here. \n" +
-            "For example, you could enable access to your files without a password if you trust all the devices on your local network.Once file and printer sharing is enabled, you can open File Explorer or Windows Explorer, right-click a folder you want to share, and select Properties. \n" +
-            "Click the Share button and make the folder available on the network.\n" +
-            "</li><li><br><b>Make sure both devices are on same Wifi</b><br> \n" +
-            "This feature makes files available on the local network, so your PC and mobile devices have to be on the same local network. You can’t access a shared Windows folder over the Internet or when your smartphone is connected to its mobile data — it has to be connected to Wi-Fi.</li><li>\n" +
-            "<br><b>Find IP Address</b>\n" +
-            "<br>Open Command Prompt. Type 'ipconfig' and press Enter. Look for Default Gateway under your network adapter for your router's IP address. Look for \\\"IPv4 Address\\\" under the same adapter section to find your computer's IP address.</li><li><br>\n" +
-            "<b>Enter details in smb dialog box</b>\n" +
-            "<br>\n" +
-            "</ol>\n" +
-            "</body>\n" +
-            "</html>"));
+    b.content(Html.fromHtml(m.getResources().getString(R.string.smb_instructions)));
     b.positiveText(R.string.doit);
     b.positiveColor(Color.parseColor(acc));
     b.build().show();
@@ -924,7 +904,7 @@ public void showPackageDialog(final File f,final MainActivity m){
     public ArrayList<HFile> toHFileArray(ArrayList<String> a) {
         ArrayList<HFile> b = new ArrayList<>();
         for (int i = 0; i < a.size(); i++) {
-            HFile hFile=new HFile(HFile.UNKNOWN,a.get(i));
+            HFile hFile=new HFile(OpenMode.UNKNOWN,a.get(i));
             hFile.generateMode(null);
             b.add(hFile);
         }

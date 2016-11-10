@@ -3,11 +3,10 @@ package com.amaze.filemanager.filesystem;
 import android.content.Context;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Logger;
-import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.OpenMode;
 import com.stericson.RootTools.RootTools;
 
 import java.io.File;
@@ -28,14 +27,14 @@ import jcifs.smb.SmbFile;
 //Hybrid file for handeling all types of files
 public class HFile {
     String path;
-    public static final int ROOT_MODE=3,LOCAL_MODE=0,SMB_MODE=1,UNKNOWN=-1;
-    int mode=0;
-    public HFile(int mode, String path) {
+    //public static final int ROOT_MODE=3,LOCAL_MODE=0,SMB_MODE=1,UNKNOWN=-1;
+    OpenMode mode=OpenMode.FILE;
+    public HFile(OpenMode mode, String path) {
         this.path = path;
         this.mode = mode;
     }
 
-    public HFile(int mode,String path, String name,boolean isDirectory) {
+    public HFile(OpenMode mode,String path, String name,boolean isDirectory) {
         this.mode = mode;
         if (path.startsWith("smb://") || isSmb()){
             if(!isDirectory)this.path = path + name;
@@ -45,33 +44,33 @@ public class HFile {
         else this.path = path + "/" + name;
     }
     public void generateMode(Context context){
-        if(path.startsWith("smb://"))mode=SMB_MODE;
+        if(path.startsWith("smb://"))mode=OpenMode.SMB;
         else {
             if(context==null){
-                mode=LOCAL_MODE;
+                mode=OpenMode.FILE;
                 return;
             }
             boolean rootmode=PreferenceManager.getDefaultSharedPreferences(context).getBoolean("rootMode",false);
             if(Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT)
-            {   mode=LOCAL_MODE;
+            {   mode=OpenMode.FILE;
                 if(rootmode){
-                    if(!getFile().canRead())mode=ROOT_MODE;
+                    if(!getFile().canRead())mode=OpenMode.DRIVE;
                 }
                 return;
             }
-            if(FileUtil.isOnExtSdCard(getFile(),context))mode=LOCAL_MODE;
+            if(FileUtil.isOnExtSdCard(getFile(),context))mode=OpenMode.FILE;
             else if(rootmode){
-                if(!getFile().canRead())mode=ROOT_MODE;
+                if(!getFile().canRead())mode=OpenMode.DRIVE;
             }
-            if(mode==UNKNOWN)mode=LOCAL_MODE;
+            if(mode==OpenMode.UNKNOWN)mode=OpenMode.FILE;
         }
 
     }
-    public void setMode(int mode) {
+    public void setMode(OpenMode mode) {
         this.mode = mode;
     }
 
-    public int getMode() {
+    public OpenMode getMode() {
         return mode;
     }
 
@@ -80,13 +79,13 @@ public class HFile {
     }
 
     public boolean isLocal(){
-        return mode==LOCAL_MODE;
+        return mode==OpenMode.FILE;
     }
     public boolean isRoot(){
-        return mode==ROOT_MODE;
+        return mode==OpenMode.DRIVE;
     }
     public boolean isSmb(){
-        return mode==SMB_MODE;
+        return mode==OpenMode.SMB;
     }
     File getFile(){return new File(path);}
     BaseFile generateBaseFileFromParent(){
@@ -99,15 +98,15 @@ public class HFile {
     }
     public long lastModified() throws MalformedURLException, SmbException {
         switch (mode){
-            case SMB_MODE:
+            case SMB:
                 SmbFile smbFile=getSmbFile();
                 if(smbFile!=null)
                     return smbFile.lastModified();
                 break;
-            case LOCAL_MODE:
+            case FILE:
                 new File(path).lastModified();
                 break;
-            case ROOT_MODE:
+            case DRIVE:
                 BaseFile baseFile=generateBaseFileFromParent();
                 if(baseFile!=null)
                 return baseFile.getDate();
@@ -117,7 +116,7 @@ public class HFile {
     public long length() {
         long s = 0l;
         switch (mode){
-            case SMB_MODE:
+            case SMB:
                 SmbFile smbFile=getSmbFile();
                 if(smbFile!=null)
                     try {
@@ -125,10 +124,10 @@ public class HFile {
                     } catch (SmbException e) {
                     }
                     return s;
-            case LOCAL_MODE:
+            case FILE:
                 s = new File(path).length();
                 return s;
-            case ROOT_MODE:
+            case DRIVE:
                 BaseFile baseFile=generateBaseFileFromParent();
                 if(baseFile!=null)
                 return baseFile.getSize();
@@ -143,14 +142,14 @@ public class HFile {
     public String getName() {
         String name = null;
         switch (mode){
-            case SMB_MODE:
+            case SMB:
                 SmbFile smbFile=getSmbFile();
                 if(smbFile!=null)
                     return smbFile.getName();
                 break;
-            case LOCAL_MODE:
+            case FILE:
                 return new File(path).getName();
-            case ROOT_MODE:
+            case DRIVE:
                 return new File(path).getName();
         }
         return name;
@@ -252,7 +251,7 @@ public class HFile {
                 for (SmbFile smbFile1 : smbFile.listFiles()) {
                     BaseFile baseFile=new BaseFile(smbFile1.getPath());
                     baseFile.setName(smbFile1.getName());
-                    baseFile.setMode(HFile.SMB_MODE);
+                    baseFile.setMode(OpenMode.SMB);
                     baseFile.setDirectory(smbFile1.isDirectory());
                     baseFile.setDate(smbFile1.lastModified());
                     baseFile.setSize(baseFile.isDirectory()?0:smbFile1.length());
@@ -381,7 +380,7 @@ public class HFile {
         } else {
             boolean b= FileUtil.deleteFile(new File(path), context);
             if(!b && rootmode){
-                setMode(ROOT_MODE);
+                setMode(OpenMode.DRIVE);
                 RootTools.remount(getParent(),"rw");
                 String s=RootHelper.runAndWait("rm -r \""+getPath()+"\"",true);
                 RootTools.remount(getParent(),"ro");

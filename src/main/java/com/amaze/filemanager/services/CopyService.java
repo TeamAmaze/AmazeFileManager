@@ -42,12 +42,13 @@ import com.amaze.filemanager.RegisterCallback;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.filesystem.HFile;
-import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.utils.GenericCopyThread;
+import com.amaze.filemanager.utils.OpenMode;
 import com.stericson.RootTools.RootTools;
 
 import java.io.File;
@@ -138,7 +139,7 @@ public class CopyService extends Service {
             files = p1[0].getParcelableArrayList("files");
             move=p1[0].getBoolean("move");
             copy=new Copy();
-            copy.execute(id, files, FILE2,move,p1[0].getInt("MODE"));
+            copy.execute(id, files, FILE2,move,OpenMode.getOpenMode(p1[0].getInt("MODE")));
 
             // TODO: Implement this method
             return id;
@@ -226,7 +227,8 @@ public class CopyService extends Service {
                 return 0;
             }
 
-            public void execute(final int id, final ArrayList<BaseFile> files, final String FILE2, final boolean move,int mode) {
+            public void execute(final int id, final ArrayList<BaseFile> files, final String FILE2,
+                                final boolean move,OpenMode mode) {
                 if (checkFolder((FILE2), c) == 1) {
                     final ProgressHandler progressHandler=new ProgressHandler(-1);
                     BufferHandler bufferHandler=new BufferHandler(c);
@@ -291,7 +293,7 @@ public class CopyService extends Service {
                         String path=files.get(i).getPath();
                         String name=files.get(i).getName();
                         copyRoot(path,name,FILE2,move);
-                        if(checkFiles(new HFile(files.get(i).getMode(),path),new HFile(HFile.ROOT_MODE,FILE2+"/"+name))){
+                        if(checkFiles(new HFile(files.get(i).getMode(),path),new HFile(OpenMode.DRIVE,FILE2+"/"+name))){
                             failedFOps.add(files.get(i));
                         }
                     }

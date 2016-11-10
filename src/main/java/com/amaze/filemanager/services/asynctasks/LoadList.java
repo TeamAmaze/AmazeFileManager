@@ -36,6 +36,7 @@ import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 
 import java.io.File;
@@ -57,8 +58,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     boolean back;
     Main ma;
     Context c;
-    int openmode = 0;//0 for normal 1 for smb 2 for custom 3 for drive
-    public LoadList(Context c, UtilitiesProviderInterface utilsProvider, boolean back, Main ma, int openmode) {
+    OpenMode openmode;
+    public LoadList(Context c, UtilitiesProviderInterface utilsProvider, boolean back, Main ma, OpenMode openmode) {
         this.utilsProvider = utilsProvider;
         this.back = back;
         this.ma = ma;
@@ -89,22 +90,22 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
            grid = ma.checkforpath(path);
            ma.folder_count = 0;
            ma.file_count = 0;
-           if (openmode == -1) {
-               HFile hFile = new HFile(HFile.UNKNOWN, path);
+           if (openmode == OpenMode.UNKNOWN) {
+               HFile hFile = new HFile(OpenMode.UNKNOWN, path);
                hFile.generateMode(ma.getActivity());
                if (hFile.isDirectory() && !hFile.isSmb()) {
-                   openmode = (0);
+                   openmode = OpenMode.FILE;
                } else if (hFile.isSmb()) {
-                   openmode = (1);
+                   openmode = OpenMode.SMB;
                    ma.smbPath = path;
                } else if (hFile.isCustomPath())
-                   openmode = (2);
+                   openmode = OpenMode.CUSTOM;
                else if (android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()) {
-                   openmode = (3);
+                   openmode = OpenMode.DRIVE;
                }
            }
-           if (openmode == 1) {
-               HFile hFile = new HFile(HFile.SMB_MODE, path);
+           if (openmode == OpenMode.SMB) {
+               HFile hFile = new HFile(OpenMode.SMB, path);
                try {
                    SmbFile[] smbFile = hFile.getSmbFile(5000).listFiles();
                    list = ma.addToSmb(smbFile, path);
@@ -119,7 +120,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                    publishProgress(e.getLocalizedMessage());
                    e.printStackTrace();
                }
-           } else if (openmode == 2) {
+           } else if (openmode == OpenMode.CUSTOM) {
 
                ArrayList<BaseFile> arrayList = null;
                switch (Integer.parseInt(path)) {
@@ -164,20 +165,20 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                    if (BaseActivity.rootMode) {
                        arrayList = RootHelper.getFilesList(path, BaseActivity.rootMode, ma.SHOW_HIDDEN, new RootHelper.GetModeCallBack() {
                            @Override
-                           public void getMode(int mode) {
+                           public void getMode(OpenMode mode) {
                                openmode = mode;
                            }
                        });
                    } else
                        arrayList = (RootHelper.getFilesList(path, ma.SHOW_HIDDEN));
-                   openmode = 0;
+                   openmode = OpenMode.FILE;
                    list = addTo(arrayList);
 
                } catch (Exception e) {
                    return null;
                }
            }
-           if (list != null && !(openmode == 2 && ((path).equals("5") || (path).equals("6"))))
+           if (list != null && !(openmode == OpenMode.CUSTOM && ((path).equals("5") || (path).equals("6"))))
                Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, BaseActivity.rootMode));
            return list;
 

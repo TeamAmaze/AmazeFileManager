@@ -62,7 +62,7 @@ import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.ui.ZipObj;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
-import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -558,8 +558,8 @@ public class ZipViewer extends Fragment {
 
     public void bbar() {
         if (current != null && current.length()!=0)
-            mainActivity.updatePath("/" + current,  false,0,folder,file);
-        else     mainActivity.updatePath("/", false,0,folder,file);
+            mainActivity.updatePath("/" + current,  false, OpenMode.FILE,folder,file);
+        else     mainActivity.updatePath("/", false,OpenMode.FILE,folder,file);
 
 
     }

@@ -43,14 +43,14 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.ui.Layoutelements;
-import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 
@@ -226,7 +226,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                 return true;
                             case R.id.unins:
                                 final BaseFile f1 = new BaseFile(rowItem.getDesc());
-                                f1.setMode(HFile.ROOT_MODE);
+                                f1.setMode(OpenMode.DRIVE);
                                 ApplicationInfo info1=null;
                                 for(PackageInfo info:c){
                                     if(info.applicationInfo.publicSourceDir.equals(rowItem.getDesc())) {
@@ -263,7 +263,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                                             String parent = f1.getParent();
                                                             if (!parent.equals("app") && !parent.equals("priv-app")){
                                                                 BaseFile baseFile=new BaseFile(f1.getParent());
-                                                                baseFile.setMode(HFile.ROOT_MODE);
+                                                                baseFile.setMode(OpenMode.DRIVE);
                                                                 files.add(baseFile);
                                                             }
                                                             else files.add(f1);
