@@ -783,7 +783,11 @@ public void openWith(final File f,final Context c) {
     public void openFile(final File f, final MainActivity m) {
         boolean defaultHandler = isSelfDefault(f, m);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
-        if (defaultHandler && f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".rar")|| f.getName().toLowerCase().endsWith(".tar")|| f.getName().toLowerCase().endsWith(".tar.gz")) {
+        if (defaultHandler && f.getName().toLowerCase().endsWith(".zip") ||
+                f.getName().toLowerCase().endsWith(".jar") ||
+                f.getName().toLowerCase().endsWith(".rar")||
+                f.getName().toLowerCase().endsWith(".tar") ||
+                f.getName().toLowerCase().endsWith(".tar.gz")) {
             showArchiveDialog(f, m);
         } else if(f.getName().toLowerCase().endsWith(".apk")) {
             showPackageDialog(f, m);
@@ -798,6 +802,7 @@ public void openWith(final File f,final Context c) {
             intent.setAction(Intent.ACTION_VIEW);
             intent.setDataAndType(uri, "audio/*");
 
+            // Behold! It's the  legendary easter egg!
             if (studio_count!=0) {
                 new CountDownTimer(studio_count, 1000) {
                     @Override

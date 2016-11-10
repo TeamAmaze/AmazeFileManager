@@ -17,7 +17,8 @@ public enum OpenMode {
      */
     CUSTOM,
 
-    ROOT;
+    ROOT,
+    OTG;
 
     /**
      * Get open mode based on the id assigned

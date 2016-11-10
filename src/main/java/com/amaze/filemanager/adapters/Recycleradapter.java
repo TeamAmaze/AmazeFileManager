@@ -3,7 +3,6 @@ package com.amaze.filemanager.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -339,7 +338,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
             if (holder.about != null) {
                 if(main.theme1==0)holder.about.setColorFilter(grey_color);
-                showPopup(holder.about,rowItem);
+                showPopup(holder.about,rowItem, p);
             }
             holder.genericIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -613,7 +612,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
             if (holder.about != null) {
                 if(main.theme1==0)holder.about.setColorFilter(grey_color);
-                showPopup(holder.about,rowItem);
+                showPopup(holder.about,rowItem, p);
             }
             if (main.SHOW_LAST_MODIFIED)
                 holder.date.setText(rowItem.getDate());
@@ -665,7 +664,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
         return TYPE_ITEM;
     }
-    void showPopup(View v,final Layoutelements rowItem){
+    void showPopup(View v, final Layoutelements rowItem, final int position){
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -709,14 +708,26 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 main.MAIN_ACTIVITY.updateDrawer();
                                 Toast.makeText(main.getActivity(), main.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                                 return true;
-
+                            case R.id.delete:
+                                ArrayList<Integer> positions = new ArrayList<Integer>();
+                                positions.add(position);
+                                utilsProvider.getFutils().deleteFiles(main.LIST_ELEMENTS, main, positions);
+                                return true;
+                            case R.id.open_with:
+                                utilsProvider.getFutils().openWith(new File(rowItem.getDesc()), main.getActivity());
+                                return true;
                         }
                         return false;
                     }
                 });
                 popupMenu.inflate(R.menu.item_extras);
                 String x = rowItem.getDesc().toLowerCase();
-                if(rowItem.isDirectory())popupMenu.getMenu().findItem(R.id.share).setVisible(false);
+                if(rowItem.isDirectory()) {
+                    popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
+                    popupMenu.getMenu().findItem(R.id.share).setVisible(false);
+                } else {
+                    popupMenu.getMenu().findItem(R.id.book).setVisible(false);
+                }
                 if (x.endsWith(".zip") || x.endsWith(".jar") || x.endsWith(".apk") || x.endsWith(".rar") || x.endsWith(".tar") || x.endsWith(".tar.gz"))
                     popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
                 popupMenu.show();
