@@ -54,13 +54,13 @@ public class HFile {
             if(Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT)
             {   mode=OpenMode.FILE;
                 if(rootmode){
-                    if(!getFile().canRead())mode=OpenMode.DRIVE;
+                    if(!getFile().canRead())mode=OpenMode.ROOT;
                 }
                 return;
             }
             if(FileUtil.isOnExtSdCard(getFile(),context))mode=OpenMode.FILE;
             else if(rootmode){
-                if(!getFile().canRead())mode=OpenMode.DRIVE;
+                if(!getFile().canRead())mode=OpenMode.ROOT;
             }
             if(mode==OpenMode.UNKNOWN)mode=OpenMode.FILE;
         }
@@ -82,7 +82,7 @@ public class HFile {
         return mode==OpenMode.FILE;
     }
     public boolean isRoot(){
-        return mode==OpenMode.DRIVE;
+        return mode==OpenMode.ROOT;
     }
     public boolean isSmb(){
         return mode==OpenMode.SMB;
@@ -106,7 +106,7 @@ public class HFile {
             case FILE:
                 new File(path).lastModified();
                 break;
-            case DRIVE:
+            case ROOT:
                 BaseFile baseFile=generateBaseFileFromParent();
                 if(baseFile!=null)
                 return baseFile.getDate();
@@ -127,7 +127,7 @@ public class HFile {
             case FILE:
                 s = new File(path).length();
                 return s;
-            case DRIVE:
+            case ROOT:
                 BaseFile baseFile=generateBaseFileFromParent();
                 if(baseFile!=null)
                 return baseFile.getSize();
@@ -149,7 +149,7 @@ public class HFile {
                 break;
             case FILE:
                 return new File(path).getName();
-            case DRIVE:
+            case ROOT:
                 return new File(path).getName();
         }
         return name;
@@ -380,7 +380,7 @@ public class HFile {
         } else {
             boolean b= FileUtil.deleteFile(new File(path), context);
             if(!b && rootmode){
-                setMode(OpenMode.DRIVE);
+                setMode(OpenMode.ROOT);
                 RootTools.remount(getParent(),"rw");
                 String s=RootHelper.runAndWait("rm -r \""+getPath()+"\"",true);
                 RootTools.remount(getParent(),"ro");

@@ -508,7 +508,7 @@ public class MainActivityHelper {
         Bundle args = new Bundle();
         args.putString(SearchAsyncHelper.KEY_INPUT, input);
         args.putString(SearchAsyncHelper.KEY_PATH, path);
-        args.putInt(SearchAsyncHelper.KEY_OPEN_MODE, openMode.getId());
+        args.putInt(SearchAsyncHelper.KEY_OPEN_MODE, openMode.ordinal());
         args.putBoolean(SearchAsyncHelper.KEY_ROOT_MODE, rootMode);
         args.putBoolean(SearchAsyncHelper.KEY_REGEX, regex);
         args.putBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, matches);

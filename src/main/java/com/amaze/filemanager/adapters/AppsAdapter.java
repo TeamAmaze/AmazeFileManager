@@ -226,7 +226,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                 return true;
                             case R.id.unins:
                                 final BaseFile f1 = new BaseFile(rowItem.getDesc());
-                                f1.setMode(OpenMode.DRIVE);
+                                f1.setMode(OpenMode.ROOT);
                                 ApplicationInfo info1=null;
                                 for(PackageInfo info:c){
                                     if(info.applicationInfo.publicSourceDir.equals(rowItem.getDesc())) {
@@ -263,7 +263,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                                             String parent = f1.getParent();
                                                             if (!parent.equals("app") && !parent.equals("priv-app")){
                                                                 BaseFile baseFile=new BaseFile(f1.getParent());
-                                                                baseFile.setMode(OpenMode.DRIVE);
+                                                                baseFile.setMode(OpenMode.ROOT);
                                                                 files.add(baseFile);
                                                             }
                                                             else files.add(f1);

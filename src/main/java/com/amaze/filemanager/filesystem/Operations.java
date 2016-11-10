@@ -66,7 +66,7 @@ public class Operations {
                         if (mode == 1 || mode == 0)
                             FileUtil.mkdir(file.getFile(), context);
                         if (!file.exists() && rootMode) {
-                            file.setMode(OpenMode.DRIVE);
+                            file.setMode(OpenMode.ROOT);
                             if (file.exists()) errorCallBack.exists(file);
                             boolean remount = false;
                             try {
@@ -127,7 +127,7 @@ public class Operations {
                             } catch (IOException e) {
                             }
                         if (!file.exists() && rootMode) {
-                            file.setMode(OpenMode.DRIVE);
+                            file.setMode(OpenMode.ROOT);
                             if (file.exists()) errorCallBack.exists(file);
                             boolean remount = false;
                             try {
@@ -201,22 +201,22 @@ public class Operations {
                                         } catch (Exception e) {
                                             Logger.log(e,f.getPath()+"\n"+f1.getPath(),context);
                                         }
-                                       f.setMode(OpenMode.DRIVE);
-                                      f1.setMode(OpenMode.DRIVE);
+                                       f.setMode(OpenMode.ROOT);
+                                      f1.setMode(OpenMode.ROOT);
                                       a=  !file.exists() && file1.exists();
                                     }
                                     errorCallBack.done(f1,a);
                                     return null;
                                 }
                                 break;
-                            case DRIVE:
+                            case ROOT:
                                 try {
                                     renameRoot(file, file1.getName());
                                 } catch (Exception e) {
                                     Logger.log(e,f.getPath()+"\n"+f1.getPath(),context);
                                 }
-                                f.setMode(OpenMode.DRIVE);
-                                f1.setMode(OpenMode.DRIVE);
+                                f.setMode(OpenMode.ROOT);
+                                f1.setMode(OpenMode.ROOT);
                                 boolean a=  !file.exists() && file1.exists();
                                 errorCallBack.done(f1,a);
                                 break;

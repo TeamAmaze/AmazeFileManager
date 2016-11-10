@@ -118,7 +118,7 @@ public class BaseFile extends HFile implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(mode.getId());
+        dest.writeInt(mode.ordinal());
         dest.writeString(path);
         dest.writeString(permisson);
         dest.writeString(name);

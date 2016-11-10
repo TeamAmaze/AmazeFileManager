@@ -293,7 +293,7 @@ public class CopyService extends Service {
                         String path=files.get(i).getPath();
                         String name=files.get(i).getName();
                         copyRoot(path,name,FILE2,move);
-                        if(checkFiles(new HFile(files.get(i).getMode(),path),new HFile(OpenMode.DRIVE,FILE2+"/"+name))){
+                        if(checkFiles(new HFile(files.get(i).getMode(),path),new HFile(OpenMode.ROOT,FILE2+"/"+name))){
                             failedFOps.add(files.get(i));
                         }
                     }

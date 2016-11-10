@@ -288,7 +288,7 @@ public class RootHelper {
                         if (!file.contains("Permission denied"))
                             try {
                                 BaseFile array = Futils.parseName(file);
-                                array.setMode(OpenMode.DRIVE);
+                                array.setMode(OpenMode.ROOT);
                                 if (array != null) {
                                     array.setName(array.getPath());
                                     array.setPath( path + "/" + array.getPath());
@@ -303,7 +303,7 @@ public class RootHelper {
                             }
 
                     }
-                    mode=OpenMode.DRIVE;
+                    mode=OpenMode.ROOT;
                 }
             } else if (Futils.canListFiles(new File(path))) {
                 a = getFilesList(path, showHidden);

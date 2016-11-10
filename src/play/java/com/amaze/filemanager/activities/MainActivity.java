@@ -965,7 +965,7 @@ public class MainActivity extends BaseActivity implements
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
                 final Main main = ma;
-                if (main.openMode != OpenMode.FILE && main.openMode != OpenMode.DRIVE) {
+                if (main.openMode != OpenMode.FILE && main.openMode != OpenMode.ROOT) {
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }

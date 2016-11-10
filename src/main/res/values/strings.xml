@@ -462,6 +462,6 @@
             </body>\n
             </html>
     </string>
-    <string name="share_limit">Can't share more than 100 files</string>
+    <string name="share_limit">Can\'t share more than 100 files</string>
 </resources>
 

@@ -465,7 +465,7 @@ public class Main extends android.support.v4.app.Fragment {
             outState.putParcelableArrayList("list", LIST_ELEMENTS);
             outState.putString("CURRENT_PATH", CURRENT_PATH);
             outState.putBoolean("selection", selection);
-            outState.putInt("openMode", openMode.getId());
+            outState.putInt("openMode", openMode.ordinal());
             outState.putInt("folder_count", folder_count);
             outState.putInt("file_count", file_count);
             if (selection) {
@@ -1001,7 +1001,7 @@ public class Main extends android.support.v4.app.Fragment {
         try {
             if (bitmap != null) {
                 if (GO_BACK_ITEM)
-                    if (!path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.DRIVE)) {
+                    if (!path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)) {
                         if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback)) {
 
                             Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.abc_ic_ab_back_mtrl_am_alpha);

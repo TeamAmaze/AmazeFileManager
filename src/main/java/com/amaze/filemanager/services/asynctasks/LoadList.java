@@ -101,7 +101,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                } else if (hFile.isCustomPath())
                    openmode = OpenMode.CUSTOM;
                else if (android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()) {
-                   openmode = OpenMode.DRIVE;
+                   openmode = OpenMode.ROOT;
                }
            }
            if (openmode == OpenMode.SMB) {

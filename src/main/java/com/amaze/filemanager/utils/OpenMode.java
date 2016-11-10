@@ -8,35 +8,25 @@ package com.amaze.filemanager.utils;
 
 public enum OpenMode {
 
-    UNKNOWN(-1),
-    FILE(0),
-    SMB(1),
+    UNKNOWN,
+    FILE,
+    SMB,
 
     /**
      * Custom file types like apk/images/downloads (which don't have a defined path)
      */
-    CUSTOM(2),
+    CUSTOM,
 
-    DRIVE(3);
-
-    int id;
-
-    OpenMode(int _id) {
-        this.id = _id;
-    }
-
-    public int getId() {
-        return this.id;
-    }
+    ROOT;
 
     /**
      * Get open mode based on the id assigned
-     * @param _id the {@link #id} of OpenMode
+     * @param ordinal the position of enum
      * @return
      */
-    public static OpenMode getOpenMode(int _id) {
+    public static OpenMode getOpenMode(int ordinal) {
         for (OpenMode openMode : OpenMode.values()) {
-            if (openMode.getId()==_id) return openMode;
+            if (openMode.ordinal()==ordinal) return openMode;
         }
         return null;
     }
