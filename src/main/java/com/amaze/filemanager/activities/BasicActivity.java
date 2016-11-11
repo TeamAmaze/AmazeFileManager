@@ -8,6 +8,7 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.theme.AppTheme;
+import com.amaze.filemanager.utils.theme.PreferencesAppThemeManager;
 
 /**
  * Created by rpiotaix on 17/10/16.
@@ -16,7 +17,7 @@ public class BasicActivity extends AppCompatActivity implements UtilitiesProvide
     private boolean initialized = false;
     protected ColorPreference colorPreference;
     private Futils utils;
-    private AppTheme appTheme;
+    private PreferencesAppThemeManager themeManager;
 
     private void initialize() {
         SharedPreferences sharedPrefeences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -24,7 +25,7 @@ public class BasicActivity extends AppCompatActivity implements UtilitiesProvide
         utils = new Futils();
 
         colorPreference = ColorPreference.loadFromPreferences(this, sharedPrefeences);
-        appTheme = AppTheme.fromPreferences(sharedPrefeences);
+        themeManager = new PreferencesAppThemeManager(sharedPrefeences);
     }
 
     @Override
@@ -47,6 +48,6 @@ public class BasicActivity extends AppCompatActivity implements UtilitiesProvide
         if (!initialized)
             initialize();
 
-        return appTheme;
+        return themeManager.getAppTheme();
     }
 }

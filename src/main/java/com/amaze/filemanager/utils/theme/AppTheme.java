@@ -6,41 +6,31 @@ import com.afollestad.materialdialogs.Theme;
 
 import java.util.Calendar;
 
-/**
- * Created by rpiotaix on 01/11/16.
- */
-
 public enum AppTheme {
     LIGHT(0, Theme.LIGHT),
     DARK(1, Theme.DARK);
 
+    public static final int LIGHT_INDEX = 0;
+    public static final int DARK_INDEX = 1;
+    public static final int TIME_INDEX = 2;
+
     private int id;
     private Theme materialDialogTheme;
 
-    public static AppTheme fromPreferences(SharedPreferences preferences) {
-        try {
-            String themeId = preferences.getString("theme", "0");
-            switch (themeId) {
-                case "0":
-                case "1":
-                case "2":
-                    return fromIndex(Integer.parseInt(themeId));
-                default:
-                    return LIGHT;
-            }
-        } catch (ClassCastException ex) {
-            return LIGHT;
-        }
-    }
-
+    /**
+     * Returns the correct AppTheme. If index == TIME_INDEX, current time is used to select the theme.
+     *
+     * @param index The theme index
+     * @return The AppTheme for the given index
+     */
     public static AppTheme fromIndex(int index) {
         switch (index) {
             default:
-            case 0:
+            case LIGHT_INDEX:
                 return LIGHT;
-            case 1:
+            case DARK_INDEX:
                 return DARK;
-            case 2:
+            case TIME_INDEX:
                 Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 if (hour <= 6 || hour >= 18) {
@@ -56,6 +46,10 @@ public enum AppTheme {
         this.materialDialogTheme = materialDialogTheme;
     }
 
+    /**
+     *
+     * @return The Theme enum to provide to {@link com.afollestad.materialdialogs.MaterialDialog.Builder}
+     */
     public Theme getMaterialDialogTheme() {
         return materialDialogTheme;
     }
