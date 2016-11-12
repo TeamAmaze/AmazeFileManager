@@ -43,6 +43,7 @@ public class ZipExtractTask extends AsyncTask<Void, Void, Void> {
         this.entry=zipEntry;
     }
     public ZipExtractTask(UtilitiesProviderInterface utilsProvider, Archive rar, String outputDir, Activity zipViewer, String fileName,boolean zip,FileHeader fileHeader) {
+        this.utilsProvider = utilsProvider;
         this.zip=zip;
         this.outputDir = outputDir;
         this.rar = rar;
@@ -69,7 +70,7 @@ public class ZipExtractTask extends AsyncTask<Void, Void, Void> {
         String cmd = "chmod 777 " + output.getPath();
         Log.d("change permissions", cmd);
         RootHelper.runAndWait(cmd, false);
-        new Futils().openFile(output, (MainActivity) zipViewer);
+        utilsProvider.getFutils().openFile(output, (MainActivity) zipViewer);
 }
     
 private void unzipEntry1(ZipFile zipfile, ZipEntry entry, String outputDir)

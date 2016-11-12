@@ -64,7 +64,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         unknown = c.getResources().getDrawable(R.drawable.ic_doc_generic_am);
         this.zipViewer = zipViewer;
     }
-    public RarAdapter(Context c, ArrayList<ZipObj> enter, ZipViewer zipViewer,boolean l) {
+    public RarAdapter(Context c, UtilitiesProviderInterface utilsProvider, ArrayList<ZipObj> enter, ZipViewer zipViewer,boolean l) {
+        this.utilsProvider = utilsProvider;
         this.enter1 = enter;
         for (int i = 0; i < enter.size(); i++) {
             myChecked.put(i, false);

@@ -566,7 +566,7 @@ public class ZipViewer extends Fragment {
     int file=0,folder=0;
     public void createviews(ArrayList<ZipObj> zipEntries, String dir) {
         if(rarAdapter==null) {
-            zipViewer.rarAdapter = new RarAdapter(zipViewer.getActivity(), zipEntries, zipViewer,true);
+            zipViewer.rarAdapter = new RarAdapter(zipViewer.getActivity(), utilsProvider, zipEntries, zipViewer,true);
             zipViewer.listView.setAdapter(zipViewer.rarAdapter);
         }
         else rarAdapter.generate(zipEntries,true);
