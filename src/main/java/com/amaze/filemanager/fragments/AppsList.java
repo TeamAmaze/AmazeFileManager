@@ -27,12 +27,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
-import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -48,6 +49,7 @@ import com.amaze.filemanager.ui.icons.IconHolder;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -55,7 +57,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class AppsList extends ListFragment {
-    Futils utils = new Futils();
+    UtilitiesProviderInterface utilsProvider;
     AppsList app = this;
     AppsAdapter adapter;
 
@@ -70,6 +72,8 @@ public class AppsList extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        utilsProvider = (UtilitiesProviderInterface) getActivity();
+
         setHasOptionsMenu(false);
         ic=new IconHolder(getActivity(),true,true);
         IntentFilter intentFilter = new IntentFilter();
@@ -84,7 +88,7 @@ public class AppsList extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
         mainActivity=(MainActivity)getActivity();
-        mainActivity.setActionBarTitle(utils.getString(getActivity(), R.string.apps));
+        mainActivity.setActionBarTitle(getResources().getString(R.string.apps));
         mainActivity.floatingActionButton.hideMenuButton(true);
         mainActivity.buttonBarFrame.setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
@@ -100,7 +104,7 @@ public class AppsList extends ListFragment {
         else{
             c=savedInstanceState.getParcelableArrayList("c");
             a=savedInstanceState.getParcelableArrayList("list");
-            adapter = new AppsAdapter(getActivity(), R.layout.rowlayout, a, app, c);
+            adapter = new AppsAdapter(getActivity(), utilsProvider, R.layout.rowlayout, a, app, c);
             setListAdapter(adapter);
             vl.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
             vl.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
@@ -191,7 +195,12 @@ public class AppsList extends ListFragment {
                 c = new ArrayList<>();
                 for (PackageInfo object : all_apps) {
                     File f=new File(object.applicationInfo.publicSourceDir);
-                    a.add(new Layoutelements(ContextCompat.getDrawable(getActivity(),R.drawable.ic_doc_apk_grid), object.applicationInfo.loadLabel(p).toString(), object.applicationInfo.publicSourceDir, object.packageName, object.versionName, utils.readableFileSize(f.length()),f.length(), false, f.lastModified()+"", false));
+
+                    a.add(new Layoutelements(new BitmapDrawable(getActivity().getResources(),
+                            BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.ic_doc_apk_grid)),
+                            object.applicationInfo.loadLabel(p).toString(), object.applicationInfo.publicSourceDir,
+                            object.packageName, object.versionName, Futils.readableFileSize(f.length()),f.length(), false,
+                            f.lastModified()+"", false));
                     c.add(object);
                 }
                 Collections.sort(a, new FileListSorter(0, sortby, asc, false));
@@ -228,7 +237,7 @@ public class AppsList extends ListFragment {
                 if (bitmap != null) {
 
 
-                    adapter = new AppsAdapter(getActivity(), R.layout.rowlayout, bitmap, app, c);
+                    adapter = new AppsAdapter(getActivity(), utilsProvider, R.layout.rowlayout, bitmap, app, c);
                     setListAdapter(adapter);
                     if(save && getListView()!=null)
                         getListView().setSelectionFromTop(index,top);

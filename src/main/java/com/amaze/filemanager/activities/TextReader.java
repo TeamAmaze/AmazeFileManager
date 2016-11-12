@@ -24,26 +24,20 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.ActionMode;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -64,9 +58,10 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.services.asynctasks.SearchTextTask;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MapEntry;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
@@ -84,11 +79,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TextReader extends BaseActivity
-        implements TextWatcher, View.OnClickListener {
-
+public class TextReader extends BaseActivity implements TextWatcher, View.OnClickListener {
     String path;
-    Futils utils = new Futils();
     Context c = this;
     public EditText mInput, searchEditText;
     private java.io.File mFile;
@@ -141,12 +133,12 @@ public class TextReader extends BaseActivity
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //findViewById(R.id.lin).setBackgroundColor(Color.parseColor(skin));
-        toolbar.setBackgroundColor(Color.parseColor(MainActivity.currentTab==1?skinTwo:skin));
-        searchViewLayout.setBackgroundColor(Color.parseColor(MainActivity.currentTab==1?skinTwo:skin));
+        toolbar.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
+        searchViewLayout.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
-                    Color.parseColor(MainActivity.currentTab==1?skinTwo:skin));
+                    getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
             ((Activity) this).setTaskDescription(taskDescription);
         }
 
@@ -163,15 +155,14 @@ public class TextReader extends BaseActivity
         //downButton.setEnabled(false);
         closeButton.setOnClickListener(this);
 
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor(MainActivity.currentTab==1?skinTwo:skin)));
+        getSupportActionBar().setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         int sdk = Build.VERSION.SDK_INT;
 
         if (sdk == 20 || sdk == 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintColor(Color.parseColor(MainActivity.currentTab==1?skinTwo:skin));
+            tintManager.setStatusBarTintColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.texteditor).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
@@ -180,10 +171,9 @@ public class TextReader extends BaseActivity
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor((PreferenceUtils.getStatusColor(MainActivity.currentTab==1?skinTwo:skin)));
+            window.setStatusBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
             if (colourednavigation)
-                window.setNavigationBarColor((PreferenceUtils
-                        .getStatusColor(MainActivity.currentTab==1?skinTwo:skin)));
+                window.setNavigationBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
 
         }
         mInput = (EditText) findViewById(R.id.fname);
@@ -463,14 +453,14 @@ public class TextReader extends BaseActivity
                 break;
             case R.id.details:
                 if(mFile.canRead()){
-                    HFile hFile=new HFile(HFile.LOCAL_MODE,mFile.getPath());
+                    HFile hFile=new HFile(OpenMode.FILE,mFile.getPath());
                     hFile.generateMode(this);
-                    utils.showProps(hFile, this, theme1);
+                    getFutils().showProps(hFile, this, theme1);
                 }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
                 break;
             case R.id.openwith:
                 if(mFile.canRead()){
-                    utils.openunknown(mFile, c, false);
+                    getFutils().openunknown(mFile, c, false);
                 }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
                 break;
             case R.id.find:

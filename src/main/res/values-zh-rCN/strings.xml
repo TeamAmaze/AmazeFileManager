@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+    Copyright (C) 2014-2015 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
     This file is part of Amaze File Manager.
 
@@ -31,9 +31,10 @@
     <string name="storage">存储</string>
     <string name="gallery">图库</string>
     <string name="apps">应用管理</string>
+    <string name="ftp">FTP 服务器</string>
     <string name="bookmanag">书签管理</string>
     <string name="setting">应用设置</string>
-    <string name="select">选择项目</string>
+    <string name="select">请选择</string>
     <string name="pressagain">再按一次「返回键」退出</string>
     <string name="open">打开</string>
     <string name="backup">备份</string>
@@ -48,6 +49,7 @@
     <string name="create">新建</string>
     <string name="success">成功</string>
     <string name="filenotexists">文件不存在</string>
+    <string name="file_empty">这个文件夹是空的</string>
     <string name="error">错误</string>
     <string name="cantlistfiles">非 Root 权限无法列出文件</string>
     <string name="searchresults">搜索结果</string>
@@ -61,13 +63,12 @@
     <string name="fileexist">同名文件已存在</string>
     <string name="filecreated">文件已创建成功</string>
     <string name="searchpath">搜索路径</string>
-    <string name="search">搜索</string>
     <string name="enterfile">请输入文件名</string>
     <string name="name">名称：</string>
     <string name="date">时间戳：</string>
     <string name="location">路径：</string>
     <string name="size">大小：</string>
-    <string name="totalitems">项目数：</string>
+    <string name="totalitems">文件数：</string>
     <string name="enterzipname">请输入 ZIP 文件名</string>
     <string name="noappfound">找不到可以打开该文件的应用</string>
     <string name="copying">正在复制</string>
@@ -85,7 +86,6 @@
     <string name="guide2">触摸蓝条以显示或隐藏地址栏</string>
     <string name="guide3">长按条目以使用更多选项</string>
     <string name="guide4">例如复制、移动、查看属性等等</string>
-    <string name="guide5">按返回键退出应用</string>
     <string name="guide6">此外也可以使用左侧栏进行浏览</string>
     <string name="maintab">无法移除主标签页</string>
     <string name="openparent">打开父目录</string>
@@ -116,15 +116,14 @@
     <string name="history">历史记录</string>
     <string name="refresh">刷新</string>
     <string name="copy">复制</string>
-    <string name="rootmode">Root 模式</string>
+    <string name="rootmode">Root Explorer</string>
     <string name="rootmodesummary">仅供已获取 Root 权限的设备使用</string>
     <string name="mountsystemsummary">如果您想修改系统文件请启用此选项</string>
     <string name="mountsystem">挂载 System 分区为可读写</string>
-    <string name="rootfailure">未获取 Root 访问权限</string>
-    <string name="cut">剪切</string>
+    <string name="rootfailure">未获取 Root 权限</string>
     <string name="selectall">全选</string>
     <string name="delete">删除</string>
-    <string name="setashome">设为为首页目录</string>
+    <string name="setashome">设为首页目录</string>
     <string name="sethome">设置首页目录</string>
     <string name="foldercolor">文件夹颜色</string>
     <string name="imagegallery">图库</string>
@@ -140,8 +139,8 @@
     <string name="card">卡片式</string>
     <!-- Theme -->
     <string name="light">明亮</string>
-    <string name="dark">黑暗</string>
-    <string name="daytime">随昼夜变化</string>
+    <string name="dark">夜间</string>
+    <string name="daytime">正常</string>
     <!--Skin-->
     <string name="red">红色</string>
     <string name="pink">粉色</string>
@@ -154,20 +153,20 @@
     <string name="teal">蓝绿</string>
     <string name="green">绿色</string>
     <string name="light_green">草绿</string>
-    <string name="amber">琥珀</string>
+    <string name="amber">琥珀色</string>
     <string name="orange">橙色</string>
     <string name="deep_orange">暗橙</string>
     <string name="brown">棕色</string>
     <string name="black">黑色</string>
     <string name="blue_grey">蓝灰</string>
-    <string name="supersu">超级授权</string>
+    <string name="supersu">管理员授权</string>
     <!--DirectorySortMode-->
     <string name="foldersOnTop">文件夹显示在顶部</string>
     <string name="filesOnTop">文件夹显示在底部</string>
     <string name="noneOnTop">文件与文件夹混合显示</string>
     <!--SortBy-->
     <string name="sortName">名称</string>
-    <string name="lastModified">日期</string>
+    <string name="lastModified">修改时间</string>
     <string name="sortSize">大小</string>
     <string name="sortNameDesc">名称（降序）</string>
     <string name="lastModifiedDesc">日期（降序）</string>
@@ -208,20 +207,20 @@
     <string name="setlistview">设置列表模式</string>
     <string name="setgridview">设置网格模式</string>
     <string name="permission">权限</string>
-    <string name="hide">排除</string>
+    <string name="hide">隐藏</string>
     <string name="exit">退出应用</string>
     <string name="enternewname">请输入新的文件名</string>
     <string name="doforall">为所有项目执行操作</string>
-    <string name="gridcolumnno">网格模式列数</string>
+    <string name="gridcolumnno">网格列数</string>
     <string name="randomDialog">随机</string>
     <string name="setRandom">更改将会在您重启应用后生效。</string>
     <string name="authors">开发人员</string>
     <string name="changelog">更新日志</string>
     <string name="fullChangelog">完整更新日志</string>
     <string name="ok">确定</string>
-    <string name="chooseUI">选择项目显示模式</string>
+    <string name="chooseUI">选择显示模式</string>
     <string name="ui">界面</string>
-    <string name="general">常规</string>
+    <string name="general">通用</string>
     <string name="thumbSummary">显示应用和图片的缩略图</string>
     <string name="thumb">显示缩略图</string>
     <string name="hidden">显示隐藏文件</string>
@@ -229,7 +228,7 @@
     <string name="lastModifiedPref">显示修改时间</string>
     <string name="sizePrefSummary">显示文件大小及文件夹内文件数量</string>
     <string name="sizePref">显示大小</string>
-    <string name="miscellaneous">杂项</string>
+    <string name="miscellaneous">其他项</string>
     <string name="rootPrefSummary">显示文件及文件夹的权限</string>
     <string name="rootPref">显示权限</string>
     <string name="aboutFileManager">关于</string>
@@ -254,7 +253,6 @@
     <string name="archive">压缩包</string>
     <string name="archtext">这是一个压缩包文件，您要执行哪一项操作？</string>
     <string name="pitext">这是一个应用安装包，您要执行哪一项操作？</string>
-    <string name="xda_title">XDA 链接</string>
     <string name="xda_summary">获取应用的问答及帮助</string>
     <string name="invalid_dir">无效的目录</string>
     <string name="circularimages">对图像和视频使用圆形图标</string>
@@ -275,7 +273,10 @@
     <string name="ukrainian_translation_title">乌克兰语</string>
     <string name="portuguese_translation_title">葡萄牙语</string>
     <string name="polish_translation_title">波兰语</string>
+    <string name="korean_translation_title">韩语</string>
     <string name="dutch_translation_title">荷兰语</string>
+    <string name="romanian_translation_title">罗马尼亚</string>
+	<string name="vietnamese_translation_title">越南语</string>
     <string name="zip_viewer">ZIP 压缩包查看器</string>
     <string name="unin_system_apk">这是一个系统应用，删除它可能导致系统不稳定。\n是否继续？</string>
     <string name="warning">警告</string>
@@ -293,7 +294,6 @@
     <string name="image">图像</string>
     <string name="contributors">捐赠人员</string>
     <string name="savepaths">记住路径</string>
-    <string name="savepathsummary">当您开启 Amaze 文件管理器时，每个标签将会显示您上次访问的目录</string>
     <string name="select_intent">选择</string>
     <string name="md5copied">MD5 码已复制到剪切板</string>
     <string name="generating">正在生成…</string>
@@ -301,5 +301,89 @@
     <string name="database">数据库</string>
     <string name="colourednavigation">导航栏变色</string>
     <string name="colourednavigationsum">设置导航栏是否跟随皮肤颜色变色</string>
-</resources>
+
+    <string name="gplus_pic_title">用G+账号登录</string>
+    <string name="gplus_pic_summary">在抽屉中显示 G+ 用户头像</string>
+    <string name="icon_credits">图像由 &lt;a href=\"http://cookicons.co/\">CookIcons&lt;/a>提供</string>
+
+    <string name="color_title">颜色</string>
+    <string name="primary_color_title">主色调(左侧栏)</string>
+    <string name="accent_color_title">反差色</string>
+    <string name="icon_color_title">图标 颜色</string>
+    <string name="icon_color_summary">给图标设置颜色</string>
+    <string name="hide_mode_title">隐藏模式</string>
+    <string name="none">没有</string>
+    <string name="hide_toolbar">隐藏工具栏</string>
+    <string name="choose_color">选择颜色</string>
+    <string name="hide_mode_toolbar">在滚动的时候隐藏工具栏</string>
+    <string name="no_cover_photo">不覆盖照片</string>
+    <string name="files">文件</string>
+    <string name="directories">方向</string>
+    <string name="showDividers">显示分割线</string>
+    <string name="needsaccess">需要写入权限</string>
+    <string name="needsaccesssummary1">\\t 给当前操作授予写入权限</string>
+    <string name="smb_con">文件共享 连接</string>
+    <string name="smb_server">服务器IP地址</string>
+    <string name="username">用户昵称</string>
+    <string name="password">密码</string>
+    <string name="anonymous">匿名</string>
+    <string name="bluetooth">蓝牙</string>
+    <string name="extstorage">内置SD卡</string>
+    <string name="folders">文件夹</string>
+    <string name="videos">视频</string>
+    <string name="apks">Android应用</string>
+    <string name="documents">文档</string>
+    <string name="images">图片</string>
+    <string name="clear">清空</string>
+    <string name="md5">md5:</string>
+    <string name="md5_2">复制MD5码</string>
+    <string name="total">所有:</string>
+    <string name="calculating">计算中...</string>
+    <string name="sort">排序</string>
+    <string name="ascending">升序排列</string>
+    <string name="descending">降序排列</string>
+    <string name="defualt">默认</string>
+    <string name="wanthelp"><u>需要帮助?</u></string>
+    <string name="quick">快速登录</string>
+    <string name="recent">最近使用过的文件</string>
+    <string name="edit">编辑</string>
+    <string name="find">在本页中查找</string>
+    <string name="grant">授予</string>
+    <string name="grantper">授予权限</string>
+    <string name="grantfailed">权限未被授予</string>
+    <string name="granttext">本应用需要用户授权“读写内置SD卡的权限”,取消对话框将退出应用</string>
+    <string name="grantgplus">该特性需要此权限，取消的话将排除该特性</string>
+    <string name="operationunsuccesful">操作失败</string>
+    <string name="creatingfile">正在创建文件</string>
+    <string name="creatingfolder">正在创建文件夹...</string>
+    <string name="renaming">重命名</string>
+    <string name="cantbeempty">%s 不能为空</string>
+    <string name="ip">地址</string>
+    <string name="connectionname">连接时的名字</string>
+    <string name="nodevicefound">未发现设备</string>
+    <string name="path">路径</string>
+    <string name="renamebookmark">修改书签</string>
+    <string name="cut">剪切</string>
+    <string name="empty"></string>
+    <string name="search">搜索</string>
+    <string name="invalid_name">命名非法</string>
+    <string name="search_hint">请输入要搜索的内容...</string>
+    <string name="advanced_search">高级搜索</string>
+    <string name="regular_expression">正则表达式</string>
+    <string name="regular_expression_summary">使用基于bash的正则表达式进行搜索</string>
+    <string name="match_content">匹配到的内容</string>
+    <string name="start_ftp">开始</string>
+    <string name="stop_ftp">停止</string>
+    <string name="ftp_status_running">运行中...</string>
+    <string name="ftp_status_not_running">未运行</string>
+    <string name="ftp_no_wifi">请确定你已经连接上可用的无线wifi</string>
+    <string name="domain">域名</string>
+    <string name="invalid">非法 %s</string>
+    <string name="ftp_notif_starting">FTP服务器已启动</string>
+    <string name="ftp_notif_title">Amaze FTP服务器已启动</string>
+    <string name="ftp_notif_text">位于 %s</string>
+    <string name="ftp_notif_stop_server">停止</string>
+    <string name="primary_two_title">主色调(右侧面板)</string>
+    <string name="primary_two_summary">设置右侧面板大部分控件的颜色</string>
+    </resources>
 

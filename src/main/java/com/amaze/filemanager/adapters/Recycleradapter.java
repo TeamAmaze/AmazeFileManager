@@ -3,7 +3,6 @@ package com.amaze.filemanager.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.Main;
@@ -30,6 +30,7 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.io.File;
@@ -40,28 +41,31 @@ import java.util.ArrayList;
  */
 public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder>
         implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
+    private UtilitiesProviderInterface utilsProvider;
+
     Main main;
     ArrayList<Layoutelements> items;
     Context context;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     private SparseBooleanArray myanim = new SparseBooleanArray();
-    ColorMatrixColorFilter colorMatrixColorFilter;
+//    ColorMatrixColorFilter colorMatrixColorFilter;
     LayoutInflater mInflater;
     int filetype=-1;
     int column,rowHeight;
     boolean topFab;
     int grey_color;
-    int c1,c2,c3,c4,c5,c6,c7,c8,c9,anim;
+    private int c1,c2,c3,c4,c5,c6,c7,c8,c9,anim;
 
-    public Recycleradapter(Main m, ArrayList<Layoutelements> items, Context context){
+    public Recycleradapter(Main m, UtilitiesProviderInterface utilsProvider, ArrayList<Layoutelements> items, Context context){
         this.main=m;
+        this.utilsProvider = utilsProvider;
         this.items=items;
         this.context=context;
         for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, false);
             myanim.put(i,false);
         }
-        colorMatrixColorFilter=main.colorMatrixColorFilter;
+//        colorMatrixColorFilter=main.colorMatrixColorFilter;
         mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         c1=Color.parseColor("#757575");
@@ -116,19 +120,20 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                 // TODO: we don't have the check icon object probably because of config change
             }
+            if (main.mActionMode==null||main.selection==false) {
+                // start actionmode if not already started
+                // null condition if there is config change
+                main.selection=true;
+                main.mActionMode = main.MAIN_ACTIVITY.startSupportActionMode(main.mActionModeCallback);
+            }
         }
 
         notifyDataSetChanged();
         //notifyItemChanged(position);
-        if (main.selection == false || main.mActionMode == null) {
-            main.selection = true;
-            /*main.mActionMode = main.getActivity().startActionMode(
-                    main.mActionModeCallback);*/
-            main.mActionMode = main.MAIN_ACTIVITY.startSupportActionMode(main.mActionModeCallback);
-
-        }
-        if(main.mActionMode!=null && main.selection)
+        if(main.mActionMode!=null && main.selection) {
+            // we have the actionmode visible, invalidate it's views
             main.mActionMode.invalidate();
+        }
         if (getCheckedItemPositions().size() == 0) {
             main.selection = false;
             main.mActionMode.finish();
@@ -326,13 +331,14 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) filetype = 0;
             else if (Icons.isApk((rowItem.getDesc()))) filetype = 1;
             else if (Icons.isVideo(rowItem.getDesc())) filetype = 2;
+            else if (Icons.isgeneric(rowItem.getDesc())) filetype = 3;
             holder.txtTitle.setText(rowItem.getTitle());
             holder.genericIcon.setImageDrawable(rowItem.getImageId());
             holder.genericText.setText("");
 
             if (holder.about != null) {
                 if(main.theme1==0)holder.about.setColorFilter(grey_color);
-                showPopup(holder.about,rowItem);
+                showPopup(holder.about,rowItem, p);
             }
             holder.genericIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -372,8 +378,16 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     else main.goBack();
                 }
             });
+
+            // resetting icons visibility
             holder.genericIcon.setVisibility(View.VISIBLE);
             holder.pictureIcon.setVisibility(View.INVISIBLE);
+            holder.apkIcon.setVisibility(View.INVISIBLE);
+            holder.checkImageView.setVisibility(View.INVISIBLE);
+
+            // setting icons for various cases
+            // apkIcon holder refers to square/non-circular drawable
+            // pictureIcon is circular drawable
             if (filetype == 0) {
                 if (main.SHOW_THUMBS) {
                     holder.genericIcon.setVisibility(View.GONE);
@@ -385,7 +399,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         main.ic.cancelLoad(holder.pictureIcon);
                         main.ic.loadDrawable(holder.pictureIcon, (rowItem.getDesc()), null);
                     } else {
-                        holder.checkImageView.setVisibility(View.INVISIBLE);
                         holder.apkIcon.setVisibility(View.VISIBLE);
                         holder.apkIcon.setImageDrawable(main.DARK_IMAGE);
                         main.ic.cancelLoad(holder.apkIcon);
@@ -396,7 +409,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 if (main.SHOW_THUMBS) {
                     holder.genericIcon.setVisibility(View.GONE);
                     holder.pictureIcon.setVisibility(View.GONE);
-                    holder.checkImageView.setVisibility(View.INVISIBLE);
                     holder.apkIcon.setVisibility(View.VISIBLE);
                     holder.apkIcon.setImageDrawable(main.apk);
                     main.ic.cancelLoad(holder.apkIcon);
@@ -407,19 +419,35 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 if (main.SHOW_THUMBS) {
                     holder.genericIcon.setVisibility(View.GONE);
                     if (main.CIRCULAR_IMAGES) {
-                        holder.checkImageView.setVisibility(View.INVISIBLE);
                         holder.pictureIcon.setVisibility(View.VISIBLE);
                         holder.pictureIcon.setImageDrawable(main.DARK_VIDEO);
                         main.ic.cancelLoad(holder.pictureIcon);
                         main.ic.loadDrawable(holder.pictureIcon,(rowItem.getDesc()), null);
                     } else {
-                        holder.checkImageView.setVisibility(View.INVISIBLE);
                         holder.apkIcon.setVisibility(View.VISIBLE);
                         holder.apkIcon.setImageDrawable(main.DARK_VIDEO);
                         main.ic.cancelLoad(holder.apkIcon);
                         main.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
                     }
                 }
+            } else if (filetype == 3) {
+
+                // if the file type is any unknown variable
+                String ext = !new File(rowItem.getDesc()).isDirectory()
+                        ? MimeTypes.getExtension(rowItem.getTitle()) : null;
+                if (ext != null && ext.trim().length() != 0) {
+                    holder.genericText.setText(ext);
+                    holder.genericIcon.setImageDrawable(null);
+                    //holder.genericIcon.setVisibility(View.INVISIBLE);
+                } else {
+
+                    // we could not find the extension, set a generic file type icon
+                    // probably a directory
+                    holder.genericIcon.setVisibility(View.VISIBLE);
+                }
+                holder.pictureIcon.setVisibility(View.GONE);
+                holder.apkIcon.setVisibility(View.GONE);
+
             } else {
                 holder.pictureIcon.setVisibility(View.GONE);
                 holder.apkIcon.setVisibility(View.GONE);
@@ -449,7 +477,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         gradientDrawable.setColor(c1);
                     }
                     holder.rl.setSelected(true);
-                    holder.genericText.setText("");
+                    //holder.genericText.setText("");
                 } else {
                     holder.checkImageView.setVisibility(View.INVISIBLE);
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
@@ -473,11 +501,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                             gradientDrawable.setColor(c8);
                         else if (Icons.isgeneric(rowItem.getDesc())) {
                             gradientDrawable.setColor(c9);
-                            String ext = MimeTypes.getExtension(new File(rowItem.getDesc()).getName());
-                            if (ext != null && ext.trim().length() != 0) {
-                                holder.genericText.setText(ext);
-                                holder.genericIcon.setImageDrawable(null);
-                            }
                         } else {
                             gradientDrawable.setColor(main.icon_skin_color);
                         }
@@ -589,7 +612,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
             if (holder.about != null) {
                 if(main.theme1==0)holder.about.setColorFilter(grey_color);
-                showPopup(holder.about,rowItem);
+                showPopup(holder.about,rowItem, p);
             }
             if (main.SHOW_LAST_MODIFIED)
                 holder.date.setText(rowItem.getDate());
@@ -641,7 +664,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
         return TYPE_ITEM;
     }
-    void showPopup(View v,final Layoutelements rowItem){
+    void showPopup(View v, final Layoutelements rowItem, final int position){
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -651,12 +674,12 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.about:
-                                main.utils.showProps((rowItem).generateBaseFile(), rowItem.getPermissions(), main, main.ROOT_MODE);
+                                utilsProvider.getFutils().showProps((rowItem).generateBaseFile(), rowItem.getPermissions(), main, BaseActivity.rootMode);
                                 return true;
                             case R.id.share:
                                 ArrayList<File> arrayList = new ArrayList<File>();
                                 arrayList.add(new File(rowItem.getDesc()));
-                                main.utils.shareFiles(arrayList, main.MAIN_ACTIVITY, main.theme1, Color.parseColor(main.fabSkin));
+                                utilsProvider.getFutils().shareFiles(arrayList, main.MAIN_ACTIVITY, main.theme1, Color.parseColor(main.fabSkin));
                                 return true;
                             case R.id.rename:
                                 main.rename(rowItem.generateBaseFile());
@@ -683,16 +706,28 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                             case R.id.book:
                                     DataUtils.addBook(new String[]{rowItem.getTitle(),rowItem.getDesc()},true);
                                 main.MAIN_ACTIVITY.updateDrawer();
-                                Toast.makeText(main.getActivity(), main.utils.getString(main.getActivity(), R.string.bookmarksadded), Toast.LENGTH_LONG).show();
+                                Toast.makeText(main.getActivity(), main.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                                 return true;
-
+                            case R.id.delete:
+                                ArrayList<Integer> positions = new ArrayList<Integer>();
+                                positions.add(position);
+                                utilsProvider.getFutils().deleteFiles(main.LIST_ELEMENTS, main, positions);
+                                return true;
+                            case R.id.open_with:
+                                utilsProvider.getFutils().openWith(new File(rowItem.getDesc()), main.getActivity());
+                                return true;
                         }
                         return false;
                     }
                 });
                 popupMenu.inflate(R.menu.item_extras);
                 String x = rowItem.getDesc().toLowerCase();
-                if(rowItem.isDirectory())popupMenu.getMenu().findItem(R.id.share).setVisible(false);
+                if(rowItem.isDirectory()) {
+                    popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
+                    popupMenu.getMenu().findItem(R.id.share).setVisible(false);
+                } else {
+                    popupMenu.getMenu().findItem(R.id.book).setVisible(false);
+                }
                 if (x.endsWith(".zip") || x.endsWith(".jar") || x.endsWith(".apk") || x.endsWith(".rar") || x.endsWith(".tar") || x.endsWith(".tar.gz"))
                     popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
                 popupMenu.show();

@@ -3,6 +3,8 @@ package com.amaze.filemanager.filesystem;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.amaze.filemanager.utils.OpenMode;
+
 /**
  * Created by arpitkh996 on 11-01-2016.
  */
@@ -14,12 +16,12 @@ public class BaseFile extends HFile implements Parcelable{
 
     String link="";
     public BaseFile(String path) {
-        super(0,path);
+        super(OpenMode.FILE,path);
         this.path = path;
     }
 
     public BaseFile(String path, String permisson, long date, long size, boolean isDirectory) {
-        super(0,path);
+        super(OpenMode.FILE,path);
         this.date = date;
         this.size = size;
         this.isDirectory = isDirectory;
@@ -39,7 +41,7 @@ public class BaseFile extends HFile implements Parcelable{
         this.name = name;
     }
 
-    public int getMode() {
+    public OpenMode getMode() {
         return mode;
     }
 
@@ -88,7 +90,7 @@ public class BaseFile extends HFile implements Parcelable{
         this.permisson = permisson;
     }
     protected BaseFile(Parcel in) {
-        super(in.readInt(),in.readString());
+        super(OpenMode.getOpenMode(in.readInt()),in.readString());
         permisson = in.readString();
         name=in.readString();
         date = in.readLong();
@@ -116,7 +118,7 @@ public class BaseFile extends HFile implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(mode);
+        dest.writeInt(mode.ordinal());
         dest.writeString(path);
         dest.writeString(permisson);
         dest.writeString(name);

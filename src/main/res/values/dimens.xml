@@ -5,7 +5,7 @@
     <dimen name="fastscroller_track_width">7dp</dimen>
     <dimen name="fastscroller_track_padding">3dp</dimen>
     <dimen name="padding_normal">16dp</dimen>
-    <dimen name="search_view_margin">4dp</dimen>
+    <dimen name="search_view_margin">10dp</dimen>
     <dimen name="search_view_edit_text_width">240dp</dimen>
     <dimen name="search_view_back_margin_left_right">16dp</dimen>
     <dimen name="search_view_info_margin_left_right">16dp</dimen>
@@ -20,4 +20,12 @@
     <dimen name="check_icon_padding">4dp</dimen>
     <dimen name="icon_margin_top">16dp</dimen>
     <dimen name="check_view_margin">2dp</dimen>
+
+    <dimen name="material_generic">16dp</dimen>
+    <dimen name="material_generic_medium">32dp</dimen>
+    <dimen name="material_generic_large">72dp</dimen>
+    <dimen name="material_generic_card_elevation">4dp</dimen>
+    <dimen name="material_generic_title">16sp</dimen>
+    <dimen name="material_generic_title_summary">12sp</dimen>
+    <dimen name="material_generic_list_item">72dp</dimen>
 </resources>

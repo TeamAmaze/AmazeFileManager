@@ -35,6 +35,7 @@ import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -48,12 +49,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatEditText;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -65,9 +64,7 @@ import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
-import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
@@ -131,7 +128,7 @@ public  final int READ = 4;
         MaterialDialog dialog=a.build();
         return dialog;
     }
-    public MaterialDialog showBasicDialog(final Activity m,String fabskin,int theme1, String[] texts) {
+    public static MaterialDialog showBasicDialog(final Activity m,String fabskin,int theme1, String[] texts) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         a.content(texts[0]);
         a.widgetColor(Color.parseColor(fabskin));
@@ -204,21 +201,8 @@ public  final int READ = 4;
         }
         return length;
     }
-    private  ColorStateList createEditTextColorStateList(int color) {
-        int[][] states = new int[3][];
-        int[] colors = new int[3];
-        int i = 0;
-        states[i] = new int[]{-android.R.attr.state_enabled};
-        colors[i] = Color.parseColor("#f6f6f6");
-        i++;
-        states[i] = new int[]{-android.R.attr.state_pressed, -android.R.attr.state_focused};
-        colors[i] = Color.parseColor("#666666");
-        i++;
-        states[i] = new int[]{};
-        colors[i] =color ;
-        return new ColorStateList(states, colors);
-    }
-    public  void setTint(CheckBox box, int color) {
+
+    public static void setTint(CheckBox box, int color) {
         if(Build.VERSION.SDK_INT>=21)return;
         ColorStateList sl = new ColorStateList(new int[][]{
                 new int[]{-android.R.attr.state_checked},
@@ -235,41 +219,8 @@ public  final int READ = 4;
             box.setButtonDrawable(drawable);
         }
     }
-    public void setTint(EditText editText, int color) {
-        if(Build.VERSION.SDK_INT>=21)return;
-        ColorStateList editTextColorStateList = createEditTextColorStateList(color);
-        if (editText instanceof AppCompatEditText) {
-            ((AppCompatEditText) editText).setSupportBackgroundTintList(editTextColorStateList);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            editText.setBackgroundTintList(editTextColorStateList);
-        }
-    }
-    public int checkFolder(final String f,Context context) {
-        if(f==null)return 0;
-        if(f.startsWith("smb://"))return 1;
-        File folder=new File(f);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
-            if (!folder.exists() || !folder.isDirectory()) {
-                return 0;
-            }
 
-            // On Android 5, trigger storage access framework.
-            if (FileUtil.isWritableNormalOrSaf(folder, context)) {
-                return 1;
-
-            }
-        } else if (Build.VERSION.SDK_INT == 19 && FileUtil.isOnExtSdCard(folder, context)) {
-            // Assume that Kitkat workaround works
-            return 1;
-        } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
-            return 1;
-        } else {
-            return 0;
-        }
-        return 0;
-    }
-
-    public void scanFile(String path, Context c) {
+    public static void scanFile(String path, Context c) {
         System.out.println(path + " " + Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT >= 19) {
             MediaScannerConnection.scanFile(c, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
@@ -371,10 +322,6 @@ public  final int READ = 4;
         // set its visibility to GONE as an optimization step (it won't
         // participate in layout passes, etc.)
     }
-    public String getString(Context c, int a) {
-        return c.getResources().getString(a);
-    }
-
 
     public void shareFiles(ArrayList<File> a, Activity c,int theme,int fab_skin) {
         ArrayList<Uri> uris = new ArrayList<Uri>();
@@ -400,7 +347,7 @@ public  final int READ = 4;
             e.printStackTrace();
         }
     }
-    public String readableFileSize(long size) {
+    public static String readableFileSize(long size) {
         if (size <= 0)
             return "0 B";
         final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
@@ -531,8 +478,8 @@ public  final int READ = 4;
     }
 public void openWith(final File f,final Context c) {
         MaterialDialog.Builder a=new MaterialDialog.Builder(c);
-        a.title(getString(c, R.string.openas));
-        String[] items=new String[]{getString(c,R.string.text),getString(c,R.string.image),getString(c,R.string.video),getString(c,R.string.audio),getString(c,R.string.database),getString(c,R.string.other)};
+        a.title(c.getResources().getString(R.string.openas));
+        String[] items=new String[]{c.getResources().getString(R.string.text),c.getResources().getString(R.string.image),c.getResources().getString(R.string.video),c.getResources().getString(R.string.audio),c.getResources().getString(R.string.database),c.getResources().getString(R.string.other)};
 
         a.items(items).itemsCallback(new MaterialDialog.ListCallback() {
             @Override
@@ -579,25 +526,25 @@ public void openWith(final File f,final Context c) {
 
     public void deleteFiles(ArrayList<Layoutelements> a, final Main b, List<Integer> pos) {
         final MaterialDialog.Builder c = new MaterialDialog.Builder(b.getActivity());
-        c.title(getString(b.getActivity(), R.string.confirm));
+        c.title(b.getResources().getString(R.string.confirm));
         String names = "";
         final ArrayList<BaseFile> todelete = new ArrayList<>();
         for (int i = 0; i < pos.size(); i++) {
             todelete.add(a.get(pos.get(i)).generateBaseFile());
             names = names + "\n" + (i + 1) + ". " + a.get(pos.get(i)).getTitle();
         }
-        c.content(getString(b.getActivity(), R.string.questiondelete) + names);
+        c.content(b.getResources().getString(R.string.questiondelete) + names);
 
         if(b.theme1==1)
             c.theme(Theme.DARK);
-        c.negativeText(getString(b.getActivity(), R.string.no));
-        c.positiveText(getString(b.getActivity(), R.string.yes));
+        c.negativeText(b.getResources().getString(R.string.no));
+        c.positiveText(b.getResources().getString(R.string.yes));
         c.positiveColor(Color.parseColor(b.fabSkin));
         c.negativeColor(Color.parseColor(b.fabSkin));
         c.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-                Toast.makeText(b.getActivity(), getString(b.getActivity(), R.string.deleting), Toast.LENGTH_SHORT).show();
+                Toast.makeText(b.getActivity(), b.getResources().getString(R.string.deleting), Toast.LENGTH_SHORT).show();
                 b.MAIN_ACTIVITY.mainActivityHelper.deleteFiles(todelete);
             }
 
@@ -630,7 +577,7 @@ public void openWith(final File f,final Context c) {
         return (sdf.format(f)).toString();
     }
 
-    public String getdate(long f,String form,String year) {
+    public static String getdate(long f,String form,String year) {
 
         SimpleDateFormat sdf = new SimpleDateFormat(form);
         String date=(sdf.format(f)).toString();
@@ -639,7 +586,7 @@ public void openWith(final File f,final Context c) {
         return date;
     }
 
-    public int calculateInSampleSize(BitmapFactory.Options options,
+    public static int calculateInSampleSize(BitmapFactory.Options options,
                                      int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
@@ -666,13 +613,13 @@ public void openWith(final File f,final Context c) {
     public void showProps(final BaseFile hFile, final String perm, final Main c,boolean root) {
         long last=hFile.getDate();
         String date = getdate(last);
-        String items = getString(c.getActivity(),R.string.calculating), size = getString(c.getActivity(),R.string.calculating), name, parent;
+        String items = c.getResources().getString(R.string.calculating), size = c.getResources().getString(R.string.calculating), name, parent;
         name = hFile.getName();
         parent = hFile.getReadablePath(hFile.getParent());
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c.getActivity());
         String fabskin = PreferenceUtils.getAccentString(sp);
         MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
-        a.title(getString(c.getActivity(), R.string.properties));
+        a.title(c.getResources().getString( R.string.properties));
         if(c.theme1==1)
             a.theme(Theme.DARK);
         View v=c.getActivity().getLayoutInflater().inflate(R.layout.properties_dialog,null);
@@ -699,7 +646,7 @@ public void openWith(final File f,final Context c) {
         }
         a.customView(v, true);
         a.positiveText(R.string.copy_path);
-        a.negativeText(getString(c.getActivity(), R.string.md5_2));
+        a.negativeText(c.getResources().getString( R.string.md5_2));
         a.positiveColor(Color.parseColor(fabskin));
         a.negativeColor(Color.parseColor(fabskin));
         a.neutralText(R.string.cancel);
@@ -720,7 +667,7 @@ public void openWith(final File f,final Context c) {
         new GenerateMD5Task(materialDialog, hFile, name, parent, size, items, date,c.getActivity
                 (),v).execute(hFile.getPath());
     }
-    public long[] getSpaces(HFile hFile){
+    public static long[] getSpaces(HFile hFile){
         if(!hFile.isSmb() && hFile.isDirectory()){
             try {
                 File file=new File(hFile.getPath());
@@ -742,13 +689,13 @@ public void openWith(final File f,final Context c) {
         } catch (SmbException e) {
             e.printStackTrace();
         }
-        String items =  getString(c,R.string.calculating), size = getString(c,R.string.calculating), name, parent;
+        String items =  c.getResources().getString(R.string.calculating), size = c.getResources().getString(R.string.calculating), name, parent;
         name =  f.getName();
         parent = f.getReadablePath(f.getParent());
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         String fabskin = PreferenceUtils.getAccentString(sp);
         MaterialDialog.Builder a = new MaterialDialog.Builder(c);
-        a.title(getString(c, R.string.properties));
+        a.title(c.getResources().getString(R.string.properties));
         if(theme1==1)
             a.theme(Theme.DARK);
 
@@ -756,7 +703,7 @@ public void openWith(final File f,final Context c) {
         v.findViewById(R.id.appX).setVisibility(View.GONE);
         a.customView(v, true);
         a.positiveText(R.string.copy_path);
-        a.negativeText(getString(c, R.string.md5_2));
+        a.negativeText(c.getResources().getString(R.string.md5_2));
         a.positiveColor(Color.parseColor(fabskin));
         a.negativeColor(Color.parseColor(fabskin));
         a.neutralText(R.string.cancel);
@@ -777,7 +724,7 @@ public void openWith(final File f,final Context c) {
         new GenerateMD5Task(materialDialog, (f), name, parent, size, items, date,c,v).execute(f.getPath());
     }
 
-    public boolean copyToClipboard(Context context, String text) {
+    public static boolean copyToClipboard(Context context, String text) {
         try {
             android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context
                     .getSystemService(context.CLIPBOARD_SERVICE);
@@ -822,20 +769,7 @@ public void openWith(final File f,final Context c) {
         return b;
     }
 
-    public boolean rename(File f, String name,boolean root) {
-        String newname = f.getParent() + "/" + name;
-        if(f.getParentFile().canWrite()){
-            return f.renameTo(new File(newname));}
-        else if(root) {
-            RootTools.remount(f.getPath(),"rw");
-            RootHelper.runAndWait("mv " + f.getPath() + " " + newname, true);
-            RootTools.remount(f.getPath(),"ro");
-            return true;
-        }
-        return false;
-    }
-
-    public boolean canListFiles(File f) {
+    public static boolean canListFiles(File f) {
         try {
             if (f.canRead() && f.isDirectory())
                 return true;
@@ -849,7 +783,11 @@ public void openWith(final File f,final Context c) {
     public void openFile(final File f, final MainActivity m) {
         boolean defaultHandler = isSelfDefault(f, m);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
-        if (defaultHandler && f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".rar")|| f.getName().toLowerCase().endsWith(".tar")|| f.getName().toLowerCase().endsWith(".tar.gz")) {
+        if (defaultHandler && f.getName().toLowerCase().endsWith(".zip") ||
+                f.getName().toLowerCase().endsWith(".jar") ||
+                f.getName().toLowerCase().endsWith(".rar")||
+                f.getName().toLowerCase().endsWith(".tar") ||
+                f.getName().toLowerCase().endsWith(".tar.gz")) {
             showArchiveDialog(f, m);
         } else if(f.getName().toLowerCase().endsWith(".apk")) {
             showPackageDialog(f, m);
@@ -864,6 +802,7 @@ public void openWith(final File f,final Context c) {
             intent.setAction(Intent.ACTION_VIEW);
             intent.setDataAndType(uri, "audio/*");
 
+            // Behold! It's the  legendary easter egg!
             if (studio_count!=0) {
                 new CountDownTimer(studio_count, 1000) {
                     @Override
@@ -890,35 +829,15 @@ public void openWith(final File f,final Context c) {
             try {
                 openunknown(f, m, false);
             } catch (Exception e) {
-                Toast.makeText(m, getString(m, R.string.noappfound),Toast.LENGTH_LONG).show();
+                Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
                 openWith(f, m);
             }
         }
     }
-public void showSMBHelpDialog(Context m,String acc){
+public static void showSMBHelpDialog(Context m,String acc){
 
     MaterialDialog.Builder b=new MaterialDialog.Builder(m);
-    b.content(Html.fromHtml("<html>\n" +
-            "<body>\n" +
-            "<center>\n" +
-            "<h1>How to access shared windows folder on android (smb)</h1>\n" +
-            "</center>\n" +
-            "<ol>\n" +
-            "<li>\n" +
-            "<b>Enable File Sharing</b>\n" +
-            "<br>Open the Control Panel, click Choose homegroup and sharing options under Network and Internet, and click Change advanced sharing settings. Enable the file and printer sharing feature.\n" +
-            "</li><br><li><b>Additional File Sharing settings</b><br>You may also want to configure the other advanced sharing settings here. \n" +
-            "For example, you could enable access to your files without a password if you trust all the devices on your local network.Once file and printer sharing is enabled, you can open File Explorer or Windows Explorer, right-click a folder you want to share, and select Properties. \n" +
-            "Click the Share button and make the folder available on the network.\n" +
-            "</li><li><br><b>Make sure both devices are on same Wifi</b><br> \n" +
-            "This feature makes files available on the local network, so your PC and mobile devices have to be on the same local network. You can’t access a shared Windows folder over the Internet or when your smartphone is connected to its mobile data — it has to be connected to Wi-Fi.</li><li>\n" +
-            "<br><b>Find IP Address</b>\n" +
-            "<br>Open Command Prompt. Type 'ipconfig' and press Enter. Look for Default Gateway under your network adapter for your router's IP address. Look for \\\"IPv4 Address\\\" under the same adapter section to find your computer's IP address.</li><li><br>\n" +
-            "<b>Enter details in smb dialog box</b>\n" +
-            "<br>\n" +
-            "</ol>\n" +
-            "</body>\n" +
-            "</html>"));
+    b.content(Html.fromHtml(m.getResources().getString(R.string.smb_instructions)));
     b.positiveText(R.string.doit);
     b.positiveColor(Color.parseColor(acc));
     b.build().show();
@@ -982,22 +901,15 @@ public void showPackageDialog(final File f,final MainActivity m){
 
     }
 
-    public Layoutelements newElement(Drawable i, String d,String permissions,String symlink,String size,long longSize,boolean directorybool,boolean b,String date) {
+    public Layoutelements newElement(BitmapDrawable i, String d, String permissions, String symlink, String size, long longSize, boolean directorybool, boolean b, String date) {
         Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size,longSize,b,date,directorybool);
         return item;
     }
 
-    public ArrayList<File> toFileArray(ArrayList<BaseFile> a) {
-        ArrayList<File> b = new ArrayList<>();
-        for (int i = 0; i < a.size(); i++) {
-            b.add(new File(a.get(i).getPath()));
-        }
-        return b;
-    }
     public ArrayList<HFile> toHFileArray(ArrayList<String> a) {
         ArrayList<HFile> b = new ArrayList<>();
         for (int i = 0; i < a.size(); i++) {
-            HFile hFile=new HFile(HFile.UNKNOWN,a.get(i));
+            HFile hFile=new HFile(OpenMode.UNKNOWN,a.get(i));
             hFile.generateMode(null);
             b.add(hFile);
         }
@@ -1006,7 +918,7 @@ public void showPackageDialog(final File f,final MainActivity m){
 
     public void showCompressDialog(final MainActivity m, final ArrayList<BaseFile> b, final String current) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
-        a.input(getString(m, R.string.enterzipname), ".zip", false, new
+        a.input(m.getResources().getString(R.string.enterzipname), ".zip", false, new
                 MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
@@ -1016,7 +928,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         a.widgetColor(Color.parseColor(BaseActivity.accentSkin));
         if(m.theme1==1)
             a.theme(Theme.DARK);
-        a.title(getString(m, R.string.enterzipname));
+        a.title(m.getResources().getString(R.string.enterzipname));
         a.positiveText(R.string.create);
         a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
         a.onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -1030,7 +942,7 @@ public void showPackageDialog(final File f,final MainActivity m){
                 }
             }
         });
-        a.negativeText(getString(m, R.string.cancel));
+        a.negativeText(m.getResources().getString(R.string.cancel));
         a.negativeColor(Color.parseColor(BaseActivity.accentSkin));
         a.build().show();
     }
@@ -1131,7 +1043,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             a.theme(Theme.DARK);
 
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toHFileArray(DataUtils.history),null,true);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, this, R.layout.bookmarkrow, toHFileArray(DataUtils.history),null,true);
         a.adapter(adapter, new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
@@ -1153,7 +1065,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         if(m.theme1==1)
             a.theme(Theme.DARK);
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, R.layout.bookmarkrow, toHFileArray(DataUtils.getHiddenfiles()),null,false);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, this, R.layout.bookmarkrow, toHFileArray(DataUtils.getHiddenfiles()),null,false);
         a.adapter(adapter, new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
@@ -1251,7 +1163,7 @@ public void showPackageDialog(final File f,final MainActivity m){
             });
     }
 
-    public BaseFile parseName(String line) {
+    public static BaseFile parseName(String line) {
         boolean linked = false;
         String name = "", link = "", size = "-1", date = "";
         String[] array = line.split(" ");
@@ -1296,14 +1208,14 @@ public void showPackageDialog(final File f,final MainActivity m){
 
     }
 
-    public int getLinkPosition(String[] array){
+    private static int getLinkPosition(String[] array){
         for(int i=0;i<array.length;i++){
             if(array[i].contains("->"))return i;
         }
         return  0;
     }
 
-public int getColonPosition(String[] array){
+    private static int getColonPosition(String[] array){
         for(int i=0;i<array.length;i++){
             if(array[i].contains(":"))return i;
         }

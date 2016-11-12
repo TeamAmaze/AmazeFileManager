@@ -13,13 +13,13 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.fragments.Main;
-import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.HistoryManager;
-
+import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.OpenMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,6 +29,8 @@ import java.util.ArrayList;
  * Created by Arpit on 16-11-2014.
  */
 public class HiddenAdapter extends ArrayAdapter<HFile> {
+    private Futils utils;
+
     /*Shortcuts s;*/
     Main context;Context c;
     public ArrayList<HFile> items;
@@ -36,8 +38,9 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
     boolean hide;
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public HiddenAdapter(Context c,Main context, int resourceId, ArrayList<HFile> items,MaterialDialog materialDialog,boolean hide) {
+    public HiddenAdapter(Context c,Main context, Futils utils,  int resourceId, ArrayList<HFile> items,MaterialDialog materialDialog,boolean hide) {
         super(c, resourceId, items);
+        this.utils = utils;
         this.c=c;
         this.context = context;
         this.items = items;
@@ -88,7 +91,7 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
             {
                 ArrayList<BaseFile> a=new ArrayList<BaseFile>();
                 BaseFile baseFile=new BaseFile(items.get(p).getPath()+"/.nomedia");
-                baseFile.setMode(HFile.LOCAL_MODE);
+                baseFile.setMode(OpenMode.FILE);
                 a.add(baseFile);
                 new DeleteTask(context.getActivity().getContentResolver(),c).execute((a));
             }
@@ -108,7 +111,7 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
                             context.getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    context.loadlist(f.getPath(), false, -1);
+                                    context.loadlist(f.getPath(), false, OpenMode.UNKNOWN);
                                 }
                             });
                         } else {
@@ -116,7 +119,7 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
                                 context.getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        context.utils.openFile(new File(f.getPath()), (MainActivity) context.getActivity());
+                                        utils.openFile(new File(f.getPath()), (MainActivity) context.getActivity());
                                     }
                                 });
                             }

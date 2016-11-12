@@ -4,7 +4,9 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -14,6 +16,7 @@ import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -146,15 +149,14 @@ public class SmbConnectDialog extends DialogFragment {
         final AppCompatEditText pass = (AppCompatEditText) v2.findViewById(R.id.passwordET);
         final AppCompatCheckBox ch = (AppCompatCheckBox) v2.findViewById(R.id.checkBox2);
         TextView help = (TextView) v2.findViewById(R.id.wanthelp);
-        Futils futils=new Futils();
-        futils.setTint(con_name,color);
-        futils.setTint(user,color);
-        futils.setTint(pass,color);
-        futils.setTint(ch,color);
+        setTint(con_name,color);
+        setTint(user,color);
+        setTint(pass,color);
+        Futils.setTint(ch,color);
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Futils().showSMBHelpDialog(context,PreferenceUtils.getAccentString(sharedPreferences));
+                Futils.showSMBHelpDialog(context,PreferenceUtils.getAccentString(sharedPreferences));
             }
         });
         ch.setOnClickListener(new View.OnClickListener() {
@@ -181,6 +183,7 @@ public class SmbConnectDialog extends DialogFragment {
                     String inf = URLDecoder.decode(userinfo, "UTF-8");
                     int domainDelim = !inf.contains(";") ? 0 : inf.indexOf(';');
                     domainp = inf.substring(0,domainDelim);
+                    if(domainp!=null && domainp.length()>0)
                     inf = inf.substring(domainDelim+1);
                     userp = inf.substring(0, inf.indexOf(":"));
                     passp = inf.substring(inf.indexOf(":") + 1, inf.length());
@@ -253,7 +256,6 @@ public class SmbConnectDialog extends DialogFragment {
                 else {
                     String useru = user.getText().toString();
                     String passp = pass.getText().toString();
-
                     smbFile = connectingWithSmbServer(new String[]{ipa, useru, passp,domaind}, false);
                 }
                 if (smbFile == null) return;
@@ -294,4 +296,29 @@ public class SmbConnectDialog extends DialogFragment {
             return null;
         }
     }
+
+    private static ColorStateList createEditTextColorStateList(int color) {
+        int[][] states = new int[3][];
+        int[] colors = new int[3];
+        int i = 0;
+        states[i] = new int[]{-android.R.attr.state_enabled};
+        colors[i] = Color.parseColor("#f6f6f6");
+        i++;
+        states[i] = new int[]{-android.R.attr.state_pressed, -android.R.attr.state_focused};
+        colors[i] = Color.parseColor("#666666");
+        i++;
+        states[i] = new int[]{};
+        colors[i] = color;
+        return new ColorStateList(states, colors);
     }
+
+    private static void setTint(EditText editText, int color) {
+        if (Build.VERSION.SDK_INT >= 21) return;
+        ColorStateList editTextColorStateList = createEditTextColorStateList(color);
+        if (editText instanceof AppCompatEditText) {
+            ((AppCompatEditText) editText).setSupportBackgroundTintList(editTextColorStateList);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            editText.setBackgroundTintList(editTextColorStateList);
+        }
+    }
+}

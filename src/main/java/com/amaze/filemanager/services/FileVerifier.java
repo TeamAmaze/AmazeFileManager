@@ -5,7 +5,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.Futils;
 
@@ -21,13 +20,11 @@ import jcifs.smb.SmbException;
  */
 public class FileVerifier extends Thread {
     ArrayList<FileBundle> arrayList = new ArrayList<>();
-    Futils utils;
     Context c;
     boolean rootmode;
     FileVerifierInterface fileVerifierInterface;
     boolean running=true;
     public FileVerifier(Context context,boolean rootmode, FileVerifierInterface fileVerifierInterface) {
-        utils = new Futils();
         c = context;
         this.rootmode=rootmode;
         this.fileVerifierInterface = fileVerifierInterface;
@@ -82,7 +79,7 @@ public class FileVerifier extends Thread {
             return;
         }
         if (!targetFile.isSmb())
-            utils.scanFile(targetFile.getPath(), c);
+            Futils.scanFile(targetFile.getPath(), c);
         if (!checkNonRootFiles(sourceFile, targetFile)) {
             fileVerifierInterface.addFailedFile(sourceFile);
             fileVerifierInterface.setCopySuccessful(false);
@@ -118,21 +115,7 @@ public class FileVerifier extends Thread {
     boolean checkNonRootFiles(HFile hFile1, HFile hFile2) {
         long l1 = hFile1.length(), l2 = hFile2.length();
         if (hFile2.exists() && ((l1 != -1 && l2 != -1) ? l1 == l2 : true)) {
-            //after basic checks try checksum if possible
-            InputStream inputStream = hFile1.getInputStream();
-            InputStream inputStream1 = hFile2.getInputStream();
-            if (inputStream == null || inputStream1 == null) return true;
-            String md5, md5_1;
-            try {
-                md5 = getMD5Checksum(inputStream);
-                md5_1 = getMD5Checksum(inputStream1);
-                if (md5 != null && md5_1 != null && md5.length() > 0 && md5_1.length() > 0) {
-                    if (md5.equals(md5_1)) return true;
-                    else return false;
-                } else return true;
-            } catch (Exception e) {
-                return true;
-            }
+             return true;
         }
         return false;
     }

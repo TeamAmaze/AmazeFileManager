@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.utils.OpenMode;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -20,7 +21,7 @@ public class SearchAsyncHelper extends Fragment {
     private HelperCallbacks mCallbacks;
     private String mPath, mInput;
     public SearchTask mSearchTask;
-    private int mOpenMode;
+    private OpenMode mOpenMode;
     private boolean mRootMode, isRegexEnabled, isMatchesEnabled;
 
     public static final String KEY_PATH = "path";
@@ -53,7 +54,7 @@ public class SearchAsyncHelper extends Fragment {
         setRetainInstance(true);
         mPath = getArguments().getString(KEY_PATH);
         mInput = getArguments().getString(KEY_INPUT);
-        mOpenMode = getArguments().getInt(KEY_OPEN_MODE);
+        mOpenMode = OpenMode.getOpenMode(getArguments().getInt(KEY_OPEN_MODE));
         mRootMode = getArguments().getBoolean(KEY_ROOT_MODE);
         isRegexEnabled = getArguments().getBoolean(KEY_REGEX);
         isMatchesEnabled = getArguments().getBoolean(KEY_REGEX_MATCHES);

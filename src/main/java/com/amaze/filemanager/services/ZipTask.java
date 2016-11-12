@@ -56,7 +56,6 @@ public class ZipTask extends Service {
     public final String EXTRACT_PROGRESS = "ZIP_PROGRESS";
     public final String EXTRACT_COMPLETED = "ZIP_COMPLETED";
 
-    Futils utils = new Futils();
     // Binder given to clients
     HashMap<Integer, Boolean> hash = new HashMap<Integer, Boolean>();
     public HashMap<Integer, DataPackage> hash1 = new HashMap<Integer, DataPackage>();
@@ -147,11 +146,19 @@ boolean foreground=true;
         long totalBytes = 0L;
         String name;
 
+        public ArrayList<File> toFileArray(ArrayList<BaseFile> a) {
+            ArrayList<File> b = new ArrayList<>();
+            for (int i = 0; i < a.size(); i++) {
+                b.add(new File(a.get(i).getPath()));
+            }
+            return b;
+        }
+
         protected Integer doInBackground(Bundle... p1) {
             int id = p1[0].getInt("id");
             ArrayList<BaseFile> a = (ArrayList<BaseFile>) p1[0].getSerializable("files");
             name = p1[0].getString("name");
-            new zip().execute(id, utils.toFileArray(a), name);
+            new zip().execute(id, toFileArray(a), name);
             // TODO: Implement this method
             return id;
         }
@@ -177,8 +184,8 @@ boolean foreground=true;
             mBuilder.setProgress(100, i, false);
             mBuilder.setOngoing(true);
             int title = R.string.zipping;
-            mBuilder.setContentTitle(utils.getString(c, title));
-            mBuilder.setContentText(new File(fileName).getName() + " " + utils.readableFileSize(done) + "/" + utils.readableFileSize(total));
+            mBuilder.setContentTitle(c.getResources().getString(title));
+            mBuilder.setContentText(new File(fileName).getName() + " " + Futils.readableFileSize(done) + "/" + Futils.readableFileSize(total));
             int id1 = Integer.parseInt("789" + id);
             mNotifyManager.notify(id1, mBuilder.build());
             if (i == 100 || total == 0) {
@@ -237,7 +244,7 @@ boolean foreground=true;
         public void execute(int id, ArrayList<File> a, String fileOut) {
             for (File f1 : a) {
                 if (f1.isDirectory()) {
-                    totalBytes = totalBytes + new Futils().folderSize(f1);
+                    totalBytes = totalBytes + Futils.folderSize(f1);
                 } else {
                     totalBytes = totalBytes + f1.length();
                 }

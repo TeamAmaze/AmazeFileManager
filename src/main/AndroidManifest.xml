@@ -22,8 +22,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.amaze.filemanager"
-    android:versionCode="42"
-    android:versionName="3.1.0 Beta 1">
+    android:versionCode="48"
+    android:versionName="3.1.2 Beta 4">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -31,10 +31,14 @@
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER"/>
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-sdk 
         android:minSdkVersion="14" 
         android:targetSdkVersion="21" />
-
+        
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
     <application
         android:icon="@mipmap/ic_launcher"
         tools:replace="android:label"
@@ -63,6 +67,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <data android:mimeType="application/zip" />
+                <data android:mimeType="application/rar" />
                 <data android:mimeType="application/x-rar-compressed"/><!--<category android:name="android.intent.category.OPENABLE" />-->
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -72,6 +77,10 @@
             android:label="@string/setting"
             android:name=".activities.Preferences" 
 			android:theme="@style/appCompatLight">
+	    <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
            
         </activity>
 		<activity
@@ -99,6 +108,11 @@
             </intent-filter>
 
         </activity>
+
+        <activity android:name=".activities.AboutActivity"
+            android:theme="@style/aboutLight"
+            android:label="About"
+            />
 
         <service
 			android:name = ".services.ExtractService"

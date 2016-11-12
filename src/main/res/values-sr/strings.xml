@@ -49,7 +49,7 @@
     <string name="create">НАПРАВИ</string>
     <string name="success">Успех</string>
     <string name="filenotexists">Фајл не постоји</string>
-    <string name="loading">Учитавам...</string>
+    <string name="loading">Учитавам&#8230;</string>
     <string name="file_empty">Фајл је празан</string>
     <string name="error">Грешка</string>
     <string name="cantlistfiles">Не могу да излистам фајлове без кореног приступа</string>
@@ -68,7 +68,7 @@
     <string name="name">Име: </string>
     <string name="date">Датум: </string>
     <string name="location">Локација: </string>
-    <string name="size">Величина фасцикле: </string>
+    <string name="size">Величина: </string>
     <string name="totalitems">Укупно ставки: </string>
     <string name="enterzipname">Унесите име архиве</string>
     <string name="noappfound">Нема апликације за отварање овог фајла</string>
@@ -79,15 +79,15 @@
     <string name="file">Фајл</string>
     <string name="folder">Фасцикла</string>
     <string name="newfolder">Нова фасцикла</string>
-    <string name="entername">Унесите име</string>
+    <string name="entername">Унесите назив</string>
     <string name="extracting">Распакујем</string>
     <string name="zipping">Компресујем</string>
     <string name="stopping">Заустављам</string>
     <string name="guide1">Добро дошли у Амејз менаџер фајлова</string>
     <string name="guide2">Додирните плаву пругу да бисте приказали или сакрили траку путање</string>
-    <string name="guide3">Притисните и држите било који фајл за још могућности...</string>
+    <string name="guide3">Додирните и држите било који фајл за још могућности...</string>
     <string name="guide4">Као што су копирање, померање, својства, итд.</string>
-    <string name="guide5">Користите дугме за назад на вашем уређају да изађете из апликације било кад...</string>
+    <string name="guide5">Користите дугме за назад на вашем уређају да изађете из апликације било кад&#8230;</string>
     <string name="guide6">...и користите дугме стрелице улево за навигацију у менаџеру фајлова</string>
     <string name="maintab">Главни језичак не можете да уклоните</string>
     <string name="openparent">Отвори родитељску фасциклу</string>
@@ -111,7 +111,7 @@
     <string name="random">Насумично</string>
     <string name="random_summary">Постави насумичну тему по покретању</string>
     <string name="colorize">Обоји иконе</string>
-    <string name="colorize_summary">Постави статичку боју икона</string>
+    <string name="colorize_summary">Поставља статичку боју икона. Не премошћује поставку боје за икону директоријума.</string>
     <string name="back">Назад</string>
     <string name="home">Почетна</string>
     <string name="paste">Налепи</string>
@@ -162,7 +162,7 @@
     <string name="brown">Смеђа</string>
     <string name="black">Црна</string>
     <string name="blue_grey">Плавосива</string>
-    <string name="supersu">Суперкорисник</string>
+    <string name="supersu">СуперСУ</string>
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Фасцикле на врху</string>
     <string name="filesOnTop">Фајлови на врху</string>
@@ -188,7 +188,7 @@
     <string name="cant_read_file">Не могу да очитам фајл</string>
     <string name="not_allowed">Није дозвољено</string>
     <string name="processes">Процеси</string>
-    <string name="searching">Претрага</string>
+    <string name="searching">Тражим</string>
     <string name="copying_fles">Копирам фајлове</string>
     <string name="done">Завршено</string>
     <string name="Extracting_fles">Распакујем фајлове</string>
@@ -203,8 +203,8 @@
     <string name="nofiles">Нема фајлова</string>
     <string name="tapnhold">Тапните и држите фајл или фасциклу за више могућности</string>
     <string name="pathcopied">Путања копирана на клипборд</string>
-    <string name="used">Искоришћено:  </string>
-    <string name="free">Слободно:  </string>
+    <string name="used">Искор:  </string>
+    <string name="free">Слобо:  </string>
     <string name="atroot">У кореној сте фасцикли</string>
     <string name="listview">Приказ списка</string>
     <string name="gridview">Приказ мреже</string>
@@ -213,7 +213,7 @@
     <string name="permission">Дозволе</string>
     <string name="hide">Сакриј</string>
     <string name="exit">Изађи</string>
-    <string name="enternewname">Унесите ново име</string>
+    <string name="enternewname">Унесите нови назив</string>
     <string name="doforall">Уради за све ставке</string>
     <string name="gridcolumnno">Број колона у приказу мреже</string>
     <string name="randomDialog">Насумично</string>
@@ -257,7 +257,7 @@
     <string name="archive">Архива</string>
     <string name="archtext">Ово је архива. Шта желите да урадите?</string>
     <string name="pitext">Ово је инсталер пакета. Шта желите да урадите?</string>
-    <string name="xda_title">XDA</string>
+    <string name="xda_title">XDA тема</string>
     <string name="xda_summary">ПиО, помоћ и решавање проблема</string>
     <string name="invalid_dir">Неисправан директоријум</string>
     <string name="circularimages">Користи кружне иконе за слике и видео</string>
@@ -283,6 +283,7 @@
     <string name="dutch_translation_title">Холандски</string>
     <string name="romanian_translation_title">Румунски</string>
     <string name="vietnamese_translation_title">Вијетнамски</string>
+    <string name="brazilian_portuguese_translation_title">Бразилски португалски</string>
 
     <string name="zip_viewer">Зип прегледач</string>
     <string name="unin_system_apk">Ово је системска апликација, уклањање може да доведе до нестабилности система.\nДа наставим?</string>
@@ -301,7 +302,7 @@
     <string name="image">Слика</string>
     <string name="contributors">Доприносиоци</string>
     <string name="savepaths">Запамти путање</string>
-    <string name="savepathsummary">Прикажи најскорије приказану фасциклу за сваки језичак по покретању</string>
+    <string name="savepathsummary">Приказ најскорије приказане фасцикле за сваки језичак по покретању</string>
     <string name="select_intent">Изабери</string>
     <string name="md5copied">МД5 копиран на клипборд</string>
     <string name="generating">Генеришем...</string>
@@ -319,8 +320,8 @@
 
     <string name="color_title">Боја</string>
     <string name="color_summary">Постављање боје разних УИ компоненти</string>
-    <string name="primary_color_title">Примарна боја (леви језичак)</string>
-    <string name="primary_color_summary">Боја великих УИ елемената за леви језичак</string>
+    <string name="primary_color_title">Примарна боја</string>
+    <string name="primary_color_summary">Боја великих елемената УИ-ја</string>
     <string name="accent_color_title">Боја наглашавања</string>
     <string name="accent_color_summary">Боја ФАБ-а и других мањих елемената УИ-ја</string>
     <string name="icon_color_title">Боја икона</string>
@@ -330,7 +331,7 @@
     <string name="hide_toolbar">Сакриј траку алатки</string>
     <string name="hide_appbar">Сакриј траку апликације</string>
     <string name="choose_color">Избор боје</string>
-    <string name="g_plus_community_title">Г+ заједница</string>
+    <string name="g_plus_community_title">Придружите се Г+ заједници</string>
     <string name="hide_mode_nothing">Трака апликације остаје нетакнута</string>
     <string name="hide_mode_toolbar">Трака алатки скривена при клизању</string>
     <string name="hide_mode_app_bar">Трака апликације скривена при клизању</string>
@@ -385,32 +386,43 @@
     <string name="ip">Адреса</string>
     <string name="connectionname">Назив везе</string>
     <string name="nodevicefound">Ниједан уређај није нађен</string>
-    <string name="searchingdevices">Тражим уређаје</string>
     <string name="path">Путања</string>
     <string name="renamebookmark">Измени обележивач</string>
     <string name="cut">Исеци</string>
     <string name="empty"></string>
     <string name="search">Тражи</string>
-    <string name="invalid_name">Неисправноп име</string>
-    <string name="search_hint">Унесите појам&#8230;</string>
+    <string name="invalid_name">Неисправан назив</string>
+    <string name="search_hint">Куцајте за претрагу&#8230;</string>
     <string name="advanced_search">Напредна претрага</string>
     <string name="regular_expression">Регуларни израз</string>
-    <string name="regular_expression_summary">Претрага помоћу БАСХ регуларних израза</string>
+    <string name="regular_expression_summary">Тражи користећи регуларни израз БАСХ стила</string>
     <string name="match_content">Поклапај садржај</string>
     <string name="match_content_summary">Ако је постављено, регуларни израз ће поклапати читав назив фајла,
-        у супротном ће тражити појављивања.</string>
-    <string name="start_ftp">Покрени</string>
+тражиће појављивања у супротном.</string>
+    <string name="start_ftp">Почни</string>
     <string name="stop_ftp">Заустави</string>
     <string name="ftp_status_running">Покренут</string>
     <string name="ftp_status_not_running">Није покренут</string>
-    <string name="ftp_no_wifi">Потврдите да сте повезани на бежичну мрежу</string>
+    <string name="ftp_no_wifi">Уверите се да сте повезани на бежичну мрежу</string>
     <string name="domain">Домен</string>
     <string name="invalid">Неисправно %s</string>
-    <string name="ftp_notif_starting">ФТП сервер се покреће</string>
-    <string name="ftp_notif_title">Амејз ФТП сервер је покренут</string>
+    <string name="ftp_notif_starting">Покрећем ФТП сервер</string>
+    <string name="ftp_notif_title">Амејзов ФТП сервер је покренут</string>
     <string name="ftp_notif_text">на %s</string>
     <string name="ftp_notif_stop_server">ЗАУСТАВИ</string>
     <string name="primary_two_title">Примарна боја (десни језичак)</string>
-    <string name="primary_two_summary">Боја великих УИ елемената за десни језичак</string>
+    <string name="primary_two_summary">Боја великих елемената УИ-ја за десни језичак</string>
+    <string name="g_plus">Гугл Плус</string>
+    <string name="support_development">Подржите развој</string>
+    <string name="report_bugs_title">Пријавите грешке</string>
+    <string name="report_bugs_summary">Пријавите грешке или затражите нову функционалност</string>
+    <string name="translate_title">Преведите</string>
+    <string name="translate_summary">Преведите Амејз на ваш језик</string>
+    <string name="g_plus_community_summary">Учествујте у бета тестирању и дискусијама
+        везаним за развој</string>
+    <string name="easter_egg_title">Студијски режим</string>
+    <string name="paypal_copy_message">Пејпел ИД копиран на клипборд</string>
+    <string name="searchingdevices">Тражим уређаје</string>
+    <string name="use_custom_ip">Користите прилагођену ИП</string>
+    <string name="bookmark_lost">Обележивач није нађен, поново правим&#8230;</string>
 </resources>
-

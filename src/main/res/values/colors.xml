@@ -37,6 +37,8 @@
     <!-- TODO: replace this hardcoded color with default list item selection color -->
     <color name="check_background">#EEEEEE</color>
     <color name="grid_background_light">#f2f2f2</color>
+    <color name="black_trans">#14000000</color>
+    <color name="theme_dark_card">#0E141A</color>
 
     <!-- primary color palatte -->
     <color name="primary_red">#F44336</color>
@@ -54,9 +56,9 @@
     <color name="primary_orange">#FF9800</color>
     <color name="primary_deep_orange">#FF5722</color>
     <color name="primary_brown">#795548</color>
-    <color name="primary_black">#000000</color>
+    <color name="primary_grey_900">#000000</color>
     <color name="primary_blue_grey">#607d8b</color>
-    <color name="primary_super_su">#004d40</color>
+    <color name="primary_teal_900">#004d40</color>
 
     <!-- accent color palatte -->
     <color name="accent_red">#F44336</color>

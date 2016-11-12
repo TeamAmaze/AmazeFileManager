@@ -5,19 +5,6 @@ package com.amaze.filemanager.filesystem;
  */
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -36,7 +23,20 @@ import android.util.Log;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.icons.MimeTypes;
-import com.amaze.filemanager.utils.Futils;
+import com.stericson.RootTools.RootTools;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utility class for helping parsing file systems.
@@ -154,9 +154,6 @@ public abstract class FileUtil {
                     // Workaround for Kitkat ext SD card
                 return MediaStoreHack.getOutputStream(context,target.getPath());
                 }
-
-
-
             }
         }
         catch (Exception e) {
@@ -204,6 +201,18 @@ public abstract class FileUtil {
         return !file.exists();
     }
 
+    private static boolean rename(File f, String name,boolean root) {
+        String newname = f.getParent() + "/" + name;
+        if(f.getParentFile().canWrite()){
+            return f.renameTo(new File(newname));}
+        else if(root) {
+            RootTools.remount(f.getPath(),"rw");
+            RootHelper.runAndWait("mv " + f.getPath() + " " + newname, true);
+            RootTools.remount(f.getPath(),"ro");
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Rename a folder. In case of extSdCard in Kitkat, the old folder stays in place, but files are moved.
@@ -216,7 +225,7 @@ public abstract class FileUtil {
      */
     public static final boolean renameFolder(@NonNull final File source,@NonNull final File target,Context context) {
         // First try the normal rename.
-        if (new Futils().rename(source, target.getName(), false)) {
+        if (rename(source, target.getName(), false)) {
             return true;
         }
         if (target.exists()) {

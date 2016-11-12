@@ -55,6 +55,16 @@
         <item name="popup">@style/Theme.AppCompat</item>
         <item name="toolbar_theme">@style/overflow_white2</item>
     </style>
+
+    <!-- about activity -->
+    <style name="aboutLight" parent="appCompatLight">
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+    <!-- about activity dark -->
+    <style name="aboutDark" parent="appCompatDark">
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
     <style name="overflow_white2" parent="Theme.AppCompat">
 
         <item name="android:textColorSecondary">#ffffff</item>
@@ -69,8 +79,6 @@
         <item name="spinBars">true</item>
         <item name="color">@android:color/white</item>
     </style>
-
-
 
     <!-- styles for preferences -->
     <!-- light -->

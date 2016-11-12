@@ -1,19 +1,17 @@
 package com.amaze.filemanager.filesystem;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
 
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Logger;
+import com.amaze.filemanager.utils.OpenMode;
 import com.stericson.RootTools.RootTools;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 
 import jcifs.smb.SmbException;
@@ -23,6 +21,17 @@ import jcifs.smb.SmbFile;
  * Created by arpitkh996 on 13-01-2016.
  */
 public class Operations {
+
+    // reserved characters by OS, shall not be allowed in file names
+    private static final String FOREWARD_SLASH = "/";
+    private static final String BACKWARD_SLASH = "\\";
+    private static final String COLON = ":";
+    private static final String ASTERISK = "*";
+    private static final String QUESTION_MARK = "?";
+    private static final String QUOTE = "\"";
+    private static final String GREATER_THAN = ">";
+    private static final String LESS_THAN = "<";
+    private static final String FAT = "FAT";
 
     public interface ErrorCallBack{
         void exists(HFile file);
@@ -57,7 +66,7 @@ public class Operations {
                         if (mode == 1 || mode == 0)
                             FileUtil.mkdir(file.getFile(), context);
                         if (!file.exists() && rootMode) {
-                            file.setMode(HFile.ROOT_MODE);
+                            file.setMode(OpenMode.ROOT);
                             if (file.exists()) errorCallBack.exists(file);
                             boolean remount = false;
                             try {
@@ -118,7 +127,7 @@ public class Operations {
                             } catch (IOException e) {
                             }
                         if (!file.exists() && rootMode) {
-                            file.setMode(HFile.ROOT_MODE);
+                            file.setMode(OpenMode.ROOT);
                             if (file.exists()) errorCallBack.exists(file);
                             boolean remount = false;
                             try {
@@ -179,7 +188,7 @@ public class Operations {
                     File file = new File(f.getPath());
                     File file1 = new File(f1.getPath());
                         switch (f.getMode()){
-                            case HFile.LOCAL_MODE:
+                            case FILE:
                                 int mode = checkFolder(file.getParentFile(), context);
                                 if (mode == 2) {
                                     errorCallBack.launchSAF(f,f1);
@@ -192,22 +201,22 @@ public class Operations {
                                         } catch (Exception e) {
                                             Logger.log(e,f.getPath()+"\n"+f1.getPath(),context);
                                         }
-                                       f.setMode(HFile.ROOT_MODE);
-                                      f1.setMode(HFile.ROOT_MODE);
+                                       f.setMode(OpenMode.ROOT);
+                                      f1.setMode(OpenMode.ROOT);
                                       a=  !file.exists() && file1.exists();
                                     }
                                     errorCallBack.done(f1,a);
                                     return null;
                                 }
                                 break;
-                            case HFile.ROOT_MODE:
+                            case ROOT:
                                 try {
                                     renameRoot(file, file1.getName());
                                 } catch (Exception e) {
                                     Logger.log(e,f.getPath()+"\n"+f1.getPath(),context);
                                 }
-                                f.setMode(HFile.ROOT_MODE);
-                                f1.setMode(HFile.ROOT_MODE);
+                                f.setMode(OpenMode.ROOT);
+                                f1.setMode(OpenMode.ROOT);
                                 boolean a=  !file.exists() && file1.exists();
                                 errorCallBack.done(f1,a);
                                 break;
@@ -252,6 +261,55 @@ public class Operations {
             return 1;
         } else {
             return 0;
+        }
+    }
+
+    /**
+     * Well, we wouldn't want to copy when the target is inside the source
+     * otherwise it'll end into a loop
+     * @param sourceFile
+     * @param targetFile
+     * @return true when copy loop is possible
+     */
+    public static boolean isCopyLoopPossible(BaseFile sourceFile, HFile targetFile) {
+        if (targetFile.getPath().contains(sourceFile.getPath())) return true;
+        else return false;
+    }
+
+    /**
+     * Validates file name
+     * special reserved characters shall not be allowed in the file names on FAT filesystems
+     * @param fileName the filename, not the full path!
+     * @return boolean if the file name is valid or invalid
+     */
+    public static boolean isFileNameValid(String fileName) {
+
+        //String fileName = builder.substring(builder.lastIndexOf("/")+1, builder.length());
+
+
+        // TODO: check file name validation only for FAT filesystems
+        if ((fileName.contains(ASTERISK) || fileName.contains(BACKWARD_SLASH) ||
+                fileName.contains(COLON) || fileName.contains(FOREWARD_SLASH) ||
+                fileName.contains(GREATER_THAN) || fileName.contains(LESS_THAN) ||
+                fileName.contains(QUESTION_MARK) || fileName.contains(QUOTE))) {
+            return false;
+        } else return true;
+    }
+
+    private static boolean isFileSystemFAT(String mountPoint) {
+        String[] args = new String[] {"/bin/bash", "-c", "df -T | awk '{print $1,$2,$NF}' | grep \"^"
+                + mountPoint + "\""};
+        try {
+            Process proc = new ProcessBuilder(args).start();
+            OutputStream outputStream = proc.getOutputStream();
+            String buffer = null;
+            outputStream.write(buffer.getBytes());
+            if (buffer!=null && buffer.contains(FAT)) return true;
+            else return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            // process interrupted, returning true, as a word of cation
+            return true;
         }
     }
 }

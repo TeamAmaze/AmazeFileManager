@@ -8,11 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.services.ftpservice.FTPService;
-import com.amaze.filemanager.utils.Futils;
 
 import java.net.InetAddress;
 
@@ -22,7 +20,7 @@ import java.net.InetAddress;
 public class FTPNotification extends BroadcastReceiver{
 
     private static final int NOTIFICATION_ID = 2123;
-    Futils utils = new Futils();
+
     @Override
     public void onReceive(Context context, Intent intent) {
         switch(intent.getAction()){
@@ -47,19 +45,19 @@ public class FTPNotification extends BroadcastReceiver{
                 + FTPService.getPort() + "/";
 
         int icon = R.drawable.ic_ftp_light;
-        CharSequence tickerText = utils.getString(context,R.string.ftp_notif_starting);
+        CharSequence tickerText = context.getResources().getString(R.string.ftp_notif_starting);
         long when = System.currentTimeMillis();
 
 
-        CharSequence contentTitle = utils.getString(context,R.string.ftp_notif_title);
-        CharSequence contentText = String.format(utils.getString(context,R.string.ftp_notif_text), iptext);
+        CharSequence contentTitle = context.getResources().getString(R.string.ftp_notif_title);
+        CharSequence contentText = String.format(context.getResources().getString(R.string.ftp_notif_text), iptext);
 
         Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
         int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
-        CharSequence stopText = utils.getString(context,R.string.ftp_notif_stop_server);
+        CharSequence stopText = context.getResources().getString(R.string.ftp_notif_stop_server);
         Intent stopIntent = new Intent(FTPService.ACTION_STOP_FTPSERVER);
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 0,
                 stopIntent, PendingIntent.FLAG_ONE_SHOT);

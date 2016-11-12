@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.services.ftpservice.FTPService;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 
 /**
@@ -30,9 +29,9 @@ public class FTPServerFragment extends Fragment {
 
     TextView statusText,warningText,ftpAddrText;
     Button ftpBtn;
-    Futils utils = new Futils();
     private MainActivity mainActivity;
     private View rootView;
+
     private BroadcastReceiver mWifiReceiver = new  BroadcastReceiver() {
 
         @Override
@@ -44,10 +43,10 @@ public class FTPServerFragment extends Fragment {
             }
             else{
                 stopServer();
-                statusText.setText(utils.getString(getContext(),R.string.ftp_status_not_running));
-                warningText.setText(utils.getString(getContext(),R.string.ftp_no_wifi));
+                statusText.setText(getResources().getString(R.string.ftp_status_not_running));
+                warningText.setText(getResources().getString(R.string.ftp_no_wifi));
                 ftpAddrText.setText("");
-                ftpBtn.setText(utils.getString(getContext(),R.string.start_ftp));
+                ftpBtn.setText(getResources().getString(R.string.start_ftp));
             }
         }
     };
@@ -56,28 +55,29 @@ public class FTPServerFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if(action == FTPService.ACTION_STARTED) {
-                statusText.setText(utils.getString(getContext(), R.string.ftp_status_running));
+                statusText.setText(getResources().getString( R.string.ftp_status_running));
                 warningText.setText("");
                 ftpAddrText.setText(getFTPAddressString());
-                ftpBtn.setText(utils.getString(getContext(),R.string.stop_ftp));
+                ftpBtn.setText(getResources().getString(R.string.stop_ftp));
             }
             else if(action == FTPService.ACTION_FAILEDTOSTART){
-                statusText.setText(utils.getString(getContext(),R.string.ftp_status_not_running));
+                statusText.setText(getResources().getString(R.string.ftp_status_not_running));
                 warningText.setText("Oops! Something went wrong");
                 ftpAddrText.setText("");
-                ftpBtn.setText(utils.getString(getContext(),R.string.start_ftp));
+                ftpBtn.setText(getResources().getString(R.string.start_ftp));
             }
             else if(action == FTPService.ACTION_STOPPED){
-                statusText.setText(utils.getString(getContext(),R.string.ftp_status_not_running));
+                statusText.setText(getResources().getString(R.string.ftp_status_not_running));
                 ftpAddrText.setText("");
-                ftpBtn.setText(utils.getString(getContext(),R.string.start_ftp));
+                ftpBtn.setText(getResources().getString(R.string.start_ftp));
             }
         }
     };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
+        setHasOptionsMenu(true);
 
     }
 
@@ -85,8 +85,7 @@ public class FTPServerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_ftp,container,false);
-//        return inflater.inflate(R.layout.article_view, container, false);
+        rootView = inflater.inflate(R.layout.fragment_ftp, container, false);
         statusText =(TextView) rootView.findViewById(R.id.statusText);
         warningText = (TextView) rootView.findViewById(R.id.warningText);
         ftpAddrText = (TextView) rootView.findViewById(R.id.ftpAddressText);
@@ -105,6 +104,7 @@ public class FTPServerFragment extends Fragment {
             //dark
             ftpImage.setImageResource(R.drawable.ic_ftp_dark);
         }
+
         ftpBtn.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -113,7 +113,7 @@ public class FTPServerFragment extends Fragment {
                     if(FTPService.isConnectedToWifi(getContext()))
                         startServer();
                     else
-                        warningText.setText(utils.getString(getContext(),R.string.ftp_no_wifi));
+                        warningText.setText(getResources().getString(R.string.ftp_no_wifi));
                 }
                 else{
                     stopServer();
@@ -128,7 +128,7 @@ public class FTPServerFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
         mainActivity=(MainActivity)getActivity();
-        mainActivity.setActionBarTitle(utils.getString(getActivity(), R.string.ftp));
+        mainActivity.setActionBarTitle(getResources().getString(R.string.ftp));
         mainActivity.floatingActionButton.hideMenuButton(true);
         mainActivity.buttonBarFrame.setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
@@ -138,10 +138,16 @@ public class FTPServerFragment extends Fragment {
         super.onDestroy();
     }
 
+    /**
+     * Sends a broadcast to start ftp server
+     */
     private void startServer() {
         getContext().sendBroadcast(new Intent(FTPService.ACTION_START_FTPSERVER));
     }
 
+    /**
+     * Sends a broadcast to stop ftp server
+     */
     private void stopServer() {
         getContext().sendBroadcast(new Intent(FTPService.ACTION_STOP_FTPSERVER));
     }
@@ -166,17 +172,26 @@ public class FTPServerFragment extends Fragment {
         getContext().unregisterReceiver(mWifiReceiver);
         getContext().unregisterReceiver(ftpReceiver);
     }
+
+    /**
+     * Update UI widgets based on connection status
+     */
     private void updateStatus(){
         if(FTPService.isRunning()){
-            statusText.setText(utils.getString(getContext(),R.string.ftp_status_running));
-            ftpBtn.setText(utils.getString(getContext(),R.string.stop_ftp));
+            statusText.setText(getResources().getString(R.string.ftp_status_running));
+            ftpBtn.setText(getResources().getString(R.string.stop_ftp));
             ftpAddrText.setText(getFTPAddressString());
         }
         else{
-            statusText.setText(utils.getString(getContext(),R.string.ftp_status_not_running));
-            ftpBtn.setText(utils.getString(getContext(),R.string.start_ftp));
+            statusText.setText(getResources().getString(R.string.ftp_status_not_running));
+            ftpBtn.setText(getResources().getString(R.string.start_ftp));
         }
     }
+
+    /**
+     *
+     * @return address at which server is running
+     */
     private String getFTPAddressString(){
         return "ftp://"+FTPService.getLocalInetAddress(getContext()).getHostAddress()+":"+FTPService.getPort();
     }

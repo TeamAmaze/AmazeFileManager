@@ -23,6 +23,15 @@ public class DataUtils {
     public static int containsServer(String[] a){
         return contains(a,servers);
     }
+    public static int containsServer(String path){
+        if(servers==null)return -1;
+        int i = 0;
+        for (String[] x : servers) {
+            if (x[1].equals(path)) return i;
+            i++;
+
+        }
+        return -1;    }
     public static int containsBooks(String[] a){
         return contains(a,books);
     }

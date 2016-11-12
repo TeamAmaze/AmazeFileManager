@@ -49,6 +49,7 @@
         <item name="popup">@style/Theme.AppCompat</item>
         <item name="toolbar_theme">@style/overflow_white2</item>
     </style>
+
     <style name="overflow_white2" parent="Theme.AppCompat">
 
         <item name="android:textColorSecondary">#ffffff</item>
