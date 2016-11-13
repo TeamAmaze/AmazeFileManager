@@ -49,6 +49,7 @@
     <string name="create">CRIAR</string>
     <string name="success">Sucesso</string>
     <string name="filenotexists">O arquivo não existe</string>
+    <string name="loading">Carregando&#8230;</string>
     <string name="file_empty">O arquivo está vazio</string>
     <string name="error">Erro</string>
     <string name="cantlistfiles">Não é possível listar arquivos sem root</string>
@@ -86,6 +87,7 @@
     <string name="guide2">Toque na faixa azul para mostrar/ocultar a barra de caminho</string>
     <string name="guide3">Toque longo no arquivo para mais opções</string>
     <string name="guide4">Por exemplo: copiar, mover, propriedades, etc.</string>
+    <string name="guide5">Use o botão Voltar do seu aparelho para sair do aplicativo&#8230;</string>
     <string name="guide6">... E use o botão de seta à esquerda para navegar no gerenciador de arquivos</string>
     <string name="maintab">A aba principal não pode ser removida</string>
     <string name="openparent">Abrir pasta superior</string>
@@ -235,7 +237,7 @@
     <string name="rootPref">Mostrar permissões</string>
     <string name="aboutFileManager">Sobre o Gerenciador de Arquivos Amaze</string>
     <string name="version">Versão</string>
-    <string name="rate">Avaliar o aplicativo</string>
+    <string name="rate">Avalie o aplicativo</string>
     <string name="license">Licenças Open Source</string>
     <string name="feedback">Enviar comentários</string>
     <string name="hiddenfiles">Ocultar arquivos</string>
@@ -255,6 +257,7 @@
     <string name="archive">Pacote</string>
     <string name="archtext">Isto é um pacote. Qual ação gostaria de efetuar?</string>
     <string name="pitext">Isto é um instalador de pacote. Qual ação gostaria de efetuar?</string>
+    <string name="xda_title">XDA</string>
     <string name="xda_summary">Controle de qualidade, ajuda e resolução de problemas</string>
     <string name="invalid_dir">Pasta inválida</string>
     <string name="circularimages">Utiliza ícones circulares para imagens e vídeos</string>
@@ -276,8 +279,13 @@
     <string name="portuguese_translation_title">Português</string>
     <string name="polish_translation_title">Polonês</string>
     <string name="korean_translation_title">Coreano</string>
+    <string name="greek_translation_title">Grego</string>
     <string name="dutch_translation_title">Holandês</string>
     <string name="romanian_translation_title">Romeno</string>
+    <string name="vietnamese_translation_title">Vietnamita</string>
+    <string name="japanese_translation_title">Japonês</string>
+    <string name="brazilian_portuguese_translation_title">Português do Brasil</string>
+    
     <string name="zip_viewer">Visualizador de Zip</string>
     <string name="unin_system_apk">Este é um aplicativo de sistema e sua exclusão poderá deixar o sistema instável.\nContinuar?</string>
     <string name="warning">Aviso</string>
@@ -295,6 +303,7 @@
     <string name="image">Imagem</string>
     <string name="contributors">Colaboradores</string>
     <string name="savepaths">Memorizar caminhos</string>
+    <string name="savepathsummary">Ao iniciar, a pasta visualizada mais recentemente em cada aba será exibida</string>
     <string name="select_intent">Selecionar</string>
     <string name="md5copied">MD5 copiado para a área de transferência</string>
     <string name="generating">Gerando..</string>
@@ -312,8 +321,8 @@
 
     <string name="color_title">Cor</string>
     <string name="color_summary">Define a cor dos componentes da interface</string>
-    <string name="primary_color_title">Cor primária</string>
-    <string name="primary_color_summary">Define a cor dos principais elementos</string>
+    <string name="primary_color_title">Cor primária (aba esquerda)</string>
+    <string name="primary_color_summary">Define a cor dos elementos grandes da interface para a aba esquerda</string>
     <string name="accent_color_title">Cor secundária</string>
     <string name="accent_color_summary">Define a cor do FAB e dos outros elementos da inteface</string>
     <string name="icon_color_title">Cor dos ícones</string>
@@ -323,6 +332,7 @@
     <string name="hide_toolbar">Ocultar barra de ferramentas</string>
     <string name="hide_appbar">Ocultar barra do aplicativo</string>
     <string name="choose_color">Escolha a cor</string>
+    <string name="g_plus_community_title">Comunidade G+</string>
     <string name="hide_mode_nothing">A barra do aplicativo fica inalterada</string>
     <string name="hide_mode_toolbar">Ocultar barra de ferramentas ao deslocar</string>
     <string name="hide_mode_app_bar">Ocultar barra do aplicativo ao deslocar</string>
@@ -400,7 +410,57 @@
     <string name="ftp_notif_title">Servidor FTP Amaze em execução</string>
     <string name="ftp_notif_text">em %s</string>
     <string name="ftp_notif_stop_server">PARAR</string>
-    <string name="primary_two_title">Cor primária da segunda aba</string>
-    <string name="primary_two_summary">Define a cor da segunda aba</string>
+    <string name="primary_two_title">Cor primária (aba direita)</string>
+    <string name="primary_two_summary">Define a cor dos elementos grandes da interface para a aba direita</string>
+    <string name="g_plus">Google Plus</string>
+    <string name="support_development">Apoie o desenvolvimento</string>
+    <string name="report_bugs_title">Relate erros</string>
+    <string name="report_bugs_summary">Comunique erros encontrados ou solicite novas funcionalidades</string>
+    <string name="translate_title">Traduza</string>
+    <string name="translate_summary">Traduza o Amaze para seu idioma</string>
+    <string name="g_plus_community_summary">Participe dos testes da versão beta e de discussões relacionadas ao desenvolvimento</string>
+    <string name="easter_egg_title">Modo Studio</string>
+    <string name="paypal_copy_message">ID do Paypal copiado para a área de transferência</string>
     <string name="searchingdevices">Procurando dispositivos</string>
+    <string name="use_custom_ip">Usar IP personalizado</string>
+    <string name="bookmark_lost">Favorito não encontrado, recriando&#8230;</string>
+    
+    <string name="smb_instructions">
+        <html>
+            <body>
+            <center>\n
+            <h1>Como acessar uma pasta compartilhada do Windows no Android (smb)</h1>\n
+            </center>\n
+            <ol>\n
+            <li>\n
+            <b>Ative o compartilhamento de arquivos</b>\n
+            <br/>Abra o Painel de Controle, clique em \'Escolher opções de grupo doméstico e de 
+                    compartilhamento\' no grupo Rede e Internet, e depois clique em \'Alterar as 
+                    configurações de compartilhamento avançadas\'. Ative a opção de compartilhamento 
+                    de arquivo e impressora.\n
+            </li><br/><li/><b>Configurações adicionais de compartilhamento de arquivos</b><br/>Você 
+                    pode querer configurar outras definições de compartilhamento avançadas. \n
+            Por exemplo, você pode ativar o acesso aos seus arquivos sem precisar digitar uma senha, 
+                caso confie em todos os dispositivos da sua rede local. Assim que o compartilhamento 
+                de arquivo e impressora estiver ativo, você poderá abrir o Windows Explorer, clicar 
+                com o botão direito do mouse em uma pasta que quiser compartilhar e selecionar 
+                Propriedades. \n
+            Clique no botão Compartilhar para que a pasta fique disponível na rede.\n
+            <li><li/><br/><b>Certifique-se de que ambos os dispositivos estejam na mesma rede Wi-fi</b><br/> \n
+            Esta funcionalidade disponibiliza arquivos na rede local, permitindo que seu computador e 
+                    aparelhos móveis tenham acesso a mesma rede local. Você não poderá acessar uma 
+                    pasta compartilhada do Windows através da Internet ou quando seu smartphone estiver 
+                    conectado através de dados móveis - ele precisa estar conectado à rede Wi-Fi.</li><li>\n
+            <br/><b>Procure o endereço IP</b>\n
+            <br/>Abra o Prompt de Comando. Digite \'ipconfig\' e pressione Enter. Procure por Gateway
+                    Padrão no seu adaptador de rede para identificar o endereço IP do seu roteador.  
+                    Encontre o \\\"Endereço IPv4\\\" na mesma seção do adaptador para identificar o 
+                    endereço IP do seu computador.</li><li/><br/>\n
+            <b>Digite os detalhes na caixa de diálogo smb</b>\n
+            <br/>\n
+            </ol>\n
+            </body>\n
+            </html>
+    </string>
+    <string name="share_limit">Não é possível compartilhar mais que 100 arquivos</string>
 </resources>
