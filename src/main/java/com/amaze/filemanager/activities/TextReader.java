@@ -21,6 +21,7 @@ package com.amaze.filemanager.activities;
 
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -32,11 +33,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -91,7 +94,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     //ArrayList<StringBuilder> texts;
     //static final int maxlength=200;
     //int index=0;
-     ScrollView scrollView;
+    ScrollView scrollView;
 
     /*
      * List maintaining the searched text's start/end index as key/value pair
@@ -135,7 +138,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         //findViewById(R.id.lin).setBackgroundColor(Color.parseColor(skin));
         toolbar.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
         searchViewLayout.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.LOLLIPOP) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
                     getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
@@ -159,14 +162,14 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         int sdk = Build.VERSION.SDK_INT;
 
-        if (sdk == 20 || sdk == 19) {
+        if (sdk == Build.VERSION_CODES.KITKAT_WATCH || sdk == Build.VERSION_CODES.KITKAT) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.texteditor).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
-        } else if (Build.VERSION.SDK_INT >= 21) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             boolean colourednavigation = Sp.getBoolean("colorednavigation", true);
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -246,16 +249,16 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     }
 
     class a extends ScrollView {
-    public a(Context context) {
-        super(context);
-    }
+        public a(Context context) {
+            super(context);
+        }
 
-    @Override
-    protected void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
-        super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
+        @Override
+        protected void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
+            super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
 
+        }
     }
-}
 
     private void checkUnsavedChanges() {
         if (mOriginal != null && mInput.isShown() && !mOriginal.equals(mInput.getText().toString())) {
@@ -356,8 +359,8 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                         StringBuilder stringBuilder=new StringBuilder();
                         BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
                         if(bufferedReader!=null){
-                         //   int i=0,k=0;
-                       //     StringBuilder stringBuilder1=new StringBuilder("");
+                            //   int i=0,k=0;
+                            //     StringBuilder stringBuilder1=new StringBuilder("");
                             while ((str=bufferedReader.readLine())!=null){
                                 stringBuilder.append(str+"\n");
                          /*       if(k<maxlength){
@@ -371,16 +374,16 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                                     k=1;
                                 }
                         */    }
-                          //  texts.add(i,stringBuilder1);
+                            //  texts.add(i,stringBuilder1);
                         }
                         mOriginal=stringBuilder.toString();
-                     inputStream.close();
+                        inputStream.close();
                     } else {
                         mOriginal = "";
                         StringBuilder stringBuilder=new StringBuilder();
                         ArrayList<String> arrayList = RootHelper
                                 .runAndWait1("cat " + mFile.getPath(), true);
-                      //  int i=0,k=0;
+                        //  int i=0,k=0;
                         //StringBuilder stringBuilder1=new StringBuilder("");
                         for (String str:arrayList){
                             stringBuilder.append(str+"\n");
@@ -395,7 +398,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                                 k=1;
                             }
                         */}
-                       // texts.add(i,stringBuilder1);
+                        // texts.add(i,stringBuilder1);
                         mOriginal=stringBuilder.toString();
                     }
                     runOnUiThread(new Runnable() {
@@ -519,19 +522,19 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
     InputStream getInputStream(Uri uri,String path){
         InputStream stream=null;
-           try {
-               stream=getContentResolver().openInputStream(uri);
-           } catch (FileNotFoundException e) {
-               stream=null;
-           }
+        try {
+            stream=getContentResolver().openInputStream(uri);
+        } catch (FileNotFoundException e) {
+            stream=null;
+        }
         if(stream==null)
             if(new File(path).canRead()){
-            try {
-                stream=new FileInputStream(path);
-            } catch (FileNotFoundException e) {
-                stream=null;
+                try {
+                    stream=new FileInputStream(path);
+                } catch (FileNotFoundException e) {
+                    stream=null;
+                }
             }
-        }
 
         return stream;
     }
@@ -550,8 +553,14 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         // hardcoded and completely random
         int cx = metrics.widthPixels - 160;
         int cy = toolbar.getBottom();
-        Animator animator = ViewAnimationUtils.createCircularReveal(searchViewLayout, cx, cy,
-                startRadius, endRadius);
+        Animator animator;
+        // FIXME: 2016/11/18   ViewAnimationUtils Compatibility
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+            animator = ViewAnimationUtils.createCircularReveal(searchViewLayout, cx, cy,
+                    startRadius, endRadius);
+        }else {
+            animator = new ObjectAnimator().ofFloat(searchViewLayout, "alpha", 0f, 1f);
+        }
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
         searchViewLayout.setVisibility(View.VISIBLE);
@@ -598,8 +607,16 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         // hardcoded and completely random
         int cx = metrics.widthPixels - 160;
         int cy = toolbar.getBottom();
-        Animator animator = ViewAnimationUtils.createCircularReveal(searchViewLayout, cx, cy,
-                startRadius, endRadius);
+
+        Animator animator;
+        // FIXME: 2016/11/18   ViewAnimationUtils Compatibility
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+            animator = ViewAnimationUtils.createCircularReveal(searchViewLayout, cx, cy,
+                    startRadius, endRadius);
+        }else {
+            animator = new ObjectAnimator().ofFloat(searchViewLayout, "alpha", 0f, 1f);
+        }
+
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
         animator.start();
@@ -646,8 +663,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
                     // highlighting previous element in list
                     Map.Entry keyValueNew = (Map.Entry) nodes.get(--mCurrent).getKey();
-                    mInput.getText().setSpan(new BackgroundColorSpan(getResources()
-                                    .getColor(R.color.search_text_highlight, getTheme())),
+                    mInput.getText().setSpan(new BackgroundColorSpan(ContextCompat.getColor(this, R.color.search_text_highlight)),
                             (Integer) keyValueNew.getKey(),
                             (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
@@ -672,8 +688,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                     }
 
                     Map.Entry keyValueNew = (Map.Entry) nodes.get(++mCurrent).getKey();
-                    mInput.getText().setSpan(new BackgroundColorSpan(getResources()
-                                    .getColor(R.color.search_text_highlight, getTheme())),
+                    mInput.getText().setSpan(new BackgroundColorSpan(ContextCompat.getColor(this, R.color.search_text_highlight)),
                             (Integer) keyValueNew.getKey(),
                             (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
