@@ -411,6 +411,10 @@
     <string name="ftp_notif_title">Amaze FTP Server running</string>
     <string name="ftp_notif_text">at %s</string>
     <string name="ftp_notif_stop_server">STOP</string>
+    <string name="ftp_preference_port_auto_chkbx">Select port automatically</string>
+    <string name="ftp_preference_port_auto_chkbx_summary">Automatically selects an available port. Default is 2211.</string>
+    <string name="ftp_preference_port_edit">FTP port</string>
+    <string name="ftp_preference_port_edit_summary">The FTP port. Can also be set automatically.</string>
     <string name="primary_two_title">Primary Color (Right Tab)</string>
     <string name="primary_two_summary">Set color to large UI elements for the right tab</string>
     <string name="g_plus">Google Plus</string>

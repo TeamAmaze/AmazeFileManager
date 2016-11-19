@@ -21,27 +21,27 @@
     <PreferenceCategory android:title="@string/ui">
         <Preference
             android:key="theme"
-            android:title="@string/theme" />
+            android:title="@string/theme"/>
         <Preference
-            android:title="@string/color_title"
             android:key="colors"
-            android:summary="@string/color_summary"/>
+            android:summary="@string/color_summary"
+            android:title="@string/color_title"/>
 
         <com.amaze.filemanager.ui.views.CheckBx
-            android:key="circularimages"
             android:defaultValue="true"
+            android:key="circularimages"
             android:summary="@string/circularimages"
             android:title="@string/circularicons"/>
         <com.amaze.filemanager.ui.views.CheckBx
-            android:key="plus_pic"
-            android:title="@string/gplus_pic_title"
-            android:summary="@string/gplus_pic_summary"
             android:defaultValue="false"
-            android:enabled="true"/>
+            android:enabled="true"
+            android:key="plus_pic"
+            android:summary="@string/gplus_pic_summary"
+            android:title="@string/gplus_pic_title"/>
         <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="true"
             android:key="showDividers"
-            android:title="@string/showDividers" />
+            android:title="@string/showDividers"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/general">
@@ -49,50 +49,50 @@
             android:defaultValue="true"
             android:key="savepaths"
             android:summary="@string/savepathsummary"
-            android:title="@string/savepaths" />
+            android:title="@string/savepaths"/>
         <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="true"
             android:key="showThumbs"
             android:summary="@string/thumbSummary"
-            android:title="@string/thumb" />
-		<com.amaze.filemanager.ui.views.CheckBx
+            android:title="@string/thumb"/>
+        <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="false"
             android:key="showHidden"
-            android:title="@string/hidden" />
+            android:title="@string/hidden"/>
         <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="true"
-            android:key="showLastModified"
             android:enabled="false"
+            android:key="showLastModified"
             android:summary="@string/lastModifiedSummary"
-            android:title="@string/lastModifiedPref" />
+            android:title="@string/lastModifiedPref"/>
         <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="false"
             android:key="showFileSize"
             android:summary="@string/sizePrefSummary"
-            android:title="@string/sizePref" />
+            android:title="@string/sizePref"/>
         <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="false"
             android:key="goBack_checkbox"
-            android:title="@string/back_title"
-            android:summary="@string/back_summary" />
+            android:summary="@string/back_summary"
+            android:title="@string/back_title"/>
         <Preference
             android:key="columns"
-            android:title="@string/gridcolumnno" />
+            android:title="@string/gridcolumnno"/>
 
-    
+
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/archive_preferences">
         <EditTextPreference
             android:key="extractpath"
-            android:title="@string/archive_extract_folder"
-            android:summary="@string/archive_summary">
+            android:summary="@string/archive_summary"
+            android:title="@string/archive_extract_folder">
         </EditTextPreference>
         <EditTextPreference
             android:key="zippath"
             android:summary="@string/zip_summary"
             android:title="@string/zip_create_folder">
         </EditTextPreference>
-</PreferenceCategory>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/miscellaneous">
 
         <PreferenceScreen
@@ -100,13 +100,13 @@
             >
             <com.amaze.filemanager.ui.views.CheckBx
                 android:key="regex"
-                android:title="@string/regular_expression"
                 android:summary="@string/regular_expression_summary"
+                android:title="@string/regular_expression"
                 />
             <com.amaze.filemanager.ui.views.CheckBx
                 android:key="matches"
-                android:title="@string/match_content"
                 android:summary="@string/match_content_summary"
+                android:title="@string/match_content"
                 />
         </PreferenceScreen>
 
@@ -114,12 +114,27 @@
             android:defaultValue="false"
             android:key="showPermissions"
             android:summary="@string/rootPrefSummary"
-            android:title="@string/rootPref" />
+            android:title="@string/rootPref"/>
         <com.amaze.filemanager.ui.views.CheckBx
             android:defaultValue="false"
             android:key="rootmode"
             android:summary="@string/rootmodesummary"
-            android:title="@string/rootmode" />
+            android:title="@string/rootmode"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="FTP Server">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="autoFtpPort"
+            android:summary="@string/ftp_preference_port_auto_chkbx_summary"
+            android:title="@string/ftp_preference_port_auto_chkbx"/>
+        <EditTextPreference
+            android:key="ftpPort"
+            android:defaultValue="2211"
+            android:summary="@string/ftp_preference_port_edit_summary"
+            android:title="@string/ftp_preference_port_edit"
+            android:inputType="numberDecimal"
+            android:digits="0123456789"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/about">
@@ -129,6 +144,6 @@
             />
         <Preference
             android:key="feedback"
-            android:title="@string/feedback" />
+            android:title="@string/feedback"/>
     </PreferenceCategory>
 </PreferenceScreen>
