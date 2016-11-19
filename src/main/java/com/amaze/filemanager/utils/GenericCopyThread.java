@@ -7,9 +7,10 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.services.ProgressHandler;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 
 /**
  * Created by vishal on 26/10/16.
@@ -31,40 +32,32 @@ public class GenericCopyThread implements Runnable {
     @Override
     public void run() {
 
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
+        FileInputStream inputStream = null;
+        FileOutputStream outputStream = null;
+        FileChannel inChannel = null;
+        FileChannel outChannel = null;
         try {
-            inputStream = mSourceFile.getInputStream();
-            outputStream = mTargetFile.getOutputStream(mContext);
+            inputStream = (FileInputStream) mSourceFile.getInputStream();
+            outputStream = (FileOutputStream) mTargetFile.getOutputStream(mContext);
+            inChannel = inputStream.getChannel();
+            outChannel = outputStream.getChannel();
 
             // writing to file
-            //progressHandler.setFileName(mSourceFile.getName());
-            //progressHandler.setTotalSize(mSourceFile.getSize());
-            int source;
-            int length=0;
-            while((source=inputStream.read()) !=- 1) {
-                //progressHandler.addReadLength(inputStream.available());
-                outputStream.write(source);
-                //progressHandler.addWrittenLength(++length, 0);
-            }
+            progressHandler.setFileName(mSourceFile.getName());
+            progressHandler.setTotalSize(mSourceFile.getSize());
+            inChannel.transferTo(0, inChannel.size(), outChannel);
+            progressHandler.addReadLength(Float.valueOf(inChannel.position()).intValue());
+            progressHandler.addWrittenLength(Float.valueOf(outChannel.position()).intValue(), 0);
         } catch (IOException e) {
             e.printStackTrace();
             Log.d(getClass().getSimpleName(), "I/O Error!");
         } finally {
-            if (inputStream!=null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try {
+                inChannel.close();
+                outChannel.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

@@ -168,8 +168,6 @@ public class CopyService extends Service {
             ArrayList<HFile> failedFOps;
             ArrayList<BaseFile> toDelete;
             boolean copy_successful;
-            ReadThread readThread;
-            WriteThread writeThread;
             public Copy() {
                 copy_successful=true;
                 failedFOps=new ArrayList<>();
@@ -231,7 +229,6 @@ public class CopyService extends Service {
                                 final boolean move,OpenMode mode) {
                 if (checkFolder((FILE2), c) == 1) {
                     final ProgressHandler progressHandler=new ProgressHandler(-1);
-                    BufferHandler bufferHandler=new BufferHandler(c);
                     GenericCopyThread copyThread = new GenericCopyThread(c);
                     progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
                         @Override
@@ -252,7 +249,7 @@ public class CopyService extends Service {
                                     continue;
                                 }
                                 HFile hFile=new HFile(mode,FILE2, files.get(i).getName(),f1.isDirectory());
-                                copyFiles((f1),hFile, bufferHandler, copyThread,progressHandler, id, move);
+                                copyFiles((f1),hFile, copyThread,progressHandler, id, move);
                             }
                             else{
                                 break;
@@ -266,28 +263,16 @@ public class CopyService extends Service {
                             break;
                         }
                     }
-                    int i=1;
-                    while(bufferHandler.writing && copyThread.thread == null){
-                        try {
-                            if(i>5)i=5;
-                            Thread.sleep(i*100);
-                            i++;
-                            System.out.print("Waiting for writer to finish");
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
                     // waiting for generic copy thread to finish before returning from this point
                     try {
 
                         if (copyThread.thread!=null) {
                             copyThread.thread.join();
-                            Log.d(getClass().getSimpleName(), "Thread alive: " + copyThread.thread.isAlive());
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                        // thread interrupted for some reason, probably already been handled
                     }
+
                 } else if (rootmode) {
                     for (int i = 0; i < files.size(); i++) {
                         String path=files.get(i).getPath();
@@ -323,7 +308,6 @@ public class CopyService extends Service {
             }
 
             private void copyFiles(final BaseFile sourceFile,final HFile targetFile,
-                                   BufferHandler bufferHandler,
                                    GenericCopyThread copyThread,
                                    ProgressHandler progressHandler,
                                    final int id,final boolean move) throws IOException {
@@ -333,10 +317,10 @@ public class CopyService extends Service {
 
                     if (!targetFile.exists()) targetFile.mkdir(c);
 
-                    // various checks - 1. target file is able to be created or not
-                    // 2. source file and target file doesn't end up in loop
-                    // 3. source file has a valid name or not
-                    if(!targetFile.exists() || !Operations.isFileNameValid(sourceFile.getName())
+                    // various checks
+                    // 1. source file and target file doesn't end up in loop
+                    // 2. source file has a valid name or not
+                    if(!Operations.isFileNameValid(sourceFile.getName())
                             || Operations.isCopyLoopPossible(sourceFile, targetFile)){
                         Log.e("Copy","cant make dir");
                         failedFOps.add(sourceFile);
@@ -348,7 +332,7 @@ public class CopyService extends Service {
                     ArrayList<BaseFile> filePaths = sourceFile.listFiles(false);
                     for (BaseFile file : filePaths) {
                         HFile destFile = new HFile(targetFile.getMode(),targetFile.getPath(), file.getName(),file.isDirectory());
-                        copyFiles(file, destFile,bufferHandler, copyThread,progressHandler, id, move);
+                        copyFiles(file, destFile,copyThread,progressHandler, id, move);
                     }
                     if(!hash.get(id))return;
                 } else {
@@ -360,29 +344,15 @@ public class CopyService extends Service {
                     }
 
                     System.out.println("Copy start for "+targetFile.getName());
-                    if (sourceFile.getSize()>1024 * 60) {
 
-                        // use memory buffer implementation to improve perf for big files
-                        bufferHandler.addFile(sourceFile, targetFile);
-                        if(readThread==null){
-                            readThread=new ReadThread(bufferHandler,progressHandler);
-                            readThread.start();
-                        }
-                        if(writeThread==null){
-                            writeThread=new WriteThread(bufferHandler,progressHandler);
-                            writeThread.start();
-                        }
-                    } else {
-
-                        // start a new thread only after previous work is done
-                        try {
-                            if (copyThread.thread!=null) copyThread.thread.join();
-                            copyThread.startThread(sourceFile, targetFile, progressHandler);
-                        } catch (InterruptedException e) {
-                            // thread interrupted due to some problem. we must return
-                            failedFOps.add(sourceFile);
-                            copy_successful = false;
-                        }
+                    // start a new thread only after previous work is done
+                    try {
+                        if (copyThread.thread!=null) copyThread.thread.join();
+                        copyThread.startThread(sourceFile, targetFile, progressHandler);
+                    } catch (InterruptedException e) {
+                        // thread interrupted due to some problem. we must return
+                        failedFOps.add(sourceFile);
+                        copy_successful = false;
                     }
                 }
             }
