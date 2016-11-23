@@ -31,30 +31,25 @@ import com.amaze.filemanager.utils.OpenMode;
 
 public class Layoutelements implements Parcelable {
     public Layoutelements(Parcel im) {
-        try {
-            Bitmap bitmap = (Bitmap) im.readParcelable(getClass().getClassLoader());
-            // Convert Bitmap to Drawable:
-            imageId = new BitmapDrawable(bitmap);
-
-            title = im.readString();
-            desc = im.readString();
-            permissions = im.readString();
-            symlink = im.readString();
-            int j = im.readInt();
-            date = im.readLong();
-            int i = im.readInt();
-            if (i == 0) {
-                header = false;
-            } else {
-                header = true;
-            } if (j == 0) {
-                isDirectory = false;
-            } else {
-                isDirectory= true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        title = im.readString();
+        desc = im.readString();
+        permissions = im.readString();
+        symlink = im.readString();
+        int j = im.readInt();
+        date = im.readLong();
+        int i = im.readInt();
+        if (i == 0) {
+            header = false;
+        } else {
+            header = true;
+        } if (j == 0) {
+            isDirectory = false;
+        } else {
+            isDirectory= true;
         }
+        Bitmap bitmap = (Bitmap) im.readParcelable(getClass().getClassLoader());
+        // Convert Bitmap to Drawable:
+        imageId = new BitmapDrawable(bitmap);
         date1 = im.readString();
         longSize=im.readLong();
     }
@@ -142,7 +137,7 @@ public class Layoutelements implements Parcelable {
     }
 
     public boolean isDirectory() {
-    return isDirectory;}
+        return isDirectory;}
     public BaseFile generateBaseFile(){
         BaseFile baseFile=new BaseFile(getDesc(),getPermissions(),getDate1(),longSize,isDirectory());
         baseFile.setMode(mode);
