@@ -93,10 +93,9 @@ public class FTPServerFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.choose_ftp_port:
                 int currentFtpPort = FTPService.getDefaultPortFromPreferences(preferences);
-                String currentFtpPortStr = Integer.toString(currentFtpPort);
 
                 new MaterialDialog.Builder(getActivity())
-                        .input(getString(R.string.ftp_port_edit_menu_title), currentFtpPortStr, true, new MaterialDialog.InputCallback() {
+                        .input(getString(R.string.ftp_port_edit_menu_title), Integer.toString(currentFtpPort), true, new MaterialDialog.InputCallback() {
                             @Override
                             public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
 
@@ -115,9 +114,7 @@ public class FTPServerFragment extends Fragment {
                                         Toast.makeText(getActivity(), R.string.ftp_port_change_error_invalid, Toast.LENGTH_SHORT)
                                              .show();
                                     } else {
-                                        preferences.edit()
-                                                   .putString(FTPService.PORT_PREFERENCE_KEY, name)
-                                                   .apply();
+                                        FTPService.changeFTPServerPort(preferences, portNumber);
                                         Toast.makeText(getActivity(), R.string.ftp_port_change_success, Toast.LENGTH_SHORT)
                                              .show();
                                     }
@@ -137,8 +134,6 @@ public class FTPServerFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
         mainActivity.getMenuInflater().inflate(R.menu.ftp_server_menu, menu);
     }
 

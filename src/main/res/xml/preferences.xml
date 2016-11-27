@@ -122,21 +122,6 @@
             android:title="@string/rootmode"/>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="FTP Server">
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="autoFtpPort"
-            android:summary="@string/ftp_preference_port_auto_chkbx_summary"
-            android:title="@string/ftp_preference_port_auto_chkbx"/>
-        <EditTextPreference
-            android:key="ftpPort"
-            android:defaultValue="2211"
-            android:summary="@string/ftp_preference_port_edit_summary"
-            android:title="@string/ftp_preference_port_edit"
-            android:inputType="numberDecimal"
-            android:digits="0123456789"/>
-    </PreferenceCategory>
-
     <PreferenceCategory android:title="@string/about">
         <Preference
             android:key="about"
