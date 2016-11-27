@@ -9,14 +9,23 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.services.ftpservice.FTPService;
@@ -27,21 +36,20 @@ import com.amaze.filemanager.utils.PreferenceUtils;
  */
 public class FTPServerFragment extends Fragment {
 
-    TextView statusText,warningText,ftpAddrText;
+    TextView statusText, warningText, ftpAddrText;
     Button ftpBtn;
     private MainActivity mainActivity;
     private View rootView;
 
-    private BroadcastReceiver mWifiReceiver = new  BroadcastReceiver() {
+    private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo netInfo = conMan.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.getType() == ConnectivityManager.TYPE_WIFI){
+            if (netInfo != null && netInfo.getType() == ConnectivityManager.TYPE_WIFI) {
                 warningText.setText("");
-            }
-            else{
+            } else {
                 stopServer();
                 statusText.setText(getResources().getString(R.string.ftp_status_not_running));
                 warningText.setText(getResources().getString(R.string.ftp_no_wifi));
@@ -54,19 +62,17 @@ public class FTPServerFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if(action == FTPService.ACTION_STARTED) {
-                statusText.setText(getResources().getString( R.string.ftp_status_running));
+            if (action == FTPService.ACTION_STARTED) {
+                statusText.setText(getResources().getString(R.string.ftp_status_running));
                 warningText.setText("");
                 ftpAddrText.setText(getFTPAddressString());
                 ftpBtn.setText(getResources().getString(R.string.stop_ftp));
-            }
-            else if(action == FTPService.ACTION_FAILEDTOSTART){
+            } else if (action == FTPService.ACTION_FAILEDTOSTART) {
                 statusText.setText(getResources().getString(R.string.ftp_status_not_running));
                 warningText.setText("Oops! Something went wrong");
                 ftpAddrText.setText("");
                 ftpBtn.setText(getResources().getString(R.string.start_ftp));
-            }
-            else if(action == FTPService.ACTION_STOPPED){
+            } else if (action == FTPService.ACTION_STOPPED) {
                 statusText.setText(getResources().getString(R.string.ftp_status_not_running));
                 ftpAddrText.setText("");
                 ftpBtn.setText(getResources().getString(R.string.start_ftp));
@@ -78,7 +84,62 @@ public class FTPServerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        switch (item.getItemId()) {
+            case R.id.choose_ftp_port:
+                int currentFtpPort = FTPService.getDefaultPortFromPreferences(preferences);
+                String currentFtpPortStr = Integer.toString(currentFtpPort);
+
+                new MaterialDialog.Builder(getActivity())
+                        .input(getString(R.string.ftp_port_edit_menu_title), currentFtpPortStr, true, new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+
+                            }
+                        })
+                        .inputType(InputType.TYPE_CLASS_NUMBER)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                EditText editText = dialog.getInputEditText();
+                                if (editText != null) {
+                                    String name = editText.getText().toString();
+
+                                    int portNumber = Integer.parseInt(name);
+                                    if (portNumber < 1024) {
+                                        Toast.makeText(getActivity(), R.string.ftp_port_change_error_invalid, Toast.LENGTH_SHORT)
+                                             .show();
+                                    } else {
+                                        preferences.edit()
+                                                   .putString(FTPService.PORT_PREFERENCE_KEY, name)
+                                                   .apply();
+                                        Toast.makeText(getActivity(), R.string.ftp_port_change_success, Toast.LENGTH_SHORT)
+                                             .show();
+                                    }
+                                }
+                            }
+                        })
+                        .positiveText("CHANGE")
+                        .negativeText(R.string.cancel)
+                        .build()
+                        .show();
+
+                return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        mainActivity.getMenuInflater().inflate(R.menu.ftp_server_menu, menu);
     }
 
     @Override
@@ -86,7 +147,7 @@ public class FTPServerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_ftp, container, false);
-        statusText =(TextView) rootView.findViewById(R.id.statusText);
+        statusText = (TextView) rootView.findViewById(R.id.statusText);
         warningText = (TextView) rootView.findViewById(R.id.warningText);
         ftpAddrText = (TextView) rootView.findViewById(R.id.ftpAddressText);
         ftpBtn = (Button) rootView.findViewById(R.id.startStopButton);
@@ -95,27 +156,26 @@ public class FTPServerFragment extends Fragment {
         int th = Integer.parseInt(Sp.getString("theme", "0"));
         // checking if theme should be set light/dark or automatic
         int theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
-        ImageView ftpImage = (ImageView)rootView.findViewById(R.id.ftp_image);
+        ImageView ftpImage = (ImageView) rootView.findViewById(R.id.ftp_image);
 
         //light theme
-        if(theme1 == 0){
+        if (theme1 == 0) {
             ftpImage.setImageResource(R.drawable.ic_ftp_light);
-        }else{
+        } else {
             //dark
             ftpImage.setImageResource(R.drawable.ic_ftp_dark);
         }
 
-        ftpBtn.setOnClickListener(new View.OnClickListener(){
+        ftpBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if(!FTPService.isRunning()){
-                    if(FTPService.isConnectedToWifi(getContext()))
+                if (!FTPService.isRunning()) {
+                    if (FTPService.isConnectedToWifi(getContext()))
                         startServer();
                     else
                         warningText.setText(getResources().getString(R.string.ftp_no_wifi));
-                }
-                else{
+                } else {
                     stopServer();
                 }
             }
@@ -123,18 +183,20 @@ public class FTPServerFragment extends Fragment {
 
         return rootView;
     }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
-        mainActivity=(MainActivity)getActivity();
+        mainActivity = (MainActivity) getActivity();
         mainActivity.setActionBarTitle(getResources().getString(R.string.ftp));
         mainActivity.floatingActionButton.hideMenuButton(true);
         mainActivity.buttonBarFrame.setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
     }
+
     @Override
-    public  void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
     }
 
@@ -153,21 +215,21 @@ public class FTPServerFragment extends Fragment {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         updateStatus();
         IntentFilter wifiFilter = new IntentFilter();
         wifiFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        getContext().registerReceiver(mWifiReceiver,wifiFilter);
+        getContext().registerReceiver(mWifiReceiver, wifiFilter);
         IntentFilter ftpFilter = new IntentFilter();
         ftpFilter.addAction(FTPService.ACTION_STARTED);
         ftpFilter.addAction(FTPService.ACTION_STOPPED);
         ftpFilter.addAction(FTPService.ACTION_FAILEDTOSTART);
-        getContext().registerReceiver(ftpReceiver,ftpFilter);
+        getContext().registerReceiver(ftpReceiver, ftpFilter);
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         getContext().unregisterReceiver(mWifiReceiver);
         getContext().unregisterReceiver(ftpReceiver);
@@ -176,23 +238,21 @@ public class FTPServerFragment extends Fragment {
     /**
      * Update UI widgets based on connection status
      */
-    private void updateStatus(){
-        if(FTPService.isRunning()){
+    private void updateStatus() {
+        if (FTPService.isRunning()) {
             statusText.setText(getResources().getString(R.string.ftp_status_running));
             ftpBtn.setText(getResources().getString(R.string.stop_ftp));
             ftpAddrText.setText(getFTPAddressString());
-        }
-        else{
+        } else {
             statusText.setText(getResources().getString(R.string.ftp_status_not_running));
             ftpBtn.setText(getResources().getString(R.string.start_ftp));
         }
     }
 
     /**
-     *
      * @return address at which server is running
      */
-    private String getFTPAddressString(){
-        return "ftp://"+FTPService.getLocalInetAddress(getContext()).getHostAddress()+":"+FTPService.getPort();
+    private String getFTPAddressString() {
+        return "ftp://" + FTPService.getLocalInetAddress(getContext()).getHostAddress() + ":" + FTPService.getPort();
     }
 }

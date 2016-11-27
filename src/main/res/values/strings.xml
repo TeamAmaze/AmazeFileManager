@@ -413,6 +413,9 @@
     <string name="ftp_notif_stop_server">STOP</string>
     <string name="ftp_preference_port_auto_chkbx">Select port automatically</string>
     <string name="ftp_preference_port_auto_chkbx_summary">Automatically selects an available port. Default is 2211.</string>
+    <string name="ftp_port_edit_menu_title">Choose FTP port</string>
+    <string name="ftp_port_change_success">FTP port changed successfully</string>
+    <string name="ftp_port_change_error_invalid">Invalid port number selected</string>
     <string name="ftp_preference_port_edit">FTP port</string>
     <string name="ftp_preference_port_edit_summary">The FTP port. Can also be set automatically.</string>
     <string name="primary_two_title">Primary Color (Right Tab)</string>
