@@ -519,7 +519,7 @@ public class MainActivity extends BaseActivity implements
         File usb = getUsbDrive();
         if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
 
-        if (Sp.getString(KEY_PREF_OTG, null)!=null) rv.add("OTG");
+        if (Sp.getString(KEY_PREF_OTG, null) != null) rv.add("OTG");
         return rv;
     }
 
@@ -1252,7 +1252,7 @@ public class MainActivity extends BaseActivity implements
         registerReceiver(mainActivityHelper.mNotificationReceiver, newFilter);
         registerReceiver(receiver2, new IntentFilter("general_communications"));
         if (getSupportFragmentManager().findFragmentById(R.id.content_frame)
-                .getClass().getName().contains("TabFragment")) {
+                                       .getClass().getName().contains("TabFragment")) {
 
             floatingActionButton.setVisibility(View.VISIBLE);
             floatingActionButton.showMenuButton(false);
@@ -1508,8 +1508,8 @@ public class MainActivity extends BaseActivity implements
                         drawerHeaderParent.setBackgroundColor(Color.parseColor("#ffffff"));
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                             drawerHeaderView.setBackground(new BitmapDrawable(loadedImage));
-                        }
-                        else     drawerHeaderView.setBackgroundDrawable(new BitmapDrawable(loadedImage));
+                        } else
+                            drawerHeaderView.setBackgroundDrawable(new BitmapDrawable(loadedImage));
 
                     }
 
@@ -1568,7 +1568,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void onConnectionFailed(final ConnectionResult result) {
-        Log.d("G+", "Connection failed"+result.getErrorCode()+result.getErrorCode());
+        Log.d("G+", "Connection failed" + result.getErrorCode() + result.getErrorCode());
         if (!mIntentInProgress && result.hasResolution()) {
             new Thread(new Runnable() {
                 @Override
@@ -1616,7 +1616,7 @@ public class MainActivity extends BaseActivity implements
         } else if (requestCode == 3) {
             String p = Sp.getString("URI", null);
 
-            Uri oldUri = p!=null ? Uri.parse(p): null;
+            Uri oldUri = p != null ? Uri.parse(p) : null;
             Uri treeUri = null;
             if (responseCode == Activity.RESULT_OK) {
                 // Get Uri from Storage Access Framework.
@@ -1651,20 +1651,20 @@ public class MainActivity extends BaseActivity implements
                     break;
                 case DataUtils.MOVE://moving
                     new MoveFiles((oparrayList), ((Main) getFragment().getTab()),
-                            ((Main) getFragment().getTab()).getActivity(),OpenMode.FILE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                            ((Main) getFragment().getTab()).getActivity(), OpenMode.FILE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     break;
                 case DataUtils.NEW_FOLDER://mkdir
                     Main ma1 = ((Main) getFragment().getTab());
-                    mainActivityHelper.mkDir(RootHelper.generateBaseFile(new File(oppathe),true), ma1);
+                    mainActivityHelper.mkDir(RootHelper.generateBaseFile(new File(oppathe), true), ma1);
                     break;
                 case DataUtils.RENAME:
-                    mainActivityHelper.rename(OpenMode.FILE,(oppathe), (oppathe1),mainActivity,BaseActivity.rootMode);
+                    mainActivityHelper.rename(OpenMode.FILE, (oppathe), (oppathe1), mainActivity, BaseActivity.rootMode);
                     Main ma2 = ((Main) getFragment().getTab());
                     ma2.updateList();
                     break;
                 case DataUtils.NEW_FILE:
                     Main ma3 = ((Main) getFragment().getTab());
-                    mainActivityHelper.mkFile(new HFile(OpenMode.FILE,oppathe), ma3);
+                    mainActivityHelper.mkFile(new HFile(OpenMode.FILE, oppathe), ma3);
 
                     break;
                 case DataUtils.EXTRACT:
@@ -1800,8 +1800,8 @@ public class MainActivity extends BaseActivity implements
     }
 
     boolean isStorage(String path) {
-        List<String> val=DataUtils.getStorages();
-        for (String s:val)
+        List<String> val = DataUtils.getStorages();
+        for (String s : val)
             if (s.equals(path)) return true;
         return false;
     }
@@ -1899,7 +1899,7 @@ public class MainActivity extends BaseActivity implements
             mDrawerLayout.openDrawer(mDrawerLinear);
             mDrawerLayout.setScrimColor(Color.TRANSPARENT);
             isDrawerLocked = true;
-        } else if (findViewById(R.id.tab_frame) == null){
+        } else if (findViewById(R.id.tab_frame) == null) {
 
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mDrawerLinear);
             mDrawerLayout.closeDrawer(mDrawerLinear);
@@ -1980,7 +1980,7 @@ public class MainActivity extends BaseActivity implements
             ((ImageView) ftpButton.findViewById(R.id.ftpicon)).setImageResource(R.drawable.ic_ftp_dark);
             ((TextView) ftpButton.findViewById(R.id.ftptext)).setTextColor(getResources().getColor(android.R.color.white));
         }
-        ftpButton.setOnClickListener(new View.OnClickListener(){
+        ftpButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -2021,7 +2021,7 @@ public class MainActivity extends BaseActivity implements
 
         searchViewLayout = (RelativeLayout) findViewById(R.id.search_view);
         searchViewEditText = (AppCompatEditText) findViewById(R.id.search_edit_text);
-        ImageView clear=(ImageView) findViewById(R.id.search_close_btn);
+        ImageView clear = (ImageView) findViewById(R.id.search_close_btn);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -2048,8 +2048,8 @@ public class MainActivity extends BaseActivity implements
             }
         });
 
-    //    searchViewEditText.setTextColor(getResources().getColor(android.R.color.black));
-   //     searchViewEditText.setHintTextColor(Color.parseColor(BaseActivity.accentSkin));
+        //    searchViewEditText.setTextColor(getResources().getColor(android.R.color.black));
+        //     searchViewEditText.setHintTextColor(Color.parseColor(BaseActivity.accentSkin));
     }
 
     /**
@@ -2403,7 +2403,7 @@ public class MainActivity extends BaseActivity implements
                 Main m = ((Main) getFragment().getTab());
                 if (m.openMode == OpenMode.FILE) {
                     bbar(m);
-                    utils.crossfade(buttons,pathbar);
+                    utils.crossfade(buttons, pathbar);
                     timer.cancel();
                     timer.start();
                 }
@@ -2415,7 +2415,7 @@ public class MainActivity extends BaseActivity implements
                 Main m = ((Main) getFragment().getTab());
                 if (m.openMode == OpenMode.FILE) {
                     bbar(m);
-                    utils.crossfade(buttons,pathbar);
+                    utils.crossfade(buttons, pathbar);
                     timer.cancel();
                     timer.start();
                 }
@@ -2450,10 +2450,10 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void renameBookmark(final String title, final String path) {
-        if (DataUtils.containsBooks(new String[]{title,path}) != -1 || DataUtils.containsAccounts(new String[]{title,path}) != -1) {
-            RenameBookmark renameBookmark=RenameBookmark.getInstance(title,path,BaseActivity.accentSkin,theme1);
-            if(renameBookmark!=null){
-                renameBookmark.show(getFragmentManager(),"renamedialog");
+        if (DataUtils.containsBooks(new String[]{title, path}) != -1 || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
+            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, BaseActivity.accentSkin, theme1);
+            if (renameBookmark != null) {
+                renameBookmark.show(getFragmentManager(), "renamedialog");
             }
         }
     }
@@ -2466,7 +2466,7 @@ public class MainActivity extends BaseActivity implements
         if (pending_path != null) {
             try {
 
-                HFile hFile = new HFile(OpenMode.UNKNOWN,pending_path);
+                HFile hFile = new HFile(OpenMode.UNKNOWN, pending_path);
                 hFile.generateMode(this);
                 if (hFile.isSimpleFile()) {
                     utils.openFile(new File(pending_path), mainActivity);
@@ -2474,7 +2474,7 @@ public class MainActivity extends BaseActivity implements
                     return;
                 }
                 TabFragment m = getFragment();
-                if(m==null){
+                if (m == null) {
                     goToMain(pending_path);
                     return;
                 }
@@ -2703,45 +2703,46 @@ public class MainActivity extends BaseActivity implements
     }
 
 
-    public void showSMBDialog(String name,String path,boolean edit){
-        if(path.length()>0 && name.length()==0){
-          int i=-1;
-            if((i=DataUtils.containsServer(new String[]{name,path}))!=-1){
-                name=DataUtils.servers.get(i)[0];
+    public void showSMBDialog(String name, String path, boolean edit) {
+        if (path.length() > 0 && name.length() == 0) {
+            int i = -1;
+            if ((i = DataUtils.containsServer(new String[]{name, path})) != -1) {
+                name = DataUtils.servers.get(i)[0];
             }
         }
-        SmbConnectDialog smbConnectDialog=new SmbConnectDialog();
-        Bundle bundle=new Bundle();
-        bundle.putString("name",name);
-        bundle.putString("path",path);
-        bundle.putBoolean("edit",edit);
+        SmbConnectDialog smbConnectDialog = new SmbConnectDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        bundle.putString("path", path);
+        bundle.putBoolean("edit", edit);
         smbConnectDialog.setArguments(bundle);
         smbConnectDialog.show(getFragmentManager(), "smbdailog");
     }
 
     @Override
-    public void addConnection(boolean edit, String name, String path,String oldname,String oldPath) {
+    public void addConnection(boolean edit, String name, String path, String oldname, String oldPath) {
         try {
-            String[] s=new String[]{name,path};
+            String[] s = new String[]{name, path};
             if (!edit) {
                 if ((DataUtils.containsServer(path)) == -1) {
                     DataUtils.addServer(new String[]{name, path});
                     refreshDrawer();
                     grid.addPath(name, path, DataUtils.SMB, 1);
-                    TabFragment fragment=getFragment();
-                    if(fragment!=null) {
-                        Fragment fragment1=fragment.getTab();
-                        if(fragment1!=null){
+                    TabFragment fragment = getFragment();
+                    if (fragment != null) {
+                        Fragment fragment1 = fragment.getTab();
+                        if (fragment1 != null) {
                             final Main ma = (Main) fragment1;
                             ma.loadlist(path, false, OpenMode.UNKNOWN);
-                        }}
-                }
-                else Snackbar.make(frameLayout,"Connection already exists",Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
+                } else
+                    Snackbar.make(frameLayout, "Connection already exists", Snackbar.LENGTH_SHORT).show();
             } else {
-                int i=-1;
-                if ((i=DataUtils.containsServer(new String[]{oldname,oldPath})) != -1) {
+                int i = -1;
+                if ((i = DataUtils.containsServer(new String[]{oldname, oldPath})) != -1) {
                     DataUtils.removeServer(i);
-                    mainActivity.grid.removePath(oldname,oldPath, DataUtils.SMB);
+                    mainActivity.grid.removePath(oldname, oldPath, DataUtils.SMB);
                 }
                 DataUtils.addServer(s);
                 Collections.sort(DataUtils.servers, new BookSorter());
@@ -2755,11 +2756,11 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
-    public void deleteConnection(String name,String path) {
-        int i=-1;
-        if ((i=DataUtils.containsServer(new String[]{name,path})) != -1) {
+    public void deleteConnection(String name, String path) {
+        int i = -1;
+        if ((i = DataUtils.containsServer(new String[]{name, path})) != -1) {
             DataUtils.removeServer(i);
-            grid.removePath(name,path, DataUtils.SMB);
+            grid.removePath(name, path, DataUtils.SMB);
             refreshDrawer();
         }
 
@@ -2767,7 +2768,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onHiddenFileAdded(String path) {
-        history.addPath(null,path,DataUtils.HIDDEN,0);
+        history.addPath(null, path, DataUtils.HIDDEN, 0);
     }
 
     @Override
@@ -2783,7 +2784,7 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void onBookAdded(String[] path, boolean refreshdrawer) {
         grid.addPath(path[0], path[1], DataUtils.BOOKS, 1);
-        if(refreshdrawer)
+        if (refreshdrawer)
             refreshDrawer();
     }
 
@@ -2801,7 +2802,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void modify(String oldpath, String oldname, String newPath, String newname) {
-        grid.rename( oldname,oldpath, newPath, newname, DataUtils.BOOKS);
+        grid.rename(oldname, oldpath, newPath, newname, DataUtils.BOOKS);
         refreshDrawer();
     }
 
