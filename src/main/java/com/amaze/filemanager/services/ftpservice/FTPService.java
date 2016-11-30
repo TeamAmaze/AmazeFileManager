@@ -3,6 +3,7 @@ package com.amaze.filemanager.services.ftpservice;
 /**
  * Created by yashwanthreddyg on 09-06-2016.
  */
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -17,7 +18,6 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
 
 import org.apache.ftpserver.ConnectionConfigFactory;
 import org.apache.ftpserver.FtpServer;
@@ -41,32 +41,31 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
-public class FTPService extends Service implements Runnable{
+public class FTPService extends Service implements Runnable {
     public static final int DEFAULT_PORT = 2211;
-    public static final boolean DEFAULT_AUTO_PORT = true;
     public static final String PORT_PREFERENCE_KEY = "ftpPort";
-    public static final String AUTO_PORT_PREFERENCE_KEY = "autoFtpPort";
 
-    public static int getDefaultPortFromPreferences(SharedPreferences preferences){
+    public static int getDefaultPortFromPreferences(SharedPreferences preferences) {
         try {
-            return Integer.parseInt(preferences.getString(PORT_PREFERENCE_KEY, Integer.toString(DEFAULT_PORT)));
-        } catch (ClassCastException ex){
-            Log.e("FtpService", "Default port preference is not an int. Using default.");
+            return preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT);
+        } catch (ClassCastException ex) {
+            Log.e("FtpService", "Default port preference is not an int. Resetting to default.");
+            changeFTPServerPort(preferences, DEFAULT_PORT);
+
             return DEFAULT_PORT;
         }
     }
 
-    public static boolean isPortSelectedAutomatically(SharedPreferences preferences) {
-        try {
-            return preferences.getBoolean(AUTO_PORT_PREFERENCE_KEY, DEFAULT_AUTO_PORT);
-        } catch (ClassCastException ex){
-            Log.e("FtpService", "Automatic port selection preference value is not a booolean. Using default.");
-            return DEFAULT_AUTO_PORT;
-        }
+    public static void changeFTPServerPort(SharedPreferences preferences, int port) {
+        preferences.edit()
+                   .putInt(PORT_PREFERENCE_KEY, port)
+                   .apply();
     }
 
     private static final String TAG = FTPService.class.getSimpleName();
-    /** TODO: 25/10/16 This is ugly */
+    /**
+     * TODO: 25/10/16 This is ugly
+     */
     private static int port = 2211;
 
     // Service will (global) broadcast when server start/stop
@@ -98,7 +97,7 @@ public class FTPService extends Service implements Runnable{
             }
         }
 
-        if(intent != null && intent.getStringExtra("username")!=null && intent.getStringExtra("password")!=null){
+        if (intent != null && intent.getStringExtra("username") != null && intent.getStringExtra("password") != null) {
             username = intent.getStringExtra("username");
             password = intent.getStringExtra("password");
             isPasswordProtected = true;
@@ -128,9 +127,9 @@ public class FTPService extends Service implements Runnable{
         String path = Environment.getExternalStorageDirectory().getAbsolutePath();
 
         BaseUser user = new BaseUser();
-        if(!isPasswordProtected){
+        if (!isPasswordProtected) {
             user.setName("anonymous");
-        }else{
+        } else {
             user.setName(username);
             user.setPassword(password);
         }
@@ -146,25 +145,16 @@ public class FTPService extends Service implements Runnable{
         }
         ListenerFactory fac = new ListenerFactory();
 
-        if(isPortSelectedAutomatically(preferences)) {
-            //check ports for availability
-            for (int i = 2211; i < 65000; i++) {
-                if (isPortAvailable(i)) {
-                    port = i;
-                    break;
-                }
-            }
-        } else {
-            port = getDefaultPortFromPreferences(preferences);
-        }
+        port = getDefaultPortFromPreferences(preferences);
+
         fac.setPort(port);
 
-        serverFactory.addListener("default",fac.createListener());
-        try{
+        serverFactory.addListener("default", fac.createListener());
+        try {
             server = serverFactory.createServer();
             server.start();
             sendBroadcast(new Intent(FTPService.ACTION_STARTED));
-        }catch(Exception e){
+        } catch (Exception e) {
             sendBroadcast(new Intent(FTPService.ACTION_FAILEDTOSTART));
         }
     }
@@ -188,7 +178,7 @@ public class FTPService extends Service implements Runnable{
             Log.d(TAG, "serverThread join()ed ok");
             serverThread = null;
         }
-        if(server!=null){
+        if (server != null) {
             server.stop();
             sendBroadcast(new Intent(FTPService.ACTION_STOPPED));
         }
@@ -225,6 +215,7 @@ public class FTPService extends Service implements Runnable{
         }
         return true;
     }
+
     public static void sleepIgnoreInterupt(long millis) {
         try {
             Thread.sleep(millis);
@@ -311,6 +302,7 @@ public class FTPService extends Service implements Runnable{
         }
         return null;
     }
+
     public static InetAddress intToInet(int value) {
         byte[] bytes = new byte[4];
         for (int i = 0; i < 4; i++) {
@@ -323,14 +315,16 @@ public class FTPService extends Service implements Runnable{
             return null;
         }
     }
+
     public static byte byteOfInt(int value, int which) {
         int shift = which * 8;
         return (byte) (value >> shift);
     }
 
-    public static int getPort(){
+    public static int getPort() {
         return port;
     }
+
     public static boolean isPortAvailable(int port) {
 
         ServerSocket ss = null;
