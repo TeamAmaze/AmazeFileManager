@@ -34,8 +34,8 @@ android {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 49
-        versionName "3.1.2 Beta 5"
+        versionCode 50
+        versionName "3.1.2 Beta 6"
     }
 
     signingConfigs {
