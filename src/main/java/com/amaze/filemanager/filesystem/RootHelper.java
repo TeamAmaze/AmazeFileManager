@@ -241,6 +241,27 @@ public class RootHelper {
         return files;
     }
 
+    public static DocumentFile getDocumentFile(String path, Context context) {
+
+        SharedPreferences manager = PreferenceManager.getDefaultSharedPreferences(context);
+        String rootUriString = manager.getString(MainActivity.KEY_PREF_OTG, null);
+
+        // start with root of SD card and then parse through document tree.
+        DocumentFile rootUri = DocumentFile.fromTreeUri(context, Uri.parse(rootUriString));
+
+        String[] parts = path.split("/");
+        for (int i = 0; i < parts.length; i++) {
+
+            if (path.equals("otg:/")) break;
+            if (parts[i].equals("otg:") || parts[i].equals("")) continue;
+            Log.d(context.getClass().getSimpleName(), "Currently at: " + parts[i]);
+            // iterating through the required path to find the end point
+            rootUri = rootUri.findFile(parts[i]);
+        }
+
+        return rootUri;
+    }
+
     public static BaseFile generateBaseFile(File x, boolean showHidden) {
         long size = 0;
         if (!x.isDirectory())

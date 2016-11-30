@@ -48,6 +48,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.provider.DocumentFile;
 import android.support.v7.widget.AppCompatButton;
 import android.text.Html;
 import android.text.TextUtils;
@@ -89,7 +90,7 @@ import jcifs.smb.SmbFile;
 
 public class Futils {
 
-public  final int READ = 4;
+    public  final int READ = 4;
     public  final int WRITE = 2;
     public  final int EXECUTE = 1;
     private Toast studioCount;
@@ -155,20 +156,20 @@ public  final int READ = 4;
 
                     }
                 });
-            a.widgetColor(Color.parseColor(BaseActivity.accentSkin));
-            if(m.theme1==1)
-                a.theme(Theme.DARK);
-            a.title(texts[2]);
-            a.positiveText(texts[3]);
-            a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
-            a.neutralText(texts[4]);
-            if(texts[5]!=(null)){
-                a.negativeText(texts[5]);
-                a.negativeColor(Color.parseColor(BaseActivity.accentSkin));
-            }
-            MaterialDialog dialog=a.build();
-            return dialog;
+        a.widgetColor(Color.parseColor(BaseActivity.accentSkin));
+        if(m.theme1==1)
+            a.theme(Theme.DARK);
+        a.title(texts[2]);
+        a.positiveText(texts[3]);
+        a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        a.neutralText(texts[4]);
+        if(texts[5]!=(null)){
+            a.negativeText(texts[5]);
+            a.negativeColor(Color.parseColor(BaseActivity.accentSkin));
         }
+        MaterialDialog dialog=a.build();
+        return dialog;
+    }
 
 
     public static long folderSize(File directory) {
@@ -377,16 +378,39 @@ public  final int READ = 4;
             Uri uri=fileToContentUri(c, f);
             if(uri==null)uri=Uri.fromFile(f);
             intent.setDataAndType(uri, type);
-        Intent startintent;
-        if (forcechooser) startintent=Intent.createChooser(intent, c.getResources().getString(R.string.openwith));
-        else startintent=intent;
-        try {
-            c.startActivity(startintent);
-        } catch (ActivityNotFoundException e) {
-            e.printStackTrace();
-        Toast.makeText(c,R.string.noappfound,Toast.LENGTH_SHORT).show();
-        openWith(f,c);
-        }}else{openWith(f, c);}
+            Intent startintent;
+            if (forcechooser) startintent=Intent.createChooser(intent, c.getResources().getString(R.string.openwith));
+            else startintent=intent;
+            try {
+                c.startActivity(startintent);
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+                Toast.makeText(c,R.string.noappfound,Toast.LENGTH_SHORT).show();
+                openWith(f,c);
+            }}else{openWith(f, c);}
+
+    }
+
+    public void openunknown(DocumentFile f, Context c, boolean forcechooser) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+
+        String type = f.getType();
+        if(type!=null && type.trim().length()!=0 && !type.equals("*/*")) {
+            intent.setDataAndType(f.getUri(), type);
+            Intent startintent;
+            if (forcechooser) startintent=Intent.createChooser(intent, c.getResources().getString(R.string.openwith));
+            else startintent=intent;
+            try {
+                c.startActivity(startintent);
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+                Toast.makeText(c,R.string.noappfound,Toast.LENGTH_SHORT).show();
+                openWith(f,c);
+            }
+        } else {
+            openWith(f, c);
+        }
 
     }
 
@@ -476,7 +500,8 @@ public  final int READ = 4;
         }
         return null;
     }
-public void openWith(final File f,final Context c) {
+
+    public void openWith(final File f,final Context c) {
         MaterialDialog.Builder a=new MaterialDialog.Builder(c);
         a.title(c.getResources().getString(R.string.openas));
         String[] items=new String[]{c.getResources().getString(R.string.text),c.getResources().getString(R.string.image),c.getResources().getString(R.string.video),c.getResources().getString(R.string.audio),c.getResources().getString(R.string.database),c.getResources().getString(R.string.other)};
@@ -507,6 +532,53 @@ public void openWith(final File f,final Context c) {
                         break;
                     case 5:
                         intent.setDataAndType(uri, "*/*");
+                        break;
+                }
+                try {
+                    c.startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
+                    openWith(f, c);
+                }
+            }
+        });
+        try {
+            a.build().show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void openWith(final DocumentFile f,final Context c) {
+        MaterialDialog.Builder a=new MaterialDialog.Builder(c);
+        a.title(c.getResources().getString(R.string.openas));
+        String[] items=new String[]{c.getResources().getString(R.string.text),c.getResources().getString(R.string.image),c.getResources().getString(R.string.video),c.getResources().getString(R.string.audio),c.getResources().getString(R.string.database),c.getResources().getString(R.string.other)};
+
+        a.items(items).itemsCallback(new MaterialDialog.ListCallback() {
+            @Override
+            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+
+                Intent intent = new Intent();
+                intent.setAction(android.content.Intent.ACTION_VIEW);
+                switch (i) {
+                    case 0:
+                        intent.setDataAndType(f.getUri(), "text/*");
+                        break;
+                    case 1:
+                        intent.setDataAndType(f.getUri(), "image/*");
+                        break;
+                    case 2:
+                        intent.setDataAndType(f.getUri(), "video/*");
+                        break;
+                    case 3:
+                        intent.setDataAndType(f.getUri(), "audio/*");
+                        break;
+                    case 4:
+                        intent = new Intent(c, DbViewer.class);
+                        intent.putExtra("path", f.getUri());
+                        break;
+                    case 5:
+                        intent.setDataAndType(f.getUri(), "*/*");
                         break;
                 }
                 try {
@@ -587,7 +659,7 @@ public void openWith(final File f,final Context c) {
     }
 
     public static int calculateInSampleSize(BitmapFactory.Options options,
-                                     int reqWidth, int reqHeight) {
+                                            int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -834,38 +906,93 @@ public void openWith(final File f,final Context c) {
             }
         }
     }
-public static void showSMBHelpDialog(Context m,String acc){
 
-    MaterialDialog.Builder b=new MaterialDialog.Builder(m);
-    b.content(Html.fromHtml(m.getResources().getString(R.string.smb_instructions)));
-    b.positiveText(R.string.doit);
-    b.positiveColor(Color.parseColor(acc));
-    b.build().show();
-}
-public void showPackageDialog(final File f,final MainActivity m){
-    MaterialDialog.Builder mat=new MaterialDialog.Builder(m);
-    mat.title(R.string.packageinstaller).content(R.string.pitext)
-            .positiveText(R.string.install)
-            .negativeText(R.string.view)
-            .neutralText(R.string.cancel)
-            .positiveColor(Color.parseColor(BaseActivity.accentSkin))
-            .negativeColor(Color.parseColor(BaseActivity.accentSkin))
-            .neutralColor(Color.parseColor(BaseActivity.accentSkin))
-            .callback(new MaterialDialog.ButtonCallback() {
-                @Override
-                public void onPositive(MaterialDialog materialDialog) {
-                    openunknown(f, m, false);
-                }
+    public void openFile(final DocumentFile f, final MainActivity m) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
+        if (f.getName().toLowerCase().endsWith(".zip") ||
+                f.getName().toLowerCase().endsWith(".jar") ||
+                f.getName().toLowerCase().endsWith(".rar")||
+                f.getName().toLowerCase().endsWith(".tar") ||
+                f.getName().toLowerCase().endsWith(".tar.gz")) {
+            //showArchiveDialog(f, m);
+        } else if(f.getName().toLowerCase().endsWith(".apk")) {
+            //showPackageDialog(f, m);
+        } else if (f.getName().toLowerCase().endsWith(".db")) {
+            Intent intent = new Intent(m, DbViewer.class);
+            intent.putExtra("path", f.getUri());
+            m.startActivity(intent);
+        }  else if (Icons.isAudio(f.getName())) {
+            final int studio_count = sharedPreferences.getInt("studio", 0);
+            final Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(f.getUri(), "audio/*");
 
-                @Override
-                public void onNegative(MaterialDialog materialDialog) {
-                    m.openZip(f.getPath());
-                }
-            });
-    if(m.theme1==1)mat.theme(Theme.DARK);
-    mat.build().show();
+            // Behold! It's the  legendary easter egg!
+            if (studio_count!=0) {
+                new CountDownTimer(studio_count, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        int sec = (int)millisUntilFinished/1000;
+                        if (studioCount!=null)
+                            studioCount.cancel();
+                        studioCount = Toast.makeText(m, sec + "", Toast.LENGTH_LONG);
+                        studioCount.show();
+                    }
 
-}
+                    @Override
+                    public void onFinish() {
+                        if (studioCount!=null)
+                            studioCount.cancel();
+                        studioCount = Toast.makeText(m, "Opening..", Toast.LENGTH_LONG);
+                        studioCount.show();
+                        m.startActivity(intent);
+                    }
+                }.start();
+            } else
+                m.startActivity(intent);
+        } else {
+            try {
+                openunknown(f, m, false);
+            } catch (Exception e) {
+                Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
+                openWith(f, m);
+            }
+        }
+    }
+
+
+    public static void showSMBHelpDialog(Context m,String acc){
+
+        MaterialDialog.Builder b=new MaterialDialog.Builder(m);
+        b.content(Html.fromHtml(m.getResources().getString(R.string.smb_instructions)));
+        b.positiveText(R.string.doit);
+        b.positiveColor(Color.parseColor(acc));
+        b.build().show();
+    }
+    public void showPackageDialog(final File f,final MainActivity m){
+        MaterialDialog.Builder mat=new MaterialDialog.Builder(m);
+        mat.title(R.string.packageinstaller).content(R.string.pitext)
+                .positiveText(R.string.install)
+                .negativeText(R.string.view)
+                .neutralText(R.string.cancel)
+                .positiveColor(Color.parseColor(BaseActivity.accentSkin))
+                .negativeColor(Color.parseColor(BaseActivity.accentSkin))
+                .neutralColor(Color.parseColor(BaseActivity.accentSkin))
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog materialDialog) {
+                        openunknown(f, m, false);
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog materialDialog) {
+                        m.openZip(f.getPath());
+                    }
+                });
+        if(m.theme1==1)mat.theme(Theme.DARK);
+        mat.build().show();
+
+    }
 
     public void showArchiveDialog(final File f, final MainActivity m) {
         MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
@@ -1036,7 +1163,7 @@ public void showPackageDialog(final File f,final MainActivity m){
         a.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                 DataUtils.clearHistory();
+                DataUtils.clearHistory();
             }
         });
         if(m.theme1==1)
@@ -1082,85 +1209,85 @@ public void showPackageDialog(final File f,final MainActivity m){
         return Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT;
     }
     public void setPermissionsDialog(final View v,View but,final HFile file, final String f, final Main main) {
-            final CheckBox readown=(CheckBox) v.findViewById(R.id.creadown);
-            final CheckBox readgroup=(CheckBox) v.findViewById(R.id.creadgroup);
-            final CheckBox readother=(CheckBox) v.findViewById(R.id.creadother);
-            final CheckBox writeown=(CheckBox) v.findViewById(R.id.cwriteown);
-            final CheckBox writegroup=(CheckBox) v.findViewById(R.id.cwritegroup);
-            final CheckBox writeother=(CheckBox) v.findViewById(R.id.cwriteother);
-            final CheckBox exeown=(CheckBox) v.findViewById(R.id.cexeown);
-            final CheckBox exegroup=(CheckBox) v.findViewById(R.id.cexegroup);
-            final CheckBox exeother=(CheckBox) v.findViewById(R.id.cexeother);
-            String perm=f;
-            if(perm.length()<6){
-                v.setVisibility(View.GONE);
-                but.setVisibility(View.GONE);
-                Toast.makeText(main.getActivity(),R.string.not_allowed,Toast.LENGTH_SHORT).show();
-                return;
-            }
-            ArrayList<Boolean[]> arrayList=parse(perm);
-            Boolean[] read=arrayList.get(0);
-            Boolean[] write=arrayList.get(1);
-            Boolean[] exe=arrayList.get(2);
-            readown.setChecked(read[0]);
-            readgroup.setChecked(read[1]);
-            readother.setChecked(read[2]);
-            writeown.setChecked(write[0]);
-            writegroup.setChecked(write[1]);
-            writeother.setChecked(write[2]);
-            exeown.setChecked(exe[0]);
-            exegroup.setChecked(exe[1]);
-            exeother.setChecked(exe[2]);
-            but.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int a = 0, b = 0, c = 0;
-                    if (readown.isChecked()) a = 4;
-                    if (writeown.isChecked()) b = 2;
-                    if (exeown.isChecked()) c = 1;
-                    int owner = a + b + c;
-                    int d = 0, e = 0, f = 0;
-                    if (readgroup.isChecked()) d = 4;
-                    if (writegroup.isChecked()) e = 2;
-                    if (exegroup.isChecked()) f = 1;
-                    int group = d + e + f;
-                    int g = 0, h = 0, i = 0;
-                    if (readother.isChecked()) g = 4;
-                    if (writeother.isChecked()) h = 2;
-                    if (exeother.isChecked()) i = 1;
-                    int other = g + h + i;
-                    String finalValue = owner + "" + group + "" + other;
+        final CheckBox readown=(CheckBox) v.findViewById(R.id.creadown);
+        final CheckBox readgroup=(CheckBox) v.findViewById(R.id.creadgroup);
+        final CheckBox readother=(CheckBox) v.findViewById(R.id.creadother);
+        final CheckBox writeown=(CheckBox) v.findViewById(R.id.cwriteown);
+        final CheckBox writegroup=(CheckBox) v.findViewById(R.id.cwritegroup);
+        final CheckBox writeother=(CheckBox) v.findViewById(R.id.cwriteother);
+        final CheckBox exeown=(CheckBox) v.findViewById(R.id.cexeown);
+        final CheckBox exegroup=(CheckBox) v.findViewById(R.id.cexegroup);
+        final CheckBox exeother=(CheckBox) v.findViewById(R.id.cexeother);
+        String perm=f;
+        if(perm.length()<6){
+            v.setVisibility(View.GONE);
+            but.setVisibility(View.GONE);
+            Toast.makeText(main.getActivity(),R.string.not_allowed,Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ArrayList<Boolean[]> arrayList=parse(perm);
+        Boolean[] read=arrayList.get(0);
+        Boolean[] write=arrayList.get(1);
+        Boolean[] exe=arrayList.get(2);
+        readown.setChecked(read[0]);
+        readgroup.setChecked(read[1]);
+        readother.setChecked(read[2]);
+        writeown.setChecked(write[0]);
+        writegroup.setChecked(write[1]);
+        writeother.setChecked(write[2]);
+        exeown.setChecked(exe[0]);
+        exegroup.setChecked(exe[1]);
+        exeother.setChecked(exe[2]);
+        but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int a = 0, b = 0, c = 0;
+                if (readown.isChecked()) a = 4;
+                if (writeown.isChecked()) b = 2;
+                if (exeown.isChecked()) c = 1;
+                int owner = a + b + c;
+                int d = 0, e = 0, f = 0;
+                if (readgroup.isChecked()) d = 4;
+                if (writegroup.isChecked()) e = 2;
+                if (exegroup.isChecked()) f = 1;
+                int group = d + e + f;
+                int g = 0, h = 0, i = 0;
+                if (readother.isChecked()) g = 4;
+                if (writeother.isChecked()) h = 2;
+                if (exeother.isChecked()) i = 1;
+                int other = g + h + i;
+                String finalValue = owner + "" + group + "" + other;
 
-                    String command = "chmod " + finalValue + " " + file.getPath();
-                    if (file.isDirectory())
-                        command = "chmod -R " + finalValue + " \"" + file.getPath()+"\"";
-                    Command com = new Command(1, command) {
-                        @Override
-                        public void commandOutput(int i, String s) {
-                            Toast.makeText(main.getActivity(), s, Toast.LENGTH_LONG);
-                        }
-
-                        @Override
-                        public void commandTerminated(int i, String s) {
-                            Toast.makeText(main.getActivity(), s, Toast.LENGTH_LONG);
-                        }
-
-                        @Override
-                        public void commandCompleted(int i, int i2) {
-                            Toast.makeText(main.getActivity(), main.getResources().getString(R.string.done), Toast.LENGTH_LONG);
-                        }
-                    };
-                    try {//
-                        RootTools.remount(file.getPath(), "RW");
-                        RootTools.getShell(true).add(com);
-                        main.updateList();
-                    } catch (Exception e1) {
-                        Toast.makeText(main.getActivity(), main.getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
-                        e1.printStackTrace();
+                String command = "chmod " + finalValue + " " + file.getPath();
+                if (file.isDirectory())
+                    command = "chmod -R " + finalValue + " \"" + file.getPath()+"\"";
+                Command com = new Command(1, command) {
+                    @Override
+                    public void commandOutput(int i, String s) {
+                        Toast.makeText(main.getActivity(), s, Toast.LENGTH_LONG);
                     }
 
+                    @Override
+                    public void commandTerminated(int i, String s) {
+                        Toast.makeText(main.getActivity(), s, Toast.LENGTH_LONG);
+                    }
+
+                    @Override
+                    public void commandCompleted(int i, int i2) {
+                        Toast.makeText(main.getActivity(), main.getResources().getString(R.string.done), Toast.LENGTH_LONG);
+                    }
+                };
+                try {//
+                    RootTools.remount(file.getPath(), "RW");
+                    RootTools.getShell(true).add(com);
+                    main.updateList();
+                } catch (Exception e1) {
+                    Toast.makeText(main.getActivity(), main.getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
+                    e1.printStackTrace();
                 }
-            });
+
+            }
+        });
     }
 
     public static BaseFile parseName(String line) {
@@ -1175,8 +1302,8 @@ public void showPackageDialog(final File f,final MainActivity m){
         }
         int p = getColonPosition(array);
         if(p!=-1){
-        date = array[p - 1] + " | " + array[p];
-        size = array[p - 2];}
+            date = array[p - 1] + " | " + array[p];
+            size = array[p - 2];}
         if (!linked) {
             for (int i = p + 1; i < array.length; i++) {
                 name = name + " " + array[i];
@@ -1251,20 +1378,20 @@ public void showPackageDialog(final File f,final MainActivity m){
         }
         if (permLine.charAt(6) == 'x') {
             group += EXECUTE;
-        execute[1]=true;
+            execute[1]=true;
         }
         int world = 0;
         if (permLine.charAt(7) == 'r') {
             world += READ;
-        read[2]=true;
+            read[2]=true;
         }
         if (permLine.charAt(8) == 'w') {
             world += WRITE;
-        write[2]=true;
+            write[2]=true;
         }
         if (permLine.charAt(9) == 'x') {
             world += EXECUTE;
-        execute[2]=true;
+            execute[2]=true;
         }
         arrayList.add(read);
         arrayList.add(write);

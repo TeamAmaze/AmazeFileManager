@@ -82,6 +82,7 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.Operations;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.icons.IconHolder;
@@ -891,7 +892,12 @@ public class Main extends android.support.v4.app.Fragment {
                         } catch (MalformedURLException e) {
                             e.printStackTrace();
                         }
-                    } else if (MAIN_ACTIVITY.mReturnIntent) {
+                    } else if (l.getMode() == OpenMode.OTG) {
+
+                        utils.openFile(RootHelper.getDocumentFile(l.getDesc(), getContext()),
+                                (MainActivity) getActivity());
+                    }
+                    else if (MAIN_ACTIVITY.mReturnIntent) {
                         returnIntentResults(new File(l.getDesc()));
                     } else {
 

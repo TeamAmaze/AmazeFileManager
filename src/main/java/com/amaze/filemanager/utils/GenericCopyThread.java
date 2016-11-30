@@ -1,10 +1,13 @@
 package com.amaze.filemanager.utils;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.services.ProgressHandler;
 
 import java.io.BufferedInputStream;
@@ -38,33 +41,55 @@ public class GenericCopyThread implements Runnable {
         FileOutputStream outputStream = null;
         FileChannel inChannel = null;
         FileChannel outChannel = null;
-        BufferedInputStream smbBufferedInputStream = null;
-        BufferedOutputStream smbBufferedOutputStream = null;
+        BufferedInputStream bufferedInputStream = null;
+        BufferedOutputStream bufferedOutputStream = null;
         try {
-            if (!mSourceFile.isSmb()) {
+            if (!mSourceFile.isSmb() && !mSourceFile.isOtgFile()) {
 
-                // copying normal file
-                inputStream = (FileInputStream) mSourceFile.getInputStream();
-                outputStream = (FileOutputStream) mTargetFile.getOutputStream(mContext);
-                inChannel = inputStream.getChannel();
-                outChannel = outputStream.getChannel();
-                inChannel.transferTo(0, inChannel.size(), outChannel);
+                if (!mTargetFile.isOtgFile()) {
+
+                    // copying normal file, target not in OTG
+                    inputStream = (FileInputStream) mSourceFile.getInputStream();
+                    outputStream = (FileOutputStream) mTargetFile.getOutputStream(mContext);
+                    inChannel = inputStream.getChannel();
+                    outChannel = outputStream.getChannel();
+                    inChannel.transferTo(0, inChannel.size(), outChannel);
+                } else {
+                    // target in OTG, obtain streams from DocumentFile Uri's
+
+                    bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(), 1024);
+                    ContentResolver contentResolver = mContext.getContentResolver();
+                    DocumentFile documentTargetFile = RootHelper.getDocumentFile(mTargetFile.getPath(), mContext);
+
+                    bufferedOutputStream = new BufferedOutputStream(contentResolver.openOutputStream(documentTargetFile.getUri()), 1024);
+                    copyFile(bufferedInputStream, bufferedOutputStream);
+                }
+            } else if (mSourceFile.isOtgFile()) {
+
+                // copying otg file
+                ContentResolver contentResolver = mContext.getContentResolver();
+                DocumentFile documentSourceFile = RootHelper.getDocumentFile(mSourceFile.getPath(), mContext);
+                bufferedInputStream = new BufferedInputStream(contentResolver.openInputStream(documentSourceFile.getUri()), 1024);
+
+                if (mTargetFile.getMode() == OpenMode.OTG) {
+
+                    // whether the target is in OTG or not
+                    DocumentFile documentTargetFile = RootHelper.getDocumentFile(mTargetFile.getPath(), mContext);
+
+                    bufferedOutputStream = new BufferedOutputStream(contentResolver.openOutputStream(documentTargetFile.getUri()), 1024);
+                } else {
+
+                    // target is not in OTG, obtain the conventional output stream
+                    bufferedOutputStream = new BufferedOutputStream(mTargetFile.getOutputStream(mContext), 1024);
+                }
+                copyFile(bufferedInputStream, bufferedOutputStream);
             } else {
 
                 // copying smb file
-                byte[] buffer = new byte[1024];
-                smbBufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(), 1024);
-                smbBufferedOutputStream = new BufferedOutputStream(mTargetFile.getOutputStream(mContext), 1024);
-                int count;
-                do {
-                    count = smbBufferedInputStream.read(buffer);
-                    if (count!=-1) {
-                        for (int i=0; i<count; i++) {
-                            smbBufferedOutputStream.write(buffer[i]);
-                        }
-                        smbBufferedOutputStream.flush();
-                    }
-                } while (count!=-1);
+                bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(), 1024);
+                bufferedOutputStream = new BufferedOutputStream(mTargetFile.getOutputStream(mContext), 1024);
+
+                copyFile(bufferedInputStream, bufferedOutputStream);
             }
 
             // writing to file
@@ -82,8 +107,8 @@ public class GenericCopyThread implements Runnable {
                 if (outChannel!=null) outChannel.close();
                 if (inputStream!=null) inputStream.close();
                 if (outputStream!=null) outputStream.close();
-                if (smbBufferedInputStream!=null) smbBufferedInputStream.close();
-                if (smbBufferedOutputStream!=null) smbBufferedOutputStream.close();
+                if (bufferedInputStream!=null) bufferedInputStream.close();
+                if (bufferedOutputStream!=null) bufferedOutputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
                 // failure in closing stream
@@ -104,5 +129,23 @@ public class GenericCopyThread implements Runnable {
         this.progressHandler = progressHandler;
         thread = new Thread(this);
         thread.start();
+    }
+
+    private void copyFile(BufferedInputStream bufferedInputStream, BufferedOutputStream bufferedOutputStream) {
+        int count;
+        byte[] buffer = new byte[1024];
+        try {
+            do {
+                count = bufferedInputStream.read(buffer);
+                if (count!=-1) {
+                    for (int i=0; i<count; i++) {
+                        bufferedOutputStream.write(buffer[i]);
+                    }
+                    bufferedOutputStream.flush();
+                }
+            } while (count!=-1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

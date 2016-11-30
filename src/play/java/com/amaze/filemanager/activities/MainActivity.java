@@ -1042,14 +1042,30 @@ public class MainActivity extends BaseActivity implements
             case R.id.paste:
                 String path = ma.CURRENT_PATH;
                 ArrayList<BaseFile> arrayList = new ArrayList<>();
-                if (COPY_PATH != null) {
-                    arrayList = COPY_PATH;
-                    new CopyFileCheck(ma, path, false, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask
-                            .THREAD_POOL_EXECUTOR, arrayList);
-                } else if (MOVE_PATH != null) {
-                    arrayList = MOVE_PATH;
-                    new CopyFileCheck(ma, path, true, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                            arrayList);
+                if (!path.contains("otg:/")) {
+                    if (COPY_PATH != null) {
+                        arrayList = COPY_PATH;
+                        new CopyFileCheck(ma, path, false, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask
+                                .THREAD_POOL_EXECUTOR, arrayList);
+                    } else if (MOVE_PATH != null) {
+                        arrayList = MOVE_PATH;
+                        new CopyFileCheck(ma, path, true, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                                arrayList);
+                    }
+                } else if (path.contains("otg:/")) {
+                    if (COPY_PATH!=null) {
+
+                        arrayList = COPY_PATH;
+                        Intent intent = new Intent(con, CopyService.class);
+                        intent.putParcelableArrayListExtra("FILE_PATHS",arrayList);
+                        intent.putExtra("COPY_DIRECTORY", path);
+                        intent.putExtra("MODE",ma.openMode);
+                        mainActivity.startService(intent);
+                    } else if (MOVE_PATH!=null){
+
+                        arrayList = MOVE_PATH;
+                        new MoveFiles(arrayList, ma, ma.getActivity(),ma.openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                    }
                 }
                 COPY_PATH = null;
                 MOVE_PATH = null;
