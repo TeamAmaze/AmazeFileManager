@@ -258,7 +258,6 @@ public class RootHelper {
             // iterating through the required path to find the end point
             rootUri = rootUri.findFile(parts[i]);
         }
-
         return rootUri;
     }
 

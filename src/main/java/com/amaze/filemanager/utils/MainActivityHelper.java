@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.provider.DocumentFile;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,8 +27,9 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
-import com.amaze.filemanager.fragments.SearchAsyncHelper;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
@@ -105,7 +107,18 @@ public class MainActivityHelper {
                 if (!isNewDirectoryRecursive(new HFile(openMode,path + "/" + a)) &&
                         Operations.isFileNameValid(a)) {
 
-                    mkDir(new HFile(openMode,path + "/" + a),ma);
+                    if (openMode == OpenMode.OTG) {
+                        // inside OTG
+
+                        DocumentFile parentDirectory = RootHelper.getDocumentFile(path, ma.getContext());
+                        if (parentDirectory.isDirectory())  {
+                            parentDirectory.createDirectory(a);
+                            ma.updateList();
+                        }
+                        else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+                    } else {
+                        mkDir(new HFile(openMode,path + "/" + a),ma);
+                    }
                 } else Toast.makeText(mainActivity, R.string.invalid_name, Toast.LENGTH_SHORT).show();
                 materialDialog.dismiss();
             }
@@ -126,8 +139,18 @@ public class MainActivityHelper {
             public void onClick(View v) {
                 String a = materialDialog.getInputEditText().getText().toString();
                 if (Operations.isFileNameValid(a)) {
+                    if (openMode == OpenMode.OTG) {
+                        // inside OTG
 
-                    mkFile(new HFile(openMode,path + "/" + a),ma);
+                        DocumentFile parentDirectory = RootHelper.getDocumentFile(path, ma.getContext());
+                        if (parentDirectory.isDirectory())  {
+                            parentDirectory.createFile(a.substring(a.lastIndexOf(".")), a);
+                            ma.updateList();
+                        }
+                        else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+                    } else {
+                        mkFile(new HFile(openMode,path + "/" + a),ma);
+                    }
                 } else Toast.makeText(mainActivity, R.string.invalid_name, Toast.LENGTH_SHORT).show();
                 materialDialog.dismiss();
             }

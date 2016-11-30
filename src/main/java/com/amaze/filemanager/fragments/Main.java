@@ -47,6 +47,7 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.provider.DocumentFile;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ActionMode;
@@ -1123,7 +1124,14 @@ public class Main extends android.support.v4.app.Fragment {
                         Operations.isFileNameValid(name)) {
                     if (openMode == OpenMode.FILE)
                         MAIN_ACTIVITY.mainActivityHelper.rename(openMode, f.getPath(), CURRENT_PATH + name, getActivity(), BaseActivity.rootMode);
-                    else
+                    else if (openMode == OpenMode.OTG) {
+                        DocumentFile documentFile = RootHelper.getDocumentFile(f.getPath(), ma.getContext());
+                        if (documentFile.renameTo(name)) {
+                            ma.updateList();
+                        } else {
+                            Toast.makeText(ma.getContext(), R.string.not_allowed, Toast.LENGTH_SHORT).show();
+                        }
+                    } else
                         MAIN_ACTIVITY.mainActivityHelper.rename(openMode, (f).getPath(), (CURRENT_PATH + "/" + name), getActivity(), BaseActivity.rootMode);
 
                 } else {
