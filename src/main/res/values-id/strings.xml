@@ -282,9 +282,10 @@
     <string name="greek_translation_title">Yunani</string>
     <string name="dutch_translation_title">Belanda</string>
     <string name="romanian_translation_title">Romania</string>
-    <string name="vietnamese_translation_title">Vietnam</string>
+	<string name="vietnamese_translation_title">Vietnam</string>
+    <string name="japanese_translation_title">Jepang</string>
     <string name="brazilian_portuguese_translation_title">Brazil Portugis</string>
-
+    
     <string name="zip_viewer">Penilik Zip</string>
     <string name="unin_system_apk">Ini adalah apl sistem, menghapusnya akan membuat sistem tidak stabil.\\nLanjutkan?</string>
     <string name="warning">Peringatan</string>
@@ -410,6 +411,10 @@ jika tidak, akan mencari yang lain</string>
     <string name="ftp_notif_title">Server FTP Amaze sedang berjalan</string>
     <string name="ftp_notif_text">pada %s</string>
     <string name="ftp_notif_stop_server">BERHENTI</string>
+    <string name="ftp_preference_port_auto_chkbx">Pilih port secara otomatis</string>
+    <string name="ftp_preference_port_auto_chkbx_summary">Otomatis memilih port yang tersedia. Nilai bawaan 2211.</string>
+    <string name="ftp_preference_port_edit">Port FTP</string>
+    <string name="ftp_preference_port_edit_summary">Port FTP. Juga bisa diatur secara otomatis.</string>
     <string name="primary_two_title">Warna Utama (Tab Kanan)</string>
     <string name="primary_two_summary">Tetapkan warna elemen UI yang besar di tab kanan</string>
     <string name="g_plus">Google Plus</string>
@@ -425,4 +430,42 @@ terkait dengan pengembangan</string>
     <string name="searchingdevices">Mencari perangkat</string>
     <string name="use_custom_ip">Gunakan IP ubahsuai</string>
     <string name="bookmark_lost">Markah tidak ditemukan, membuat ulang&#8230;</string>
+
+    <string name="smb_instructions">
+        <html>
+            <body>
+            <center>\\n
+            <h1>Cara mengakses folder berbagi pada windows dari android (smb)</h1>\\n
+            </center>\\n
+            <ol>\\n
+            <li>\\n
+            <b>Aktifkan Layanan Berbagi Berkas</b>\\n
+            <br/>Buka Panel Kontrol, klik Pilih grup rumah dan opsi berbagi pada menu
+                    Jaringan dan Internet, dan klik Ubah pengaturan berbagi lanjutan. Aktifkan
+                    fitur berbagi berkas dan printer.\\n
+            </li><br/><li/><b>Pengaturan Berbagi Berkas Tambahan</b><br/>Anda mungkin juga
+                    ingin mengkonfigurasi pengaturan berbagi lanjutan lainnya di sini. \\n
+            Contoh, Anda bisa mengakses berkas Anda tanpa sandi jika Anda percaya semua
+                perangkat pada jaringan lokal Anda. Setelah pengaturan berbagi berkas dan printer diaktifkan, Anda bisa
+                membuka File Explorer atau Windows Explorer, klik kanan folder yang ingin Anda bagikan, dan
+                pilih Properti. \\n
+            Klik tombol Berbagi dan buat folder tersedia di jaringan.\\n
+            <li><li/><br/><b>Pastikan kedua perangkat berada pada WiFi yang sama</b><br/> \\n
+            Fitur ini akan membuat berkas tersedia pada jaringan lokal, jadi PC dan perangkat Anda
+                    juga harus berada pada jaringan lokal yang sama. Anda tidak bisa mengakses folder berbagi
+                    melalui internet atau ketika telepon seluler Anda tersambung menggunakan mobile data — perangkat
+                    harus tersambung ke jaringan Wi-Fi.</li><li>\\n
+            <br/><b>Temukan Alamat IP</b>\\n
+            <br/>Buka Command Prompt. Ketik \'ipconfig\' dan tekan Enter. Cari Default Gateway
+                    pada adapter jaringan Anda untuk alamat router Anda. Lihat
+                    \\\"IPv4 Address\\\" pada adapter yang sama untuk alamat IP
+                    komputer Anda.</li><li/><br/>\\n
+            <b>Masukkan detail pada kotak jendela smb</b>\\n
+            <br/>\\n
+            </ol>\\n
+            </body>\\n
+            </html>
+    </string>
+    <string name="share_limit">Tidak bisa membagikan lebih dari 100 berkas.</string>
 </resources>
+

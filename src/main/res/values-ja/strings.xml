@@ -282,9 +282,10 @@
     <string name="greek_translation_title">ギリシャ語</string>
     <string name="dutch_translation_title">オランダ語</string>
     <string name="romanian_translation_title">ルーマニア語</string>
-    <string name="vietnamese_translation_title">ベトナム語</string>
+	<string name="vietnamese_translation_title">ベトナム語</string>
+    <string name="japanese_translation_title">日本語</string>
     <string name="brazilian_portuguese_translation_title">ブラジルのポルトガル語</string>
-
+    
     <string name="zip_viewer">Zip ビューアー</string>
     <string name="unin_system_apk">これはシステムアプリです。削除するとシステムが不安定になる可能性があります。\\n続行しますか?</string>
     <string name="warning">警告</string>
@@ -410,6 +411,10 @@
     <string name="ftp_notif_title">Amaze FTP サーバーは実行中</string>
     <string name="ftp_notif_text">%s に</string>
     <string name="ftp_notif_stop_server">停止</string>
+    <string name="ftp_preference_port_auto_chkbx">自動的にポートを選択</string>
+    <string name="ftp_preference_port_auto_chkbx_summary">自動的に使用可能なポートを選択します。 デフォルトは 2211 です。</string>
+    <string name="ftp_preference_port_edit">FTP ポート</string>
+    <string name="ftp_preference_port_edit_summary">FTPポート。 自動的に設定することもできます。</string>
     <string name="primary_two_title">プライマリー色 (右タブ)</string>
     <string name="primary_two_summary">右タブの大きな UI エレメントに色を設定します</string>
     <string name="g_plus">Google+</string>
@@ -425,4 +430,43 @@
     <string name="searchingdevices">デバイスの検索中</string>
     <string name="use_custom_ip">カスタム IP を使用する</string>
     <string name="bookmark_lost">ブックマークが見つかりません。再作成中&#8230;</string>
+
+    <string name="smb_instructions">
+<html>
+<body>
+<center>\\n
+<h1>Android で共有の Windows フォルダーにアクセスする方法 (smb)</h1>\\n
+</center>\\n
+<ol>\\n
+<li>\\n
+<b>ファイル共有を有効にします</b>\\n
+<br/>コントロールパネルを開き、ネットワークとインターネットの下のホームグループと共有オプションを選択をクリックし、
+共有の詳細設定の変更をクリックします。
+ファイルとプリンターの共有機能を有効にします。\\n
+</li><br/><li/><b>追加のファイル共有設定</b><br/>また、
+その他の詳細な共有設定はここにあります。 \\n
+たとえば、ローカルネットワーク上のデバイスをすべての信頼する場合は、
+パスワードなしでファイルへのアクセスを有効にすることができます。
+ファイルとプリンタの共有が有効になっているときは、
+ファイルエクスプローラーまたは Windows エクスプローラーを開き、共有するフォルダを右クリックし、
+プロパティを選択します。\\n
+共有ボタンをクリックして、ネットワーク上でフォルダーを利用可能にします。\\n
+<li><li/><br/><b>両方のデバイスが同じ Wifi に接続されていることを確認します。</b><br/> \\n
+この機能により、ローカルネットワーク上でファイルを利用できるようになります。そのため、PC とモバイルデバイスは、
+同じローカルネットワーク上にいる必要があります。インターネットを介して、またはスマートフォンがモバイルデータに接続されているときは
+共有 Windows フォルダーにアクセスできません — 
+Wi-Fiに接続する必要があります。</li><li>\\n
+<br/><b>IP アドレスの検索</b>\\n
+<br/>コマンドプロンプトを開きます。 \'ipconfig\' と入力し、Enter キーを押します。
+お使いのルーターの IP アドレス用のネットワークアダプターの下にあるデフォルトゲートウェイを探します。
+同じアダプタセクションの下の \\\"IPv4 アドレス\\\" を探して、コンピュータの IP アドレスを確認します。
+</li><li/><br/>\\n
+<b>詳細を smb ダイアログボックスに入力します</b>\\n
+<br/>\\n
+</ol>\\n
+</body>\\n
+</html>
+</string>
+    <string name="share_limit">100 ファイル以上を共有することはできません</string>
 </resources>
+

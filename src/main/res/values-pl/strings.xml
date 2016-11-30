@@ -69,7 +69,7 @@
     <string name="date">Data: </string>
     <string name="location">Położenie: </string>
     <string name="size">Rozmiar: </string>
-    <string name="totalitems">Łącznie elementów: </string>
+    <string name="totalitems">Liczba elementów: </string>
     <string name="enterzipname">Proszę wprowadzić nazwę archiwum</string>
     <string name="noappfound">Nie odnaleziono aplikacji potrzebnej do otworzenia tego pliku.</string>
     <string name="copying">Kopiowanie</string>
@@ -80,7 +80,7 @@
     <string name="folder">Katalog</string>
     <string name="newfolder">Nowy katalog</string>
     <string name="entername">Proszę wprowadzić nazwę</string>
-    <string name="extracting">Wypakowywanie</string>
+    <string name="extracting">Rozpakowywanie</string>
     <string name="zipping">Kompresowanie</string>
     <string name="stopping">Zatrzymywanie</string>
     <string name="guide1">Witamy w menedżerze plików Amaze</string>
@@ -120,7 +120,7 @@
     <string name="refresh">Wczytaj ponownie</string>
     <string name="copy">Skopiuj</string>
     <string name="rootmode">Przeglądanie z prawami root\'a</string>
-    <string name="rootmodesummary">Jedynie dla urządzeń z prawami root\'a. Zaznacz, jeżeli jesteś tego pewien.</string>
+    <string name="rootmodesummary">Działa jedynie na urządzeniach z prawami root\'a. Proszę upewnić się przed włączeniem.</string>
     <string name="mountsystemsummary">Włącz, jeżeli chcesz edytować pliki systemowe</string>
     <string name="mountsystem">Zamontuj katalogi systemowe do zapisu</string>
     <string name="rootfailure">Nie przyznano praw root\'a</string>
@@ -282,9 +282,10 @@
     <string name="greek_translation_title">Grecki</string>
     <string name="dutch_translation_title">Niderlandzki</string>
     <string name="romanian_translation_title">Rumuński</string>
-    <string name="vietnamese_translation_title">Wietnamski</string>
+	<string name="vietnamese_translation_title">Wietnamski</string>
+    <string name="japanese_translation_title">Japoński</string>
     <string name="brazilian_portuguese_translation_title">Brazylijski portugalski</string>
-
+    
     <string name="zip_viewer">Przeglądarka archiwum</string>
     <string name="unin_system_apk">To jest aplikacja systemowa, usunięcie jej może spowodować niestabilność systemu.\\nKontynuować?</string>
     <string name="warning">Ostrzeżenie</string>
@@ -314,7 +315,7 @@
     <string name="sd_card_grant_next">sd_card_grant_next</string>
     <string name="sd_card_grant_first">sd_card_grant_first</string>
     <string name="fab_skin">Skórka FAB</string>
-    <string name="gplus_pic_title">Zaloguj z G+</string>
+    <string name="gplus_pic_title">Logowanie z G+</string>
     <string name="gplus_pic_summary">Wyświetla obraz G+ w szufladzie</string>
     <string name="icon_credits">Grafika od &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
 
@@ -367,7 +368,7 @@
     <string name="ascending">Rosnąco</string>
     <string name="descending">Malejąco</string>
     <string name="defualt">Domyślnie</string>
-    <string name="doit">Zrób to</string>
+    <string name="doit">Gotowe</string>
     <string name="wanthelp"><u>Czy potrzebujesz pomocy?</u></string>
     <string name="quick">Szybki dostęp</string>
     <string name="recent">Ostatnie pliki</string>
@@ -409,6 +410,10 @@
     <string name="ftp_notif_title">Serwer Amaze FTP jest uruchomiony</string>
     <string name="ftp_notif_text">pod adresem: %s</string>
     <string name="ftp_notif_stop_server">ZATRZYMAJ</string>
+    <string name="ftp_preference_port_auto_chkbx">Wybranie portu automatycznie</string>
+    <string name="ftp_preference_port_auto_chkbx_summary">Automatycznie wybiera dostępny port. Domyślnie 2221.</string>
+    <string name="ftp_preference_port_edit">Port FTP</string>
+    <string name="ftp_preference_port_edit_summary">Port FTP może być również ustalony automatycznie.</string>
     <string name="primary_two_title">Kolor główny (prawa karta)</string>
     <string name="primary_two_summary">Ustala kolor dużych elementów interfejsu prawej karty</string>
     <string name="g_plus">Google Plus</string>
@@ -417,8 +422,12 @@
     <string name="report_bugs_summary">Umożliwia zgłoszenie błędu lub zaproponowanie nowej funkcjonalności</string>
     <string name="translate_title">Przetłumacz</string>
     <string name="translate_summary">Umożliwia przetłumaczenie aplikacji na dany język</string>
+    <string name="g_plus_community_summary">Umożliwia testowanie wersji beta i wzięcie udziału w dyskusjach związanych z rozwojem programu</string>
     <string name="easter_egg_title">Tryb studio</string>
+    <string name="paypal_copy_message">Skopiowano do schowka identyfikator Paypal</string>
     <string name="searchingdevices">Szukanie urządzeń</string>
     <string name="use_custom_ip">Własne IP</string>
     <string name="bookmark_lost">Nie odnaleziono zakładki, ponowne tworzenie&#8230;</string>
-</resources>
+
+    </resources>
+

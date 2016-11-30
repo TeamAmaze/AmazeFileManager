@@ -425,5 +425,6 @@ rund um die Entwicklung</string>
     <string name="searchingdevices">Suche nach Geräten</string>
     <string name="use_custom_ip">Verwende benutzerdefinierte IP</string>
     <string name="bookmark_lost">Lesezeichen nicht gefunden, erstelle erneut&#8230;</string>
-</resources>
+
+    </resources>
 

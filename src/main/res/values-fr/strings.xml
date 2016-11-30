@@ -89,7 +89,7 @@
     <string name="guide4">Comme copier, déplacer, propriétés, etc</string>
     <string name="guide5">Utiliser le bouton Retour de votre appareil pour sortir de l\'application à n\'importe quel moment&#8230;</string>
     <string name="guide6">..Et utiliser la flèche de gauche pour naviguer dans le gestionnaire de fichiers</string>
-    <string name="maintab">L\'onglet Principal ne peut pas être déplacé</string>
+    <string name="maintab">L\'onglet principal ne peut pas être supprimé</string>
     <string name="openparent">Ouvrir le répertoire Parent</string>
     <string name="openwith">Ouvrir avec</string>
     <string name="share">Partager</string>
@@ -283,6 +283,7 @@
     <string name="dutch_translation_title">Néerlandais</string>
     <string name="romanian_translation_title">Roumain</string>
     <string name="vietnamese_translation_title">vietnamien</string>
+    <string name="japanese_translation_title">Japonnais</string>
     <string name="brazilian_portuguese_translation_title">Portugais brésilien</string>
 
     <string name="zip_viewer">Visionneur ZIP</string>
@@ -322,7 +323,7 @@
     <string name="color_summary">Définir une couleur aux divers éléments de l\'UI</string>
     <string name="primary_color_title">Couleur Primaire</string>
     <string name="primary_color_summary">Définir une couleur aux grands ensembles de l\'UI
-pour l\'onglet de gauche</string>
+        pour l\'onglet de gauche</string>
     <string name="accent_color_title">Couleur accentuée</string>
     <string name="accent_color_summary">Définir la couleur du FAB et d\'autres petits éléments de l\'UI</string>
     <string name="icon_color_title">Couleur d\'icône</string>
@@ -399,7 +400,7 @@ pour l\'onglet de gauche</string>
     <string name="regular_expression_summary">Rechercher en utilisant une expression rationelle de style BASH</string>
     <string name="match_content">Rechercher le contenu</string>
     <string name="match_content_summary">Si défini, l\'expression rationelle sera comparée avec le nom
-de fichier complet, autrement, une instance sera recherchée.</string>
+        de fichier complet, autrement, une instance sera recherchée.</string>
     <string name="start_ftp">Démarrer</string>
     <string name="stop_ftp">Arrêter</string>
     <string name="ftp_status_running">Démarré</string>
@@ -411,14 +412,57 @@ de fichier complet, autrement, une instance sera recherchée.</string>
     <string name="ftp_notif_title">Le serveur FTP est en cours d\'exécution</string>
     <string name="ftp_notif_text">À %s</string>
     <string name="ftp_notif_stop_server">ARRÊT</string>
+    <string name="ftp_preference_port_auto_chkbx">Sélectionner le port automatiquement</string>
+    <string name="ftp_preference_port_auto_chkbx_summary">Sélectionne automatiquement un port disponible. La valeur par défaut est 2211.</string>
+    <string name="ftp_preference_port_edit">Port FTP</string>
+    <string name="ftp_preference_port_edit_summary">Le port FTP. Peut être défini automatiquement.</string>
     <string name="primary_two_title">Couleur Primaire (Onglet Droit)</string>
     <string name="primary_two_summary">Assigner la couleur des grands ensembles de l\'IU
-pour l\'onglet de droite.</string>
+        pour l\'onglet de droite.</string>
     <string name="g_plus">Google Plus</string>
+    <string name="support_development">Aider au développement</string>
     <string name="report_bugs_title">Signaler un bug</string>
     <string name="report_bugs_summary">Signaler un bug ou demander une nouvelle fonctionnalité</string>
     <string name="translate_title">Traduire</string>
     <string name="translate_summary">Traduire Amaze dans votre langue</string>
+    <string name="g_plus_community_summary">Prendre part aux bêta-tests et discussions en relation au développement</string>
+    <string name="easter_egg_title">Mode Studio</string>
     <string name="paypal_copy_message">Id Paypal copié dans le presse-papiers</string>
     <string name="searchingdevices">Recherche d\'appareils</string>
-</resources>
+    <string name="use_custom_ip">Utiliser une adresse IP modifiée</string>
+    <string name="bookmark_lost">Favori non trouvé, recréation&#8230;</string>
+
+    <string name="smb_instructions">
+        <html>
+        <body>
+        <center>\\n
+        <h1>Comment accéder à un dossier partager de windows sous Android (smb)</h1>\\n
+        </center>\\n
+        <ol>\\n
+        <li>\\n
+        <b>Activation du partage de fichiers</b>\\n
+        <br/>Ouvrez le Panneau de Configuration, cliquez sur Choisir les options de groupe résidentiel et de partage sous Réseau et Internet,
+        et cliquez sur changer les options des partages avancées. Active l\'option de partage de fichiers et d\'imprimantes\\n
+        </li><br/><li/><b>Options de partages de fichiers avancées
+        </b><br/>You pouvez aussi régler d\'autres paramètres de partages à cet endroit.
+        Par exemple, vous pouvez autoriser l\'accès à vos fichiers sans mot de passe si vous vous trouvez dans un réseau de confiance (réseau domestique).
+        Une fois que le partage de fichiers et d\'imprimantes est activé, vous pouvez ouvrir l\'Explorateur de fichiers, cliquer-droit sur un dossier à partager,
+        et sélectionner Propriétés.\\n
+        Cliquez sur l\'onglet Partage et rendez le dossier disponible sur votre réseau.\\n
+        <li><li/><br/><b>Assurez vous que les deux appareils soient connectés au même réseau Wifi</b><br/> \\n
+        Cette fonction rend disponible vos fichiers sur un réseau local, donc votre PC et votre appareil mobile doit
+        se trouver sur le même réseau local. Vous ne pouvez pas accéder à vos partages Windows à travers Internet où quand votre appareil mobile est connecté au réseau cellulaire - Il doit être connecté au Wifi.
+        </li><li>\\n
+        <br/><b>Trouver votre adresse IP</b>\\n
+        <br/>Ouvrez une invite de commande. Tapez \'ipconfig\' et appuyez sur Entrer.
+        Regardez la valeur de Passerelle par défaut pour connaitre l\'IP de votre routeur. Regardez \\\"Adresse IPv4 \\\" pour connaitre l\'adresse IP de votre ordinateur.
+        </li><li/><br/>\\n
+        <b>Entrez les détails dans le fenêtre de configuration de smb</b>\\n
+        <br/>\\n
+        </ol>\\n
+        </body>\\n
+        </html>
+    </string>
+    <string name="share_limit">Impossible de partage plus de 100 fichiers</string>
+    </resources>
+

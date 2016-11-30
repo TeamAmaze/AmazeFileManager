@@ -282,9 +282,9 @@
     <string name="greek_translation_title">Грчки</string>
     <string name="dutch_translation_title">Холандски</string>
     <string name="romanian_translation_title">Румунски</string>
-    <string name="vietnamese_translation_title">Вијетнамски</string>
+	<string name="vietnamese_translation_title">Вијетнамски</string>
     <string name="brazilian_portuguese_translation_title">Бразилски португалски</string>
-
+    
     <string name="zip_viewer">Зип прегледач</string>
     <string name="unin_system_apk">Ово је системска апликација, уклањање може да доведе до нестабилности система.\nДа наставим?</string>
     <string name="warning">Упозорење</string>
@@ -425,4 +425,6 @@
     <string name="searchingdevices">Тражим уређаје</string>
     <string name="use_custom_ip">Користите прилагођену ИП</string>
     <string name="bookmark_lost">Обележивач није нађен, поново правим&#8230;</string>
-</resources>
+
+    </resources>
+
