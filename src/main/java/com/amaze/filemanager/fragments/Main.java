@@ -884,14 +884,14 @@ public class Main extends android.support.v4.app.Fragment {
                     computeScroll();
                     loadlist(path, false, openMode);
                 } else {
-                    if (l.getMode() == OpenMode.SMB)
+                    if (l.getMode() == OpenMode.SMB) {
                         try {
                             SmbFile smbFile = new SmbFile(l.getDesc());
                             launch(smbFile, l.getlongSize());
                         } catch (MalformedURLException e) {
                             e.printStackTrace();
                         }
-                    else if (MAIN_ACTIVITY.mReturnIntent) {
+                    } else if (MAIN_ACTIVITY.mReturnIntent) {
                         returnIntentResults(new File(l.getDesc()));
                     } else {
 
@@ -1001,7 +1001,8 @@ public class Main extends android.support.v4.app.Fragment {
         try {
             if (bitmap != null) {
                 if (GO_BACK_ITEM)
-                    if (!path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)) {
+                    if (!path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
+                            && !path.equals("otg:/")) {
                         if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback)) {
 
                             Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
@@ -1163,7 +1164,7 @@ public class Main extends android.support.v4.app.Fragment {
             if (selection) {
                 adapter.toggleChecked(false);
             } else {
-                if (openMode == OpenMode.SMB)
+                if (openMode == OpenMode.SMB) {
                     try {
                         if (!smbPath.equals(CURRENT_PATH)) {
                             String path = (new SmbFile(CURRENT_PATH).getParent());
@@ -1172,7 +1173,8 @@ public class Main extends android.support.v4.app.Fragment {
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
-                else if (CURRENT_PATH.equals("/") || CURRENT_PATH.equals(home))
+                } else if (CURRENT_PATH.equals("/") || CURRENT_PATH.equals(home) ||
+                        CURRENT_PATH.equals("otg:/"))
                     MAIN_ACTIVITY.exit();
                 else if (utils.canGoBack(f)) {
                     loadlist(f.getParent(), true, openMode);

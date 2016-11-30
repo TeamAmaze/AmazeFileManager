@@ -26,14 +26,14 @@ import android.provider.MediaStore;
 import android.widget.Toast;
 
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.ui.Layoutelements;
-import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
-import com.amaze.filemanager.filesystem.HFile;
-import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.OpenMode;
@@ -76,7 +76,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     @Override
     public void onProgressUpdate(String... message) {
         if(c!=null)
-        Toast.makeText(c, message[0], Toast.LENGTH_SHORT).show();
+            Toast.makeText(c, message[0], Toast.LENGTH_SHORT).show();
     }
 
     boolean grid;
@@ -85,102 +85,112 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     // Actual download method, run in the task thread
     protected ArrayList<Layoutelements> doInBackground(String... params) {
         // params comes from the execute() call: params[0] is the url.
-          ArrayList<Layoutelements> list = null;
-           path = params[0];
-           grid = ma.checkforpath(path);
-           ma.folder_count = 0;
-           ma.file_count = 0;
-           if (openmode == OpenMode.UNKNOWN) {
-               HFile hFile = new HFile(OpenMode.UNKNOWN, path);
-               hFile.generateMode(ma.getActivity());
-               if (hFile.isDirectory() && !hFile.isSmb()) {
-                   openmode = OpenMode.FILE;
-               } else if (hFile.isSmb()) {
-                   openmode = OpenMode.SMB;
-                   ma.smbPath = path;
-               } else if (hFile.isCustomPath())
-                   openmode = OpenMode.CUSTOM;
-               else if (android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()) {
-                   openmode = OpenMode.ROOT;
-               }
-           }
-           if (openmode == OpenMode.SMB) {
-               HFile hFile = new HFile(OpenMode.SMB, path);
-               try {
-                   SmbFile[] smbFile = hFile.getSmbFile(5000).listFiles();
-                   list = ma.addToSmb(smbFile, path);
-               } catch (SmbAuthException e) {
-                   if(!e.getMessage().toLowerCase().contains("denied"))
-                   ma.reauthenticateSmb();
-                   publishProgress(e.getLocalizedMessage());
-               } catch (SmbException e) {
-                   publishProgress(e.getLocalizedMessage());
-                   e.printStackTrace();
-               } catch (NullPointerException e) {
-                   publishProgress(e.getLocalizedMessage());
-                   e.printStackTrace();
-               }
-           } else if (openmode == OpenMode.CUSTOM) {
+        ArrayList<Layoutelements> list = null;
+        path = params[0];
+        grid = ma.checkforpath(path);
+        ma.folder_count = 0;
+        ma.file_count = 0;
+        if (openmode == OpenMode.UNKNOWN) {
+            HFile hFile = new HFile(OpenMode.UNKNOWN, path);
+            hFile.generateMode(ma.getActivity());
+            if (hFile.isDirectory() && !hFile.isSmb()) {
+                openmode = OpenMode.FILE;
+            } else if (hFile.isSmb()) {
+                openmode = OpenMode.SMB;
+                ma.smbPath = path;
+            } else if (hFile.isOtgFile()) {
+                openmode = OpenMode.OTG;
+            } else if (hFile.isCustomPath())
+                openmode = OpenMode.CUSTOM;
+            else if (android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()) {
+                openmode = OpenMode.ROOT;
+            }
+        }
 
-               ArrayList<BaseFile> arrayList = null;
-               switch (Integer.parseInt(path)) {
-                   case 0:
-                       arrayList = (listImages());
-                       path = "0";
-                       break;
-                   case 1:
-                       arrayList = (listVideos());
-                       path = "1";
-                       break;
-                   case 2:
-                       arrayList = (listaudio());
-                       path = "2";
-                       break;
-                   case 3:
-                       arrayList = (listDocs());
-                       path = "3";
-                       break;
-                   case 4:
-                       arrayList = (listApks());
-                       path = "4";
-                       break;
-                   case 5:
-                       arrayList = listRecent();
-                       path = "5";
-                       break;
-                   case 6:
-                       arrayList = listRecentFiles();
-                       path = "6";
+        switch (openmode) {
+            case SMB:
+                HFile hFile = new HFile(OpenMode.SMB, path);
+                try {
+                    SmbFile[] smbFile = hFile.getSmbFile(5000).listFiles();
+                    list = ma.addToSmb(smbFile, path);
+                } catch (SmbAuthException e) {
+                    if(!e.getMessage().toLowerCase().contains("denied"))
+                        ma.reauthenticateSmb();
+                    publishProgress(e.getLocalizedMessage());
+                } catch (SmbException e) {
+                    publishProgress(e.getLocalizedMessage());
+                    e.printStackTrace();
+                } catch (NullPointerException e) {
+                    publishProgress(e.getLocalizedMessage());
+                    e.printStackTrace();
+                }
+                break;
+            case CUSTOM:
+                ArrayList<BaseFile> arrayList = null;
+                switch (Integer.parseInt(path)) {
+                    case 0:
+                        arrayList = (listImages());
+                        path = "0";
+                        break;
+                    case 1:
+                        arrayList = (listVideos());
+                        path = "1";
+                        break;
+                    case 2:
+                        arrayList = (listaudio());
+                        path = "2";
+                        break;
+                    case 3:
+                        arrayList = (listDocs());
+                        path = "3";
+                        break;
+                    case 4:
+                        arrayList = (listApks());
+                        path = "4";
+                        break;
+                    case 5:
+                        arrayList = listRecent();
+                        path = "5";
+                        break;
+                    case 6:
+                        arrayList = listRecentFiles();
+                        path = "6";
+                        break;
+                }
+                try {
+                    if (arrayList != null)
+                        list = addTo(arrayList);
+                    else return new ArrayList<>();
+                } catch (Exception e) {
+                }
+                break;
+            case OTG:
+                list = addTo(listOtg(path));
+                break;
+            default:
+                try {
+                    ArrayList<BaseFile> arrayList1;
+                    if (BaseActivity.rootMode) {
+                        arrayList1 = RootHelper.getFilesList(path, BaseActivity.rootMode, ma.SHOW_HIDDEN, new RootHelper.GetModeCallBack() {
+                            @Override
+                            public void getMode(OpenMode mode) {
+                                openmode = mode;
+                            }
+                        });
+                    } else
+                        arrayList1 = (RootHelper.getFilesList(path, ma.SHOW_HIDDEN));
+                    openmode = OpenMode.FILE;
+                    list = addTo(arrayList1);
 
-               }
-               try {
-                   if (arrayList != null)
-                       list = addTo(arrayList);
-                   else return new ArrayList<>();
-               } catch (Exception e) {
-               }
-           } else {
-               try {
-                   ArrayList<BaseFile> arrayList;
-                   if (BaseActivity.rootMode) {
-                       arrayList = RootHelper.getFilesList(path, BaseActivity.rootMode, ma.SHOW_HIDDEN, new RootHelper.GetModeCallBack() {
-                           @Override
-                           public void getMode(OpenMode mode) {
-                               openmode = mode;
-                           }
-                       });
-                   } else
-                       arrayList = (RootHelper.getFilesList(path, ma.SHOW_HIDDEN));
-                   openmode = OpenMode.FILE;
-                   list = addTo(arrayList);
+                } catch (Exception e) {
+                    return null;
+                }
+                break;
+        }
 
-               } catch (Exception e) {
-                   return null;
-               }
-           }
-           if (list != null && !(openmode == OpenMode.CUSTOM && ((path).equals("5") || (path).equals("6"))))
-               Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, BaseActivity.rootMode));
-           return list;
+        if (list != null && !(openmode == OpenMode.CUSTOM && ((path).equals("5") || (path).equals("6"))))
+            Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, BaseActivity.rootMode));
+        return list;
 
     }
 
@@ -193,7 +203,9 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
             if (!DataUtils.hiddenfiles.contains(ele.getPath())) {
                 if (ele.isDirectory()) {
                     size = "";
-                    Layoutelements layoutelements = utilsProvider.getFutils().newElement(ma.folder, f.getPath(), ele.getPermisson(), ele.getLink(), size, 0, true, false, ele.getDate() + "");
+                    Layoutelements layoutelements = utilsProvider.getFutils().newElement(ma.folder,
+                            f.getPath(), ele.getPermisson(), ele.getLink(), size, 0, true, false,
+                            ele.getDate() + "");
                     layoutelements.setMode(ele.getMode());
                     a.add(layoutelements);
                     ma.folder_count++;
@@ -211,7 +223,9 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                         //e.printStackTrace();
                     }
                     try {
-                        Layoutelements layoutelements = utilsProvider.getFutils().newElement(Icons.loadMimeIcon(ma.getActivity(), f.getPath(), !ma.IS_LIST, ma.res), f.getPath(), ele.getPermisson(), ele.getLink(), size, longSize, false, false, ele.getDate() + "");
+                        Layoutelements layoutelements = utilsProvider.getFutils().newElement(Icons.loadMimeIcon(ma.getActivity(),
+                                f.getPath(), !ma.IS_LIST, ma.res), f.getPath(), ele.getPermisson(),
+                                ele.getLink(), size, longSize, false, false, ele.getDate() + "");
                         layoutelements.setMode(ele.getMode());
                         a.add(layoutelements);
                         ma.file_count++;
@@ -399,6 +413,17 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         }
         cursor.close();
         return songs;
+    }
+
+    /**
+     * Lists files from an OTG device
+     * @param path the path to the directory tree, starts with prefix 'otg:/'
+     *             Independent of URI (or mount point) for the OTG
+     * @return a list of files loaded
+     */
+    ArrayList<BaseFile> listOtg(String path) {
+
+        return RootHelper.getDocumentFilesList(path, c);
     }
 
     boolean contains(String[] types, String path) {

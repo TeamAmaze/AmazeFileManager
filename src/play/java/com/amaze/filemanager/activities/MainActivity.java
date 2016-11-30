@@ -180,7 +180,8 @@ public class MainActivity extends BaseActivity implements
     public boolean mRingtonePickerIntent = false, colourednavigation = false;
     public Toolbar toolbar;
     public int skinStatusBar;
-    public int storage_count = 0;
+
+    public int storage_count = 0; // number of storage available (internal/external/otg etc)
 
     public FloatingActionMenu floatingActionButton;
     public LinearLayout pathbar;
@@ -247,7 +248,7 @@ public class MainActivity extends BaseActivity implements
     private CoordinatorLayout mScreenLayout;
 
     private static final int REQUEST_CODE_SAF = 223;
-    private static final String KEY_PREF_OTG = "uri_usb_otg";
+    public static final String KEY_PREF_OTG = "uri_usb_otg";
 
     // the current visible tab, either 0 or 1
     public static int currentTab;
@@ -519,7 +520,7 @@ public class MainActivity extends BaseActivity implements
         File usb = getUsbDrive();
         if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
 
-        if (Sp.getString(KEY_PREF_OTG, null)!=null) rv.add("OTG");
+        if (Sp.getString(KEY_PREF_OTG, null)!=null) rv.add("otg:/");
         return rv;
     }
 
@@ -632,6 +633,9 @@ public class MainActivity extends BaseActivity implements
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
                 icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
+            } else if ("otg:/".equals(file)) {
+                name = "OTG";
+                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_48dp);
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
@@ -1275,7 +1279,7 @@ public class MainActivity extends BaseActivity implements
             if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
                 // start system request for storage access framework
                 Toast.makeText(getApplicationContext(),
-                        "Give OTG access permission", Toast.LENGTH_LONG).show();
+                        getString(R.string.otg_access), Toast.LENGTH_LONG).show();
                 Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
                 startActivityForResult(safIntent, REQUEST_CODE_SAF);
             } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
@@ -1404,6 +1408,9 @@ public class MainActivity extends BaseActivity implements
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
                 icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
+            } else if ("otg:/".equals(file)) {
+                name = "OTG";
+                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_48dp);
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
@@ -2479,8 +2486,7 @@ public class MainActivity extends BaseActivity implements
                     return;
                 }
                 Main main = ((Main) m.getTab());
-                if (main != null)
-                    main.loadlist(pending_path, false, OpenMode.UNKNOWN);
+                if (main != null) main.loadlist(pending_path, false, OpenMode.UNKNOWN);
             } catch (ClassCastException e) {
                 select = null;
                 goToMain("");

@@ -116,6 +116,7 @@ public class TabFragment extends android.support.v4.app.Fragment
             List<Tab> tabs1=tabHandler.getAllTabs();
             int i=tabs1.size();
             if(i==0) {
+                // creating tabs in db for the first time, probably the first launch of app
                 if (mainActivity.storage_count>1)
                     addTab(new Tab(1,"",((EntryItem)DataUtils.list.get(1)).getPath(),"/"),1,"");
                 else
@@ -363,15 +364,15 @@ public class TabFragment extends android.support.v4.app.Fragment
         }
     }
 
-    public void addTab(Tab text,int pos,String path) {
-        if(text==null)return;
+    public void addTab(Tab tab,int pos,String path) {
+        if(tab==null)return;
         android.support.v4.app.Fragment main = new Main();
         Bundle b = new Bundle();
         if(path!=null && path.length()!=0)
             b.putString("lastpath",path);
         else
-            b.putString("lastpath",text.getOriginalPath(savepaths));
-        b.putString("home", text.getHome());
+            b.putString("lastpath",tab.getOriginalPath(savepaths));
+        b.putString("home", tab.getHome());
         b.putInt("no", pos);
         main.setArguments(b);
         fragments.add(main);

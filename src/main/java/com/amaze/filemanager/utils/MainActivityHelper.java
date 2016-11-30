@@ -458,6 +458,10 @@ public class MainActivityHelper {
         else return a;
     }
 
+    public String parseOtgPath(String a) {
+        return "otg://" + a;
+    }
+
     /**
      * Creates a fragment which will handle the search AsyncTask {@link SearchAsyncHelper}
      * @param query the text query entered the by user

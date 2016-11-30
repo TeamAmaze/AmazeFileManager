@@ -467,5 +467,6 @@
             </html>
     </string>
     <string name="share_limit">Can\'t share more than 100 files</string>
+    <string name="otg_access">Select the root of OTG device</string>
 </resources>
 

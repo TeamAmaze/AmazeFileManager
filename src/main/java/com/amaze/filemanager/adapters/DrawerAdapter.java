@@ -185,7 +185,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
     }
 
     /**
-     * Checks whether path for exists
+     * Checks whether path for bookmark exists
      * If path is not found, empty directory is created
      * @param path
      */

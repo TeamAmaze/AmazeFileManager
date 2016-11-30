@@ -40,19 +40,21 @@ public class HFile {
             if(!isDirectory)this.path = path + name;
             else if(!name.endsWith("/")) this.path=path+name+"/";
             else this.path=path+name;
-        }
-        else this.path = path + "/" + name;
+        } else this.path = path + "/" + name;
     }
     public void generateMode(Context context){
         if(path.startsWith("smb://"))mode=OpenMode.SMB;
-        else {
+        else if (path.startsWith("otg:/")) {
+
+            mode = OpenMode.OTG;
+        } else {
             if(context==null){
                 mode=OpenMode.FILE;
                 return;
             }
             boolean rootmode=PreferenceManager.getDefaultSharedPreferences(context).getBoolean("rootMode",false);
-            if(Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT)
-            {   mode=OpenMode.FILE;
+            if(Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT) {
+                mode=OpenMode.FILE;
                 if(rootmode){
                     if(!getFile().canRead())mode=OpenMode.ROOT;
                 }
@@ -87,6 +89,11 @@ public class HFile {
     public boolean isSmb(){
         return mode==OpenMode.SMB;
     }
+
+    public boolean isOtgFile() {
+        return mode==OpenMode.OTG;
+    }
+
     File getFile(){return new File(path);}
     BaseFile generateBaseFileFromParent(){
         ArrayList<BaseFile> arrayList= RootHelper.getFilesList(getFile().getParent(),true,true,null);
@@ -109,7 +116,7 @@ public class HFile {
             case ROOT:
                 BaseFile baseFile=generateBaseFileFromParent();
                 if(baseFile!=null)
-                return baseFile.getDate();
+                    return baseFile.getDate();
         }
         return new File("/").lastModified();
     }
@@ -123,14 +130,14 @@ public class HFile {
                         s = smbFile.length();
                     } catch (SmbException e) {
                     }
-                    return s;
+                return s;
             case FILE:
                 s = new File(path).length();
                 return s;
             case ROOT:
                 BaseFile baseFile=generateBaseFileFromParent();
                 if(baseFile!=null)
-                return baseFile.getSize();
+                    return baseFile.getSize();
         }
         return s;
     }
@@ -275,7 +282,7 @@ public class HFile {
     public String getReadablePath(String path){
         if(isSmb())
             return parseSmbPath(path);
-            return path;
+        return path;
     }
     String parseSmbPath(String a) {
         if (a.contains("@"))
@@ -336,8 +343,14 @@ public class HFile {
         else if(isRoot())return RootHelper.fileExists(path);
         return exists;
     }
+
+    /**
+     * Whether file is a simple file (i.e. not a directory/smb/otg/other)
+     * @return true if file; other wise false
+     */
     public boolean isSimpleFile(){
-        if(!isSmb() && !isCustomPath() && !android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()){
+        if(!isSmb() && !isOtgFile() && !isCustomPath()
+                && !android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()){
             if(!new File(path).isDirectory())return true;
         }
         return false;
@@ -347,11 +360,11 @@ public class HFile {
             try {
                 new SmbFile(path).setLastModified(date);
                 return true;
-        } catch (SmbException e) {
-                 return false;
-        } catch (MalformedURLException e) {
+            } catch (SmbException e) {
                 return false;
-        }
+            } catch (MalformedURLException e) {
+                return false;
+            }
         File f=new File(path);
         return f.setLastModified(date);
 
