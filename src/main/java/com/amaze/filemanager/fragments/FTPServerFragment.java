@@ -84,6 +84,7 @@ public class FTPServerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mainActivity = (MainActivity) getActivity();
     }
 
     @Override
@@ -179,7 +180,6 @@ public class FTPServerFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
-        mainActivity = (MainActivity) getActivity();
         mainActivity.setActionBarTitle(getResources().getString(R.string.ftp));
         mainActivity.floatingActionButton.hideMenuButton(true);
         mainActivity.buttonBarFrame.setVisibility(View.GONE);
