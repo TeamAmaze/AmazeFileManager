@@ -13,7 +13,7 @@ public class PreferencesAppThemeManager implements AppThemeManagerInterface {
 
     private AppTheme loadFromPreferences(SharedPreferences preferences) {
         try {
-            String themeId = preferences.getString("appTheme", "0");
+            String themeId = preferences.getString("theme", "0");
             switch (themeId) {
                 case "0":
                 case "1":
