@@ -9,7 +9,7 @@ import java.util.Calendar;
  * Created by Vishal on 12-05-2015.
  */
 public class PreferenceUtils {
-    private static int primary = -1, accent = -1, folder = -1, theme = -1, primaryTwo = -1;
+    private static int primary = -1, accent = -1, folder = -1, primaryTwo = -1;
 
     public static final String KEY_PRIMARY_TWO = "skin_two";
     public static final String KEY_PRIMARY = "skin";
@@ -70,15 +70,9 @@ public class PreferenceUtils {
     public static String getAccentString(SharedPreferences Sp) {
         return (colors[getAccent(Sp)]);
     }
-    public static int getTheme(SharedPreferences Sp){
-        if(theme==-1){
-            int th = Integer.parseInt(Sp.getString("theme", "0"));
-            theme = th == 2 ? PreferenceUtils.hourOfDay() : th;
-        }
-        return theme;
-    }
+
     public static void reset(){
-        primary=accent=folder=theme=primaryTwo=-1;
+        primary=accent=folder=primaryTwo=-1;
     }
 
     @Deprecated
@@ -314,6 +308,7 @@ public class PreferenceUtils {
             "<br><br></code></p>" +
             "</body></html>";
 
+    @Deprecated
     public static int hourOfDay() {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);

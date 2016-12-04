@@ -8,16 +8,12 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,18 +22,22 @@ import java.util.List;
  * Created by Arpit on 01-07-2015.
  */
 public class ShareTask extends AsyncTask<String,String,Void> {
+    private AppTheme appTheme;
+
     Activity contextc;
-    int theme,fab_skin;
+    int fab_skin;
     ArrayList<Uri> arrayList;
     ArrayList<Intent> targetShareIntents=new ArrayList<Intent>();
     ArrayList<String> arrayList1=new ArrayList<>();
     ArrayList<Drawable> arrayList2=new ArrayList<>();
-    public ShareTask(Activity context,ArrayList<Uri> arrayList,int theme,int fab_skin){
-        this.contextc=context;
-        this.arrayList=arrayList;
-        this.theme=theme;
-        this.fab_skin=fab_skin;
+
+    public ShareTask(Activity context, ArrayList<Uri> arrayList, AppTheme appTheme, int fab_skin) {
+        this.contextc = context;
+        this.arrayList = arrayList;
+        this.appTheme = appTheme;
+        this.fab_skin = fab_skin;
     }
+
     @Override
     protected Void doInBackground(String... strings) {
         String mime=strings[0];
@@ -72,7 +72,7 @@ public class ShareTask extends AsyncTask<String,String,Void> {
             intent.setPackage("com.android.bluetooth");
             targetShareIntents.add(intent);
             arrayList1.add(contextc.getResources().getString(R.string.bluetooth));
-            arrayList2.add(contextc.getResources().getDrawable(theme==1?R.drawable.ic_settings_bluetooth_white_36dp:R.drawable.ic_settings_bluetooth_black_24dp));
+            arrayList2.add(contextc.getResources().getDrawable(appTheme.equals(AppTheme.DARK) ? R.drawable.ic_settings_bluetooth_white_36dp : R.drawable.ic_settings_bluetooth_black_24dp));
         }     return null;
     }
     private boolean appInstalledOrNot(String uri,PackageManager pm) {
@@ -92,8 +92,8 @@ public class ShareTask extends AsyncTask<String,String,Void> {
 
             MaterialDialog.Builder builder=new MaterialDialog.Builder(contextc);
             builder.title(R.string.share);
-            if(theme==1)builder.theme(Theme.DARK);
-            ShareAdapter shareAdapter=new ShareAdapter(contextc,targetShareIntents,arrayList1,arrayList2,theme);
+            builder.theme(appTheme.getMaterialDialogTheme());
+            ShareAdapter shareAdapter = new ShareAdapter(contextc, targetShareIntents, arrayList1, arrayList2);
             builder.adapter(shareAdapter, new MaterialDialog.ListCallback() {
                 @Override
                 public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {

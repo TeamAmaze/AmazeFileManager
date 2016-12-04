@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.util.DisplayMetrics;
 
+import com.amaze.filemanager.utils.theme.AppTheme;
+
 /**
  * Created by vishal on 30/5/16.
  * Class used to create background of check icon on selection with
@@ -19,15 +21,15 @@ public class CircleGradientDrawable extends GradientDrawable {
     /**
      * Constructor
      * @param color the hex color of circular icon
-     * @param theme current theme light/dark which will determine the boundary color
+     * @param appTheme current theme light/dark which will determine the boundary color
      * @param metrics to convert the boundary width for {@link #setStroke} method from dp to px
      */
-    public CircleGradientDrawable(String color, int theme, DisplayMetrics metrics) {
+    public CircleGradientDrawable(String color, AppTheme appTheme, DisplayMetrics metrics) {
         this.mDisplayMetrics = metrics;
         setShape(OVAL);
         setSize(1, 1);
         setColor(Color.parseColor(color));
-        setStroke(dpToPx(STROKE_WIDTH), (theme == 1) ? Color.parseColor(STROKE_COLOR_DARK)
+        setStroke(dpToPx(STROKE_WIDTH), (appTheme.equals(AppTheme.DARK)) ? Color.parseColor(STROKE_COLOR_DARK)
                 : Color.parseColor(STROKE_COLOR_LIGHT));
     }
 

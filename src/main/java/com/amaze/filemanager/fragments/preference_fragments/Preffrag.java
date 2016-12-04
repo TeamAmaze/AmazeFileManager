@@ -35,7 +35,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
@@ -43,34 +42,35 @@ import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.ui.views.CheckBx;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.stericson.RootTools.RootTools;
 
 public class Preffrag extends PreferenceFragment{
 
     private static final CharSequence PREFERENCE_KEY_ABOUT = "about";
 
-    int theme;
+    private UtilitiesProviderInterface utilsProvider;
+
     SharedPreferences sharedPref;
     CheckBx gplus;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        utilsProvider = (UtilitiesProviderInterface) getActivity();
+
         PreferenceUtils.reset();
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        final int th1 = Integer.parseInt(sharedPref.getString("theme", "0"));
-        theme = th1==2 ? PreferenceUtils.hourOfDay() : th1;
-
         findPreference("columns").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 final String[] sort = getResources().getStringArray(R.array.columns);
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                if(theme==1)a.theme(Theme.DARK);
+                a.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
                 a.title(R.string.gridcolumnno);
                 int current = Integer.parseInt(sharedPref.getString("columns", "-1"));
                 current=current==-1?0:current;
@@ -94,7 +94,7 @@ public class Preffrag extends PreferenceFragment{
                 String[] sort = getResources().getStringArray(R.array.theme);
                 int current = Integer.parseInt(sharedPref.getString("theme", "0"));
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                if(theme==1)a.theme(Theme.DARK);
+                a.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
@@ -218,7 +218,7 @@ public class Preffrag extends PreferenceFragment{
             // For example, if the request has been denied previously.
 
             String fab_skin = (BaseActivity.accentSkin);
-            final MaterialDialog materialDialog=Futils.showBasicDialog(getActivity(),fab_skin,theme, new String[]{getResources().getString(R.string.grantgplus), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel),null});
+            final MaterialDialog materialDialog = Futils.showBasicDialog(getActivity(), fab_skin, utilsProvider.getAppTheme(), new String[]{getResources().getString(R.string.grantgplus), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel), null});
             materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

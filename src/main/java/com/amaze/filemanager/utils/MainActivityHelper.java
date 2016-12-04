@@ -35,6 +35,7 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.ui.dialogs.SmbSearchDialog;
+import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class MainActivityHelper {
     public void showFailedOperationDialog(ArrayList<BaseFile> failedOps, boolean move, Context contextc){
         MaterialDialog.Builder mat=new MaterialDialog.Builder(contextc);
         mat.title("Operation Unsuccessful");
-        if(mainActivity.theme1==1)mat.theme(Theme.DARK);
+        mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         mat.positiveColor(Color.parseColor(BaseActivity.accentSkin));
         mat.positiveText(R.string.cancel);
         String content="Following files were not "+(move?"moved":"copied")+" successfully";
@@ -209,7 +210,7 @@ public class MainActivityHelper {
     }
     public void guideDialogForLEXA(String path) {
         final MaterialDialog.Builder x = new MaterialDialog.Builder(mainActivity);
-        if (mainActivity.theme1 == 1) x.theme(Theme.DARK);
+        x.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         x.title(R.string.needsaccess);
         LayoutInflater layoutInflater = (LayoutInflater) mainActivity.getSystemService(mainActivity.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.lexadrawer, null);

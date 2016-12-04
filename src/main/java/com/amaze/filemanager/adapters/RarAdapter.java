@@ -34,6 +34,7 @@ import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.rarfile.FileHeader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
@@ -206,8 +207,6 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     @Override
     public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
         View  view = mInflater.inflate(R.layout.listheader, viewGroup, false);
-        /*if(zipViewer.mainActivity.theme1==1)
-            view.setBackgroundResource(R.color.holo_dark_background);*/
         HeaderViewHolder holder = new HeaderViewHolder(view);
         return holder;
     }
@@ -237,7 +236,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         }
         View v= mInflater.inflate(R.layout.rowlayout,parent, false);
         ViewHolder vh = new ViewHolder(v);
-        if(zipViewer.mainActivity.theme1==1)
+        if(utilsProvider.getAppTheme().equals(AppTheme.DARK))
             vh.txtTitle.setTextColor(zipViewer.getActivity().getResources().getColor(android.R.color.white));
         ImageButton about = (ImageButton) v.findViewById(R.id.properties);
         about.setVisibility(View.INVISIBLE);
@@ -297,9 +296,9 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             holder.checkImageView.setBackground(new CircleGradientDrawable(zipViewer.accentColor,
-                    zipViewer.theme1, zipViewer.getResources().getDisplayMetrics()));
+                    utilsProvider.getAppTheme(), zipViewer.getResources().getDisplayMetrics()));
         } else holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(zipViewer.accentColor,
-                zipViewer.theme1, zipViewer.getResources().getDisplayMetrics()));
+                utilsProvider.getAppTheme(), zipViewer.getResources().getDisplayMetrics()));
 
         if(rowItem.getEntry()==null){
             holder.genericIcon.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha));
@@ -371,7 +370,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         Boolean checked = myChecked.get(p);
         if (checked != null) {
 
-            if (zipViewer.mainActivity.theme1 == 0) {
+            if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
 
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
             } else {
@@ -446,9 +445,9 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             holder.checkImageView.setBackground(new CircleGradientDrawable(zipViewer.accentColor,
-                    zipViewer.theme1, zipViewer.getResources().getDisplayMetrics()));
+                    utilsProvider.getAppTheme(), zipViewer.getResources().getDisplayMetrics()));
         } else holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(zipViewer.accentColor,
-                zipViewer.theme1, zipViewer.getResources().getDisplayMetrics()));
+                utilsProvider.getAppTheme(), zipViewer.getResources().getDisplayMetrics()));
 
         if (rowItem.isDirectory()) {
             holder.genericIcon.setImageDrawable(folder);
@@ -494,7 +493,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         Boolean checked = myChecked.get(p);
         if (checked != null) {
 
-            if (zipViewer.mainActivity.theme1 == 0) {
+            if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
 
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
             } else {

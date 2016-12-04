@@ -73,6 +73,7 @@ import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.share.ShareTask;
+import com.amaze.filemanager.utils.theme.AppTheme;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.Command;
 
@@ -111,42 +112,23 @@ public class Futils {
         return Math.min(minimum, max);
     }
 
-    public MaterialDialog showBasicDialog(Context c,String fabskin,int theme1, String[] texts) {
-        MaterialDialog.Builder a = new MaterialDialog.Builder(c);
-        a.content(texts[0]);
-        a.widgetColor(Color.parseColor(fabskin));
-        if(theme1==1)
-            a.theme(Theme.DARK);
-        a.title(texts[1]);
-        a.positiveText(texts[2]);
-        a.positiveColor(Color.parseColor(fabskin));
-        a.negativeText(texts[3]);
-        a.negativeColor(Color.parseColor(fabskin));
-        if(texts[4]!=(null)){
-            a.neutralText(texts[4]);
-            a.neutralColor(Color.parseColor(fabskin));
+    public static MaterialDialog showBasicDialog(Activity m, String fabskin, AppTheme appTheme, String[] texts) {
+        MaterialDialog.Builder a = new MaterialDialog.Builder(m)
+                .content(texts[0])
+                .widgetColor(Color.parseColor(fabskin))
+                .theme(appTheme.getMaterialDialogTheme())
+                .title(texts[1])
+                .positiveText(texts[2])
+                .positiveColor(Color.parseColor(fabskin))
+                .negativeText(texts[3])
+                .negativeColor(Color.parseColor(fabskin));
+        if (texts[4] != (null)) {
+            a.neutralText(texts[4])
+             .neutralColor(Color.parseColor(fabskin));
         }
-        MaterialDialog dialog=a.build();
-        return dialog;
+        return a.build();
     }
-    public static MaterialDialog showBasicDialog(final Activity m,String fabskin,int theme1, String[] texts) {
-        MaterialDialog.Builder a = new MaterialDialog.Builder(m);
-        a.content(texts[0]);
-        a.widgetColor(Color.parseColor(fabskin));
-        if(theme1==1)
-            a.theme(Theme.DARK);
-        a.title(texts[1]);
-        a.positiveText(texts[2]);
-        a.positiveColor(Color.parseColor(fabskin));
-        a.negativeText(texts[3]);
-        a.negativeColor(Color.parseColor(fabskin));
-        if(texts[4]!=(null)){
-            a.neutralText(texts[4]);
-            a.neutralColor(Color.parseColor(fabskin));
-        }
-        MaterialDialog dialog=a.build();
-        return dialog;
-    }
+
     public MaterialDialog showNameDialog(final MainActivity m, String[] texts) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         a.input(texts[0], texts[1], false, new
@@ -157,17 +139,17 @@ public class Futils {
                     }
                 });
         a.widgetColor(Color.parseColor(BaseActivity.accentSkin));
-        if(m.theme1==1)
-            a.theme(Theme.DARK);
+
+        a.theme(m.getAppTheme().getMaterialDialogTheme());
         a.title(texts[2]);
         a.positiveText(texts[3]);
         a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
         a.neutralText(texts[4]);
-        if(texts[5]!=(null)){
+        if (texts[5] != (null)) {
             a.negativeText(texts[5]);
             a.negativeColor(Color.parseColor(BaseActivity.accentSkin));
         }
-        MaterialDialog dialog=a.build();
+        MaterialDialog dialog = a.build();
         return dialog;
     }
 
@@ -325,6 +307,10 @@ public class Futils {
     }
 
     public void shareFiles(ArrayList<File> a, Activity c,int theme,int fab_skin) {
+        shareFiles(a,c, AppTheme.fromIndex(theme), fab_skin);
+    }
+
+    public void shareFiles(ArrayList<File> a, Activity c,AppTheme appTheme,int fab_skin) {
         ArrayList<Uri> uris = new ArrayList<Uri>();
         boolean b = true;
         for (File f : a) {
@@ -343,11 +329,12 @@ public class Futils {
             mime = "*/*";
         try {
 
-            new ShareTask(c,uris,theme,fab_skin).execute(mime);
+            new ShareTask(c,uris,appTheme,fab_skin).execute(mime);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     public static String readableFileSize(long size) {
         if (size <= 0)
             return "0 B";
@@ -378,16 +365,16 @@ public class Futils {
             Uri uri=fileToContentUri(c, f);
             if(uri==null)uri=Uri.fromFile(f);
             intent.setDataAndType(uri, type);
-            Intent startintent;
-            if (forcechooser) startintent=Intent.createChooser(intent, c.getResources().getString(R.string.openwith));
-            else startintent=intent;
-            try {
-                c.startActivity(startintent);
-            } catch (ActivityNotFoundException e) {
-                e.printStackTrace();
-                Toast.makeText(c,R.string.noappfound,Toast.LENGTH_SHORT).show();
-                openWith(f,c);
-            }}else{openWith(f, c);}
+        Intent startintent;
+        if (forcechooser) startintent=Intent.createChooser(intent, c.getResources().getString(R.string.openwith));
+        else startintent=intent;
+        try {
+            c.startActivity(startintent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        Toast.makeText(c,R.string.noappfound,Toast.LENGTH_SHORT).show();
+        openWith(f,c);
+        }}else{openWith(f, c);}
 
     }
 
@@ -596,7 +583,7 @@ public class Futils {
         }
     }
 
-    public void deleteFiles(ArrayList<Layoutelements> a, final Main b, List<Integer> pos) {
+    public void deleteFiles(ArrayList<Layoutelements> a, final Main b, List<Integer> pos, AppTheme appTheme) {
         final MaterialDialog.Builder c = new MaterialDialog.Builder(b.getActivity());
         c.title(b.getResources().getString(R.string.confirm));
         String names = "";
@@ -606,9 +593,7 @@ public class Futils {
             names = names + "\n" + (i + 1) + ". " + a.get(pos.get(i)).getTitle();
         }
         c.content(b.getResources().getString(R.string.questiondelete) + names);
-
-        if(b.theme1==1)
-            c.theme(Theme.DARK);
+        c.theme(appTheme.getMaterialDialogTheme());
         c.negativeText(b.getResources().getString(R.string.no));
         c.positiveText(b.getResources().getString(R.string.yes));
         c.positiveColor(Color.parseColor(b.fabSkin));
@@ -682,7 +667,7 @@ public class Futils {
         return inSampleSize;
     }
 
-    public void showProps(final BaseFile hFile, final String perm, final Main c,boolean root) {
+    public void showProps(final BaseFile hFile, final String perm, final Main c, boolean root, AppTheme appTheme) {
         long last=hFile.getDate();
         String date = getdate(last);
         String items = c.getResources().getString(R.string.calculating), size = c.getResources().getString(R.string.calculating), name, parent;
@@ -692,8 +677,7 @@ public class Futils {
         String fabskin = PreferenceUtils.getAccentString(sp);
         MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
         a.title(c.getResources().getString( R.string.properties));
-        if(c.theme1==1)
-            a.theme(Theme.DARK);
+        a.theme(appTheme.getMaterialDialogTheme());
         View v=c.getActivity().getLayoutInflater().inflate(R.layout.properties_dialog,null);
         AppCompatButton appCompatButton=(AppCompatButton)v.findViewById(R.id.appX);
         appCompatButton.setAllCaps(true);
@@ -752,48 +736,48 @@ public class Futils {
         }
         return new long[]{-1,-1,-1};
     }
-    public void showProps(final HFile f, final Activity c,int theme1) {
+
+    public void showProps(final HFile f, final Activity c, AppTheme appTheme) {
         String date = null;
         try {
             date = getdate(f.lastModified());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (SmbException e) {
+        } catch (MalformedURLException | SmbException e) {
             e.printStackTrace();
         }
-        String items =  c.getResources().getString(R.string.calculating), size = c.getResources().getString(R.string.calculating), name, parent;
-        name =  f.getName();
+
+        String items = c.getResources().getString(R.string.calculating), size = c.getResources().getString(R.string.calculating), name, parent;
+        name = f.getName();
         parent = f.getReadablePath(f.getParent());
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         String fabskin = PreferenceUtils.getAccentString(sp);
-        MaterialDialog.Builder a = new MaterialDialog.Builder(c);
-        a.title(c.getResources().getString(R.string.properties));
-        if(theme1==1)
-            a.theme(Theme.DARK);
 
-        View v=c.getLayoutInflater().inflate(R.layout.properties_dialog,null);
+        View v = c.getLayoutInflater().inflate(R.layout.properties_dialog, null);
         v.findViewById(R.id.appX).setVisibility(View.GONE);
-        a.customView(v, true);
-        a.positiveText(R.string.copy_path);
-        a.negativeText(c.getResources().getString(R.string.md5_2));
-        a.positiveColor(Color.parseColor(fabskin));
-        a.negativeColor(Color.parseColor(fabskin));
-        a.neutralText(R.string.cancel);
-        a.neutralColor(Color.parseColor(fabskin));
-        a.callback(new MaterialDialog.ButtonCallback() {
-            @Override
-            public void onPositive(MaterialDialog materialDialog) {
-                copyToClipboard(c, f.getPath());
-                Toast.makeText(c, c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
-            }
 
-            @Override
-            public void onNegative(MaterialDialog materialDialog) {
-            }
-        });
-        MaterialDialog materialDialog=a.build();
+        MaterialDialog materialDialog = new MaterialDialog.Builder(c)
+                .title(c.getResources().getString(R.string.properties))
+                .theme(appTheme.getMaterialDialogTheme())
+                .customView(v, true)
+                .positiveText(R.string.copy_path)
+                .negativeText(c.getResources().getString(R.string.md5_2))
+                .positiveColor(Color.parseColor(fabskin))
+                .negativeColor(Color.parseColor(fabskin))
+                .neutralText(R.string.cancel)
+                .neutralColor(Color.parseColor(fabskin))
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog materialDialog) {
+                        copyToClipboard(c, f.getPath());
+                        Toast.makeText(c, c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog materialDialog) {
+                    }
+                })
+                .build();
         materialDialog.show();
-        new GenerateMD5Task(materialDialog, (f), name, parent, size, items, date,c,v).execute(f.getPath());
+        new GenerateMD5Task(materialDialog, (f), name, parent, size, items, date, c, v).execute(f.getPath());
     }
 
     public static boolean copyToClipboard(Context context, String text) {
@@ -960,38 +944,37 @@ public class Futils {
         }
     }
 
-
     public static void showSMBHelpDialog(Context m,String acc){
-
         MaterialDialog.Builder b=new MaterialDialog.Builder(m);
         b.content(Html.fromHtml(m.getResources().getString(R.string.smb_instructions)));
         b.positiveText(R.string.doit);
         b.positiveColor(Color.parseColor(acc));
         b.build().show();
     }
-    public void showPackageDialog(final File f,final MainActivity m){
-        MaterialDialog.Builder mat=new MaterialDialog.Builder(m);
+
+    public void showPackageDialog(final File f, final MainActivity m) {
+        MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
         mat.title(R.string.packageinstaller).content(R.string.pitext)
-                .positiveText(R.string.install)
-                .negativeText(R.string.view)
-                .neutralText(R.string.cancel)
-                .positiveColor(Color.parseColor(BaseActivity.accentSkin))
-                .negativeColor(Color.parseColor(BaseActivity.accentSkin))
-                .neutralColor(Color.parseColor(BaseActivity.accentSkin))
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog materialDialog) {
-                        openunknown(f, m, false);
-                    }
+           .positiveText(R.string.install)
+           .negativeText(R.string.view)
+           .neutralText(R.string.cancel)
+           .positiveColor(Color.parseColor(BaseActivity.accentSkin))
+           .negativeColor(Color.parseColor(BaseActivity.accentSkin))
+           .neutralColor(Color.parseColor(BaseActivity.accentSkin))
+           .callback(new MaterialDialog.ButtonCallback() {
+               @Override
+               public void onPositive(MaterialDialog materialDialog) {
+                   openunknown(f, m, false);
+               }
 
-                    @Override
-                    public void onNegative(MaterialDialog materialDialog) {
-                        m.openZip(f.getPath());
-                    }
-                });
-        if(m.theme1==1)mat.theme(Theme.DARK);
-        mat.build().show();
-
+               @Override
+               public void onNegative(MaterialDialog materialDialog) {
+                   m.openZip(f.getPath());
+               }
+           })
+           .theme(m.getAppTheme().getMaterialDialogTheme())
+           .build()
+           .show();
     }
 
     public void showArchiveDialog(final File f, final MainActivity m) {
@@ -1019,7 +1002,7 @@ public class Futils {
                             m.openZip(Uri.fromFile(f).toString());
                     }
                 });
-        if (m.theme1 == 1) mat.theme(Theme.DARK);
+        if (m.getAppTheme().equals(AppTheme.DARK)) mat.theme(Theme.DARK);
         MaterialDialog b = mat.build();
 
         if (!f.getName().toLowerCase().endsWith(".rar") && !f.getName().toLowerCase().endsWith(".jar") && !f.getName().toLowerCase().endsWith(".apk") && !f.getName().toLowerCase().endsWith(".zip"))
@@ -1053,8 +1036,7 @@ public class Futils {
                     }
                 });
         a.widgetColor(Color.parseColor(BaseActivity.accentSkin));
-        if(m.theme1==1)
-            a.theme(Theme.DARK);
+        a.theme(m.getAppTheme().getMaterialDialogTheme());
         a.title(m.getResources().getString(R.string.enterzipname));
         a.positiveText(R.string.create);
         a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
@@ -1074,11 +1056,11 @@ public class Futils {
         a.build().show();
     }
 
-    public void showSortDialog(final Main m) {
+    public void showSortDialog(final Main m, AppTheme appTheme) {
         String[] sort = m.getResources().getStringArray(R.array.sortby);
         int current = Integer.parseInt(m.Sp.getString("sortby", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-        if(m.theme1==1)a.theme(Theme.DARK);
+        a.theme(appTheme.getMaterialDialogTheme());
         a.items(sort).itemsCallbackSingleChoice(current > 3 ? current - 4 : current, new MaterialDialog.ListCallbackSingleChoice() {
             @Override
             public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
@@ -1114,11 +1096,11 @@ public class Futils {
         a.build().show();
     }
 
-    public void showSortDialog(final AppsList m) {
+    public void showSortDialog(final AppsList m, AppTheme appTheme) {
         String[] sort = m.getResources().getStringArray(R.array.sortbyApps);
         int current = Integer.parseInt(m.Sp.getString("sortbyApps", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-        if(m.theme1==1)a.theme(Theme.DARK);
+        a.theme(appTheme.getMaterialDialogTheme());
         a.items(sort).itemsCallbackSingleChoice(current > 2 ? current - 3 : current, new MaterialDialog.ListCallbackSingleChoice() {
             @Override
             public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
@@ -1153,7 +1135,7 @@ public class Futils {
         a.build().show();
     }
 
-    public void showHistoryDialog(final Main m) {
+    public void showHistoryDialog(final Main m, AppTheme appTheme) {
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
@@ -1166,8 +1148,7 @@ public class Futils {
                 DataUtils.clearHistory();
             }
         });
-        if(m.theme1==1)
-            a.theme(Theme.DARK);
+        a.theme(appTheme.getMaterialDialogTheme());
 
         a.autoDismiss(true);
         HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, this, R.layout.bookmarkrow, toHFileArray(DataUtils.history),null,true);
@@ -1184,13 +1165,12 @@ public class Futils {
 
     }
 
-    public void showHiddenDialog(final Main m) {
+    public void showHiddenDialog(final Main m, AppTheme appTheme) {
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
         a.title(R.string.hiddenfiles);
-        if(m.theme1==1)
-            a.theme(Theme.DARK);
+        a.theme(appTheme.getMaterialDialogTheme());
         a.autoDismiss(true);
         HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, this, R.layout.bookmarkrow, toHFileArray(DataUtils.getHiddenfiles()),null,false);
         a.adapter(adapter, new MaterialDialog.ListCallback() {

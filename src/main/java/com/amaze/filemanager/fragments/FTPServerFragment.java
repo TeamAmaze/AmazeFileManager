@@ -29,7 +29,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.services.ftpservice.FTPService;
-import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.theme.AppTheme;
 
 /**
  * Created by yashwanthreddyg on 10-06-2016.
@@ -84,6 +84,7 @@ public class FTPServerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mainActivity = (MainActivity) getActivity();
     }
 
     @Override
@@ -142,19 +143,15 @@ public class FTPServerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_ftp, container, false);
-        statusText = (TextView) rootView.findViewById(R.id.statusText);
+        statusText =(TextView) rootView.findViewById(R.id.statusText);
         warningText = (TextView) rootView.findViewById(R.id.warningText);
         ftpAddrText = (TextView) rootView.findViewById(R.id.ftpAddressText);
         ftpBtn = (Button) rootView.findViewById(R.id.startStopButton);
 
-        SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-        int th = Integer.parseInt(Sp.getString("theme", "0"));
-        // checking if theme should be set light/dark or automatic
-        int theme1 = th == 2 ? PreferenceUtils.hourOfDay() : th;
-        ImageView ftpImage = (ImageView) rootView.findViewById(R.id.ftp_image);
+        ImageView ftpImage = (ImageView)rootView.findViewById(R.id.ftp_image);
 
         //light theme
-        if (theme1 == 0) {
+        if (mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
             ftpImage.setImageResource(R.drawable.ic_ftp_light);
         } else {
             //dark
@@ -183,7 +180,6 @@ public class FTPServerFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
-        mainActivity = (MainActivity) getActivity();
         mainActivity.setActionBarTitle(getResources().getString(R.string.ftp));
         mainActivity.floatingActionButton.hideMenuButton(true);
         mainActivity.buttonBarFrame.setVisibility(View.GONE);

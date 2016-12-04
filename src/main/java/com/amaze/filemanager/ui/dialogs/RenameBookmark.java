@@ -19,6 +19,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.net.URL;
 import java.net.URLDecoder;
@@ -28,23 +30,31 @@ import java.net.URLEncoder;
  * Created by arpitkh996 on 21-01-2016.
  */
 public class RenameBookmark extends DialogFragment {
+    private UtilitiesProviderInterface utilsProvider;
+
     String title,path,user="",pass="",ipp="";
     String fabskin;
-    int theme1;
     Context c;
     BookmarkCallback bookmarkCallback;
     SharedPreferences Sp;
     int studiomode=0;
-    public static RenameBookmark getInstance(String name,String path,String fabskin,int theme1){
-        RenameBookmark renameBookmark=new RenameBookmark();
-        Bundle bundle=new Bundle();
-        bundle.putString("title",name);
-        bundle.putString("path",path);
-        bundle.putString("fabskin",fabskin);
-        bundle.putInt("theme",theme1);
+
+    public static RenameBookmark getInstance(String name, String path, String fabskin) {
+        RenameBookmark renameBookmark = new RenameBookmark();
+        Bundle bundle = new Bundle();
+        bundle.putString("title", name);
+        bundle.putString("path", path);
+        bundle.putString("fabskin", fabskin);
         renameBookmark.setArguments(bundle);
         return renameBookmark;
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        utilsProvider = (UtilitiesProviderInterface) getActivity();
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         c=getActivity();
@@ -53,7 +63,6 @@ public class RenameBookmark extends DialogFragment {
         title=getArguments().getString("title");
         path=getArguments().getString("path");
         fabskin=getArguments().getString("fabskin");
-        theme1=getArguments().getInt("theme",0);
         Sp=PreferenceManager.getDefaultSharedPreferences(c);
         studiomode=Sp.getInt("studio", 0);
         if (DataUtils.containsBooks(new String[]{title, path}) != -1 || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
@@ -67,8 +76,7 @@ public class RenameBookmark extends DialogFragment {
             builder.positiveText(R.string.save);
             builder.neutralText(R.string.cancel);
             builder.negativeText(R.string.delete);
-            if(theme1==1)
-                builder.theme(Theme.DARK);
+            builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
             builder.autoDismiss(false);
             View v2 = getActivity().getLayoutInflater().inflate(R.layout.rename, null);
             builder.customView(v2, true);

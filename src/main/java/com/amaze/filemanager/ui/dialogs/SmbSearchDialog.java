@@ -37,6 +37,8 @@ import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.utils.Computer;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.SubnetScanner;
+import com.amaze.filemanager.utils.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,18 +47,21 @@ import java.util.List;
  * Created by arpitkh996 on 16-01-2016.
  */
 public class SmbSearchDialog extends DialogFragment {
+    private UtilitiesProviderInterface utilsProvider;
+
     Listviewadapter listviewadapter;
     ArrayList<Computer> computers = new ArrayList<>();
     SharedPreferences Sp;
-    int theme, fabskin;
+    int fabskin;
     SubnetScanner subnetScanner;
     Context context;
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        utilsProvider = (UtilitiesProviderInterface) getActivity();
+
         context=getActivity();
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        theme = PreferenceUtils.getTheme(Sp);
         fabskin = Color.parseColor(PreferenceUtils.getAccentString(Sp));
     }
 
@@ -191,7 +196,7 @@ public class SmbSearchDialog extends DialogFragment {
             if (holder != null && holder.txtTitle != null) {
                 holder.txtTitle.setText(f.name);
                 holder.image.setImageResource(R.drawable.ic_settings_remote_white_48dp);
-                if (theme == 0)
+                if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
                     holder.image.setColorFilter(Color.parseColor("#666666"));
                 holder.txtDesc.setText(f.addr);
             }

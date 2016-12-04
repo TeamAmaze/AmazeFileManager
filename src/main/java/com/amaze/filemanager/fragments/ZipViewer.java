@@ -66,6 +66,7 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
@@ -109,7 +110,6 @@ public class ZipViewer extends Fragment {
     int openmode;
     //0 for zip 1 for rar
     boolean stopAnims=true;
-    public Integer theme, theme1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -182,7 +182,7 @@ public class ZipViewer extends Fragment {
         listView.setLayoutManager(mLayoutManager);
         res = getResources();
         mainActivity.supportInvalidateOptionsMenu();
-        if (mainActivity.theme1 == 1)
+        if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
             rootView.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         else
             listView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
@@ -197,9 +197,6 @@ public class ZipViewer extends Fragment {
         skin = mainActivity.getColorPreference().getColorAsString(ColorUsage.PRIMARY);
         accentColor = mainActivity.getColorPreference().getColorAsString(ColorUsage.ACCENT);
         iconskin = mainActivity.getColorPreference().getColorAsString(ColorUsage.ICON_SKIN);
-
-        theme = Integer.parseInt(Sp.getString("theme", "0"));
-        theme1 = theme == 2 ? PreferenceUtils.hourOfDay() : theme;
 
         //mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
