@@ -93,7 +93,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         if (openmode == OpenMode.UNKNOWN) {
             HFile hFile = new HFile(OpenMode.UNKNOWN, path);
             hFile.generateMode(ma.getActivity());
-            if (hFile.isDirectory() && !hFile.isSmb()) {
+            if (hFile.isLocal()) {
                 openmode = OpenMode.FILE;
             } else if (hFile.isSmb()) {
                 openmode = OpenMode.SMB;

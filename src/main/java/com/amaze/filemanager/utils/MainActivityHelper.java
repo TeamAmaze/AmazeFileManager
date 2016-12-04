@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.provider.DocumentFile;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,7 +18,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
@@ -27,7 +25,6 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
-import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
@@ -35,7 +32,6 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.ui.dialogs.SmbSearchDialog;
-import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -105,22 +101,7 @@ public class MainActivityHelper {
             @Override
             public void onClick(View v) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                if (!isNewDirectoryRecursive(new HFile(openMode,path + "/" + a)) &&
-                        Operations.isFileNameValid(a)) {
-
-                    if (openMode == OpenMode.OTG) {
-                        // inside OTG
-
-                        DocumentFile parentDirectory = RootHelper.getDocumentFile(path, ma.getContext());
-                        if (parentDirectory.isDirectory())  {
-                            parentDirectory.createDirectory(a);
-                            ma.updateList();
-                        }
-                        else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
-                    } else {
-                        mkDir(new HFile(openMode,path + "/" + a),ma);
-                    }
-                } else Toast.makeText(mainActivity, R.string.invalid_name, Toast.LENGTH_SHORT).show();
+                mkDir(new HFile(openMode,path + "/" + a),ma);
                 materialDialog.dismiss();
             }
         });
@@ -139,20 +120,7 @@ public class MainActivityHelper {
             @Override
             public void onClick(View v) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                if (Operations.isFileNameValid(a)) {
-                    if (openMode == OpenMode.OTG) {
-                        // inside OTG
-
-                        DocumentFile parentDirectory = RootHelper.getDocumentFile(path, ma.getContext());
-                        if (parentDirectory.isDirectory())  {
-                            parentDirectory.createFile(a.substring(a.lastIndexOf(".")), a);
-                            ma.updateList();
-                        }
-                        else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
-                    } else {
-                        mkFile(new HFile(openMode,path + "/" + a),ma);
-                    }
-                } else Toast.makeText(mainActivity, R.string.invalid_name, Toast.LENGTH_SHORT).show();
+                mkFile(new HFile(openMode,path + "/" + a),ma);
                 materialDialog.dismiss();
             }
         });
@@ -242,17 +210,19 @@ public class MainActivityHelper {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         mainActivity.startActivityForResult(intent, 3);
     }
-    public void rename(OpenMode mode, String f, String f1, final Activity context, boolean rootmode) {
-        final Toast toast=Toast.makeText(context, R.string.renaming, Toast.LENGTH_LONG);
+    public void rename(OpenMode mode, String oldPath, String newPath, final Activity context, boolean rootmode) {
+        final Toast toast=Toast.makeText(context, context.getString(R.string.renaming),
+                Toast.LENGTH_SHORT);
         toast.show();
-        Operations.rename(new HFile(mode, f), new HFile(mode, f1), rootmode, context, new Operations.ErrorCallBack() {
+        Operations.rename(new HFile(mode, oldPath), new HFile(mode, newPath), rootmode, context, new Operations.ErrorCallBack() {
             @Override
             public void exists(HFile file) {
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (toast != null) toast.cancel();
-                        Toast.makeText(mainActivity, (R.string.fileexist), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mainActivity, context.getString(R.string.fileexist),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -281,13 +251,26 @@ public class MainActivityHelper {
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (toast != null) toast.cancel();
                         if (b) {
                             Intent intent = new Intent("loadlist");
                             mainActivity.sendBroadcast(intent);
                         } else
-                            Toast.makeText(context, R.string.operationunsuccesful, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, context.getString(R.string.operationunsuccesful),
+                                    Toast.LENGTH_SHORT).show();
 
+                    }
+                });
+            }
+
+            @Override
+            public void invalidName(final HFile file) {
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (toast != null) toast.cancel();
+                        Toast.makeText(context, context.getString(R.string.invalid_name) + ": "
+                                + file.getName(), Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -340,7 +323,8 @@ public class MainActivityHelper {
 
 
     public void mkFile(final HFile path,final Main ma) {
-        final Toast toast=Toast.makeText(ma.getActivity(), R.string.creatingfile, Toast.LENGTH_LONG);
+        final Toast toast=Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfile),
+                Toast.LENGTH_SHORT);
         toast.show();
         Operations.mkfile(path, ma.getActivity(), BaseActivity.rootMode, new Operations.ErrorCallBack() {
             @Override
@@ -349,7 +333,8 @@ public class MainActivityHelper {
                     @Override
                     public void run() {
                         if(toast!=null)toast.cancel();
-                        Toast.makeText(mainActivity, (R.string.fileexist), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mainActivity, mainActivity.getString(R.string.fileexist),
+                                Toast.LENGTH_SHORT).show();
                         if(ma!=null && ma.getActivity()!=null) {
                             // retry with dialog prompted again
                             mkfile(file.getMode(),file.getParent(),ma);
@@ -383,12 +368,26 @@ public class MainActivityHelper {
                 ma.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(toast!=null)toast.cancel();
+
                         if(b){
                             ma.updateList();
                         }
-                        else Toast.makeText(ma.getActivity(),"Operation Failed",Toast.LENGTH_SHORT).show();
+                        else Toast.makeText(ma.getActivity(), ma.getString(R.string.operationunsuccesful),
+                                Toast.LENGTH_SHORT).show();
 
+                    }
+                });
+            }
+
+            @Override
+            public void invalidName(final HFile file) {
+                ma.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (toast != null) toast.cancel();
+                        Toast.makeText(ma.getActivity(), ma.getString(R.string.invalid_name)
+                                + ": " + file.getName(), Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -396,7 +395,8 @@ public class MainActivityHelper {
     }
 
     public void mkDir(final HFile path,final Main ma) {
-        final Toast toast=Toast.makeText(ma.getActivity(), R.string.creatingfolder, Toast.LENGTH_LONG);
+        final Toast toast=Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfolder),
+                Toast.LENGTH_SHORT);
         toast.show();
         Operations.mkdir(path, ma.getActivity(), BaseActivity.rootMode, new Operations.ErrorCallBack() {
             @Override
@@ -405,7 +405,8 @@ public class MainActivityHelper {
                     @Override
                     public void run() {
                         if (toast != null) toast.cancel();
-                        Toast.makeText(mainActivity, (R.string.fileexist), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mainActivity, mainActivity.getString(R.string.fileexist),
+                                Toast.LENGTH_SHORT).show();
                         if (ma != null && ma.getActivity() != null) {
                             // retry with dialog prompted again
                             mkdir(file.getMode(), file.getParent(), ma);
@@ -439,11 +440,24 @@ public class MainActivityHelper {
                     @Override
                     public void run() {
 
-                        if (toast != null) toast.cancel();
                         if (b) {
                             ma.updateList();
                         } else
-                            Toast.makeText(ma.getActivity(), R.string.operationunsuccesful, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ma.getActivity(), ma.getString(R.string.operationunsuccesful),
+                                    Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void invalidName(final HFile file) {
+                ma.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (toast != null) toast.cancel();
+                        Toast.makeText(ma.getActivity(), ma.getString(R.string.invalid_name)
+                                + ": " + file.getName(), Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -545,20 +559,13 @@ public class MainActivityHelper {
     /**
      * Check whether creation of new directory is inside the same directory with a same name or not
      * Directory inside the same directory with similar filename shall not be allowed
+     * Doesn't work at an OTG path
      * @param file
      * @return
      */
     public static boolean isNewDirectoryRecursive(HFile file) {
-        if (!file.isDirectory()) return false;
 
-        StringBuilder builder = new StringBuilder(file.getPath());
-        String newName = builder.substring(builder.lastIndexOf("/")+1, builder.length());
-
-        StringBuilder parentPath = new StringBuilder(builder.substring(0,
-                builder.length()-(newName.length()+1)));
-        String parentName = parentPath.substring(parentPath.lastIndexOf("/")+1,
-                parentPath.length());
-        if (newName.equals(parentName)) return true;
+        if (file.getName().equals(file.getParentName())) return true;
         else return false;
     }
 }

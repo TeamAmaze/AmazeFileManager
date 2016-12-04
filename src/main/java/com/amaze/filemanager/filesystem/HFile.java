@@ -158,6 +158,9 @@ public class HFile {
                 return new File(path).getName();
             case ROOT:
                 return new File(path).getName();
+            default:
+                StringBuilder builder = new StringBuilder(path);
+                name = builder.substring(builder.lastIndexOf("/")+1, builder.length());
         }
         return name;
     }
@@ -188,35 +191,78 @@ public class HFile {
             return true;
         return false;
     }
-    public String getParent() {
-        String name = "";
-        if (isSmb()) {
-            try {
-                name = new SmbFile(path).getParent();
-            } catch (MalformedURLException e) {
-                name = "";
-                e.printStackTrace();
-            }
-        } else
-            name = new File(path).getParent();
-        return name;
-    }
-    public boolean isDirectory() {
-        boolean isDirectory = false;
-        if (isSmb()) {
-            try {
-                isDirectory = new SmbFile(path).isDirectory();
-            } catch (SmbException e) {
-                isDirectory = false;
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                isDirectory = false;
-                e.printStackTrace();
-            }
-        } else if(isLocal())isDirectory = new File(path).isDirectory();
-        else if(isRoot())isDirectory=RootHelper.isDirectory(path,true,5);
-        return isDirectory;
 
+    /**
+     * Returns a path to parent for various {@link #mode}
+     * @return
+     */
+    public String getParent() {
+        String parentPath = "";
+        switch (mode) {
+            case SMB:
+                try {
+                    parentPath = new SmbFile(path).getParent();
+                } catch (MalformedURLException e) {
+                    parentPath = "";
+                    e.printStackTrace();
+                }
+                break;
+            case FILE:
+                parentPath = new File(path).getParent();
+                break;
+            default:
+                StringBuilder builder = new StringBuilder(path);
+                StringBuilder parentPathBuilder = new StringBuilder(builder.substring(0,
+                        builder.length()-(getName().length()+1)));
+                return parentPathBuilder.toString();
+        }
+        return parentPath;
+    }
+
+    public String getParentName() {
+        StringBuilder builder = new StringBuilder(path);
+        StringBuilder parentPath = new StringBuilder(builder.substring(0,
+                builder.length()-(getName().length()+1)));
+        String parentName = parentPath.substring(parentPath.lastIndexOf("/")+1,
+                parentPath.length());
+        return parentName;
+    }
+
+    /**
+     * Whether this object refers to a directory or file, handles all types of files
+     * @return
+     */
+    public boolean isDirectory() {
+        boolean isDirectory;
+        switch (mode) {
+            case SMB:
+                try {
+                    isDirectory = new SmbFile(path).isDirectory();
+                } catch (SmbException e) {
+                    isDirectory = false;
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    isDirectory = false;
+                    e.printStackTrace();
+                }
+                break;
+            case FILE:
+                isDirectory = new File(path).isDirectory();
+                break;
+            case ROOT:
+                isDirectory=RootHelper.isDirectory(path,true,5);
+                break;
+            case OTG:
+                // TODO: support for this method in OTG on-the-fly
+                // you need to manually call {@link RootHelper#getDocumentFile() method
+                isDirectory = false;
+                break;
+            default:
+                isDirectory = new File(path).isDirectory();
+                break;
+
+        }
+        return isDirectory;
     }
 
     public long folderSize() {
@@ -355,6 +401,7 @@ public class HFile {
         }
         return false;
     }
+
     public boolean setLastModified(long date){
         if(isSmb())
             try {

@@ -191,6 +191,8 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
      * @param path
      */
     void checkForPath(String path) {
+
+        // TODO: Add support for SMB and OTG in this function
         if (!new File(path).exists()) {
 
             Toast.makeText(getContext(), getContext().getString(R.string.bookmark_lost), Toast.LENGTH_SHORT).show();
@@ -214,6 +216,11 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
 
                         @Override
                         public void done(HFile hFile, boolean b) {
+
+                        }
+
+                        @Override
+                        public void invalidName(HFile file) {
 
                         }
                     });

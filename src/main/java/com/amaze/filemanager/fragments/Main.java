@@ -47,7 +47,6 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.provider.DocumentFile;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ActionMode;
@@ -70,7 +69,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.IMyAidlInterface;
 import com.amaze.filemanager.Loadlistener;
 import com.amaze.filemanager.R;
@@ -82,7 +80,6 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
-import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.ui.Layoutelements;
@@ -98,7 +95,6 @@ import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -1089,6 +1085,10 @@ public class Main extends android.support.v4.app.Fragment {
 
     }
 
+    /**
+     * Show dialog to rename a file
+     * @param f the file to rename
+     */
     public void rename(final BaseFile f) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
         String name = f.getName();
@@ -1108,23 +1108,8 @@ public class Main extends android.support.v4.app.Fragment {
                     if (f.isDirectory() && !name.endsWith("/"))
                         name = name + "/";
 
-                if (!MainActivityHelper.isNewDirectoryRecursive(new HFile(openMode, CURRENT_PATH + "/" + name)) &&
-                        Operations.isFileNameValid(name)) {
-                    if (openMode == OpenMode.FILE)
-                        MAIN_ACTIVITY.mainActivityHelper.rename(openMode, f.getPath(), CURRENT_PATH + name, getActivity(), BaseActivity.rootMode);
-                    else if (openMode == OpenMode.OTG) {
-                        DocumentFile documentFile = RootHelper.getDocumentFile(f.getPath(), ma.getContext());
-                        if (documentFile.renameTo(name)) {
-                            ma.updateList();
-                        } else {
-                            Toast.makeText(ma.getContext(), R.string.not_allowed, Toast.LENGTH_SHORT).show();
-                        }
-                    } else
-                        MAIN_ACTIVITY.mainActivityHelper.rename(openMode, (f).getPath(), (CURRENT_PATH + "/" + name), getActivity(), BaseActivity.rootMode);
-
-                } else {
-                    Toast.makeText(MAIN_ACTIVITY, R.string.invalid_name, Toast.LENGTH_SHORT).show();
-                }
+                MAIN_ACTIVITY.mainActivityHelper.rename(openMode, f.getPath(),
+                        CURRENT_PATH + "/" + name, getActivity(), BaseActivity.rootMode);
             }
 
             @Override
