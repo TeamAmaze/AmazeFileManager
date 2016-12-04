@@ -43,6 +43,7 @@ import com.amaze.filemanager.ui.views.CheckBx;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.theme.AppTheme;
 import com.stericson.RootTools.RootTools;
 
 public class Preffrag extends PreferenceFragment{
@@ -98,7 +99,9 @@ public class Preffrag extends PreferenceFragment{
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        sharedPref.edit().putString("theme", "" + which).commit();
+                        utilsProvider.getThemeManager()
+                                     .setAppTheme(AppTheme.fromIndex(which))
+                                     .save();
                         dialog.dismiss();
                         restartPC(getActivity());
                         return true;
