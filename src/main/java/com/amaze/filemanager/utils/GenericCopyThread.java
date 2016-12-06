@@ -47,52 +47,48 @@ public class GenericCopyThread implements Runnable {
         BufferedInputStream bufferedInputStream = null;
         BufferedOutputStream bufferedOutputStream = null;
         try {
-            if (!mSourceFile.isSmb() && !mSourceFile.isOtgFile()) {
 
-                inChannel = new RandomAccessFile(new File(mSourceFile.getPath()), "r").getChannel();
-                if (!mTargetFile.isOtgFile()) {
-
-                    // copying normal file, target not in OTG
-                    outChannel = new RandomAccessFile(new File(mTargetFile.getPath()), "rw").getChannel();
-                } else {
-                    // target in OTG, obtain streams from DocumentFile Uri's
-
-                    ContentResolver contentResolver = mContext.getContentResolver();
-                    DocumentFile documentTargetFile = RootHelper.getDocumentFile(mTargetFile.getPath(), mContext);
-                    outChannel = ((FileOutputStream) contentResolver.openOutputStream(documentTargetFile.getUri())).getChannel();
-                }
-                MappedByteBuffer inByteBuffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, inChannel.size());
-                MappedByteBuffer outByteBuffer = outChannel.map(FileChannel.MapMode.READ_WRITE, 0, inChannel.size());
-                outByteBuffer.put(inByteBuffer);
-            } else if (mSourceFile.isOtgFile()) {
-
-                // copying otg file
+            // initializing the input channels based on file types
+            if (mSourceFile.isOtgFile()) {
+                // source is in otg
                 ContentResolver contentResolver = mContext.getContentResolver();
                 DocumentFile documentSourceFile = RootHelper.getDocumentFile(mSourceFile.getPath(), mContext);
 
                 inChannel = ((FileInputStream) contentResolver.openInputStream(documentSourceFile.getUri())).getChannel();
+            } else if (mSourceFile.isSmb()) {
 
-                if (mTargetFile.getMode() == OpenMode.OTG) {
-
-                    // whether the target is in OTG or not
-                    DocumentFile documentTargetFile = RootHelper.getDocumentFile(mTargetFile.getPath(), mContext);
-
-                    outChannel = ((FileOutputStream) contentResolver.openOutputStream(documentTargetFile.getUri())).getChannel();
-                } else {
-
-                    // target is not in OTG, obtain the conventional output stream
-                    outChannel = new RandomAccessFile(new File(mTargetFile.getPath()), "rw").getChannel();
-                }
-                MappedByteBuffer inByteBuffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, inChannel.size());
-                MappedByteBuffer outByteBuffer = outChannel.map(FileChannel.MapMode.READ_WRITE, 0, inChannel.size());
-                outByteBuffer.put(inByteBuffer);
+                // source is in smb
+                bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(), 8192);
             } else {
 
-                // copying smb file
-                bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(), 8192);
-                bufferedOutputStream = new BufferedOutputStream(mTargetFile.getOutputStream(mContext), 8192);
+                // source file is neither smb nor otg; getting a channel from direct file instead of stream
+                inChannel = new RandomAccessFile(new File(mSourceFile.getPath()), "r").getChannel();
+            }
 
-                copyFile(bufferedInputStream, bufferedOutputStream);
+            // initializing the output channels based on file types
+            if (mTargetFile.isOtgFile()) {
+
+                // target in OTG, obtain streams from DocumentFile Uri's
+
+                ContentResolver contentResolver = mContext.getContentResolver();
+                DocumentFile documentTargetFile = RootHelper.getDocumentFile(mTargetFile.getPath(), mContext);
+                outChannel = ((FileOutputStream) contentResolver.openOutputStream(documentTargetFile.getUri())).getChannel();
+            } else if (mTargetFile.isSmb()) {
+
+                bufferedOutputStream = new BufferedOutputStream(mTargetFile.getOutputStream(mContext), 8192);
+            } else {
+                // copying normal file, target not in OTG
+                outChannel = new RandomAccessFile(new File(mTargetFile.getPath()), "rw").getChannel();
+            }
+
+            if (bufferedInputStream!=null) {
+                if (bufferedOutputStream!=null) copyFile(bufferedInputStream, bufferedOutputStream);
+                else if (outChannel!=null) {
+                    copyFile(bufferedInputStream, outChannel);
+                }
+            } else if (inChannel!=null) {
+                if (bufferedOutputStream!=null) copyFile(inChannel, bufferedOutputStream);
+                else if (outChannel!=null)  copyFile(inChannel, outChannel);
             }
 
             // writing to file
@@ -134,21 +130,64 @@ public class GenericCopyThread implements Runnable {
         thread.start();
     }
 
-    private void copyFile(BufferedInputStream bufferedInputStream, BufferedOutputStream bufferedOutputStream) {
+    private void copyFile(BufferedInputStream bufferedInputStream, FileChannel outChannel)
+            throws IOException {
+
+        MappedByteBuffer byteBuffer = outChannel.map(FileChannel.MapMode.READ_WRITE, 0,
+                mSourceFile.getSize());
         int count;
         byte[] buffer = new byte[8192];
-        try {
-            do {
-                count = bufferedInputStream.read(buffer);
-                if (count!=-1) {
-                    for (int i=0; i<count; i++) {
-                        bufferedOutputStream.write(buffer[i]);
-                    }
-                    bufferedOutputStream.flush();
+        do {
+            count = bufferedInputStream.read(buffer);
+            if (count!=-1) {
+                for (int i=0; i<count; i++) {
+                    byteBuffer.put(buffer[i]);
                 }
-            } while (count!=-1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            }
+        } while (count!=-1);
+    }
+
+    private void copyFile(FileChannel inChannel, FileChannel outChannel) throws IOException {
+
+        MappedByteBuffer inByteBuffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, inChannel.size());
+        MappedByteBuffer outByteBuffer = outChannel.map(FileChannel.MapMode.READ_WRITE, 0, inChannel.size());
+
+        outByteBuffer.put(inByteBuffer);
+    }
+
+    private void copyFile(BufferedInputStream bufferedInputStream, BufferedOutputStream bufferedOutputStream)
+            throws IOException{
+        int count;
+        byte[] buffer = new byte[8192];
+        do {
+            count = bufferedInputStream.read(buffer);
+            if (count!=-1) {
+                for (int i=0; i<count; i++) {
+                    bufferedOutputStream.write(buffer[i]);
+                }
+            }
+        } while (count!=-1);
+        bufferedOutputStream.flush();
+    }
+
+    private void copyFile(FileChannel inChannel, BufferedOutputStream bufferedOutputStream)
+            throws IOException {
+        MappedByteBuffer inBuffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, mSourceFile.getSize());
+        byte[] buffer = new byte[8192];
+        int length;
+        do {
+
+            int oldPosition = inBuffer.position();
+            inBuffer.get(buffer);
+            int newPosition = inBuffer.position();
+            length = newPosition-oldPosition;
+            if (length!=0) {
+                for (int i=0; i<length; i++) {
+                    bufferedOutputStream.write(buffer[i]);
+                }
+            }
+        } while (length==0);
+
+        bufferedOutputStream.write(inBuffer.array());
     }
 }

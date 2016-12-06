@@ -74,7 +74,7 @@ public class Operations {
 
                     // first check whether new directory already exists
                     DocumentFile directoryToCreate = RootHelper.getDocumentFile(file.getPath(), context);
-                    if (directoryToCreate.exists()) errorCallBack.exists(file);
+                    if (directoryToCreate!=null) errorCallBack.exists(file);
 
                     DocumentFile parentDirectory = RootHelper.getDocumentFile(file.getParent(), context);
                     if (parentDirectory.isDirectory())  {
@@ -154,7 +154,7 @@ public class Operations {
 
                     // first check whether new file already exists
                     DocumentFile fileToCreate = RootHelper.getDocumentFile(file.getPath(), context);
-                    if (fileToCreate.exists()) errorCallBack.exists(file);
+                    if (fileToCreate!=null) errorCallBack.exists(file);
 
                     DocumentFile parentDirectory = RootHelper.getDocumentFile(file.getParent(), context);
                     if (parentDirectory.isDirectory())  {
@@ -242,7 +242,7 @@ public class Operations {
                 } else if (oldFile.isOtgFile()) {
                     DocumentFile oldDocumentFile = RootHelper.getDocumentFile(oldFile.getPath(), context);
                     DocumentFile newDocumentFile = RootHelper.getDocumentFile(newFile.getPath(), context);
-                    if (newDocumentFile.exists()) {
+                    if (newDocumentFile!=null) {
                         errorCallBack.exists(newFile);
                         return null;
                     }
