@@ -98,7 +98,6 @@ dependencies {
     // Google Play Services
     playCompile 'com.google.android.gms:play-services-plus:7.8.0'
     compile 'org.sufficientlysecure:donations:2.3'
-    playCompile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile project(':libs:StickyHeadersRecyclerView')
     compile 'com.github.clans:fab:1.6.1'
     compile('com.github.afollestad.material-dialogs:core:0.8.5.5@aar') {
@@ -123,6 +122,7 @@ dependencies {
     compile files('libs/ftpserver-core-1.1.0-SNAPSHOT.jar')
 
     compile 'com.jcraft:jsch:0.1.53'
+    compile 'com.android.volley:volley:1.0.0'
 }
 
 def Properties props = new Properties()

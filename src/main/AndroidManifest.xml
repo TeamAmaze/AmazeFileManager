@@ -40,6 +40,7 @@
         android:name="android.hardware.touchscreen"
         android:required="false" />
     <application
+        android:name=".utils.AppConfig"
         android:icon="@mipmap/ic_launcher"
         tools:replace="android:label"
         android:label="Amaze">

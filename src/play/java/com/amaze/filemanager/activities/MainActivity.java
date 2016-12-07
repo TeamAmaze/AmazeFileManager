@@ -126,6 +126,7 @@ import com.amaze.filemanager.ui.drawer.SectionItem;
 import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
+import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
@@ -136,18 +137,14 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stericson.RootTools.RootTools;
 
@@ -214,7 +211,7 @@ public class MainActivity extends BaseActivity implements
     View drawerHeaderLayout;
     View drawerHeaderView, indicator_layout;
     RoundedImageView drawerProfilePic;
-    DisplayImageOptions displayImageOptions;
+    ImageLoader mImageLoader;
     int sdk, COUNTER = 0;
     TextView mGoogleName, mGoogleId;
     LinearLayout buttons;
@@ -266,6 +263,7 @@ public class MainActivity extends BaseActivity implements
         setContentView(R.layout.main_toolbar);
         initialiseViews();
         tabHandler = new TabHandler(this);
+        mImageLoader = AppConfig.getInstance().getImageLoader();
         utils = getFutils();
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
@@ -1524,47 +1522,36 @@ public class MainActivity extends BaseActivity implements
                 mGoogleName.setText(currentPerson.getDisplayName());
                 mGoogleId.setText(accountName);
                 // setting cover pic
-                ImageLoader.getInstance().loadImage(personCover.getUrl(), displayImageOptions, new SimpleImageLoadingListener() {
+                mImageLoader.get(personCover.getUrl(), new ImageLoader.ImageListener() {
                     @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        super.onLoadingComplete(imageUri, view, loadedImage);
+                    public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                         drawerHeaderParent.setBackgroundColor(Color.parseColor("#ffffff"));
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            drawerHeaderView.setBackground(new BitmapDrawable(loadedImage));
+                            drawerHeaderView.setBackground(new BitmapDrawable(response.getBitmap()));
                         } else
-                            drawerHeaderView.setBackgroundDrawable(new BitmapDrawable(loadedImage));
-
+                            drawerHeaderView.setBackgroundDrawable(new BitmapDrawable(response.getBitmap()));
                     }
 
                     @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                        super.onLoadingFailed(imageUri, view, failReason);
-                        drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-                        drawerHeaderParent.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
-                    }
-
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                        super.onLoadingStarted(imageUri, view);
-                        drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-                        drawerHeaderParent.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MainActivity.this, getString(R.string.no_cover_photo),
+                                Toast.LENGTH_LONG).show();
                     }
                 });
 
                 // setting profile pic
-                ImageLoader.getInstance().loadImage(stringBuilder.toString(), displayImageOptions, new SimpleImageLoadingListener() {
+                mImageLoader.get(stringBuilder.toString(), new ImageLoader.ImageListener() {
                     @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-
-                        super.onLoadingComplete(imageUri, view, loadedImage);
-
-                        drawerProfilePic.setImageBitmap(loadedImage);
+                    public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                        drawerProfilePic.setImageBitmap(response.getBitmap());
                         drawerProfilePic.setVisibility(View.VISIBLE);
                     }
 
                     @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                        super.onLoadingFailed(imageUri, view, failReason);
+                    public void onErrorResponse(VolleyError error) {
+
+                        Toast.makeText(MainActivity.this, getString(R.string.no_profile_pic),
+                                Toast.LENGTH_LONG).show();
                     }
                 });
             } else {
@@ -1860,19 +1847,7 @@ public class MainActivity extends BaseActivity implements
     void initialiseViews() {
         appBarLayout = (AppBarLayout) findViewById(R.id.lin);
 
-        if (!ImageLoader.getInstance().isInited()) {
 
-            ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
-        }
-        displayImageOptions = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.amaze_header)
-                .showImageForEmptyUri(R.drawable.amaze_header)
-                .showImageOnFail(R.drawable.amaze_header)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
 
         mScreenLayout = (CoordinatorLayout) findViewById(R.id.main_frame);
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
@@ -2564,29 +2539,17 @@ public class MainActivity extends BaseActivity implements
                 String path = Sp.getString("drawer_header_path", null);
                 if (path == null) return;
                 try {
-                    ImageLoader.getInstance().loadImage(path, displayImageOptions, new ImageLoadingListener() {
+                    final ImageView headerImageView = new ImageView(MainActivity.this);
+                    headerImageView.setImageDrawable(drawerHeaderParent.getBackground());
+                    mImageLoader.get(path, new ImageLoader.ImageListener() {
                         @Override
-                        public void onLoadingStarted(String s, View view) {
-
-                        }
-
-                        @Override
-                        public void onLoadingFailed(String s, View view, FailReason failReason) {
-
-                        }
-
-                        @Override
-                        public void onLoadingComplete(String s, View view, Bitmap b) {
-                            if (b == null) return;
-                            Drawable d = new BitmapDrawable(getResources(), b);
-                            if (d == null) return;
-                            drawerHeaderParent.setBackgroundDrawable(d);
+                        public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                            headerImageView.setImageBitmap(response.getBitmap());
                             drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
-
                         }
 
                         @Override
-                        public void onLoadingCancelled(String s, View view) {
+                        public void onErrorResponse(VolleyError error) {
 
                         }
                     });
