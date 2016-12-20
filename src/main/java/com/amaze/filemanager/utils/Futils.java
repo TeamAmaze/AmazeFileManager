@@ -628,7 +628,8 @@ public class Futils {
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
         return (sdf.format(f.lastModified())).toString();
     }
-    public String getdate(long f) {
+
+    public static String getdate(long f) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
         return (sdf.format(f)).toString();
@@ -667,18 +668,18 @@ public class Futils {
         return inSampleSize;
     }
 
-    public void showProps(final BaseFile hFile, final String perm, final Main c, boolean root, AppTheme appTheme) {
+    public void showProps(final BaseFile hFile, final String perm, final MainActivity c, boolean root, AppTheme appTheme) {
         long last=hFile.getDate();
         String date = getdate(last);
         String items = c.getResources().getString(R.string.calculating), size = c.getResources().getString(R.string.calculating), name, parent;
         name = hFile.getName();
         parent = hFile.getReadablePath(hFile.getParent());
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c.getActivity());
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         String fabskin = PreferenceUtils.getAccentString(sp);
-        MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
+        MaterialDialog.Builder a = new MaterialDialog.Builder(c);
         a.title(c.getResources().getString( R.string.properties));
         a.theme(appTheme.getMaterialDialogTheme());
-        View v=c.getActivity().getLayoutInflater().inflate(R.layout.properties_dialog,null);
+        View v=c.getLayoutInflater().inflate(R.layout.properties_dialog,null);
         AppCompatButton appCompatButton=(AppCompatButton)v.findViewById(R.id.appX);
         appCompatButton.setAllCaps(true);
         final View permtabl=v.findViewById(R.id.permtable);
@@ -691,7 +692,7 @@ public class Futils {
                     if (permtabl.getVisibility() == View.GONE) {
                         permtabl.setVisibility(View.VISIBLE);
                         but.setVisibility(View.VISIBLE);
-                        setPermissionsDialog(permtabl, but, hFile, perm, c);
+                        //setPermissionsDialog(permtabl, but, hFile, perm, c);
                     } else {
                         but.setVisibility(View.GONE);
                         permtabl.setVisibility(View.GONE);
@@ -710,8 +711,8 @@ public class Futils {
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-                c.MAIN_ACTIVITY.copyToClipboard(c.getActivity(), hFile.getPath());
-                Toast.makeText(c.getActivity(), c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
+                c.copyToClipboard(c, hFile.getPath());
+                Toast.makeText(c, c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -720,8 +721,12 @@ public class Futils {
         });
         MaterialDialog materialDialog=a.build();
         materialDialog.show();
-        new GenerateMD5Task(materialDialog, hFile, name, parent, size, items, date,c.getActivity
-                (),v).execute(hFile.getPath());
+        /*View bottomSheet = c.findViewById(R.id.design_bottom_sheet);
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.STATE_DRAGGING);*/
+        new GenerateMD5Task(materialDialog, hFile, name, parent, size, items, date,c
+                ,v).execute(hFile.getPath());
     }
     public static long[] getSpaces(HFile hFile){
         if(!hFile.isSmb() && hFile.isDirectory()){
@@ -874,7 +879,8 @@ public class Futils {
                     public void onFinish() {
                         if (studioCount!=null)
                             studioCount.cancel();
-                        studioCount = Toast.makeText(m, "Opening..", Toast.LENGTH_LONG);
+                        studioCount = Toast.makeText(m, m.getString(R.string.opening),
+                                Toast.LENGTH_LONG);
                         studioCount.show();
                         m.startActivity(intent);
                     }
@@ -927,7 +933,7 @@ public class Futils {
                     public void onFinish() {
                         if (studioCount!=null)
                             studioCount.cancel();
-                        studioCount = Toast.makeText(m, "Opening..", Toast.LENGTH_LONG);
+                        studioCount = Toast.makeText(m, m.getString(R.string.opening), Toast.LENGTH_LONG);
                         studioCount.show();
                         m.startActivity(intent);
                     }

@@ -37,15 +37,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
-
-import org.sufficientlysecure.donations.DonationsFragment;
 
 public class Preferences extends BaseActivity implements ActivityCompat.OnRequestPermissionsResultCallback  {
     int select=0;
@@ -128,25 +125,7 @@ public class Preferences extends BaseActivity implements ActivityCompat.OnReques
         }
         return true;
     }
-    private static final String GOOGLE_PUBKEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo9hApxv/pAZAUQshPiQEX2L6ZPoifEUw9fuisAxZFOHpW83mcRbWDmcqdouc1JqHak0/J0tZEBMc4SqSngE+xK3NxS2Mf4uwXPhD40bC1InAKtGNOJllGXKS8RRmk2FDD33ZHrdFUcJuKL6EIXHl1bwFIrd9rvr5VRt1mvXGj+iSdZe1WQpLex/f/s+eEe1B046Z/U6YNoPvP7xFezbZr3F1kRsx4WD5fcrTdptn38BXcwabJ1T/c2fLuGjUCZbycrggqJS47zEJ+SJhJpQUJWabq0sEYAHlyVN0CR0AVTd4/+y4+hFuPaYkhT4u/H5Uvd78u0VQdljzDs4w8mS++QIDAQAB";
-    private static final String[] GOOGLE_CATALOG = new String[]{"ntpsync.donation","ntpsync.donation.2", "ntpsync.donation.13"};
-    public void donate(){
-        try {
-            getFragmentManager().beginTransaction().remove(p).commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        String[] s=new String[]{"Minimal Donation","Medium Donation","High Donation"};
-        DonationsFragment donationsFragment = DonationsFragment.newInstance(BuildConfig.DEBUG, true, GOOGLE_PUBKEY, GOOGLE_CATALOG,
-                s, false, null, null,
-                null, false, null, null, false, null);
-        android.support.v4.app.FragmentTransaction transaction =getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.prefsfragment, donationsFragment);
-        transaction.commit();
-        getSupportActionBar().setTitle(R.string.donate);
-
-    }
     public  void restartPC(final Activity activity) {
         if (activity == null)
             return;

@@ -65,11 +65,11 @@
     <string name="filecreated">File Created</string>
     <string name="searchpath">Search Path</string>
     <string name="enterfile">Enter File Name</string>
-    <string name="name">Name: </string>
-    <string name="date">Date: </string>
-    <string name="location">Location: </string>
-    <string name="size">Size of Folder: </string>
-    <string name="totalitems">Total Items: </string>
+    <string name="name">Name</string>
+    <string name="date">Date</string>
+    <string name="location">Location</string>
+    <string name="size">Size of Folder</string>
+    <string name="totalitems">Total Items</string>
     <string name="enterzipname">Enter Zip Name</string>
     <string name="noappfound">No App found to open this file</string>
     <string name="copying">Copying</string>
@@ -282,11 +282,11 @@
     <string name="greek_translation_title">Greek</string>
     <string name="dutch_translation_title">Dutch</string>
     <string name="romanian_translation_title">Romanian</string>
-	<string name="vietnamese_translation_title">Vietnamese</string>
+    <string name="vietnamese_translation_title">Vietnamese</string>
     <string name="japanese_translation_title">Japanese</string>
     <string name="brazilian_portuguese_translation_title">Brazilian portuguese</string>
     <string name="tamil_translation_title">Tamil</string>
-    
+
     <string name="zip_viewer">Zip Viewer</string>
     <string name="unin_system_apk">This is a system app, deleting it might lead to system un-stability.\nProceed?</string>
     <string name="warning">Warning</string>
@@ -469,5 +469,52 @@
     <string name="share_limit">Can\'t share more than 100 files</string>
     <string name="otg_access">Select the root of OTG device</string>
     <string name="no_profile_pic">No G+ profile picture</string>
+    <string name="opening">Opening..</string>
+    <string name="information">Information</string>
+    <!-- reference to file accessed date -->
+    <string name="accessed">Accessed</string>
+    <!-- reference to file modified date -->
+    <string name="modified">Modified</string>
+
+    <string name="title">Title</string>
+    <string name="artist">Artist</string>
+    <string name="album">Album</string>
+    <string name="year">Year</string>
+    <string name="duration">Duration</string>
+    <string name="comment">Comment</string>
+    <!-- reference to audio/video file -->
+    <string name="container">Container</string>
+    <string name="codec">Codec</string>
+    <string name="channels">Channels</string>
+    <string name="sample_rate">Sample Rate</string>
+    <string name="bitrate">Bitrate</string>
+    <string name="dimensions">Dimensions</string>
+    <string name="frame_rate">Frame Rate</string>
+    <string name="image_type">Image Type</string>
+    <string name="width">Width</string>
+    <string name="height">Height</string>
+    <string name="date_modified">Date Modified</string>
+    <string name="software">Software</string>
+    <string name="creator">Creator</string>
+    <string name="camera_brand">Camera Brand</string>
+    <string name="camera_model">Camera Model</string>
+    <string name="date_taken">Date Taken</string>
+    <string name="exposure_time">Exposure Time</string>
+    <string name="aperture_value">Aperture Value</string>
+    <string name="image_iso">ISO Speed Rating</string>
+    <string name="flash_fired">Flash Fired</string>
+    <string name="focal_length">Focal Length</string>
+    <string name="document">Document</string>
+    <string name="subject">Subject</string>
+    <string name="author">Author</string>
+    <string name="keywords">Keywords</string>
+    <string name="producer">Producer</string>
+    <string name="created">Created</string>
+    <string name="format">Format</string>
+    <string name="pages">Number of Pages</string>
+    <!-- reference to a document file -->
+    <string name="optimized">Optimized</string>
+    <string name="security">Security</string>
+    <string name="paper_size">Paper Size</string>
 </resources>
 

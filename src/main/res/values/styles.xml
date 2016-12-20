@@ -85,6 +85,19 @@
         <item name="color">@android:color/white</item>
     </style>
 
+    <!-- Collapsing Toolbar title styles -->
+    <style name="expanded_appbar" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">48sp
+        </item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="collapsed_appbar" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
     <!-- styles for preferences -->
     <!-- light -->
     <style name="pref_accent_light_red" parent="appCompatLight">

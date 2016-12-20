@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.fragments.PropertiesSheet;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -676,7 +678,14 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.about:
-                                utilsProvider.getFutils().showProps((rowItem).generateBaseFile(), rowItem.getPermissions(), main, BaseActivity.rootMode, utilsProvider.getAppTheme());
+                                //utilsProvider.getFutils().showProps((rowItem).generateBaseFile(), rowItem.getPermissions(), main.MAIN_ACTIVITY, BaseActivity.rootMode, utilsProvider.getAppTheme());
+                                PropertiesSheet propertiesSheet = new PropertiesSheet();
+                                Bundle arguments = new Bundle();
+                                arguments.putParcelable(PropertiesSheet.KEY_FILE, rowItem.generateBaseFile());
+                                arguments.putString(PropertiesSheet.KEY_PERMISSION, rowItem.getPermissions());
+                                arguments.putBoolean(PropertiesSheet.KEY_ROOT, BaseActivity.rootMode);
+                                propertiesSheet.setArguments(arguments);
+                                propertiesSheet.show(main.getFragmentManager(), PropertiesSheet.TAG_FRAGMENT);
                                 return true;
                             case R.id.share:
                                 ArrayList<File> arrayList = new ArrayList<File>();

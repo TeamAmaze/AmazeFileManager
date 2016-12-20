@@ -1631,7 +1631,8 @@ public class MainActivity extends BaseActivity implements
             if (responseCode == Activity.RESULT_OK) {
                 // Get Uri from Storage Access Framework.
                 treeUri = intent.getData();
-                // Persist URI - this is required for verification of writability.
+                //
+                // ersist URI - this is required for verification of writability.
                 if (treeUri != null) Sp.edit().putString("URI", treeUri.toString()).commit();
             }
             // If not confirmed SAF, or if still not writable, then revert settings.

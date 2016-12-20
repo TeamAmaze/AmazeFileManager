@@ -27,14 +27,16 @@
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <FrameLayout
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:clipToPadding="false"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent" >
+        </FrameLayout>
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -286,7 +288,6 @@
                 fab:fab_label="Drive Connection" />
 
         </com.github.clans.fab.FloatingActionMenu>
-
 
     </android.support.design.widget.CoordinatorLayout>    <!--
          android:layout_gravity="start" tells DrawerLayout to treat
