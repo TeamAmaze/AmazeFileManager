@@ -6,10 +6,11 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
-import com.stericson.RootTools.RootTools;
+import com.amaze.filemanager.utils.RootUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -94,19 +95,11 @@ public class Operations {
                         if (!file.exists() && rootMode) {
                             file.setMode(OpenMode.ROOT);
                             if (file.exists()) errorCallBack.exists(file);
-                            boolean remount = false;
                             try {
-                                String res;
-                                if (!("rw".equals(res = RootTools.getMountedAs(file.getParent()))))
-                                    remount = true;
-                                if (remount)
-                                    RootTools.remount(file.getParent(), "rw");
-                                RootHelper.runAndWait("mkdir \"" + file.getPath()+"\"", true);
-                                if (remount) {
-                                    if (res == null || res.length() == 0) res = "ro";
-                                    RootTools.remount(file.getParent(), res);
-                                }
-                            } catch (Exception e) {
+                                RootUtils.mountOwnerRW(file.getParent());
+                                RootUtils.mkDir(file.getPath(), null);
+                                RootUtils.mountOwnerRO(file.getParent());
+                            } catch (RootNotPermittedException e) {
                                 Logger.log(e, file.getPath(), context);
                             }
                             errorCallBack.done(file, file.exists());
@@ -180,17 +173,11 @@ public class Operations {
                             if (file.exists()) errorCallBack.exists(file);
                             boolean remount = false;
                             try {
-                                String res;
-                                if (!("rw".equals(res = RootTools.getMountedAs(file.getParent()))))
-                                    remount = true;
-                                if (remount)
-                                    RootTools.remount(file.getParent(), "rw");
-                                RootHelper.runAndWait("touch \"" + file.getPath()+"\"", true);
-                                if (remount) {
-                                    if (res == null || res.length() == 0) res = "ro";
-                                    RootTools.remount(file.getParent(), res);
-                                }
-                            } catch (Exception e) {
+
+                                RootUtils.mountOwnerRW(file.getParent());
+                                RootHelper.runShellCommand("touch \"" + file.getPath()+"\"");
+                                RootUtils.mountOwnerRO(file.getParent());
+                            } catch (RootNotPermittedException e) {
                                 Logger.log(e, file.getPath(), context);
                             }
                             errorCallBack.done(file, file.exists());
@@ -262,7 +249,11 @@ public class Operations {
                             if (mode == 2) {
                                 errorCallBack.launchSAF(oldFile,newFile);
                             } else if (mode == 1 || mode==0) {
-                                boolean b = FileUtil.renameFolder(file, file1, context);
+                                try {
+                                    FileUtil.renameFolder(file, file1, context);
+                                } catch (RootNotPermittedException e) {
+                                    e.printStackTrace();
+                                }
                                 boolean a = !file.exists() && file1.exists();
                                 if (!a && rootMode){
                                     try {
@@ -298,10 +289,10 @@ public class Operations {
 
     }
     static void renameRoot(File a,String v) throws Exception {
-        boolean remount=false;
+        //boolean remount=false;
         String newname = a.getParent() + "/" + v;
-        String res;
-        if (!("rw".equals(res = RootTools.getMountedAs(a.getParent()))))
+        //String res;
+        /*if (!("rw".equals(res = RootTools.getMountedAs(a.getParent()))))
             remount = true;
         if (remount)
             RootTools.remount(a.getParent(), "rw");
@@ -309,7 +300,10 @@ public class Operations {
         if (remount) {
             if (res == null || res.length() == 0) res = "ro";
             RootTools.remount(a.getParent(), res);
-        }
+        }*/
+        RootUtils.mountOwnerRW(a.getParent());
+        RootUtils.rename(a.getPath(), a.getParent() + "/" + newname);
+        RootUtils.mountOwnerRO(a.getParent());
     }
     public static int checkFolder(final File folder, Context context) {
         boolean lol= Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP,ext=FileUtil.isOnExtSdCard(folder, context);

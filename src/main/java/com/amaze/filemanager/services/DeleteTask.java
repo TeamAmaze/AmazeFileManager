@@ -30,6 +30,7 @@ import android.support.v4.provider.DocumentFile;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.filesystem.BaseFile;
@@ -74,7 +75,12 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
         } else {
 
             for(BaseFile a:files)
-                (a).delete(cd,rootMode);
+                try {
+                    (a).delete(cd,rootMode);
+                } catch (RootNotPermittedException e) {
+                    e.printStackTrace();
+                    b = false;
+                }
         }
 
         return b;

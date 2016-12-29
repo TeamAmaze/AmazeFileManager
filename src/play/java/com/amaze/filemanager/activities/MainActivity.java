@@ -34,7 +34,6 @@ import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -48,6 +47,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
@@ -93,7 +93,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.IMyAidlInterface;
 import com.amaze.filemanager.Loadlistener;
 import com.amaze.filemanager.R;
@@ -146,14 +145,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
-import com.stericson.RootTools.RootTools;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import eu.chainfire.libsuperuser.Shell;
 
 
 public class MainActivity extends BaseActivity implements
@@ -251,6 +250,9 @@ public class MainActivity extends BaseActivity implements
     public static int currentTab;
 
     public static boolean isSearchViewEnabled = false;
+    public static Shell.Interactive shellInteractive;
+    private static Handler handler;
+    private static HandlerThread handlerThread;
 
     /**
      * Called when the activity is first created.
@@ -259,6 +261,7 @@ public class MainActivity extends BaseActivity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initialisePreferences();
+        initializeInteractiveShell();
         DataUtils.registerOnDataChangedListener(this);
         setContentView(R.layout.main_toolbar);
         initialiseViews();
@@ -445,6 +448,25 @@ public class MainActivity extends BaseActivity implements
     }
 
     /**
+     * Initializes an interactive shell, which will stay throughout the app lifecycle
+     * The shell is associated with a handler thread which maintain the message queue from the
+     * callbacks of shell as we certainly cannot allow the callbacks to run on same thread because
+     * of possible deadlock situation and the asynchronous behaviour of LibSuperSU
+     */
+    private void initializeInteractiveShell() {
+
+        // only one looper can be associated to a thread. So we're making sure not to create new
+        // handler threads every time the code relaunch.
+        if (rootMode) {
+
+            handlerThread = new HandlerThread("root_handler");
+            handlerThread.start();
+            handler = new Handler(handlerThread.getLooper());
+            shellInteractive = (new Shell.Builder()).useSU().setHandler(handler).open();
+        }
+    }
+
+    /**
      * Returns all available SD-Cards in the system (include emulated)
      * <p>
      * Warning: Hack! Based on Android source code of version 4.3 (API 18)
@@ -593,11 +615,7 @@ public class MainActivity extends BaseActivity implements
         if (backPressedToExitOnce) {
             finish();
             if (BaseActivity.rootMode) {
-                try {
-                    RootTools.closeAllShells();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                // close all shells
             }
         } else {
             this.backPressedToExitOnce = true;
@@ -1325,12 +1343,13 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (BaseActivity.rootMode) {
-            try {
-                RootTools.closeAllShells();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (rootMode) {
+            // close interactive shell and handler thread associated with it
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                // let it finish up first with what it's doing
+                handlerThread.quitSafely();
+            } else handlerThread.quit();
+            shellInteractive.close();
         }
         DataUtils.clear();
 

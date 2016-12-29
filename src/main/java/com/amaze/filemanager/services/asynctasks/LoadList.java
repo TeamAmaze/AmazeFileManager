@@ -26,6 +26,7 @@ import android.provider.MediaStore;
 import android.widget.Toast;
 
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
@@ -168,21 +169,20 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                 list = addTo(listOtg(path));
                 break;
             default:
+                // we're neither in OTG not in SMB, load the list based on root/general filesystem
                 try {
                     ArrayList<BaseFile> arrayList1;
-                    if (BaseActivity.rootMode) {
-                        arrayList1 = RootHelper.getFilesList(path, BaseActivity.rootMode, ma.SHOW_HIDDEN, new RootHelper.GetModeCallBack() {
-                            @Override
-                            public void getMode(OpenMode mode) {
-                                openmode = mode;
-                            }
-                        });
-                    } else
-                        arrayList1 = (RootHelper.getFilesList(path, ma.SHOW_HIDDEN));
-                    openmode = OpenMode.FILE;
+                    arrayList1 = RootHelper.getFilesList(path, BaseActivity.rootMode, ma.SHOW_HIDDEN,
+                            new RootHelper.GetModeCallBack() {
+                        @Override
+                        public void getMode(OpenMode mode) {
+                            openmode = mode;
+                        }
+                    });
                     list = addTo(arrayList1);
 
-                } catch (Exception e) {
+                } catch (RootNotPermittedException e) {
+                    // TODO: Better handle this exception by showing a notification to user
                     return null;
                 }
                 break;
@@ -239,12 +239,11 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     }
 
     @Override
-    // Once the image is downloaded, associates it to the imageView
-    protected void onPostExecute(ArrayList<Layoutelements> bitmap) {
+    protected void onPostExecute(ArrayList<Layoutelements> list) {
         if (isCancelled()) {
-            bitmap = null;
+            list = null;
         }
-        ma.createViews(bitmap, back, path, openmode, false, grid);
+        ma.createViews(list, back, path, openmode, false, grid);
         ma.mSwipeRefreshLayout.setRefreshing(false);
 
     }

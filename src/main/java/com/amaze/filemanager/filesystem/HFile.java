@@ -4,10 +4,11 @@ import android.content.Context;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.OpenMode;
-import com.stericson.RootTools.RootTools;
+import com.amaze.filemanager.utils.RootUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -96,7 +97,13 @@ public class HFile {
 
     File getFile(){return new File(path);}
     BaseFile generateBaseFileFromParent(){
-        ArrayList<BaseFile> arrayList= RootHelper.getFilesList(getFile().getParent(),true,true,null);
+        ArrayList<BaseFile> arrayList= null;
+        try {
+            arrayList = RootHelper.getFilesList(getFile().getParent(),true,true,null);
+        } catch (RootNotPermittedException e) {
+            e.printStackTrace();
+            return null;
+        }
         for(BaseFile baseFile:arrayList){
             if(baseFile.getPath().equals(path))
                 return baseFile;
@@ -250,7 +257,12 @@ public class HFile {
                 isDirectory = new File(path).isDirectory();
                 break;
             case ROOT:
-                isDirectory=RootHelper.isDirectory(path,true,5);
+                try {
+                    isDirectory=RootHelper.isDirectory(path,true,5);
+                } catch (RootNotPermittedException e) {
+                    e.printStackTrace();
+                    isDirectory = false;
+                }
                 break;
             case OTG:
                 // TODO: support for this method in OTG on-the-fly
@@ -320,7 +332,12 @@ public class HFile {
                 e.printStackTrace();
             }
         } else {
-            arrayList = RootHelper.getFilesList(path, rootmode, true,null);
+            try {
+                arrayList = RootHelper.getFilesList(path, rootmode, true,null);
+            } catch (RootNotPermittedException e) {
+                e.printStackTrace();
+                arrayList = null;
+            }
         }
         if (arrayList == null) arrayList = new ArrayList<>();
         return arrayList;
@@ -386,7 +403,12 @@ public class HFile {
             }
         }
         else if(isLocal())exists = new File(path).exists();
-        else if(isRoot())return RootHelper.fileExists(path);
+        else if(isRoot()) try {
+            return RootHelper.fileExists(path);
+        } catch (RootNotPermittedException e) {
+            e.printStackTrace();
+            return false;
+        }
         return exists;
     }
 
@@ -428,7 +450,8 @@ public class HFile {
         } else
             FileUtil.mkdir(new File(path), context);
     }
-    public boolean delete(Context context,boolean rootmode){
+
+    public boolean delete(Context context,boolean rootmode) throws RootNotPermittedException {
         if (isSmb()) {
             try {
                 new SmbFile(path).delete();
@@ -441,9 +464,12 @@ public class HFile {
             boolean b= FileUtil.deleteFile(new File(path), context);
             if(!b && rootmode){
                 setMode(OpenMode.ROOT);
-                RootTools.remount(getParent(),"rw");
+                /*RootTools.remount(getParent(),"rw");
                 String s=RootHelper.runAndWait("rm -r \""+getPath()+"\"",true);
-                RootTools.remount(getParent(),"ro");
+                RootTools.remount(getParent(),"ro");*/
+                RootUtils.mountOwnerRW(getParent());
+                RootUtils.delete(getPath());
+                RootUtils.mountOwnerRO(getParent());
             }
 
         }

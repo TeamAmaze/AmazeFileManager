@@ -44,7 +44,8 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
-import com.stericson.RootTools.RootTools;
+
+import eu.chainfire.libsuperuser.Shell;
 
 public class Preffrag extends PreferenceFragment{
 
@@ -128,7 +129,7 @@ public class Preffrag extends PreferenceFragment{
             public boolean onPreferenceClick(Preference preference) {
                 boolean b = sharedPref.getBoolean("rootmode", false);
                 if (b) {
-                    if (RootTools.isAccessGiven()) {
+                    if (Shell.SU.available()) {
                         rootmode.setChecked(true);
                     
                     } else {  rootmode.setChecked(false);

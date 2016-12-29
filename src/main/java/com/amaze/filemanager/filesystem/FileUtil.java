@@ -22,8 +22,9 @@ import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.ui.icons.MimeTypes;
-import com.stericson.RootTools.RootTools;
+import com.amaze.filemanager.utils.RootUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -134,6 +135,7 @@ public abstract class FileUtil {
         }
         return true;
     }
+
     public static OutputStream getOutputStream(@NonNull final File target,Context context,long s)throws Exception {
 
         OutputStream outStream = null;
@@ -152,7 +154,7 @@ public abstract class FileUtil {
                 }
                 else if (Build.VERSION.SDK_INT==Build.VERSION_CODES.KITKAT) {
                     // Workaround for Kitkat ext SD card
-                return MediaStoreHack.getOutputStream(context,target.getPath());
+                    return MediaStoreHack.getOutputStream(context,target.getPath());
                 }
             }
         }
@@ -160,8 +162,8 @@ public abstract class FileUtil {
             Log.e("AmazeFileUtils",
                     "Error when copying file from " +  target.getAbsolutePath(), e);
         }
-      return outStream;
-        }
+        return outStream;
+    }
     /**
      * Delete a file. May be even on external SD card.
      *
@@ -201,14 +203,14 @@ public abstract class FileUtil {
         return !file.exists();
     }
 
-    private static boolean rename(File f, String name,boolean root) {
+    private static boolean rename(File f, String name,boolean root) throws RootNotPermittedException {
         String newname = f.getParent() + "/" + name;
         if(f.getParentFile().canWrite()){
             return f.renameTo(new File(newname));}
         else if(root) {
-            RootTools.remount(f.getPath(),"rw");
-            RootHelper.runAndWait("mv " + f.getPath() + " " + newname, true);
-            RootTools.remount(f.getPath(),"ro");
+            RootUtils.mountOwnerRW(f.getPath());
+            RootUtils.rename(f.getPath(), newname);
+            RootUtils.mountOwnerRO(f.getPath());
             return true;
         }
         return false;
@@ -223,7 +225,8 @@ public abstract class FileUtil {
      *            The target folder.
      * @return true if the renaming was successful.
      */
-    public static final boolean renameFolder(@NonNull final File source,@NonNull final File target,Context context) {
+    public static final boolean renameFolder(@NonNull final File source,@NonNull final File target,
+                                             Context context) throws RootNotPermittedException {
         // First try the normal rename.
         if (rename(source, target.getName(), false)) {
             return true;
@@ -313,7 +316,7 @@ public abstract class FileUtil {
         // Try the Kitkat workaround.
         if (Build.VERSION.SDK_INT==Build.VERSION_CODES.KITKAT) {
             try {
-            return    MediaStoreHack.mkdir(context,file);
+                return    MediaStoreHack.mkdir(context,file);
             } catch (IOException e) {
                 return false;
             }
@@ -393,7 +396,7 @@ public abstract class FileUtil {
         String[] fileList = file.list();
         if (fileList != null && fileList.length > 0) {
             //  empty the folder.
-               rmdir1(file,context);
+            rmdir1(file,context);
         }
         String[] fileList1 = file.list();
         if (fileList1 != null && fileList1.length > 0) {
@@ -600,6 +603,7 @@ public abstract class FileUtil {
         if(paths.isEmpty())paths.add("/storage/sdcard1");
         return paths.toArray(new String[0]);
     }
+
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static String[] getExtSdCardPathsForActivity(Context context) {
         List<String> paths = new ArrayList<String>();
@@ -681,7 +685,7 @@ public abstract class FileUtil {
         try {
             String fullPath = file.getCanonicalPath();
             if(!baseFolder.equals(fullPath))
-            relativePath = fullPath.substring(baseFolder.length() + 1);
+                relativePath = fullPath.substring(baseFolder.length() + 1);
             else originalDirectory=true;
         }
         catch (IOException e) {
@@ -793,7 +797,7 @@ public abstract class FileUtil {
             return null;
         }
     }
-   static class MediaFile {
+    static class MediaFile {
 
         private static final String NO_MEDIA = ".nomedia";
         private static final String ALBUM_ART_URI = "content://media/external/audio/albumart";

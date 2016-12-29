@@ -117,12 +117,17 @@ dependencies {
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21'
 
-    compile files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
+    //compile files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
+    // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api
+    compile group: 'org.apache.ftpserver', name: 'ftplet-api', version: '1.1.0'
 
-    compile files('libs/ftpserver-core-1.1.0-SNAPSHOT.jar')
+    //compile files('libs/ftpserver-core-1.1.0-SNAPSHOT.jar')
+    // https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core
+    compile group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.0'
 
     compile 'com.jcraft:jsch:0.1.53'
     compile 'com.android.volley:volley:1.0.0'
+    compile 'eu.chainfire:libsuperuser:1.0.0.+'
 }
 
 def Properties props = new Properties()

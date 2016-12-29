@@ -58,16 +58,17 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.services.asynctasks.SearchTextTask;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
-import com.stericson.RootTools.RootTools;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -79,6 +80,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -123,6 +125,10 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
     Uri uri=null;
     public ImageButton upButton, downButton, closeButton;
+    boolean delete=false;
+    private File pathFile;
+    // input stream associated with the file
+    private InputStream inputStream;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -191,6 +197,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             }
             else
                 mFile = new File(getIntent().getStringExtra("path"));
+            Log.d(getClass().getSimpleName(), mFile.getPath());
         } catch (Exception e) {
             mFile = null;
         }
@@ -323,8 +330,13 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 if (!mFile.canWrite())
 
                 {
-                    RootTools.remount(mFile.getParent(), "rw");
-                    RootHelper.runAndWait("cat " + f.getPath() + " > " + mFile.getPath(), true);
+                    try {
+                        RootUtils.mountOwnerRW(mFile.getParent());
+                        RootHelper.runShellCommand("cat " + f.getPath() + " > " + mFile.getPath());
+                    } catch (RootNotPermittedException e) {
+                        e.printStackTrace();
+                        // don't have root
+                    }
                     f.delete();
                 }
                 runOnUiThread(new Runnable() {
@@ -353,7 +365,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             public void run() {
 
                 try {
-                    InputStream inputStream=getInputStream(uri,path);
+                    inputStream=getInputStream(uri,path);
                     if (inputStream!=null) {
                         String str=null;
                         //if(texts==null)texts=new ArrayList<>();
@@ -382,8 +394,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                     } else {
                         mOriginal = "";
                         StringBuilder stringBuilder=new StringBuilder();
-                        ArrayList<String> arrayList = RootHelper
-                                .runAndWait1("cat " + mFile.getPath(), true);
+                        List<String> arrayList = RootHelper.runNonRootShellCommand("cat " + mFile.getPath());
                         //  int i=0,k=0;
                         //StringBuilder stringBuilder1=new StringBuilder("");
                         for (String str:arrayList){
@@ -478,6 +489,14 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // delete the file copied to cache dir
+        if(delete)pathFile.delete();
+    }
+
+    @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
         // condition to check if callback is called in search editText
@@ -529,11 +548,34 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             stream=null;
         }
         if(stream==null)
-            if(new File(path).canRead()){
+
+            if(mFile.canRead()){
                 try {
                     stream=new FileInputStream(path);
                 } catch (FileNotFoundException e) {
                     stream=null;
+                }
+            } else {
+                // try loading stream associated using root and cache dir
+                File file1=getExternalCacheDir();
+                if(file1==null)file1=getCacheDir();
+
+                if (BaseActivity.rootMode) {
+
+                    try {
+                        RootUtils.copy(path,new File(file1.getPath(), mFile.getName()).getPath());
+                        pathFile=new File(file1.getPath(),mFile.getName());
+                        RootUtils.mountOwnerRW(pathFile.getPath());
+                        try {
+                            stream = new FileInputStream(pathFile);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                            stream = null;
+                        }
+                    } catch (RootNotPermittedException e) {
+                        e.printStackTrace();
+                    }
+                    delete=true;
                 }
             }
 

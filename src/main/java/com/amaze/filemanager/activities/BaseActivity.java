@@ -14,12 +14,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
-import com.stericson.RootTools.RootTools;
-
-import java.io.IOException;
 
 /**
  * Created by arpitkh996 on 03-03-2016.
@@ -34,42 +30,31 @@ public class BaseActivity extends BasicActivity {
     boolean checkStorage=true;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         // checking if theme should be set light/dark or automatic
         if (Sp.getBoolean("random_checkbox", false)) {
             getColorPreference().randomize()
-                                .saveToPreferences(Sp);
+                    .saveToPreferences(Sp);
         }
 
         accentSkin = getColorPreference().getColorAsString(ColorUsage.ACCENT);
         setTheme();
+
         rootMode = Sp.getBoolean("rootmode", false);
-        if (rootMode) {
-            if (!RootTools.isAccessGiven()) {
-                rootMode = false;
-                Sp.edit().putBoolean("rootmode", false).commit();
-            }
-        }
 
         //requesting storage permissions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkStorage)
             if (!checkStoragePermission())
                 requestStoragePermission();
-
     }
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (rootMode) {
-            try {
-                RootTools.closeAllShells();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
         DataUtils.clear();
     }
     public boolean checkStoragePermission() {
@@ -253,5 +238,4 @@ public class BaseActivity extends BasicActivity {
         }
 
     }
-
 }

@@ -41,13 +41,13 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.fragments.DbViewerFragment;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
-import com.stericson.RootTools.RootTools;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -151,11 +151,18 @@ public class DbViewer extends BaseActivity {
                 File file1=getExternalCacheDir();
                 if(file1==null)file1=getCacheDir();
 
+                // if the db can't be read, and we have root enabled, try reading it by
+                // first copying it in cache dir
                 if (!file.canRead() && BaseActivity.rootMode) {
-                    RootTools.copyFile(pathFile.getPath(),new File(file1.getPath(),file.getName()).getPath(), true,false);
-                    pathFile=new File(file1.getPath(),file.getName());
-                    RootHelper.runAndWait("chmod 777 " + pathFile.getPath(), true);
-                    RootTools.remount(pathFile.getPath(), "RW");
+
+                    try {
+                        RootUtils.copy(pathFile.getPath(),new File(file1.getPath(),file.getName()).getPath());
+                        pathFile=new File(file1.getPath(),file.getName());
+                        RootUtils.chmod(pathFile.getPath(), 777);
+                        RootUtils.mountOwnerRW(pathFile.getPath());
+                    } catch (RootNotPermittedException e) {
+                        e.printStackTrace();
+                    }
                     delete=true;
                 }
                 try {

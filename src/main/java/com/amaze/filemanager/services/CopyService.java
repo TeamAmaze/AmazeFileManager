@@ -40,6 +40,7 @@ import com.amaze.filemanager.ProgressListener;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.RegisterCallback;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
@@ -49,7 +50,7 @@ import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.GenericCopyThread;
 import com.amaze.filemanager.utils.OpenMode;
-import com.stericson.RootTools.RootTools;
+import com.amaze.filemanager.utils.RootUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -127,19 +128,19 @@ public class CopyService extends Service {
     }
 
     public class DoInBackground extends AsyncTask<Bundle, Void, Integer> {
-        ArrayList<BaseFile> files;
+        ArrayList<BaseFile> sourceFiles;
         boolean move;
         Copy copy;
         public DoInBackground() {
         }
 
         protected Integer doInBackground(Bundle... p1) {
-            String FILE2 = p1[0].getString("FILE2");
+            String targetPath = p1[0].getString("FILE2");
             int id = p1[0].getInt("id");
-            files = p1[0].getParcelableArrayList("files");
+            sourceFiles = p1[0].getParcelableArrayList("files");
             move=p1[0].getBoolean("move");
             copy=new Copy();
-            copy.execute(id, files, FILE2,move,OpenMode.getOpenMode(p1[0].getInt("MODE")));
+            copy.execute(id, sourceFiles, targetPath,move,OpenMode.getOpenMode(p1[0].getInt("MODE")));
 
             // TODO: Implement this method
             return id;
@@ -225,9 +226,9 @@ public class CopyService extends Service {
                 return 0;
             }
 
-            public void execute(final int id, final ArrayList<BaseFile> files, final String FILE2,
+            public void execute(final int id, final ArrayList<BaseFile> sourceFiles, final String targetPath,
                                 final boolean move,OpenMode mode) {
-                if (checkFolder((FILE2), c) == 1) {
+                if (checkFolder((targetPath), c) == 1) {
                     final ProgressHandler progressHandler=new ProgressHandler(-1);
                     GenericCopyThread copyThread = new GenericCopyThread(c);
                     progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
@@ -237,18 +238,19 @@ public class CopyService extends Service {
                             System.out.println(new File(fileName).getName() + " Progress " + p1 + " Secondary Progress " + p2 + " Speed " + speed + " Avg Speed " + avg);
                         }
                     });
-                    getTotalBytes(files, progressHandler);
-                    for (int i = 0; i < files.size(); i++) {
-                        BaseFile f1 = (files.get(i));
+                    getTotalBytes(sourceFiles, progressHandler);
+                    for (int i = 0; i < sourceFiles.size(); i++) {
+                        BaseFile f1 = (sourceFiles.get(i));
                         Log.e("Copy","basefile\t"+f1.getPath());
                         try {
 
+
+                            HFile hFile=new HFile(mode,targetPath, sourceFiles.get(i).getName(),f1.isDirectory());
                             if (hash.get(id)){
-                                if(!f1.isSmb() && !new File(files.get(i).getPath()).canRead() && rootmode){
-                                    copyRoot(files.get(i).getPath(),files.get(i).getName(),FILE2,move);
+                                if(!f1.isSmb() && !new File(sourceFiles.get(i).getPath()).canRead() && rootmode){
+                                    copyRoot(f1, hFile, move);
                                     continue;
                                 }
-                                HFile hFile=new HFile(mode,FILE2, files.get(i).getName(),f1.isDirectory());
                                 copyFiles((f1),hFile, copyThread,progressHandler, id, move);
                             }
                             else{
@@ -258,8 +260,8 @@ public class CopyService extends Service {
                             e.printStackTrace();
                             Log.e("Copy","Got exception checkout");
 
-                            failedFOps.add(files.get(i));
-                            for(int j=i+1;j<files.size();j++)failedFOps.add(files.get(j));
+                            failedFOps.add(sourceFiles.get(i));
+                            for(int j=i+1;j<sourceFiles.size();j++)failedFOps.add(sourceFiles.get(j));
                             break;
                         }
                     }
@@ -274,37 +276,41 @@ public class CopyService extends Service {
                     }
 
                 } else if (rootmode) {
-                    for (int i = 0; i < files.size(); i++) {
-                        String path=files.get(i).getPath();
-                        String name=files.get(i).getName();
-                        copyRoot(path,name,FILE2,move);
-                        if(checkFiles(new HFile(files.get(i).getMode(),path),new HFile(OpenMode.ROOT,FILE2+"/"+name))){
-                            failedFOps.add(files.get(i));
-                        }
+                    for (int i = 0; i < sourceFiles.size(); i++) {
+                        HFile hFile=new HFile(mode,targetPath, sourceFiles.get(i).getName(),sourceFiles.get(i).isDirectory());
+                        copyRoot(sourceFiles.get(i), hFile, move);
+                        /*if(checkFiles(new HFile(sourceFiles.get(i).getMode(),path),new HFile(OpenMode.ROOT,targetPath+"/"+name))){
+                            failedFOps.add(sourceFiles.get(i));
+                        }*/
                     }
 
 
                 } else {
-                    for(BaseFile f:files) failedFOps.add(f);
+                    for(BaseFile f:sourceFiles) failedFOps.add(f);
                     return;
                 }
 
                 // making sure to delete files after copy operation is done
                 if (move) {
                     ArrayList<BaseFile> toDelete=new ArrayList<>();
-                    for(BaseFile a:files){
+                    for(BaseFile a:sourceFiles){
                         if(!failedFOps.contains(a))
                             toDelete.add(a);
                     }
                     new DeleteTask(getContentResolver(), c).execute((toDelete));
                 }
             }
-            boolean copyRoot(String path,String name,String FILE2,boolean move){
-                boolean b = RootTools.copyFile(RootHelper.getCommandLineString(path), RootHelper.getCommandLineString(FILE2)+"/"+name, true, true);
-                if (!b && path.contains("/0/"))
-                    b = RootTools.copyFile(RootHelper.getCommandLineString(path.replace("/0/", "/legacy/")), RootHelper.getCommandLineString(FILE2)+"/"+name, true, true);
-                Futils.scanFile(FILE2 + "/" + name, c);
-                return b;
+            void copyRoot(BaseFile sourceFile, HFile targetFile, boolean move){
+
+                try {
+                    RootUtils.mountOwnerRW(targetFile.getParent());
+                    if (!move) RootUtils.copy(sourceFile.getPath(), targetFile.getPath());
+                    else if (move) RootUtils.move(sourceFile.getPath(), targetFile.getPath());
+                } catch (RootNotPermittedException e) {
+                    failedFOps.add(sourceFile);
+                    e.printStackTrace();
+                }
+                Futils.scanFile(targetFile.getPath(), c);
             }
 
             private void copyFiles(final BaseFile sourceFile,final HFile targetFile,
@@ -435,8 +441,11 @@ public class CopyService extends Service {
             e.printStackTrace();
         }
     }
+
     //check if copy is successful
-    boolean checkFiles(HFile hFile1,HFile hFile2){
+    // avoid using the method as there is no way to know when we would be returning from command callbacks
+    // rather confirm from the command result itself, inside it's callback
+    boolean checkFiles(HFile hFile1,HFile hFile2) throws RootNotPermittedException {
         if(RootHelper.isDirectory(hFile1.getPath(),rootmode,5))
         {
             if(RootHelper.fileExists(hFile2.getPath()))return false;
@@ -477,6 +486,7 @@ public class CopyService extends Service {
             else return false;
         }
     }
+
     private BroadcastReceiver receiver3 = new BroadcastReceiver() {
 
         @Override

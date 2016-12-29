@@ -4,14 +4,14 @@ package com.amaze.filemanager.utils;
  * Created by arpitkh996 on 25-01-2016.
  */
 
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.stericson.RootTools.RootTools;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import eu.chainfire.libsuperuser.Shell;
 
 public class RootUtils {
     public static final String DATA_APP_DIR = "/data/app";
@@ -32,47 +32,100 @@ public class RootUtils {
         return str.startsWith("/proc") || str.startsWith("/sys");
     }
 
-    public static ArrayList<String> getDirListingSu(String str) {
-            ArrayList<String> arrayLis=RootHelper.runAndWait1(LS.replace("%", str),true);
-            return arrayLis;
-    }
-
-    public static ArrayList<String> getDirListing(String str)  {
-        ArrayList<String> arrayLis=RootHelper.runAndWait1(LS.replace("%", str),false);
+    /**
+     * Get a shell based listing
+     * Context is superuser level shell
+     * @param str
+     * @return
+     */
+    public static ArrayList<String> getDirListingSu(String str) throws RootNotPermittedException {
+        ArrayList<String> arrayLis=RootHelper.runShellCommand(LS.replace("%", str));
         return arrayLis;
     }
 
-    public static void chmod(File sEFile, String str, boolean z) throws Exception {
-        chmod(Arrays.asList(new File[]{sEFile}), str, z);
-    }
-    public static boolean isWritable(String m){
-        try {
-            if(m.toLowerCase().equals("rw"))
-                return true;
-        } catch (Exception e) {
-        }
-        return false;
+    /**
+     * Get a shell based listing
+     * Context is an third-party context level shell
+     * @param str
+     * @return
+     */
+    public static List<String> getDirListing(String str) throws RootNotPermittedException {
+        return RootHelper.runNonRootShellCommand(LS.replace("%", str));
     }
 
-    public static void chmod(List<File> list, String str, boolean z) throws Exception {
-        String path =  list.get(0).getPath();
-            String m=  RootTools.getMountedAs(path);
-            boolean b=isWritable(m);
-            if(!b)
-                RootTools.remount(path,"rw");
-            for (File path2 : list) {
-                path = path2.getPath();
-                String str2 = "chmod %s %s \"%s\"";
-                Object[] objArr = new Object[3];
-                objArr[0] = z ? "-R" : "";
-                objArr[1] = str;
-                objArr[2] = path;
-                RootHelper.runAndWait(String.format(str2, objArr),true);
-            }
-
-            if(!b && m!=null && m.length()>0)
-                RootTools.remount(path,m);
+    /**
+     * Change permissions (owner/group/others) of a specified path
+     * @param path
+     * @param octalNotation octal notation of permission
+     * @throws RootNotPermittedException
+     */
+    public static void chmod(String path, int octalNotation) throws RootNotPermittedException {
+        if (!Shell.SU.available()) throw new RootNotPermittedException();
+        String command = "chmod %s %s";
+        Object[] args = new Object[2];
+        args[0] = octalNotation;
+        args[1] = path;
+        RootHelper.runShellCommand(String.format(command, args));
     }
+
+
+    /**
+     * Mount path for writable access (rw)
+     * @param path
+     * @throws RootNotPermittedException
+     */
+    public static void mountOwnerRW(String path) throws RootNotPermittedException{
+        if (!Shell.SU.available()) throw new RootNotPermittedException();
+        chmod(path, 644);
+    }
+
+    /**
+     * Mount path for readable access (ro)
+     * @param path
+     * @throws RootNotPermittedException
+     */
+    public static void mountOwnerRO(String path) throws RootNotPermittedException{
+        if (!Shell.SU.available()) throw new RootNotPermittedException();
+        chmod(path, 444);
+    }
+
+    /**
+     *
+     * @param source
+     * @param destination
+     * @throws RootNotPermittedException
+     */
+    public static void copy(String source, String destination) throws RootNotPermittedException {
+        RootHelper.runShellCommand("cp " + source + " " + destination);
+    }
+
+    public static void mkDir(String path, String name) throws RootNotPermittedException {
+        RootHelper.runShellCommand("mkdir " + path + "/" + name);
+    }
+
+    /**
+     * Recursively removes a path with it's contents (if any)
+     * @param path
+     * @throws RootNotPermittedException
+     */
+    public static void delete(String path) throws RootNotPermittedException {
+        RootHelper.runShellCommand("rm -r " + path);
+    }
+
+    /**
+     *
+     * @param path
+     * @param destination
+     * @throws RootNotPermittedException
+     */
+    public static void move(String path, String destination) throws RootNotPermittedException {
+        RootHelper.runShellCommand("mv " + path + " " + destination);
+    }
+
+    public static void rename(String oldPath, String newPath) throws RootNotPermittedException {
+        RootHelper.runShellCommand("mv " + oldPath + " " + newPath);
+    }
+
     public static String parsePermission(String permLine) {
         int owner = 0;
         int READ = 4;
@@ -156,16 +209,11 @@ public class RootUtils {
         copy(sEFile.getPath(), sEFile2.getPath(), z);
     }
 */
-    public static void dd(String str, String str2) throws Exception {
-            String m=  RootTools.getMountedAs(str2);
-            boolean b=isWritable(m);
-            if(!b)RootTools.remount(str2,"rw");
-            String str3 = "dd if=\"" + str + "\" of=\"" + str2 + "\"";
-            RootHelper.runAndWait(str3,true);
-            if(!b && m!=null && m.length()>0)
-                RootTools.remount(str2,m);
-
-        }
+    public static void dd(String str, String str2) throws RootNotPermittedException {
+        mountOwnerRW(str2);
+        String str3 = "dd if=\"" + str + "\" of=\"" + str2 + "\"";
+        RootHelper.runShellCommand(str3);
+    }
 /*
     public static void move(String str, String str2) throws SEException {
         StorageManager instance = StorageManager.getInstance();
@@ -257,5 +305,6 @@ public class RootUtils {
             instance.remount(str, false);
         }
     }
-*/}
+*/
+}
 

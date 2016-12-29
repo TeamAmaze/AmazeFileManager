@@ -516,5 +516,7 @@
     <string name="optimized">Optimized</string>
     <string name="security">Security</string>
     <string name="paper_size">Paper Size</string>
+
+    <string name="root_error">Error starting an interactive root shell</string>
 </resources>
 

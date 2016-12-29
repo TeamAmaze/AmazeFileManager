@@ -27,16 +27,19 @@ import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
-import com.stericson.RootTools.RootTools;
-import com.stericson.RootTools.execution.Command;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+
+import eu.chainfire.libsuperuser.Shell;
 
 public class RootHelper {
-    public static String runAndWait(String cmd, boolean root) {
+
+    /*public static String runAndWait(String cmd, boolean root) {
 
         Command c = new Command(0, cmd) {
             @Override
@@ -160,6 +163,63 @@ public class RootHelper {
 
         //Logger.debug("Command Finished!");
         return true;
+    }*/
+
+    /**
+     * Runs the command and stores output in a list. The listener is set on the caller thread,
+     * thus any code run in callback must be thread safe.
+     * Command is run from the root context (u:r:SuperSU0)
+     * @param cmd the command
+     * @return a list of results. Null only if the command passed is a blocking call or no output is
+     * there for the command passed
+     * @throws RootNotPermittedException
+     */
+    public static ArrayList<String> runShellCommand(String cmd) throws RootNotPermittedException {
+        if (!Shell.SU.available()) throw new RootNotPermittedException();
+        final ArrayList<String> result = new ArrayList<>();
+
+        // setting STDOUT listener so as to avoid extra buffer and possible memory loss by superuser
+        MainActivity.shellInteractive.addCommand(cmd, 0, new Shell.OnCommandResultListener() {
+            @Override
+            public void onCommandResult(int commandCode, int exitCode, List<String> output) {
+
+                for (String line : output) {
+                    result.add(line);
+                }
+            }
+        });
+        MainActivity.shellInteractive.waitForIdle();
+        return result;
+    }
+
+    /**
+     * Runs the command and stores output in a list. The listener is set on the caller thread,
+     * thus any code run in callback must be thread safe.
+     * Command is run from superuser context (u:r:SuperSU0)
+     * @param cmd the command
+     * @param callback
+     * @return a list of results. Null only if the command passed is a blocking call or no output is
+     * there for the command passed
+     * @throws RootNotPermittedException
+     */
+    public static void runShellCommand(String cmd, Shell.OnCommandResultListener callback)
+            throws RootNotPermittedException {
+        if (!Shell.SU.available()) throw new RootNotPermittedException();
+        MainActivity.shellInteractive.addCommand(cmd, 0, callback);
+    }
+
+    /**
+     * Runs the command and stores output in a list. The listener is set on the caller thread,
+     * thus any code run in callback must be thread safe.
+     * Command is run from a third-party level context (u:r:init_shell0)
+     * Not callback supported as the shell is not interactive
+     * @param cmd the command
+     * @return a list of results. Null only if the command passed is a blocking call or no output is
+     * there for the command passed
+     * @throws RootNotPermittedException
+     */
+    public static List<String> runNonRootShellCommand(String cmd) {
+        return Shell.SH.run(cmd);
     }
 
 
@@ -168,6 +228,13 @@ public class RootHelper {
     }
 
     private static final String UNIX_ESCAPE_EXPRESSION = "(\\(|\\)|\\[|\\]|\\s|\'|\"|`|\\{|\\}|&|\\\\|\\?)";
+
+    /**
+     * Loads files in a path using basic filesystem callbacks
+     * @param path the path
+     * @param showHidden
+     * @return
+     */
     public static ArrayList<BaseFile> getFilesList(String path, boolean showHidden) {
         File f = new File(path);
         ArrayList<BaseFile> files = new ArrayList<>();
@@ -190,8 +257,6 @@ public class RootHelper {
             }
         } catch (Exception e) {
         }
-
-
         return files;
     }
 
@@ -241,6 +306,12 @@ public class RootHelper {
         return files;
     }
 
+    /**
+     * Traverse to a specified path in OTG
+     * @param path
+     * @param context
+     * @return
+     */
     public static DocumentFile getDocumentFile(String path, Context context) {
 
         SharedPreferences manager = PreferenceManager.getDefaultSharedPreferences(context);
@@ -322,7 +393,14 @@ public class RootHelper {
         return per;
     }
 
-    public static boolean fileExists(String path){
+    /**
+     * Whether a file exist at a specified path. We try to reload a list and conform from that list
+     * of parent's children that the file we're looking for is there or not.
+     * @param path
+     * @return
+     * @throws RootNotPermittedException
+     */
+    public static boolean fileExists(String path) throws RootNotPermittedException {
         File f=new File(path);
         String p=f.getParent();
         if (p != null && p.length() >0) {
@@ -336,6 +414,7 @@ public class RootHelper {
         }
     return false;
     }
+
     static boolean contains(String[] a,String name){
         for(String s:a){
             //Log.e("checking",s);
@@ -343,12 +422,20 @@ public class RootHelper {
         }
         return false;
     }
-    public static boolean isDirectory(String a, boolean root,int count) {
+
+    /**
+     * Whether a file is directory or not
+     * @param a
+     * @param root
+     * @param count
+     * @return
+     */
+    public static boolean isDirectory(String a, boolean root,int count) throws RootNotPermittedException {
         File f = new File(a);
         String name = f.getName();
         String p = f.getParent();
-        if (p != null && p.length() > 1) {
-            ArrayList<String> ls = runAndWait1("ls -la " + p, root, 2000);
+        if (p != null && p.length() > 0) {
+            ArrayList<String> ls = runShellCommand("ls -l " + p);
             for (String s : ls) {
                 if (contains(s.split(" "),name)) {
                     try {
@@ -376,19 +463,37 @@ public class RootHelper {
         if (path.getPermisson().startsWith("d")) return true;
         else return new File(path.getPath()).isDirectory();
     }
+
+    /**
+     * Callback to setting type of file to handle, while loading list of files
+     */
     public interface GetModeCallBack{
         void getMode(OpenMode mode);
     }
-    public static ArrayList<BaseFile> getFilesList(String path, boolean root, boolean showHidden,GetModeCallBack getModeCallBack) {
-        String p = " ";
+
+    /**
+     * Get a list of files using shell, supposing the path is not a SMB/OTG/Custom (*.apk/images)
+     * @param path
+     * @param root whether root is available or not
+     * @param showHidden to show hidden files
+     * @param getModeCallBack callback to set the type of file
+     * @return
+     */
+    public static ArrayList<BaseFile> getFilesList(String path, boolean root,
+                                                   boolean showHidden,GetModeCallBack getModeCallBack)
+            throws RootNotPermittedException {
+        //String p = " ";
         OpenMode mode=OpenMode.FILE;
-        if (showHidden) p = "a ";
+        //if (showHidden) p = "a ";
         ArrayList<BaseFile> a = new ArrayList<>();
         ArrayList<String> ls = new ArrayList<>();
         if (root) {
+            // we're rooted and we're trying to load file with superuser
             if (!path.startsWith("/storage") && !path.startsWith("/sdcard")) {
+                // we're at the root directories, superuser is required!
                 String cpath = getCommandLineString(path);
-                ls = runAndWait1("ls -l" + p + cpath, root);
+                //ls = Shell.SU.run("ls -l " + cpath);
+                ls = runShellCommand("ls -l " + cpath);
                 if (ls != null) {
                     for (int i=0;i<ls.size();i++) {
                         String file=ls.get(i);
@@ -398,7 +503,7 @@ public class RootHelper {
                                 array.setMode(OpenMode.ROOT);
                                 if (array != null) {
                                     array.setName(array.getPath());
-                                    array.setPath( path + "/" + array.getPath());
+                                    array.setPath(path + "/" + array.getPath());
                                     if (array.getLink().trim().length() > 0) {
                                         boolean isdirectory = isDirectory(array.getLink(), root,0);
                                         array.setDirectory(isdirectory);
@@ -413,26 +518,27 @@ public class RootHelper {
                     mode=OpenMode.ROOT;
                 }
             } else if (Futils.canListFiles(new File(path))) {
+                // we might as well not require root to load files
                 a = getFilesList(path, showHidden);
                 mode = OpenMode.FILE;
             } else {
+                // couldn't load files using native java filesystem callbacks
+                // maybe the access is not allowed due to android system restrictions, we'll see later
                 mode = OpenMode.FILE;
                 a = new ArrayList<>();
             }
         } else if (Futils.canListFiles(new File(path))) {
+            // we don't have root, so we're taking a chance to load files using basic java filesystem
             a = getFilesList( path, showHidden);
             mode=OpenMode.FILE;
         } else {
+            // couldn't load files using native java filesystem callbacks
+            // maybe the access is not allowed due to android system restrictions, we'll see later
             mode=OpenMode.FILE;
             a = new ArrayList<>();
-        }
-        if (a.size() == 0 && Futils.canListFiles(new File(path))) {
-            a = getFilesList( path, showHidden);
-            mode=OpenMode.FILE;
         }
         if(getModeCallBack!=null)getModeCallBack.getMode(mode);
         return a;
 
     }
-
 }

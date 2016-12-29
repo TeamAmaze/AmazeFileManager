@@ -64,8 +64,10 @@ import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
@@ -74,8 +76,6 @@ import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.share.ShareTask;
 import com.amaze.filemanager.utils.theme.AppTheme;
-import com.stericson.RootTools.RootTools;
-import com.stericson.RootTools.execution.Command;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -86,6 +86,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import eu.chainfire.libsuperuser.Shell;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
@@ -1214,7 +1215,7 @@ public class Futils {
         ArrayList<Boolean[]> arrayList=parse(perm);
         Boolean[] read=arrayList.get(0);
         Boolean[] write=arrayList.get(1);
-        Boolean[] exe=arrayList.get(2);
+        final Boolean[] exe=arrayList.get(2);
         readown.setChecked(read[0]);
         readgroup.setChecked(read[1]);
         readother.setChecked(read[2]);
@@ -1232,7 +1233,9 @@ public class Futils {
                 if (writeown.isChecked()) b = 2;
                 if (exeown.isChecked()) c = 1;
                 int owner = a + b + c;
-                int d = 0, e = 0, f = 0;
+                int d = 0;
+                int e = 0;
+                int f = 0;
                 if (readgroup.isChecked()) d = 4;
                 if (writegroup.isChecked()) e = 2;
                 if (exegroup.isChecked()) f = 1;
@@ -1247,28 +1250,25 @@ public class Futils {
                 String command = "chmod " + finalValue + " " + file.getPath();
                 if (file.isDirectory())
                     command = "chmod -R " + finalValue + " \"" + file.getPath()+"\"";
-                Command com = new Command(1, command) {
-                    @Override
-                    public void commandOutput(int i, String s) {
-                        Toast.makeText(main.getActivity(), s, Toast.LENGTH_LONG);
-                    }
 
-                    @Override
-                    public void commandTerminated(int i, String s) {
-                        Toast.makeText(main.getActivity(), s, Toast.LENGTH_LONG);
-                    }
-
-                    @Override
-                    public void commandCompleted(int i, int i2) {
-                        Toast.makeText(main.getActivity(), main.getResources().getString(R.string.done), Toast.LENGTH_LONG);
-                    }
-                };
-                try {//
-                    RootTools.remount(file.getPath(), "RW");
-                    RootTools.getShell(true).add(com);
+                try {
+                    RootUtils.mountOwnerRW(file.getPath());
+                    RootHelper.runShellCommand(command, new Shell.OnCommandResultListener() {
+                        @Override
+                        public void onCommandResult(int commandCode, int exitCode, List<String> output) {
+                            if (exitCode<0) {
+                                Toast.makeText(main.getActivity(), main.getString(R.string.operationunsuccesful),
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(main.getActivity(),
+                                        main.getResources().getString(R.string.done), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                     main.updateList();
-                } catch (Exception e1) {
-                    Toast.makeText(main.getActivity(), main.getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
+                } catch (RootNotPermittedException e1) {
+                    Toast.makeText(main.getActivity(), main.getResources().getString(R.string.rootfailure),
+                            Toast.LENGTH_LONG).show();
                     e1.printStackTrace();
                 }
 
@@ -1276,6 +1276,11 @@ public class Futils {
         });
     }
 
+    /**
+     * We're parsing a line returned from a stdout of shell.
+     * @param line must be the line returned from a 'ls' command
+     * @return
+     */
     public static BaseFile parseName(String line) {
         boolean linked = false;
         String name = "", link = "", size = "-1", date = "";
@@ -1318,7 +1323,6 @@ public class Futils {
             baseFile.setLink(link);
             return baseFile;
         }
-
     }
 
     private static int getLinkPosition(String[] array){

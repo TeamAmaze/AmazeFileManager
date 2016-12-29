@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.github.junrar.Archive;
@@ -71,7 +72,12 @@ public class ZipExtractTask extends AsyncTask<Void, Void, Void> {
 
         String cmd = "chmod 777 " + output.getPath();
         Log.d("change permissions", cmd);
-        RootHelper.runAndWait(cmd, false);
+        try {
+            RootHelper.runShellCommand(cmd);
+        } catch (RootNotPermittedException e) {
+            e.printStackTrace();
+            // don't have root permissions
+        }
         utilsProvider.getFutils().openFile(output, (MainActivity) zipViewer);
     }
 
