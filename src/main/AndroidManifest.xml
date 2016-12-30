@@ -28,13 +28,12 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.ACCESS_SUPERUSER"/>
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-sdk 
         android:minSdkVersion="14" 
-        android:targetSdkVersion="21" />
+        android:targetSdkVersion="25" />
         
     <uses-feature
         android:name="android.hardware.touchscreen"
@@ -131,12 +130,23 @@
                 android:process=":amaze"
             >
 		</service>
+
         <service
             android:name="com.amaze.filemanager.services.ftpservice.FTPService"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true" />
 
+        <service
+            android:name=".services.ftpservice.FTPTileService"
+            android:icon="@drawable/ic_ftp_dark"
+            android:label="@string/ftp"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            >
+            <intent-filter>
+                <action android:name="android.serive.quicksettings.action.QS_TILE"/>
+            </intent-filter>
         </service>
+
         <receiver
             android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver"
             android:exported="true">

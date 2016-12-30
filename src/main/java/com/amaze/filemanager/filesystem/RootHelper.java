@@ -175,7 +175,7 @@ public class RootHelper {
      * @throws RootNotPermittedException
      */
     public static ArrayList<String> runShellCommand(String cmd) throws RootNotPermittedException {
-        if (!Shell.SU.available()) throw new RootNotPermittedException();
+        //if (!MainActivity.shellInteractive.isRunning()) throw new RootNotPermittedException();
         final ArrayList<String> result = new ArrayList<>();
 
         // setting STDOUT listener so as to avoid extra buffer and possible memory loss by superuser
@@ -204,7 +204,7 @@ public class RootHelper {
      */
     public static void runShellCommand(String cmd, Shell.OnCommandResultListener callback)
             throws RootNotPermittedException {
-        if (!Shell.SU.available()) throw new RootNotPermittedException();
+        //if (!MainActivity.shellInteractive.isRunning()) throw new RootNotPermittedException();
         MainActivity.shellInteractive.addCommand(cmd, 0, callback);
     }
 

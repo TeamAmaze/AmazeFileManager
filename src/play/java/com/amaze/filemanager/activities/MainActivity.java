@@ -1343,6 +1343,8 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        DataUtils.clear();
+
         if (rootMode) {
             // close interactive shell and handler thread associated with it
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -1351,7 +1353,6 @@ public class MainActivity extends BaseActivity implements
             } else handlerThread.quit();
             shellInteractive.close();
         }
-        DataUtils.clear();
 
         unbindDrive();
         if (grid != null)
