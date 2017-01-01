@@ -48,7 +48,6 @@ import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.icons.IconHolder;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -69,6 +68,8 @@ public class AppsList extends ListFragment {
     ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
     private MainActivity mainActivity;
     int asc,sortby;
+    private IntentFilter packageFilter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,11 +77,6 @@ public class AppsList extends ListFragment {
 
         setHasOptionsMenu(false);
         ic=new IconHolder(getActivity(),true,true);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
-        intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        intentFilter.addDataScheme("package");
-        getActivity().registerReceiver(br, intentFilter);
 
     }
     @Override
@@ -101,12 +97,14 @@ public class AppsList extends ListFragment {
             getActivity().getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         if(savedInstanceState==null)loadlist(false);
         else{
-            c=savedInstanceState.getParcelableArrayList("c");
-            a=savedInstanceState.getParcelableArrayList("list");
-            adapter = new AppsAdapter(getActivity(), utilsProvider, R.layout.rowlayout, a, app, c);
-            setListAdapter(adapter);
+            //c=savedInstanceState.getParcelableArrayList("c");
+            //a=savedInstanceState.getParcelableArrayList("list");
+            //adapter = new AppsAdapter(getActivity(), utilsProvider, R.layout.rowlayout, a, app, c);
+            //setListAdapter(adapter);
             vl.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
             vl.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
+
+            loadlist(false);
         }
         setHasOptionsMenu(true);
     }
@@ -136,7 +134,6 @@ public class AppsList extends ListFragment {
     @Override
     public  void onDestroy(){
         super.onDestroy();
-        getActivity().unregisterReceiver(br);
     }
     int index=0,top=0;
     public void loadlist(boolean save){
@@ -154,11 +151,25 @@ public class AppsList extends ListFragment {
 
         return toolbarHeight;
     }
+
     @Override
     public void onResume() {
         super.onResume();
 
+        packageFilter = new IntentFilter();
+        packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        packageFilter.addDataScheme("package");
+        getActivity().registerReceiver(br, packageFilter);
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        getActivity().unregisterReceiver(br);
+    }
+
     BroadcastReceiver br = new BroadcastReceiver() {
 
         @Override
@@ -174,8 +185,9 @@ public class AppsList extends ListFragment {
     public void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
         if(vl!=null){
-            b.putParcelableArrayList("c",c);
-            b.putParcelableArrayList("list",a);
+            // list too big for the transaction bundle to handle
+            //b.putParcelableArrayList("c",c);
+            //b.putParcelableArrayList("list",a);
             int index = vl.getFirstVisiblePosition();
             View vi = vl.getChildAt(0);
             int top = (vi == null) ? 0 : vi.getTop();

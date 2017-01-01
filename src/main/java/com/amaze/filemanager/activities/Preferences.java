@@ -93,13 +93,8 @@ public class Preferences extends BaseActivity implements ActivityCompat.OnReques
         else{
             Intent in = new Intent(Preferences.this, MainActivity.class);
             in.setAction(Intent.ACTION_MAIN);
-            final int enter_anim = android.R.anim.fade_in;
-            final int exit_anim = android.R.anim.fade_out;
-            Activity activity = this;
-            activity.overridePendingTransition(enter_anim, exit_anim);
-            activity.finish();
-            activity.overridePendingTransition(enter_anim, exit_anim);
-            activity.startActivity(in);
+            this.finish();
+            this.startActivity(in);
         }
     }
     @Override

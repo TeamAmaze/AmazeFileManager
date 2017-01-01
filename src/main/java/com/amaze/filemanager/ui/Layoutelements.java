@@ -19,7 +19,6 @@
 
 package com.amaze.filemanager.ui;
 
-import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
@@ -47,9 +46,10 @@ public class Layoutelements implements Parcelable {
         } else {
             isDirectory= true;
         }
-        Bitmap bitmap = (Bitmap) im.readParcelable(getClass().getClassLoader());
+        // don't save bitmaps in parcel, it might exceed the allowed transaction threshold
+        //Bitmap bitmap = (Bitmap) im.readParcelable(getClass().getClassLoader());
         // Convert Bitmap to Drawable:
-        imageId = new BitmapDrawable(bitmap);
+        //imageId = new BitmapDrawable(bitmap);
         date1 = im.readString();
         longSize=im.readLong();
     }
@@ -68,7 +68,7 @@ public class Layoutelements implements Parcelable {
         p1.writeInt(isDirectory?1:0);
         p1.writeLong(date);
         p1.writeInt(header ? 1 : 0);
-        p1.writeParcelable(imageId.getBitmap(), p2);
+        //p1.writeParcelable(imageId.getBitmap(), p2);
         p1.writeString(date1);
         p1.writeLong(longSize);
         // TODO: Implement this method

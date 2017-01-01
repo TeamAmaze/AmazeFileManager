@@ -212,13 +212,13 @@
                 android:layout_height="match_parent" />
         </LinearLayout>
 
-        <View
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/fab_bg"
             android:visibility="gone"
             android:clickable="true"
-            android:background="#a6000000"/>
+            android:src="@drawable/shadow_up_small"/>
         <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/menu"
             android:layout_width="wrap_content"

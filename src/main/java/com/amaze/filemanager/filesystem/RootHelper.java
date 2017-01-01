@@ -166,8 +166,8 @@ public class RootHelper {
     }*/
 
     /**
-     * Runs the command and stores output in a list. The listener is set on the caller thread,
-     * thus any code run in callback must be thread safe.
+     * Runs the command and stores output in a list. The listener is set on the handler
+     * thread {@link MainActivity#handlerThread} thus any code run in callback must be thread safe.
      * Command is run from the root context (u:r:SuperSU0)
      * @param cmd the command
      * @return a list of results. Null only if the command passed is a blocking call or no output is
@@ -178,7 +178,7 @@ public class RootHelper {
         //if (!MainActivity.shellInteractive.isRunning()) throw new RootNotPermittedException();
         final ArrayList<String> result = new ArrayList<>();
 
-        // setting STDOUT listener so as to avoid extra buffer and possible memory loss by superuser
+        // callback being called on a background handler thead
         MainActivity.shellInteractive.addCommand(cmd, 0, new Shell.OnCommandResultListener() {
             @Override
             public void onCommandResult(int commandCode, int exitCode, List<String> output) {

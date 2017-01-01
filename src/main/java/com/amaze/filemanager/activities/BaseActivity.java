@@ -30,7 +30,7 @@ public class BaseActivity extends BasicActivity {
     boolean checkStorage=true;
 
     @Override
-    public void onCreate(final Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(this);
 

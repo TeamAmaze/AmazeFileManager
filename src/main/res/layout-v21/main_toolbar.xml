@@ -203,14 +203,14 @@
                 app:currentPageIndicatorColor="?attr/colorAccent"
                 />
         </LinearLayout>
-        <View
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/fab_bg"
-            android:elevation="5dp"
             android:visibility="gone"
             android:clickable="true"
-            android:background="#a6000000"/>
+            android:src="@drawable/shadow_up_small"
+            />
 
         <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/menu"

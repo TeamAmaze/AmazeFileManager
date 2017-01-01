@@ -136,14 +136,13 @@
             android:enabled="true"
             android:exported="true" />
 
-        <service
-            android:name=".services.ftpservice.FTPTileService"
+        <service android:name=".services.ftpservice.FTPTileService"
             android:icon="@drawable/ic_ftp_dark"
             android:label="@string/ftp"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
-            >
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
-                <action android:name="android.serive.quicksettings.action.QS_TILE"/>
+                <action
+                    android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
 

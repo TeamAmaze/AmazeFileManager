@@ -1016,7 +1016,7 @@ public class Main extends android.support.v4.app.Fragment {
                             && !path.equals("otg:/")) {
                         if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback)) {
 
-                            Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                            Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_arrow_left_white_24dp);
                             bitmap.add(0,
                                     utils.newElement(new BitmapDrawable(res, iconBitmap),
                                             "..", "", "", goback, 0, false, true, ""));

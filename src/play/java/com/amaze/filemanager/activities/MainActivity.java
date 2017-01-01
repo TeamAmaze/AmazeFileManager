@@ -240,8 +240,8 @@ public class MainActivity extends BaseActivity implements
     private RelativeLayout searchViewLayout;
     private AppCompatEditText searchViewEditText;
     private int[] searchCoords = new int[2];
-    private View mFabBackground;
     private CoordinatorLayout mScreenLayout;
+    private ImageView fabBgView;
 
     private static final int REQUEST_CODE_SAF = 223;
     public static final String KEY_PREF_OTG = "uri_usb_otg";
@@ -566,7 +566,6 @@ public class MainActivity extends BaseActivity implements
             } else if (name.contains("TabFragment")) {
                 if (floatingActionButton.isOpened()) {
                     floatingActionButton.close(true);
-                    utils.revealShow(findViewById(R.id.fab_bg), false);
                 } else {
                     TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
                     Fragment fragment1 = tabFragment.getTab();
@@ -1120,7 +1119,7 @@ public class MainActivity extends BaseActivity implements
             animator = new ObjectAnimator().ofFloat(searchViewLayout, "alpha", 0f, 1f);
         }
 
-        utils.revealShow(mFabBackground, true);
+        utils.revealShow(fabBgView, true);
 
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
@@ -1171,7 +1170,7 @@ public class MainActivity extends BaseActivity implements
         }
 
         // removing background fade view
-        utils.revealShow(mFabBackground, false);
+        utils.revealShow(fabBgView, false);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
         animator.start();
@@ -1868,8 +1867,6 @@ public class MainActivity extends BaseActivity implements
     void initialiseViews() {
         appBarLayout = (AppBarLayout) findViewById(R.id.lin);
 
-
-
         mScreenLayout = (CoordinatorLayout) findViewById(R.id.main_frame);
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
 
@@ -1877,7 +1874,6 @@ public class MainActivity extends BaseActivity implements
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
-        mFabBackground = findViewById(R.id.fab_bg);
         drawerHeaderView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -1925,13 +1921,12 @@ public class MainActivity extends BaseActivity implements
         }
         mDrawerList.addHeaderView(drawerHeaderLayout);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        View v = findViewById(R.id.fab_bg);
+        fabBgView = (ImageView) findViewById(R.id.fab_bg);
 
-        v.setOnClickListener(new View.OnClickListener() {
+        fabBgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 floatingActionButton.close(true);
-                utils.revealShow(view, false);
                 if (isSearchViewEnabled) hideSearchView();
             }
         });
@@ -1959,14 +1954,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 Intent in = new Intent(MainActivity.this, Preferences.class);
-                finish();
-                final int enter_anim = android.R.anim.fade_in;
-                final int exit_anim = android.R.anim.fade_out;
-                Activity s = MainActivity.this;
-                s.overridePendingTransition(exit_anim, enter_anim);
-                s.finish();
-                s.overridePendingTransition(enter_anim, exit_anim);
-                s.startActivity(in);
+                startActivity(in);
             }
 
         });
@@ -2112,9 +2100,8 @@ public class MainActivity extends BaseActivity implements
         floatingActionButton.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
             public void onMenuToggle(boolean b) {
-                View v = findViewById(R.id.fab_bg);
-                if (b) utils.revealShow(v, true);
-                else utils.revealShow(v, false);
+                if (b) utils.revealShow(fabBgView, true);
+                else utils.revealShow(fabBgView, false);
             }
         });
 
@@ -2125,7 +2112,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(0);
-                utils.revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
@@ -2136,7 +2123,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(1);
-                utils.revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
@@ -2147,7 +2134,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(2);
-                utils.revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
@@ -2158,7 +2145,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(3);
-                utils.revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });

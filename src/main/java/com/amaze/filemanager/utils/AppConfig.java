@@ -1,6 +1,7 @@
 package com.amaze.filemanager.utils;
 
 import android.app.Application;
+import android.os.StrictMode;
 import android.text.TextUtils;
 
 import com.android.volley.Request;
@@ -25,6 +26,10 @@ public class AppConfig extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+
+        // disabling file exposure method check for api n+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
     }
 
     public static synchronized AppConfig getInstance() {
