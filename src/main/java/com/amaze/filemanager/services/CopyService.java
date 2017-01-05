@@ -46,6 +46,7 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.utils.CopyWatcherUtil;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.GenericCopyThread;
@@ -66,6 +67,18 @@ public class CopyService extends Service {
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
     Context c;
+
+    ProgressListener progressListener;
+    boolean foreground=true;
+
+    long totalSize = 0l;
+
+    private static final String TAG_COPY_TARGET = "COPY_DIRECTORY";
+    private static final String TAG_COPY_SOURCES = "FILE_PATHS";
+    private static final String TAG_COPY_OPEN_MODE = "MODE";
+    private static final String TAG_COPY_MOVE = "move";
+    private static final String TAG_COPY_START_ID = "id";
+
     @Override
     public void onCreate() {
         c = getApplicationContext();
@@ -74,17 +87,16 @@ public class CopyService extends Service {
         registerReceiver(receiver3, new IntentFilter("copycancel"));
     }
 
-
-    boolean foreground=true;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle b = new Bundle();
-        ArrayList<BaseFile> files = intent.getParcelableArrayListExtra("FILE_PATHS");
-        String FILE2 = intent.getStringExtra("COPY_DIRECTORY");
-        int mode=intent.getIntExtra("MODE",0);
+        ArrayList<BaseFile> files = intent.getParcelableArrayListExtra(TAG_COPY_SOURCES);
+        String targetPath = intent.getStringExtra(TAG_COPY_TARGET);
+        int mode=intent.getIntExtra(TAG_COPY_OPEN_MODE, 0);
+        totalSize = getTotalBytes(files);
         mNotifyManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        b.putInt("id", startId);
+        b.putInt(TAG_COPY_START_ID, startId);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -93,35 +105,58 @@ public class CopyService extends Service {
         mBuilder = new NotificationCompat.Builder(c);
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setContentTitle(getResources().getString(R.string.copying))
-
                 .setSmallIcon(R.drawable.ic_content_copy_white_36dp);
         if(foreground){
             startForeground(Integer.parseInt("456"+startId),mBuilder.build());
             foreground=false;
         }
-        b.putBoolean("move", intent.getBooleanExtra("move", false));
-        b.putString("FILE2", FILE2);
-        b.putInt("MODE",mode);
-        b.putParcelableArrayList("files", files);
+        b.putBoolean(TAG_COPY_MOVE, intent.getBooleanExtra(TAG_COPY_MOVE, false));
+        b.putString(TAG_COPY_TARGET, targetPath);
+        b.putInt(TAG_COPY_OPEN_MODE, mode);
+        b.putParcelableArrayList(TAG_COPY_SOURCES, files);
         hash.put(startId, true);
+
         DataPackage intent1 = new DataPackage();
         intent1.setName(files.get(0).getName());
-        intent1.setTotal(0);
-        intent1.setDone(0);
+        intent1.setSourceFiles(files.size());
+        intent1.setSourceProgress(0);
+        intent1.setTotal(totalSize);
+        intent1.setByteProgress(0);
         intent1.setId(startId);
-        intent1.setP1(0);
-        intent1.setP2(0);
-        intent1.setMove(intent.getBooleanExtra("move", false));
+        intent1.setSpeedRaw(0);
+        intent1.setMove(intent.getBooleanExtra(TAG_COPY_MOVE, false));
+        intent1.setCompleted(false);
+
+        intent1.setMove(intent.getBooleanExtra(TAG_COPY_MOVE, false));
         intent1.setCompleted(false);
         hash1.put(startId,intent1);
+
         //going async
         new DoInBackground().execute(b);
 
         // If we get killed, after returning from here, restart
         return START_STICKY;
     }
-    ProgressListener progressListener;
 
+
+
+    long getTotalBytes(final ArrayList<BaseFile> files) {
+        long totalBytes = 0l;
+        try {
+            for (int i = 0; i < files.size(); i++) {
+                HFile f1 = (files.get(i));
+                if (f1.isDirectory()) {
+                    totalBytes = totalBytes + f1.folderSize();
+                } else {
+                    totalBytes = totalBytes + f1.length();
+                }
+            }
+        } catch (Exception e) {
+            // skip for now
+        }
+
+        return totalBytes;
+    }
 
     public void onDestroy() {
         this.unregisterReceiver(receiver3);
@@ -135,12 +170,13 @@ public class CopyService extends Service {
         }
 
         protected Integer doInBackground(Bundle... p1) {
-            String targetPath = p1[0].getString("FILE2");
-            int id = p1[0].getInt("id");
-            sourceFiles = p1[0].getParcelableArrayList("files");
-            move=p1[0].getBoolean("move");
+            String targetPath = p1[0].getString(TAG_COPY_TARGET);
+            int id = p1[0].getInt(TAG_COPY_START_ID);
+            sourceFiles = p1[0].getParcelableArrayList(TAG_COPY_SOURCES);
+            move=p1[0].getBoolean(TAG_COPY_MOVE);
             copy=new Copy();
-            copy.execute(id, sourceFiles, targetPath,move,OpenMode.getOpenMode(p1[0].getInt("MODE")));
+            copy.execute(id, sourceFiles, targetPath, move,
+                    OpenMode.getOpenMode(p1[0].getInt(TAG_COPY_OPEN_MODE)));
 
             // TODO: Implement this method
             return id;
@@ -148,7 +184,7 @@ public class CopyService extends Service {
 
         @Override
         public void onPostExecute(Integer b) {
-            publishResults("", 0, 0, b, 0, 0, true, move);
+            publishResults(b, "", 0, 0, totalSize, totalSize, 0, true, move);
             generateNotification(copy.failedFOps,move);
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
@@ -164,8 +200,6 @@ public class CopyService extends Service {
 
         class Copy {
 
-            long totalBytes = 0L, copiedBytes = 0L;
-            boolean calculatingTotalSize=false;
             ArrayList<HFile> failedFOps;
             ArrayList<BaseFile> toDelete;
             boolean copy_successful;
@@ -175,32 +209,12 @@ public class CopyService extends Service {
                 toDelete=new ArrayList<>();
             }
 
-            long getTotalBytes(final ArrayList<BaseFile> files, final ProgressHandler progressHandler) {
-                calculatingTotalSize=true;
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        long totalBytes = 0l;
-                        try {
-                            for (int i = 0; i < files.size(); i++) {
-                                HFile f1 = (files.get(i));
-                                if (f1.isDirectory()) {
-                                    totalBytes = totalBytes + f1.folderSize();
-                                } else {
-                                    totalBytes = totalBytes + f1.length();
-                                }
-                            }
-                            progressHandler.setTotalSize(totalBytes);
-                        } catch (Exception e) {
-                        }
-                        Copy.this.totalBytes=totalBytes;
-                        calculatingTotalSize=false;
-                    }
-                }).run();
-
-                return totalBytes;
-            }
-
+            /**
+             * Checks whether the target path exists or is writable
+             * @param f the target path
+             * @param context
+             * @return 1 if exists or writable, 0 if not writable
+             */
             public int checkFolder(final String f,Context context) {
                 if(f==null)return 0;
                 if(f.startsWith("smb://") || f.startsWith("otg:"))return 1;
@@ -229,16 +243,22 @@ public class CopyService extends Service {
             public void execute(final int id, final ArrayList<BaseFile> sourceFiles, final String targetPath,
                                 final boolean move,OpenMode mode) {
                 if (checkFolder((targetPath), c) == 1) {
-                    final ProgressHandler progressHandler=new ProgressHandler(-1);
+                    getTotalBytes(sourceFiles);
+
+                    final ProgressHandler progressHandler=new ProgressHandler(sourceFiles.size(), totalSize);
                     GenericCopyThread copyThread = new GenericCopyThread(c);
+                    CopyWatcherUtil watcherUtil = new CopyWatcherUtil(progressHandler, totalSize);
+
                     progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
+
                         @Override
-                        public void onProgressed(String fileName, float p1, float p2, float speed, float avg) {
-                            publishResults(fileName, (int) p1, (int) p2, id, progressHandler.totalSize, progressHandler.writtenSize, false, move);
-                            System.out.println(new File(fileName).getName() + " Progress " + p1 + " Secondary Progress " + p2 + " Speed " + speed + " Avg Speed " + avg);
+                        public void onProgressed(String fileName, int sourceFiles, int sourceProgress,
+                                                 long totalSize, long writtenSize, int speed) {
+                            publishResults(id, fileName, sourceFiles, sourceProgress, totalSize,
+                                    writtenSize, speed, false, move);
                         }
                     });
-                    getTotalBytes(sourceFiles, progressHandler);
+
                     for (int i = 0; i < sourceFiles.size(); i++) {
                         BaseFile f1 = (sourceFiles.get(i));
                         Log.e("Copy","basefile\t"+f1.getPath());
@@ -247,18 +267,20 @@ public class CopyService extends Service {
 
                             HFile hFile=new HFile(mode,targetPath, sourceFiles.get(i).getName(),f1.isDirectory());
                             if (hash.get(id)){
+
                                 if(!f1.isSmb() && !new File(sourceFiles.get(i).getPath()).canRead() && rootmode){
                                     copyRoot(f1, hFile, move);
                                     continue;
                                 }
-                                copyFiles((f1),hFile, copyThread,progressHandler, id, move);
+                                copyFiles((f1),hFile, copyThread, progressHandler, watcherUtil, id);
+                                progressHandler.setSourceFilesCopied(i+1);
                             }
                             else{
                                 break;
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Log.e("Copy","Got exception checkout");
+                            Log.e("Copy", "Got exception checkout");
 
                             failedFOps.add(sourceFiles.get(i));
                             for(int j=i+1;j<sourceFiles.size();j++)failedFOps.add(sourceFiles.get(j));
@@ -306,6 +328,7 @@ public class CopyService extends Service {
                     RootUtils.mountOwnerRW(targetFile.getParent());
                     if (!move) RootUtils.copy(sourceFile.getPath(), targetFile.getPath());
                     else if (move) RootUtils.move(sourceFile.getPath(), targetFile.getPath());
+                    RootUtils.mountOwnerRO(targetFile.getParent());
                 } catch (RootNotPermittedException e) {
                     failedFOps.add(sourceFile);
                     e.printStackTrace();
@@ -313,10 +336,11 @@ public class CopyService extends Service {
                 Futils.scanFile(targetFile.getPath(), c);
             }
 
-            private void copyFiles(final BaseFile sourceFile,final HFile targetFile,
+            private void copyFiles(final BaseFile sourceFile, final HFile targetFile,
                                    GenericCopyThread copyThread,
                                    ProgressHandler progressHandler,
-                                   final int id,final boolean move) throws IOException {
+                                   CopyWatcherUtil watcherUtil,
+                                   final int id) throws IOException {
                 Log.e("Copy",sourceFile.getPath());
                 if (sourceFile.isDirectory()) {
                     if(!hash.get(id))return;
@@ -328,7 +352,6 @@ public class CopyService extends Service {
                     // 2. source file has a valid name or not
                     if(!Operations.isFileNameValid(sourceFile.getName())
                             || Operations.isCopyLoopPossible(sourceFile, targetFile)){
-                        Log.e("Copy","cant make dir");
                         failedFOps.add(sourceFile);
                         copy_successful=false;
                         return;
@@ -337,8 +360,9 @@ public class CopyService extends Service {
                     if(!hash.get(id))return;
                     ArrayList<BaseFile> filePaths = sourceFile.listFiles(false);
                     for (BaseFile file : filePaths) {
-                        HFile destFile = new HFile(targetFile.getMode(),targetFile.getPath(), file.getName(),file.isDirectory());
-                        copyFiles(file, destFile,copyThread,progressHandler, id, move);
+                        HFile destFile = new HFile(targetFile.getMode(),targetFile.getPath(),
+                                file.getName(),file.isDirectory());
+                        copyFiles(file, destFile, copyThread, progressHandler, watcherUtil, id);
                     }
                     if(!hash.get(id))return;
                 } else {
@@ -349,12 +373,20 @@ public class CopyService extends Service {
                         return;
                     }
 
-                    System.out.println("Copy start for "+targetFile.getName());
+                    Log.d(getClass().getSimpleName(), "Copy start for " + targetFile.getName());
 
-                    // start a new thread only after previous work is done
                     try {
-                        if (copyThread.thread!=null) copyThread.thread.join();
-                        copyThread.startThread(sourceFile, targetFile, progressHandler);
+                        if (copyThread.thread!=null) {
+                            // start a new thread only after previous work is done
+                            copyThread.thread.join();
+                        } else {
+                            // initial start of copy, initiate the watcher
+                            watcherUtil.watch();
+                        }
+
+                        // we've joined, moving on to next file
+                        progressHandler.setFileName(sourceFile.getName());
+                        copyThread.startThread(sourceFile, targetFile);
                     } catch (InterruptedException e) {
                         // thread interrupted due to some problem. we must return
                         failedFOps.add(sourceFile);
@@ -365,12 +397,13 @@ public class CopyService extends Service {
         }
     }
 
-    void generateNotification(ArrayList<HFile> failedOps,boolean move) {
+    void generateNotification(ArrayList<HFile> failedOps, boolean move) {
         if(failedOps.size()==0)return;
         mNotifyManager.cancelAll();
         NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(c);
         mBuilder.setContentTitle(c.getString(R.string.operationunsuccesful));
-        mBuilder.setContentText("Some files weren't %s successfully".replace("%s",move?"moved":"copied"));
+        mBuilder.setContentText(c.getString(R.string.copy_error).replace("%s",
+                move ? c.getString(R.string.moved) : c.getString(R.string.copied)));
         mBuilder.setAutoCancel(true);
 
         Intent intent= new Intent(this, MainActivity.class);
@@ -385,24 +418,41 @@ public class CopyService extends Service {
         mNotifyManager.notify(741,mBuilder.build());
 
         intent=new Intent("general_communications");
-        intent.putExtra("failedOps",failedOps);
-        intent.putExtra("move",move);
+        intent.putExtra("failedOps", failedOps);
+        intent.putExtra(TAG_COPY_MOVE, move);
 
         sendBroadcast(intent);
     }
 
-    private void publishResults(String a, int p1, int p2, int id, long total, long done, boolean b, boolean move) {
+    /**
+     * Publish the results of the progress to notification and {@link DataPackage}
+     * and eventually to {@link com.amaze.filemanager.fragments.ProcessViewer}
+     * @param id id of current service
+     * @param fileName file name of current file being copied
+     * @param sourceFiles total number of files selected by user for copy
+     * @param sourceProgress files been copied out of them
+     * @param totalSize total size of selected items to copy
+     * @param writtenSize bytes successfully copied
+     * @param speed number of bytes being copied per sec
+     * @param isComplete whether operation completed or ongoing
+     * @param move if the files are to be moved
+     */
+    private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
+                                long totalSize, long writtenSize, int speed, boolean isComplete,
+                                boolean move) {
         if (hash.get(id)) {
             //notification
-            mBuilder.setProgress(100, p1, false);
+            double progressPercent = (writtenSize/totalSize)*100;
+            mBuilder.setProgress(100, (int) Math.round(progressPercent), false);
             mBuilder.setOngoing(true);
             int title = R.string.copying;
             if (move) title = R.string.moving;
             mBuilder.setContentTitle(c.getResources().getString(title));
-            mBuilder.setContentText(new File(a).getName() + " " + Futils.readableFileSize(done) + "/" + Futils.readableFileSize(total));
+            mBuilder.setContentText(fileName + " " + Futils.readableFileSize(writtenSize) + "/" +
+                    Futils.readableFileSize(totalSize));
             int id1 = Integer.parseInt("456" + id);
             mNotifyManager.notify(id1, mBuilder.build());
-            if (p1 == 100 || total == 0) {
+            if (writtenSize == totalSize || totalSize == 0) {
                 mBuilder.setContentTitle("Copy completed");
                 if (move)
                     mBuilder.setContentTitle("Move Completed");
@@ -413,27 +463,30 @@ public class CopyService extends Service {
                 mNotifyManager.notify(id1, mBuilder.build());
                 publishCompletedResult(id, id1);
             }
+
             //for processviewer
             DataPackage intent = new DataPackage();
-            intent.setName(new File(a).getName());
-            intent.setTotal(total);
-            intent.setDone(done);
+            intent.setName(fileName);
+            intent.setSourceFiles(sourceFiles);
+            intent.setSourceProgress(sourceProgress);
+            intent.setTotal(totalSize);
+            intent.setByteProgress(writtenSize);
             intent.setId(id);
-            intent.setP1(p1);
-            intent.setP2(p2);
+            intent.setSpeedRaw(speed);
             intent.setMove(move);
-            intent.setCompleted(b);
+            intent.setCompleted(isComplete);
             hash1.put(id,intent);
             try {
                 if(progressListener!=null){
                     progressListener.onUpdate(intent);
-                    if(b)progressListener.refresh();
+                    if(isComplete)progressListener.refresh();
                 }
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         } else publishCompletedResult(id, Integer.parseInt("456" + id));
     }
+
     public void publishCompletedResult(int id,int id1){
         try {
             mNotifyManager.cancel(id1);
@@ -453,7 +506,8 @@ public class CopyService extends Service {
             if(baseFiles.size()>0){
                 boolean b=true;
                 for(BaseFile baseFile:baseFiles){
-                    if(!checkFiles(new HFile(baseFile.getMode(),baseFile.getPath()),new HFile(hFile2.getMode(),hFile2.getPath()+"/"+(baseFile.getName()))))
+                    if(!checkFiles(new HFile(baseFile.getMode(), baseFile.getPath()),
+                            new HFile(hFile2.getMode(),hFile2.getPath()+"/"+(baseFile.getName()))))
                         b=false;
                 }
                 return b;
@@ -495,6 +549,7 @@ public class CopyService extends Service {
             hash.put(intent.getIntExtra("id", 1), false);
         }
     };
+
     //bind with processviewer
     RegisterCallback registerCallback= new RegisterCallback.Stub() {
         @Override
@@ -511,6 +566,7 @@ public class CopyService extends Service {
             return dataPackages;
         }
     };
+
     @Override
     public IBinder onBind(Intent arg0) {
         // TODO Auto-generated method stub

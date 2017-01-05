@@ -60,6 +60,8 @@ public class ProcessViewer extends Fragment {
 
     LinearLayout rootView;
     boolean mBound = false;
+
+    // Ids to differentiate between already processed data package and new data package
     ArrayList<Integer> CopyIds = new ArrayList<Integer>();
     ArrayList<Integer> CancelledCopyIds = new ArrayList<Integer>();
     ArrayList<Integer> ExtractIds = new ArrayList<Integer>();
@@ -77,7 +79,6 @@ public class ProcessViewer extends Fragment {
                 container, false);
         setRetainInstance(false);
 
-
         mainActivity = (MainActivity) getActivity();
         if (mainActivity.getAppTheme().equals(AppTheme.DARK))
             root.setBackgroundResource((R.color.cardView_background));
@@ -90,6 +91,7 @@ public class ProcessViewer extends Fragment {
         mainActivity.supportInvalidateOptionsMenu();
         return root;
     }
+
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
@@ -152,6 +154,7 @@ public class ProcessViewer extends Fragment {
             mBound = false;
         }
     };
+
     private ServiceConnection mExtractConnection = new ServiceConnection() {
 
         @Override
@@ -245,40 +248,58 @@ public class ProcessViewer extends Fragment {
         clear();
     }
 
-    public void processResults(final DataPackage b) {
+    public void processResults(final DataPackage dataPackage) {
         if (!running) return;
         if (getResources() == null) return;
-        if (b != null) {
-            int id = b.getId();
+        if (dataPackage != null) {
+            int id = dataPackage.getId();
             final Integer id1 = new Integer(id);
+
             if (!CancelledCopyIds.contains(id1)) {
+                // new data package utilizing
+
                 if (CopyIds.contains(id1)) {
-                    boolean completed = b.isCompleted();
+                    // views have been initialized, just update the progress from new data package
+                    boolean completed = dataPackage.isCompleted();
                     View process = rootView.findViewWithTag("copy" + id);
                     if (completed) {
                         try {
+
+                            // operation completed, remove views
                             rootView.removeViewInLayout(process);
                             CopyIds.remove(CopyIds.indexOf(id1));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     } else {
-                        String name = b.getName();
-                        int p1 = b.getP1();
-                        int p2 = b.getP2();
-                        long total = b.getTotal();
-                        long done = b.getDone();
-                        boolean move = b.isMove();
-                        String text = getResources().getString(R.string.copying) + "\n" + name + "\n" + Futils.readableFileSize(done) + "/" + Futils.readableFileSize(total) + "\n" + p1 + "%";
+
+                        // update views from data package
+                        String name = dataPackage.getName();
+                        long total = dataPackage.getTotal();
+                        long doneBytes = dataPackage.getByteProgress();
+
+                        double progressPercent = (doneBytes/total)*100;
+
+                        boolean move = dataPackage.isMove();
+                        String text = getResources().getString(R.string.copying) + "\n" + name + "\n" + Futils.readableFileSize(doneBytes)
+                                + "/" + Futils.readableFileSize(total) + "\n" + progressPercent + "%";
                         if (move) {
-                            text = getResources().getString(R.string.moving) + "\n" + name + "\n" + Futils.readableFileSize(done) + "/" + Futils.readableFileSize(total) + "\n" + p1 + "%";
+                            text = getResources().getString(R.string.moving) + "\n"
+                                    + name + "\n"
+                                    + Futils.readableFileSize(doneBytes)
+                                    + "/" + Futils.readableFileSize(total) + "\n"
+                                    + progressPercent + "%" + "\n"
+                                    + dataPackage.getSourceProgress() + "/"
+                                    + dataPackage.getSourceFiles() + "\n"
+                                    + Futils.readableFileSize(dataPackage.getSpeedRaw());
                         }
                         ((TextView) process.findViewById(R.id.progressText)).setText(text);
                         ProgressBar p = (ProgressBar) process.findViewById(R.id.progressBar1);
-                        p.setProgress(p1);
-                        p.setSecondaryProgress(p2);
+                        p.setProgress((int) Math.round(progressPercent));
                     }
                 } else {
+
+                    // initialize views for first time
                     CardView root = (android.support.v7.widget.CardView) getActivity()
                             .getLayoutInflater().inflate(R.layout.processrow, null);
                     root.setTag("copy" + id);
@@ -287,7 +308,7 @@ public class ProcessViewer extends Fragment {
                     TextView progressText = (TextView) root.findViewById(R.id.progressText);
 
                     Drawable icon = icons.getCopyDrawable();
-                    boolean move = b.isMove();
+                    boolean move = dataPackage.isMove();
                     if (move) {
                         icon = icons.getCutDrawable();
                     }
@@ -319,9 +340,10 @@ public class ProcessViewer extends Fragment {
                         }
                     });
 
-                    String name = b.getName();
-                    int p1 = b.getP1();
-                    int p2 = b.getP2();
+                    String name = dataPackage.getName();
+                    long doneBytes = dataPackage.getByteProgress();
+                    long totalBytes = dataPackage.getTotal();
+                    double progressPercent = (doneBytes/totalBytes)*100;
 
                     String text = getResources().getString(R.string.copying) + "\n" + name;
                     if (move) {
@@ -329,8 +351,7 @@ public class ProcessViewer extends Fragment {
                     }
                     progressText.setText(text);
                     ProgressBar p = (ProgressBar) root.findViewById(R.id.progressBar1);
-                    p.setProgress(p1);
-                    p.setSecondaryProgress(p2);
+                    p.setProgress((int) Math.round(progressPercent));
                     CopyIds.add(id1);
                     rootView.addView(root);
                 }
@@ -353,14 +374,18 @@ public class ProcessViewer extends Fragment {
                     ExtractIds.remove(ExtractIds.indexOf(id));
                 } else {
                     String name = dataPackage.getName();
-                    int p1 = dataPackage.getP1();
-                    long p3 = dataPackage.getTotal();
-                    long p2 = dataPackage.getDone();
-                    ProgressBar p = (ProgressBar) process.findViewById(R.id.progressBar1);
-                    if (p1 <= 100) {
-                        ((TextView) process.findViewById(R.id.progressText)).setText(getResources().getString(R.string.extracting) + "\n" + name + "\n" + p1 + "%" + "\n" + Futils.readableFileSize(p2) + "/" + Futils.readableFileSize(p3));
+                    long totalBytes = dataPackage.getTotal();
+                    long doneBytes = dataPackage.getByteProgress();
+                    double progressPercent = (doneBytes/totalBytes)*100;
 
-                        p.setProgress(p1);
+                    ProgressBar p = (ProgressBar) process.findViewById(R.id.progressBar1);
+                    if (progressPercent <= 100) {
+                        ((TextView) process.findViewById(R.id.progressText)).setText(getResources().getString(R.string.extracting)
+                                + "\n" + name + "\n" + progressPercent + "%" + "\n"
+                                + Futils.readableFileSize(doneBytes)
+                                + "/" + Futils.readableFileSize(totalBytes));
+
+                        p.setProgress((int) Math.round(progressPercent));
                     }
                 }
             } else {
@@ -401,12 +426,14 @@ public class ProcessViewer extends Fragment {
                 });
 
                 String name = dataPackage.getName();
-                int p1 = dataPackage.getP1();
+                long totalBytes = dataPackage.getTotal();
+                long doneBytes = dataPackage.getByteProgress();
+                double progressPercent = (doneBytes/totalBytes)*100;
 
 
                 ((TextView) root.findViewById(R.id.progressText)).setText(getResources().getString(R.string.extracting) + "\n" + name);
                 ProgressBar p = (ProgressBar) root.findViewById(R.id.progressBar1);
-                p.setProgress(p1);
+                p.setProgress((int) Math.round(progressPercent));
                 ExtractIds.add(id);
                 rootView.addView(root);
             }
@@ -425,13 +452,17 @@ public class ProcessViewer extends Fragment {
                     ZipIds.remove(ZipIds.indexOf(id));
                 } else {
                     String name = dataPackage.getName();
-                    int p1 = dataPackage.getP1();
+                    long totalBytes = dataPackage.getTotal();
+                    long doneBytes = dataPackage.getByteProgress();
+                    double progressPercent = (doneBytes/totalBytes)*100;
 
                     ProgressBar p = (ProgressBar) process.findViewById(R.id.progressBar1);
-                    if (p1 <= 100) {
-                        ((TextView) process.findViewById(R.id.progressText)).setText(getResources().getString(R.string.zipping) + "\n" + name + "\n" + p1 + "%");
+                    if (progressPercent <= 100) {
+                        ((TextView) process.findViewById(R.id.progressText)).setText(getResources().getString(R.string.zipping)
+                                + "\n" + name + "\n"
+                                + progressPercent + "%");
 
-                        p.setProgress(p1);
+                        p.setProgress((int) Math.round(progressPercent));
                     }
                 }
             } else {
@@ -472,12 +503,13 @@ public class ProcessViewer extends Fragment {
                 });
 
                 String name = dataPackage.getName();
-                int p1 = dataPackage.getP1();
-
+                long totalBytes = dataPackage.getTotal();
+                long doneBytes = dataPackage.getByteProgress();
+                double progressPercent = (doneBytes/totalBytes)*100;
 
                 ((TextView) root.findViewById(R.id.progressText)).setText(getResources().getString(R.string.zipping) + "\n" + name);
                 ProgressBar p = (ProgressBar) root.findViewById(R.id.progressBar1);
-                p.setProgress(p1);
+                p.setProgress((int) Math.round(progressPercent));
 
                 ZipIds.add(id);
                 rootView.addView(root);

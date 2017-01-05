@@ -8,7 +8,6 @@ import android.util.Log;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.services.ProgressHandler;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -22,6 +21,8 @@ import java.nio.channels.FileChannel;
 
 /**
  * Created by vishal on 26/10/16.
+ *
+ * Base class to handle file copy.
  */
 
 public class GenericCopyThread implements Runnable {
@@ -29,7 +30,6 @@ public class GenericCopyThread implements Runnable {
     private BaseFile mSourceFile;
     private HFile mTargetFile;
     private Context mContext;
-    private ProgressHandler progressHandler;
 
     public Thread thread;
 
@@ -119,13 +119,11 @@ public class GenericCopyThread implements Runnable {
      * Start a thread encapsulating this class's runnable interface, a call to {@link #run()} is made
      * @param sourceFile the source file, which is to be copied
      * @param targetFile the target file
-     * @param progressHandler handles the progress of copy
      */
-    public void startThread(BaseFile sourceFile, HFile targetFile, ProgressHandler progressHandler) {
+    public void startThread(BaseFile sourceFile, HFile targetFile) {
 
         this.mSourceFile = sourceFile;
         this.mTargetFile = targetFile;
-        this.progressHandler = progressHandler;
         thread = new Thread(this);
         thread.start();
     }
@@ -143,6 +141,8 @@ public class GenericCopyThread implements Runnable {
                 for (int i=0; i<count; i++) {
                     byteBuffer.put(buffer[i]);
                 }
+
+                CopyWatcherUtil.POSITION+=count;
             }
         } while (count!=-1);
     }
@@ -152,7 +152,11 @@ public class GenericCopyThread implements Runnable {
         MappedByteBuffer inByteBuffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, inChannel.size());
         MappedByteBuffer outByteBuffer = outChannel.map(FileChannel.MapMode.READ_WRITE, 0, inChannel.size());
 
-        outByteBuffer.put(inByteBuffer);
+        do {
+
+            outByteBuffer.put(inByteBuffer.get());
+            CopyWatcherUtil.POSITION++;
+        } while (inByteBuffer.hasRemaining());
     }
 
     private void copyFile(BufferedInputStream bufferedInputStream, BufferedOutputStream bufferedOutputStream)
@@ -165,6 +169,8 @@ public class GenericCopyThread implements Runnable {
                 for (int i=0; i<count; i++) {
                     bufferedOutputStream.write(buffer[i]);
                 }
+
+                CopyWatcherUtil.POSITION+=count;
             }
         } while (count!=-1);
         bufferedOutputStream.flush();
@@ -174,20 +180,20 @@ public class GenericCopyThread implements Runnable {
             throws IOException {
         MappedByteBuffer inBuffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, mSourceFile.getSize());
         byte[] buffer = new byte[8192];
-        int length;
+        int length, oldPosition, newPosition;
         do {
 
-            int oldPosition = inBuffer.position();
+            oldPosition = inBuffer.position();
             inBuffer.get(buffer);
-            int newPosition = inBuffer.position();
+            newPosition = inBuffer.position();
             length = newPosition-oldPosition;
             if (length!=0) {
                 for (int i=0; i<length; i++) {
                     bufferedOutputStream.write(buffer[i]);
                 }
+                CopyWatcherUtil.POSITION+=length;
             }
         } while (length==0);
-
-        bufferedOutputStream.write(inBuffer.array());
+        bufferedOutputStream.flush();
     }
 }

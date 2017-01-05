@@ -243,7 +243,8 @@ public class RootHelper {
                 for (File x : f.listFiles()) {
                     long size = 0;
                     if (!x.isDirectory()) size = x.length();
-                    BaseFile baseFile=new BaseFile(x.getPath(), parseFilePermission(x), x.lastModified() , size, x.isDirectory());
+                    BaseFile baseFile=new BaseFile(x.getPath(), parseFilePermission(x),
+                            x.lastModified(), size, x.isDirectory());
                     baseFile.setName(x.getName());
                     baseFile.setMode(OpenMode.FILE);
                     if (showHidden) {

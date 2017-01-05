@@ -19,60 +19,62 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <android.support.v7.widget.CardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_view"
-        android:layout_gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        card_view:cardCornerRadius="4dp"
-        card_view:cardUseCompatPadding="true"
-        card_view:cardElevation="4dp">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardUseCompatPadding="true"
+    card_view:cardElevation="4dp">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:padding="10dp"
         android:layout_height="match_parent">
-    <RelativeLayout
-        android:id="@+id/textParent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/progressImage"
-            android:layout_width="wrap_content"
-            android:layout_centerVertical="true"
-            android:padding="5dp"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical" />
-
-        <ImageButton
-            android:id="@+id/delete_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_centerVertical="true"
-            android:background="@drawable/ripple"
-            android:contentDescription="Cancel Process"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/ic_action_cancel_light" />
-
-        <TextView
-            android:id="@+id/progressText"
-            android:layout_toRightOf="@id/progressImage"
-            android:layout_toLeftOf="@id/delete_button"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+        <RelativeLayout
+            android:id="@+id/textParent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content">
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/progressImage"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:padding="5dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical" />
 
-    <ProgressBar
-        android:id="@+id/progressBar1"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_below="@id/textParent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+            <ImageButton
+                android:id="@+id/delete_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_centerVertical="true"
+                android:background="@drawable/ripple"
+                android:contentDescription="Cancel Process"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_action_cancel_light" />
+
+            <TextView
+                android:id="@+id/progressText"
+                android:layout_toRightOf="@id/progressImage"
+                android:layout_toLeftOf="@id/delete_button"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_below="@id/textParent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
 </android.support.v7.widget.CardView>

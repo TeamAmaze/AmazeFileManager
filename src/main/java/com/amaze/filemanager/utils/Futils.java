@@ -345,6 +345,7 @@ public class Futils {
                 / Math.pow(1024, digitGroups))
                 + "" + units[digitGroups];
     }
+
     private boolean isSelfDefault(File f, Context c){
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);

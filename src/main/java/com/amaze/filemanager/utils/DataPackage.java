@@ -5,22 +5,47 @@ import android.os.Parcelable;
 
 /**
  * Created by Arpit on 01-08-2015.
+ *
+ * Class stores the {@link com.amaze.filemanager.services.CopyService} progress variables.
+ * This class also acts as a middle layer to communicate with
+ * {@link com.amaze.filemanager.fragments.ProcessViewer}
  */
-public class DataPackage implements Parcelable{
-    int id,p1,p2;
-    long total,done;
+public class DataPackage implements Parcelable {
+
+    int id;
+
+    // which file is being copied from total number of files
+    int sourceProgress;
+
+    // current byte position in total bytes pool
+    long byteProgress;
+
+    // total number of source files to be copied
+    int sourceFiles;
+
+    // total size of all source files combined
+    long totalSize;
+
+    // bytes being copied per sec
+    int speedRaw;
+
     boolean completed=false,move=false;
+
+    // name of source file being copied
     String name;
+
+    public DataPackage(){}
 
     protected DataPackage(Parcel in) {
         id = in.readInt();
-        p1 = in.readInt();
-        p2 = in.readInt();
-        total = in.readLong();
-        done = in.readLong();
+        sourceProgress = in.readInt();
+        byteProgress = in.readLong();
+        sourceFiles = in.readInt();
+        totalSize = in.readLong();
         completed = in.readByte() != 0;
         move = in.readByte() != 0;
         name = in.readString();
+        speedRaw = in.readInt();
     }
 
     public static final Creator<DataPackage> CREATOR = new Creator<DataPackage>() {
@@ -35,16 +60,6 @@ public class DataPackage implements Parcelable{
         }
     };
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public DataPackage(){}
-
     public int getId() {
         return id;
     }
@@ -53,12 +68,20 @@ public class DataPackage implements Parcelable{
         this.id = id;
     }
 
-    public int getP2() {
-        return p2;
+    public String getName() {
+        return name;
     }
 
-    public void setP2(int p2) {
-        this.p2 = p2;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getByteProgress() {
+        return byteProgress;
+    }
+
+    public void setByteProgress(long byteProgress) {
+        this.byteProgress = byteProgress;
     }
 
     public boolean isMove() {
@@ -77,28 +100,36 @@ public class DataPackage implements Parcelable{
         this.completed = completed;
     }
 
-    public long getDone() {
-        return done;
-    }
-
-    public void setDone(long done) {
-        this.done = done;
-    }
-
     public long getTotal() {
-        return total;
+        return totalSize;
     }
 
-    public void setTotal(long total) {
-        this.total = total;
+    public void setTotal(long totalSize) {
+        this.totalSize = totalSize;
     }
 
-    public int getP1() {
-        return p1;
+    public int getSourceProgress() {
+        return sourceProgress;
     }
 
-    public void setP1(int p1) {
-        this.p1 = p1;
+    public void setSourceProgress(int progress) {
+        this.sourceProgress = progress;
+    }
+
+    public void setSourceFiles(int sourceFiles) {
+        this.sourceFiles = sourceFiles;
+    }
+
+    public int getSourceFiles() {
+        return this.sourceFiles;
+    }
+
+    public void setSpeedRaw(int speedRaw) {
+        this.speedRaw = speedRaw;
+    }
+
+    public int getSpeedRaw() {
+        return this.speedRaw;
     }
 
     @Override
@@ -109,12 +140,13 @@ public class DataPackage implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
-        dest.writeInt(p1);
-        dest.writeInt(p2);
-        dest.writeLong(total);
-        dest.writeLong(done);
+        dest.writeInt(sourceProgress);
+        dest.writeLong(byteProgress);
+        dest.writeInt(sourceFiles);
+        dest.writeLong(totalSize);
         dest.writeByte((byte) (completed ? 1 : 0));
         dest.writeByte((byte) (move ? 1 : 0));
         dest.writeString(name);
+        dest.writeInt(speedRaw);
     }
 }

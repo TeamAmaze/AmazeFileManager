@@ -69,17 +69,17 @@ public class ZipTask extends Service {
         c=getApplicationContext();
         registerReceiver(receiver1, new IntentFilter("zipcancel"));
     }
-boolean foreground=true;
+    boolean foreground=true;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle b = new Bundle();
-        zpath= PreferenceManager.getDefaultSharedPreferences(this).getString("zippath","");
+        zpath= PreferenceManager.getDefaultSharedPreferences(this).getString("zippath", "");
         mNotifyManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String name = intent.getStringExtra("name");
-        if((zpath!=null && zpath.length()!=0)){
-        if(zpath.endsWith("/"))name=zpath+new File(name).getName();
-            else name=zpath+"/"+new File(name).getName();
+        if((zpath!=null && zpath.length()!=0)) {
+            if(zpath.endsWith("/")) name = zpath + new File(name).getName();
+            else name = zpath + "/" + new File(name).getName();
         }
         File c = new File(name);
         if (!c.exists()) {
@@ -90,17 +90,22 @@ boolean foreground=true;
                 e.printStackTrace();
             }
         }
+
         DataPackage intent1 = new DataPackage();
         intent1.setName(name);
-        intent1.setTotal(0);
-        intent1.setDone(0);
+        intent1.setSourceFiles(1);
+        intent1.setSourceProgress(0);
+        intent1.setTotal(new File(zpath).length());
+        intent1.setByteProgress(0);
         intent1.setId(startId);
-        intent1.setP1(0);
+        intent1.setSpeedRaw(0);
+        intent1.setMove(false);
         intent1.setCompleted(false);
+
         hash1.put(startId, intent1);
         mBuilder = new NotificationCompat.Builder(this);
         Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.putExtra("openprocesses",true);
+        notificationIntent.putExtra("openprocesses", true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setContentTitle(getResources().getString(R.string.zipping))
@@ -165,7 +170,7 @@ boolean foreground=true;
 
         @Override
         public void onPostExecute(Integer b) {
-            publishResults(b, name, 100, true,0,totalBytes);
+            publishResults(b, name, true, totalBytes, totalBytes);
             hash.put(b,false);
             boolean stop=true;
             for(int a:hash.keySet()){
@@ -179,35 +184,41 @@ boolean foreground=true;
 
     }
 
-    private void publishResults(int id, String fileName, int i, boolean b,long done,long total) {
+    private void publishResults(int id, String fileName, boolean isCompleted,long done,long total) {
         if (hash.get(id)) {
-            mBuilder.setProgress(100, i, false);
+            double progressPercent = (done/total)*100;
+            mBuilder.setProgress(100, (int) Math.round(progressPercent), false);
             mBuilder.setOngoing(true);
             int title = R.string.zipping;
             mBuilder.setContentTitle(c.getResources().getString(title));
             mBuilder.setContentText(new File(fileName).getName() + " " + Futils.readableFileSize(done) + "/" + Futils.readableFileSize(total));
             int id1 = Integer.parseInt("789" + id);
             mNotifyManager.notify(id1, mBuilder.build());
-            if (i == 100 || total == 0) {
+            if (done == total || total == 0) {
                 mBuilder.setContentTitle("Zip completed");
                 mBuilder.setContentText("");
                 mBuilder.setProgress(0, 0, false);
                 mBuilder.setOngoing(false);
                 mNotifyManager.notify(id1, mBuilder.build());
                 publishCompletedResult(id1);
-                b=true;
+                isCompleted = true;
             }
+
             DataPackage intent = new DataPackage();
             intent.setName(fileName);
+            intent.setSourceFiles(1);
+            intent.setSourceProgress(1);
             intent.setTotal(total);
-            intent.setDone(done);
+            intent.setByteProgress(done);
             intent.setId(id);
-            intent.setP1(i);
-            intent.setCompleted(b);
+            intent.setSpeedRaw(0);
+            intent.setMove(false);
+            intent.setCompleted(isCompleted);
+
             hash1.put(id, intent);
             if(progressListener!=null){
                 progressListener.onUpdate(intent);
-                if(b)progressListener.refresh();
+                if(isCompleted) progressListener.refresh();
             }
         } else {
             publishCompletedResult(Integer.parseInt("789" + id));
@@ -219,7 +230,7 @@ boolean foreground=true;
             e.printStackTrace();
         }
     }
-    
+
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -253,7 +264,7 @@ boolean foreground=true;
             count = a.size();
             fileName = fileOut;
             File zipDirectory = new File(fileOut);
-             
+
             try {
                 out = FileUtil.getOutputStream(zipDirectory,c,totalBytes);
                 zos = new ZipOutputStream(new BufferedOutputStream(out));
@@ -261,7 +272,7 @@ boolean foreground=true;
             }
             for (File file : a) {
                 try {
-                     
+
                     compressFile(id, file, "");
                 } catch (Exception e) {
                 }
@@ -282,17 +293,13 @@ boolean foreground=true;
         {
             if(asyncTask!=null && asyncTask.getStatus()== AsyncTask.Status.RUNNING)asyncTask.cancel(true);
             asyncTask=new AsyncTask<Void,Void,Void>(){
-                int p1,p2;
                 @Override
                 protected Void doInBackground(Void... voids) {
                     if(isCancelled())return null;
-                    p1 = (int) ((copiedbytes / (float) totalbytes) * 100);
-                    lastpercent = (int)copiedbytes;
-                    if(isCancelled())return null;
                     return null;
                 }@Override
-                 public void onPostExecute(Void v){
-                    publishResults(id, name, p1, completed, copiedbytes,totalbytes);
+                public void onPostExecute(Void v){
+                    publishResults(id, name, completed, copiedbytes, totalbytes);
                 }
             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
@@ -304,7 +311,7 @@ boolean foreground=true;
                 byte[] buf = new byte[20480];
                 int len;
                 BufferedInputStream in=new BufferedInputStream( new FileInputStream(file));
-                    zos.putNextEntry(new ZipEntry(path + "/" + file.getName()));
+                zos.putNextEntry(new ZipEntry(path + "/" + file.getName()));
                 while ((len = in.read(buf)) > 0) {
                     if (hash.get(id)) {
                         zos.write(buf, 0, len);

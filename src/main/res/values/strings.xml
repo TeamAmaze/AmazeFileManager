@@ -518,5 +518,10 @@
     <string name="paper_size">Paper Size</string>
 
     <string name="root_error">Error starting an interactive root shell</string>
+    
+    <!-- %s will be replaced with either copied or moved -->
+    <string name="copy_error">Some files weren\'t successfully %s</string>
+    <string name="copied">copied</string>
+    <string name="moved">moved</string>
 </resources>
 
