@@ -152,11 +152,11 @@ public class GenericCopyThread implements Runnable {
         MappedByteBuffer inByteBuffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, inChannel.size());
         MappedByteBuffer outByteBuffer = outChannel.map(FileChannel.MapMode.READ_WRITE, 0, inChannel.size());
 
-        do {
+        while (inByteBuffer.hasRemaining()) {
 
             outByteBuffer.put(inByteBuffer.get());
             CopyWatcherUtil.POSITION++;
-        } while (inByteBuffer.hasRemaining());
+        }
     }
 
     private void copyFile(BufferedInputStream bufferedInputStream, BufferedOutputStream bufferedOutputStream)

@@ -22,22 +22,32 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
-    android:layout_gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="500dp"
+    android:layout_gravity="center"
     card_view:cardCornerRadius="4dp"
     card_view:cardUseCompatPadding="true"
     card_view:cardElevation="4dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:padding="10dp"
         android:layout_height="match_parent">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/progress_chart"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_alignParentTop="true"
+            android:paddingBottom="@dimen/material_generic"
+            />
 
         <RelativeLayout
             android:id="@+id/textParent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/progress_chart"
+            android:padding="@dimen/material_generic"
+            >
 
             <ImageView
                 android:id="@+id/progressImage"

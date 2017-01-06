@@ -346,6 +346,15 @@ public class Futils {
                 + "" + units[digitGroups];
     }
 
+    public static float readableFileSizeFloat(long size) {
+        if (size <= 0)
+            return 0;
+        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+        Float newSize = Float.valueOf(new DecimalFormat("#,##0.##").format(size
+                / Math.pow(1024, digitGroups)));
+        return newSize;
+    }
+
     private boolean isSelfDefault(File f, Context c){
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);

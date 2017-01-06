@@ -523,5 +523,6 @@
     <string name="copy_error">Some files weren\'t successfully %s</string>
     <string name="copied">copied</string>
     <string name="moved">moved</string>
+    <string name="process_chart_description">Progress</string>
 </resources>
 

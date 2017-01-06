@@ -50,7 +50,6 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private Toast mToast;
     private SharedPreferences mSharedPref;
     private View mAuthorsDivider;
-    private boolean mIconEaster = false;
 
     private static final String KEY_PREF_STUDIO = "studio";
     private static final String URL_AUTHOR_1_G_PLUS = "https://plus.google.com/u/0/110424067388738907251/";
@@ -123,9 +122,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
 
         // license icon easter
         Random random = new Random();
-        if (random.nextInt(2) == 0) mIconEaster = false;
-        else mIconEaster = true;
-        if (mIconEaster) {
+        if (random.nextInt(2) == 0) {
             mLicensesIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_apple_ios_grey600_24dp));
         }
 

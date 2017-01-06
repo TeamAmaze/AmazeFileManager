@@ -72,6 +72,8 @@ public class CopyService extends Service {
     boolean foreground=true;
 
     long totalSize = 0l;
+    int totalSourceFiles = 0;
+    int sourceProgress = 0;
 
     private static final String TAG_COPY_TARGET = "COPY_DIRECTORY";
     private static final String TAG_COPY_SOURCES = "FILE_PATHS";
@@ -184,7 +186,7 @@ public class CopyService extends Service {
 
         @Override
         public void onPostExecute(Integer b) {
-            publishResults(b, "", 0, 0, totalSize, totalSize, 0, true, move);
+            publishResults(b, "", totalSourceFiles, totalSourceFiles, totalSize, totalSize, 0, true, move);
             generateNotification(copy.failedFOps,move);
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
@@ -245,7 +247,8 @@ public class CopyService extends Service {
                 if (checkFolder((targetPath), c) == 1) {
                     getTotalBytes(sourceFiles);
 
-                    final ProgressHandler progressHandler=new ProgressHandler(sourceFiles.size(), totalSize);
+                    totalSourceFiles = sourceFiles.size();
+                    final ProgressHandler progressHandler=new ProgressHandler(totalSourceFiles, totalSize);
                     GenericCopyThread copyThread = new GenericCopyThread(c);
                     CopyWatcherUtil watcherUtil = new CopyWatcherUtil(progressHandler, totalSize);
 
@@ -260,10 +263,11 @@ public class CopyService extends Service {
                     });
 
                     for (int i = 0; i < sourceFiles.size(); i++) {
+
+                        sourceProgress = i;
                         BaseFile f1 = (sourceFiles.get(i));
                         Log.e("Copy","basefile\t"+f1.getPath());
                         try {
-
 
                             HFile hFile=new HFile(mode,targetPath, sourceFiles.get(i).getName(),f1.isDirectory());
                             if (hash.get(id)){
@@ -273,7 +277,7 @@ public class CopyService extends Service {
                                     continue;
                                 }
                                 copyFiles((f1),hFile, copyThread, progressHandler, watcherUtil, id);
-                                progressHandler.setSourceFilesCopied(i+1);
+                                progressHandler.setSourceFilesCopied(sourceProgress + 1);
                             }
                             else{
                                 break;

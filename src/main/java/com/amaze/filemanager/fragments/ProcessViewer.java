@@ -25,6 +25,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -32,6 +33,7 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +54,15 @@ import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
 
@@ -72,11 +82,13 @@ public class ProcessViewer extends Fragment {
     IconUtils icons;
     MainActivity mainActivity;
 
+    private LineChart mLineChart;
+    private LineData mLineData = new LineData();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = (ViewGroup) inflater.inflate(R.layout.processparent,
-                container, false);
+        View root = (ViewGroup) inflater.inflate(R.layout.processparent, container, false);
         setRetainInstance(false);
 
         mainActivity = (MainActivity) getActivity();
@@ -124,7 +136,7 @@ public class ProcessViewer extends Fragment {
                         mainActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                clear();
+                                //clear();
                             }
                         });
                     }
@@ -261,48 +273,65 @@ public class ProcessViewer extends Fragment {
                 if (CopyIds.contains(id1)) {
                     // views have been initialized, just update the progress from new data package
                     boolean completed = dataPackage.isCompleted();
-                    View process = rootView.findViewWithTag("copy" + id);
-                    if (completed) {
+                    View processView = rootView.findViewWithTag("copy" + id);
+
+                    /*if (completed) {
                         try {
 
                             // operation completed, remove views
-                            rootView.removeViewInLayout(process);
-                            CopyIds.remove(CopyIds.indexOf(id1));
+                            //rootView.removeViewInLayout(processView);
+                            //CopyIds.remove(CopyIds.indexOf(id1));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     } else {
 
-                        // update views from data package
-                        String name = dataPackage.getName();
-                        long total = dataPackage.getTotal();
-                        long doneBytes = dataPackage.getByteProgress();
 
-                        double progressPercent = (doneBytes/total)*100;
+                    }*/
+                    // update views from data package
 
-                        boolean move = dataPackage.isMove();
-                        String text = getResources().getString(R.string.copying) + "\n" + name + "\n" + Futils.readableFileSize(doneBytes)
-                                + "/" + Futils.readableFileSize(total) + "\n" + progressPercent + "%";
-                        if (move) {
-                            text = getResources().getString(R.string.moving) + "\n"
-                                    + name + "\n"
-                                    + Futils.readableFileSize(doneBytes)
-                                    + "/" + Futils.readableFileSize(total) + "\n"
-                                    + progressPercent + "%" + "\n"
-                                    + dataPackage.getSourceProgress() + "/"
-                                    + dataPackage.getSourceFiles() + "\n"
-                                    + Futils.readableFileSize(dataPackage.getSpeedRaw());
-                        }
-                        ((TextView) process.findViewById(R.id.progressText)).setText(text);
-                        ProgressBar p = (ProgressBar) process.findViewById(R.id.progressBar1);
-                        p.setProgress((int) Math.round(progressPercent));
-                    }
+                    String name = dataPackage.getName();
+                    long total = dataPackage.getTotal();
+                    long doneBytes = dataPackage.getByteProgress();
+
+                    double progressPercent = (doneBytes/total)*100;
+
+                    addEntry(Futils.readableFileSizeFloat(doneBytes),
+                            Futils.readableFileSizeFloat(dataPackage.getSpeedRaw()));
+
+                    boolean move = dataPackage.isMove();
+                    String text = (move ? getResources().getString(R.string.moving)
+                            : getResources().getString(R.string.copying)) + "\n"
+                            + name + "\n"
+                            + Futils.readableFileSize(doneBytes)
+                            + "/" + Futils.readableFileSize(total) + "\n"
+                            + progressPercent + "%" + "\n"
+                            + dataPackage.getSourceProgress() + "/"
+                            + dataPackage.getSourceFiles() + "\n"
+                            + Futils.readableFileSize(dataPackage.getSpeedRaw());
+                    ((TextView) processView.findViewById(R.id.progressText)).setText(text);
+                    ProgressBar p = (ProgressBar) processView.findViewById(R.id.progressBar1);
+                    p.setProgress((int) Math.round(progressPercent));
                 } else {
 
                     // initialize views for first time
                     CardView root = (android.support.v7.widget.CardView) getActivity()
                             .getLayoutInflater().inflate(R.layout.processrow, null);
+                    rootView.addView(root);
+
+                    ViewGroup.LayoutParams params = root.getLayoutParams();
+                    params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    params.height = dpToPx(300);
+                    root.setLayoutParams(params);
                     root.setTag("copy" + id);
+
+                    long doneBytes = dataPackage.getByteProgress();
+                    long totalBytes = dataPackage.getTotal();
+                    double progressPercent = (doneBytes/totalBytes)*100;
+
+                    mLineChart = (LineChart) root.findViewById(R.id.progress_chart);
+                    chartInit(totalBytes);
+                    //addEntry(doneBytes, Futils.readableFileSizeFloat(dataPackage.getSpeedRaw()));
 
                     ImageButton cancel = (ImageButton) root.findViewById(R.id.delete_button);
                     TextView progressText = (TextView) root.findViewById(R.id.progressText);
@@ -341,9 +370,6 @@ public class ProcessViewer extends Fragment {
                     });
 
                     String name = dataPackage.getName();
-                    long doneBytes = dataPackage.getByteProgress();
-                    long totalBytes = dataPackage.getTotal();
-                    double progressPercent = (doneBytes/totalBytes)*100;
 
                     String text = getResources().getString(R.string.copying) + "\n" + name;
                     if (move) {
@@ -353,7 +379,6 @@ public class ProcessViewer extends Fragment {
                     ProgressBar p = (ProgressBar) root.findViewById(R.id.progressBar1);
                     p.setProgress((int) Math.round(progressPercent));
                     CopyIds.add(id1);
-                    rootView.addView(root);
                 }
             }
         }
@@ -517,4 +542,74 @@ public class ProcessViewer extends Fragment {
         }
     }
 
+    private void addEntry(float xValue, float yValue) {
+
+        ILineDataSet dataSet = mLineData.getDataSetByIndex(0);
+        if (dataSet==null) {
+            // adding set for first time
+            dataSet = createDataSet();
+            mLineData.addDataSet(dataSet);
+        }
+
+        int randomDataSetIndex = (int) (Math.random() * mLineData.getDataSetCount());
+        mLineData.addEntry(new Entry(xValue, yValue), randomDataSetIndex);
+        mLineData.notifyDataChanged();
+
+        // let the chart know it's data has changed
+        mLineChart.notifyDataSetChanged();
+
+        // this automatically refreshes the chart (calls invalidate())
+        //mLineChart.moveViewTo(mLineData.getEntryCount() - 7, 50f, YAxis.AxisDependency.LEFT);
+        mLineChart.invalidate();
+    }
+
+    private LineDataSet createDataSet() {
+        LineDataSet lineDataset = new LineDataSet(new ArrayList<Entry>(), null);
+
+        lineDataset.setLineWidth(1.75f);
+        lineDataset.setCircleRadius(5f);
+        lineDataset.setCircleHoleRadius(2.5f);
+        lineDataset.setColor(Color.WHITE);
+        lineDataset.setCircleColor(Color.WHITE);
+        lineDataset.setHighLightColor(Color.WHITE);
+        lineDataset.setDrawValues(false);
+        lineDataset.setCircleColorHole(mainActivity.getColorPreference().getColor(ColorUsage.ACCENT));
+
+        return lineDataset;
+    }
+
+    private void chartInit(long totalBytes) {
+
+        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        mLineChart.setBackgroundColor(accentColor);
+        mLineChart.getLegend().setEnabled(false);
+
+        // no description text
+        mLineChart.getDescription().setEnabled(false);
+
+        XAxis xAxis = mLineChart.getXAxis();
+        YAxis yAxisLeft = mLineChart.getAxisLeft();
+        mLineChart.getAxisRight().setEnabled(false);
+        yAxisLeft.setAxisMinimum(0.0f);
+        yAxisLeft.setTextColor(Color.WHITE);
+        yAxisLeft.setAxisLineColor(Color.TRANSPARENT);
+        yAxisLeft.setSpaceTop(40);
+
+        float factor = 0.5f;
+        int whiteTrans = ( (int) ( factor * 255.0f ) << 24 ) | ( Color.WHITE & 0x00ffffff);
+        yAxisLeft.setGridColor(whiteTrans);
+
+        xAxis.setAxisMaximum(Futils.readableFileSizeFloat(totalBytes));
+        xAxis.setAxisLineColor(Color.TRANSPARENT);
+        xAxis.setGridColor(Color.TRANSPARENT);
+        xAxis.setTextColor(Color.WHITE);
+        mLineChart.setData(mLineData);
+        mLineChart.invalidate();
+    }
+
+    public int dpToPx(double dp) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int px = Math.round(Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)));
+        return px;
+    }
 }
