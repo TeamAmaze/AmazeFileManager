@@ -27,7 +27,7 @@ public class BaseActivity extends BasicActivity {
     @Deprecated
     public static String accentSkin;
     public static boolean rootMode;
-    boolean checkStorage=true;
+    boolean checkStorage = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -236,6 +236,5 @@ public class BaseActivity extends BasicActivity {
                 setTheme(R.style.appCompatDark);
             }
         }
-
     }
 }

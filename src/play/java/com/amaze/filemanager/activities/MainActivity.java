@@ -25,13 +25,11 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -48,8 +46,6 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -93,8 +89,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.amaze.filemanager.IMyAidlInterface;
-import com.amaze.filemanager.Loadlistener;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.Tab;
@@ -114,7 +108,6 @@ import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
-import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
@@ -199,7 +192,6 @@ public class MainActivity extends BaseActivity implements
     public int operation = -1;
     public ArrayList<BaseFile> oparrayList;
     public String oppathe, oppathe1;
-    IMyAidlInterface aidlInterface;
     MaterialDialog materialDialog;
     String newPath = null;
     boolean backPressedToExitOnce = false;
@@ -790,8 +782,6 @@ public class MainActivity extends BaseActivity implements
                 else onDrawerClosed();
                 floatingActionButton.setVisibility(View.VISIBLE);
                 floatingActionButton.showMenuButton(true);
-
-
             } else {
                 pending_path = ((EntryItem) list.get(i)).getPath();
                 if (pending_path.equals("drive")) {
@@ -1221,24 +1211,6 @@ public class MainActivity extends BaseActivity implements
         if (mDrawerToggle != null) mDrawerToggle.syncState();
     }
 
-    boolean mbound = false;
-
-    public void bindDrive() {
-        Intent i = new Intent();
-        i.setClassName("com.amaze.filemanager.driveplugin", "com.amaze.filemanager.driveplugin.MainService");
-        try {
-            bindService((i), mConnection, Context.BIND_AUTO_CREATE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    void unbindDrive() {
-        if (mbound != false)
-            unbindService(mConnection);
-    }
-
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -1282,6 +1254,7 @@ public class MainActivity extends BaseActivity implements
             materialDialog.show();
             materialDialog = null;
         }
+
         IntentFilter newFilter = new IntentFilter();
         newFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
         newFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
@@ -1289,7 +1262,7 @@ public class MainActivity extends BaseActivity implements
         registerReceiver(mainActivityHelper.mNotificationReceiver, newFilter);
         registerReceiver(receiver2, new IntentFilter("general_communications"));
         if (getSupportFragmentManager().findFragmentById(R.id.content_frame)
-                                       .getClass().getName().contains("TabFragment")) {
+                .getClass().getName().contains("TabFragment")) {
 
             floatingActionButton.setVisibility(View.VISIBLE);
             floatingActionButton.showMenuButton(false);
@@ -1355,7 +1328,6 @@ public class MainActivity extends BaseActivity implements
             shellInteractive.close();
         }
 
-        unbindDrive();
         if (grid != null)
             grid.end();
         if (history != null)
@@ -2580,68 +2552,6 @@ public class MainActivity extends BaseActivity implements
                     mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), mainActivity);
                 }
             }
-        }
-    };
-
-
-    public void translateDrawerList(boolean down) {
-        if (down)
-            mDrawerList.animate().translationY(toolbar.getHeight());
-        else mDrawerList.setTranslationY(0);
-    }
-
-    Loadlistener loadlistener = new Loadlistener.Stub() {
-        @Override
-        public void load(final List<Layoutelements> layoutelements, String driveId) throws RemoteException {
-            if (layoutelements == null && DataUtils.containsAccounts(driveId) == -1) {
-                DataUtils.addAcc(new String[]{driveId, driveId});
-                grid.addPath(driveId, driveId, DataUtils.DRIVE, 1);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        refreshDrawer();
-                    }
-                });
-                unbindDrive();
-
-            }
-        }
-
-        @Override
-        public void error(final String message, final int mode) throws RemoteException {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(mainActivity, "Error " + message + mode, Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    };
-    ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            aidlInterface = (IMyAidlInterface.Stub.asInterface(service));
-            mbound = true;
-            try {
-                aidlInterface.registerCallback(loadlistener);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            try {
-                aidlInterface.create();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mbound = false;
-            Log.d("DriveConnection", "DisConnected");
-            aidlInterface = null;
         }
     };
 

@@ -25,11 +25,10 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
@@ -44,9 +43,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amaze.filemanager.ProgressListener;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.RegisterCallback;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.ExtractService;
@@ -69,7 +66,6 @@ import java.util.ArrayList;
 public class ProcessViewer extends Fragment {
 
     LinearLayout rootView;
-    boolean mBound = false;
 
     // Ids to differentiate between already processed data package and new data package
     ArrayList<Integer> CopyIds = new ArrayList<Integer>();
@@ -81,6 +77,7 @@ public class ProcessViewer extends Fragment {
     SharedPreferences Sp;
     IconUtils icons;
     MainActivity mainActivity;
+    int accentColor, primaryColor;
 
     private LineChart mLineChart;
     private LineData mLineData = new LineData();
@@ -92,10 +89,13 @@ public class ProcessViewer extends Fragment {
         setRetainInstance(false);
 
         mainActivity = (MainActivity) getActivity();
+
+        accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        primaryColor = mainActivity.getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab));
         if (mainActivity.getAppTheme().equals(AppTheme.DARK))
             root.setBackgroundResource((R.color.cardView_background));
+        mainActivity.updateViews(new ColorDrawable(primaryColor));
         rootView = (LinearLayout) root.findViewById(R.id.secondbut);
-        //((MainActivity)getActivity()).getSupportActionBar().setTitle(utils.getString(getActivity(),R.string.processes));
         mainActivity.setActionBarTitle(getResources().getString(R.string.processes));
         mainActivity.floatingActionButton.hideMenuButton(true);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -110,60 +110,45 @@ public class ProcessViewer extends Fragment {
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            RegisterCallback binder = (RegisterCallback.Stub.asInterface(service));
-            mBound = true;
-            try {
-                for(DataPackage dataPackage:binder.getCurrent()){
-                    processResults(dataPackage);
-                }
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            try {
-                binder.registerCallBack(new ProgressListener.Stub() {
-                    @Override
-                    public void onUpdate(final DataPackage dataPackage) {
-                        mainActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                processResults(dataPackage);
-                            }
-                        });
-                    }
 
+            CopyService.LocalBinder localBinder = (CopyService.LocalBinder) service;
+            CopyService copyService = localBinder.getService();
+
+            for (final DataPackage dataPackage : copyService.getDataPackageList()) {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
-                    public void refresh() {
-                        mainActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                //clear();
-                            }
-                        });
+                    public void run() {
+
+                        processResults(dataPackage);
                     }
                 });
-            } catch (RemoteException e) {
-                e.printStackTrace();
             }
-            /*
-            for (int i : mService.hash1.keySet()) {
-                processResults(mService.hash1.get(i));
-            }
-            mService.setProgressListener(new CopyService.ProgressListener() {
+
+            copyService.setProgressListener(new CopyService.ProgressListener() {
                 @Override
-                public void onUpdate(DataPackage dataPackage) {
-                    processResults(dataPackage);
+                public void onUpdate(final DataPackage dataPackage) {
+                    if (getActivity()==null) {
+                        // callback called when we're not inside the app
+                        return;
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            processResults(dataPackage);
+                        }
+                    });
                 }
 
                 @Override
                 public void refresh() {
-                    clear();
+
                 }
-            });*/
+            });
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
         }
     };
 
@@ -175,7 +160,6 @@ public class ProcessViewer extends Fragment {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             ExtractService.LocalBinder binder = (ExtractService.LocalBinder) service;
             ExtractService mService = binder.getService();
-            mBound = true;
             for (int i : mService.hash1.keySet()) {
                 processExtractResults(mService.hash1.get(i));
             }
@@ -187,14 +171,13 @@ public class ProcessViewer extends Fragment {
 
                 @Override
                 public void refresh() {
-                    clear();
+                    //clear();
                 }
             });
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
         }
     };
 
@@ -206,7 +189,6 @@ public class ProcessViewer extends Fragment {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             ZipTask.LocalBinder binder = (ZipTask.LocalBinder) service;
             ZipTask mService = binder.getService();
-            mBound = true;
             for (int i : mService.hash1.keySet()) {
                 processCompressResults(mService.hash1.get(i));
             }
@@ -218,22 +200,20 @@ public class ProcessViewer extends Fragment {
 
                 @Override
                 public void refresh() {
-                    clear();
+                    //clear();
                 }
             });
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
         }
     };
-    boolean running = false;
 
     @Override
     public void onResume() {
         super.onResume();
-        running = true;
+
         Intent intent = new Intent(getActivity(), CopyService.class);
         getActivity().bindService(intent, mConnection, 0);
         Intent intent1 = new Intent(getActivity(), ExtractService.class);
@@ -241,6 +221,7 @@ public class ProcessViewer extends Fragment {
         Intent intent2 = new Intent(getActivity(), ZipTask.class);
         getActivity().bindService(intent2, mCompressConnection, 0);
     }
+
     void clear(){
         rootView.removeAllViewsInLayout();
         CopyIds.clear();
@@ -250,19 +231,22 @@ public class ProcessViewer extends Fragment {
         ZipIds.clear();
         CancelledZipIds.clear();
     }
+
     @Override
     public void onPause() {
         super.onPause();
-        running = false;
         getActivity().unbindService(mConnection);
         getActivity().unbindService(mExtractConnection);
         getActivity().unbindService(mCompressConnection);
-        clear();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //clear();
     }
 
     public void processResults(final DataPackage dataPackage) {
-        if (!running) return;
-        if (getResources() == null) return;
         if (dataPackage != null) {
             int id = dataPackage.getId();
             final Integer id1 = new Integer(id);
@@ -331,7 +315,6 @@ public class ProcessViewer extends Fragment {
 
                     mLineChart = (LineChart) root.findViewById(R.id.progress_chart);
                     chartInit(totalBytes);
-                    //addEntry(doneBytes, Futils.readableFileSizeFloat(dataPackage.getSpeedRaw()));
 
                     ImageButton cancel = (ImageButton) root.findViewById(R.id.delete_button);
                     TextView progressText = (TextView) root.findViewById(R.id.progressText);
@@ -385,8 +368,6 @@ public class ProcessViewer extends Fragment {
     }
 
     public void processExtractResults(DataPackage dataPackage) {
-        if (!running) return;
-        if (getResources() == null) return;
         final int id = dataPackage.getId();
 
         if (!CancelledExtractIds.contains(id)) {
@@ -542,6 +523,11 @@ public class ProcessViewer extends Fragment {
         }
     }
 
+    /**
+     * Add a new entry dynamically to the chart, initializes a {@link LineDataSet} if not done so
+     * @param xValue the x-axis value, the number of bytes processed till now
+     * @param yValue the y-axis value, bytes processed per sec
+     */
     private void addEntry(float xValue, float yValue) {
 
         ILineDataSet dataSet = mLineData.getDataSetByIndex(0);
@@ -557,12 +543,13 @@ public class ProcessViewer extends Fragment {
 
         // let the chart know it's data has changed
         mLineChart.notifyDataSetChanged();
-
-        // this automatically refreshes the chart (calls invalidate())
-        //mLineChart.moveViewTo(mLineData.getEntryCount() - 7, 50f, YAxis.AxisDependency.LEFT);
         mLineChart.invalidate();
     }
 
+    /**
+     * Creates an instance for {@link LineDataSet} which will store the entries
+     * @return
+     */
     private LineDataSet createDataSet() {
         LineDataSet lineDataset = new LineDataSet(new ArrayList<Entry>(), null);
 
@@ -573,14 +560,17 @@ public class ProcessViewer extends Fragment {
         lineDataset.setCircleColor(Color.WHITE);
         lineDataset.setHighLightColor(Color.WHITE);
         lineDataset.setDrawValues(false);
-        lineDataset.setCircleColorHole(mainActivity.getColorPreference().getColor(ColorUsage.ACCENT));
+        lineDataset.setCircleColorHole(accentColor);
 
         return lineDataset;
     }
 
+    /**
+     * Initialize chart for the first time
+     * @param totalBytes maximum value for x-axis
+     */
     private void chartInit(long totalBytes) {
 
-        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
         mLineChart.setBackgroundColor(accentColor);
         mLineChart.getLegend().setEnabled(false);
 

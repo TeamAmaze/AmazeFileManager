@@ -127,7 +127,6 @@
 			<service
 			android:name = ".services.CopyService"
 			android:label = "Copying"
-                android:process=":amaze"
             >
 		</service>
 
