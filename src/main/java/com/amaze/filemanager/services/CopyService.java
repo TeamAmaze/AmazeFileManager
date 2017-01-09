@@ -109,7 +109,7 @@ public class CopyService extends Service {
         mBuilder.setContentTitle(getResources().getString(R.string.copying))
                 .setSmallIcon(R.drawable.ic_content_copy_white_36dp);
         if(foreground){
-            startForeground(Integer.parseInt("456"+startId),mBuilder.build());
+            startForeground(Integer.parseInt("456"+startId), mBuilder.build());
             foreground=false;
         }
         b.putBoolean(TAG_COPY_MOVE, intent.getBooleanExtra(TAG_COPY_MOVE, false));
@@ -207,7 +207,7 @@ public class CopyService extends Service {
              */
             public int checkFolder(final String f,Context context) {
                 if(f==null)return 0;
-                if(f.startsWith("smb://") || f.startsWith("otg:"))return 1;
+                if(f.startsWith("smb://") || f.startsWith("otg:")) return 1;
                 File folder=new File(f);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
                     if (!folder.exists() || !folder.isDirectory()) {
