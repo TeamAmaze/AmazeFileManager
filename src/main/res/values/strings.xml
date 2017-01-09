@@ -524,5 +524,10 @@
     <string name="copied">copied</string>
     <string name="moved">moved</string>
     <string name="process_chart_description">Progress</string>
+    <string name="copy_complete">Copy Complete</string>
+    <string name="move_complete">Move Complete</string>
+    <string name="waiting_title">Waiting</string>
+    <string name="waiting_content">Waiting for operation to complete</string>
+
 </resources>
 

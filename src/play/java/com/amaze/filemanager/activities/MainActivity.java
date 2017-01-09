@@ -127,6 +127,7 @@ import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
@@ -1067,7 +1068,8 @@ public class MainActivity extends BaseActivity implements
                         intent.putParcelableArrayListExtra("FILE_PATHS",arrayList);
                         intent.putExtra("COPY_DIRECTORY", path);
                         intent.putExtra("MODE",ma.openMode);
-                        mainActivity.startService(intent);
+
+                        ServiceWatcherUtil.runService(mainActivity, intent);
                     } else if (MOVE_PATH!=null){
 
                         arrayList = MOVE_PATH;

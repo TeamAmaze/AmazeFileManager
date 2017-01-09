@@ -32,13 +32,10 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,19 +62,17 @@ import java.util.ArrayList;
 
 public class ProcessViewer extends Fragment {
 
-    LinearLayout rootView;
+    private View rootView;
+    private CardView mCardView;
 
-    // Ids to differentiate between already processed data package and new data package
-    ArrayList<Integer> CopyIds = new ArrayList<Integer>();
-    ArrayList<Integer> CancelledCopyIds = new ArrayList<Integer>();
-    ArrayList<Integer> ExtractIds = new ArrayList<Integer>();
-    ArrayList<Integer> CancelledExtractIds = new ArrayList<Integer>();
-    ArrayList<Integer> ZipIds = new ArrayList<Integer>();
-    ArrayList<Integer> CancelledZipIds = new ArrayList<Integer>();
+    boolean isInitialized = false;
     SharedPreferences Sp;
     IconUtils icons;
     MainActivity mainActivity;
     int accentColor, primaryColor;
+    ImageButton mCancelButton;
+    TextView mProgressTextView;
+    private ProgressBar mProgressBar;
 
     private LineChart mLineChart;
     private LineData mLineData = new LineData();
@@ -85,7 +80,7 @@ public class ProcessViewer extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = (ViewGroup) inflater.inflate(R.layout.processparent, container, false);
+        rootView = inflater.inflate(R.layout.processparent, container, false);
         setRetainInstance(false);
 
         mainActivity = (MainActivity) getActivity();
@@ -93,15 +88,48 @@ public class ProcessViewer extends Fragment {
         accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
         primaryColor = mainActivity.getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab));
         if (mainActivity.getAppTheme().equals(AppTheme.DARK))
-            root.setBackgroundResource((R.color.cardView_background));
+            rootView.setBackgroundResource((R.color.cardView_background));
         mainActivity.updateViews(new ColorDrawable(primaryColor));
-        rootView = (LinearLayout) root.findViewById(R.id.secondbut);
         mainActivity.setActionBarTitle(getResources().getString(R.string.processes));
         mainActivity.floatingActionButton.hideMenuButton(true);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         icons = new IconUtils(Sp, getActivity());
         mainActivity.supportInvalidateOptionsMenu();
-        return root;
+
+        mCardView = (CardView) rootView.findViewById(R.id.card_view);
+
+        mLineChart = (LineChart) rootView.findViewById(R.id.progress_chart);
+
+        mCancelButton = (ImageButton) rootView.findViewById(R.id.delete_button);
+        mProgressTextView = (TextView) rootView.findViewById(R.id.progressText);
+        mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar1);
+
+        Drawable icon = icons.getCopyDrawable();
+
+        if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+
+            mCancelButton.setImageResource(R.drawable.ic_action_cancel);
+            mCardView.setCardBackgroundColor(getResources().getColor(R.color.cardView_foreground));
+            mCardView.setCardElevation(0f);
+            mProgressTextView.setTextColor(Color.WHITE);
+        } else {
+
+            icon.setColorFilter(Color.parseColor("#666666"), PorterDuff.Mode.SRC_ATOP);
+            mProgressTextView.setTextColor(Color.BLACK);
+        }
+
+        mCancelButton.setImageDrawable(icon);
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View p1) {
+                Toast.makeText(getActivity(), getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
+                Intent i = new Intent(CopyService.TAG_COPY_CANCEL_BROADCAST);
+                getActivity().sendBroadcast(i);
+                mProgressTextView.setText(getString(R.string.cancel));
+            }
+        });
+
+        return rootView;
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -161,12 +189,12 @@ public class ProcessViewer extends Fragment {
             ExtractService.LocalBinder binder = (ExtractService.LocalBinder) service;
             ExtractService mService = binder.getService();
             for (int i : mService.hash1.keySet()) {
-                processExtractResults(mService.hash1.get(i));
+                //processExtractResults(mService.hash1.get(i));
             }
             mService.setProgressListener(new ExtractService.ProgressListener() {
                 @Override
                 public void onUpdate(DataPackage dataPackage) {
-                    processExtractResults(dataPackage);
+                    //processExtractResults(dataPackage);
                 }
 
                 @Override
@@ -190,12 +218,12 @@ public class ProcessViewer extends Fragment {
             ZipTask.LocalBinder binder = (ZipTask.LocalBinder) service;
             ZipTask mService = binder.getService();
             for (int i : mService.hash1.keySet()) {
-                processCompressResults(mService.hash1.get(i));
+                //processCompressResults(mService.hash1.get(i));
             }
             mService.setProgressListener(new ZipTask.ProgressListener() {
                 @Override
                 public void onUpdate(DataPackage dataPackage) {
-                    processCompressResults(dataPackage);
+                    //processCompressResults(dataPackage);
                 }
 
                 @Override
@@ -222,16 +250,6 @@ public class ProcessViewer extends Fragment {
         getActivity().bindService(intent2, mCompressConnection, 0);
     }
 
-    void clear(){
-        rootView.removeAllViewsInLayout();
-        CopyIds.clear();
-        CancelledCopyIds.clear();
-        ExtractIds.clear();
-        CancelledExtractIds.clear();
-        ZipIds.clear();
-        CancelledZipIds.clear();
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -243,131 +261,53 @@ public class ProcessViewer extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //clear();
     }
 
     public void processResults(final DataPackage dataPackage) {
         if (dataPackage != null) {
-            int id = dataPackage.getId();
-            final Integer id1 = new Integer(id);
 
-            if (!CancelledCopyIds.contains(id1)) {
-                // new data package utilizing
+            boolean completed = dataPackage.isCompleted();
 
-                if (CopyIds.contains(id1)) {
-                    // views have been initialized, just update the progress from new data package
-                    boolean completed = dataPackage.isCompleted();
-                    View processView = rootView.findViewWithTag("copy" + id);
+            String name = dataPackage.getName();
+            long total = dataPackage.getTotal();
+            long doneBytes = dataPackage.getByteProgress();
 
-                    /*if (completed) {
-                        try {
+            float progressPercent = ((float)doneBytes/total)*100;
+            boolean move = dataPackage.isMove();
 
-                            // operation completed, remove views
-                            //rootView.removeViewInLayout(processView);
-                            //CopyIds.remove(CopyIds.indexOf(id1));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } else {
+            if (isInitialized) {
+                // views have already been initialized, process the data and set new values
 
+                addEntry(Futils.readableFileSizeFloat(doneBytes),
+                        Futils.readableFileSizeFloat(dataPackage.getSpeedRaw()));
 
-                    }*/
-                    // update views from data package
+                String text = (move ? getResources().getString(R.string.moving)
+                        : getResources().getString(R.string.copying)) + "\n"
+                        + name + "\n"
+                        + Futils.readableFileSize(doneBytes)
+                        + "/" + Futils.readableFileSize(total) + "\n"
+                        + progressPercent + "%" + "\n"
+                        + dataPackage.getSourceProgress() + "/"
+                        + dataPackage.getSourceFiles() + "\n"
+                        + Futils.readableFileSize(dataPackage.getSpeedRaw());
+                mProgressTextView.setText(text);
+                mProgressBar.setProgress(Math.round(progressPercent));
+            } else {
+                // initializing views for the first time
+                chartInit(total);
 
-                    String name = dataPackage.getName();
-                    long total = dataPackage.getTotal();
-                    long doneBytes = dataPackage.getByteProgress();
-
-                    double progressPercent = (doneBytes/total)*100;
-
-                    addEntry(Futils.readableFileSizeFloat(doneBytes),
-                            Futils.readableFileSizeFloat(dataPackage.getSpeedRaw()));
-
-                    boolean move = dataPackage.isMove();
-                    String text = (move ? getResources().getString(R.string.moving)
-                            : getResources().getString(R.string.copying)) + "\n"
-                            + name + "\n"
-                            + Futils.readableFileSize(doneBytes)
-                            + "/" + Futils.readableFileSize(total) + "\n"
-                            + progressPercent + "%" + "\n"
-                            + dataPackage.getSourceProgress() + "/"
-                            + dataPackage.getSourceFiles() + "\n"
-                            + Futils.readableFileSize(dataPackage.getSpeedRaw());
-                    ((TextView) processView.findViewById(R.id.progressText)).setText(text);
-                    ProgressBar p = (ProgressBar) processView.findViewById(R.id.progressBar1);
-                    p.setProgress((int) Math.round(progressPercent));
-                } else {
-
-                    // initialize views for first time
-                    CardView root = (android.support.v7.widget.CardView) getActivity()
-                            .getLayoutInflater().inflate(R.layout.processrow, null);
-                    rootView.addView(root);
-
-                    ViewGroup.LayoutParams params = root.getLayoutParams();
-                    params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                    params.height = dpToPx(300);
-                    root.setLayoutParams(params);
-                    root.setTag("copy" + id);
-
-                    long doneBytes = dataPackage.getByteProgress();
-                    long totalBytes = dataPackage.getTotal();
-                    double progressPercent = (doneBytes/totalBytes)*100;
-
-                    mLineChart = (LineChart) root.findViewById(R.id.progress_chart);
-                    chartInit(totalBytes);
-
-                    ImageButton cancel = (ImageButton) root.findViewById(R.id.delete_button);
-                    TextView progressText = (TextView) root.findViewById(R.id.progressText);
-
-                    Drawable icon = icons.getCopyDrawable();
-                    boolean move = dataPackage.isMove();
-                    if (move) {
-                        icon = icons.getCutDrawable();
-                    }
-                    if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
-
-                        cancel.setImageResource(R.drawable.ic_action_cancel);
-                        root.setCardBackgroundColor(R.color.cardView_foreground);
-                        root.setCardElevation(0f);
-                        progressText.setTextColor(Color.WHITE);
-                    } else {
-
-                        icon.setColorFilter(Color.parseColor("#666666"), PorterDuff.Mode.SRC_ATOP);
-                        progressText.setTextColor(Color.BLACK);
-                    }
-
-                    ((ImageView) root.findViewById(R.id.progressImage)).setImageDrawable(icon);
-                    cancel.setOnClickListener(new View.OnClickListener() {
-
-                        public void onClick(View p1) {
-                            Toast.makeText(getActivity(), getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
-                            Intent i = new Intent("copycancel");
-                            i.putExtra("id", id1);
-                            getActivity().sendBroadcast(i);
-                            rootView.removeView(rootView.findViewWithTag("copy" + id1));
-
-                            CopyIds.remove(CopyIds.indexOf(id1));
-                            CancelledCopyIds.add(id1);
-                            // TODO: Implement this method
-                        }
-                    });
-
-                    String name = dataPackage.getName();
-
-                    String text = getResources().getString(R.string.copying) + "\n" + name;
-                    if (move) {
-                        text = getResources().getString(R.string.moving) + "\n" + name;
-                    }
-                    progressText.setText(text);
-                    ProgressBar p = (ProgressBar) root.findViewById(R.id.progressBar1);
-                    p.setProgress((int) Math.round(progressPercent));
-                    CopyIds.add(id1);
+                String text = getResources().getString(R.string.copying) + "\n" + name;
+                if (move) {
+                    text = getResources().getString(R.string.moving) + "\n" + name;
                 }
+                mProgressTextView.setText(text);
+                mProgressBar.setProgress(Math.round(progressPercent));
+                isInitialized = true;
             }
         }
     }
 
-    public void processExtractResults(DataPackage dataPackage) {
+    /*public void processExtractResults(DataPackage dataPackage) {
         final int id = dataPackage.getId();
 
         if (!CancelledExtractIds.contains(id)) {
@@ -521,7 +461,7 @@ public class ProcessViewer extends Fragment {
                 rootView.addView(root);
             }
         }
-    }
+    }*/
 
     /**
      * Add a new entry dynamically to the chart, initializes a {@link LineDataSet} if not done so
@@ -595,11 +535,5 @@ public class ProcessViewer extends Fragment {
         xAxis.setTextColor(Color.WHITE);
         mLineChart.setData(mLineData);
         mLineChart.invalidate();
-    }
-
-    public int dpToPx(double dp) {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int px = Math.round(Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)));
-        return px;
     }
 }

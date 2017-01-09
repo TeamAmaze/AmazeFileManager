@@ -29,6 +29,9 @@ public class ProgressHandler {
     // current copy speed (bytes copied in 1000ms time)
     int speedRaw = 0;
 
+    // boolean manages the lifecycle of service and whether it should be canceled
+    private boolean isCancelled = false;
+
     // callback interface to interact with process viewer fragment and notification
     ProgressListener progressListener;
 
@@ -65,6 +68,14 @@ public class ProgressHandler {
 
     public synchronized void setSourceFilesCopied(int sourceFilesCopied) {
         this.sourceFilesCopied = sourceFilesCopied;
+    }
+
+    public synchronized void setCancelled(boolean isCancelled) {
+        this.isCancelled = isCancelled;
+    }
+
+    public synchronized boolean getCancelled() {
+        return this.isCancelled;
     }
 
     public void setProgressListener(ProgressListener progressListener) {

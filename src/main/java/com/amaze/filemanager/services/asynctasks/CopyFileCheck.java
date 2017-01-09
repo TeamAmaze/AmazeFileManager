@@ -12,18 +12,17 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.CopyService;
-import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.theme.AppTheme;
+import com.amaze.filemanager.utils.ServiceWatcherUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -113,7 +112,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
                         intent.putParcelableArrayListExtra("FILE_PATHS",ab);
                         intent.putExtra("COPY_DIRECTORY", path);
                         intent.putExtra("MODE",openMode);
-                        mainActivity.startService(intent);
+                        ServiceWatcherUtil.runService(mainActivity, intent);
                     } else {
 
                         new MoveFiles(ab, ma, ma.getActivity(),openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);

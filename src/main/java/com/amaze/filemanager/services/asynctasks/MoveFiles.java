@@ -29,6 +29,7 @@ import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.ServiceWatcherUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -66,11 +67,11 @@ public class MoveFiles extends AsyncTask<String,Void,Boolean> {
     public void onPostExecute(Boolean b){
         if(b ){
             if(ma!=null)if(ma.CURRENT_PATH.equals(path))ma.updateList();
-                for(BaseFile f:files) {
-                    Futils.scanFile(f.getPath(), context);
-                    Futils.scanFile(path + "/" + f.getName(), context);
+            for(BaseFile f:files) {
+                Futils.scanFile(f.getPath(), context);
+                Futils.scanFile(path + "/" + f.getName(), context);
 
-                }
+            }
         }
         else if(!b){
             Intent intent = new Intent(context, CopyService.class);
@@ -78,6 +79,8 @@ public class MoveFiles extends AsyncTask<String,Void,Boolean> {
             intent.putExtra("COPY_DIRECTORY", path);
             intent.putExtra("move",true);
             intent.putExtra("MODE",mode);
-            context.startService(intent);}
+
+            ServiceWatcherUtil.runService(context, intent);
+        }
     }
 }

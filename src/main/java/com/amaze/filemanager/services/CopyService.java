@@ -26,17 +26,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
@@ -44,29 +43,28 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.utils.CopyWatcherUtil;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.GenericCopyThread;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.ServiceWatcherUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class CopyService extends Service {
-    HashMap<Integer, Boolean> hash = new HashMap<Integer, Boolean>();
-    public volatile ArrayList<DataPackage> dataPackages = new ArrayList<>();
-    boolean rootmode;
+
+    public ArrayList<DataPackage> dataPackages = new ArrayList<>();
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
     Context c;
 
     ProgressListener progressListener;
     private final IBinder mBinder = new LocalBinder();
+    private ProgressHandler progressHandler;
 
     boolean foreground=true;
 
@@ -80,23 +78,26 @@ public class CopyService extends Service {
     private static final String TAG_COPY_MOVE = "move";
     private static final String TAG_COPY_START_ID = "id";
 
+    public static final String TAG_COPY_CANCEL_BROADCAST = "copycancel";
+
     @Override
     public void onCreate() {
         c = getApplicationContext();
-        SharedPreferences Sp=PreferenceManager.getDefaultSharedPreferences(this);
-        rootmode=Sp.getBoolean("rootmode",false);
-        registerReceiver(receiver3, new IntentFilter("copycancel"));
+
+        registerReceiver(receiver3, new IntentFilter(TAG_COPY_CANCEL_BROADCAST));
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
         Bundle b = new Bundle();
         ArrayList<BaseFile> files = intent.getParcelableArrayListExtra(TAG_COPY_SOURCES);
         String targetPath = intent.getStringExtra(TAG_COPY_TARGET);
         int mode=intent.getIntExtra(TAG_COPY_OPEN_MODE, 0);
         totalSize = getTotalBytes(files);
-        mNotifyManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        totalSourceFiles = files.size();
+        progressHandler = new ProgressHandler(totalSourceFiles, totalSize);
+        mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         b.putInt(TAG_COPY_START_ID, startId);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
@@ -115,7 +116,7 @@ public class CopyService extends Service {
         b.putString(TAG_COPY_TARGET, targetPath);
         b.putInt(TAG_COPY_OPEN_MODE, mode);
         b.putParcelableArrayList(TAG_COPY_SOURCES, files);
-        hash.put(startId, true);
+        //hash.put(startId, true);
 
         DataPackage intent1 = new DataPackage();
         intent1.setName(files.get(0).getName());
@@ -130,7 +131,7 @@ public class CopyService extends Service {
 
         intent1.setMove(intent.getBooleanExtra(TAG_COPY_MOVE, false));
         intent1.setCompleted(false);
-        dataPackages.add(intent1);
+        putDataPackage(intent1);
 
         //going async
         new DoInBackground().execute(b);
@@ -138,8 +139,6 @@ public class CopyService extends Service {
         // If we get killed, after returning from here, restart
         return START_STICKY;
     }
-
-
 
     long getTotalBytes(final ArrayList<BaseFile> files) {
         long totalBytes = 0l;
@@ -178,34 +177,24 @@ public class CopyService extends Service {
             copy=new Copy();
             copy.execute(id, sourceFiles, targetPath, move,
                     OpenMode.getOpenMode(p1[0].getInt(TAG_COPY_OPEN_MODE)));
-
-            // TODO: Implement this method
             return id;
         }
 
         @Override
         public void onPostExecute(Integer b) {
-            publishResults(b, "", totalSourceFiles, totalSourceFiles, totalSize, totalSize, 0, true, move);
-            generateNotification(copy.failedFOps,move);
+
+            //  publishResults(b, "", totalSourceFiles, totalSourceFiles, totalSize, totalSize, 0, true, move);
+            generateNotification(copy.failedFOps, move);
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
-            hash.put(b,false);
-            boolean stop=true;
-            for(int a:hash.keySet()){
-                if(hash.get(a))stop=false;
-            }
-            if(!stop) stopSelf(b);
-            else stopSelf();
-
+            stopSelf();
         }
 
         class Copy {
 
             ArrayList<HFile> failedFOps;
             ArrayList<BaseFile> toDelete;
-            boolean copy_successful;
             public Copy() {
-                copy_successful=true;
                 failedFOps=new ArrayList<>();
                 toDelete=new ArrayList<>();
             }
@@ -244,12 +233,9 @@ public class CopyService extends Service {
             public void execute(final int id, final ArrayList<BaseFile> sourceFiles, final String targetPath,
                                 final boolean move,OpenMode mode) {
                 if (checkFolder((targetPath), c) == 1) {
-                    getTotalBytes(sourceFiles);
 
-                    totalSourceFiles = sourceFiles.size();
-                    final ProgressHandler progressHandler=new ProgressHandler(totalSourceFiles, totalSize);
                     GenericCopyThread copyThread = new GenericCopyThread(c);
-                    CopyWatcherUtil watcherUtil = new CopyWatcherUtil(progressHandler, totalSize);
+                    ServiceWatcherUtil watcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
 
                     progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
 
@@ -269,9 +255,10 @@ public class CopyService extends Service {
                         try {
 
                             HFile hFile=new HFile(mode,targetPath, sourceFiles.get(i).getName(),f1.isDirectory());
-                            if (hash.get(id)){
+                            if (!progressHandler.getCancelled()){
 
-                                if(!f1.isSmb() && !new File(sourceFiles.get(i).getPath()).canRead() && rootmode){
+                                if(!f1.isSmb() && !new File(sourceFiles.get(i).getPath()).canRead()
+                                        && BaseActivity.rootMode){
                                     copyRoot(f1, hFile, move);
                                     continue;
                                 }
@@ -300,7 +287,7 @@ public class CopyService extends Service {
                         e.printStackTrace();
                     }
 
-                } else if (rootmode) {
+                } else if (BaseActivity.rootMode) {
                     for (int i = 0; i < sourceFiles.size(); i++) {
                         HFile hFile=new HFile(mode,targetPath, sourceFiles.get(i).getName(),sourceFiles.get(i).isDirectory());
                         copyRoot(sourceFiles.get(i), hFile, move);
@@ -316,7 +303,8 @@ public class CopyService extends Service {
                 }
 
                 // making sure to delete files after copy operation is done
-                if (move) {
+                // and not if the copy was cancelled
+                if (move && !progressHandler.getCancelled()) {
                     ArrayList<BaseFile> toDelete=new ArrayList<>();
                     for(BaseFile a:sourceFiles){
                         if(!failedFOps.contains(a))
@@ -325,6 +313,7 @@ public class CopyService extends Service {
                     new DeleteTask(getContentResolver(), c).execute((toDelete));
                 }
             }
+
             void copyRoot(BaseFile sourceFile, HFile targetFile, boolean move){
 
                 try {
@@ -342,11 +331,11 @@ public class CopyService extends Service {
             private void copyFiles(final BaseFile sourceFile, final HFile targetFile,
                                    GenericCopyThread copyThread,
                                    ProgressHandler progressHandler,
-                                   CopyWatcherUtil watcherUtil,
+                                   ServiceWatcherUtil watcherUtil,
                                    final int id) throws IOException {
                 Log.e("Copy",sourceFile.getPath());
                 if (sourceFile.isDirectory()) {
-                    if(!hash.get(id))return;
+                    if(progressHandler.getCancelled())return;
 
                     if (!targetFile.exists()) targetFile.mkdir(c);
 
@@ -356,23 +345,21 @@ public class CopyService extends Service {
                     if(!Operations.isFileNameValid(sourceFile.getName())
                             || Operations.isCopyLoopPossible(sourceFile, targetFile)){
                         failedFOps.add(sourceFile);
-                        copy_successful=false;
                         return;
                     }
                     targetFile.setLastModified(sourceFile.lastModified());
-                    if(!hash.get(id))return;
+                    if(progressHandler.getCancelled())return;
                     ArrayList<BaseFile> filePaths = sourceFile.listFiles(false);
                     for (BaseFile file : filePaths) {
                         HFile destFile = new HFile(targetFile.getMode(),targetFile.getPath(),
                                 file.getName(),file.isDirectory());
                         copyFiles(file, destFile, copyThread, progressHandler, watcherUtil, id);
                     }
-                    if(!hash.get(id))return;
+                    if(progressHandler.getCancelled())return;
                 } else {
-                    if (!hash.get(id)) return;
+                    if (progressHandler.getCancelled()) return;
                     if(!Operations.isFileNameValid(sourceFile.getName())){
                         failedFOps.add(sourceFile);
-                        copy_successful=false;
                         return;
                     }
 
@@ -393,7 +380,6 @@ public class CopyService extends Service {
                     } catch (InterruptedException e) {
                         // thread interrupted due to some problem. we must return
                         failedFOps.add(sourceFile);
-                        copy_successful = false;
                     }
                 }
             }
@@ -443,10 +429,11 @@ public class CopyService extends Service {
     private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
                                 long totalSize, long writtenSize, int speed, boolean isComplete,
                                 boolean move) {
-        if (hash.get(id)) {
+        if (!progressHandler.getCancelled()) {
+
             //notification
-            float progressPercent = (writtenSize/totalSize)*100;
-            mBuilder.setProgress(100, (int) progressPercent, false);
+            float progressPercent = ((float) writtenSize/totalSize)*100;
+            mBuilder.setProgress(100, Math.round(progressPercent), false);
             mBuilder.setOngoing(true);
             int title = R.string.copying;
             if (move) title = R.string.moving;
@@ -456,15 +443,15 @@ public class CopyService extends Service {
             int id1 = Integer.parseInt("456" + id);
             mNotifyManager.notify(id1, mBuilder.build());
             if (writtenSize == totalSize || totalSize == 0) {
-                mBuilder.setContentTitle("Copy completed");
+                mBuilder.setContentTitle(getString(R.string.copy_complete));
                 if (move)
-                    mBuilder.setContentTitle("Move Completed");
+                    mBuilder.setContentTitle(getString(R.string.move_complete));
                 mBuilder.setContentText("");
                 mBuilder.setProgress(0, 0, false);
                 mBuilder.setOngoing(false);
                 mBuilder.setAutoCancel(true);
                 mNotifyManager.notify(id1, mBuilder.build());
-                publishCompletedResult(id, id1);
+                publishCompletedResult(id1);
             }
 
             //for processviewer
@@ -481,12 +468,12 @@ public class CopyService extends Service {
             putDataPackage(intent);
             if(progressListener!=null){
                 progressListener.onUpdate(intent);
-                if(isComplete)progressListener.refresh();
+                if(isComplete) progressListener.refresh();
             }
-        } else publishCompletedResult(id, Integer.parseInt("456" + id));
+        } else publishCompletedResult(Integer.parseInt("456" + id));
     }
 
-    public void publishCompletedResult(int id,int id1){
+    public void publishCompletedResult(int id1){
         try {
             mNotifyManager.cancel(id1);
         } catch (Exception e) {
@@ -498,7 +485,7 @@ public class CopyService extends Service {
     // avoid using the method as there is no way to know when we would be returning from command callbacks
     // rather confirm from the command result itself, inside it's callback
     boolean checkFiles(HFile hFile1,HFile hFile2) throws RootNotPermittedException {
-        if(RootHelper.isDirectory(hFile1.getPath(),rootmode,5))
+        if(RootHelper.isDirectory(hFile1.getPath(), BaseActivity.rootMode, 5))
         {
             if(RootHelper.fileExists(hFile2.getPath()))return false;
             ArrayList<BaseFile> baseFiles=RootHelper.getFilesList(hFile1.getPath(),true,true,null);
@@ -545,7 +532,8 @@ public class CopyService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             //cancel operation
-            hash.put(intent.getIntExtra("id", 1), false);
+            //hash.put(intent.getIntExtra("id", 1), false);
+            progressHandler.setCancelled(true);
         }
     };
 
@@ -575,7 +563,7 @@ public class CopyService extends Service {
      * Returns the {@link #dataPackages} list which contains
      * data to be transferred to {@link com.amaze.filemanager.fragments.ProcessViewer}
      * Method call is synchronized so as to avoid modifying the list
-     * by {@link CopyWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
+     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
      * is executing the callbacks in {@link com.amaze.filemanager.fragments.ProcessViewer}
      * @return
      */
@@ -586,7 +574,7 @@ public class CopyService extends Service {
     /**
      * Puts a {@link DataPackage} into a list
      * Method call is synchronized so as to avoid modifying the list
-     * by {@link CopyWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
+     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
      * is executing the callbacks in {@link com.amaze.filemanager.fragments.ProcessViewer}
      * @param dataPackage
      */

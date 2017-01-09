@@ -142,7 +142,7 @@ public class GenericCopyThread implements Runnable {
                     byteBuffer.put(buffer[i]);
                 }
 
-                CopyWatcherUtil.POSITION+=count;
+                ServiceWatcherUtil.POSITION+=count;
             }
         } while (count!=-1);
     }
@@ -155,7 +155,7 @@ public class GenericCopyThread implements Runnable {
         while (inByteBuffer.hasRemaining()) {
 
             outByteBuffer.put(inByteBuffer.get());
-            CopyWatcherUtil.POSITION++;
+            ServiceWatcherUtil.POSITION++;
         }
     }
 
@@ -170,7 +170,7 @@ public class GenericCopyThread implements Runnable {
                     bufferedOutputStream.write(buffer[i]);
                 }
 
-                CopyWatcherUtil.POSITION+=count;
+                ServiceWatcherUtil.POSITION+=count;
             }
         } while (count!=-1);
         bufferedOutputStream.flush();
@@ -191,7 +191,7 @@ public class GenericCopyThread implements Runnable {
                 for (int i=0; i<length; i++) {
                     bufferedOutputStream.write(buffer[i]);
                 }
-                CopyWatcherUtil.POSITION+=length;
+                ServiceWatcherUtil.POSITION+=length;
             }
         } while (length==0);
         bufferedOutputStream.flush();
