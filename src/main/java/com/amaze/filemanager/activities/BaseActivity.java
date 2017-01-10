@@ -1,14 +1,10 @@
 package com.amaze.filemanager.activities;
 
 import android.Manifest;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
@@ -16,7 +12,6 @@ import android.view.View;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -34,8 +29,6 @@ public class BaseActivity extends BasicActivity {
     public static String accentSkin;
     public static boolean rootMode;
     boolean checkStorage = true;
-
-    public static boolean IS_BOUND = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -249,29 +242,10 @@ public class BaseActivity extends BasicActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        Intent intent = new Intent(this, CopyService.class);
-        bindService(intent, mConnection, 0);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unbindService(mConnection);
     }
-
-    private ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            IS_BOUND = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            IS_BOUND = false;
-        }
-    };
 }
