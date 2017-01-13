@@ -70,6 +70,11 @@ public class ProgressHandler {
         this.sourceFilesCopied = sourceFilesCopied;
     }
 
+    // dynamically setting total size, useful in case files are compressed
+    public synchronized void setTotalSize(long totalSize) {
+        this.totalSize = totalSize;
+    }
+
     public synchronized void setCancelled(boolean isCancelled) {
         this.isCancelled = isCancelled;
     }

@@ -59,6 +59,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 
 public class ProcessViewer extends Fragment {
 
@@ -123,7 +124,7 @@ public class ProcessViewer extends Fragment {
 
             public void onClick(View p1) {
                 Toast.makeText(getActivity(), getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
-                Intent i = new Intent(CopyService.TAG_COPY_CANCEL_BROADCAST);
+                Intent i = new Intent(CopyService.TAG_BROADCAST_COPY_CANCEL);
                 getActivity().sendBroadcast(i);
                 mProgressTextView.setText(getString(R.string.cancel));
             }
@@ -142,7 +143,16 @@ public class ProcessViewer extends Fragment {
             CopyService.LocalBinder localBinder = (CopyService.LocalBinder) service;
             CopyService copyService = localBinder.getService();
 
-            for (final DataPackage dataPackage : copyService.getDataPackageList()) {
+            ArrayList<DataPackage> dataPackages;
+            try {
+                dataPackages = copyService.getDataPackageList();
+            } catch (ConcurrentModificationException e) {
+                // array list was being modified while fetching (even after synchronization) :/
+                // return for now
+                return;
+            }
+
+            for (final DataPackage dataPackage : dataPackages) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -186,20 +196,47 @@ public class ProcessViewer extends Fragment {
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            ExtractService.LocalBinder binder = (ExtractService.LocalBinder) service;
-            ExtractService mService = binder.getService();
-            for (int i : mService.hash1.keySet()) {
-                //processExtractResults(mService.hash1.get(i));
+            ExtractService.LocalBinder localBinder = (ExtractService.LocalBinder) service;
+            ExtractService extractService = localBinder.getService();
+
+            ArrayList<DataPackage> dataPackages;
+            try {
+                dataPackages = extractService.getDataPackageList();
+            } catch (ConcurrentModificationException e) {
+                // array list was being modified while fetching (even after synchronization) :/
+                // return for now
+                return;
             }
-            mService.setProgressListener(new ExtractService.ProgressListener() {
+
+            for (final DataPackage dataPackage : dataPackages) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        processResults(dataPackage);
+                    }
+                });
+            }
+
+            extractService.setProgressListener(new ExtractService.ProgressListener() {
                 @Override
-                public void onUpdate(DataPackage dataPackage) {
-                    //processExtractResults(dataPackage);
+                public void onUpdate(final DataPackage dataPackage) {
+                    if (getActivity()==null) {
+                        // callback called when we're not inside the app
+                        return;
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            processResults(dataPackage);
+                        }
+                    });
                 }
 
                 @Override
                 public void refresh() {
-                    //clear();
+
                 }
             });
         }

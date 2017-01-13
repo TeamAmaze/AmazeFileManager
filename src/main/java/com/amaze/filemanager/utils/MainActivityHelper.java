@@ -485,8 +485,8 @@ public class MainActivityHelper {
             mainActivity.operation = DataUtils.EXTRACT;
         } else if (mode == 1) {
             Intent intent = new Intent(mainActivity, ExtractService.class);
-            intent.putExtra("zip", file.getPath());
-            mainActivity.startService(intent);
+            intent.putExtra(ExtractService.KEY_PATH_ZIP, file.getPath());
+            ServiceWatcherUtil.runService(mainActivity, intent);
         } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
 

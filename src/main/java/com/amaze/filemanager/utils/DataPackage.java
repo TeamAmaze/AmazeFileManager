@@ -12,8 +12,6 @@ import android.os.Parcelable;
  */
 public class DataPackage implements Parcelable {
 
-    int id;
-
     // which file is being copied from total number of files
     int sourceProgress;
 
@@ -37,7 +35,6 @@ public class DataPackage implements Parcelable {
     public DataPackage(){}
 
     protected DataPackage(Parcel in) {
-        id = in.readInt();
         sourceProgress = in.readInt();
         byteProgress = in.readLong();
         sourceFiles = in.readInt();
@@ -59,14 +56,6 @@ public class DataPackage implements Parcelable {
             return new DataPackage[size];
         }
     };
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -139,7 +128,6 @@ public class DataPackage implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeInt(sourceProgress);
         dest.writeLong(byteProgress);
         dest.writeInt(sourceFiles);

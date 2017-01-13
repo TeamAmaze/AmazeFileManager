@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
@@ -32,6 +33,8 @@ public class GenericCopyThread implements Runnable {
     private Context mContext;
 
     public Thread thread;
+
+    public static final int DEFAULT_BUFFER_SIZE =  8192;
 
     public GenericCopyThread(Context context) {
         this.mContext = context;
@@ -58,7 +61,7 @@ public class GenericCopyThread implements Runnable {
             } else if (mSourceFile.isSmb()) {
 
                 // source is in smb
-                bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(), 8192);
+                bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(), DEFAULT_BUFFER_SIZE);
             } else {
 
                 // source file is neither smb nor otg; getting a channel from direct file instead of stream
@@ -75,7 +78,7 @@ public class GenericCopyThread implements Runnable {
                 outChannel = ((FileOutputStream) contentResolver.openOutputStream(documentTargetFile.getUri())).getChannel();
             } else if (mTargetFile.isSmb()) {
 
-                bufferedOutputStream = new BufferedOutputStream(mTargetFile.getOutputStream(mContext), 8192);
+                bufferedOutputStream = new BufferedOutputStream(mTargetFile.getOutputStream(mContext), DEFAULT_BUFFER_SIZE);
             } else {
                 // copying normal file, target not in OTG
                 outChannel = new RandomAccessFile(new File(mTargetFile.getPath()), "rw").getChannel();
@@ -134,14 +137,12 @@ public class GenericCopyThread implements Runnable {
         MappedByteBuffer byteBuffer = outChannel.map(FileChannel.MapMode.READ_WRITE, 0,
                 mSourceFile.getSize());
         int count;
-        byte[] buffer = new byte[8192];
+        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         do {
             count = bufferedInputStream.read(buffer);
             if (count!=-1) {
-                for (int i=0; i<count; i++) {
-                    byteBuffer.put(buffer[i]);
-                }
 
+                byteBuffer.put(buffer, 0, count);
                 ServiceWatcherUtil.POSITION+=count;
             }
         } while (count!=-1);
@@ -157,19 +158,24 @@ public class GenericCopyThread implements Runnable {
             outByteBuffer.put(inByteBuffer.get());
             ServiceWatcherUtil.POSITION++;
         }
+        int count;
+        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+        while (inByteBuffer.hasRemaining()) {
+            ByteBuffer byteBuffer = inByteBuffer.get(buffer);
+            count = byteBuffer.capacity();
+            outByteBuffer.put(byteBuffer.array(), 0, count);
+        }
     }
 
     private void copyFile(BufferedInputStream bufferedInputStream, BufferedOutputStream bufferedOutputStream)
             throws IOException{
         int count;
-        byte[] buffer = new byte[8192];
+        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         do {
             count = bufferedInputStream.read(buffer);
             if (count!=-1) {
-                for (int i=0; i<count; i++) {
-                    bufferedOutputStream.write(buffer[i]);
-                }
 
+                bufferedOutputStream.write(buffer, 0 , count);
                 ServiceWatcherUtil.POSITION+=count;
             }
         } while (count!=-1);
@@ -179,7 +185,7 @@ public class GenericCopyThread implements Runnable {
     private void copyFile(FileChannel inChannel, BufferedOutputStream bufferedOutputStream)
             throws IOException {
         MappedByteBuffer inBuffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, mSourceFile.getSize());
-        byte[] buffer = new byte[8192];
+        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         int length, oldPosition, newPosition;
         do {
 
@@ -188,9 +194,8 @@ public class GenericCopyThread implements Runnable {
             newPosition = inBuffer.position();
             length = newPosition-oldPosition;
             if (length!=0) {
-                for (int i=0; i<length; i++) {
-                    bufferedOutputStream.write(buffer[i]);
-                }
+
+                bufferedOutputStream.write(buffer, 0, length);
                 ServiceWatcherUtil.POSITION+=length;
             }
         } while (length==0);

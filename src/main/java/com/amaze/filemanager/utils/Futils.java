@@ -186,6 +186,22 @@ public class Futils {
         return length;
     }
 
+    /**
+     * Helper method to get size of an otg folder
+     * @param path
+     * @param context
+     * @return
+     */
+    public static long folderSize(String path, Context context) {
+        long length = 0l;
+        for (BaseFile baseFile : RootHelper.getDocumentFilesList(path, context)) {
+            if (baseFile.isDirectory()) length += folderSize(baseFile.getPath(), context);
+            else length += baseFile.length();
+
+        }
+        return length;
+    }
+
     public static void setTint(CheckBox box, int color) {
         if(Build.VERSION.SDK_INT>=21)return;
         ColorStateList sl = new ColorStateList(new int[][]{

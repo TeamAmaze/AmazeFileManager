@@ -127,6 +127,7 @@ public class HFile {
         }
         return new File("/").lastModified();
     }
+
     public long length() {
         long s = 0l;
         switch (mode){
@@ -143,10 +144,19 @@ public class HFile {
                 return s;
             case ROOT:
                 BaseFile baseFile=generateBaseFileFromParent();
-                if(baseFile!=null)
-                    return baseFile.getSize();
+                if(baseFile!=null) return baseFile.getSize();
+                break;
         }
         return s;
+    }
+
+    /**
+     * Helper method to find length of file under otg
+     * @param context
+     * @return
+     */
+    public long length(Context context) {
+        return RootHelper.getDocumentFile(path, context).length();
     }
 
     public String getPath() {
@@ -279,17 +289,38 @@ public class HFile {
 
     public long folderSize() {
         long size = 0l;
-        if (isSmb()) {
-            try {
-                size = Futils.folderSize(new SmbFile(path));
-            } catch (MalformedURLException e) {
-                size = 0l;
-                e.printStackTrace();
-            }
-        } else
-            size = Futils.folderSize(new File(path));
+
+        switch (mode){
+            case SMB:
+                try {
+                    size = Futils.folderSize(new SmbFile(path));
+                } catch (MalformedURLException e) {
+                    size = 0l;
+                    e.printStackTrace();
+                }
+                break;
+            case FILE:
+                size = Futils.folderSize(new File(path));
+                break;
+            case ROOT:
+                BaseFile baseFile=generateBaseFileFromParent();
+                if(baseFile!=null) size = baseFile.getSize();
+                break;
+            default:
+                return 0l;
+        }
         return size;
     }
+
+    /**
+     * Helper method to get length of folder in an otg
+     * @param context
+     * @return
+     */
+    public long folderSize(Context context) {
+        return Futils.folderSize(path, context);
+    }
+
 
     public long getUsableSpace() {
         long size = 0l;

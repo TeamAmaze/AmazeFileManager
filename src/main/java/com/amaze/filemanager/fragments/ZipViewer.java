@@ -63,7 +63,6 @@ import com.amaze.filemanager.ui.ZipObj;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -77,6 +76,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class ZipViewer extends Fragment {
+
     private UtilitiesProviderInterface utilsProvider;
     public String s;
     public File f;
@@ -417,9 +417,8 @@ public class ZipViewer extends Fragment {
                 for (int i : rarAdapter.getCheckedItemPositions()) {
                     a.add(elements.get(i).getName());
                 }
-                intent.putExtra("zip", f.getPath());
-                intent.putExtra("entries1", true);
-                intent.putExtra("entries", a);
+                intent.putExtra(ExtractService.KEY_PATH_ZIP, f.getPath());
+                intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
                 getActivity().startService(intent);
             } catch (Exception e) {
                 e.printStackTrace();

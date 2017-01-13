@@ -1,8 +1,11 @@
 package com.amaze.filemanager.utils;
 
 import android.app.Application;
+import android.content.Context;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -19,6 +22,7 @@ public class AppConfig extends Application {
 
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
+    private static Handler mApplicationHandler = new Handler();
 
     private static AppConfig mInstance;
 
@@ -30,6 +34,44 @@ public class AppConfig extends Application {
         // disabling file exposure method check for api n+
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
+    }
+
+    /**
+     * Shows a toast message
+     *
+     * @param context Any context belonging to this application
+     * @param message The message to show
+     */
+    public static void toast(Context context, String message) {
+        // this is a static method so it is easier to call,
+        // as the context checking and casting is done for you
+
+        if (context == null) return;
+
+        if (!(context instanceof Application)) {
+            context = context.getApplicationContext();
+        }
+
+        if (context instanceof Application) {
+            final Context c = context;
+            final String m = message;
+
+            ((AppConfig) context).runInApplicationThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(c, m, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
+    /**
+     * Run a runnable in the main application thread
+     *
+     * @param r Runnable to run
+     */
+    public void runInApplicationThread(Runnable r) {
+        mApplicationHandler.post(r);
     }
 
     public static synchronized AppConfig getInstance() {

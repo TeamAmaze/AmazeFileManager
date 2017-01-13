@@ -57,7 +57,8 @@ import java.util.ArrayList;
 
 public class CopyService extends Service {
 
-    public ArrayList<DataPackage> dataPackages = new ArrayList<>();
+    // list of data packages, to initiate chart in process viewer fragment
+    private ArrayList<DataPackage> dataPackages = new ArrayList<>();
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
     Context c;
@@ -65,8 +66,6 @@ public class CopyService extends Service {
     ProgressListener progressListener;
     private final IBinder mBinder = new LocalBinder();
     private ProgressHandler progressHandler;
-
-    boolean foreground=true;
 
     long totalSize = 0l;
     int totalSourceFiles = 0;
@@ -78,13 +77,13 @@ public class CopyService extends Service {
     private static final String TAG_COPY_MOVE = "move";
     private static final String TAG_COPY_START_ID = "id";
 
-    public static final String TAG_COPY_CANCEL_BROADCAST = "copycancel";
+    public static final String TAG_BROADCAST_COPY_CANCEL = "copycancel";
 
     @Override
     public void onCreate() {
         c = getApplicationContext();
 
-        registerReceiver(receiver3, new IntentFilter(TAG_COPY_CANCEL_BROADCAST));
+        registerReceiver(receiver3, new IntentFilter(TAG_BROADCAST_COPY_CANCEL));
     }
 
     @Override
@@ -94,7 +93,8 @@ public class CopyService extends Service {
         ArrayList<BaseFile> files = intent.getParcelableArrayListExtra(TAG_COPY_SOURCES);
         String targetPath = intent.getStringExtra(TAG_COPY_TARGET);
         int mode=intent.getIntExtra(TAG_COPY_OPEN_MODE, 0);
-        totalSize = getTotalBytes(files);
+        totalSize = OpenMode.getOpenMode(mode)==OpenMode.OTG ?
+                getTotalBytes(files, getApplicationContext()) : getTotalBytes(files);
         totalSourceFiles = files.size();
         progressHandler = new ProgressHandler(totalSourceFiles, totalSize);
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -102,21 +102,19 @@ public class CopyService extends Service {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        notificationIntent.putExtra("openprocesses",true);
+        notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         mBuilder = new NotificationCompat.Builder(c);
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setContentTitle(getResources().getString(R.string.copying))
                 .setSmallIcon(R.drawable.ic_content_copy_white_36dp);
-        if(foreground){
-            startForeground(Integer.parseInt("456"+startId), mBuilder.build());
-            foreground=false;
-        }
+
+        startForeground(Integer.parseInt("456"+startId), mBuilder.build());
+
         b.putBoolean(TAG_COPY_MOVE, intent.getBooleanExtra(TAG_COPY_MOVE, false));
         b.putString(TAG_COPY_TARGET, targetPath);
         b.putInt(TAG_COPY_OPEN_MODE, mode);
         b.putParcelableArrayList(TAG_COPY_SOURCES, files);
-        //hash.put(startId, true);
 
         DataPackage intent1 = new DataPackage();
         intent1.setName(files.get(0).getName());
@@ -124,7 +122,6 @@ public class CopyService extends Service {
         intent1.setSourceProgress(0);
         intent1.setTotal(totalSize);
         intent1.setByteProgress(0);
-        intent1.setId(startId);
         intent1.setSpeedRaw(0);
         intent1.setMove(intent.getBooleanExtra(TAG_COPY_MOVE, false));
         intent1.setCompleted(false);
@@ -155,6 +152,21 @@ public class CopyService extends Service {
             // skip for now
         }
 
+        return totalBytes;
+    }
+
+    /**
+     * Helper method to calculate source files size in an otg device
+     * @param files
+     * @param context
+     * @return
+     */
+    long getTotalBytes(ArrayList<BaseFile> files, Context context) {
+        long totalBytes = 0;
+        for (BaseFile file : files) {
+            if (file.isDirectory()) totalBytes += file.folderSize(context);
+            else totalBytes += file.length(context);
+        }
         return totalBytes;
     }
 
@@ -262,7 +274,7 @@ public class CopyService extends Service {
                                     copyRoot(f1, hFile, move);
                                     continue;
                                 }
-                                copyFiles((f1),hFile, copyThread, progressHandler, watcherUtil, id);
+                                copyFiles((f1),hFile, copyThread, progressHandler, watcherUtil);
                                 progressHandler.setSourceFilesCopied(sourceProgress + 1);
                             }
                             else{
@@ -331,11 +343,10 @@ public class CopyService extends Service {
             private void copyFiles(final BaseFile sourceFile, final HFile targetFile,
                                    GenericCopyThread copyThread,
                                    ProgressHandler progressHandler,
-                                   ServiceWatcherUtil watcherUtil,
-                                   final int id) throws IOException {
+                                   ServiceWatcherUtil watcherUtil) throws IOException {
                 Log.e("Copy",sourceFile.getPath());
                 if (sourceFile.isDirectory()) {
-                    if(progressHandler.getCancelled())return;
+                    if(progressHandler.getCancelled()) return;
 
                     if (!targetFile.exists()) targetFile.mkdir(c);
 
@@ -353,7 +364,7 @@ public class CopyService extends Service {
                     for (BaseFile file : filePaths) {
                         HFile destFile = new HFile(targetFile.getMode(),targetFile.getPath(),
                                 file.getName(),file.isDirectory());
-                        copyFiles(file, destFile, copyThread, progressHandler, watcherUtil, id);
+                        copyFiles(file, destFile, copyThread, progressHandler, watcherUtil);
                     }
                     if(progressHandler.getCancelled())return;
                 } else {
@@ -461,7 +472,6 @@ public class CopyService extends Service {
             intent.setSourceProgress(sourceProgress);
             intent.setTotal(totalSize);
             intent.setByteProgress(writtenSize);
-            intent.setId(id);
             intent.setSpeedRaw(speed);
             intent.setMove(move);
             intent.setCompleted(isComplete);
@@ -532,7 +542,6 @@ public class CopyService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             //cancel operation
-            //hash.put(intent.getIntExtra("id", 1), false);
             progressHandler.setCancelled(true);
         }
     };

@@ -136,7 +136,7 @@ public abstract class FileUtil {
         return true;
     }
 
-    public static OutputStream getOutputStream(@NonNull final File target,Context context,long s)throws Exception {
+    public static OutputStream getOutputStream(final File target, Context context, long s) throws Exception {
 
         OutputStream outStream = null;
         try {
@@ -144,23 +144,20 @@ public abstract class FileUtil {
             if (isWritable(target)) {
                 // standard way
                 outStream = new FileOutputStream(target);
-            }
-            else {
+            } else {
                 if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
                     // Storage Access Framework
                     DocumentFile targetDocument = getDocumentFile(target, false,context);
-                    outStream =
-                            context.getContentResolver().openOutputStream(targetDocument.getUri());
-                }
-                else if (Build.VERSION.SDK_INT==Build.VERSION_CODES.KITKAT) {
+                    outStream = context.getContentResolver().openOutputStream(targetDocument.getUri());
+                } else if (Build.VERSION.SDK_INT==Build.VERSION_CODES.KITKAT) {
                     // Workaround for Kitkat ext SD card
                     return MediaStoreHack.getOutputStream(context,target.getPath());
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.e("AmazeFileUtils",
                     "Error when copying file from " +  target.getAbsolutePath(), e);
+            throw new Exception();
         }
         return outStream;
     }
@@ -187,7 +184,7 @@ public abstract class FileUtil {
 
         // Try the Kitkat workaround.
         if (Build.VERSION.SDK_INT==Build.VERSION_CODES.KITKAT) {
-            ContentResolver resolver = context.getContentResolver();
+             ContentResolver resolver = context.getContentResolver();
 
             try {
                 Uri uri = MediaStoreHack.getUriFromFile(file.getAbsolutePath(),context);

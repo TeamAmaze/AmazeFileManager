@@ -97,7 +97,7 @@ public class ZipTask extends Service {
         intent1.setSourceProgress(0);
         intent1.setTotal(new File(zpath).length());
         intent1.setByteProgress(0);
-        intent1.setId(startId);
+        //intent1.setId(startId);
         intent1.setSpeedRaw(0);
         intent1.setMove(false);
         intent1.setCompleted(false);
@@ -210,7 +210,7 @@ public class ZipTask extends Service {
             intent.setSourceProgress(1);
             intent.setTotal(total);
             intent.setByteProgress(done);
-            intent.setId(id);
+            //intent.setId(id);
             intent.setSpeedRaw(0);
             intent.setMove(false);
             intent.setCompleted(isCompleted);

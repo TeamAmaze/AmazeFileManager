@@ -32,6 +32,8 @@ public class ServiceWatcherUtil {
     // position of byte in total byte size to be copied
     public static long POSITION = 0L;
 
+    public static final int ID_NOTIFICATION_WAIT =  9248;
+
     /**
      *
      * @param progressHandler to publish progress after certain delay
@@ -91,6 +93,18 @@ public class ServiceWatcherUtil {
         if (handlerThread==null || !handlerThread.isAlive()) {
             // we're not bound, no need to proceed further and waste up resources
             // start the service directly
+
+            /**
+             * We can actually end up racing at this point with the {@link HandlerThread} started
+             * in {@link #init(Context)}. If older service has returned, we already have the runnable
+             * waiting to execute in #init, and user is in app, and starts another service, and
+             * as this block executes the {@link android.app.Service#onStartCommand(Intent, int, int)}
+             * we end up with a context switch to 'service_startup_watcher' in #init, it also starts
+             * a new service (as {@link #progressHandler} is not alive yet).
+             * Though chances are very slim, but even if this condition occurs, only the progress will
+             * be flawed, but the actual operation will go fine, due to android's native serial service
+             * execution. #nough' said!
+             */
             context.startService(intent);
             return;
         }
@@ -121,7 +135,7 @@ public class ServiceWatcherUtil {
         mBuilder.setAutoCancel(false);
         mBuilder.setSmallIcon(R.drawable.ic_all_inclusive_white_36dp);
         mBuilder.setProgress(0, 0, true);
-        notificationManager.notify(9248, mBuilder.build());
+        notificationManager.notify(ID_NOTIFICATION_WAIT, mBuilder.build());
 
         Runnable runnable = new Runnable() {
             @Override
@@ -135,7 +149,7 @@ public class ServiceWatcherUtil {
 
                     if (pendingIntents.size()==0) {
                         // we've done all the work, free up resources (if not already killed by system)
-                        notificationManager.cancel(9248);
+                        notificationManager.cancel(ID_NOTIFICATION_WAIT);
                         handler.removeCallbacks(this);
                         waitingThread.quit();
                         return;

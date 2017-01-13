@@ -192,6 +192,9 @@ public class MainActivity extends BaseActivity implements
     int hidemode;
     public int operation = -1;
     public ArrayList<BaseFile> oparrayList;
+
+    // oppathe - the path at which certain operation needs to be performed
+    // oppathe1 - the new path which user wants to create/modify
     public String oppathe, oppathe1;
     MaterialDialog materialDialog;
     String newPath = null;
@@ -238,6 +241,7 @@ public class MainActivity extends BaseActivity implements
 
     private static final int REQUEST_CODE_SAF = 223;
     public static final String KEY_PREF_OTG = "uri_usb_otg";
+    public static final String KEY_INTENT_PROCESS_VIEWER = "openprocesses";
 
     // the current visible tab, either 0 or 1
     public static int currentTab;
@@ -308,7 +312,7 @@ public class MainActivity extends BaseActivity implements
             }
         };
         path = getIntent().getStringExtra("path");
-        openprocesses = getIntent().getBooleanExtra("openprocesses", false);
+        openprocesses = getIntent().getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
         try {
             intent = getIntent();
             if (intent.getStringArrayListExtra("failedOps") != null) {
@@ -2486,7 +2490,7 @@ public class MainActivity extends BaseActivity implements
             if (failedOps != null) {
                 mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), this);
             }
-        } else if ((openprocesses = i.getBooleanExtra("openprocesses", false))) {
+        } else if ((openprocesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
 
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, new ProcessViewer());
