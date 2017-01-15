@@ -41,6 +41,7 @@ import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.GenericCopyThread;
+import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
@@ -162,12 +163,11 @@ public class ExtractService extends Service {
         void refresh();
     }
 
-    private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress, long total, long done,
-                                int speed, boolean isCompleted) {
+    private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
+                                long total, long done, int speed, boolean isCompleted) {
         if(!progressHandler.getCancelled()) {
             mBuilder.setContentTitle(getResources().getString(R.string.extracting));
-
-            float progressPercent = ((float) (done / total) * 100);
+            float progressPercent = ((float) done/total)*100;
             mBuilder.setProgress(100, Math.round(progressPercent), false);
             mBuilder.setOngoing(true);
             mBuilder.setContentText(fileName + " " + Futils.readableFileSize(done) + "/"
@@ -370,9 +370,12 @@ public class ExtractService extends Service {
 
                 int sourceProgress = 0;
                 for(ZipEntry entry:entry1) {
-                    progressHandler.setFileName(entry.getName());
-                    unzipEntry(zipfile, entry, destinationPath);
-                    progressHandler.setSourceFilesCopied(++sourceProgress);
+                    if (!progressHandler.getCancelled()) {
+
+                        progressHandler.setFileName(entry.getName());
+                        unzipEntry(zipfile, entry, destinationPath);
+                        progressHandler.setSourceFilesCopied(++sourceProgress);
+                    }
                 }
 
                 Intent intent = new Intent("loadlist");
@@ -410,8 +413,11 @@ public class ExtractService extends Service {
                 watcherUtil.watch();
 
                 for (ZipEntry entry : arrayList) {
-                    progressHandler.setFileName(entry.getName());
-                    unzipEntry(zipfile, entry, destinationPath);
+                    if (!progressHandler.getCancelled()) {
+
+                        progressHandler.setFileName(entry.getName());
+                        unzipEntry(zipfile, entry, destinationPath);
+                    }
                 }
 
                 // operating finished
@@ -458,8 +464,11 @@ public class ExtractService extends Service {
 
                 for(TarArchiveEntry entry : archiveEntries){
 
-                    progressHandler.setFileName(entry.getName());
-                    unzipTAREntry(inputStream, entry, destinationPath);
+                    if (!progressHandler.getCancelled()) {
+
+                        progressHandler.setFileName(entry.getName());
+                        unzipTAREntry(inputStream, entry, destinationPath);
+                    }
                 }
 
                 // operating finished
@@ -501,8 +510,11 @@ public class ExtractService extends Service {
 
                 for (FileHeader header:arrayList){
 
-                    progressHandler.setFileName(header.getFileNameString());
-                    unzipRAREntry(zipFile, header, destinationPath);
+                    if (!progressHandler.getCancelled()) {
+
+                        progressHandler.setFileName(header.getFileNameString());
+                        unzipRAREntry(zipFile, header, destinationPath);
+                    }
                 }
 
                 progressHandler.setSourceFilesCopied(1);

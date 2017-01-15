@@ -307,17 +307,22 @@ public class MainActivityHelper {
         }
     }
 
-    public void compressFiles(File file, ArrayList<BaseFile> b) {
+    /**
+     * Helper method to start Compress service
+     * @param file the new compressed file
+     * @param b list of {@link BaseFile} to be compressed
+     */
+    public void compressFiles(File file, ArrayList<BaseFile> baseFiles) {
         int mode = checkFolder(file.getParentFile(), mainActivity);
         if (mode == 2) {
             mainActivity.oppathe = (file.getPath());
             mainActivity.operation = DataUtils.COMPRESS;
-            mainActivity.oparrayList = b;
+            mainActivity.oparrayList = baseFiles;
         } else if (mode == 1) {
             Intent intent2 = new Intent(mainActivity, ZipTask.class);
-            intent2.putExtra("name", file.getPath());
-            intent2.putExtra("files", b);
-            mainActivity.startService(intent2);
+            intent2.putExtra(ZipTask.KEY_COMPRESS_PATH, file.getPath());
+            intent2.putExtra(ZipTask.KEY_COMPRESS_FILES, baseFiles);
+            ServiceWatcherUtil.runService(mainActivity, intent2);
         } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
 

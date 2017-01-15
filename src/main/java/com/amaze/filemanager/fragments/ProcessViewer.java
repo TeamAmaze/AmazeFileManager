@@ -252,20 +252,47 @@ public class ProcessViewer extends Fragment {
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            ZipTask.LocalBinder binder = (ZipTask.LocalBinder) service;
-            ZipTask mService = binder.getService();
-            for (int i : mService.hash1.keySet()) {
-                //processCompressResults(mService.hash1.get(i));
+            ZipTask.LocalBinder localBinder = (ZipTask.LocalBinder) service;
+            ZipTask zipTask = localBinder.getService();
+
+            ArrayList<DataPackage> dataPackages;
+            try {
+                dataPackages = zipTask.getDataPackageList();
+            } catch (ConcurrentModificationException e) {
+                // array list was being modified while fetching (even after synchronization) :/
+                // return for now
+                return;
             }
-            mService.setProgressListener(new ZipTask.ProgressListener() {
+
+            for (final DataPackage dataPackage : dataPackages) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        processResults(dataPackage);
+                    }
+                });
+            }
+
+            zipTask.setProgressListener(new ZipTask.ProgressListener() {
                 @Override
-                public void onUpdate(DataPackage dataPackage) {
-                    //processCompressResults(dataPackage);
+                public void onUpdate(final DataPackage dataPackage) {
+                    if (getActivity() == null) {
+                        // callback called when we're not inside the app
+                        return;
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            processResults(dataPackage);
+                        }
+                    });
                 }
 
                 @Override
                 public void refresh() {
-                    //clear();
+
                 }
             });
         }

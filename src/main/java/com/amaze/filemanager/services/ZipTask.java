@@ -36,9 +36,13 @@ import android.support.v4.app.NotificationCompat;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.GenericCopyThread;
+import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.ProgressHandler;
+import com.amaze.filemanager.utils.ServiceWatcherUtil;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -47,83 +51,104 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class ZipTask extends Service {
-    public final String EXTRACT_CONDITION = "ZIPPING";
-    public final String EXTRACT_PROGRESS = "ZIP_PROGRESS";
-    public final String EXTRACT_COMPLETED = "ZIP_COMPLETED";
 
-    // Binder given to clients
-    HashMap<Integer, Boolean> hash = new HashMap<Integer, Boolean>();
-    public HashMap<Integer, DataPackage> hash1 = new HashMap<Integer, DataPackage>();
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
-    String zpath;
+    String mZipPath;
     Context c;
-    @SuppressWarnings("deprecation")
+    ProgressListener progressListener;
+    long totalBytes = 0l;
+    private final IBinder mBinder = new LocalBinder();
+    private ProgressHandler progressHandler;
+    private ArrayList<DataPackage> dataPackages = new ArrayList<>();
+
+    public static final String KEY_COMPRESS_PATH = "zip_path";
+    public static final String KEY_COMPRESS_FILES = "zip_files";
+    public static final String KEY_COMPRESS_BROADCAST_CANCEL = "zip_cancel";
+
     @Override
     public void onCreate() {
         c=getApplicationContext();
-        registerReceiver(receiver1, new IntentFilter("zipcancel"));
+        registerReceiver(receiver1, new IntentFilter(KEY_COMPRESS_BROADCAST_CANCEL));
     }
-    boolean foreground=true;
+
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, final int startId) {
         Bundle b = new Bundle();
-        zpath= PreferenceManager.getDefaultSharedPreferences(this).getString("zippath", "");
-        mNotifyManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        String name = intent.getStringExtra("name");
-        if((zpath!=null && zpath.length()!=0)) {
-            if(zpath.endsWith("/")) name = zpath + new File(name).getName();
-            else name = zpath + "/" + new File(name).getName();
+        String path = intent.getStringExtra(KEY_COMPRESS_PATH);
+
+        ArrayList<BaseFile> baseFiles = intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES);
+
+        File zipFile = new File(path);
+        mZipPath= PreferenceManager.getDefaultSharedPreferences(this)
+                .getString(PreferenceUtils.KEY_PATH_COMPRESS, path);
+        mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if(!mZipPath.equals(path)) {
+            mZipPath.concat(mZipPath.endsWith("/") ? (zipFile.getName()) : ("/" + zipFile.getName()));
         }
-        File c = new File(name);
-        if (!c.exists()) {
+
+        if (!zipFile.exists()) {
             try {
-                c.createNewFile();
+                zipFile.createNewFile();
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
 
+        totalBytes = getTotalBytes(baseFiles);
+        progressHandler = new ProgressHandler(baseFiles.size(), totalBytes);
+        progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
+            @Override
+            public void onProgressed(String fileName, int sourceFiles, int sourceProgress,
+                                     long totalSize, long writtenSize, int speed) {
+                publishResults(startId, fileName, sourceFiles, sourceProgress,
+                        totalSize, writtenSize, speed, false);
+            }
+        });
+
         DataPackage intent1 = new DataPackage();
-        intent1.setName(name);
-        intent1.setSourceFiles(1);
+        intent1.setName(baseFiles.get(0).getName());
+        intent1.setSourceFiles(baseFiles.size());
         intent1.setSourceProgress(0);
-        intent1.setTotal(new File(zpath).length());
+        intent1.setTotal(totalBytes);
         intent1.setByteProgress(0);
-        //intent1.setId(startId);
         intent1.setSpeedRaw(0);
         intent1.setMove(false);
         intent1.setCompleted(false);
 
-        hash1.put(startId, intent1);
         mBuilder = new NotificationCompat.Builder(this);
         Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.putExtra("openprocesses", true);
+        notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setContentTitle(getResources().getString(R.string.zipping))
-
                 .setSmallIcon(R.drawable.ic_doc_compressed);
-        if(foreground){
-            startForeground(Integer.parseInt("789"+startId),mBuilder.build());
-        }
-        ArrayList<String> a = intent.getStringArrayListExtra("files");
+        startForeground(Integer.parseInt("789"+startId),mBuilder.build());
         b.putInt("id", startId);
-        b.putStringArrayList("files", a);
-        b.putString("name", name);
-        hash.put(startId, true);
-        new Doback().execute(b);
+        b.putParcelableArrayList(KEY_COMPRESS_FILES, baseFiles);
+        b.putString(KEY_COMPRESS_PATH, mZipPath);
+        new DoWork().execute(b);
         // If we get killed, after returning from here, restart
         return START_STICKY;
     }
-    private final IBinder mBinder = new LocalBinder();
+
+    private long getTotalBytes(ArrayList<BaseFile> baseFiles) {
+        long totalBytes = 0l;
+        for (BaseFile f1 : baseFiles) {
+            if (f1.isDirectory()) {
+                totalBytes += f1.folderSize();
+            } else {
+                totalBytes += f1.length();
+            }
+        }
+        return totalBytes;
+    }
+
     public class LocalBinder extends Binder {
         public ZipTask getService() {
             // Return this instance of LocalService so clients can call public methods
@@ -135,21 +160,20 @@ public class ZipTask extends Service {
         this.progressListener = progressListener;
     }
 
-    ProgressListener progressListener;
-
     public interface ProgressListener {
         void onUpdate(DataPackage dataPackage);
         void refresh();
     }
 
-    public class Doback extends AsyncTask<Bundle, Void, Integer> {
-        ArrayList<String> files;
+    public class DoWork extends AsyncTask<Bundle, Void, Integer> {
 
-        public Doback() {
+        ZipOutputStream zos;
+
+        String zipPath;
+        ServiceWatcherUtil watcherUtil;
+
+        public DoWork() {
         }
-
-        long totalBytes = 0L;
-        String name;
 
         public ArrayList<File> toFileArray(ArrayList<BaseFile> a) {
             ArrayList<File> b = new ArrayList<>();
@@ -161,119 +185,43 @@ public class ZipTask extends Service {
 
         protected Integer doInBackground(Bundle... p1) {
             int id = p1[0].getInt("id");
-            ArrayList<BaseFile> a = (ArrayList<BaseFile>) p1[0].getSerializable("files");
-            name = p1[0].getString("name");
-            new zip().execute(id, toFileArray(a), name);
-            // TODO: Implement this method
+            ArrayList<BaseFile> baseFiles = p1[0].getParcelableArrayList(KEY_COMPRESS_FILES);
+            zipPath = p1[0].getString(KEY_COMPRESS_PATH);
+            execute(toFileArray(baseFiles), zipPath);
             return id;
         }
 
         @Override
         public void onPostExecute(Integer b) {
-            publishResults(b, name, true, totalBytes, totalBytes);
-            hash.put(b,false);
-            boolean stop=true;
-            for(int a:hash.keySet()){
-                if(hash.get(a))stop=false;
-            }
-            if(stop)
-                stopSelf(b);
+
+            stopSelf();
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
         }
 
-    }
+        public void execute(ArrayList<File> baseFiles, String zipPath) {
 
-    private void publishResults(int id, String fileName, boolean isCompleted,long done,long total) {
-        if (hash.get(id)) {
-            double progressPercent = (done/total)*100;
-            mBuilder.setProgress(100, (int) Math.round(progressPercent), false);
-            mBuilder.setOngoing(true);
-            int title = R.string.zipping;
-            mBuilder.setContentTitle(c.getResources().getString(title));
-            mBuilder.setContentText(new File(fileName).getName() + " " + Futils.readableFileSize(done) + "/" + Futils.readableFileSize(total));
-            int id1 = Integer.parseInt("789" + id);
-            mNotifyManager.notify(id1, mBuilder.build());
-            if (done == total || total == 0) {
-                mBuilder.setContentTitle("Zip completed");
-                mBuilder.setContentText("");
-                mBuilder.setProgress(0, 0, false);
-                mBuilder.setOngoing(false);
-                mNotifyManager.notify(id1, mBuilder.build());
-                publishCompletedResult(id1);
-                isCompleted = true;
-            }
-
-            DataPackage intent = new DataPackage();
-            intent.setName(fileName);
-            intent.setSourceFiles(1);
-            intent.setSourceProgress(1);
-            intent.setTotal(total);
-            intent.setByteProgress(done);
-            //intent.setId(id);
-            intent.setSpeedRaw(0);
-            intent.setMove(false);
-            intent.setCompleted(isCompleted);
-
-            hash1.put(id, intent);
-            if(progressListener!=null){
-                progressListener.onUpdate(intent);
-                if(isCompleted) progressListener.refresh();
-            }
-        } else {
-            publishCompletedResult(Integer.parseInt("789" + id));
-        }
-    }public void publishCompletedResult(int id1){
-        try {
-            mNotifyManager.cancel(id1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    /**
-     * Class used for the client Binder.  Because we know this service always
-     * runs in the same process as its clients, we don't need to deal with IPC.
-     */
-
-    private BroadcastReceiver receiver1 = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            hash.put(intent.getIntExtra("id", 1), false);
-        }
-    };
-    class zip {
-        public zip() {
-        }
-
-        int count,lastpercent=0;
-        long size, totalBytes=0;
-        String fileName;
-
-        public void execute(int id, ArrayList<File> a, String fileOut) {
-            for (File f1 : a) {
-                if (f1.isDirectory()) {
-                    totalBytes = totalBytes + Futils.folderSize(f1);
-                } else {
-                    totalBytes = totalBytes + f1.length();
-                }
-            }
-            OutputStream out = null;
-            count = a.size();
-            fileName = fileOut;
-            File zipDirectory = new File(fileOut);
+            OutputStream out;
+            File zipDirectory = new File(zipPath);
+            watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
+            watcherUtil.watch();
 
             try {
-                out = FileUtil.getOutputStream(zipDirectory,c,totalBytes);
+                out = FileUtil.getOutputStream(zipDirectory, c, totalBytes);
                 zos = new ZipOutputStream(new BufferedOutputStream(out));
             } catch (Exception e) {
             }
-            for (File file : a) {
+
+            int fileProgress = 0;
+            for (File file : baseFiles) {
                 try {
 
-                    compressFile(id, file, "");
+                    if (!progressHandler.getCancelled()) {
+
+                        progressHandler.setFileName(file.getName());
+                        compressFile(file, "");
+                        progressHandler.setSourceFilesCopied(++fileProgress);
+                    }
                 } catch (Exception e) {
                 }
             }
@@ -285,42 +233,17 @@ public class ZipTask extends Service {
             }
         }
 
-        ZipOutputStream zos;
-        private int isCompressed = 0;
-        AsyncTask asyncTask;
-        void calculateProgress(final String name,final int id, final boolean completed,final long
-                copiedbytes,final long totalbytes)
-        {
-            if(asyncTask!=null && asyncTask.getStatus()== AsyncTask.Status.RUNNING)asyncTask.cancel(true);
-            asyncTask=new AsyncTask<Void,Void,Void>(){
-                @Override
-                protected Void doInBackground(Void... voids) {
-                    if(isCancelled())return null;
-                    return null;
-                }@Override
-                public void onPostExecute(Void v){
-                    publishResults(id, name, completed, copiedbytes, totalbytes);
-                }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-        }
-
-        private void compressFile(int id, File file, String path) throws IOException,NullPointerException {
+        private void compressFile(File file, String path) throws IOException, NullPointerException {
 
             if (!file.isDirectory()) {
-                byte[] buf = new byte[20480];
+                byte[] buf = new byte[GenericCopyThread.DEFAULT_BUFFER_SIZE];
                 int len;
                 BufferedInputStream in=new BufferedInputStream( new FileInputStream(file));
                 zos.putNextEntry(new ZipEntry(path + "/" + file.getName()));
                 while ((len = in.read(buf)) > 0) {
-                    if (hash.get(id)) {
-                        zos.write(buf, 0, len);
-                        size += len;
-                        int p=(int) ((size / (float) totalBytes) * 100);
-                        if(p!=lastpercent || lastpercent==0) {
-                            calculateProgress(fileName,id,false,size,totalBytes);
-                        }lastpercent=p;
-                    }
+
+                    zos.write(buf, 0, len);
+                    ServiceWatcherUtil.POSITION += len;
                 }
                 in.close();
                 return;
@@ -328,15 +251,76 @@ public class ZipTask extends Service {
             if (file.list() == null) {
                 return;
             }
-            for (String fileName : file.list()) {
+            for (File currentFile : file.listFiles()) {
 
-                File f = new File(file.getAbsolutePath() + File.separator
-                        + fileName);
-                compressFile(id, f, path + File.separator + file.getName());
+                compressFile(currentFile, path + File.separator + file.getName());
 
             }
         }
     }
+
+    private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
+                                long total, long done, int speed, boolean isCompleted) {
+        if (!progressHandler.getCancelled()) {
+            float progressPercent = ((float) done/total)*100;
+            mBuilder.setProgress(100, Math.round(progressPercent), false);
+            mBuilder.setOngoing(true);
+            int title = R.string.compressing;
+            mBuilder.setContentTitle(c.getResources().getString(title));
+            mBuilder.setContentText(new File(fileName).getName() + " " +
+                    Futils.readableFileSize(done) + "/" + Futils.readableFileSize(total));
+            int id1 = Integer.parseInt("789" + id);
+            mNotifyManager.notify(id1, mBuilder.build());
+            if (done == total || total == 0) {
+                mBuilder.setContentTitle(getString(R.string.compression_complete));
+                mBuilder.setContentText("");
+                mBuilder.setProgress(100, 100, false);
+                mBuilder.setOngoing(false);
+                mNotifyManager.notify(id1, mBuilder.build());
+                publishCompletedResult(id1);
+                isCompleted = true;
+            }
+
+            DataPackage intent = new DataPackage();
+            intent.setName(fileName);
+            intent.setSourceFiles(sourceFiles);
+            intent.setSourceProgress(sourceProgress);
+            intent.setTotal(total);
+            intent.setByteProgress(done);
+            intent.setSpeedRaw(speed);
+            intent.setMove(false);
+            intent.setCompleted(isCompleted);
+
+            putDataPackage(intent);
+            if(progressListener!=null){
+                progressListener.onUpdate(intent);
+                if(isCompleted) progressListener.refresh();
+            }
+        } else {
+            publishCompletedResult(Integer.parseInt("789" + id));
+        }
+    }
+
+    public void publishCompletedResult(int id1){
+        try {
+            mNotifyManager.cancel(id1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Class used for the client Binder.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with IPC.
+     */
+
+    private BroadcastReceiver receiver1 = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            progressHandler.setCancelled(true);
+        }
+    };
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -347,5 +331,28 @@ public class ZipTask extends Service {
     @Override
     public void onDestroy() {
         this.unregisterReceiver(receiver1);
+    }
+
+    /**
+     * Returns the {@link #dataPackages} list which contains
+     * data to be transferred to {@link com.amaze.filemanager.fragments.ProcessViewer}
+     * Method call is synchronized so as to avoid modifying the list
+     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
+     * is executing the callbacks in {@link com.amaze.filemanager.fragments.ProcessViewer}
+     * @return
+     */
+    public synchronized ArrayList<DataPackage> getDataPackageList() {
+        return this.dataPackages;
+    }
+
+    /**
+     * Puts a {@link DataPackage} into a list
+     * Method call is synchronized so as to avoid modifying the list
+     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
+     * is executing the callbacks in {@link com.amaze.filemanager.fragments.ProcessViewer}
+     * @param dataPackage
+     */
+    private synchronized void putDataPackage(DataPackage dataPackage) {
+        this.dataPackages.add(dataPackage);
     }
 }

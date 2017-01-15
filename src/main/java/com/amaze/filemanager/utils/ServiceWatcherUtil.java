@@ -16,7 +16,6 @@ import android.os.HandlerThread;
 import android.support.v4.app.NotificationCompat;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.services.ProgressHandler;
 
 import java.util.ArrayList;
 

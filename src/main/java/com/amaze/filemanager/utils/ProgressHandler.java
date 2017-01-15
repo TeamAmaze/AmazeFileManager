@@ -1,4 +1,6 @@
-package com.amaze.filemanager.services;
+package com.amaze.filemanager.utils;
+
+import com.amaze.filemanager.services.CopyService;
 
 /**
  * Created by arpitkh96 on 18/8/16.
@@ -93,7 +95,7 @@ public class ProgressHandler {
      * {@link CopyService#publishResults(int, String, int, int, long, long, int, boolean, boolean)}
      * and eventually for notification generation and process viewer fragment
      */
-    interface ProgressListener {
+    public interface ProgressListener {
         /**
          * @param fileName File name currently being copied (can be recursive, irrespective of selections)
          * @param sourceFiles how many total number of files did the user selected

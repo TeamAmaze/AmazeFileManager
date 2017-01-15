@@ -81,7 +81,6 @@
     <string name="newfolder">New Folder</string>
     <string name="entername">Enter Name</string>
     <string name="extracting">Extracting</string>
-    <string name="zipping">Zipping</string>
     <string name="stopping">Stopping</string>
     <string name="guide1">Welcome to Amaze File Manager</string>
     <string name="guide2">Touch the blue strip to show or hide PathBar</string>
@@ -192,7 +191,6 @@
     <string name="copying_fles">Copying Files</string>
     <string name="done">Done</string>
     <string name="Extracting_fles">Extracting Files</string>
-    <string name="Zipping_fles">Zipping Files</string>
     <string name="items">Items</string>
     <string name="item">Item</string>
     <string name="set">Set</string>
@@ -529,6 +527,8 @@
     <string name="waiting_title">Waiting</string>
     <string name="waiting_content">Waiting for operation to complete</string>
     <string name="extract_complete">Extraction complete</string>
+    <string name="compression_complete">Compression Complete</string>
+    <string name="compressing">Compressing</string>
 
 </resources>
 
