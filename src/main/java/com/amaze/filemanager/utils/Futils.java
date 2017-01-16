@@ -1185,12 +1185,7 @@ public class Futils {
 
         a.autoDismiss(true);
         HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, this, R.layout.bookmarkrow, toHFileArray(DataUtils.history),null,true);
-        a.adapter(adapter, new MaterialDialog.ListCallback() {
-            @Override
-            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-
-            }
-        });
+        a.adapter(adapter, null);
 
         MaterialDialog x= a.build();
         adapter.updateDialog(x);
@@ -1206,12 +1201,7 @@ public class Futils {
         a.theme(appTheme.getMaterialDialogTheme());
         a.autoDismiss(true);
         HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, this, R.layout.bookmarkrow, toHFileArray(DataUtils.getHiddenfiles()),null,false);
-        a.adapter(adapter, new MaterialDialog.ListCallback() {
-            @Override
-            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-
-            }
-        });
+        a.adapter(adapter, null);
         a.dividerColor(Color.GRAY);
         MaterialDialog x= a.build();
         adapter.updateDialog(x);

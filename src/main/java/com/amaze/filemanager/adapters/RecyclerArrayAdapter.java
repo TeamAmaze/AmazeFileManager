@@ -9,7 +9,7 @@ import java.util.Collection;
 /**
  * Created by Arpit on 13-04-2015.
  */
-abstract class RecyclerArrayAdapter<M, VH extends RecyclerView.ViewHolder>
+public abstract class RecyclerArrayAdapter<M, VH extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<VH> {
     private ArrayList<M> items = new ArrayList<M>();
 
