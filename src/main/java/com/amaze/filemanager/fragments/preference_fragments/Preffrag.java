@@ -30,6 +30,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -42,7 +43,7 @@ import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.ui.views.CheckBx;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -96,13 +97,16 @@ public class Preffrag extends PreferenceFragment{
                 String[] sort = getResources().getStringArray(R.array.theme);
                 int current = Integer.parseInt(sharedPref.getString("theme", "0"));
                 MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                a.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
+//                a.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         utilsProvider.getThemeManager()
                                      .setAppTheme(AppTheme.fromIndex(which))
                                      .save();
+
+                        Log.d("theme", AppTheme.fromIndex(which).name());
+
                         dialog.dismiss();
                         restartPC(getActivity());
                         return true;

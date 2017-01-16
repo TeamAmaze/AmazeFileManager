@@ -16,11 +16,9 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.UtilitiesProviderInterface;
-import com.amaze.filemanager.utils.theme.AppTheme;
+import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.net.URL;
 import java.net.URLDecoder;

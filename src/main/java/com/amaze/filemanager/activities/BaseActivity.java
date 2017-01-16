@@ -242,6 +242,7 @@ public class BaseActivity extends BasicActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setTheme();
     }
 
     @Override
