@@ -21,15 +21,15 @@ import java.util.List;
 /**
  * Created by Arpit on 01-07-2015.
  */
-public class ShareTask extends AsyncTask<String,String,Void> {
+public class ShareTask extends AsyncTask<String, String, Void> {
     private AppTheme appTheme;
 
-    Activity contextc;
-    int fab_skin;
-    ArrayList<Uri> arrayList;
-    ArrayList<Intent> targetShareIntents=new ArrayList<Intent>();
-    ArrayList<String> arrayList1=new ArrayList<>();
-    ArrayList<Drawable> arrayList2=new ArrayList<>();
+    private Activity contextc;
+    private int fab_skin;
+    private ArrayList<Uri> arrayList;
+    private ArrayList<Intent> targetShareIntents = new ArrayList<>();
+    private ArrayList<String> arrayList1 = new ArrayList<>();
+    private ArrayList<Drawable> arrayList2 = new ArrayList<>();
 
     public ShareTask(Activity context, ArrayList<Uri> arrayList, AppTheme appTheme, int fab_skin) {
         this.contextc = context;
@@ -40,21 +40,21 @@ public class ShareTask extends AsyncTask<String,String,Void> {
 
     @Override
     protected Void doInBackground(String... strings) {
-        String mime=strings[0];
-        Intent shareIntent=new Intent();
-        boolean bluetooth_present=false;
+        String mime = strings[0];
+        Intent shareIntent = new Intent();
+        boolean bluetooth_present = false;
         shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
         shareIntent.setType(mime);
-        PackageManager packageManager=contextc.getPackageManager();
-        List<ResolveInfo> resInfos=packageManager.queryIntentActivities(shareIntent, 0);
-        if(!resInfos.isEmpty()) {
+        PackageManager packageManager = contextc.getPackageManager();
+        List<ResolveInfo> resInfos = packageManager.queryIntentActivities(shareIntent, 0);
+        if (!resInfos.isEmpty()) {
             for (ResolveInfo resInfo : resInfos) {
                 String packageName = resInfo.activityInfo.packageName;
                 arrayList2.add(resInfo.loadIcon(packageManager));
                 arrayList1.add(resInfo.loadLabel(packageManager).toString());
-                if(packageName.contains("android.bluetooth"))bluetooth_present=true;
+                if (packageName.contains("android.bluetooth")) bluetooth_present = true;
                 Intent intent = new Intent();
-                System.out.println(resInfo.activityInfo.packageName+"\t"+resInfo.activityInfo.name);
+                System.out.println(resInfo.activityInfo.packageName + "\t" + resInfo.activityInfo.name);
                 intent.setComponent(new ComponentName(packageName, resInfo.activityInfo.name));
                 intent.setAction(Intent.ACTION_SEND_MULTIPLE);
                 intent.setType(mime);
@@ -62,8 +62,9 @@ public class ShareTask extends AsyncTask<String,String,Void> {
                 intent.setPackage(packageName);
                 targetShareIntents.add(intent);
 
-            }   }
-        if(!bluetooth_present && appInstalledOrNot("com.android.bluetooth",packageManager)){
+            }
+        }
+        if (!bluetooth_present && appInstalledOrNot("com.android.bluetooth", packageManager)) {
             Intent intent = new Intent();
             intent.setComponent(new ComponentName("com.android.bluetooth", "com.android.bluetooth.opp.BluetoothOppLauncherActivity"));
             intent.setAction(Intent.ACTION_SEND_MULTIPLE);
@@ -73,36 +74,33 @@ public class ShareTask extends AsyncTask<String,String,Void> {
             targetShareIntents.add(intent);
             arrayList1.add(contextc.getResources().getString(R.string.bluetooth));
             arrayList2.add(contextc.getResources().getDrawable(appTheme.equals(AppTheme.DARK) ? R.drawable.ic_settings_bluetooth_white_36dp : R.drawable.ic_settings_bluetooth_black_24dp));
-        }     return null;
+        }
+        return null;
     }
-    private boolean appInstalledOrNot(String uri,PackageManager pm) {
+
+    private boolean appInstalledOrNot(String uri, PackageManager pm) {
         boolean app_installed;
         try {
             pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
             app_installed = true;
-        }
-        catch (PackageManager.NameNotFoundException e) {
+        } catch (PackageManager.NameNotFoundException e) {
             app_installed = false;
         }
         return app_installed;
     }
+
     @Override
-    public void onPostExecute(Void v){
+    public void onPostExecute(Void v) {
         if (!targetShareIntents.isEmpty()) {
 
-            MaterialDialog.Builder builder=new MaterialDialog.Builder(contextc);
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(contextc);
             builder.title(R.string.share);
             builder.theme(appTheme.getMaterialDialogTheme());
             ShareAdapter shareAdapter = new ShareAdapter(contextc, targetShareIntents, arrayList1, arrayList2);
-            builder.adapter(shareAdapter, new MaterialDialog.ListCallback() {
-                @Override
-                public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-
-                }
-            });
+            builder.adapter(shareAdapter, null);
             builder.negativeText(R.string.cancel);
             builder.negativeColor(fab_skin);
-            MaterialDialog b=builder.build();
+            MaterialDialog b = builder.build();
             shareAdapter.updateMatDialog(b);
             b.show();
         } else {
