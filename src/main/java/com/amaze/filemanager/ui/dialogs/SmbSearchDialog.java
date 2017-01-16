@@ -8,11 +8,12 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.adapters.RecyclerArrayAdapter;
 import com.amaze.filemanager.utils.Computer;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.SubnetScanner;
@@ -43,12 +45,13 @@ public class SmbSearchDialog extends DialogFragment {
     int fabskin;
     SubnetScanner subnetScanner;
     Context context;
+
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         utilsProvider = (UtilitiesProviderInterface) getActivity();
 
-        context=getActivity();
+        context = getActivity();
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         fabskin = Color.parseColor(PreferenceUtils.getAccentString(Sp));
     }
@@ -56,7 +59,7 @@ public class SmbSearchDialog extends DialogFragment {
     @Override
     public void dismiss() {
         super.dismiss();
-        if(subnetScanner!=null)
+        if (subnetScanner != null)
             subnetScanner.interrupt();
     }
 
@@ -79,12 +82,12 @@ public class SmbSearchDialog extends DialogFragment {
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 if (subnetScanner != null)
                     subnetScanner.interrupt();
-                if(getActivity()!=null && getActivity() instanceof MainActivity) {
+                if (getActivity() != null && getActivity() instanceof MainActivity) {
                     dismiss();
-                    MainActivity mainActivity=(MainActivity)getActivity();
-                    mainActivity.showSMBDialog("","",false);
+                    MainActivity mainActivity = (MainActivity) getActivity();
+                    mainActivity.showSMBDialog("", "", false);
                 }
-                }
+            }
         });
         builder.positiveText(R.string.use_custom_ip);
         builder.positiveColor(fabskin);
@@ -98,8 +101,8 @@ public class SmbSearchDialog extends DialogFragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if(!computers.contains(computer))
-                            computers.add(computers.size() - 1, computer);
+                            if (!computers.contains(computer))
+                                computers.add(computers.size() - 1, computer);
                             listviewadapter.notifyDataSetChanged();
                         }
                     });
@@ -111,14 +114,14 @@ public class SmbSearchDialog extends DialogFragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if(computers.size()==1){
+                            if (computers.size() == 1) {
                                 dismiss();
-                                Toast.makeText(getActivity(),R.string.nodevicefound,Toast.LENGTH_SHORT).show();
-                                MainActivity mainActivity=(MainActivity)getActivity();
-                                mainActivity.showSMBDialog("","",false);
+                                Toast.makeText(getActivity(), R.string.nodevicefound, Toast.LENGTH_SHORT).show();
+                                MainActivity mainActivity = (MainActivity) getActivity();
+                                mainActivity.showSMBDialog("", "", false);
                                 return;
                             }
-                            computers.remove(computers.size()-1);
+                            computers.remove(computers.size() - 1);
                             listviewadapter.notifyDataSetChanged();
                         }
                     });
@@ -127,69 +130,102 @@ public class SmbSearchDialog extends DialogFragment {
         });
         subnetScanner.start();
 
-        builder.adapter(listviewadapter, new MaterialDialog.ListCallback() {
-            @Override
-            public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-
-            }
-        });
+        builder.adapter(listviewadapter, null);
         return builder.build();
     }
 
-    private class Listviewadapter extends ArrayAdapter<Computer> {
+    private class Listviewadapter extends RecyclerArrayAdapter<Computer, Listviewadapter.ViewHolder> {
+        private static final int VIEW_PROGRESSBAR = 1;
+        private static final int VIEW_ELEMENT = 2;
+
         LayoutInflater mInflater;
 
-        public Listviewadapter(Context context, int resource, List<Computer> objects) {
-            super(context, resource, objects);
+        public Listviewadapter(Context context, @LayoutRes int resource, List<Computer> objects) {
+            addAll(objects);
             mInflater = (LayoutInflater) context
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         }
 
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            switch (viewType) {
+                case VIEW_PROGRESSBAR:
+                    ProgressBar progressBar = new ProgressBar(getContext(), null, android.R.attr.progressBarStyle);
+                    progressBar.setIndeterminate(true);
+                    progressBar.setBackgroundDrawable(null);
 
-        private class ViewHolder {
-            ImageView image;
-            TextView txtTitle;
-            TextView txtDesc;
-            // RelativeLayout row;
+                    return new ViewHolder(progressBar);
+                default:
+                case VIEW_ELEMENT:
+                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.smb_computers_row, parent, false);
+
+                    return new ElementViewHolder(view);
+            }
         }
 
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            holder.render(position, getItem(position));
+        }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        class ViewHolder extends RecyclerView.ViewHolder {
+            ViewHolder(View itemView) {
+                super(itemView);
+            }
+
+            public void render(final int p, Computer f) {
+
+            }
+        }
+
+        class ElementViewHolder extends ViewHolder {
+            private View rootView;
+
+            private ImageView image;
+            private TextView txtTitle;
+            private TextView txtDesc;
+
+            ElementViewHolder(View view) {
+                super(view);
+
+                rootView = view;
+
+                txtTitle = (TextView) view.findViewById(R.id.firstline);
+                image = (ImageView) view.findViewById(R.id.icon);
+                txtDesc = (TextView) view.findViewById(R.id.secondLine);
+            }
+
+            @Override
+            public void render(final int p, Computer f) {
+                rootView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (subnetScanner != null)
+                            subnetScanner.interrupt();
+                        if (getActivity() != null && getActivity() instanceof MainActivity) {
+                            dismiss();
+                            MainActivity mainActivity = (MainActivity) getActivity();
+                            mainActivity.showSMBDialog(listviewadapter.getItem(p).name, listviewadapter.getItem(p).addr, false);
+                        }
+                    }
+                });
+
+                txtTitle.setText(f.name);
+                image.setImageResource(R.drawable.ic_settings_remote_white_48dp);
+                if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
+                    image.setColorFilter(Color.parseColor("#666666"));
+                txtDesc.setText(f.addr);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
             Computer f = getItem(position);
             if (f.addr.equals("-1")) {
-                ProgressBar progressBar = new ProgressBar(getContext(),null,android.R.attr.progressBarStyle );
-                progressBar.setIndeterminate(true);
-                progressBar.setBackgroundDrawable(null);
-                return progressBar;
+                return VIEW_PROGRESSBAR;
+            } else {
+                return VIEW_ELEMENT;
             }
-            View view;
-            final int p = position;
-            view = mInflater.inflate(R.layout.smb_computers_row, null);
-            final ViewHolder holder = new ViewHolder();
-            holder.txtTitle = (TextView) view.findViewById(R.id.firstline);
-            holder.image = (ImageView) view.findViewById(R.id.icon);
-            holder.txtDesc = (TextView) view.findViewById(R.id.secondLine);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (subnetScanner != null)
-                        subnetScanner.interrupt();
-                    if(getActivity()!=null && getActivity() instanceof MainActivity){
-                        dismiss();
-                        MainActivity mainActivity=(MainActivity)getActivity();
-                        mainActivity.showSMBDialog(listviewadapter.getItem(p).name,listviewadapter.getItem(p).addr,false);
-                    }
-                }
-            });
-            if (holder != null && holder.txtTitle != null) {
-                holder.txtTitle.setText(f.name);
-                holder.image.setImageResource(R.drawable.ic_settings_remote_white_48dp);
-                if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
-                    holder.image.setColorFilter(Color.parseColor("#666666"));
-                holder.txtDesc.setText(f.addr);
-            }
-
-            return view;
         }
     }
 }
