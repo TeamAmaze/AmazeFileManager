@@ -281,7 +281,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     /**
      * onBindViewHolder for zip files
-     * @param vholder the ViewHolder reference for instantiating views
+     * @param vholder the ElementViewHolder reference for instantiating views
      * @param position1 the position of the view to bind
      */
     void onBindView(RecyclerView.ViewHolder vholder,final int position1){
