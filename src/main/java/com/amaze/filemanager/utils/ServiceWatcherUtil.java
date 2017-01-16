@@ -36,7 +36,7 @@ public class ServiceWatcherUtil {
     /**
      *
      * @param progressHandler to publish progress after certain delay
-     * @param totalSize total size of copy operation on files, so we know when to halt the watcher
+     * @param totalSize total size of files to be performed, so we know when to halt the watcher
      */
     public ServiceWatcherUtil(ProgressHandler progressHandler, long totalSize) {
         this.progressHandler = progressHandler;
@@ -49,22 +49,21 @@ public class ServiceWatcherUtil {
     }
 
     /**
-     * Watches over the copy progress without interrupting the worker
-     * {@link GenericCopyThread#thread} thread.
-     * Method frees up all the resources and worker threads after copy operation completes.
+     * Watches over the service progress without interrupting the worker thread in respective services
+     * Method frees up all the resources and handlers after operation completes.
      */
     public void watch() {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
 
-                // we don't have a file name yet, wait for copy to start
+                // we don't have a file name yet, wait for service to set
                 if (progressHandler.getFileName()==null) handler.postDelayed(this, 1000);
 
                 progressHandler.addWrittenLength(POSITION);
                 if (POSITION == totalSize || progressHandler.getCancelled()) {
-                    // copy complete, free up resources
-                    // we've finished the work or copy cancelled
+                    // process complete, free up resources
+                    // we've finished the work or process cancelled
                     handler.removeCallbacks(this);
                     handlerThread.quit();
                     return;

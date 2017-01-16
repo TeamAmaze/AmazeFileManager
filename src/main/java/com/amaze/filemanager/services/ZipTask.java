@@ -39,7 +39,7 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.GenericCopyThread;
+import com.amaze.filemanager.utils.GenericCopyUtil;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -120,13 +120,14 @@ public class ZipTask extends Service {
         intent1.setSpeedRaw(0);
         intent1.setMove(false);
         intent1.setCompleted(false);
+        putDataPackage(intent1);
 
         mBuilder = new NotificationCompat.Builder(this);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         mBuilder.setContentIntent(pendingIntent);
-        mBuilder.setContentTitle(getResources().getString(R.string.zipping))
+        mBuilder.setContentTitle(getResources().getString(R.string.compressing))
                 .setSmallIcon(R.drawable.ic_doc_compressed);
         startForeground(Integer.parseInt("789"+startId),mBuilder.build());
         b.putInt("id", startId);
@@ -194,9 +195,9 @@ public class ZipTask extends Service {
         @Override
         public void onPostExecute(Integer b) {
 
-            stopSelf();
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
+            stopSelf();
         }
 
         public void execute(ArrayList<File> baseFiles, String zipPath) {
@@ -209,34 +210,34 @@ public class ZipTask extends Service {
             try {
                 out = FileUtil.getOutputStream(zipDirectory, c, totalBytes);
                 zos = new ZipOutputStream(new BufferedOutputStream(out));
-            } catch (Exception e) {
-            }
 
-            int fileProgress = 0;
-            for (File file : baseFiles) {
-                try {
-
+                int fileProgress = 0;
+                for (File file : baseFiles) {
                     if (!progressHandler.getCancelled()) {
 
                         progressHandler.setFileName(file.getName());
                         compressFile(file, "");
-                        progressHandler.setSourceFilesCopied(++fileProgress);
-                    }
-                } catch (Exception e) {
+                        progressHandler.setSourceFilesProcessed(++fileProgress);
+                    } else return;
                 }
-            }
-            try {
-                zos.flush();
-                zos.close();
-
             } catch (Exception e) {
+            } finally {
+
+                try {
+                    zos.flush();
+                    zos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
         private void compressFile(File file, String path) throws IOException, NullPointerException {
 
             if (!file.isDirectory()) {
-                byte[] buf = new byte[GenericCopyThread.DEFAULT_BUFFER_SIZE];
+                if (progressHandler.getCancelled()) return;
+
+                byte[] buf = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
                 int len;
                 BufferedInputStream in=new BufferedInputStream( new FileInputStream(file));
                 zos.putNextEntry(new ZipEntry(path + "/" + file.getName()));

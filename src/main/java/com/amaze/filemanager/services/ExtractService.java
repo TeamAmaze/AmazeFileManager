@@ -40,7 +40,7 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.GenericCopyThread;
+import com.amaze.filemanager.utils.GenericCopyUtil;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.github.junrar.Archive;
@@ -105,17 +105,6 @@ public class ExtractService extends Service {
                 publishResults(startId, fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed, false);
             }
         });
-
-        /*DataPackage intent1 = new DataPackage();
-        intent1.setName(file);
-        intent1.setSourceFiles(entries==null ? 1 : entries.size());
-        intent1.setSourceProgress(0);
-        intent1.setTotal(totalSize);
-        intent1.setByteProgress(0);
-        intent1.setSpeedRaw(0);
-        intent1.setMove(false);
-        intent1.setCompleted(false);
-        putDataPackage(intent1);*/
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
@@ -248,7 +237,7 @@ public class ExtractService extends Service {
                     FileUtil.getOutputStream(outputFile, cd, 0));
             try {
                 int len;
-                byte buf[] = new byte[GenericCopyThread.DEFAULT_BUFFER_SIZE];
+                byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
                 while ((len = inputStream.read(buf)) > 0) {
 
                     outputStream.write(buf, 0, len);
@@ -282,7 +271,7 @@ public class ExtractService extends Service {
                     FileUtil.getOutputStream(outputFile, cd,entry.getFullUnpackSize()));
             try {
                 int len;
-                byte buf[] = new byte[GenericCopyThread.DEFAULT_BUFFER_SIZE];
+                byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
                 while ((len = inputStream.read(buf)) > 0) {
 
                     outputStream.write(buf, 0, len);
@@ -365,18 +354,21 @@ public class ExtractService extends Service {
                 // setting total bytes calculated from zip entries
                 progressHandler.setTotalSize(totalBytes);
 
+                setInitDataPackage(totalBytes, entry1.get(0).getName());
+
                 watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
                 watcherUtil.watch();
 
-                int sourceProgress = 0;
                 for(ZipEntry entry:entry1) {
                     if (!progressHandler.getCancelled()) {
 
                         progressHandler.setFileName(entry.getName());
                         unzipEntry(zipfile, entry, destinationPath);
-                        progressHandler.setSourceFilesCopied(++sourceProgress);
                     }
                 }
+
+                // operating finished
+                progressHandler.setSourceFilesProcessed(1);
 
                 Intent intent = new Intent("loadlist");
                 sendBroadcast(intent);
@@ -409,6 +401,8 @@ public class ExtractService extends Service {
                 // setting total bytes calculated from zip entries
                 progressHandler.setTotalSize(totalBytes);
 
+                setInitDataPackage(totalBytes, arrayList.get(0).getName());
+
                 watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
                 watcherUtil.watch();
 
@@ -421,7 +415,7 @@ public class ExtractService extends Service {
                 }
 
                 // operating finished
-                progressHandler.setSourceFilesCopied(1);
+                progressHandler.setSourceFilesProcessed(1);
                 Intent intent = new Intent("loadlist");
                 sendBroadcast(intent);
                 return true;
@@ -459,6 +453,8 @@ public class ExtractService extends Service {
                 // setting total bytes calculated from zip entries
                 progressHandler.setTotalSize(totalBytes);
 
+                setInitDataPackage(totalBytes, archiveEntries.get(0).getName());
+
                 watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
                 watcherUtil.watch();
 
@@ -472,7 +468,7 @@ public class ExtractService extends Service {
                 }
 
                 // operating finished
-                progressHandler.setSourceFilesCopied(1);
+                progressHandler.setSourceFilesProcessed(1);
                 inputStream.close();
 
                 Intent intent = new Intent("loadlist");
@@ -505,6 +501,8 @@ public class ExtractService extends Service {
                 // setting total bytes calculated from zip entries
                 progressHandler.setTotalSize(totalBytes);
 
+                setInitDataPackage(totalBytes, arrayList.get(0).getFileNameString());
+
                 watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
                 watcherUtil.watch();
 
@@ -517,7 +515,7 @@ public class ExtractService extends Service {
                     }
                 }
 
-                progressHandler.setSourceFilesCopied(1);
+                progressHandler.setSourceFilesProcessed(1);
                 Intent intent = new Intent("loadlist");
                 sendBroadcast(intent);
                 return true;
@@ -563,12 +561,32 @@ public class ExtractService extends Service {
 
         @Override
         public void onPostExecute(Integer b) {
+            Intent intent = new Intent("loadlist");
+            sendBroadcast(intent);
             stopSelf();
         }
 
 
     }
 
+    /**
+     * Setting initial package to initialize charts in process viewer properly
+     * @param totalSize
+     * @param fileName
+     */
+    private void setInitDataPackage(long totalSize, String fileName) {
+
+        DataPackage intent1 = new DataPackage();
+        intent1.setName(fileName);
+        intent1.setSourceFiles(1);
+        intent1.setSourceProgress(0);
+        intent1.setTotal(totalSize);
+        intent1.setByteProgress(0);
+        intent1.setSpeedRaw(0);
+        intent1.setMove(false);
+        intent1.setCompleted(false);
+        putDataPackage(intent1);
+    }
 
     @Override
     public void onDestroy() {

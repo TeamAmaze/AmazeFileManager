@@ -59,7 +59,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 
 public class ProcessViewer extends Fragment {
 
@@ -91,7 +90,7 @@ public class ProcessViewer extends Fragment {
         if (mainActivity.getAppTheme().equals(AppTheme.DARK))
             rootView.setBackgroundResource((R.color.cardView_background));
         mainActivity.updateViews(new ColorDrawable(primaryColor));
-        mainActivity.setActionBarTitle(getResources().getString(R.string.processes));
+        mainActivity.setActionBarTitle(getResources().getString(R.string.process_viewer));
         mainActivity.floatingActionButton.hideMenuButton(true);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         icons = new IconUtils(Sp, getActivity());
@@ -143,16 +142,16 @@ public class ProcessViewer extends Fragment {
             CopyService.LocalBinder localBinder = (CopyService.LocalBinder) service;
             CopyService copyService = localBinder.getService();
 
-            ArrayList<DataPackage> dataPackages;
+            /*ArrayList<DataPackage> dataPackages;
             try {
                 dataPackages = copyService.getDataPackageList();
             } catch (ConcurrentModificationException e) {
                 // array list was being modified while fetching (even after synchronization) :/
                 // return for now
                 return;
-            }
+            }*/
 
-            for (final DataPackage dataPackage : dataPackages) {
+            for (final DataPackage dataPackage : copyService.getDataPackageList()) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -161,6 +160,9 @@ public class ProcessViewer extends Fragment {
                     }
                 });
             }
+
+            // animate the chart a little after initial values have been applied
+            mLineChart.animateXY(500, 500);
 
             copyService.setProgressListener(new CopyService.ProgressListener() {
                 @Override
@@ -199,16 +201,16 @@ public class ProcessViewer extends Fragment {
             ExtractService.LocalBinder localBinder = (ExtractService.LocalBinder) service;
             ExtractService extractService = localBinder.getService();
 
-            ArrayList<DataPackage> dataPackages;
+            /*ArrayList<DataPackage> dataPackages;
             try {
                 dataPackages = extractService.getDataPackageList();
             } catch (ConcurrentModificationException e) {
                 // array list was being modified while fetching (even after synchronization) :/
                 // return for now
                 return;
-            }
+            }*/
 
-            for (final DataPackage dataPackage : dataPackages) {
+            for (final DataPackage dataPackage : extractService.getDataPackageList()) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -217,6 +219,9 @@ public class ProcessViewer extends Fragment {
                     }
                 });
             }
+
+            // animate the chart a little after initial values have been applied
+            mLineChart.animateXY(500, 500);
 
             extractService.setProgressListener(new ExtractService.ProgressListener() {
                 @Override
@@ -255,16 +260,16 @@ public class ProcessViewer extends Fragment {
             ZipTask.LocalBinder localBinder = (ZipTask.LocalBinder) service;
             ZipTask zipTask = localBinder.getService();
 
-            ArrayList<DataPackage> dataPackages;
+            /*ArrayList<DataPackage> dataPackages;
             try {
                 dataPackages = zipTask.getDataPackageList();
             } catch (ConcurrentModificationException e) {
                 // array list was being modified while fetching (even after synchronization) :/
                 // return for now
                 return;
-            }
+            }*/
 
-            for (final DataPackage dataPackage : dataPackages) {
+            for (final DataPackage dataPackage : zipTask.getDataPackageList()) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -273,6 +278,9 @@ public class ProcessViewer extends Fragment {
                     }
                 });
             }
+
+            // animate the chart a little after initial values have been applied
+            mLineChart.animateXY(500, 500);
 
             zipTask.setProgressListener(new ZipTask.ProgressListener() {
                 @Override
@@ -370,162 +378,6 @@ public class ProcessViewer extends Fragment {
             }
         }
     }
-
-    /*public void processExtractResults(DataPackage dataPackage) {
-        final int id = dataPackage.getId();
-
-        if (!CancelledExtractIds.contains(id)) {
-            if (ExtractIds.contains(id)) {
-
-                boolean completed = dataPackage.isCompleted();
-                View process = rootView.findViewWithTag("extract" + id);
-                if (completed) {
-                    rootView.removeViewInLayout(process);
-                    ExtractIds.remove(ExtractIds.indexOf(id));
-                } else {
-                    String name = dataPackage.getName();
-                    long totalBytes = dataPackage.getTotal();
-                    long doneBytes = dataPackage.getByteProgress();
-                    double progressPercent = (doneBytes/totalBytes)*100;
-
-                    ProgressBar p = (ProgressBar) process.findViewById(R.id.progressBar1);
-                    if (progressPercent <= 100) {
-                        ((TextView) process.findViewById(R.id.progressText)).setText(getResources().getString(R.string.extracting)
-                                + "\n" + name + "\n" + progressPercent + "%" + "\n"
-                                + Futils.readableFileSize(doneBytes)
-                                + "/" + Futils.readableFileSize(totalBytes));
-
-                        p.setProgress((int) Math.round(progressPercent));
-                    }
-                }
-            } else {
-                CardView root = (CardView) getActivity().getLayoutInflater().inflate(R.layout.processrow, null);
-                root.setTag("extract" + id);
-
-                ImageView progressImage = ((ImageView) root.findViewById(R.id.progressImage));
-                ImageButton cancel = (ImageButton) root.findViewById(R.id.delete_button);
-                TextView progressText = (TextView) root.findViewById(R.id.progressText);
-
-                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
-
-                    root.setCardBackgroundColor(R.color.cardView_foreground);
-                    root.setCardElevation(0f);
-                    cancel.setImageResource(R.drawable.ic_action_cancel);
-                    progressText.setTextColor(Color.WHITE);
-                    progressImage.setImageResource(R.drawable.ic_doc_compressed);
-                } else {
-
-                    // cancel has default src set for light theme
-                    progressText.setTextColor(Color.BLACK);
-                    progressImage.setImageResource(R.drawable.ic_doc_compressed_black);
-                }
-
-                cancel.setOnClickListener(new View.OnClickListener() {
-
-                    public void onClick(View p1) {
-                        Toast.makeText(getActivity(), getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
-                        Intent i = new Intent("excancel");
-                        i.putExtra("id", id);
-                        getActivity().sendBroadcast(i);
-                        rootView.removeView(rootView.findViewWithTag("extract" + id));
-
-                        ExtractIds.remove(ExtractIds.indexOf(id));
-                        CancelledExtractIds.add(id);
-                        // TODO: Implement this method
-                    }
-                });
-
-                String name = dataPackage.getName();
-                long totalBytes = dataPackage.getTotal();
-                long doneBytes = dataPackage.getByteProgress();
-                double progressPercent = (doneBytes/totalBytes)*100;
-
-
-                ((TextView) root.findViewById(R.id.progressText)).setText(getResources().getString(R.string.extracting) + "\n" + name);
-                ProgressBar p = (ProgressBar) root.findViewById(R.id.progressBar1);
-                p.setProgress((int) Math.round(progressPercent));
-                ExtractIds.add(id);
-                rootView.addView(root);
-            }
-        }
-    }
-
-    void processCompressResults(DataPackage dataPackage) {
-        final int id = dataPackage.getId();
-
-        if (!CancelledZipIds.contains(id)) {
-            if (ZipIds.contains(id)) {
-                boolean completed = dataPackage.isCompleted();
-                View process = rootView.findViewWithTag("zip" + id);
-                if (completed) {
-                    rootView.removeViewInLayout(process);
-                    ZipIds.remove(ZipIds.indexOf(id));
-                } else {
-                    String name = dataPackage.getName();
-                    long totalBytes = dataPackage.getTotal();
-                    long doneBytes = dataPackage.getByteProgress();
-                    double progressPercent = (doneBytes/totalBytes)*100;
-
-                    ProgressBar p = (ProgressBar) process.findViewById(R.id.progressBar1);
-                    if (progressPercent <= 100) {
-                        ((TextView) process.findViewById(R.id.progressText)).setText(getResources().getString(R.string.zipping)
-                                + "\n" + name + "\n"
-                                + progressPercent + "%");
-
-                        p.setProgress((int) Math.round(progressPercent));
-                    }
-                }
-            } else {
-                CardView root = (CardView) getActivity().getLayoutInflater().inflate(R.layout.processrow, null);
-                root.setTag("zip" + id);
-
-                ImageView progressImage = ((ImageView) root.findViewById(R.id.progressImage));
-                ImageButton cancel = (ImageButton) root.findViewById(R.id.delete_button);
-                TextView progressText = (TextView) root.findViewById(R.id.progressText);
-
-                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
-
-                    root.setCardBackgroundColor(R.color.cardView_foreground);
-                    root.setCardElevation(0f);
-                    cancel.setImageResource(R.drawable.ic_action_cancel);
-                    progressText.setTextColor(Color.WHITE);
-                    progressImage.setImageResource(R.drawable.ic_doc_compressed);
-                } else {
-
-                    // cancel has default src set for light theme
-                    progressText.setTextColor(Color.BLACK);
-                    progressImage.setImageResource(R.drawable.ic_doc_compressed_black);
-                }
-
-                cancel.setOnClickListener(new View.OnClickListener() {
-
-                    public void onClick(View p1) {
-                        Toast.makeText(getActivity(), getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
-                        Intent i = new Intent("zipcancel");
-                        i.putExtra("id", id);
-                        getActivity().sendBroadcast(i);
-                        rootView.removeView(rootView.findViewWithTag("zip" + id));
-
-                        ZipIds.remove(ZipIds.indexOf(id));
-                        CancelledZipIds.add(id);
-                        // TODO: Implement this method
-                    }
-                });
-
-                String name = dataPackage.getName();
-                long totalBytes = dataPackage.getTotal();
-                long doneBytes = dataPackage.getByteProgress();
-                double progressPercent = (doneBytes/totalBytes)*100;
-
-                ((TextView) root.findViewById(R.id.progressText)).setText(getResources().getString(R.string.zipping) + "\n" + name);
-                ProgressBar p = (ProgressBar) root.findViewById(R.id.progressBar1);
-                p.setProgress((int) Math.round(progressPercent));
-
-                ZipIds.add(id);
-                rootView.addView(root);
-            }
-        }
-    }*/
 
     /**
      * Add a new entry dynamically to the chart, initializes a {@link LineDataSet} if not done so

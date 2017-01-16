@@ -19,6 +19,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 
 /**
  * Created by vishal on 26/10/16.
@@ -26,22 +27,24 @@ import java.nio.channels.FileChannel;
  * Base class to handle file copy.
  */
 
-public class GenericCopyThread implements Runnable {
+public class GenericCopyUtil {
 
     private BaseFile mSourceFile;
     private HFile mTargetFile;
-    private Context mContext;
-
-    public Thread thread;
+    private Context mContext;   // context needed to find the DocumentFile in otg/sd card
 
     public static final int DEFAULT_BUFFER_SIZE =  8192;
 
-    public GenericCopyThread(Context context) {
+    public GenericCopyUtil(Context context) {
         this.mContext = context;
     }
 
-    @Override
-    public void run() {
+    /**
+     * Starts copy of file
+     * Supports : {@link File}, {@link jcifs.smb.SmbFile}, {@link DocumentFile}
+     * @throws IOException
+     */
+    private void startCopy() throws IOException {
 
         FileInputStream inputStream = null;
         FileOutputStream outputStream = null;
@@ -94,14 +97,10 @@ public class GenericCopyThread implements Runnable {
                 else if (outChannel!=null)  copyFile(inChannel, outChannel);
             }
 
-            // writing to file
-            /*progressHandler.setFileName(mSourceFile.getName());
-            progressHandler.setTotalSize(mSourceFile.getSize());
-            progressHandler.addReadLength(Float.valueOf(inChannel.position()).intValue());
-            progressHandler.addWrittenLength(Float.valueOf(outChannel.position()).intValue(), 0);*/
         } catch (IOException e) {
             e.printStackTrace();
             Log.d(getClass().getSimpleName(), "I/O Error!");
+            throw new IOException();
         } finally {
 
             try {
@@ -119,16 +118,16 @@ public class GenericCopyThread implements Runnable {
     }
 
     /**
-     * Start a thread encapsulating this class's runnable interface, a call to {@link #run()} is made
+     * Method exposes this class to initiate copy
      * @param sourceFile the source file, which is to be copied
      * @param targetFile the target file
      */
-    public void startThread(BaseFile sourceFile, HFile targetFile) {
+    public void copy(BaseFile sourceFile, HFile targetFile) throws IOException{
 
         this.mSourceFile = sourceFile;
         this.mTargetFile = targetFile;
-        thread = new Thread(this);
-        thread.start();
+
+        startCopy();
     }
 
     private void copyFile(BufferedInputStream bufferedInputStream, FileChannel outChannel)
@@ -150,25 +149,15 @@ public class GenericCopyThread implements Runnable {
 
     private void copyFile(FileChannel inChannel, FileChannel outChannel) throws IOException {
 
-        MappedByteBuffer inByteBuffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, inChannel.size());
-        MappedByteBuffer outByteBuffer = outChannel.map(FileChannel.MapMode.READ_WRITE, 0, inChannel.size());
+        //MappedByteBuffer inByteBuffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, inChannel.size());
+        //MappedByteBuffer outByteBuffer = outChannel.map(FileChannel.MapMode.READ_WRITE, 0, inChannel.size());
 
-        while (inByteBuffer.hasRemaining()) {
-
-            outByteBuffer.put(inByteBuffer.get());
-            ServiceWatcherUtil.POSITION++;
-        }
-        int count;
-        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        while (inByteBuffer.hasRemaining()) {
-            ByteBuffer byteBuffer = inByteBuffer.get(buffer);
-            count = byteBuffer.capacity();
-            outByteBuffer.put(byteBuffer.array(), 0, count);
-        }
+        ReadableByteChannel inByteChannel = new CustomReadableByteChannel(inChannel);
+        outChannel.transferFrom(inByteChannel, 0, Long.MAX_VALUE);
     }
 
     private void copyFile(BufferedInputStream bufferedInputStream, BufferedOutputStream bufferedOutputStream)
-            throws IOException{
+            throws IOException {
         int count;
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         do {
@@ -200,5 +189,37 @@ public class GenericCopyThread implements Runnable {
             }
         } while (length==0);
         bufferedOutputStream.flush();
+    }
+
+    class CustomReadableByteChannel implements ReadableByteChannel {
+
+        ReadableByteChannel byteChannel;
+
+        CustomReadableByteChannel(ReadableByteChannel byteChannel) {
+            this.byteChannel = byteChannel;
+        }
+
+        @Override
+        public int read(ByteBuffer dst) throws IOException {
+            int bytes;
+            if (((bytes = byteChannel.read(dst))>0)) {
+
+                ServiceWatcherUtil.POSITION += bytes;
+                return bytes;
+
+            }
+            return 0;
+        }
+
+        @Override
+        public boolean isOpen() {
+            return byteChannel.isOpen();
+        }
+
+        @Override
+        public void close() throws IOException {
+
+            byteChannel.close();
+        }
     }
 }

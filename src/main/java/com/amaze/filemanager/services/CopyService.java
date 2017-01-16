@@ -45,7 +45,7 @@ import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.GenericCopyThread;
+import com.amaze.filemanager.utils.GenericCopyUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.RootUtils;
@@ -247,8 +247,10 @@ public class CopyService extends Service {
                                 final boolean move,OpenMode mode) {
                 if (checkFolder((targetPath), c) == 1) {
 
-                    GenericCopyThread copyThread = new GenericCopyThread(c);
                     ServiceWatcherUtil watcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
+
+                    // initial start of copy, initiate the watcher
+                    watcherUtil.watch();
 
                     progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
 
@@ -265,6 +267,7 @@ public class CopyService extends Service {
                         sourceProgress = i;
                         BaseFile f1 = (sourceFiles.get(i));
                         Log.e("Copy","basefile\t"+f1.getPath());
+
                         try {
 
                             HFile hFile=new HFile(mode,targetPath, sourceFiles.get(i).getName(),f1.isDirectory());
@@ -273,10 +276,11 @@ public class CopyService extends Service {
                                 if(!f1.isSmb() && !new File(sourceFiles.get(i).getPath()).canRead()
                                         && BaseActivity.rootMode){
                                     copyRoot(f1, hFile, move);
+                                    progressHandler.setSourceFilesProcessed(++sourceProgress);
                                     continue;
                                 }
-                                copyFiles((f1),hFile, copyThread, progressHandler, watcherUtil);
-                                progressHandler.setSourceFilesCopied(sourceProgress + 1);
+                                copyFiles((f1),hFile, progressHandler);
+                                progressHandler.setSourceFilesProcessed(++sourceProgress);
                             }
                             else{
                                 break;
@@ -289,15 +293,6 @@ public class CopyService extends Service {
                             for(int j=i+1;j<sourceFiles.size();j++)failedFOps.add(sourceFiles.get(j));
                             break;
                         }
-                    }
-                    // waiting for generic copy thread to finish before returning from this point
-                    try {
-
-                        if (copyThread.thread!=null) {
-                            copyThread.thread.join();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
 
                 } else if (BaseActivity.rootMode) {
@@ -333,6 +328,7 @@ public class CopyService extends Service {
                     RootUtils.mountOwnerRW(targetFile.getParent());
                     if (!move) RootUtils.copy(sourceFile.getPath(), targetFile.getPath());
                     else if (move) RootUtils.move(sourceFile.getPath(), targetFile.getPath());
+                    ServiceWatcherUtil.POSITION+=sourceFile.getSize();
                     RootUtils.mountOwnerRO(targetFile.getParent());
                 } catch (RootNotPermittedException e) {
                     failedFOps.add(sourceFile);
@@ -342,10 +338,8 @@ public class CopyService extends Service {
             }
 
             private void copyFiles(final BaseFile sourceFile, final HFile targetFile,
-                                   GenericCopyThread copyThread,
-                                   ProgressHandler progressHandler,
-                                   ServiceWatcherUtil watcherUtil) throws IOException {
-                Log.e("Copy",sourceFile.getPath());
+                                   ProgressHandler progressHandler) throws IOException {
+
                 if (sourceFile.isDirectory()) {
                     if(progressHandler.getCancelled()) return;
 
@@ -365,9 +359,10 @@ public class CopyService extends Service {
                     for (BaseFile file : filePaths) {
                         HFile destFile = new HFile(targetFile.getMode(),targetFile.getPath(),
                                 file.getName(),file.isDirectory());
-                        copyFiles(file, destFile, copyThread, progressHandler, watcherUtil);
+                        copyFiles(file, destFile, progressHandler);
                     }
                     if(progressHandler.getCancelled())return;
+
                 } else {
                     if (progressHandler.getCancelled()) return;
                     if(!Operations.isFileNameValid(sourceFile.getName())){
@@ -375,37 +370,32 @@ public class CopyService extends Service {
                         return;
                     }
 
-                    Log.d(getClass().getSimpleName(), "Copy start for " + targetFile.getName());
+                    GenericCopyUtil copyUtil = new GenericCopyUtil(c);
 
-                    try {
-                        if (copyThread.thread!=null) {
-                            // start a new thread only after previous work is done
-                            copyThread.thread.join();
-                        } else {
-                            // initial start of copy, initiate the watcher
-                            watcherUtil.watch();
-                        }
-
-                        // we've joined, moving on to next file
-                        progressHandler.setFileName(sourceFile.getName());
-                        copyThread.startThread(sourceFile, targetFile);
-                    } catch (InterruptedException e) {
-                        // thread interrupted due to some problem. we must return
-                        failedFOps.add(sourceFile);
-                    }
+                    progressHandler.setFileName(sourceFile.getName());
+                    copyUtil.copy(sourceFile, targetFile);
                 }
             }
         }
     }
 
+    /**
+     * Displays a notification, sends intent and cancels progress if there were some failures
+     * in copy progress
+     * @param failedOps
+     * @param move
+     */
     void generateNotification(ArrayList<HFile> failedOps, boolean move) {
         if(failedOps.size()==0)return;
+
         mNotifyManager.cancelAll();
         NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(c);
         mBuilder.setContentTitle(c.getString(R.string.operationunsuccesful));
         mBuilder.setContentText(c.getString(R.string.copy_error).replace("%s",
                 move ? c.getString(R.string.moved) : c.getString(R.string.copied)));
         mBuilder.setAutoCancel(true);
+
+        progressHandler.setCancelled(true);
 
         Intent intent= new Intent(this, MainActivity.class);
         intent.putExtra("failedOps",failedOps);
