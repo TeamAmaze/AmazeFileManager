@@ -33,7 +33,7 @@ import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.rarfile.FileHeader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
@@ -281,7 +281,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     /**
      * onBindViewHolder for zip files
-     * @param vholder the ViewHolder reference for instantiating views
+     * @param vholder the ElementViewHolder reference for instantiating views
      * @param position1 the position of the view to bind
      */
     void onBindView(RecyclerView.ViewHolder vholder,final int position1){

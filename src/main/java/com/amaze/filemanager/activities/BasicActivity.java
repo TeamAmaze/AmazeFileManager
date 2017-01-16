@@ -4,8 +4,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
+import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.amaze.filemanager.utils.theme.AppThemeManagerInterface;
@@ -16,18 +17,16 @@ import com.amaze.filemanager.utils.theme.PreferencesAppThemeManager;
  */
 public class BasicActivity extends AppCompatActivity implements UtilitiesProviderInterface {
     private boolean initialized = false;
-    protected ColorPreference colorPreference;
-    private Futils utils;
-    private PreferencesAppThemeManager themeManager;
+    private UtilitiesProviderInterface utilsProvider;
 
     private void initialize() {
-        SharedPreferences sharedPrefeences = PreferenceManager.getDefaultSharedPreferences(this);
+        utilsProvider = getAppConfig().getUtilsProvider();
 
-        utils = new Futils();
-
-        colorPreference = ColorPreference.loadFromPreferences(this, sharedPrefeences);
-        themeManager = new PreferencesAppThemeManager(sharedPrefeences);
         initialized = true;
+    }
+
+    protected AppConfig getAppConfig(){
+        return (AppConfig) getApplication();
     }
 
     @Override
@@ -35,14 +34,14 @@ public class BasicActivity extends AppCompatActivity implements UtilitiesProvide
         if (!initialized)
             initialize();
 
-        return utils;
+        return utilsProvider.getFutils();
     }
 
     public ColorPreference getColorPreference() {
         if (!initialized)
             initialize();
 
-        return colorPreference;
+        return utilsProvider.getColorPreference();
     }
 
     @Override
@@ -50,12 +49,15 @@ public class BasicActivity extends AppCompatActivity implements UtilitiesProvide
         if (!initialized)
             initialize();
 
-        return themeManager.getAppTheme();
+        return utilsProvider.getAppTheme();
     }
 
     @Override
     public AppThemeManagerInterface getThemeManager() {
-        return themeManager;
+        if (!initialized)
+            initialize();
+
+        return utilsProvider.getThemeManager();
 
     }
 }
