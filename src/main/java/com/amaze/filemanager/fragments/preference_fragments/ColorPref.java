@@ -21,12 +21,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.ui.views.CheckBx;
-import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.color.ColorUsage;
 

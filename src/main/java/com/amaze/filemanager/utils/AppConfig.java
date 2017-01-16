@@ -7,6 +7,8 @@ import android.os.StrictMode;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
+import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
@@ -20,16 +22,23 @@ public class AppConfig extends Application {
 
     public static final String TAG = AppConfig.class.getSimpleName();
 
+    private UtilitiesProviderInterface utilsProvider;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private static Handler mApplicationHandler = new Handler();
 
     private static AppConfig mInstance;
 
+    public UtilitiesProviderInterface getUtilsProvider() {
+        return utilsProvider;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+
+        utilsProvider = new UtilitiesProvider(this);
 
         // disabling file exposure method check for api n+
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -88,7 +97,7 @@ public class AppConfig extends Application {
 
     public ImageLoader getImageLoader() {
         getRequestQueue();
-        if (mImageLoader==null) {
+        if (mImageLoader == null) {
             this.mImageLoader = new ImageLoader(mRequestQueue, new LruBitmapCache());
         }
         return mImageLoader;
