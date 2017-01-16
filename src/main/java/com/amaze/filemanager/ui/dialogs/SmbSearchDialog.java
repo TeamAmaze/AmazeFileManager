@@ -55,12 +55,13 @@ public class SmbSearchDialog extends DialogFragment {
     int fabskin;
     SubnetScanner subnetScanner;
     Context context;
+
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         utilsProvider = (UtilitiesProviderInterface) getActivity();
 
-        context=getActivity();
+        context = getActivity();
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         fabskin = Color.parseColor(PreferenceUtils.getAccentString(Sp));
     }
@@ -68,7 +69,7 @@ public class SmbSearchDialog extends DialogFragment {
     @Override
     public void dismiss() {
         super.dismiss();
-        if(subnetScanner!=null)
+        if (subnetScanner != null)
             subnetScanner.interrupt();
     }
 
@@ -91,12 +92,12 @@ public class SmbSearchDialog extends DialogFragment {
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 if (subnetScanner != null)
                     subnetScanner.interrupt();
-                if(getActivity()!=null && getActivity() instanceof MainActivity) {
+                if (getActivity() != null && getActivity() instanceof MainActivity) {
                     dismiss();
-                    MainActivity mainActivity=(MainActivity)getActivity();
-                    mainActivity.showSMBDialog("","",false);
+                    MainActivity mainActivity = (MainActivity) getActivity();
+                    mainActivity.showSMBDialog("", "", false);
                 }
-                }
+            }
         });
         builder.positiveText(R.string.use_custom_ip);
         builder.positiveColor(fabskin);
@@ -110,8 +111,8 @@ public class SmbSearchDialog extends DialogFragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if(!computers.contains(computer))
-                            computers.add(computers.size() - 1, computer);
+                            if (!computers.contains(computer))
+                                computers.add(computers.size() - 1, computer);
                             listviewadapter.notifyDataSetChanged();
                         }
                     });
@@ -123,14 +124,14 @@ public class SmbSearchDialog extends DialogFragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if(computers.size()==1){
+                            if (computers.size() == 1) {
                                 dismiss();
-                                Toast.makeText(getActivity(),R.string.nodevicefound,Toast.LENGTH_SHORT).show();
-                                MainActivity mainActivity=(MainActivity)getActivity();
-                                mainActivity.showSMBDialog("","",false);
+                                Toast.makeText(getActivity(), R.string.nodevicefound, Toast.LENGTH_SHORT).show();
+                                MainActivity mainActivity = (MainActivity) getActivity();
+                                mainActivity.showSMBDialog("", "", false);
                                 return;
                             }
-                            computers.remove(computers.size()-1);
+                            computers.remove(computers.size() - 1);
                             listviewadapter.notifyDataSetChanged();
                         }
                     });
@@ -169,7 +170,7 @@ public class SmbSearchDialog extends DialogFragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             Computer f = getItem(position);
             if (f.addr.equals("-1")) {
-                ProgressBar progressBar = new ProgressBar(getContext(),null,android.R.attr.progressBarStyle );
+                ProgressBar progressBar = new ProgressBar(getContext(), null, android.R.attr.progressBarStyle);
                 progressBar.setIndeterminate(true);
                 progressBar.setBackgroundDrawable(null);
                 return progressBar;
@@ -186,10 +187,10 @@ public class SmbSearchDialog extends DialogFragment {
                 public void onClick(View v) {
                     if (subnetScanner != null)
                         subnetScanner.interrupt();
-                    if(getActivity()!=null && getActivity() instanceof MainActivity){
+                    if (getActivity() != null && getActivity() instanceof MainActivity) {
                         dismiss();
-                        MainActivity mainActivity=(MainActivity)getActivity();
-                        mainActivity.showSMBDialog(listviewadapter.getItem(p).name,listviewadapter.getItem(p).addr,false);
+                        MainActivity mainActivity = (MainActivity) getActivity();
+                        mainActivity.showSMBDialog(listviewadapter.getItem(p).name, listviewadapter.getItem(p).addr, false);
                     }
                 }
             });

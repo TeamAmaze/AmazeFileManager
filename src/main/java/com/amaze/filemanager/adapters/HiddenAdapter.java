@@ -32,22 +32,28 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
     private Futils utils;
 
     /*Shortcuts s;*/
-    Main context;Context c;
+    private Main context;
+    private Context c;
     public ArrayList<HFile> items;
-    MaterialDialog materialDialog;
-    boolean hide;
+    private MaterialDialog materialDialog;
+    private boolean hide;
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public HiddenAdapter(Context c,Main context, Futils utils,  int resourceId, ArrayList<HFile> items,MaterialDialog materialDialog,boolean hide) {
-        super(c, resourceId, items);
+    public HiddenAdapter(Context context,
+                         Main main,
+                         Futils utils,
+                         int resourceId,
+                         ArrayList<HFile> items,
+                         MaterialDialog materialDialog,
+                         boolean hide) {
+        super(context, resourceId, items);
         this.utils = utils;
-        this.c=c;
-        this.context = context;
+        this.c = context;
+        this.context = main;
         this.items = items;
-        this.hide=hide;
-        this.materialDialog=materialDialog;
-    /*    s = new Shortcuts(c,"shortcut.xml");
-    */}
+        this.hide = hide;
+        this.materialDialog = materialDialog;
+    }
 
 
     private class ViewHolder {
@@ -59,7 +65,6 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         final HFile f = items.get(position);
-        //final Layoutelements rowItem = getItem(position);
 
         View view;
         final int p = position;
@@ -71,7 +76,7 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
             vholder.txtTitle = (TextView) view.findViewById(R.id.text1);
             vholder.image = (ImageButton) view.findViewById(R.id.delete_button);
             vholder.txtDesc = (TextView) view.findViewById(R.id.text2);
-            vholder.row=(LinearLayout)view.findViewById(R.id.bookmarkrow);
+            vholder.row = (LinearLayout) view.findViewById(R.id.bookmarkrow);
             view.setTag(vholder);
 
         } else {
@@ -80,21 +85,20 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
         }
         final ViewHolder holder = (ViewHolder) view.getTag();
         holder.txtTitle.setText(f.getName());
-        String a=f.getReadablePath(f.getPath());
+        String a = f.getReadablePath(f.getPath());
         holder.txtDesc.setText(a);
-        if(hide)
+        if (hide)
             holder.image.setVisibility(View.GONE);
-            holder.image.setOnClickListener(new View.OnClickListener() {
+        holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            if(!f.isSmb() && f.isDirectory())
-            {
-                ArrayList<BaseFile> a=new ArrayList<BaseFile>();
-                BaseFile baseFile=new BaseFile(items.get(p).getPath()+"/.nomedia");
-                baseFile.setMode(OpenMode.FILE);
-                a.add(baseFile);
-                new DeleteTask(context.getActivity().getContentResolver(),c).execute((a));
-            }
+                if (!f.isSmb() && f.isDirectory()) {
+                    ArrayList<BaseFile> a = new ArrayList<BaseFile>();
+                    BaseFile baseFile = new BaseFile(items.get(p).getPath() + "/.nomedia");
+                    baseFile.setMode(OpenMode.FILE);
+                    a.add(baseFile);
+                    new DeleteTask(context.getActivity().getContentResolver(), c).execute((a));
+                }
                 DataUtils.removeHiddenFile(items.get(p).getPath());
                 items.remove(items.get(p));
                 notifyDataSetChanged();
@@ -115,7 +119,7 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
                                 }
                             });
                         } else {
-                            if(!f.isSmb()){
+                            if (!f.isSmb()) {
                                 context.getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -130,8 +134,9 @@ public class HiddenAdapter extends ArrayAdapter<HFile> {
         });
         return view;
     }
-    public void updateDialog(MaterialDialog dialog){
-        materialDialog=dialog;
+
+    public void updateDialog(MaterialDialog dialog) {
+        materialDialog = dialog;
     }
 
 
