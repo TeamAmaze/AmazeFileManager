@@ -103,7 +103,7 @@ public class Icons {
         );
 
 // Compressed
-        add(R.drawable.ic_doc_compressed,
+        add(R.drawable.ic_zip_box_white_36dp,
                 "application/mac-binhex40",
                 "application/rar",
                 "application/zip",
@@ -267,7 +267,7 @@ public class Icons {
 
     public static boolean isArchive(String name) {
         Integer res = sMimeIcons.get(MimeTypes.getMimeType(new File(name)));
-        if (res != null && res == R.drawable.ic_doc_compressed) return true;
+        if (res != null && res == R.drawable.ic_zip_box_white_36dp) return true;
         return false;
     }
 

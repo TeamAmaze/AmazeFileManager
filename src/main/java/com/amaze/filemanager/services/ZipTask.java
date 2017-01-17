@@ -128,7 +128,7 @@ public class ZipTask extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setContentTitle(getResources().getString(R.string.compressing))
-                .setSmallIcon(R.drawable.ic_doc_compressed);
+                .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
         startForeground(Integer.parseInt("789"+startId),mBuilder.build());
         b.putInt("id", startId);
         b.putParcelableArrayList(KEY_COMPRESS_FILES, baseFiles);

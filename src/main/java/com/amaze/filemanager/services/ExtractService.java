@@ -114,7 +114,7 @@ public class ExtractService extends Service {
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setContentTitle(getResources().getString(R.string.extracting))
                 .setContentText(new File(file).getName())
-                .setSmallIcon(R.drawable.ic_doc_compressed);
+                .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
         startForeground(Integer.parseInt("123" + startId), mBuilder.build());
 
         new DoWork().execute(b);

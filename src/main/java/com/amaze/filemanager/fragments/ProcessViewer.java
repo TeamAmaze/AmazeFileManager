@@ -24,9 +24,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -36,6 +34,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +58,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 
 public class ProcessViewer extends Fragment {
 
@@ -71,6 +71,7 @@ public class ProcessViewer extends Fragment {
     MainActivity mainActivity;
     int accentColor, primaryColor;
     ImageButton mCancelButton;
+    ImageView mProgressImage;
     TextView mProgressTextView;
     private ProgressBar mProgressBar;
 
@@ -99,12 +100,10 @@ public class ProcessViewer extends Fragment {
         mCardView = (CardView) rootView.findViewById(R.id.card_view);
 
         mLineChart = (LineChart) rootView.findViewById(R.id.progress_chart);
-
+        mProgressImage = (ImageView) rootView.findViewById(R.id.progress_image);
         mCancelButton = (ImageButton) rootView.findViewById(R.id.delete_button);
         mProgressTextView = (TextView) rootView.findViewById(R.id.progressText);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar1);
-
-        Drawable icon = icons.getCopyDrawable();
 
         if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
 
@@ -112,22 +111,7 @@ public class ProcessViewer extends Fragment {
             mCardView.setCardBackgroundColor(getResources().getColor(R.color.cardView_foreground));
             mCardView.setCardElevation(0f);
             mProgressTextView.setTextColor(Color.WHITE);
-        } else {
-
-            icon.setColorFilter(Color.parseColor("#666666"), PorterDuff.Mode.SRC_ATOP);
-            mProgressTextView.setTextColor(Color.BLACK);
         }
-
-        mCancelButton.setImageDrawable(icon);
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View p1) {
-                Toast.makeText(getActivity(), getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
-                Intent i = new Intent(CopyService.TAG_BROADCAST_COPY_CANCEL);
-                getActivity().sendBroadcast(i);
-                mProgressTextView.setText(getString(R.string.cancel));
-            }
-        });
 
         return rootView;
     }
@@ -142,21 +126,21 @@ public class ProcessViewer extends Fragment {
             CopyService.LocalBinder localBinder = (CopyService.LocalBinder) service;
             CopyService copyService = localBinder.getService();
 
-            /*ArrayList<DataPackage> dataPackages;
+            ArrayList<DataPackage> dataPackages;
             try {
                 dataPackages = copyService.getDataPackageList();
             } catch (ConcurrentModificationException e) {
                 // array list was being modified while fetching (even after synchronization) :/
                 // return for now
                 return;
-            }*/
+            }
 
-            for (final DataPackage dataPackage : copyService.getDataPackageList()) {
+            for (final DataPackage dataPackage : dataPackages) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 
-                        processResults(dataPackage);
+                        processResults(dataPackage, ServiceType.COPY);
                     }
                 });
             }
@@ -175,7 +159,7 @@ public class ProcessViewer extends Fragment {
                         @Override
                         public void run() {
 
-                            processResults(dataPackage);
+                            processResults(dataPackage, ServiceType.COPY);
                         }
                     });
                 }
@@ -201,21 +185,21 @@ public class ProcessViewer extends Fragment {
             ExtractService.LocalBinder localBinder = (ExtractService.LocalBinder) service;
             ExtractService extractService = localBinder.getService();
 
-            /*ArrayList<DataPackage> dataPackages;
+            ArrayList<DataPackage> dataPackages;
             try {
                 dataPackages = extractService.getDataPackageList();
             } catch (ConcurrentModificationException e) {
                 // array list was being modified while fetching (even after synchronization) :/
                 // return for now
                 return;
-            }*/
+            }
 
-            for (final DataPackage dataPackage : extractService.getDataPackageList()) {
+            for (final DataPackage dataPackage : dataPackages) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 
-                        processResults(dataPackage);
+                        processResults(dataPackage, ServiceType.EXTRACT);
                     }
                 });
             }
@@ -234,7 +218,7 @@ public class ProcessViewer extends Fragment {
                         @Override
                         public void run() {
 
-                            processResults(dataPackage);
+                            processResults(dataPackage, ServiceType.EXTRACT);
                         }
                     });
                 }
@@ -260,21 +244,21 @@ public class ProcessViewer extends Fragment {
             ZipTask.LocalBinder localBinder = (ZipTask.LocalBinder) service;
             ZipTask zipTask = localBinder.getService();
 
-            /*ArrayList<DataPackage> dataPackages;
+            ArrayList<DataPackage> dataPackages;
             try {
                 dataPackages = zipTask.getDataPackageList();
             } catch (ConcurrentModificationException e) {
                 // array list was being modified while fetching (even after synchronization) :/
                 // return for now
                 return;
-            }*/
+            }
 
-            for (final DataPackage dataPackage : zipTask.getDataPackageList()) {
+            for (final DataPackage dataPackage : dataPackages) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 
-                        processResults(dataPackage);
+                        processResults(dataPackage, ServiceType.COMPRESS);
                     }
                 });
             }
@@ -293,7 +277,7 @@ public class ProcessViewer extends Fragment {
                         @Override
                         public void run() {
 
-                            processResults(dataPackage);
+                            processResults(dataPackage, ServiceType.COMPRESS);
                         }
                     });
                 }
@@ -335,7 +319,16 @@ public class ProcessViewer extends Fragment {
         super.onDestroy();
     }
 
-    public void processResults(final DataPackage dataPackage) {
+    /**
+     * Enum helps defining the result type for {@link #processResults(DataPackage, ServiceType)}
+     * to process
+     */
+    enum ServiceType {
+
+        COPY, EXTRACT, COMPRESS
+    }
+
+    public void processResults(final DataPackage dataPackage, ServiceType serviceType) {
         if (dataPackage != null) {
 
             boolean completed = dataPackage.isCompleted();
@@ -374,8 +367,83 @@ public class ProcessViewer extends Fragment {
                 }
                 mProgressTextView.setText(text);
                 mProgressBar.setProgress(Math.round(progressPercent));
+
+                // setting progress image
+                setupDrawables(serviceType);
+
                 isInitialized = true;
             }
+        }
+    }
+
+    /**
+     * Setup drawables and click listeners based on the {@link ServiceType}
+     * @param serviceType
+     */
+    private void setupDrawables(ServiceType serviceType) {
+        switch (serviceType) {
+            case COPY:
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+
+                    mProgressImage.setImageDrawable(getResources()
+                            .getDrawable(R.drawable.ic_content_copy_white_36dp));
+                } else {
+                    mProgressImage.setImageDrawable(getResources()
+                            .getDrawable(R.drawable.ic_content_copy_grey600_36dp));
+                }
+                mCancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
+                        Intent i = new Intent(CopyService.TAG_BROADCAST_COPY_CANCEL);
+                        getActivity().sendBroadcast(i);
+                        mProgressTextView.setText(getString(R.string.cancel));
+                    }
+                });
+                break;
+            case EXTRACT:
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+
+                    mProgressImage.setImageDrawable(getResources()
+                            .getDrawable(R.drawable.ic_zip_box_white_36dp));
+                } else {
+                    mProgressImage.setImageDrawable(getResources()
+                            .getDrawable(R.drawable.ic_zip_box_grey600_36dp));
+                }
+
+                mCancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
+                        Intent i = new Intent(ExtractService.TAG_BROADCAST_EXTRACT_CANCEL);
+                        getActivity().sendBroadcast(i);
+                        mProgressTextView.setText(getString(R.string.cancel));
+                    }
+                });
+                break;
+            case COMPRESS:
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+
+                    mProgressImage.setImageDrawable(getResources()
+                            .getDrawable(R.drawable.ic_zip_box_white_36dp));
+                } else {
+                    mProgressImage.setImageDrawable(getResources()
+                            .getDrawable(R.drawable.ic_zip_box_grey600_36dp));
+                }
+
+                mCancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
+                        Intent i = new Intent(ZipTask.KEY_COMPRESS_BROADCAST_CANCEL);
+                        getActivity().sendBroadcast(i);
+                        mProgressTextView.setText(getString(R.string.cancel));
+                    }
+                });
+                break;
         }
     }
 

@@ -55,33 +55,34 @@
                     >
 
                     <ImageView
-                        android:id="@+id/progressImage"
+                        android:id="@+id/progress_image"
                         android:layout_width="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:padding="5dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/material_generic"
                         android:layout_alignParentLeft="true"
                         />
 
                     <ImageButton
                         android:id="@+id/delete_button"
+                        android:src="@drawable/ic_action_cancel_light"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
                         android:layout_centerVertical="true"
-                        android:background="@drawable/ripple"
-                        android:contentDescription="Cancel Process"
                         android:layout_alignParentRight="true"
-                        android:src="@drawable/ic_action_cancel_light" />
+                        android:layout_marginLeft="@dimen/material_generic"
+                        android:background="@drawable/ripple"
+                        />
 
                     <TextView
                         android:id="@+id/progressText"
-                        android:layout_toRightOf="@id/progressImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@id/progress_image"
                         android:layout_toLeftOf="@id/delete_button"
                         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:textColor="@android:color/black"
+                        />
 
                 </RelativeLayout>
 

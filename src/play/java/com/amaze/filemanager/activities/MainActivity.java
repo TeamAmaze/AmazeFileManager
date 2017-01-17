@@ -237,7 +237,7 @@ public class MainActivity extends BaseActivity implements
     private AppCompatEditText searchViewEditText;
     private int[] searchCoords = new int[2];
     private CoordinatorLayout mScreenLayout;
-    private ImageView fabBgView;
+    private View fabBgView;
 
     private static final int REQUEST_CODE_SAF = 223;
     public static final String KEY_PREF_OTG = "uri_usb_otg";
@@ -1881,7 +1881,7 @@ public class MainActivity extends BaseActivity implements
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
         mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
-        if (getAppTheme().equals(AppTheme.DARK)) mDrawerLinear.setBackgroundColor(Color.parseColor("#303030"));
+        if (getAppTheme().equals(AppTheme.DARK)) mDrawerLinear.setBackgroundColor(getColor(R.color.holo_dark_background));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
@@ -1901,7 +1901,10 @@ public class MainActivity extends BaseActivity implements
         }
         mDrawerList.addHeaderView(drawerHeaderLayout);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        fabBgView = (ImageView) findViewById(R.id.fab_bg);
+        fabBgView = findViewById(R.id.fab_bg);
+        if (getAppTheme().equals(AppTheme.DARK)) {
+            fabBgView.setBackgroundResource(R.drawable.fab_shadow_dark);
+        }
 
         fabBgView.setOnClickListener(new View.OnClickListener() {
             @Override
