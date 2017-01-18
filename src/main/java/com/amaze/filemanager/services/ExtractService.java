@@ -359,6 +359,7 @@ public class ExtractService extends Service {
                 watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
                 watcherUtil.watch();
 
+                progressHandler.setSourceFilesProcessed(1);
                 for(ZipEntry entry:entry1) {
                     if (!progressHandler.getCancelled()) {
 
@@ -368,8 +369,6 @@ public class ExtractService extends Service {
                 }
 
                 // operating finished
-                progressHandler.setSourceFilesProcessed(1);
-
                 Intent intent = new Intent("loadlist");
                 sendBroadcast(intent);
                 return true;
@@ -406,6 +405,7 @@ public class ExtractService extends Service {
                 watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
                 watcherUtil.watch();
 
+                progressHandler.setSourceFilesProcessed(1);
                 for (ZipEntry entry : arrayList) {
                     if (!progressHandler.getCancelled()) {
 
@@ -415,7 +415,6 @@ public class ExtractService extends Service {
                 }
 
                 // operating finished
-                progressHandler.setSourceFilesProcessed(1);
                 Intent intent = new Intent("loadlist");
                 sendBroadcast(intent);
                 return true;
@@ -458,6 +457,7 @@ public class ExtractService extends Service {
                 watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
                 watcherUtil.watch();
 
+                progressHandler.setSourceFilesProcessed(1);
                 for(TarArchiveEntry entry : archiveEntries){
 
                     if (!progressHandler.getCancelled()) {
@@ -468,7 +468,6 @@ public class ExtractService extends Service {
                 }
 
                 // operating finished
-                progressHandler.setSourceFilesProcessed(1);
                 inputStream.close();
 
                 Intent intent = new Intent("loadlist");
@@ -506,6 +505,7 @@ public class ExtractService extends Service {
                 watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
                 watcherUtil.watch();
 
+                progressHandler.setSourceFilesProcessed(1);
                 for (FileHeader header:arrayList){
 
                     if (!progressHandler.getCancelled()) {
@@ -515,7 +515,6 @@ public class ExtractService extends Service {
                     }
                 }
 
-                progressHandler.setSourceFilesProcessed(1);
                 Intent intent = new Intent("loadlist");
                 sendBroadcast(intent);
                 return true;

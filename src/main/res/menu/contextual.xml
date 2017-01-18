@@ -27,7 +27,7 @@
     <item
         android:id="@+id/cpy"
         android:title="@string/copy"
-        android:icon="@drawable/ic_content_copy_white_36dp"
+        android:icon="@drawable/ic_content_copy_white_24dp"
         app:showAsAction="always" />
     <item
         android:id="@+id/delete"

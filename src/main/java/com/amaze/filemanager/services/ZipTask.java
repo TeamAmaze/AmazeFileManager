@@ -216,8 +216,8 @@ public class ZipTask extends Service {
                     if (!progressHandler.getCancelled()) {
 
                         progressHandler.setFileName(file.getName());
-                        compressFile(file, "");
                         progressHandler.setSourceFilesProcessed(++fileProgress);
+                        compressFile(file, "");
                     } else return;
                 }
             } catch (Exception e) {

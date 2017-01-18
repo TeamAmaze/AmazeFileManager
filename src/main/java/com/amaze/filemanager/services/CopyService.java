@@ -274,13 +274,13 @@ public class CopyService extends Service {
                             if (!progressHandler.getCancelled()){
 
                                 if(!f1.isSmb() && !new File(sourceFiles.get(i).getPath()).canRead()
-                                        && BaseActivity.rootMode){
-                                    copyRoot(f1, hFile, move);
+                                        && BaseActivity.rootMode) {
                                     progressHandler.setSourceFilesProcessed(++sourceProgress);
+                                    copyRoot(f1, hFile, move);
                                     continue;
                                 }
-                                copyFiles((f1),hFile, progressHandler);
                                 progressHandler.setSourceFilesProcessed(++sourceProgress);
+                                copyFiles((f1),hFile, progressHandler);
                             }
                             else{
                                 break;

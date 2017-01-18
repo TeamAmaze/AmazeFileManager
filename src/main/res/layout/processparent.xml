@@ -74,26 +74,55 @@
                         android:background="@drawable/ripple"
                         />
 
-                    <TextView
-                        android:id="@+id/progressText"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_toRightOf="@id/progress_image"
                         android:layout_toLeftOf="@id/delete_button"
-                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-                        android:textColor="@android:color/black"
-                        />
+                        android:orientation="vertical"
+                        >
 
+                        <TextView
+                            android:id="@+id/text_view_progress_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+                            android:textColor="@android:color/darker_gray"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="@dimen/material_generic"
+                            />
+
+                        <com.amaze.filemanager.ui.views.ThemedTextView
+                            android:id="@+id/text_view_progress_file_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/material_generic"
+                            android:textStyle="italic"
+                            />
+
+                        <com.amaze.filemanager.ui.views.ThemedTextView
+                            android:id="@+id/text_view_progress_bytes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/material_generic"
+                            />
+
+                        <com.amaze.filemanager.ui.views.ThemedTextView
+                            android:id="@+id/text_view_progress_file"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/material_generic"
+                            />
+
+                        <com.amaze.filemanager.ui.views.ThemedTextView
+                            android:id="@+id/text_view_progress_speed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/material_generic"
+                            />
+
+                    </LinearLayout>
                 </RelativeLayout>
-
-                <ProgressBar
-                    android:id="@+id/progressBar1"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_below="@id/textParent"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
     </ScrollView>

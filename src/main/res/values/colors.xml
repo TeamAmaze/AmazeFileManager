@@ -88,4 +88,6 @@
     <color name="cardView_foreground">#202020</color>
     <color name="cardView_background">#363F45</color>
 
+    <color name="white_translucent">#80ffffff</color>
+
 </resources>

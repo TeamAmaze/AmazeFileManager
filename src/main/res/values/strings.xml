@@ -529,6 +529,13 @@
     <string name="extract_complete">Extraction complete</string>
     <string name="compression_complete">Compression Complete</string>
     <string name="compressing">Compressing</string>
+    <string name="cancelled">Cancelled</string>
+    <!-- reference to - Written #bytes out of #bytes -->
+    <string name="written">Written</string>
+    <string name="out_of">out of</string>
+    <string name="of">of</string>
+    <string name="processing_file">Processing file</string>
+    <string name="current_speed">Current Speed</string>
 
 </resources>
 

@@ -24,18 +24,20 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,8 +74,8 @@ public class ProcessViewer extends Fragment {
     int accentColor, primaryColor;
     ImageButton mCancelButton;
     ImageView mProgressImage;
-    TextView mProgressTextView;
-    private ProgressBar mProgressBar;
+    private TextView mProgressTypeText, mProgressFileNameText,
+            mProgressBytesText, mProgressFileText,  mProgressSpeedText;
 
     private LineChart mLineChart;
     private LineData mLineData = new LineData();
@@ -102,15 +104,17 @@ public class ProcessViewer extends Fragment {
         mLineChart = (LineChart) rootView.findViewById(R.id.progress_chart);
         mProgressImage = (ImageView) rootView.findViewById(R.id.progress_image);
         mCancelButton = (ImageButton) rootView.findViewById(R.id.delete_button);
-        mProgressTextView = (TextView) rootView.findViewById(R.id.progressText);
-        mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar1);
+        mProgressTypeText = (TextView) rootView.findViewById(R.id.text_view_progress_type);
+        mProgressFileNameText = (TextView) rootView.findViewById(R.id.text_view_progress_file_name);
+        mProgressBytesText = (TextView) rootView.findViewById(R.id.text_view_progress_bytes);
+        mProgressFileText = (TextView) rootView.findViewById(R.id.text_view_progress_file);
+        mProgressSpeedText = (TextView) rootView.findViewById(R.id.text_view_progress_speed);
 
         if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
 
             mCancelButton.setImageResource(R.drawable.ic_action_cancel);
             mCardView.setCardBackgroundColor(getResources().getColor(R.color.cardView_foreground));
             mCardView.setCardElevation(0f);
-            mProgressTextView.setTextColor(Color.WHITE);
         }
 
         return rootView;
@@ -336,43 +340,40 @@ public class ProcessViewer extends Fragment {
             String name = dataPackage.getName();
             long total = dataPackage.getTotal();
             long doneBytes = dataPackage.getByteProgress();
-
-            float progressPercent = ((float)doneBytes/total)*100;
             boolean move = dataPackage.isMove();
 
-            if (isInitialized) {
-                // views have already been initialized, process the data and set new values
+            if (!isInitialized) {
 
-                addEntry(Futils.readableFileSizeFloat(doneBytes),
-                        Futils.readableFileSizeFloat(dataPackage.getSpeedRaw()));
-
-                String text = (move ? getResources().getString(R.string.moving)
-                        : getResources().getString(R.string.copying)) + "\n"
-                        + name + "\n"
-                        + Futils.readableFileSize(doneBytes)
-                        + "/" + Futils.readableFileSize(total) + "\n"
-                        + progressPercent + "%" + "\n"
-                        + dataPackage.getSourceProgress() + "/"
-                        + dataPackage.getSourceFiles() + "\n"
-                        + Futils.readableFileSize(dataPackage.getSpeedRaw());
-                mProgressTextView.setText(text);
-                mProgressBar.setProgress(Math.round(progressPercent));
-            } else {
                 // initializing views for the first time
                 chartInit(total);
 
-                String text = getResources().getString(R.string.copying) + "\n" + name;
-                if (move) {
-                    text = getResources().getString(R.string.moving) + "\n" + name;
-                }
-                mProgressTextView.setText(text);
-                mProgressBar.setProgress(Math.round(progressPercent));
-
                 // setting progress image
-                setupDrawables(serviceType);
-
+                setupDrawables(serviceType, move);
                 isInitialized = true;
             }
+
+            addEntry(Futils.readableFileSizeFloat(doneBytes),
+                    Futils.readableFileSizeFloat(dataPackage.getSpeedRaw()));
+
+            mProgressFileNameText.setText(name);
+
+            Spanned bytesText = Html.fromHtml(getString(R.string.written)
+                    + " <font color='" + accentColor + "'><i>" + Futils.readableFileSize(doneBytes)
+                    + " </font></i>" + getString(R.string.out_of) + " <i>"
+                    + Futils.readableFileSize(total) + "</i>");
+            mProgressBytesText.setText(bytesText);
+
+            Spanned fileProcessedSpan = Html.fromHtml(getString(R.string.processing_file)
+                    + " <font color='" + accentColor + "'><i>" + (dataPackage.getSourceProgress())
+                    + " </font></i>" + getString(R.string.of) + " <i>"
+                    + dataPackage.getSourceFiles() + "</i>");
+            mProgressFileText.setText(fileProcessedSpan);
+
+            Spanned speedSpan = Html.fromHtml(getString(R.string.current_speed)
+                    + ": <font color='" + accentColor + "'><i>"
+                    + Futils.readableFileSize(dataPackage.getSpeedRaw())
+                    + "/s</font></i>");
+            mProgressSpeedText.setText(speedSpan);
         }
     }
 
@@ -380,7 +381,7 @@ public class ProcessViewer extends Fragment {
      * Setup drawables and click listeners based on the {@link ServiceType}
      * @param serviceType
      */
-    private void setupDrawables(ServiceType serviceType) {
+    private void setupDrawables(ServiceType serviceType, boolean isMove) {
         switch (serviceType) {
             case COPY:
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
@@ -391,16 +392,9 @@ public class ProcessViewer extends Fragment {
                     mProgressImage.setImageDrawable(getResources()
                             .getDrawable(R.drawable.ic_content_copy_grey600_36dp));
                 }
-                mCancelButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getActivity(),
-                                getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
-                        Intent i = new Intent(CopyService.TAG_BROADCAST_COPY_CANCEL);
-                        getActivity().sendBroadcast(i);
-                        mProgressTextView.setText(getString(R.string.cancel));
-                    }
-                });
+                mProgressTypeText.setText(isMove ? getResources().getString(R.string.moving)
+                        : getResources().getString(R.string.copying));
+                cancelBroadcast(new Intent(CopyService.TAG_BROADCAST_COPY_CANCEL));
                 break;
             case EXTRACT:
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
@@ -411,17 +405,8 @@ public class ProcessViewer extends Fragment {
                     mProgressImage.setImageDrawable(getResources()
                             .getDrawable(R.drawable.ic_zip_box_grey600_36dp));
                 }
-
-                mCancelButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getActivity(),
-                                getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
-                        Intent i = new Intent(ExtractService.TAG_BROADCAST_EXTRACT_CANCEL);
-                        getActivity().sendBroadcast(i);
-                        mProgressTextView.setText(getString(R.string.cancel));
-                    }
-                });
+                mProgressTypeText.setText(getResources().getString(R.string.extracting));
+                cancelBroadcast(new Intent(ExtractService.TAG_BROADCAST_EXTRACT_CANCEL));
                 break;
             case COMPRESS:
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
@@ -432,19 +417,33 @@ public class ProcessViewer extends Fragment {
                     mProgressImage.setImageDrawable(getResources()
                             .getDrawable(R.drawable.ic_zip_box_grey600_36dp));
                 }
-
-                mCancelButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getActivity(),
-                                getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
-                        Intent i = new Intent(ZipTask.KEY_COMPRESS_BROADCAST_CANCEL);
-                        getActivity().sendBroadcast(i);
-                        mProgressTextView.setText(getString(R.string.cancel));
-                    }
-                });
+                mProgressTypeText.setText(getResources().getString(R.string.compressing));
+                cancelBroadcast(new Intent(ZipTask.KEY_COMPRESS_BROADCAST_CANCEL));
                 break;
         }
+    }
+
+    /**
+     * Setup click listener to cancel button click for various intent types
+     * @param intent
+     */
+    private void cancelBroadcast(final Intent intent) {
+
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
+                getActivity().sendBroadcast(intent);
+                mProgressTypeText.setText(getString(R.string.cancelled));
+                mProgressSpeedText.setText("");
+                mProgressFileText.setText("");
+                mProgressBytesText.setText("");
+                mProgressFileNameText.setText("");
+
+                mProgressTypeText.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            }
+        });
     }
 
     /**
@@ -504,19 +503,17 @@ public class ProcessViewer extends Fragment {
         XAxis xAxis = mLineChart.getXAxis();
         YAxis yAxisLeft = mLineChart.getAxisLeft();
         mLineChart.getAxisRight().setEnabled(false);
-        yAxisLeft.setAxisMinimum(0.0f);
         yAxisLeft.setTextColor(Color.WHITE);
         yAxisLeft.setAxisLineColor(Color.TRANSPARENT);
-        yAxisLeft.setSpaceTop(40);
-
-        float factor = 0.5f;
-        int whiteTrans = ( (int) ( factor * 255.0f ) << 24 ) | ( Color.WHITE & 0x00ffffff);
-        yAxisLeft.setGridColor(whiteTrans);
+        yAxisLeft.setTypeface(Typeface.DEFAULT_BOLD);
+        yAxisLeft.setGridColor(getResources().getColor(R.color.white_translucent));
 
         xAxis.setAxisMaximum(Futils.readableFileSizeFloat(totalBytes));
+        xAxis.setAxisMinimum(0.0f);
         xAxis.setAxisLineColor(Color.TRANSPARENT);
         xAxis.setGridColor(Color.TRANSPARENT);
         xAxis.setTextColor(Color.WHITE);
+        xAxis.setTypeface(Typeface.DEFAULT_BOLD);
         mLineChart.setData(mLineData);
         mLineChart.invalidate();
     }

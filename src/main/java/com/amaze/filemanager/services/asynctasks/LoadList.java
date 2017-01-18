@@ -25,6 +25,7 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
@@ -33,6 +34,7 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.icons.Icons;
+import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
@@ -183,6 +185,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
 
                 } catch (RootNotPermittedException e) {
                     // TODO: Better handle this exception by showing a notification to user
+                    AppConfig.toast(c, c.getString(R.string.not_allowed));
                     return null;
                 }
                 break;
@@ -243,9 +246,9 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         if (isCancelled()) {
             list = null;
         }
+
         ma.createViews(list, back, path, openmode, false, grid);
         ma.mSwipeRefreshLayout.setRefreshing(false);
-
     }
 
     ArrayList<BaseFile> listaudio() {

@@ -39,132 +39,6 @@ import eu.chainfire.libsuperuser.Shell;
 
 public class RootHelper {
 
-    /*public static String runAndWait(String cmd, boolean root) {
-
-        Command c = new Command(0, cmd) {
-            @Override
-            public void commandOutput(int i, String s) {
-
-            }
-
-            @Override
-            public void commandTerminated(int i, String s) {
-
-            }
-
-            @Override
-            public void commandCompleted(int i, int i2) {
-
-            }
-        };
-        try {
-            RootTools.getShell(root).add(c);
-        } catch (Exception e) {
-            return null;
-        }
-
-        if (!waitForCommand(c, -1)) {
-            return null;
-        }
-
-        return c.toString();
-    }
-
-    public static ArrayList<String> runAndWait1(String cmd, final boolean root, final long time) {
-        final ArrayList<String> output = new ArrayList<String>();
-        Command cc = new Command(1, cmd) {
-            @Override
-            public void commandOutput(int i, String s) {
-                output.add(s);
-            }
-
-            @Override
-            public void commandTerminated(int i, String s) {
-
-                System.out.println("error" + root + s+time);
-
-            }
-
-            @Override
-            public void commandCompleted(int i, int i2) {
-
-            }
-        };
-        try {
-            RootTools.getShell(root).add(cc);
-        } catch (Exception e) {
-            //       Logger.errorST("Exception when trying to run shell command", e);
-            e.printStackTrace();
-            return null;
-        }
-
-        if (!waitForCommand(cc, time)) {
-            return null;
-        }
-
-        return output;
-    }
-
-    public static ArrayList<String> runAndWait1(String cmd, final boolean root) {
-        final ArrayList<String> output = new ArrayList<String>();
-        Command cc = new Command(1, cmd) {
-            @Override
-            public void commandOutput(int i, String s) {
-                output.add(s);
-            }
-
-            @Override
-            public void commandTerminated(int i, String s) {
-
-                System.out.println("error" + root + s);
-
-            }
-
-            @Override
-            public void commandCompleted(int i, int i2) {
-
-            }
-        };
-        try {
-            RootTools.getShell(root).add(cc);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        if (!waitForCommand(cc, -1)) {
-            return null;
-        }
-
-        return output;
-    }
-
-    private static boolean waitForCommand(Command cmd, long time) {
-        long t = 0;
-        while (!cmd.isFinished()) {
-            synchronized (cmd) {
-                try {
-                    if (!cmd.isFinished()) {
-                        cmd.wait(2000);
-                        t += 2000;
-                        if (t != -1 && t >= time)
-                            return true;
-
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (!cmd.isExecuting() && !cmd.isFinished()) {
-                return false;
-            }
-        }
-
-        //Logger.debug("Command Finished!");
-        return true;
-    }*/
-
     /**
      * Runs the command and stores output in a list. The listener is set on the handler
      * thread {@link MainActivity#handlerThread} thus any code run in callback must be thread safe.
@@ -175,10 +49,10 @@ public class RootHelper {
      * @throws RootNotPermittedException
      */
     public static ArrayList<String> runShellCommand(String cmd) throws RootNotPermittedException {
-        //if (!MainActivity.shellInteractive.isRunning()) throw new RootNotPermittedException();
+        if (!MainActivity.shellInteractive.isRunning()) throw new RootNotPermittedException();
         final ArrayList<String> result = new ArrayList<>();
 
-        // callback being called on a background handler thead
+        // callback being called on a background handler thread
         MainActivity.shellInteractive.addCommand(cmd, 0, new Shell.OnCommandResultListener() {
             @Override
             public void onCommandResult(int commandCode, int exitCode, List<String> output) {
@@ -204,7 +78,7 @@ public class RootHelper {
      */
     public static void runShellCommand(String cmd, Shell.OnCommandResultListener callback)
             throws RootNotPermittedException {
-        //if (!MainActivity.shellInteractive.isRunning()) throw new RootNotPermittedException();
+        if (!MainActivity.shellInteractive.isRunning()) throw new RootNotPermittedException();
         MainActivity.shellInteractive.addCommand(cmd, 0, callback);
     }
 
@@ -487,14 +361,14 @@ public class RootHelper {
         OpenMode mode=OpenMode.FILE;
         //if (showHidden) p = "a ";
         ArrayList<BaseFile> a = new ArrayList<>();
-        ArrayList<String> ls = new ArrayList<>();
+        ArrayList<String> ls;
         if (root) {
             // we're rooted and we're trying to load file with superuser
             if (!path.startsWith("/storage") && !path.startsWith("/sdcard")) {
                 // we're at the root directories, superuser is required!
                 String cpath = getCommandLineString(path);
                 //ls = Shell.SU.run("ls -l " + cpath);
-                ls = runShellCommand("ls -l " + cpath);
+                ls = runShellCommand("ls -l " + (showHidden ? "-a " : "") + cpath);
                 if (ls != null) {
                     for (int i=0;i<ls.size();i++) {
                         String file=ls.get(i);
@@ -540,6 +414,5 @@ public class RootHelper {
         }
         if(getModeCallBack!=null)getModeCallBack.getMode(mode);
         return a;
-
     }
 }
