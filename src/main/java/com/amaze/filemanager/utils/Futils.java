@@ -408,6 +408,7 @@ public class Futils {
     public void openunknown(DocumentFile f, Context c, boolean forcechooser) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         String type = f.getType();
         if(type!=null && type.trim().length()!=0 && !type.equals("*/*")) {
@@ -574,6 +575,7 @@ public class Futils {
 
                 Intent intent = new Intent();
                 intent.setAction(android.content.Intent.ACTION_VIEW);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 switch (i) {
                     case 0:
                         intent.setDataAndType(f.getUri(), "text/*");
@@ -937,11 +939,13 @@ public class Futils {
         } else if (f.getName().toLowerCase().endsWith(".db")) {
             Intent intent = new Intent(m, DbViewer.class);
             intent.putExtra("path", f.getUri());
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             m.startActivity(intent);
         }  else if (Icons.isAudio(f.getName())) {
             final int studio_count = sharedPreferences.getInt("studio", 0);
             final Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.setDataAndType(f.getUri(), "audio/*");
 
             // Behold! It's the  legendary easter egg!

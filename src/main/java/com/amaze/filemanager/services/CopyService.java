@@ -72,9 +72,9 @@ public class CopyService extends Service {
     int totalSourceFiles = 0;
     int sourceProgress = 0;
 
-    private static final String TAG_COPY_TARGET = "COPY_DIRECTORY";
-    private static final String TAG_COPY_SOURCES = "FILE_PATHS";
-    private static final String TAG_COPY_OPEN_MODE = "MODE";
+    public static final String TAG_COPY_TARGET = "COPY_DIRECTORY";
+    public static final String TAG_COPY_SOURCES = "FILE_PATHS";
+    public static final String TAG_COPY_OPEN_MODE = "MODE"; // target open mode
     private static final String TAG_COPY_MOVE = "move";
     private static final String TAG_COPY_START_ID = "id";
 
@@ -94,7 +94,7 @@ public class CopyService extends Service {
         ArrayList<BaseFile> files = intent.getParcelableArrayListExtra(TAG_COPY_SOURCES);
         String targetPath = intent.getStringExtra(TAG_COPY_TARGET);
         int mode=intent.getIntExtra(TAG_COPY_OPEN_MODE, 0);
-        totalSize = OpenMode.getOpenMode(mode)==OpenMode.OTG ?
+        totalSize = files.get(0).getMode()==OpenMode.OTG ?
                 getTotalBytes(files, getApplicationContext()) : getTotalBytes(files);
         totalSourceFiles = files.size();
         progressHandler = new ProgressHandler(totalSourceFiles, totalSize);
@@ -243,6 +243,14 @@ public class CopyService extends Service {
                 return 0;
             }
 
+            /**
+             * Method iterate through files to be copied
+             * @param id
+             * @param sourceFiles
+             * @param targetPath
+             * @param move
+             * @param mode target file open mode (current path's open mode)
+             */
             public void execute(final int id, final ArrayList<BaseFile> sourceFiles, final String targetPath,
                                 final boolean move,OpenMode mode) {
                 if (checkFolder((targetPath), c) == 1) {
@@ -280,7 +288,7 @@ public class CopyService extends Service {
                                     continue;
                                 }
                                 progressHandler.setSourceFilesProcessed(++sourceProgress);
-                                copyFiles((f1),hFile, progressHandler);
+                                copyFiles((f1), hFile, progressHandler);
                             }
                             else{
                                 break;

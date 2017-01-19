@@ -116,6 +116,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                 try {
                     SmbFile[] smbFile = hFile.getSmbFile(5000).listFiles();
                     list = ma.addToSmb(smbFile, path);
+                    openmode = OpenMode.SMB;
                 } catch (SmbAuthException e) {
                     if(!e.getMessage().toLowerCase().contains("denied"))
                         ma.reauthenticateSmb();
@@ -169,6 +170,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                 break;
             case OTG:
                 list = addTo(listOtg(path));
+                openmode = OpenMode.OTG;
                 break;
             default:
                 // we're neither in OTG not in SMB, load the list based on root/general filesystem

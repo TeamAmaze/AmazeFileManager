@@ -109,9 +109,9 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
                     if (!move) {
 
                         Intent intent = new Intent(con, CopyService.class);
-                        intent.putParcelableArrayListExtra("FILE_PATHS",ab);
-                        intent.putExtra("COPY_DIRECTORY", path);
-                        intent.putExtra("MODE",openMode);
+                        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, ab);
+                        intent.putExtra(CopyService.TAG_COPY_TARGET, path);
+                        intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, openMode.ordinal());
                         ServiceWatcherUtil.runService(mainActivity, intent);
                     } else {
 

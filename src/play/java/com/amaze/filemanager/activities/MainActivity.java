@@ -1069,9 +1069,9 @@ public class MainActivity extends BaseActivity implements
 
                         arrayList = COPY_PATH;
                         Intent intent = new Intent(con, CopyService.class);
-                        intent.putParcelableArrayListExtra("FILE_PATHS",arrayList);
-                        intent.putExtra("COPY_DIRECTORY", path);
-                        intent.putExtra("MODE",ma.openMode);
+                        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, arrayList);
+                        intent.putExtra(CopyService.TAG_COPY_TARGET, path);
+                        intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, ma.openMode.ordinal());
 
                         ServiceWatcherUtil.runService(mainActivity, intent);
                     } else if (MOVE_PATH!=null){

@@ -204,10 +204,10 @@ public class RootHelper {
             // iterating through the required path to find the end point
 
             DocumentFile nextDocument = rootUri.findFile(parts[i]);
-            /*if (nextDocument == null || !nextDocument.exists()) {
+            if (nextDocument == null || !nextDocument.exists()) {
                 nextDocument = rootUri.createFile(parts[i].substring(parts[i].lastIndexOf(".")), parts[i]);
                 Log.d(context.getClass().getSimpleName(), "NOT FOUND! File created: " + parts[i]);
-            }*/
+            }
             rootUri = nextDocument;
         }
         return rootUri;

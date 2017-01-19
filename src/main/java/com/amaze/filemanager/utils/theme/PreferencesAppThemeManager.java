@@ -1,14 +1,13 @@
 package com.amaze.filemanager.utils.theme;
 
 import android.content.SharedPreferences;
-import android.util.Log;
 
 public class PreferencesAppThemeManager implements AppThemeManagerInterface {
     private SharedPreferences preferences;
     private AppTheme appTheme;
 
     public PreferencesAppThemeManager(SharedPreferences preferences) {
-        Log.d("ThemeManager", "INSTANTIATE");
+
         this.preferences = preferences;
         appTheme = loadFromPreferences(preferences);
     }
@@ -31,7 +30,6 @@ public class PreferencesAppThemeManager implements AppThemeManagerInterface {
 
     @Override
     public AppTheme getAppTheme() {
-        Log.d("AppTheme", "Get " + appTheme.name());
         return appTheme;
     }
 

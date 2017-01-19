@@ -2,6 +2,7 @@ package com.amaze.filemanager.utils;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.os.ParcelFileDescriptor;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
@@ -13,6 +14,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -32,6 +34,7 @@ public class GenericCopyUtil {
     private BaseFile mSourceFile;
     private HFile mTargetFile;
     private Context mContext;   // context needed to find the DocumentFile in otg/sd card
+    private static final String PATH_FILE_DESCRIPTOR = "/proc/self/fd/";
 
     public static final int DEFAULT_BUFFER_SIZE =  8192;
 
@@ -52,6 +55,9 @@ public class GenericCopyUtil {
         FileChannel outChannel = null;
         BufferedInputStream bufferedInputStream = null;
         BufferedOutputStream bufferedOutputStream = null;
+        ParcelFileDescriptor inputFileDescriptor = null;
+        ParcelFileDescriptor outputFileDescriptor = null;
+
         try {
 
             // initializing the input channels based on file types
@@ -60,7 +66,20 @@ public class GenericCopyUtil {
                 ContentResolver contentResolver = mContext.getContentResolver();
                 DocumentFile documentSourceFile = RootHelper.getDocumentFile(mSourceFile.getPath(), mContext);
 
-                inChannel = ((FileInputStream) contentResolver.openInputStream(documentSourceFile.getUri())).getChannel();
+                try {
+
+                    // try getting file descriptor since we know it's a defined file
+                    inputFileDescriptor = contentResolver
+                            .openFileDescriptor(documentSourceFile.getUri(), "r");
+                    File procFile = new File(PATH_FILE_DESCRIPTOR + inputFileDescriptor.getFd());
+                    //if (!procFile.isFile()) throw new NullPointerException();
+
+                    bufferedInputStream = new BufferedInputStream(new FileInputStream(procFile));
+                } catch (FileNotFoundException e) {
+                    // falling back to getting input stream from uri
+                    bufferedInputStream = new BufferedInputStream(contentResolver
+                            .openInputStream(documentSourceFile.getUri()));
+                }
             } else if (mSourceFile.isSmb()) {
 
                 // source is in smb
@@ -78,7 +97,20 @@ public class GenericCopyUtil {
 
                 ContentResolver contentResolver = mContext.getContentResolver();
                 DocumentFile documentTargetFile = RootHelper.getDocumentFile(mTargetFile.getPath(), mContext);
-                outChannel = ((FileOutputStream) contentResolver.openOutputStream(documentTargetFile.getUri())).getChannel();
+
+                try {
+
+                    // try getting file descriptor since we know it's a defined file
+                    outputFileDescriptor = contentResolver
+                            .openFileDescriptor(documentTargetFile.getUri(), "rw");
+                    File procFile = new File(PATH_FILE_DESCRIPTOR + outputFileDescriptor);
+
+                    bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(procFile));
+                } catch (FileNotFoundException e) {
+                    // falling back to getting input stream from uri
+                    bufferedOutputStream = new BufferedOutputStream(contentResolver
+                            .openOutputStream(documentTargetFile.getUri()));
+                }
             } else if (mTargetFile.isSmb()) {
 
                 bufferedOutputStream = new BufferedOutputStream(mTargetFile.getOutputStream(mContext), DEFAULT_BUFFER_SIZE);
@@ -110,6 +142,8 @@ public class GenericCopyUtil {
                 if (outputStream!=null) outputStream.close();
                 if (bufferedInputStream!=null) bufferedInputStream.close();
                 if (bufferedOutputStream!=null) bufferedOutputStream.close();
+                if (inputFileDescriptor!=null)  inputFileDescriptor.close();
+                if (outputFileDescriptor!=null) outputFileDescriptor.close();
             } catch (IOException e) {
                 e.printStackTrace();
                 // failure in closing stream
@@ -158,39 +192,43 @@ public class GenericCopyUtil {
 
     private void copyFile(BufferedInputStream bufferedInputStream, BufferedOutputStream bufferedOutputStream)
             throws IOException {
-        int count;
+        int count = 0;
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        do {
+
+        while (count != -1) {
+
             count = bufferedInputStream.read(buffer);
             if (count!=-1) {
 
                 bufferedOutputStream.write(buffer, 0 , count);
                 ServiceWatcherUtil.POSITION+=count;
             }
-        } while (count!=-1);
+        }
         bufferedOutputStream.flush();
     }
 
     private void copyFile(FileChannel inChannel, BufferedOutputStream bufferedOutputStream)
             throws IOException {
         MappedByteBuffer inBuffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, mSourceFile.getSize());
+
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        int length, oldPosition, newPosition;
-        do {
+        while (inBuffer.hasRemaining()) {
 
-            oldPosition = inBuffer.position();
-            inBuffer.get(buffer);
-            newPosition = inBuffer.position();
-            length = newPosition-oldPosition;
-            if (length!=0) {
-
-                bufferedOutputStream.write(buffer, 0, length);
-                ServiceWatcherUtil.POSITION+=length;
+            int count = 0;
+            for (int i=0; i<buffer.length && inBuffer.hasRemaining(); i++) {
+                buffer[i] = inBuffer.get();
+                count++;
             }
-        } while (length==0);
+            bufferedOutputStream.write(buffer, 0, count);
+            ServiceWatcherUtil.POSITION = inBuffer.position();
+        }
         bufferedOutputStream.flush();
     }
 
+    /**
+     * Inner class responsible for getting a {@link ReadableByteChannel} from the input channel
+     * and to watch over the read progress
+     */
     class CustomReadableByteChannel implements ReadableByteChannel {
 
         ReadableByteChannel byteChannel;
