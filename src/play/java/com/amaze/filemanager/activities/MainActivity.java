@@ -241,6 +241,7 @@ public class MainActivity extends BaseActivity implements
 
     private static final int REQUEST_CODE_SAF = 223;
     public static final String KEY_PREF_OTG = "uri_usb_otg";
+    private static final String VALUE_PREF_OTG_NULL = "n/a";
     public static final String KEY_INTENT_PROCESS_VIEWER = "openprocesses";
 
     // the current visible tab, either 0 or 1
@@ -321,7 +322,8 @@ public class MainActivity extends BaseActivity implements
                     mainActivityHelper.showFailedOperationDialog(failedOps, intent.getBooleanExtra("move", false), this);
                 }
             }
-            if (intent.getAction() != null)
+            if (intent.getAction() != null) {
+
                 if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
 
                     // file picker intent
@@ -339,6 +341,7 @@ public class MainActivity extends BaseActivity implements
                     openzip = true;
                     zippath = uri.toString();
                 }
+            }
         } catch (Exception e) {
 
         }
@@ -539,8 +542,31 @@ public class MainActivity extends BaseActivity implements
         File usb = getUsbDrive();
         if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
 
-        if (Sp.getString(KEY_PREF_OTG, null)!=null) rv.add("otg:/");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (isUsbDeviceConnected()) rv.add("otg:/");
+        }
         return rv;
+    }
+
+    /**
+     * Method finds whether a USB device is connected or not
+     * @return true if device is connected
+     */
+    private boolean isUsbDeviceConnected() {
+        UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
+        if (usbManager.getDeviceList().size()!=0) {
+            // we need to set this every time as there is no way to know that whether USB device was
+            // disconnected after closing the app and another one was connected
+            // in that case the uri will obviously change
+            // other wise we could persist the uri even after reopening the app by not writing
+            // this preference when it's not null
+            Sp.edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
+            return true;
+        } else {
+
+            Sp.edit().putString(KEY_PREF_OTG, null).apply();
+            return false;
+        }
     }
 
     @Override
@@ -774,6 +800,7 @@ public class MainActivity extends BaseActivity implements
                 TabFragment tabFragment = new TabFragment();
                 Bundle a = new Bundle();
                 a.putString("path", ((EntryItem) list.get(i)).getPath());
+
                 tabFragment.setArguments(a);
 
                 android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -789,11 +816,24 @@ public class MainActivity extends BaseActivity implements
                 floatingActionButton.showMenuButton(true);
             } else {
                 pending_path = ((EntryItem) list.get(i)).getPath();
-                if (pending_path.equals("drive")) {
-                    pending_path = ((EntryItem) list.get(i)).getTitle();
-                }
+
                 select = i;
                 adapter.toggleChecked(select);
+
+                if (((EntryItem) list.get(i)).getPath().equals("otg:/")) {
+
+                    if (Sp.getString(KEY_PREF_OTG, null).equals(VALUE_PREF_OTG_NULL)) {
+
+                        // we've not gotten otg path yet
+                        // start system request for storage access framework
+                        Toast.makeText(getApplicationContext(),
+                                getString(R.string.otg_access), Toast.LENGTH_LONG).show();
+                        Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                        startActivityForResult(safIntent, REQUEST_CODE_SAF);
+                        return;
+                    }
+                }
+
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
 
@@ -1249,7 +1289,9 @@ public class MainActivity extends BaseActivity implements
         super.onPause();
         unregisterReceiver(mainActivityHelper.mNotificationReceiver);
         unregisterReceiver(receiver2);
-        unregisterReceiver(mOtgReceiver);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            unregisterReceiver(mOtgReceiver);
+        }
         killToast();
     }
 
@@ -1278,27 +1320,36 @@ public class MainActivity extends BaseActivity implements
             floatingActionButton.hideMenuButton(false);
         }
 
-        // Registering intent filter for OTG
-        IntentFilter otgFilter = new IntentFilter();
-        otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        registerReceiver(mOtgReceiver, otgFilter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+            // Registering intent filter for OTG
+            IntentFilter otgFilter = new IntentFilter();
+            otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+            otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+            registerReceiver(mOtgReceiver, otgFilter);
+        }
     }
 
+
+    /**
+     * Receiver to check if a USB device is connected at the runtime of application
+     * If device is not connected at runtime (i.e. it was connected when the app was closed)
+     * then {@link #isUsbDeviceConnected()} method handles the connection through
+     * {@link #getStorageDirectories()}
+     */
     BroadcastReceiver mOtgReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
-                // start system request for storage access framework
-                Toast.makeText(getApplicationContext(),
-                        getString(R.string.otg_access), Toast.LENGTH_LONG).show();
-                Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                startActivityForResult(safIntent, REQUEST_CODE_SAF);
-            } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
 
-                //resetting otg provider address
+            if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
+
+                Sp.edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
+                updateDrawer();
+
+            } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
                 Sp.edit().putString(KEY_PREF_OTG, null).apply();
                 updateDrawer();
+                goToMain("");
             }
         }
     };
@@ -1687,7 +1738,9 @@ public class MainActivity extends BaseActivity implements
         } else if (requestCode == REQUEST_CODE_SAF && responseCode == Activity.RESULT_OK) {
             // otg access
             Sp.edit().putString(KEY_PREF_OTG, intent.getData().toString()).apply();
-            updateDrawer();
+
+            if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
+            else onDrawerClosed();
         }
     }
 
@@ -2504,7 +2557,8 @@ public class MainActivity extends BaseActivity implements
             //Commit the transaction
             transaction.commitAllowingStateLoss();
             supportInvalidateOptionsMenu();
-        } else if (intent.getAction() != null)
+        } else if (intent.getAction() != null) {
+
             if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
 
                 // file picker intent
@@ -2521,6 +2575,21 @@ public class MainActivity extends BaseActivity implements
                 zippath = uri.toString();
                 openZip(zippath);
             }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+                if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
+                    if (Sp.getString(KEY_PREF_OTG, null)==null) {
+                        Sp.edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
+                        updateDrawer();
+                    }
+
+                } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
+                    Sp.edit().putString(KEY_PREF_OTG, null).apply();
+                    updateDrawer();
+                }
+            }
+        }
     }
 
     void setDrawerHeaderBackground() {

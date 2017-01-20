@@ -305,22 +305,32 @@ public class Operations {
         RootUtils.rename(a.getPath(), a.getParent() + "/" + newname);
         RootUtils.mountOwnerRO(a.getParent());
     }
-    public static int checkFolder(final File folder, Context context) {
-        boolean lol= Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP,ext=FileUtil.isOnExtSdCard(folder, context);
-        if (lol && ext) {
-            if (!folder.exists() || !folder.isDirectory()) {
-                return 0;
-            }
 
-            // On Android 5, trigger storage access framework.
-            if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
-                return 2;
+    public static int checkFolder(final File folder, Context context) {
+        boolean lol= Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+        if (lol) {
+
+            boolean ext = FileUtil.isOnExtSdCard(folder, context);
+            if (ext) {
+
+                if (!folder.exists() || !folder.isDirectory()) {
+                    return 0;
+                }
+
+                // On Android 5, trigger storage access framework.
+                if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
+                    return 2;
+                }
+                return 1;
             }
-            return 1;
-        } else if (Build.VERSION.SDK_INT == 19 && FileUtil.isOnExtSdCard(folder, context)) {
+        } else if (Build.VERSION.SDK_INT == 19) {
             // Assume that Kitkat workaround works
-            return 1;
-        } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+            if (FileUtil.isOnExtSdCard(folder, context)) return 1;
+
+        }
+
+        // file not on external sd card
+        if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
             return 1;
         } else {
             return 0;
