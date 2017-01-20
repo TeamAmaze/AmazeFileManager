@@ -927,8 +927,16 @@ public class Futils {
     }
 
     public void openFile(final DocumentFile f, final MainActivity m) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
-        if (f.getName().toLowerCase().endsWith(".zip") ||
+        //SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
+        try {
+            openunknown(f, m, false);
+        } catch (Exception e) {
+            Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
+            openWith(f, m);
+        }
+
+        // not supporting inbuilt activities for now
+        /*if (f.getName().toLowerCase().endsWith(".zip") ||
                 f.getName().toLowerCase().endsWith(".jar") ||
                 f.getName().toLowerCase().endsWith(".rar")||
                 f.getName().toLowerCase().endsWith(".tar") ||
@@ -946,7 +954,7 @@ public class Futils {
             final Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.setDataAndType(f.getUri(), "audio/*");
+            intent.setDataAndType(f.getUri(), "audio*//*");
 
             // Behold! It's the  legendary easter egg!
             if (studio_count!=0) {
@@ -978,7 +986,7 @@ public class Futils {
                 Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
                 openWith(f, m);
             }
-        }
+        }*/
     }
 
     public static void showSMBHelpDialog(Context m,String acc){

@@ -530,12 +530,14 @@
     <string name="compression_complete">Compression Complete</string>
     <string name="compressing">Compressing</string>
     <string name="cancelled">Cancelled</string>
-    <!-- reference to - Written #bytes out of #bytes -->
+    <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
     <string name="written">Written</string>
     <string name="out_of">out of</string>
+    <!-- reference to - 'Processing file # of #' in process viewer -->
     <string name="of">of</string>
     <string name="processing_file">Processing file</string>
     <string name="current_speed">Current Speed</string>
+    <string name="smb_launch_error">You will need to copy this file to storage to open it</string>
 
 </resources>
 

@@ -74,11 +74,11 @@ public class GenericCopyUtil {
                     File procFile = new File(PATH_FILE_DESCRIPTOR + inputFileDescriptor.getFd());
                     //if (!procFile.isFile()) throw new NullPointerException();
 
-                    bufferedInputStream = new BufferedInputStream(new FileInputStream(procFile));
+                    bufferedInputStream = new BufferedInputStream(new FileInputStream(procFile), DEFAULT_BUFFER_SIZE);
                 } catch (FileNotFoundException e) {
                     // falling back to getting input stream from uri
                     bufferedInputStream = new BufferedInputStream(contentResolver
-                            .openInputStream(documentSourceFile.getUri()));
+                            .openInputStream(documentSourceFile.getUri()), DEFAULT_BUFFER_SIZE);
                 }
             } else if (mSourceFile.isSmb()) {
 
@@ -105,11 +105,11 @@ public class GenericCopyUtil {
                             .openFileDescriptor(documentTargetFile.getUri(), "rw");
                     File procFile = new File(PATH_FILE_DESCRIPTOR + outputFileDescriptor);
 
-                    bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(procFile));
+                    bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(procFile), DEFAULT_BUFFER_SIZE);
                 } catch (FileNotFoundException e) {
                     // falling back to getting input stream from uri
                     bufferedOutputStream = new BufferedOutputStream(contentResolver
-                            .openOutputStream(documentTargetFile.getUri()));
+                            .openOutputStream(documentTargetFile.getUri()), DEFAULT_BUFFER_SIZE);
                 }
             } else if (mTargetFile.isSmb()) {
 

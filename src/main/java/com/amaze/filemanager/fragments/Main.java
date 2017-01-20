@@ -1475,7 +1475,15 @@ public class Main extends android.support.v4.app.Fragment {
         new Thread() {
             public void run() {
                 try {
-                    s.setStreamSrc(smbFile, null, si);//the second argument can be a list of subtitle files
+                    /*List<SmbFile> subtitleFiles = new ArrayList<SmbFile>();
+
+                    // finding subtitles
+                    for (Layoutelements layoutelement : LIST_ELEMENTS) {
+                        SmbFile smbFile = new SmbFile(layoutelement.getDesc());
+                        if (smbFile.getName().contains(smbFile.getName())) subtitleFiles.add(smbFile);
+                    }*/
+
+                    s.setStreamSrc(smbFile, si);
                     getActivity().runOnUiThread(new Runnable() {
                         public void run() {
                             try {
@@ -1487,7 +1495,8 @@ public class Main extends android.support.v4.app.Fragment {
                                 if (resInfos != null && resInfos.size() > 0)
                                     startActivity(i);
                                 else
-                                    Toast.makeText(getActivity(), "You will need to copy this file to storage to open it", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(),
+                                            getString(R.string.smb_launch_error), Toast.LENGTH_SHORT).show();
                             } catch (ActivityNotFoundException e) {
                                 e.printStackTrace();
                             }

@@ -4,7 +4,6 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -19,7 +18,7 @@ public class Streamer extends StreamServer {
     public static final String URL = "http://127.0.0.1:" + PORT;
     private SmbFile file;
     long length=0;
-    protected List<SmbFile> extras; //those can be subtitles
+    //protected List<SmbFile> extras; //those can be subtitles
     // private InputStream stream;
     // private long length;
     private static Streamer instance;
@@ -46,9 +45,9 @@ public class Streamer extends StreamServer {
         return pattern.matcher(file.getName()).matches();
     }
 
-    public void setStreamSrc(SmbFile file,List<SmbFile> extraFiles,long len) {
+    public void setStreamSrc(SmbFile file, long len) {
         this.file = file;
-        this.extras = extraFiles;
+        //this.extras = extraFiles;
         this.length=len;
     }
 
@@ -60,14 +59,14 @@ public class Streamer extends StreamServer {
             String name = getNameFromPath(uri);
             if(file!=null && file.getName().equals(name))
                 sourceFile = file;
-            else if(extras!=null){
+            /*else if(extras!=null){
                 for(SmbFile i : extras){
                     if(i!=null && i.getName().equals(name)){
                         sourceFile = i;
                         break;
                     }
                 }
-            }
+            }*/
             if (sourceFile==null)
                 res= new Response(HTTP_NOTFOUND, MIME_PLAINTEXT, null);
             else {
