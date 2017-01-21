@@ -458,12 +458,11 @@ public class MainActivity extends BaseActivity implements
         // only one looper can be associated to a thread. So we're making sure not to create new
         // handler threads every time the code relaunch.
 
-        handlerThread = new HandlerThread("handler");
-        handlerThread.start();
-        handler = new Handler(handlerThread.getLooper());
-
         if (rootMode) {
 
+            handlerThread = new HandlerThread("handler");
+            handlerThread.start();
+            handler = new Handler(handlerThread.getLooper());
             shellInteractive = (new Shell.Builder()).useSU().setHandler(handler).open();
         }
     }

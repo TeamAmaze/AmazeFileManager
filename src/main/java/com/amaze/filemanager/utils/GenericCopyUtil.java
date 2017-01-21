@@ -34,7 +34,7 @@ public class GenericCopyUtil {
     private BaseFile mSourceFile;
     private HFile mTargetFile;
     private Context mContext;   // context needed to find the DocumentFile in otg/sd card
-    private static final String PATH_FILE_DESCRIPTOR = "/proc/self/fd/";
+    public static final String PATH_FILE_DESCRIPTOR = "/proc/self/fd/";
 
     public static final int DEFAULT_BUFFER_SIZE =  8192;
 

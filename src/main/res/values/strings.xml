@@ -538,6 +538,9 @@
     <string name="processing_file">Processing file</string>
     <string name="current_speed">Current Speed</string>
     <string name="smb_launch_error">You will need to copy this file to storage to open it</string>
+    <string name="error_file_not_found">Error: File Not Found</string>
+    <string name="error_io">I/O Error</string>
+    <string name="error_root_not_permitted">Error: Root permission not granted</string>
 
 </resources>
 

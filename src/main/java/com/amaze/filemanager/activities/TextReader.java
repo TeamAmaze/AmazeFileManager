@@ -31,6 +31,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
@@ -59,9 +60,11 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.services.asynctasks.SearchTextTask;
+import com.amaze.filemanager.utils.GenericCopyUtil;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -71,25 +74,25 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class TextReader extends BaseActivity implements TextWatcher, View.OnClickListener {
+
     String path;
     Context c = this;
     public EditText mInput, searchEditText;
-    private java.io.File mFile;
+    private File mFile;
     private String mOriginal;
     private Timer mTimer;
     private boolean mModified, isEditAllowed = true;
@@ -123,12 +126,13 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
     private RelativeLayout searchViewLayout;
 
-    Uri uri=null;
+    Uri uri = null;
     public ImageButton upButton, downButton, closeButton;
-    boolean delete=false;
-    private File pathFile;
+    boolean delete = false; // flag to specify deleting a cached file before returning
+    private File cachedFile;
     // input stream associated with the file
     private InputStream inputStream;
+    private ParcelFileDescriptor parcelFileDescriptor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -201,32 +205,39 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         } catch (Exception e) {
             mFile = null;
         }
+
         String fileName=null;
         try {
-            if (uri.getScheme().equals("file")) {
-                fileName = uri.getLastPathSegment();
-            } else {
-                Cursor cursor = null;
-                try {
-                    cursor = getContentResolver().query(uri, new String[]{
-                            MediaStore.Images.ImageColumns.DISPLAY_NAME
-                    }, null, null, null);
+            // try to get file name from content providers row
+            if (uri != null) {
+                if (uri.getScheme().equals("file")) {
+                    fileName = uri.getLastPathSegment();
+                } else {
+                    Cursor cursor = null;
+                    try {
+                        cursor = getContentResolver().query(uri, new String[]{
+                                MediaStore.Images.ImageColumns.DISPLAY_NAME
+                        }, null, null, null);
 
-                    if (cursor != null && cursor.moveToFirst()) {
-                        fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
-                    }
-                } finally {
+                        if (cursor != null && cursor.moveToFirst()) {
+                            fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
+                        }
+                    } finally {
 
-                    if (cursor != null) {
-                        cursor.close();
+                        if (cursor != null) {
+                            cursor.close();
+                        }
                     }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(fileName==null || fileName.trim().length()==0)fileName=f.getName();
+
+        // try getting filename from file system, as couldn't find from uri
+        if(fileName==null || fileName.trim().length()==0)   fileName = mFile.getName();
         getSupportActionBar().setTitle(fileName);
+
         mInput.addTextChangedListener(this);
         try {
             if (getAppTheme().equals(AppTheme.DARK))
@@ -244,7 +255,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             mInput.setScrollY(index);
         } else {
 
-            load(mFile);
+            load(uri, mFile);
         }
     }
 
@@ -280,7 +291,8 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
-                            writeTextFile(mFile.getPath(), mInput.getText().toString());
+
+                            saveFile(uri, mFile, mInput.getText().toString());
                             finish();
                         }
 
@@ -295,59 +307,137 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         }
     }
 
+    /**
+     * Method initiates a worker thread which writes the {@link #mInput} bytes to the defined
+     * file/uri 's output stream
+     * @param uri the uri associated with this text (if any)
+     * @param file the file associated with this text (if any)
+     * @param editTextString the edit text string
+     */
+    private void saveFile(final Uri uri, final File file, final String editTextString) {
 
-    File f;
 
-    public void writeTextFile(String fileName, String s) {
-        f = new File(fileName);
-        mOriginal = s;
-        final String s1 = s;
-        if (!mFile.canWrite()) {
-            f = new File(this.getFilesDir() + "/" + f.getName());
-        }
         Toast.makeText(c, R.string.saving, Toast.LENGTH_SHORT).show();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                FileWriter output = null;
+
                 try {
-                    output = new FileWriter(f.getPath());
-                    BufferedWriter writer = new BufferedWriter(output);
-                    writer.write(s1);
-                    writer.close();
-                    output.close();
-                } catch (IOException e) {
+                    writeTextFile(uri, file, editTextString);
+                } catch (StreamNotFoundException e) {
+                    e.printStackTrace();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(c, R.string.error, Toast.LENGTH_SHORT).show();
+
+                            Toast.makeText(c, R.string.error_file_not_found,
+                                    Toast.LENGTH_SHORT).show();
                         }
                     });
+                } catch (IOException e) {
                     e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
 
+                            Toast.makeText(c, R.string.error_io,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } catch (RootNotPermittedException e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
 
+                            Toast.makeText(c, R.string.error_root_not_permitted,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
-                if (!mFile.canWrite())
-
-                {
-                    try {
-                        RootUtils.mountOwnerRW(mFile.getParent());
-                        RootHelper.runShellCommand("cat " + f.getPath() + " > " + mFile.getPath());
-                    } catch (RootNotPermittedException e) {
-                        e.printStackTrace();
-                        // don't have root
-                    }
-                    f.delete();
-                }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        Toast.makeText(c, "Done", Toast.LENGTH_SHORT).show();
-                    }
-                });
             }
         }).start();
+    }
+
+    /**
+     * Helper method for {@link #saveFile(Uri, File, String)}
+     * Works on a background thread to save data to output stream associated with this reader
+     * @see #saveFile(Uri, File, String)
+     * @param uri
+     * @param file
+     * @param inputText
+     * @throws StreamNotFoundException
+     * @throws IOException
+     * @throws RootNotPermittedException
+     */
+    private void writeTextFile(final Uri uri, final File file, String inputText)
+            throws StreamNotFoundException, IOException, RootNotPermittedException {
+        mOriginal = inputText;
+
+        OutputStream outputStream = null;
+
+        if (uri != null) {
+            if (parcelFileDescriptor != null) {
+                File descriptorFile = new File(GenericCopyUtil.PATH_FILE_DESCRIPTOR + parcelFileDescriptor.getFd());
+                try {
+                    outputStream = new FileOutputStream(descriptorFile);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    outputStream = null;
+                }
+            }
+
+            if (outputStream == null) {
+                try {
+                    outputStream = getContentResolver().openOutputStream(uri);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    outputStream = null;
+                }
+            }
+        }
+
+        if (outputStream == null) {
+
+            if(file.canWrite()){
+                try {
+                    outputStream = new FileOutputStream(path);
+                } catch (FileNotFoundException e) {
+                    outputStream = null;
+                }
+            } else {
+                // try loading stream associated using root and cache dir
+                try {
+                    outputStream = new FileOutputStream(cachedFile);
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    outputStream = null;
+                }
+            }
+        }
+
+        if (outputStream == null)   throw new StreamNotFoundException();
+
+        // saving data to file
+        outputStream.write(mOriginal.getBytes());
+        outputStream.close();
+
+        // copying cached file back to original file and deleting it
+        if (!mFile.canWrite() && delete) {
+            RootUtils.mountOwnerRW(cachedFile.getParent());
+            RootHelper.runShellCommand("cat " + cachedFile.getPath() + " > " + mFile.getPath());
+            RootUtils.mountOwnerRO(cachedFile.getParent());
+
+            cachedFile.delete();
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                Toast.makeText(c, getString(R.string.done), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -356,7 +446,13 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         //   findViewById(R.id.progress).setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
-    private void load(final File mFile) {
+    /**
+     * Initiates loading of file/uri by getting an input stream associated with it
+     * on a worker thread
+     * @param uri
+     * @param mFile
+     */
+    private void load(final Uri uri, final File mFile) {
         setProgress(true);
         this.mFile = mFile;
         mInput.setHint(R.string.loading);
@@ -365,17 +461,17 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             public void run() {
 
                 try {
-                    inputStream=getInputStream(uri,path);
-                    if (inputStream!=null) {
-                        String str=null;
-                        //if(texts==null)texts=new ArrayList<>();
-                        StringBuilder stringBuilder=new StringBuilder();
-                        BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
-                        if(bufferedReader!=null){
-                            //   int i=0,k=0;
-                            //     StringBuilder stringBuilder1=new StringBuilder("");
-                            while ((str=bufferedReader.readLine())!=null){
-                                stringBuilder.append(str+"\n");
+                    inputStream = getInputStream(uri, mFile);
+
+                    String str=null;
+                    //if(texts==null)texts=new ArrayList<>();
+                    StringBuilder stringBuilder=new StringBuilder();
+                    BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
+                    if(bufferedReader!=null){
+                        //   int i=0,k=0;
+                        //     StringBuilder stringBuilder1=new StringBuilder("");
+                        while ((str=bufferedReader.readLine())!=null){
+                            stringBuilder.append(str+"\n");
                          /*       if(k<maxlength){
                                     stringBuilder1.append(str+"\n");
                                     k++;
@@ -387,32 +483,11 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                                     k=1;
                                 }
                         */    }
-                            //  texts.add(i,stringBuilder1);
-                        }
-                        mOriginal=stringBuilder.toString();
-                        inputStream.close();
-                    } else {
-                        mOriginal = "";
-                        StringBuilder stringBuilder=new StringBuilder();
-                        List<String> arrayList = RootHelper.runNonRootShellCommand("cat " + mFile.getPath());
-                        //  int i=0,k=0;
-                        //StringBuilder stringBuilder1=new StringBuilder("");
-                        for (String str:arrayList){
-                            stringBuilder.append(str+"\n");
-                        /*    if(k<maxlength){
-                                stringBuilder1.append(str+"\n");
-                                k++;
-                            }else {
-                                texts.add(i,stringBuilder1);
-                                i++;
-                                stringBuilder1=new StringBuilder("");
-                                stringBuilder1.append(str+"\n");
-                                k=1;
-                            }
-                        */}
-                        // texts.add(i,stringBuilder1);
-                        mOriginal=stringBuilder.toString();
+                        //  texts.add(i,stringBuilder1);
                     }
+                    mOriginal=stringBuilder.toString();
+                    inputStream.close();
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -429,7 +504,19 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                             setProgress(false);
                         }
                     });
-                } catch (final Exception e) {
+
+                } catch (StreamNotFoundException e) {
+
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            mInput.setHint(R.string.error);
+                        }
+                    });
+                } catch (IOException e) {
+
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
                         @Override
@@ -464,7 +551,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 break;
             case R.id.save:
                 // Make sure EditText is visible before saving!
-                writeTextFile(mFile.getPath(), mInput.getText().toString());
+                saveFile(uri, mFile, mInput.getText().toString());
                 break;
             case R.id.details:
                 if(mFile.canRead()){
@@ -492,8 +579,15 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     protected void onDestroy() {
         super.onDestroy();
 
-        // delete the file copied to cache dir
-        if(delete)pathFile.delete();
+        // closing parcel file descriptor if associated any
+        if (parcelFileDescriptor != null) {
+            try {
+                parcelFileDescriptor.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, getString(R.string.error_io), Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
@@ -540,16 +634,57 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         }
     }
 
-    InputStream getInputStream(Uri uri,String path){
-        InputStream stream=null;
-        try {
-            stream=getContentResolver().openInputStream(uri);
-        } catch (FileNotFoundException e) {
-            stream=null;
-        }
-        if(stream==null)
+    /**
+     * Helper method to {@link #load(Uri, File)}
+     * Tries to find an input stream associated with file/uri
+     * @param uri
+     * @param file
+     * @return
+     * @throws StreamNotFoundException exception thrown when we couldn't find a stream
+     * after all the attempts
+     */
+    private InputStream getInputStream(Uri uri, File file)
+            throws StreamNotFoundException {
+        InputStream stream = null;
 
-            if(mFile.canRead()){
+        if (uri != null) {
+
+            // trying to get URI from intent action
+            try {
+                // getting a writable file descriptor
+                parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "rw");
+                File parcelFile = new File(GenericCopyUtil.PATH_FILE_DESCRIPTOR + parcelFileDescriptor.getFd());
+
+                stream = new FileInputStream(parcelFile);
+            } catch (FileNotFoundException e) {
+
+                // falling back to readable file descriptor
+                try {
+                    parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
+                    File parcelFile = new File(GenericCopyUtil.PATH_FILE_DESCRIPTOR + parcelFileDescriptor.getFd());
+
+                    stream = new FileInputStream(parcelFile);
+                } catch (FileNotFoundException e1) {
+                    e1.printStackTrace();
+                    stream = null;
+                }
+            }
+
+            if (stream == null) {
+                // couldn't get a file descriptor based on path, let's try opening stream directly
+                try {
+                    stream = getContentResolver().openInputStream(uri);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    stream = null;
+
+                    // couldn't get input stream, let's try using root or basic filesystem calls
+                }
+            }
+        }
+
+        if(stream==null) {
+            if(file.canRead()){
                 try {
                     stream=new FileInputStream(path);
                 } catch (FileNotFoundException e) {
@@ -557,27 +692,33 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 }
             } else {
                 // try loading stream associated using root and cache dir
-                File file1=getExternalCacheDir();
-                if(file1==null)file1=getCacheDir();
+                File cacheDir=getExternalCacheDir();
+                if(cacheDir == null)    cacheDir = getCacheDir();
 
                 if (BaseActivity.rootMode) {
 
                     try {
-                        RootUtils.copy(path,new File(file1.getPath(), mFile.getName()).getPath());
-                        pathFile=new File(file1.getPath(),mFile.getName());
-                        RootUtils.mountOwnerRW(pathFile.getPath());
+                        RootUtils.mountOwnerRW(cacheDir.getPath());
+                        RootUtils.copy(path, new File(cacheDir.getPath(), mFile.getName()).getPath());
+                        RootUtils.mountOwnerRO(cacheDir.getPath());
+                        cachedFile = new File(cacheDir.getPath(), mFile.getName());
                         try {
-                            stream = new FileInputStream(pathFile);
+                            stream = new FileInputStream(cachedFile);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                             stream = null;
                         }
                     } catch (RootNotPermittedException e) {
                         e.printStackTrace();
+                        stream = null;
                     }
                     delete=true;
                 }
             }
+        }
+
+        // throwing exception if stream not found after all the attemps above
+        if (stream == null) throw new StreamNotFoundException();
 
         return stream;
     }

@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import eu.chainfire.libsuperuser.Shell;
-
 public class RootUtils {
     public static final String DATA_APP_DIR = "/data/app";
     private static final String LS = "ls -lAnH \"%\" --color=never";
@@ -60,7 +58,6 @@ public class RootUtils {
      * @throws RootNotPermittedException
      */
     public static void chmod(String path, int octalNotation) throws RootNotPermittedException {
-        if (!Shell.SU.available()) throw new RootNotPermittedException();
         String command = "chmod %s %s";
         Object[] args = new Object[2];
         args[0] = octalNotation;
@@ -75,7 +72,6 @@ public class RootUtils {
      * @throws RootNotPermittedException
      */
     public static void mountOwnerRW(String path) throws RootNotPermittedException{
-        if (!Shell.SU.available()) throw new RootNotPermittedException();
         chmod(path, 644);
     }
 
@@ -85,7 +81,6 @@ public class RootUtils {
      * @throws RootNotPermittedException
      */
     public static void mountOwnerRO(String path) throws RootNotPermittedException{
-        if (!Shell.SU.available()) throw new RootNotPermittedException();
         chmod(path, 444);
     }
 
@@ -113,7 +108,7 @@ public class RootUtils {
     }
 
     /**
-     *
+     * Moves file using root
      * @param path
      * @param destination
      * @throws RootNotPermittedException
