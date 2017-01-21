@@ -50,7 +50,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.provider.DocumentFile;
 import android.support.v7.widget.AppCompatButton;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
@@ -991,7 +990,7 @@ public class Futils {
 
     public static void showSMBHelpDialog(Context m,String acc){
         MaterialDialog.Builder b=new MaterialDialog.Builder(m);
-        b.content(Html.fromHtml(m.getResources().getString(R.string.smb_instructions)));
+        b.content(m.getText(R.string.smb_instructions));
         b.positiveText(R.string.doit);
         b.positiveColor(Color.parseColor(acc));
         b.build().show();
