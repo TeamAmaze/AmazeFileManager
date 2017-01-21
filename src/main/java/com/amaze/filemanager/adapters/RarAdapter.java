@@ -236,8 +236,6 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         }
         View v= mInflater.inflate(R.layout.rowlayout,parent, false);
         ViewHolder vh = new ViewHolder(v);
-        if(utilsProvider.getAppTheme().equals(AppTheme.DARK))
-            vh.txtTitle.setTextColor(zipViewer.getActivity().getResources().getColor(android.R.color.white));
         ImageButton about = (ImageButton) v.findViewById(R.id.properties);
         about.setVisibility(View.INVISIBLE);
         return vh;

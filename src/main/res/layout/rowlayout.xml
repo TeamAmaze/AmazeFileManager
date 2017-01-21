@@ -103,7 +103,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true">
 
-        <TextView
+        <com.amaze.filemanager.ui.views.ThemedTextView
             android:id="@+id/firstline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -111,7 +111,6 @@
             android:singleLine="true"
             android:ellipsize="middle"
             android:clickable="false"
-            android:textColor="@android:color/black"
             android:textSize="17sp" />
 
         <RelativeLayout
