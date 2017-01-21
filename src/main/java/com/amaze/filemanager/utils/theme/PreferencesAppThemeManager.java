@@ -2,6 +2,10 @@ package com.amaze.filemanager.utils.theme;
 
 import android.content.SharedPreferences;
 
+/**
+ * Implements {@link AppThemeManagerInterface} by saving the theme preference via the {@link SharedPreferences} object given at initialization.
+ * If an error occurs while loading the theme preference from the {@link SharedPreferences} object, LIGHT is the default.
+ */
 public class PreferencesAppThemeManager implements AppThemeManagerInterface {
     private SharedPreferences preferences;
     private AppTheme appTheme;

@@ -1,11 +1,12 @@
 package com.amaze.filemanager.utils.theme;
 
-import android.content.SharedPreferences;
-
 import com.afollestad.materialdialogs.Theme;
 
 import java.util.Calendar;
 
+/**
+ * This enum represents the theme of the app (LIGHT or DARK)
+ */
 public enum AppTheme {
     LIGHT(0, Theme.LIGHT),
     DARK(1, Theme.DARK);
@@ -16,6 +17,11 @@ public enum AppTheme {
 
     private int id;
     private Theme materialDialogTheme;
+
+    AppTheme(int id, Theme materialDialogTheme) {
+        this.id = id;
+        this.materialDialogTheme = materialDialogTheme;
+    }
 
     /**
      * Returns the correct AppTheme. If index == TIME_INDEX, current time is used to select the theme.
@@ -41,13 +47,7 @@ public enum AppTheme {
         }
     }
 
-    AppTheme(int id, Theme materialDialogTheme) {
-        this.id = id;
-        this.materialDialogTheme = materialDialogTheme;
-    }
-
     /**
-     *
      * @return The Theme enum to provide to {@link com.afollestad.materialdialogs.MaterialDialog.Builder}
      */
     public Theme getMaterialDialogTheme() {
