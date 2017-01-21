@@ -69,7 +69,7 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
 
         if (files.get(0).isOtgFile()) {
             for (BaseFile a : files) {
-                DocumentFile documentFile = RootHelper.getDocumentFile(a.getPath(), cd);
+                DocumentFile documentFile = RootHelper.getDocumentFile(a.getPath(), cd, false);
                  b = documentFile.delete();
             }
         } else {

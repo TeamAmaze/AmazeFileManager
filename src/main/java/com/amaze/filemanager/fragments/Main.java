@@ -893,7 +893,7 @@ public class Main extends android.support.v4.app.Fragment {
                         }
                     } else if (l.getMode() == OpenMode.OTG) {
 
-                        utils.openFile(RootHelper.getDocumentFile(l.getDesc(), getContext()),
+                        utils.openFile(RootHelper.getDocumentFile(l.getDesc(), getContext(), false),
                                 (MainActivity) getActivity());
                     }
                     else if (MAIN_ACTIVITY.mReturnIntent) {

@@ -74,10 +74,10 @@ public class Operations {
                 } else if (file.isOtgFile()) {
 
                     // first check whether new directory already exists
-                    DocumentFile directoryToCreate = RootHelper.getDocumentFile(file.getPath(), context);
+                    DocumentFile directoryToCreate = RootHelper.getDocumentFile(file.getPath(), context, false);
                     if (directoryToCreate!=null) errorCallBack.exists(file);
 
-                    DocumentFile parentDirectory = RootHelper.getDocumentFile(file.getParent(), context);
+                    DocumentFile parentDirectory = RootHelper.getDocumentFile(file.getParent(), context, false);
                     if (parentDirectory.isDirectory())  {
                         parentDirectory.createDirectory(file.getName());
                         errorCallBack.done(file, true);
@@ -146,10 +146,10 @@ public class Operations {
                 } else if (file.isOtgFile()) {
 
                     // first check whether new file already exists
-                    DocumentFile fileToCreate = RootHelper.getDocumentFile(file.getPath(), context);
+                    DocumentFile fileToCreate = RootHelper.getDocumentFile(file.getPath(), context, false);
                     if (fileToCreate!=null) errorCallBack.exists(file);
 
-                    DocumentFile parentDirectory = RootHelper.getDocumentFile(file.getParent(), context);
+                    DocumentFile parentDirectory = RootHelper.getDocumentFile(file.getParent(), context, false);
                     if (parentDirectory.isDirectory())  {
                         parentDirectory.createFile(file.getName().substring(file.getName().lastIndexOf(".")),
                                 file.getName());
@@ -227,8 +227,8 @@ public class Operations {
                     }
                     return null;
                 } else if (oldFile.isOtgFile()) {
-                    DocumentFile oldDocumentFile = RootHelper.getDocumentFile(oldFile.getPath(), context);
-                    DocumentFile newDocumentFile = RootHelper.getDocumentFile(newFile.getPath(), context);
+                    DocumentFile oldDocumentFile = RootHelper.getDocumentFile(oldFile.getPath(), context, false);
+                    DocumentFile newDocumentFile = RootHelper.getDocumentFile(newFile.getPath(), context, false);
                     if (newDocumentFile!=null) {
                         errorCallBack.exists(newFile);
                         return null;
@@ -263,7 +263,7 @@ public class Operations {
                                     }
                                     oldFile.setMode(OpenMode.ROOT);
                                     newFile.setMode(OpenMode.ROOT);
-                                    a=  !file.exists() && file1.exists();
+                                    a = !file.exists() && file1.exists();
                                 }
                                 errorCallBack.done(newFile,a);
                                 return null;

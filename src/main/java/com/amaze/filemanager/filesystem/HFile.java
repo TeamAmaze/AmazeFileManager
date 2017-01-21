@@ -156,7 +156,7 @@ public class HFile {
      * @return
      */
     public long length(Context context) {
-        return RootHelper.getDocumentFile(path, context).length();
+        return RootHelper.getDocumentFile(path, context, false).length();
     }
 
     public String getPath() {

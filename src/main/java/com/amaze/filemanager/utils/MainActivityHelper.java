@@ -481,6 +481,7 @@ public class MainActivityHelper {
             mainActivity.operation = DataUtils.DELETE;
         } else if (mode == 1 || mode == 0)
             new DeleteTask(null, mainActivity).execute((files));
+        else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
 
     public void extractFile(File file) {

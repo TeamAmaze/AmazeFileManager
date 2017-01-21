@@ -185,9 +185,11 @@ public class RootHelper {
      * Traverse to a specified path in OTG
      * @param path
      * @param context
+     * @param createRecursive flag used to determine whether to create new file while traversing to path,
+     *                        in case path is not present. Notably useful in opening an output stream.
      * @return
      */
-    public static DocumentFile getDocumentFile(String path, Context context) {
+    public static DocumentFile getDocumentFile(String path, Context context, boolean createRecursive) {
 
         SharedPreferences manager = PreferenceManager.getDefaultSharedPreferences(context);
         String rootUriString = manager.getString(MainActivity.KEY_PREF_OTG, null);
@@ -204,9 +206,11 @@ public class RootHelper {
             // iterating through the required path to find the end point
 
             DocumentFile nextDocument = rootUri.findFile(parts[i]);
-            if (nextDocument == null || !nextDocument.exists()) {
-                nextDocument = rootUri.createFile(parts[i].substring(parts[i].lastIndexOf(".")), parts[i]);
-                Log.d(context.getClass().getSimpleName(), "NOT FOUND! File created: " + parts[i]);
+            if (createRecursive) {
+                if (nextDocument == null || !nextDocument.exists()) {
+                    nextDocument = rootUri.createFile(parts[i].substring(parts[i].lastIndexOf(".")), parts[i]);
+                    Log.d(context.getClass().getSimpleName(), "NOT FOUND! File created: " + parts[i]);
+                }
             }
             rootUri = nextDocument;
         }

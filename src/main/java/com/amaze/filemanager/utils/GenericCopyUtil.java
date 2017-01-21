@@ -64,7 +64,8 @@ public class GenericCopyUtil {
             if (mSourceFile.isOtgFile()) {
                 // source is in otg
                 ContentResolver contentResolver = mContext.getContentResolver();
-                DocumentFile documentSourceFile = RootHelper.getDocumentFile(mSourceFile.getPath(), mContext);
+                DocumentFile documentSourceFile = RootHelper.getDocumentFile(mSourceFile.getPath(),
+                        mContext, false);
 
                 try {
 
@@ -96,7 +97,8 @@ public class GenericCopyUtil {
                 // target in OTG, obtain streams from DocumentFile Uri's
 
                 ContentResolver contentResolver = mContext.getContentResolver();
-                DocumentFile documentTargetFile = RootHelper.getDocumentFile(mTargetFile.getPath(), mContext);
+                DocumentFile documentTargetFile = RootHelper.getDocumentFile(mTargetFile.getPath(),
+                        mContext, true);
 
                 try {
 
