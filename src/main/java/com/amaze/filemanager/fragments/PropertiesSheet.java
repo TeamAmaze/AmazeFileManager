@@ -62,7 +62,7 @@ public class PropertiesSheet extends BottomSheetDialogFragment {
         mFileNameTextView = (TextView) rootView.findViewById(R.id.text_view_file_name);
         mFileNameTextView.setText(mFile.getName());
         mFileTypeTextView = (TextView) rootView.findViewById(R.id.text_view_file_type);
-        mFileTypeTextView.setText(mFile.getName().substring(mFile.getName().lastIndexOf(".")));
+        mFileTypeTextView.setText(mFile.isDirectory() ? getString(R.string.folder) : mFile.getName().substring(mFile.getName().lastIndexOf(".")));
         mFileSizeTextView = (TextView) rootView.findViewById(R.id.text_view_file_size);
         mFileSizeTextView.setText(Math.round(mFile.getSize()) + "");
         mFileLocationTextView = (TextView) rootView.findViewById(R.id.text_view_file_location);
