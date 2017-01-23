@@ -818,7 +818,7 @@ public class Futils {
             android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context
                     .getSystemService(context.CLIPBOARD_SERVICE);
             android.content.ClipData clip = android.content.ClipData
-                    .newPlainText("Path copied to clipboard", text);
+                    .newPlainText(context.getString(R.string.clipboard_path_copy), text);
             clipboard.setPrimaryClip(clip);
             return true;
         } catch (Exception e) {

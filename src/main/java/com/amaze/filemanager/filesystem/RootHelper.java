@@ -80,6 +80,7 @@ public class RootHelper {
             throws RootNotPermittedException {
         if (!MainActivity.shellInteractive.isRunning()) throw new RootNotPermittedException();
         MainActivity.shellInteractive.addCommand(cmd, 0, callback);
+        MainActivity.shellInteractive.waitForIdle();
     }
 
     /**
@@ -283,7 +284,12 @@ public class RootHelper {
         File f=new File(path);
         String p=f.getParent();
         if (p != null && p.length() >0) {
-            ArrayList<BaseFile> ls = getFilesList(p,true,true,null);
+            ArrayList<BaseFile> ls = getFilesList(p, true, true, new GetModeCallBack() {
+                @Override
+                public void getMode(OpenMode mode) {
+
+                }
+            });
             for(BaseFile strings:ls){
                 if(strings.getPath()!=null && strings.getPath().equals(path)){
                     return true;
@@ -291,7 +297,7 @@ public class RootHelper {
 
             }
         }
-    return false;
+        return false;
     }
 
     static boolean contains(String[] a,String name){
@@ -324,7 +330,7 @@ public class RootHelper {
                             if(count>5)
                                 return f.isDirectory();
                             else
-                            return isDirectory(path.getLink().trim(), root, ++count);
+                                return isDirectory(path.getLink().trim(), root, ++count);
                         }
                         else return f.isDirectory();
                     } catch (Exception e) {
@@ -358,8 +364,8 @@ public class RootHelper {
      * @param getModeCallBack callback to set the type of file
      * @return
      */
-    public static ArrayList<BaseFile> getFilesList(String path, boolean root,
-                                                   boolean showHidden,GetModeCallBack getModeCallBack)
+    public static ArrayList<BaseFile> getFilesList(String path, boolean root, boolean showHidden,
+                                                   GetModeCallBack getModeCallBack)
             throws RootNotPermittedException {
         //String p = " ";
         OpenMode mode=OpenMode.FILE;

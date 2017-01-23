@@ -74,9 +74,9 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
             }
         } else {
 
-            for(BaseFile a:files)
+            for(BaseFile a : files)
                 try {
-                    (a).delete(cd,rootMode);
+                    (a).delete(cd, rootMode);
                 } catch (RootNotPermittedException e) {
                     e.printStackTrace();
                     b = false;

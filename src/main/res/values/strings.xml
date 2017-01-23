@@ -556,7 +556,8 @@
     <string name="smb_launch_error">You will need to copy this file to storage to open it</string>
     <string name="error_file_not_found">Error: File Not Found</string>
     <string name="error_io">I/O Error</string>
-    <string name="error_root_not_permitted">Error: Root permission not granted</string>
+    <string name="clipboard_path_copy">Path copied to clipboard</string>
+    <string name="error_busybox">Busybox not found. Closing interactive shell.</string>
 
 </resources>
 

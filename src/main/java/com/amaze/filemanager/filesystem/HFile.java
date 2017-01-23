@@ -35,9 +35,9 @@ public class HFile {
         this.mode = mode;
     }
 
-    public HFile(OpenMode mode,String path, String name,boolean isDirectory) {
+    public HFile(OpenMode mode, String path, String name, boolean isDirectory) {
         this.mode = mode;
-        if (path.startsWith("smb://") || isSmb()){
+        if (path.startsWith("smb://") || isSmb()) {
             if(!isDirectory)this.path = path + name;
             else if(!name.endsWith("/")) this.path=path+name+"/";
             else this.path=path+name;
@@ -225,6 +225,7 @@ public class HFile {
                 }
                 break;
             case FILE:
+            case ROOT:
                 parentPath = new File(path).getParent();
                 break;
             default:
@@ -492,17 +493,15 @@ public class HFile {
                 Logger.log(e,path,context);
             }
         } else {
-            boolean b= FileUtil.deleteFile(new File(path), context);
-            if(!b && rootmode){
+            if(isRoot() && rootmode) {
                 setMode(OpenMode.ROOT);
-                /*RootTools.remount(getParent(),"rw");
-                String s=RootHelper.runAndWait("rm -r \""+getPath()+"\"",true);
-                RootTools.remount(getParent(),"ro");*/
-                RootUtils.mountOwnerRW(getParent());
-                RootUtils.delete(getPath());
-                RootUtils.mountOwnerRO(getParent());
-            }
 
+                RootUtils.chmod(getPath(), 744);
+                RootUtils.delete(getPath());
+            } else {
+
+                FileUtil.deleteFile(new File(path), context);
+            }
         }
         return !exists();
     }
