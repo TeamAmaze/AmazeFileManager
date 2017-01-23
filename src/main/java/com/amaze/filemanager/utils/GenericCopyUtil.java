@@ -171,16 +171,17 @@ public class GenericCopyUtil {
 
         MappedByteBuffer byteBuffer = outChannel.map(FileChannel.MapMode.READ_WRITE, 0,
                 mSourceFile.getSize());
-        int count;
+        int count = 0;
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        do {
+        while (count != -1) {
+
             count = bufferedInputStream.read(buffer);
             if (count!=-1) {
 
                 byteBuffer.put(buffer, 0, count);
                 ServiceWatcherUtil.POSITION+=count;
             }
-        } while (count!=-1);
+        }
     }
 
     private void copyFile(FileChannel inChannel, FileChannel outChannel) throws IOException {

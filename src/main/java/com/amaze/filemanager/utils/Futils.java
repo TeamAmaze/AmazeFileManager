@@ -696,18 +696,18 @@ public class Futils {
         return inSampleSize;
     }
 
-    public void showProps(final BaseFile hFile, final String perm, final MainActivity c, boolean root, AppTheme appTheme) {
+    public void showProps(final BaseFile hFile, final String perm, final Main c, boolean root, AppTheme appTheme) {
         long last=hFile.getDate();
         String date = getdate(last);
         String items = c.getResources().getString(R.string.calculating), size = c.getResources().getString(R.string.calculating), name, parent;
         name = hFile.getName();
         parent = hFile.getReadablePath(hFile.getParent());
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c.getActivity());
         String fabskin = PreferenceUtils.getAccentString(sp);
-        MaterialDialog.Builder a = new MaterialDialog.Builder(c);
+        MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
         a.title(c.getResources().getString( R.string.properties));
         a.theme(appTheme.getMaterialDialogTheme());
-        View v=c.getLayoutInflater().inflate(R.layout.properties_dialog,null);
+        View v=c.getActivity().getLayoutInflater().inflate(R.layout.properties_dialog,null);
         AppCompatButton appCompatButton=(AppCompatButton)v.findViewById(R.id.appX);
         appCompatButton.setAllCaps(true);
         final View permtabl=v.findViewById(R.id.permtable);
@@ -720,7 +720,7 @@ public class Futils {
                     if (permtabl.getVisibility() == View.GONE) {
                         permtabl.setVisibility(View.VISIBLE);
                         but.setVisibility(View.VISIBLE);
-                        //setPermissionsDialog(permtabl, but, hFile, perm, c);
+                        setPermissionsDialog(permtabl, but, hFile, perm, c);
                     } else {
                         but.setVisibility(View.GONE);
                         permtabl.setVisibility(View.GONE);
@@ -739,8 +739,8 @@ public class Futils {
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-                c.copyToClipboard(c, hFile.getPath());
-                Toast.makeText(c, c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
+                ((MainActivity) c.getActivity()).copyToClipboard(c.getActivity(), hFile.getPath());
+                Toast.makeText(c.getActivity(), c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -753,7 +753,7 @@ public class Futils {
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.STATE_DRAGGING);*/
-        new GenerateMD5Task(materialDialog, hFile, name, parent, size, items, date,c
+        new GenerateMD5Task(materialDialog, hFile, name, parent, size, items, date,c.getActivity()
                 ,v).execute(hFile.getPath());
     }
     public static long[] getSpaces(HFile hFile){

@@ -2013,6 +2013,7 @@ public class MainActivity extends BaseActivity implements
             public void onClick(View v) {
                 Intent in = new Intent(MainActivity.this, Preferences.class);
                 startActivity(in);
+                finish();
             }
 
         });

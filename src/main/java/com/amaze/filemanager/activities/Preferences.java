@@ -90,11 +90,12 @@ public class Preferences extends BaseActivity implements ActivityCompat.OnReques
         if(select==1 && changed==1)
             restartPC(this);
         else if(select==1 || select==2){selectItem(0);}
-        else{
+        else {
             Intent in = new Intent(Preferences.this, MainActivity.class);
             in.setAction(Intent.ACTION_MAIN);
-            this.finish();
+            in.setAction(Intent.CATEGORY_LAUNCHER);
             this.startActivity(in);
+            this.finish();
         }
     }
     @Override
@@ -106,16 +107,18 @@ public class Preferences extends BaseActivity implements ActivityCompat.OnReques
                     restartPC(this);
                 else if(select==1 ){selectItem(0);}
                 else{
-                Intent in = new Intent(Preferences.this, MainActivity.class);
-                in.setAction(Intent.ACTION_MAIN);
-                final int enter_anim = android.R.anim.fade_in;
-                final int exit_anim = android.R.anim.fade_out;
-                Activity activity = this;
-                activity.overridePendingTransition(enter_anim, exit_anim);
+                    Intent in = new Intent(Preferences.this, MainActivity.class);
+                    in.setAction(Intent.ACTION_MAIN);
+                    in.setAction(Intent.CATEGORY_LAUNCHER);
+
+                    final int enter_anim = android.R.anim.fade_in;
+                    final int exit_anim = android.R.anim.fade_out;
+                    Activity activity = this;
+                    activity.overridePendingTransition(enter_anim, exit_anim);
                     activity.finish();
-                activity.overridePendingTransition(enter_anim, exit_anim);
-                activity.startActivity(in);
-            }return true;
+                    activity.overridePendingTransition(enter_anim, exit_anim);
+                    activity.startActivity(in);
+                }return true;
 
         }
         return true;
@@ -156,8 +159,8 @@ public class Preferences extends BaseActivity implements ActivityCompat.OnReques
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         if (requestCode == 66) {
-                p.invalidateGplus();
-            }
-
+            p.invalidateGplus();
         }
+
+    }
 }
