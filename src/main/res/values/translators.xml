@@ -45,4 +45,6 @@
     <string name="app_version" translatable="false">v3.1.2 Beta 6</string>
     <string name="author_1" translatable="false">Arpit Khurana</string>
     <string name="author_2" translatable="false">Vishal Nehra</string>
+    <string name="github" translatable="false">Github</string>
+    <string name="googleplus" translatable="false">Google+</string>
 </resources>

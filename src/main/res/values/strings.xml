@@ -43,6 +43,7 @@
     <string name="properties">Properties</string>
     <string name="copyingapk">Copying apk to </string>
     <string name="addbook">Add Bookmark</string>
+    <string name="delbook">Delete Bookmark</string>
     <string name="addtobook">Add to Bookmark</string>
     <string name="enterpath">Enter Path</string>
     <string name="cancel">CANCEL</string>
@@ -557,6 +558,13 @@
     <string name="error_file_not_found">Error: File Not Found</string>
     <string name="error_io">I/O Error</string>
     <string name="error_root_not_permitted">Error: Root permission not granted</string>
-
+    <string name="medium_text">Medium Text</string>
+    <string name="tap_and_hold_tips">Tap and hold on a File or Folder for more options</string>
+    <string name="permission_read">Read</string>
+    <string name="permission_write">Write</string>
+    <string name="permission_execute">Execute</string>
+    <string name="permission_owner">Owner</string>
+    <string name="permission_group">Group</string>
+    <string name="permission_other">Other</string>
 </resources>
 

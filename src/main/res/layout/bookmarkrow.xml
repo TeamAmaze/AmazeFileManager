@@ -29,7 +29,7 @@
         android:layout_height="fill_parent"
         android:src="@drawable/ic_action_cancel_light"
         android:background="?android:selectableItemBackground"
-        android:contentDescription="Delete Bookmark" />
+        android:contentDescription="@string/delbook" />
 
     <LinearLayout
         android:layout_height="wrap_content"
