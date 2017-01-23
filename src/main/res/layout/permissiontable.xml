@@ -28,23 +28,22 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="" />
+            android:padding="5dp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:text="Read" />
+            android:text="@string/permission_read" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:text="Write" />
+            android:text="@string/permission_write" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:text="Execute" />
+            android:text="@string/permission_execute" />
 
         </TableRow>
     <TableRow
@@ -54,7 +53,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Owner"
+            android:text="@string/permission_owner"
             />
 
         <CheckBox
@@ -85,7 +84,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Group" />
+            android:text="@string/permission_group" />
 
         <CheckBox
             android:id="@+id/creadgroup"
@@ -109,7 +108,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Other" />
+            android:text="@string/permission_other" />
 
         <CheckBox
             android:id="@+id/creadother"

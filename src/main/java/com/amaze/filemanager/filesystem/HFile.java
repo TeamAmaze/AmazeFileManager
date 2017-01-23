@@ -44,11 +44,13 @@ public class HFile {
         } else this.path = path + "/" + name;
     }
     public void generateMode(Context context){
-        if(path.startsWith("smb://"))mode=OpenMode.SMB;
-        else if (path.startsWith("otg:/")) {
-
+        if (path.startsWith("smb://")) {
+            mode = OpenMode.SMB;
+        } else if (path.startsWith("otg:/")) {
             mode = OpenMode.OTG;
-        } else {
+        } else if (isCustomPath()) {
+            mode = OpenMode.CUSTOM;
+        }else {
             if(context==null){
                 mode=OpenMode.FILE;
                 return;
@@ -202,9 +204,9 @@ public class HFile {
                 path.equals("1") ||
                 path.equals("2") ||
                 path.equals("3") ||
+                path.equals("4") ||
                 path.equals("5") ||
-                path.equals("6") ||
-                path.equals("4"))
+                path.equals("6"))
             return true;
         return false;
     }

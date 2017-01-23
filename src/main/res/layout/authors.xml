@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             style="@android:style/TextAppearance.Medium"
             android:textStyle="bold"
-            android:text="Arpit Khurana"/>
+            android:text="@string/author_1"/>
         <TextView
             android:id="@+id/git1"
             android:layout_width="wrap_content"
@@ -24,7 +24,7 @@
             android:layout_below="@id/name1"
             android:layout_marginTop="15dp"
             style="@android:style/TextAppearance.Small"
-            android:text="Github"/>
+            android:text="@string/github"/>
         <TextView
             android:id="@+id/googlePlus1"
             android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="15dp"
             style="@android:style/TextAppearance.Small"
-            android:text="Google+"/>
+            android:text="@string/googleplus"/>
         </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             style="@android:style/TextAppearance.Medium"
             android:textStyle="bold"
-            android:text="Vishal Nehra"/>
+            android:text="@string/author_2"/>
         <TextView
             android:id="@+id/git2"
             android:layout_width="wrap_content"
@@ -57,7 +57,7 @@
             android:layout_below="@id/name2"
             android:layout_marginTop="15dp"
             style="@android:style/TextAppearance.Small"
-            android:text="Github"/>
+            android:text="@string/github"/>
         <TextView
             android:id="@+id/googlePlus2"
             android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="15dp"
             style="@android:style/TextAppearance.Small"
-            android:text="Google+"/>
+            android:text="@string/googleplus"/>
     </RelativeLayout>
 
     <TextView
