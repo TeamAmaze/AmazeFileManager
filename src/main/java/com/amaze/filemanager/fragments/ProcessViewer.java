@@ -62,6 +62,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.concurrent.TimeUnit;
 
 public class ProcessViewer extends Fragment {
 
@@ -76,10 +77,11 @@ public class ProcessViewer extends Fragment {
     ImageButton mCancelButton;
     ImageView mProgressImage;
     private TextView mProgressTypeText, mProgressFileNameText,
-            mProgressBytesText, mProgressFileText,  mProgressSpeedText;
+            mProgressBytesText, mProgressFileText,  mProgressSpeedText, mProgressTimer;
 
     private LineChart mLineChart;
     private LineData mLineData = new LineData();
+    private long time = 0l;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -110,6 +112,7 @@ public class ProcessViewer extends Fragment {
         mProgressBytesText = (TextView) rootView.findViewById(R.id.text_view_progress_bytes);
         mProgressFileText = (TextView) rootView.findViewById(R.id.text_view_progress_file);
         mProgressSpeedText = (TextView) rootView.findViewById(R.id.text_view_progress_speed);
+        mProgressTimer = (TextView) rootView.findViewById(R.id.text_view_progress_timer);
 
         if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
 
@@ -375,7 +378,25 @@ public class ProcessViewer extends Fragment {
                     + Formatter.formatFileSize(getContext(), dataPackage.getSpeedRaw())
                     + "/s</font></i>");
             mProgressSpeedText.setText(speedSpan);
+
+            Spanned timerSpan = Html.fromHtml(getString(R.string.service_timer)
+                    + ": <font color='" + accentColor + "'><i>"
+                    + formatTimer(++time)
+                    + "</font></i>");
+
+            mProgressTimer.setText(timerSpan);
         }
+    }
+
+    /**
+     * Formats input to plain mm:ss format
+     * @param timer
+     * @return
+     */
+    private String formatTimer(long timer) {
+        final long min = TimeUnit.SECONDS.toMinutes(timer);
+        final long sec = TimeUnit.SECONDS.toSeconds(timer - TimeUnit.MINUTES.toMillis(min));
+        return String.format("%02d:%02d", min, sec);
     }
 
     /**

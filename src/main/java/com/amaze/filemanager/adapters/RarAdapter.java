@@ -406,14 +406,14 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
                         } else {
                             String x=rowItem.getName().substring(rowItem.getName().lastIndexOf("/")+1);
-                            BaseFile file = new BaseFile(c.getCacheDir().getAbsolutePath() + "/" + x);
+                            BaseFile file = new BaseFile(c.getExternalCacheDir().getAbsolutePath() + "/" + x);
                             file.setMode(OpenMode.FILE);
-                            zipViewer.files.clear();
-                            zipViewer.files.add(0, file);
+                            zipViewer.files.add(file);
 
                             try {
                                 ZipFile zipFile = new ZipFile(zipViewer.f);
-                                new ZipExtractTask(utilsProvider, zipFile, c.getCacheDir().getAbsolutePath(), zipViewer.getActivity(), x,true,rowItem.getEntry()).execute();
+                                new ZipExtractTask(utilsProvider, zipFile, c.getExternalCacheDir().getAbsolutePath(),
+                                        zipViewer.getActivity(), x, true, rowItem.getEntry()).execute();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -422,7 +422,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         });
     }
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder vholder,final int position1) {
+    public void onBindViewHolder(RecyclerView.ViewHolder vholder, final int position1) {
         if(zipMode){
             onBindView(vholder,position1);
             return;
@@ -522,20 +522,20 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                         new RarHelperTask(zipViewer,  rowItem.getFileNameString()).execute
                                 (zipViewer.f);
 
-                    }else {
+                    } else {
                         if (headerRequired(rowItem)!=null) {
                             FileHeader fileHeader = headerRequired(rowItem);
-                            BaseFile file1 = new BaseFile(c.getCacheDir().getAbsolutePath()
+                            BaseFile file1 = new BaseFile(c.getExternalCacheDir().getAbsolutePath()
                                     + "/" + fileHeader.getFileNameString());
                             file1.setMode(OpenMode.FILE);
-                            zipViewer.files.clear();
-                            zipViewer.files.add(0, file1);
-                            new ZipExtractTask(utilsProvider, zipViewer.archive, c.getCacheDir().getAbsolutePath(),
+                            zipViewer.files.add(file1);
+                            new ZipExtractTask(utilsProvider, zipViewer.archive, c.getExternalCacheDir().getAbsolutePath(),
                                     zipViewer.mainActivity, fileHeader.getFileNameString(), false, fileHeader).execute();
                         }
 
                     }
-                }}
+                }
+            }
         });
     }
 

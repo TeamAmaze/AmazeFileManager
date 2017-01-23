@@ -97,7 +97,7 @@ public class Operations {
                             if (file.exists()) errorCallBack.exists(file);
                             try {
                                 RootUtils.mountOwnerRW(file.getParent());
-                                RootUtils.mkDir(file.getPath(), null);
+                                RootUtils.mkDir(file.getParent(), file.getName());
                                 RootUtils.mountOwnerRO(file.getParent());
                             } catch (RootNotPermittedException e) {
                                 Logger.log(e, file.getPath(), context);
@@ -209,6 +209,11 @@ public class Operations {
                     return null;
                 }
 
+                if(newFile.exists()){
+                    errorCallBack.exists(newFile);
+                    return null;
+                }
+
                 if (oldFile.isSmb()) {
                     try {
                         SmbFile smbFile = new SmbFile(oldFile.getPath());
@@ -236,10 +241,6 @@ public class Operations {
                     errorCallBack.done(newFile, oldDocumentFile.renameTo(newFile.getName()));
                     return null;
                 } else {
-                    if(newFile.exists()){
-                        errorCallBack.exists(newFile);
-                        return null;
-                    }
 
                     File file = new File(oldFile.getPath());
                     File file1 = new File(newFile.getPath());
@@ -257,7 +258,10 @@ public class Operations {
                                 boolean a = !file.exists() && file1.exists();
                                 if (!a && rootMode){
                                     try {
-                                        renameRoot(file, file1.getName());
+
+                                        RootUtils.mountOwnerRW(file.getParent());
+                                        RootUtils.rename(file.getPath(), file1.getPath());
+                                        RootUtils.mountOwnerRO(file.getParent());
                                     } catch (Exception e) {
                                         Logger.log(e,oldFile.getPath()+"\n"+newFile.getPath(),context);
                                     }
@@ -271,14 +275,16 @@ public class Operations {
                             break;
                         case ROOT:
                             try {
-                                renameRoot(file, file1.getName());
+
+                                RootUtils.mountOwnerRW(file.getParent());
+                                RootUtils.rename(file.getPath(), file1.getPath());
+                                RootUtils.mountOwnerRO(file1.getParent());
                             } catch (Exception e) {
                                 Logger.log(e,oldFile.getPath()+"\n"+newFile.getPath(),context);
                             }
-                            oldFile.setMode(OpenMode.ROOT);
+
                             newFile.setMode(OpenMode.ROOT);
-                            boolean a=  !file.exists() && file1.exists();
-                            errorCallBack.done(newFile,a);
+                            errorCallBack.done(newFile, true);
                             break;
 
                     }
@@ -287,23 +293,6 @@ public class Operations {
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-    }
-    static void renameRoot(File a,String v) throws Exception {
-        //boolean remount=false;
-        String newname = a.getParent() + "/" + v;
-        //String res;
-        /*if (!("rw".equals(res = RootTools.getMountedAs(a.getParent()))))
-            remount = true;
-        if (remount)
-            RootTools.remount(a.getParent(), "rw");
-        RootHelper.runAndWait("mv \"" + a.getPath()+ "\" \"" +newname+"\"" , true);
-        if (remount) {
-            if (res == null || res.length() == 0) res = "ro";
-            RootTools.remount(a.getParent(), res);
-        }*/
-        RootUtils.mountOwnerRW(a.getParent());
-        RootUtils.rename(a.getPath(), a.getParent() + "/" + newname);
-        RootUtils.mountOwnerRO(a.getParent());
     }
 
     public static int checkFolder(final File folder, Context context) {

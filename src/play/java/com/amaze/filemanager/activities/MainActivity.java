@@ -93,6 +93,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
@@ -104,6 +105,7 @@ import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
@@ -127,6 +129,7 @@ import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -464,6 +467,18 @@ public class MainActivity extends BaseActivity implements
             handlerThread.start();
             handler = new Handler(handlerThread.getLooper());
             shellInteractive = (new Shell.Builder()).useSU().setHandler(handler).open();
+
+            // check for busybox
+            try {
+                if (!RootUtils.isBusyboxAvailable()) {
+                    Toast.makeText(this, getString(R.string.error_busybox), Toast.LENGTH_LONG).show();
+                    closeInteractiveShell();
+                    Sp.edit().putBoolean(PreferenceUtils.KEY_ROOT, false).apply();
+                }
+            } catch (RootNotPermittedException e) {
+                e.printStackTrace();
+                Sp.edit().putBoolean(PreferenceUtils.KEY_ROOT, false).apply();
+            }
         }
     }
 
@@ -1375,6 +1390,21 @@ public class MainActivity extends BaseActivity implements
         super.onDestroy();
         DataUtils.clear();
 
+        closeInteractiveShell();
+
+        if (grid != null)
+            grid.end();
+        if (history != null)
+            history.end();
+        /*if (mainFragment!=null)
+            mainFragment=null;*/
+    }
+
+    /**
+     * Closes the interactive shell and threads associated
+     */
+    private void closeInteractiveShell() {
+
         if (rootMode) {
             // close interactive shell and handler thread associated with it
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -1383,13 +1413,6 @@ public class MainActivity extends BaseActivity implements
             } else handlerThread.quit();
             shellInteractive.close();
         }
-
-        if (grid != null)
-            grid.end();
-        if (history != null)
-            history.end();
-        /*if (mainFragment!=null)
-            mainFragment=null;*/
     }
 
     public void updatepaths(int pos) {
@@ -1718,8 +1741,8 @@ public class MainActivity extends BaseActivity implements
                     mainActivityHelper.mkDir(RootHelper.generateBaseFile(new File(oppathe), true), ma1);
                     break;
                 case DataUtils.RENAME:
-                    mainActivityHelper.rename(OpenMode.FILE, (oppathe), (oppathe1), mainActivity, BaseActivity.rootMode);
                     Main ma2 = ((Main) getFragment().getTab());
+                    mainActivityHelper.rename(ma2.openMode, (oppathe), (oppathe1), mainActivity, BaseActivity.rootMode);
                     ma2.updateList();
                     break;
                 case DataUtils.NEW_FILE:
@@ -1990,6 +2013,7 @@ public class MainActivity extends BaseActivity implements
             public void onClick(View v) {
                 Intent in = new Intent(MainActivity.this, Preferences.class);
                 startActivity(in);
+                finish();
             }
 
         });

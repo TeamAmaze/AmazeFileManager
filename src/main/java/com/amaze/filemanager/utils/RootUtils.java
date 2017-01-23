@@ -58,11 +58,9 @@ public class RootUtils {
      * @throws RootNotPermittedException
      */
     public static void chmod(String path, int octalNotation) throws RootNotPermittedException {
-        String command = "chmod %s %s";
-        Object[] args = new Object[2];
-        args[0] = octalNotation;
-        args[1] = path;
-        RootHelper.runShellCommand(String.format(command, args));
+        String command = "chmod %d \"%s\"";
+
+        RootHelper.runShellCommand(String.format(command, octalNotation, path));
     }
 
 
@@ -91,11 +89,23 @@ public class RootUtils {
      * @throws RootNotPermittedException
      */
     public static void copy(String source, String destination) throws RootNotPermittedException {
-        RootHelper.runShellCommand("cp " + source + " " + destination);
+        RootHelper.runShellCommand("cp \"" + source + "\" \"" + destination + "\"");
     }
 
     public static void mkDir(String path, String name) throws RootNotPermittedException {
-        RootHelper.runShellCommand("mkdir " + path + "/" + name);
+        RootHelper.runShellCommand("mkdir \"" + path + "/" + name + "\"");
+    }
+
+
+    /**
+     * Returns file permissions in octal notation
+     * @param path
+     * @return
+     */
+    public static int getFilePermissions(String path) throws RootNotPermittedException {
+        String line = RootHelper.runShellCommand("stat -c  %a \"" + path + "\"").get(0);
+
+        return Integer.valueOf(line.toString());
     }
 
     /**
@@ -104,7 +114,13 @@ public class RootUtils {
      * @throws RootNotPermittedException
      */
     public static void delete(String path) throws RootNotPermittedException {
-        RootHelper.runShellCommand("rm -r " + path);
+
+        RootHelper.runShellCommand("rm -r \"" + path + "\"");
+    }
+
+    public static boolean isBusyboxAvailable() throws RootNotPermittedException {
+        ArrayList<String> output = RootHelper.runShellCommand("busybox");
+        return output.size()!=0;
     }
 
     /**
@@ -114,11 +130,11 @@ public class RootUtils {
      * @throws RootNotPermittedException
      */
     public static void move(String path, String destination) throws RootNotPermittedException {
-        RootHelper.runShellCommand("mv " + path + " " + destination);
+        RootHelper.runShellCommand("mv \"" + path + " \" \"" + destination + "\"");
     }
 
     public static void rename(String oldPath, String newPath) throws RootNotPermittedException {
-        RootHelper.runShellCommand("mv " + oldPath + " " + newPath);
+        RootHelper.runShellCommand("mv \"" + oldPath + "\" \"" + newPath + "\"");
     }
 
     public static String parsePermission(String permLine) {
@@ -158,148 +174,5 @@ public class RootUtils {
         String finalValue = owner + "" + group + "" + world;
         return finalValue;
     }
-    /*
-    public static void createSymLink(String str, String str2) throws SEException {
-        StorageManager instance = StorageManager.getInstance();
-        try {
-            Console instance2 = Console.getInstance();
-            instance2.su();
-            String str3 = "ln -s \"" + str + "\" \"" + str2 + "\"";
-            instance.remount(str2, true);
-            instance2.execute(str3);
-            instance.remount(str2, false);
-        } catch (Throwable e) {
-            throw Exceptions.operationFailed(e);
-        } catch (Throwable e2) {
-            throw Exceptions.operationFailed(e2);
-        } catch (Throwable th) {
-            instance.remount(str2, false);
-        }
-    }
-*/
-    /*public static void copy(String str, String str2, boolean z) throws SEException {
-        StorageManager instance = StorageManager.getInstance();
-        try {
-            Console instance2 = Console.getInstance();
-            instance2.su();
-            String str3 = "cp -%s \"%s\" \"%s\"";
-            Object[] objArr = new Object[3];
-            objArr[0] = z ? "fp" : "f";
-            objArr[1] = str;
-            objArr[2] = str2;
-            String format = String.format(str3, objArr);
-            instance.remount(str2, true);
-            instance2.execute(format);
-            instance.remount(str2, false);
-        } catch (Throwable e) {
-            throw Exceptions.copyError(str, str2, e);
-        } catch (Throwable e2) {
-            throw Exceptions.copyError(str, str2, e2);
-        } catch (Throwable th) {
-            instance.remount(str2, false);
-        }
-    }
-*/
-  /*  public static void copy(SEFile sEFile, SEFile sEFile2, boolean z) throws SEException {
-        copy(sEFile.getPath(), sEFile2.getPath(), z);
-    }
-*/
-    public static void dd(String str, String str2) throws RootNotPermittedException {
-        mountOwnerRW(str2);
-        String str3 = "dd if=\"" + str + "\" of=\"" + str2 + "\"";
-        RootHelper.runShellCommand(str3);
-    }
-/*
-    public static void move(String str, String str2) throws SEException {
-        StorageManager instance = StorageManager.getInstance();
-        try {
-            Console instance2 = Console.getInstance();
-            instance2.su();
-            instance.remount(str2, true);
-            instance2.execute("mv -f \"" + str + "\" \"" + str2 + "\"");
-            instance.remount(str2, false);
-        } catch (Throwable e) {
-            throw Exceptions.copyError(str, str2, e);
-        } catch (Throwable e2) {
-            throw Exceptions.copyError(str, str2, e2);
-        } catch (Throwable th) {
-            instance.remount(str2, false);
-        }
-    }
-
-    public static void copyAndDelete(String str, String str2) {
-        copy(str, str2, true);
-        deleteFile(str);
-    }
-
-    public static void rename(String str, String str2) throws SEException {
-        StorageManager instance = StorageManager.getInstance();
-        try {
-            Console instance2 = Console.getInstance();
-            instance2.su();
-            instance.remount(str2, true);
-            instance2.execute("mv \"" + str + "\" \"" + str2 + "\"");
-            instance.remount(str2, false);
-        } catch (Throwable e) {
-            throw Exceptions.renameError(str2, e);
-        } catch (Throwable e2) {
-            throw Exceptions.renameError(str2, e2);
-        } catch (Throwable th) {
-            instance.remount(str2, false);
-        }
-    }
-
-    public static void mkdir(String str) throws SEException {
-        StorageManager instance = StorageManager.getInstance();
-        try {
-            Console instance2 = Console.getInstance();
-            instance2.su();
-            instance.remount(str, true);
-            instance2.execute("mkdir -p -m 755 \"" + str + "\"");
-            instance.remount(str, false);
-        } catch (Throwable e) {
-            throw Exceptions.mkdirError(str, e);
-        } catch (Throwable e2) {
-            throw Exceptions.mkdirError(str, e2);
-        } catch (Throwable th) {
-            instance.remount(str, false);
-        }
-    }
-
-    public static void mkfile(String str) throws SEException {
-        StorageManager instance = StorageManager.getInstance();
-        try {
-            Console instance2 = Console.getInstance();
-            instance2.su();
-            instance.remount(str, true);
-            instance2.execute("touch \"" + str + "\"");
-            instance.remount(str, false);
-        } catch (Throwable e) {
-            throw Exceptions.mkfileError(str, e);
-        } catch (Throwable e2) {
-            throw Exceptions.mkfileError(str, e2);
-        } catch (Throwable th) {
-            instance.remount(str, false);
-        }
-    }
-
-    public static boolean deleteFile(String str) throws SEException {
-        StorageManager instance = StorageManager.getInstance();
-        try {
-            Console instance2 = Console.getInstance();
-            instance2.su();
-            instance.remount(str, true);
-            instance2.execute("rm -r \"" + str + "\"");
-            instance.remount(str, false);
-            return true;
-        } catch (Throwable e) {
-            throw Exceptions.deleteError(str, e);
-        } catch (Throwable e2) {
-            throw Exceptions.deleteError(str, e2);
-        } catch (Throwable th) {
-            instance.remount(str, false);
-        }
-    }
-*/
 }
 

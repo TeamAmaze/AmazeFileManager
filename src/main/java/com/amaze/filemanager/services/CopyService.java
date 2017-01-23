@@ -236,7 +236,7 @@ public class CopyService extends Service {
                 } else if (Build.VERSION.SDK_INT == 19 && FileUtil.isOnExtSdCard(folder, context)) {
                     // Assume that Kitkat workaround works
                     return 1;
-                } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+                } else if (folder.canWrite()) {
                     return 1;
                 } else {
                     return 0;
@@ -253,23 +253,24 @@ public class CopyService extends Service {
              * @param mode target file open mode (current path's open mode)
              */
             public void execute(final int id, final ArrayList<BaseFile> sourceFiles, final String targetPath,
-                                final boolean move,OpenMode mode) {
+                                final boolean move, OpenMode mode) {
+
+                ServiceWatcherUtil watcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
+
+                // initial start of copy, initiate the watcher
+                watcherUtil.watch();
+
+                progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
+
+                    @Override
+                    public void onProgressed(String fileName, int sourceFiles, int sourceProgress,
+                                             long totalSize, long writtenSize, int speed) {
+                        publishResults(id, fileName, sourceFiles, sourceProgress, totalSize,
+                                writtenSize, speed, false, move);
+                    }
+                });
+
                 if (checkFolder((targetPath), c) == 1) {
-
-                    ServiceWatcherUtil watcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
-
-                    // initial start of copy, initiate the watcher
-                    watcherUtil.watch();
-
-                    progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
-
-                        @Override
-                        public void onProgressed(String fileName, int sourceFiles, int sourceProgress,
-                                                 long totalSize, long writtenSize, int speed) {
-                            publishResults(id, fileName, sourceFiles, sourceProgress, totalSize,
-                                    writtenSize, speed, false, move);
-                        }
-                    });
 
                     for (int i = 0; i < sourceFiles.size(); i++) {
 
@@ -279,10 +280,12 @@ public class CopyService extends Service {
 
                         try {
 
-                            HFile hFile=new HFile(mode,targetPath, sourceFiles.get(i).getName(),f1.isDirectory());
+                            HFile hFile=new HFile(mode, targetPath, sourceFiles.get(i).getName(),
+                                    f1.isDirectory());
                             if (!progressHandler.getCancelled()){
 
-                                if(!f1.isSmb() && !new File(sourceFiles.get(i).getPath()).canRead()
+                                if(!f1.isSmb()
+                                        && (f1.getMode() == OpenMode.ROOT || mode == OpenMode.ROOT)
                                         && BaseActivity.rootMode) {
                                     progressHandler.setSourceFilesProcessed(++sourceProgress);
                                     copyRoot(f1, hFile, move);
@@ -306,7 +309,8 @@ public class CopyService extends Service {
 
                 } else if (BaseActivity.rootMode) {
                     for (int i = 0; i < sourceFiles.size(); i++) {
-                        HFile hFile=new HFile(mode,targetPath, sourceFiles.get(i).getName(),sourceFiles.get(i).isDirectory());
+                        HFile hFile=new HFile(mode, targetPath, sourceFiles.get(i).getName(),
+                                sourceFiles.get(i).isDirectory());
                         copyRoot(sourceFiles.get(i), hFile, move);
                         /*if(checkFiles(new HFile(sourceFiles.get(i).getMode(),path),new HFile(OpenMode.ROOT,targetPath+"/"+name))){
                             failedFOps.add(sourceFiles.get(i));
@@ -331,14 +335,12 @@ public class CopyService extends Service {
                 }
             }
 
-            void copyRoot(BaseFile sourceFile, HFile targetFile, boolean move){
+            void copyRoot(BaseFile sourceFile, HFile targetFile, boolean move) {
 
                 try {
-                    RootUtils.mountOwnerRW(targetFile.getParent());
                     if (!move) RootUtils.copy(sourceFile.getPath(), targetFile.getPath());
                     else if (move) RootUtils.move(sourceFile.getPath(), targetFile.getPath());
                     ServiceWatcherUtil.POSITION+=sourceFile.getSize();
-                    RootUtils.mountOwnerRO(targetFile.getParent());
                 } catch (RootNotPermittedException e) {
                     failedFOps.add(sourceFile);
                     e.printStackTrace();

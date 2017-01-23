@@ -148,8 +148,7 @@ public class DbViewer extends BaseActivity {
             @Override
             public void run() {
 
-                File file1=getExternalCacheDir();
-                if(file1==null)file1=getCacheDir();
+                File file1 = getExternalCacheDir();
 
                 // if the db can't be read, and we have root enabled, try reading it by
                 // first copying it in cache dir
@@ -158,8 +157,6 @@ public class DbViewer extends BaseActivity {
                     try {
                         RootUtils.copy(pathFile.getPath(),new File(file1.getPath(),file.getName()).getPath());
                         pathFile=new File(file1.getPath(),file.getName());
-                        RootUtils.chmod(pathFile.getPath(), 777);
-                        RootUtils.mountOwnerRW(pathFile.getPath());
                     } catch (RootNotPermittedException e) {
                         e.printStackTrace();
                     }

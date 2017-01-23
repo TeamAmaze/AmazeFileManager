@@ -80,7 +80,7 @@ public class ZipViewer extends Fragment {
     private UtilitiesProviderInterface utilsProvider;
     public String s;
     public File f;
-    public ArrayList<BaseFile> files;
+    public ArrayList<BaseFile> files;       // files to be deleted from cache
     public Boolean selection = false;
     public String current;
     public String skin, accentColor, iconskin, year;
@@ -447,7 +447,7 @@ public class ZipViewer extends Fragment {
         // needed to remove any extracted file from cache, when onResume was not called
         // in case of opening any unknown file inside the zip
         // FIXME : only deletes most recent openUnknown file from cache
-        if (files.size() == 1) {
+        if (files.size()!=0) {
 
             new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute((files));
         }
@@ -456,10 +456,6 @@ public class ZipViewer extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (files.size() == 1) {
-
-            new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute((files));
-        }
 
         mainActivity.floatingActionButton.hideMenuButton(true);
     }

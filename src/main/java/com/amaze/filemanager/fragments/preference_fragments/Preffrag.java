@@ -32,7 +32,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -45,8 +44,6 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
-
-import eu.chainfire.libsuperuser.Shell;
 
 public class Preffrag extends PreferenceFragment{
 
@@ -127,13 +124,13 @@ public class Preffrag extends PreferenceFragment{
 
 
 
-        final CheckBx rootmode = (CheckBx) findPreference("rootmode");
+        /*final CheckBx rootmode = (CheckBx) findPreference("rootmode");
         rootmode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 boolean b = sharedPref.getBoolean("rootmode", false);
                 if (b) {
-                    if (Shell.SU.available()) {
+                    if (MainActivity.shellInteractive.isRunning()) {
                         rootmode.setChecked(true);
                     
                     } else {  rootmode.setChecked(false);
@@ -144,11 +141,9 @@ public class Preffrag extends PreferenceFragment{
                     rootmode.setChecked(false);
                     
                 }
-
-
                 return false;
             }
-        });
+        });*/
 
         // Feedback
         Preference preference3 = (Preference) findPreference("feedback");

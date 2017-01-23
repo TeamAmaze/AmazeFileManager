@@ -121,6 +121,13 @@
                             android:layout_marginBottom="@dimen/material_generic"
                             />
 
+                        <com.amaze.filemanager.ui.views.ThemedTextView
+                            android:id="@+id/text_view_progress_timer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/material_generic"
+                            />
+
                     </LinearLayout>
                 </RelativeLayout>
             </RelativeLayout>
