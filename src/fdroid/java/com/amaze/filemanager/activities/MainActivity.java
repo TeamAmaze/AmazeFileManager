@@ -25,12 +25,11 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -46,8 +45,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.IBinder;
-import android.os.RemoteException;
+import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -91,13 +89,11 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
-import com.amaze.filemanager.IMyAidlInterface;
-import com.amaze.filemanager.Loadlistener;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
@@ -109,11 +105,11 @@ import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
-import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
@@ -124,26 +120,32 @@ import com.amaze.filemanager.ui.drawer.SectionItem;
 import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
+import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
-import com.stericson.RootTools.RootTools;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import eu.chainfire.libsuperuser.Shell;
 
 
 public class MainActivity extends BaseActivity implements OnRequestPermissionsResultCallback,
@@ -165,13 +167,15 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     public boolean mRingtonePickerIntent = false, colourednavigation = false;
     public Toolbar toolbar;
     public int skinStatusBar;
-    public int storage_count = 0;
+
+    public int storage_count = 0; // number of storage available (internal/external/otg etc)
 
     public FloatingActionMenu floatingActionButton;
     public LinearLayout pathbar;
     public FrameLayout buttonBarFrame;
     public boolean isDrawerLocked = false;
     HistoryManager history, grid;
+    Futils utils;
 
     MainActivity mainActivity = this;
     public DrawerAdapter adapter;
@@ -185,8 +189,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     int hidemode;
     public int operation = -1;
     public ArrayList<BaseFile> oparrayList;
+
+    // oppathe - the path at which certain operation needs to be performed
+    // oppathe1 - the new path which user wants to create/modify
     public String oppathe, oppathe1;
-    IMyAidlInterface aidlInterface;
     MaterialDialog materialDialog;
     String newPath = null;
     boolean backPressedToExitOnce = false;
@@ -196,6 +202,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     View drawerHeaderLayout;
     View drawerHeaderView, indicator_layout;
     RoundedImageView drawerProfilePic;
+    ImageLoader mImageLoader;
     int sdk, COUNTER = 0;
     TextView mGoogleName, mGoogleId;
     LinearLayout buttons;
@@ -225,13 +232,21 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     private RelativeLayout searchViewLayout;
     private AppCompatEditText searchViewEditText;
     private int[] searchCoords = new int[2];
-    private View mFabBackground;
     private CoordinatorLayout mScreenLayout;
+    private View fabBgView;
+
+    private static final int REQUEST_CODE_SAF = 223;
+    public static final String KEY_PREF_OTG = "uri_usb_otg";
+    private static final String VALUE_PREF_OTG_NULL = "n/a";
+    public static final String KEY_INTENT_PROCESS_VIEWER = "openprocesses";
 
     // the current visible tab, either 0 or 1
     public static int currentTab;
 
     public static boolean isSearchViewEnabled = false;
+    public static Shell.Interactive shellInteractive;
+    public static Handler handler;
+    private static HandlerThread handlerThread;
 
     /**
      * Called when the activity is first created.
@@ -240,10 +255,13 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initialisePreferences();
+        initializeInteractiveShell();
         DataUtils.registerOnDataChangedListener(this);
         setContentView(R.layout.main_toolbar);
         initialiseViews();
         tabHandler = new TabHandler(this);
+        mImageLoader = AppConfig.getInstance().getImageLoader();
+        utils = getFutils();
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
 
@@ -264,7 +282,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         DataUtils.setHiddenfiles(history.readTable(DataUtils.HIDDEN));
         DataUtils.setGridfiles(grid.readTable(DataUtils.GRID));
         DataUtils.setListfiles(grid.readTable(DataUtils.LIST));
-
         util = new IconUtils(Sp, this);
         icons = new IconUtils(Sp, this);
 
@@ -275,11 +292,11 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
             @Override
             public void onFinish() {
-                getFutils().crossfadeInverse(buttons, pathbar);
+                utils.crossfadeInverse(buttons, pathbar);
             }
         };
         path = getIntent().getStringExtra("path");
-        openprocesses = getIntent().getBooleanExtra("openprocesses", false);
+        openprocesses = getIntent().getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
         try {
             intent = getIntent();
             if (intent.getStringArrayListExtra("failedOps") != null) {
@@ -288,17 +305,18 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     mainActivityHelper.showFailedOperationDialog(failedOps, intent.getBooleanExtra("move", false), this);
                 }
             }
-            if (intent.getAction() != null)
+            if (intent.getAction() != null) {
+
                 if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
 
                     // file picker intent
                     mReturnIntent = true;
-                    Toast.makeText(this, getResources().getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
                 } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
                     // ringtone picker intent
                     mReturnIntent = true;
                     mRingtonePickerIntent = true;
-                    Toast.makeText(this, getResources().getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
                 } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
 
                     // zip viewer intent
@@ -306,6 +324,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     openzip = true;
                     zippath = uri.toString();
                 }
+            }
         } catch (Exception e) {
 
         }
@@ -339,13 +358,13 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 supportInvalidateOptionsMenu();
             } else {
                 if (path != null && path.length() > 0) {
-                    HFile file = new HFile(HFile.UNKNOWN, path);
+                    HFile file = new HFile(OpenMode.UNKNOWN, path);
                     file.generateMode(this);
                     if (file.isDirectory())
                         goToMain(path);
                     else {
                         goToMain("");
-                        getFutils().openFile(new File(path), this);
+                        utils.openFile(new File(path), this);
                     }
                 } else {
                     goToMain("");
@@ -408,6 +427,38 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
                     getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
             ((Activity) this).setTaskDescription(taskDescription);
+        }
+    }
+
+    /**
+     * Initializes an interactive shell, which will stay throughout the app lifecycle
+     * The shell is associated with a handler thread which maintain the message queue from the
+     * callbacks of shell as we certainly cannot allow the callbacks to run on same thread because
+     * of possible deadlock situation and the asynchronous behaviour of LibSuperSU
+     */
+    private void initializeInteractiveShell() {
+
+        // only one looper can be associated to a thread. So we're making sure not to create new
+        // handler threads every time the code relaunch.
+
+        if (rootMode) {
+
+            handlerThread = new HandlerThread("handler");
+            handlerThread.start();
+            handler = new Handler(handlerThread.getLooper());
+            shellInteractive = (new Shell.Builder()).useSU().setHandler(handler).open();
+
+            // check for busybox
+            try {
+                if (!RootUtils.isBusyboxAvailable()) {
+                    Toast.makeText(this, getString(R.string.error_busybox), Toast.LENGTH_LONG).show();
+                    closeInteractiveShell();
+                    Sp.edit().putBoolean(PreferenceUtils.KEY_ROOT, false).apply();
+                }
+            } catch (RootNotPermittedException e) {
+                e.printStackTrace();
+                Sp.edit().putBoolean(PreferenceUtils.KEY_ROOT, false).apply();
+            }
         }
     }
 
@@ -476,7 +527,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             String strings[] = FileUtil.getExtSdCardPathsForActivity(this);
             for (String s : strings) {
                 File f = new File(s);
-                if (!rv.contains(s) && Futils.canListFiles(f))
+                if (!rv.contains(s) && utils.canListFiles(f))
                     rv.add(s);
             }
         }
@@ -484,7 +535,32 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             rv.add("/");
         File usb = getUsbDrive();
         if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (isUsbDeviceConnected()) rv.add("otg:/");
+        }
         return rv;
+    }
+
+    /**
+     * Method finds whether a USB device is connected or not
+     * @return true if device is connected
+     */
+    private boolean isUsbDeviceConnected() {
+        UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
+        if (usbManager.getDeviceList().size()!=0) {
+            // we need to set this every time as there is no way to know that whether USB device was
+            // disconnected after closing the app and another one was connected
+            // in that case the uri will obviously change
+            // other wise we could persist the uri even after reopening the app by not writing
+            // this preference when it's not null
+            Sp.edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
+            return true;
+        } else {
+
+            Sp.edit().putString(KEY_PREF_OTG, null).apply();
+            return false;
+        }
     }
 
     @Override
@@ -509,7 +585,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             } else if (name.contains("TabFragment")) {
                 if (floatingActionButton.isOpened()) {
                     floatingActionButton.close(true);
-                    getFutils().revealShow(findViewById(R.id.fab_bg), false);
                 } else {
                     TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
                     Fragment fragment1 = tabFragment.getTab();
@@ -558,15 +633,11 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         if (backPressedToExitOnce) {
             finish();
             if (BaseActivity.rootMode) {
-                try {
-                    RootTools.closeAllShells();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                // close all shells
             }
         } else {
             this.backPressedToExitOnce = true;
-            showToast(getResources().getString(R.string.pressagain));
+            showToast(getString(R.string.pressagain));
             new Handler().postDelayed(new Runnable() {
 
                 @Override
@@ -596,6 +667,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
                 icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
+            } else if ("otg:/".equals(file)) {
+                name = "OTG";
+                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_48dp);
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
@@ -720,6 +794,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 TabFragment tabFragment = new TabFragment();
                 Bundle a = new Bundle();
                 a.putString("path", ((EntryItem) list.get(i)).getPath());
+
                 tabFragment.setArguments(a);
 
                 android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -733,15 +808,26 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 else onDrawerClosed();
                 floatingActionButton.setVisibility(View.VISIBLE);
                 floatingActionButton.showMenuButton(true);
-
-
             } else {
                 pending_path = ((EntryItem) list.get(i)).getPath();
-                if (pending_path.equals("drive")) {
-                    pending_path = ((EntryItem) list.get(i)).getTitle();
-                }
+
                 select = i;
                 adapter.toggleChecked(select);
+
+                if (((EntryItem) list.get(i)).getPath().equals("otg:/")) {
+
+                    if (Sp.getString(KEY_PREF_OTG, null).equals(VALUE_PREF_OTG_NULL)) {
+
+                        // we've not gotten otg path yet
+                        // start system request for storage access framework
+                        Toast.makeText(getApplicationContext(),
+                                getString(R.string.otg_access), Toast.LENGTH_LONG).show();
+                        Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                        startActivityForResult(safIntent, REQUEST_CODE_SAF);
+                        return;
+                    }
+                }
+
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
 
@@ -924,12 +1010,12 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 break;
             case R.id.history:
                 if (ma != null)
-                    getFutils().showHistoryDialog(ma, getAppTheme());
+                    utils.showHistoryDialog(ma, getAppTheme());
                 break;
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
                 final Main main = ma;
-                if (main.openMode != 0 && main.openMode != 3) {
+                if (main.openMode != OpenMode.FILE && main.openMode != OpenMode.ROOT) {
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
@@ -953,12 +1039,12 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             case R.id.item10:
                 Fragment fragment = getDFragment();
                 if (fragment.getClass().getName().contains("AppsList"))
-                    getFutils().showSortDialog((AppsList) fragment, getAppTheme());
+                    utils.showSortDialog((AppsList) fragment, getAppTheme());
 
                 break;
             case R.id.sortby:
                 if (ma != null)
-                    getFutils().showSortDialog(ma, getAppTheme());
+                    utils.showSortDialog(ma, getAppTheme());
                 break;
             case R.id.dsort:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -978,7 +1064,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 a.build().show();
                 break;
             case R.id.hiddenitems:
-                getFutils().showHiddenDialog(ma, getAppTheme());
+                utils.showHiddenDialog(ma, getAppTheme());
                 break;
             case R.id.view:
                 if (ma.IS_LIST) {
@@ -1002,14 +1088,31 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             case R.id.paste:
                 String path = ma.CURRENT_PATH;
                 ArrayList<BaseFile> arrayList = new ArrayList<>();
-                if (COPY_PATH != null) {
-                    arrayList = COPY_PATH;
-                    new CopyFileCheck(ma, path, false, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask
-                            .THREAD_POOL_EXECUTOR, arrayList);
-                } else if (MOVE_PATH != null) {
-                    arrayList = MOVE_PATH;
-                    new CopyFileCheck(ma, path, true, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                            arrayList);
+                if (!path.contains("otg:/")) {
+                    if (COPY_PATH != null) {
+                        arrayList = COPY_PATH;
+                        new CopyFileCheck(ma, path, false, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask
+                                .THREAD_POOL_EXECUTOR, arrayList);
+                    } else if (MOVE_PATH != null) {
+                        arrayList = MOVE_PATH;
+                        new CopyFileCheck(ma, path, true, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                                arrayList);
+                    }
+                } else if (path.contains("otg:/")) {
+                    if (COPY_PATH!=null) {
+
+                        arrayList = COPY_PATH;
+                        Intent intent = new Intent(con, CopyService.class);
+                        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, arrayList);
+                        intent.putExtra(CopyService.TAG_COPY_TARGET, path);
+                        intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, ma.openMode.ordinal());
+
+                        ServiceWatcherUtil.runService(mainActivity, intent);
+                    } else if (MOVE_PATH!=null){
+
+                        arrayList = MOVE_PATH;
+                        new MoveFiles(arrayList, ma, ma.getActivity(),ma.openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                    }
                 }
                 COPY_PATH = null;
                 MOVE_PATH = null;
@@ -1048,7 +1151,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             animator = new ObjectAnimator().ofFloat(searchViewLayout, "alpha", 0f, 1f);
         }
 
-        getFutils().revealShow(mFabBackground, true);
+        utils.revealShow(fabBgView, true);
 
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
@@ -1099,7 +1202,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         }
 
         // removing background fade view
-        getFutils().revealShow(mFabBackground, false);
+        utils.revealShow(fabBgView, false);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
         animator.start();
@@ -1148,24 +1251,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         if (mDrawerToggle != null) mDrawerToggle.syncState();
     }
 
-    boolean mbound = false;
-
-    public void bindDrive() {
-        Intent i = new Intent();
-        i.setClassName("com.amaze.filemanager.driveplugin", "com.amaze.filemanager.driveplugin.MainService");
-        try {
-            bindService((i), mConnection, Context.BIND_AUTO_CREATE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    void unbindDrive() {
-        if (mbound != false)
-            unbindService(mConnection);
-    }
-
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -1198,6 +1283,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         super.onPause();
         unregisterReceiver(mainActivityHelper.mNotificationReceiver);
         unregisterReceiver(receiver2);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            unregisterReceiver(mOtgReceiver);
+        }
         killToast();
     }
 
@@ -1208,6 +1296,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             materialDialog.show();
             materialDialog = null;
         }
+
         IntentFilter newFilter = new IntentFilter();
         newFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
         newFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
@@ -1225,11 +1314,39 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             floatingActionButton.hideMenuButton(false);
         }
 
-        // Registering intent filter for OTG
-        IntentFilter otgFilter = new IntentFilter();
-        otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+            // Registering intent filter for OTG
+            IntentFilter otgFilter = new IntentFilter();
+            otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+            otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+            registerReceiver(mOtgReceiver, otgFilter);
+        }
     }
+
+
+    /**
+     * Receiver to check if a USB device is connected at the runtime of application
+     * If device is not connected at runtime (i.e. it was connected when the app was closed)
+     * then {@link #isUsbDeviceConnected()} method handles the connection through
+     * {@link #getStorageDirectories()}
+     */
+    BroadcastReceiver mOtgReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
+
+                Sp.edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
+                updateDrawer();
+
+            } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
+                Sp.edit().putString(KEY_PREF_OTG, null).apply();
+                updateDrawer();
+                goToMain("");
+            }
+        }
+    };
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -1251,22 +1368,31 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (BaseActivity.rootMode) {
-            try {
-                RootTools.closeAllShells();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
         DataUtils.clear();
 
-        unbindDrive();
+        closeInteractiveShell();
+
         if (grid != null)
             grid.end();
         if (history != null)
             history.end();
         /*if (mainFragment!=null)
             mainFragment=null;*/
+    }
+
+    /**
+     * Closes the interactive shell and threads associated
+     */
+    private void closeInteractiveShell() {
+
+        if (rootMode) {
+            // close interactive shell and handler thread associated with it
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                // let it finish up first with what it's doing
+                handlerThread.quitSafely();
+            } else handlerThread.quit();
+            shellInteractive.close();
+        }
     }
 
     public void updatepaths(int pos) {
@@ -1348,6 +1474,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
                 icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
+            } else if ("otg:/".equals(file)) {
+                name = "OTG";
+                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_48dp);
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
@@ -1389,7 +1518,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         list.add(new EntryItem(getResources().getString(R.string.documents), "3", ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
         list.add(new EntryItem(getResources().getString(R.string.apks), "4", ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
         DataUtils.setList(list);
-        adapter = new DrawerAdapter(con, this, list, MainActivity.this, Sp);
+        adapter = new DrawerAdapter(this, this, list, MainActivity.this, Sp);
         mDrawerList.setAdapter(adapter);
 
     }
@@ -1415,12 +1544,13 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         } else if (requestCode == 3) {
             String p = Sp.getString("URI", null);
 
-            Uri oldUri = p!=null ? Uri.parse(p): null;
+            Uri oldUri = p != null ? Uri.parse(p) : null;
             Uri treeUri = null;
             if (responseCode == Activity.RESULT_OK) {
                 // Get Uri from Storage Access Framework.
                 treeUri = intent.getData();
-                // Persist URI - this is required for verification of writability.
+                //
+                // ersist URI - this is required for verification of writability.
                 if (treeUri != null) Sp.edit().putString("URI", treeUri.toString()).commit();
             }
             // If not confirmed SAF, or if still not writable, then revert settings.
@@ -1449,20 +1579,21 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     startService(intent1);
                     break;
                 case DataUtils.MOVE://moving
-                    new MoveFiles((oparrayList), ((Main) getFragment().getTab()), ((Main) getFragment().getTab()).getActivity(),0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                    new MoveFiles((oparrayList), ((Main) getFragment().getTab()),
+                            ((Main) getFragment().getTab()).getActivity(), OpenMode.FILE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     break;
                 case DataUtils.NEW_FOLDER://mkdir
                     Main ma1 = ((Main) getFragment().getTab());
-                    mainActivityHelper.mkDir(RootHelper.generateBaseFile(new File(oppathe),true), ma1);
+                    mainActivityHelper.mkDir(RootHelper.generateBaseFile(new File(oppathe), true), ma1);
                     break;
                 case DataUtils.RENAME:
-                    mainActivityHelper.rename(HFile.LOCAL_MODE,(oppathe), (oppathe1),mainActivity,BaseActivity.rootMode);
                     Main ma2 = ((Main) getFragment().getTab());
+                    mainActivityHelper.rename(ma2.openMode, (oppathe), (oppathe1), mainActivity, BaseActivity.rootMode);
                     ma2.updateList();
                     break;
                 case DataUtils.NEW_FILE:
                     Main ma3 = ((Main) getFragment().getTab());
-                    mainActivityHelper.mkFile(new HFile(HFile.LOCAL_MODE,oppathe), ma3);
+                    mainActivityHelper.mkFile(new HFile(OpenMode.FILE, oppathe), ma3);
 
                     break;
                 case DataUtils.EXTRACT:
@@ -1472,6 +1603,12 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     mainActivityHelper.compressFiles(new File(oppathe), oparrayList);
             }
             operation = -1;
+        } else if (requestCode == REQUEST_CODE_SAF && responseCode == Activity.RESULT_OK) {
+            // otg access
+            Sp.edit().putString(KEY_PREF_OTG, intent.getData().toString()).apply();
+
+            if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
+            else onDrawerClosed();
         }
     }
 
@@ -1482,7 +1619,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             buttons.removeAllViews();
             buttons.setMinimumHeight(pathbar.getHeight());
             Drawable arrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
-            Bundle b = getFutils().getPaths(text, this);
+            Bundle b = utils.getPaths(text, this);
             ArrayList<String> names = b.getStringArrayList("names");
             ArrayList<String> rnames = new ArrayList<String>();
 
@@ -1594,8 +1731,8 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     }
 
     boolean isStorage(String path) {
-        List<String> val=DataUtils.getStorages();
-        for (String s:val)
+        List<String> val = DataUtils.getStorages();
+        for (String s : val)
             if (s.equals(path)) return true;
         return false;
     }
@@ -1624,7 +1761,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         showHidden = Sp.getBoolean("showHidden", false);
         aBoolean = Sp.getBoolean("view", true);
         currentTab = Sp.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
-        skinStatusBar = PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab)));
+        skinStatusBar = (PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
         colourednavigation = Sp.getBoolean("colorednavigation", false);
     }
 
@@ -1638,7 +1775,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
-        mFabBackground = findViewById(R.id.fab_bg);
         drawerHeaderView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -1666,7 +1802,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
         mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
-        if (getAppTheme().equals(AppTheme.DARK)) mDrawerLinear.setBackgroundColor(Color.parseColor("#303030"));
+        if (getAppTheme().equals(AppTheme.DARK)) mDrawerLinear.setBackgroundColor(getColor(R.color.holo_dark_background));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
@@ -1678,7 +1814,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             mDrawerLayout.openDrawer(mDrawerLinear);
             mDrawerLayout.setScrimColor(Color.TRANSPARENT);
             isDrawerLocked = true;
-        } else if (findViewById(R.id.tab_frame) == null){
+        } else if (findViewById(R.id.tab_frame) == null) {
 
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mDrawerLinear);
             mDrawerLayout.closeDrawer(mDrawerLinear);
@@ -1686,13 +1822,15 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         }
         mDrawerList.addHeaderView(drawerHeaderLayout);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        View v = findViewById(R.id.fab_bg);
+        fabBgView = findViewById(R.id.fab_bg);
+        if (getAppTheme().equals(AppTheme.DARK)) {
+            fabBgView.setBackgroundResource(R.drawable.fab_shadow_dark);
+        }
 
-        v.setOnClickListener(new View.OnClickListener() {
+        fabBgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 floatingActionButton.close(true);
-                getFutils().revealShow(view, false);
                 if (isSearchViewEnabled) hideSearchView();
             }
         });
@@ -1720,14 +1858,8 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             @Override
             public void onClick(View v) {
                 Intent in = new Intent(MainActivity.this, Preferences.class);
+                startActivity(in);
                 finish();
-                final int enter_anim = android.R.anim.fade_in;
-                final int exit_anim = android.R.anim.fade_out;
-                Activity s = MainActivity.this;
-                s.overridePendingTransition(exit_anim, enter_anim);
-                s.finish();
-                s.overridePendingTransition(enter_anim, exit_anim);
-                s.startActivity(in);
             }
 
         });
@@ -1758,7 +1890,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             ((ImageView) ftpButton.findViewById(R.id.ftpicon)).setImageResource(R.drawable.ic_ftp_dark);
             ((TextView) ftpButton.findViewById(R.id.ftptext)).setTextColor(getResources().getColor(android.R.color.white));
         }
-        ftpButton.setOnClickListener(new View.OnClickListener(){
+        ftpButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -1799,7 +1931,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
         searchViewLayout = (RelativeLayout) findViewById(R.id.search_view);
         searchViewEditText = (AppCompatEditText) findViewById(R.id.search_edit_text);
-        ImageView clear=(ImageView) findViewById(R.id.search_close_btn);
+        ImageView clear = (ImageView) findViewById(R.id.search_close_btn);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1863,20 +1995,18 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
     void initialiseFab() {
         String folder_skin = getColorPreference().getColorAsString(ColorUsage.ICON_SKIN);
-        int fabSkinPressed = PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.ACCENT));
-        int folderskin = getColorPreference().getColor(ColorUsage.ACCENT);
+        int fabSkinPressed = PreferenceUtils.getStatusColor(BaseActivity.accentSkin);
+        int folderskin = Color.parseColor(folder_skin);
         int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
         floatingActionButton = (FloatingActionMenu) findViewById(R.id.menu);
         floatingActionButton.setMenuButtonColorNormal(Color.parseColor(BaseActivity.accentSkin));
         floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
-        final Futils utils = getFutils();
 
         floatingActionButton.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
             public void onMenuToggle(boolean b) {
-                View v = findViewById(R.id.fab_bg);
-                if (b) utils.revealShow(v, true);
-                else utils.revealShow(v, false);
+                if (b) utils.revealShow(fabBgView, true);
+                else utils.revealShow(fabBgView, false);
             }
         });
 
@@ -1887,7 +2017,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(0);
-                utils.revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
@@ -1898,7 +2028,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(1);
-                utils.revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
@@ -1909,7 +2039,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(2);
-                utils.revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
@@ -1920,7 +2050,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(3);
-                utils.revealShow(findViewById(R.id.fab_bg), false);
+                utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
@@ -1941,14 +2071,14 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         }).run();
     }
 
-    public void updatePath(@NonNull final String news, boolean results, int
+    public void updatePath(@NonNull final String news, boolean results, OpenMode
             openmode, int folder_count, int file_count) {
 
         if (news.length() == 0) return;
         if (news == null) return;
-        if (openmode == 1 && news.startsWith("smb:/"))
+        if (openmode == OpenMode.SMB && news.startsWith("smb:/"))
             newPath = mainActivityHelper.parseSmbPath(news);
-        else if (openmode == 2)
+        else if (openmode == OpenMode.CUSTOM)
             newPath = mainActivityHelper.getIntegralNames(news);
         else newPath = news;
         final TextView bapath = (TextView) pathbar.findViewById(R.id.fullpath);
@@ -2179,9 +2309,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             @Override
             public void onClick(View view) {
                 Main m = ((Main) getFragment().getTab());
-                if (m.openMode == 0) {
+                if (m.openMode == OpenMode.FILE) {
                     bbar(m);
-                    getFutils().crossfade(buttons,pathbar);
+                    utils.crossfade(buttons, pathbar);
                     timer.cancel();
                     timer.start();
                 }
@@ -2191,9 +2321,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             @Override
             public void onClick(View view) {
                 Main m = ((Main) getFragment().getTab());
-                if (m.openMode == 0) {
+                if (m.openMode == OpenMode.FILE) {
                     bbar(m);
-                    getFutils().crossfade(buttons,pathbar);
+                    utils.crossfade(buttons, pathbar);
                     timer.cancel();
                     timer.start();
                 }
@@ -2229,7 +2359,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
     public void renameBookmark(final String title, final String path) {
         if (DataUtils.containsBooks(new String[]{title,path}) != -1 || DataUtils.containsAccounts(new String[]{title,path}) != -1) {
-            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, BaseActivity.accentSkin);
+            RenameBookmark renameBookmark=RenameBookmark.getInstance(title,path,BaseActivity.accentSkin);
             if(renameBookmark!=null){
                 renameBookmark.show(getFragmentManager(),"renamedialog");
             }
@@ -2244,21 +2374,20 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         if (pending_path != null) {
             try {
 
-                HFile hFile = new HFile(HFile.UNKNOWN,pending_path);
+                HFile hFile = new HFile(OpenMode.UNKNOWN, pending_path);
                 hFile.generateMode(this);
                 if (hFile.isSimpleFile()) {
-                    getFutils().openFile(new File(pending_path), mainActivity);
+                    utils.openFile(new File(pending_path), mainActivity);
                     pending_path = null;
                     return;
                 }
                 TabFragment m = getFragment();
-                if(m==null){
+                if (m == null) {
                     goToMain(pending_path);
                     return;
                 }
                 Main main = ((Main) m.getTab());
-                if (main != null)
-                    main.loadlist(pending_path, false, -1);
+                if (main != null) main.loadlist(pending_path, false, OpenMode.UNKNOWN);
             } catch (ClassCastException e) {
                 select = null;
                 goToMain("");
@@ -2278,15 +2407,15 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 Fragment f = getDFragment();
                 if ((f.getClass().getName().contains("TabFragment"))) {
                     Main m = ((Main) getFragment().getTab());
-                    m.loadlist(path, false, 0);
+                    m.loadlist(path, false, OpenMode.FILE);
                 } else goToMain(path);
-            } else getFutils().openFile(new File(path), mainActivity);
+            } else utils.openFile(new File(path), mainActivity);
         } else if (i.getStringArrayListExtra("failedOps") != null) {
             ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra("failedOps");
             if (failedOps != null) {
                 mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), this);
             }
-        } else if ((openprocesses = i.getBooleanExtra("openprocesses", false))) {
+        } else if ((openprocesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
 
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, new ProcessViewer());
@@ -2297,23 +2426,39 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             //Commit the transaction
             transaction.commitAllowingStateLoss();
             supportInvalidateOptionsMenu();
-        } else if (intent.getAction() != null)
+        } else if (intent.getAction() != null) {
+
             if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
 
                 // file picker intent
                 mReturnIntent = true;
-                Toast.makeText(this, getResources().getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
             } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
                 // ringtone picker intent
                 mReturnIntent = true;
                 mRingtonePickerIntent = true;
-                Toast.makeText(this, getResources().getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
             } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
                 // zip viewer intent
                 Uri uri = intent.getData();
                 zippath = uri.toString();
                 openZip(zippath);
             }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+                if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
+                    if (Sp.getString(KEY_PREF_OTG, null)==null) {
+                        Sp.edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
+                        updateDrawer();
+                    }
+
+                } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
+                    Sp.edit().putString(KEY_PREF_OTG, null).apply();
+                    updateDrawer();
+                }
+            }
+        }
     }
 
     void setDrawerHeaderBackground() {
@@ -2322,7 +2467,24 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 if (Sp.getBoolean("plus_pic", false)) return;
                 String path = Sp.getString("drawer_header_path", null);
                 if (path == null) return;
-                drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
+                try {
+                    final ImageView headerImageView = new ImageView(MainActivity.this);
+                    headerImageView.setImageDrawable(drawerHeaderParent.getBackground());
+                    mImageLoader.get(path, new ImageLoader.ImageListener() {
+                        @Override
+                        public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                            headerImageView.setImageBitmap(response.getBitmap());
+                            drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
+                        }
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }).run();
     }
@@ -2337,68 +2499,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), mainActivity);
                 }
             }
-        }
-    };
-
-
-    public void translateDrawerList(boolean down) {
-        if (down)
-            mDrawerList.animate().translationY(toolbar.getHeight());
-        else mDrawerList.setTranslationY(0);
-    }
-
-    Loadlistener loadlistener = new Loadlistener.Stub() {
-        @Override
-        public void load(final List<Layoutelements> layoutelements, String driveId) throws RemoteException {
-            if (layoutelements == null && DataUtils.containsAccounts(driveId) == -1) {
-                DataUtils.addAcc(new String[]{driveId, driveId});
-                grid.addPath(driveId, driveId, DataUtils.DRIVE, 1);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        refreshDrawer();
-                    }
-                });
-                unbindDrive();
-
-            }
-        }
-
-        @Override
-        public void error(final String message, final int mode) throws RemoteException {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(mainActivity, "Error " + message + mode, Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    };
-    ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            aidlInterface = (IMyAidlInterface.Stub.asInterface(service));
-            mbound = true;
-            try {
-                aidlInterface.registerCallback(loadlistener);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            try {
-                aidlInterface.create();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mbound = false;
-            Log.d("DriveConnection", "DisConnected");
-            aidlInterface = null;
         }
     };
 
@@ -2452,45 +2552,46 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     }
 
 
-    public void showSMBDialog(String name,String path,boolean edit){
-        if(path.length()>0 && name.length()==0){
-            int i=-1;
-            if((i=DataUtils.containsServer(new String[]{name,path}))!=-1){
-                name=DataUtils.servers.get(i)[0];
+    public void showSMBDialog(String name, String path, boolean edit) {
+        if (path.length() > 0 && name.length() == 0) {
+            int i = -1;
+            if ((i = DataUtils.containsServer(new String[]{name, path})) != -1) {
+                name = DataUtils.servers.get(i)[0];
             }
         }
-        SmbConnectDialog smbConnectDialog=new SmbConnectDialog();
-        Bundle bundle=new Bundle();
-        bundle.putString("name",name);
-        bundle.putString("path",path);
-        bundle.putBoolean("edit",edit);
+        SmbConnectDialog smbConnectDialog = new SmbConnectDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        bundle.putString("path", path);
+        bundle.putBoolean("edit", edit);
         smbConnectDialog.setArguments(bundle);
         smbConnectDialog.show(getFragmentManager(), "smbdailog");
     }
 
     @Override
-    public void addConnection(boolean edit, String name, String path,String oldname,String oldPath) {
+    public void addConnection(boolean edit, String name, String path, String oldname, String oldPath) {
         try {
-            String[] s=new String[]{name,path};
+            String[] s = new String[]{name, path};
             if (!edit) {
                 if ((DataUtils.containsServer(path)) == -1) {
                     DataUtils.addServer(new String[]{name, path});
                     refreshDrawer();
                     grid.addPath(name, path, DataUtils.SMB, 1);
-                    TabFragment fragment=getFragment();
-                    if(fragment!=null) {
-                        Fragment fragment1=fragment.getTab();
-                        if(fragment1!=null){
+                    TabFragment fragment = getFragment();
+                    if (fragment != null) {
+                        Fragment fragment1 = fragment.getTab();
+                        if (fragment1 != null) {
                             final Main ma = (Main) fragment1;
-                            ma.loadlist(path, false, -1);
-                        }}
-                }
-                else Snackbar.make(frameLayout,"Connection already exists",Snackbar.LENGTH_SHORT).show();
+                            ma.loadlist(path, false, OpenMode.UNKNOWN);
+                        }
+                    }
+                } else
+                    Snackbar.make(frameLayout, "Connection already exists", Snackbar.LENGTH_SHORT).show();
             } else {
-                int i=-1;
-                if ((i=DataUtils.containsServer(new String[]{oldname,oldPath})) != -1) {
+                int i = -1;
+                if ((i = DataUtils.containsServer(new String[]{oldname, oldPath})) != -1) {
                     DataUtils.removeServer(i);
-                    mainActivity.grid.removePath(oldname,oldPath, DataUtils.SMB);
+                    mainActivity.grid.removePath(oldname, oldPath, DataUtils.SMB);
                 }
                 DataUtils.addServer(s);
                 Collections.sort(DataUtils.servers, new BookSorter());
@@ -2504,11 +2605,11 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     }
 
     @Override
-    public void deleteConnection(String name,String path) {
-        int i=-1;
-        if ((i=DataUtils.containsServer(new String[]{name,path})) != -1) {
+    public void deleteConnection(String name, String path) {
+        int i = -1;
+        if ((i = DataUtils.containsServer(new String[]{name, path})) != -1) {
             DataUtils.removeServer(i);
-            grid.removePath(name,path, DataUtils.SMB);
+            grid.removePath(name, path, DataUtils.SMB);
             refreshDrawer();
         }
 
@@ -2516,7 +2617,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
     @Override
     public void onHiddenFileAdded(String path) {
-        history.addPath(null,path,DataUtils.HIDDEN,0);
+        history.addPath(null, path, DataUtils.HIDDEN, 0);
     }
 
     @Override
@@ -2532,7 +2633,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     @Override
     public void onBookAdded(String[] path, boolean refreshdrawer) {
         grid.addPath(path[0], path[1], DataUtils.BOOKS, 1);
-        if(refreshdrawer)
+        if (refreshdrawer)
             refreshDrawer();
     }
 
@@ -2550,7 +2651,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
     @Override
     public void modify(String oldpath, String oldname, String newPath, String newname) {
-        grid.rename( oldname,oldpath, newPath, newname, DataUtils.BOOKS);
+        grid.rename(oldname, oldpath, newPath, newname, DataUtils.BOOKS);
         refreshDrawer();
     }
 
