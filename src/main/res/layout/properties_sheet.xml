@@ -93,9 +93,6 @@
                 layout="@layout/properties_information"
                 />
             <include
-                layout="@layout/properties_information"
-                />
-            <include
                 android:id="@+id/properties_general"
                 layout="@layout/properties_general"
                 android:visibility="gone"
