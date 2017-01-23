@@ -378,7 +378,7 @@ public class RootHelper {
                 // we're at the root directories, superuser is required!
                 String cpath = getCommandLineString(path);
                 //ls = Shell.SU.run("ls -l " + cpath);
-                ls = runShellCommand("ls -l " + (showHidden ? "-a " : "") + cpath);
+                ls = runShellCommand("ls -l " + (showHidden ? "-a " : "") + "\"" + cpath + "\"");
                 if (ls != null) {
                     for (int i=0;i<ls.size();i++) {
                         String file=ls.get(i);
