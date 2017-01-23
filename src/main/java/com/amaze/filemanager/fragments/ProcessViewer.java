@@ -33,6 +33,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -358,9 +359,9 @@ public class ProcessViewer extends Fragment {
             mProgressFileNameText.setText(name);
 
             Spanned bytesText = Html.fromHtml(getString(R.string.written)
-                    + " <font color='" + accentColor + "'><i>" + Futils.readableFileSize(doneBytes)
+                    + " <font color='" + accentColor + "'><i>" + Formatter.formatFileSize(getContext(), doneBytes)
                     + " </font></i>" + getString(R.string.out_of) + " <i>"
-                    + Futils.readableFileSize(total) + "</i>");
+                    + Formatter.formatFileSize(getContext(), total) + "</i>");
             mProgressBytesText.setText(bytesText);
 
             Spanned fileProcessedSpan = Html.fromHtml(getString(R.string.processing_file)
@@ -371,7 +372,7 @@ public class ProcessViewer extends Fragment {
 
             Spanned speedSpan = Html.fromHtml(getString(R.string.current_speed)
                     + ": <font color='" + accentColor + "'><i>"
-                    + Futils.readableFileSize(dataPackage.getSpeedRaw())
+                    + Formatter.formatFileSize(getContext(), dataPackage.getSpeedRaw())
                     + "/s</font></i>");
             mProgressSpeedText.setText(speedSpan);
         }

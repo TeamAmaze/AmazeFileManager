@@ -34,6 +34,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
+import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -210,7 +211,7 @@ public class AppsList extends ListFragment {
                     a.add(new Layoutelements(new BitmapDrawable(getActivity().getResources(),
                             BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.ic_doc_apk_grid)),
                             object.applicationInfo.loadLabel(p).toString(), object.applicationInfo.publicSourceDir,
-                            object.packageName, object.versionName, Futils.readableFileSize(f.length()),f.length(), false,
+                            object.packageName, object.versionName, Formatter.formatFileSize(getContext(), f.length()),f.length(), false,
                             f.lastModified()+"", false));
                     c.add(object);
                 }

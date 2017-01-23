@@ -23,6 +23,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.text.format.Formatter;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -219,7 +220,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                     try {
                         if (ele.getSize() != -1) {
                             longSize = Long.valueOf(ele.getSize());
-                            size = Futils.readableFileSize(longSize);
+                            size = Formatter.formatFileSize(c, longSize);
                         } else {
                             size = "";
                             longSize = 0;

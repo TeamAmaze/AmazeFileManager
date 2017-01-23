@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -269,7 +270,7 @@ public class ZipTask extends Service {
             int title = R.string.compressing;
             mBuilder.setContentTitle(c.getResources().getString(title));
             mBuilder.setContentText(new File(fileName).getName() + " " +
-                    Futils.readableFileSize(done) + "/" + Futils.readableFileSize(total));
+                    Formatter.formatFileSize(c, done) + "/" + Formatter.formatFileSize(c, total));
             int id1 = Integer.parseInt("789" + id);
             mNotifyManager.notify(id1, mBuilder.build());
             if (done == total || total == 0) {

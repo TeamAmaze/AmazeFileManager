@@ -9,6 +9,7 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
+
+import java.io.File;
 
 /**
  * Created by vishal on 14/12/16.
@@ -64,7 +67,7 @@ public class PropertiesSheet extends BottomSheetDialogFragment {
         mFileTypeTextView = (TextView) rootView.findViewById(R.id.text_view_file_type);
         mFileTypeTextView.setText(mFile.isDirectory() ? getString(R.string.folder) : mFile.getName().substring(mFile.getName().lastIndexOf(".")));
         mFileSizeTextView = (TextView) rootView.findViewById(R.id.text_view_file_size);
-        mFileSizeTextView.setText(Math.round(mFile.getSize()) + "");
+        mFileSizeTextView.setText(Formatter.formatFileSize(dialog.getContext(), mFile.isDirectory() ? Futils.folderSize(new File(mFile.getPath())) : mFile.getSize()));
         mFileLocationTextView = (TextView) rootView.findViewById(R.id.text_view_file_location);
         mFileLocationTextView.setText(mFile.getPath());
         mFileAccessedTextView = (TextView) rootView.findViewById(R.id.text_view_file_accessed);

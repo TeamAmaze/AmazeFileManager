@@ -49,6 +49,7 @@ import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -1331,7 +1332,7 @@ public class Main extends android.support.v4.app.Fragment {
             } else {
                 file_count++;
                 try {
-                    Layoutelements layoutelements = new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(), !IS_LIST, res), name, mFile[i].getPath(), "", "", Futils.readableFileSize(mFile[i].length()), mFile[i].length(), false, mFile[i].lastModified() + "", false);
+                    Layoutelements layoutelements = new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(), !IS_LIST, res), name, mFile[i].getPath(), "", "", Formatter.formatFileSize(getContext(), mFile[i].length()), mFile[i].length(), false, mFile[i].lastModified() + "", false);
                     layoutelements.setMode(OpenMode.SMB);
                     searchHelper.add(layoutelements.generateBaseFile());
                     a.add(layoutelements);
@@ -1359,7 +1360,7 @@ public class Main extends android.support.v4.app.Fragment {
                 try {
                     if (mFile.getSize() != -1) {
                         longSize = Long.valueOf(mFile.getSize());
-                        size = Futils.readableFileSize(longSize);
+                        size = Formatter.formatFileSize(getContext(), longSize);
                     } else {
                         size = "";
                         longSize = 0;
