@@ -51,15 +51,12 @@ public class MoveFiles extends AsyncTask<String,Void,Boolean> {
     protected Boolean doInBackground(String... strings) {
         path=strings[0];
         boolean b=true;
-        int i=0;
         if(files.size()==0)return true;
         if(mode!=OpenMode.FILE)return false;
-        if(files.get(0).isSmb()){return false;}
         for(BaseFile f:files){
             File file=new File(path+"/"+f.getName());
             File file1=new File(f.getPath());
             if(!file1.renameTo(file)){b=false;}
-            i++;
         }
         return b;
     }
@@ -75,10 +72,10 @@ public class MoveFiles extends AsyncTask<String,Void,Boolean> {
         }
         else if(!b){
             Intent intent = new Intent(context, CopyService.class);
-            intent.putExtra("FILE_PATHS", (files));
-            intent.putExtra("COPY_DIRECTORY", path);
-            intent.putExtra("move",true);
-            intent.putExtra("MODE",mode);
+            intent.putExtra(CopyService.TAG_COPY_SOURCES, (files));
+            intent.putExtra(CopyService.TAG_COPY_TARGET, path);
+            intent.putExtra(CopyService.TAG_COPY_MOVE, true);
+            intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, mode.ordinal());
 
             ServiceWatcherUtil.runService(context, intent);
         }

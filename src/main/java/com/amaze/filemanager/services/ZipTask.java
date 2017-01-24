@@ -195,6 +195,7 @@ public class ZipTask extends Service {
         @Override
         public void onPostExecute(Integer b) {
 
+            watcherUtil.stopWatch();
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
             stopSelf();

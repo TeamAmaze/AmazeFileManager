@@ -25,6 +25,7 @@ public class ServiceWatcherUtil {
     private static HandlerThread handlerThread;
     private ProgressHandler progressHandler;
     long totalSize;
+    private Runnable runnable;
 
     private static ArrayList<Intent> pendingIntents = new ArrayList<>();
 
@@ -53,7 +54,7 @@ public class ServiceWatcherUtil {
      * Method frees up all the resources and handlers after operation completes.
      */
     public void watch() {
-        final Runnable runnable = new Runnable() {
+        runnable = new Runnable() {
             @Override
             public void run() {
 
@@ -61,6 +62,7 @@ public class ServiceWatcherUtil {
                 if (progressHandler.getFileName()==null) handler.postDelayed(this, 1000);
 
                 progressHandler.addWrittenLength(POSITION);
+
                 if (POSITION == totalSize || progressHandler.getCancelled()) {
                     // process complete, free up resources
                     // we've finished the work or process cancelled
@@ -73,6 +75,15 @@ public class ServiceWatcherUtil {
         };
 
         handler.postDelayed(runnable, 1000);
+    }
+
+    /**
+     * Manually call runnable, before the delay. Fixes race condition which can arise when
+     * service has finished execution and stopping self, but the runnable is yet scheduled to be posted.
+     * Thus avoids posting any callback after service has stopped.
+     */
+    public void stopWatch() {
+        handler.post(runnable);
     }
 
     /**

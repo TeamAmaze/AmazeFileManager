@@ -2,7 +2,6 @@ package com.amaze.filemanager.utils;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.os.ParcelFileDescriptor;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
@@ -14,7 +13,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -55,8 +53,6 @@ public class GenericCopyUtil {
         FileChannel outChannel = null;
         BufferedInputStream bufferedInputStream = null;
         BufferedOutputStream bufferedOutputStream = null;
-        ParcelFileDescriptor inputFileDescriptor = null;
-        ParcelFileDescriptor outputFileDescriptor = null;
 
         try {
 
@@ -67,20 +63,8 @@ public class GenericCopyUtil {
                 DocumentFile documentSourceFile = RootHelper.getDocumentFile(mSourceFile.getPath(),
                         mContext, false);
 
-                try {
-
-                    // try getting file descriptor since we know it's a defined file
-                    inputFileDescriptor = contentResolver
-                            .openFileDescriptor(documentSourceFile.getUri(), "r");
-                    File procFile = new File(PATH_FILE_DESCRIPTOR + inputFileDescriptor.getFd());
-                    //if (!procFile.isFile()) throw new NullPointerException();
-
-                    bufferedInputStream = new BufferedInputStream(new FileInputStream(procFile), DEFAULT_BUFFER_SIZE);
-                } catch (FileNotFoundException e) {
-                    // falling back to getting input stream from uri
-                    bufferedInputStream = new BufferedInputStream(contentResolver
-                            .openInputStream(documentSourceFile.getUri()), DEFAULT_BUFFER_SIZE);
-                }
+                bufferedInputStream = new BufferedInputStream(contentResolver
+                        .openInputStream(documentSourceFile.getUri()), DEFAULT_BUFFER_SIZE);
             } else if (mSourceFile.isSmb()) {
 
                 // source is in smb
@@ -100,19 +84,8 @@ public class GenericCopyUtil {
                 DocumentFile documentTargetFile = RootHelper.getDocumentFile(mTargetFile.getPath(),
                         mContext, true);
 
-                try {
-
-                    // try getting file descriptor since we know it's a defined file
-                    outputFileDescriptor = contentResolver
-                            .openFileDescriptor(documentTargetFile.getUri(), "rw");
-                    File procFile = new File(PATH_FILE_DESCRIPTOR + outputFileDescriptor);
-
-                    bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(procFile), DEFAULT_BUFFER_SIZE);
-                } catch (FileNotFoundException e) {
-                    // falling back to getting input stream from uri
-                    bufferedOutputStream = new BufferedOutputStream(contentResolver
-                            .openOutputStream(documentTargetFile.getUri()), DEFAULT_BUFFER_SIZE);
-                }
+                bufferedOutputStream = new BufferedOutputStream(contentResolver
+                        .openOutputStream(documentTargetFile.getUri()), DEFAULT_BUFFER_SIZE);
             } else if (mTargetFile.isSmb()) {
 
                 bufferedOutputStream = new BufferedOutputStream(mTargetFile.getOutputStream(mContext), DEFAULT_BUFFER_SIZE);
@@ -144,8 +117,6 @@ public class GenericCopyUtil {
                 if (outputStream!=null) outputStream.close();
                 if (bufferedInputStream!=null) bufferedInputStream.close();
                 if (bufferedOutputStream!=null) bufferedOutputStream.close();
-                if (inputFileDescriptor!=null)  inputFileDescriptor.close();
-                if (outputFileDescriptor!=null) outputFileDescriptor.close();
             } catch (IOException e) {
                 e.printStackTrace();
                 // failure in closing stream
@@ -158,7 +129,7 @@ public class GenericCopyUtil {
      * @param sourceFile the source file, which is to be copied
      * @param targetFile the target file
      */
-    public void copy(BaseFile sourceFile, HFile targetFile) throws IOException{
+    public void copy(BaseFile sourceFile, HFile targetFile) throws IOException {
 
         this.mSourceFile = sourceFile;
         this.mTargetFile = targetFile;

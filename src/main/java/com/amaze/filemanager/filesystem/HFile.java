@@ -3,6 +3,7 @@ package com.amaze.filemanager.filesystem;
 import android.content.Context;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.provider.DocumentFile;
 
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.utils.Futils;
@@ -237,6 +238,16 @@ public class HFile {
         return parentPath;
     }
 
+    /**
+     * Helper method to get parent path
+     * @param context
+     * @return
+     */
+    public String getParent(Context context) {
+
+        return null;
+    }
+
     public String getParentName() {
         StringBuilder builder = new StringBuilder(path);
         StringBuilder parentPath = new StringBuilder(builder.substring(0,
@@ -363,6 +374,8 @@ public class HFile {
                 else arrayList = new ArrayList<>();
                 e.printStackTrace();
             }
+        } else if (isOtgFile()) {
+
         } else {
             try {
                 arrayList = RootHelper.getFilesList(path, rootmode, true,null);
@@ -374,16 +387,28 @@ public class HFile {
         if (arrayList == null) arrayList = new ArrayList<>();
         return arrayList;
     }
+
+    /**
+     * Helper method to list children of this file
+     * @param context
+     * @return
+     */
+    public ArrayList<BaseFile> listFiles(Context context) {
+        return RootHelper.getDocumentFilesList(path, context);
+    }
+
     public String getReadablePath(String path){
         if(isSmb())
             return parseSmbPath(path);
         return path;
     }
+
     String parseSmbPath(String a) {
         if (a.contains("@"))
             return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
         else return a;
     }
+
     public InputStream getInputStream() {
         InputStream inputStream = null;
         if (isSmb()) {
@@ -435,13 +460,27 @@ public class HFile {
             }
         }
         else if(isLocal())exists = new File(path).exists();
-        else if(isRoot()) try {
-            return RootHelper.fileExists(path);
-        } catch (RootNotPermittedException e) {
-            e.printStackTrace();
-            return false;
+        else if(isRoot()) {
+            try {
+                return RootHelper.fileExists(path);
+            } catch (RootNotPermittedException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
         return exists;
+    }
+
+    /**
+     * Helper method to check file existence in otg
+     * @param context
+     * @return
+     */
+    public boolean exists(Context context) {
+        if (isOtgFile()) {
+            DocumentFile fileToCheck = RootHelper.getDocumentFile(path, context, false);
+            return fileToCheck!=null;
+        } else return (exists());
     }
 
     /**
@@ -479,6 +518,14 @@ public class HFile {
             } catch (MalformedURLException e) {
                 Logger.log(e,path,context);
             }
+        } else if (isOtgFile()) {
+            if (!exists(context)){
+                DocumentFile parentDirectory = RootHelper.getDocumentFile(getParent(), context, false);
+                if (parentDirectory.isDirectory())  {
+                    parentDirectory.createDirectory(getName());
+                }
+            }
+
         } else
             FileUtil.mkdir(new File(path), context);
     }
