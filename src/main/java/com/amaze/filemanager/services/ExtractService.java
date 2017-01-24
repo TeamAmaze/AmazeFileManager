@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.text.format.Formatter;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
@@ -159,13 +160,13 @@ public class ExtractService extends Service {
             float progressPercent = ((float) done/total)*100;
             mBuilder.setProgress(100, Math.round(progressPercent), false);
             mBuilder.setOngoing(true);
-            mBuilder.setContentText(fileName + " " + Futils.readableFileSize(done) + "/"
-                    + Futils.readableFileSize(total));
+            mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(cd, done) + "/"
+                    + Formatter.formatFileSize(cd, total));
             int id1=Integer.parseInt("123"+id);
             mNotifyManager.notify(id1, mBuilder.build());
             if(progressPercent==100 || total == 0){
                 mBuilder.setContentTitle(getString(R.string.extract_complete));
-                mBuilder.setContentText(fileName + " " + Futils.readableFileSize(total));
+                mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(cd, total));
                 mBuilder.setProgress(100, 100, false);
                 mBuilder.setOngoing(false);
                 mNotifyManager.notify(id1, mBuilder.build());

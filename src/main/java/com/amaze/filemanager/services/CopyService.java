@@ -32,6 +32,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.text.format.Formatter;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
@@ -459,8 +460,8 @@ public class CopyService extends Service {
             int title = R.string.copying;
             if (move) title = R.string.moving;
             mBuilder.setContentTitle(c.getResources().getString(title));
-            mBuilder.setContentText(fileName + " " + Futils.readableFileSize(writtenSize) + "/" +
-                    Futils.readableFileSize(totalSize));
+            mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(c, writtenSize) + "/" +
+                    Formatter.formatFileSize(c, totalSize));
             int id1 = Integer.parseInt("456" + id);
             mNotifyManager.notify(id1, mBuilder.build());
             if (writtenSize == totalSize || totalSize == 0) {

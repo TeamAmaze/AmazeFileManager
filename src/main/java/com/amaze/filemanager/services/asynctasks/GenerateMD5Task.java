@@ -2,6 +2,7 @@ package com.amaze.filemanager.services.asynctasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.format.Formatter;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,10 +74,10 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
                     if (longs[0] != -1 && longs[0] != 0) {
                         float r1 = (longs[0] - longs[1]) * 360 / longs[0];
                         float r2 = (longs[2]) * 360 / longs[0];
-                        t1.setText(Futils.readableFileSize(longs[0]));
-                        t2.setText(Futils.readableFileSize(longs[1]));
-                        t3.setText(Futils.readableFileSize(longs[0] - longs[1] - longs[2]));
-                        t4.setText(Futils.readableFileSize(longs[2]));
+                        t1.setText(Formatter.formatFileSize(c, longs[0]));
+                        t2.setText(Formatter.formatFileSize(c, longs[1]));
+                        t3.setText(Formatter.formatFileSize(c, longs[0] - longs[1] - longs[2]));
+                        t4.setText(Formatter.formatFileSize(c, longs[2]));
 
                         CircleAnimation animation = new CircleAnimation(g.sizeDrawable, r1, r2);
                         animation.setDuration(Math.round(r1 * 5));
@@ -116,7 +117,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
             int x = f.listFiles(false).size();
             items = x + " " + c.getResources().getString(x == 0 ? R.string.item : R.string.items);
         } else {
-            items = Futils.readableFileSize(f.length());
+            items = Formatter.formatFileSize(c, f.length());
         }
         publishProgress("");
         String md5 = "";

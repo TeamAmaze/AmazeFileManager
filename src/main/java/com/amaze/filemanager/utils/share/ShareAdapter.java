@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -66,8 +65,8 @@ public class ShareAdapter extends RecyclerArrayAdapter<Intent, ShareAdapter.View
 
             rootView = view;
 
-            TextView a = ((TextView) view.findViewById(R.id.firstline));
-            ImageView v = (ImageView) view.findViewById(R.id.icon);
+            a = ((TextView) view.findViewById(R.id.firstline));
+            v = (ImageView) view.findViewById(R.id.icon);
         }
 
         void render(final int position) {

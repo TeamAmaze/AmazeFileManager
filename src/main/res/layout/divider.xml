@@ -30,5 +30,5 @@
         android:textSize="11dip"
         android:layout_gravity="center"
         android:layout_height="fill_parent"
-        android:text="Tap and hold on a File or Folder for more options"/>
+        android:text="@string/tap_and_hold_tips"/>
     </FrameLayout>

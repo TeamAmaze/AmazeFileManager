@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.Formatter;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -322,7 +323,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                     }
                 } } else {
                 if (zipViewer.showSize)
-                    holder.txtDesc.setText(Futils.readableFileSize(rowItem.getSize()));
+                    holder.txtDesc.setText(Formatter.formatFileSize(c, rowItem.getSize()));
                 holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/") + 1));
                 if (zipViewer.coloriseIcons) {
                     if (Icons.isVideo(rowItem.getName()) || Icons.isPicture(rowItem.getName()))
