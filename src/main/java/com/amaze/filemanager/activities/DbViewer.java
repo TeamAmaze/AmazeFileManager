@@ -155,7 +155,8 @@ public class DbViewer extends BaseActivity {
                 if (!file.canRead() && BaseActivity.rootMode) {
 
                     try {
-                        RootUtils.copy(pathFile.getPath(),new File(file1.getPath(),file.getName()).getPath());
+                        RootUtils.copy(pathFile.getPath(),
+                                new File(file1.getPath(),file.getName()).getPath(), null);
                         pathFile=new File(file1.getPath(),file.getName());
                     } catch (RootNotPermittedException e) {
                         e.printStackTrace();

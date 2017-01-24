@@ -1269,7 +1269,6 @@ public class Futils {
                     command = "chmod -R " + finalValue + " \"" + file.getPath()+"\"";
 
                 try {
-                    RootUtils.mountOwnerRW(file.getPath());
                     RootHelper.runShellCommand(command, new Shell.OnCommandResultListener() {
                         @Override
                         public void onCommandResult(int commandCode, int exitCode, List<String> output) {

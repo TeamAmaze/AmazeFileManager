@@ -201,13 +201,11 @@ public abstract class FileUtil {
     }
 
     private static boolean rename(File f, String name,boolean root) throws RootNotPermittedException {
-        String newname = f.getParent() + "/" + name;
-        if(f.getParentFile().canWrite()){
-            return f.renameTo(new File(newname));}
-        else if(root) {
-            RootUtils.mountOwnerRW(f.getParent());
-            RootUtils.rename(f.getPath(), newname);
-            RootUtils.mountOwnerRO(f.getParent());
+        String newPath = f.getParent() + "/" + name;
+        if(f.getParentFile().canWrite()) {
+            return f.renameTo(new File(newPath));
+        } else if(root) {
+            RootUtils.rename(f.getPath(), newPath, f.getParent());
             return true;
         }
         return false;

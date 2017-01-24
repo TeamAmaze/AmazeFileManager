@@ -346,8 +346,12 @@ public class CopyService extends Service {
             void copyRoot(BaseFile sourceFile, HFile targetFile, boolean move) {
 
                 try {
-                    if (!move) RootUtils.copy(sourceFile.getPath(), targetFile.getPath());
-                    else if (move) RootUtils.move(sourceFile.getPath(), targetFile.getPath());
+                    OpenMode targetOpenMode = targetFile.getMode();
+                    if (!move) RootUtils.copy(sourceFile.getPath(),
+                            targetFile.getPath(),
+                            targetOpenMode == OpenMode.ROOT ? targetFile.getParent() : null);
+                    else if (move) RootUtils.move(sourceFile.getPath(), targetFile.getPath(),
+                            targetOpenMode == OpenMode.ROOT ? targetFile.getParent() : null);
                     ServiceWatcherUtil.POSITION+=sourceFile.getSize();
                 } catch (RootNotPermittedException e) {
                     failedFOps.add(sourceFile);

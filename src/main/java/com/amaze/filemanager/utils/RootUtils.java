@@ -69,7 +69,7 @@ public class RootUtils {
      * @param path
      * @throws RootNotPermittedException
      */
-    public static void mountOwnerRW(String path) throws RootNotPermittedException{
+    private static void mountOwnerRW(String path) throws RootNotPermittedException{
         chmod(path, 644);
     }
 
@@ -78,27 +78,66 @@ public class RootUtils {
      * @param path
      * @throws RootNotPermittedException
      */
-    public static void mountOwnerRO(String path) throws RootNotPermittedException{
+    private static void mountOwnerRO(String path) throws RootNotPermittedException{
         chmod(path, 444);
     }
 
     /**
-     *
+     * Copies file using root
      * @param source
      * @param destination
+     * @param mountPath
      * @throws RootNotPermittedException
      */
-    public static void copy(String source, String destination) throws RootNotPermittedException {
+    public static void copy(String source, String destination, String mountPath) throws RootNotPermittedException {
+
+        int mountPathPermissionsOctal = 644;
+        if (mountPath != null) {
+
+            // target is inside root director, mount the parent first, before writing
+            mountPathPermissionsOctal = getFilePermissions(mountPath);
+            mountOwnerRW(mountPath);
+        }
         RootHelper.runShellCommand("cp \"" + source + "\" \"" + destination + "\"");
+
+        if (mountPath != null) {
+            chmod(mountPath, mountPathPermissionsOctal);
+        }
     }
 
-    public static void mkDir(String path, String name) throws RootNotPermittedException {
+    /**
+     * Creates an empty directory using root
+     * @param path path to new directory
+     * @param name name of directory
+     * @param mountPath path to mount
+     * @throws RootNotPermittedException
+     */
+    public static void mkDir(String path, String name, String mountPath) throws RootNotPermittedException {
+
+        int mountPathPermissionsOctal = getFilePermissions(mountPath);
+        mountOwnerRW(mountPath);
         RootHelper.runShellCommand("mkdir \"" + path + "/" + name + "\"");
+        chmod(mountPath, mountPathPermissionsOctal);
+    }
+
+    /**
+     * Creates an empty file using root
+     * @param path path to new file
+     * @param mountPath path to mount
+     * @throws RootNotPermittedException
+     */
+    public static void mkFile(String path, String mountPath) throws RootNotPermittedException {
+
+        int mountPathPermissionsOctal = getFilePermissions(mountPath);
+        mountOwnerRW(mountPath);
+        RootHelper.runShellCommand("touch \"" + path +"\"");
+        chmod(mountPath, mountPathPermissionsOctal);
     }
 
 
     /**
      * Returns file permissions in octal notation
+     * Method requires busybox
      * @param path
      * @return
      */
@@ -111,10 +150,12 @@ public class RootUtils {
     /**
      * Recursively removes a path with it's contents (if any)
      * @param path
+     * @param mountPath path to mount before performing operation
      * @throws RootNotPermittedException
      */
-    public static void delete(String path) throws RootNotPermittedException {
+    public static void delete(String path, String mountPath) throws RootNotPermittedException {
 
+        mountOwnerRW(mountPath);
         RootHelper.runShellCommand("rm -r \"" + path + "\"");
     }
 
@@ -127,14 +168,32 @@ public class RootUtils {
      * Moves file using root
      * @param path
      * @param destination
+     * @param mountPath path to mount before performing operation
      * @throws RootNotPermittedException
      */
-    public static void move(String path, String destination) throws RootNotPermittedException {
+    public static void move(String path, String destination, String mountPath)
+            throws RootNotPermittedException {
+
+        int mountPathPermissionsOctal = getFilePermissions(mountPath);
+        mountOwnerRW(mountPath);
         RootHelper.runShellCommand("mv \"" + path + " \" \"" + destination + "\"");
+        chmod(mountPath, mountPathPermissionsOctal);
     }
 
-    public static void rename(String oldPath, String newPath) throws RootNotPermittedException {
+    /**
+     * Renames file using root
+     * @param oldPath path to file before rename
+     * @param newPath path to file after rename
+     * @param mountPath path to mount before performing operation
+     * @throws RootNotPermittedException
+     */
+    public static void rename(String oldPath, String newPath, String mountPath)
+            throws RootNotPermittedException {
+
+        int mountPathPermissionsOctal = getFilePermissions(mountPath);
+        mountOwnerRW(mountPath);
         RootHelper.runShellCommand("mv \"" + oldPath + "\" \"" + newPath + "\"");
+        chmod(mountPath, mountPathPermissionsOctal);
     }
 
     public static String parsePermission(String permLine) {

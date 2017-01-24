@@ -35,7 +35,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
     TextView md5TextView;
 
     public GenerateMD5Task(MaterialDialog a, HFile f, String name, String parent,
-                           String size, String items, String date, Context c, final View textView) {
+                           String size, String items, String date, final Context c, final View textView) {
         this.a = a;
         this.c = c;
         this.f = f;

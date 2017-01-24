@@ -96,9 +96,8 @@ public class Operations {
                             file.setMode(OpenMode.ROOT);
                             if (file.exists()) errorCallBack.exists(file);
                             try {
-                                RootUtils.mountOwnerRW(file.getParent());
-                                RootUtils.mkDir(file.getParent(), file.getName());
-                                RootUtils.mountOwnerRO(file.getParent());
+
+                                RootUtils.mkDir(file.getParent(), file.getName(), file.getParent());
                             } catch (RootNotPermittedException e) {
                                 Logger.log(e, file.getPath(), context);
                             }
@@ -171,12 +170,9 @@ public class Operations {
                         if (!file.exists() && rootMode) {
                             file.setMode(OpenMode.ROOT);
                             if (file.exists()) errorCallBack.exists(file);
-                            boolean remount = false;
                             try {
 
-                                RootUtils.mountOwnerRW(file.getParent());
-                                RootHelper.runShellCommand("touch \"" + file.getPath()+"\"");
-                                RootUtils.mountOwnerRO(file.getParent());
+                                RootUtils.mkFile(file.getPath(), file.getParent());
                             } catch (RootNotPermittedException e) {
                                 Logger.log(e, file.getPath(), context);
                             }
@@ -258,10 +254,7 @@ public class Operations {
                                 boolean a = !file.exists() && file1.exists();
                                 if (!a && rootMode){
                                     try {
-
-                                        RootUtils.mountOwnerRW(file.getParent());
-                                        RootUtils.rename(file.getPath(), file1.getPath());
-                                        RootUtils.mountOwnerRO(file.getParent());
+                                        RootUtils.rename(file.getPath(), file1.getPath(), file.getParent());
                                     } catch (Exception e) {
                                         Logger.log(e,oldFile.getPath()+"\n"+newFile.getPath(),context);
                                     }
@@ -276,9 +269,7 @@ public class Operations {
                         case ROOT:
                             try {
 
-                                RootUtils.mountOwnerRW(file.getParent());
-                                RootUtils.rename(file.getPath(), file1.getPath());
-                                RootUtils.mountOwnerRO(file1.getParent());
+                                RootUtils.rename(file.getPath(), file1.getPath(),file.getParent());
                             } catch (Exception e) {
                                 Logger.log(e,oldFile.getPath()+"\n"+newFile.getPath(),context);
                             }
