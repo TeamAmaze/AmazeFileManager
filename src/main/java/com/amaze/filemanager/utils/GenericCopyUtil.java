@@ -161,7 +161,7 @@ public class GenericCopyUtil {
         //MappedByteBuffer outByteBuffer = outChannel.map(FileChannel.MapMode.READ_WRITE, 0, inChannel.size());
 
         ReadableByteChannel inByteChannel = new CustomReadableByteChannel(inChannel);
-        outChannel.transferFrom(inByteChannel, 0, Long.MAX_VALUE);
+        outChannel.transferFrom(inByteChannel, 0, mSourceFile.getSize());
     }
 
     private void copyFile(BufferedInputStream bufferedInputStream, BufferedOutputStream bufferedOutputStream)
