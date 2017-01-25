@@ -1956,7 +1956,7 @@ public class MainActivity extends BaseActivity implements
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
         mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
-        if (getAppTheme().equals(AppTheme.DARK)) mDrawerLinear.setBackgroundColor(getColor(R.color.holo_dark_background));
+        if (getAppTheme().equals(AppTheme.DARK)) mDrawerLinear.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
