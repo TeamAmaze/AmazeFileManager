@@ -263,7 +263,8 @@ public class SmbConnectDialog extends DialogFragment {
                 if (ch.isChecked())
                     smbFile = connectingWithSmbServer(new String[]{ipa, "", "",domaind}, true);
                 else {
-                    String useru = user.getText().toString();
+                    String useraw = user.getText().toString();
+                    String useru = useraw.replaceAll(" ", "\\ ");
                     String passp = pass.getText().toString();
                     smbFile = connectingWithSmbServer(new String[]{ipa, useru, passp,domaind}, false);
                 }
