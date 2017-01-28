@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -226,11 +227,11 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 break;
 
             case R.id.relative_layout_licenses:
-                final Dialog dialog = new Dialog(this, getAppTheme().equals(AppTheme.LIGHT) ?
-                        android.R.style.Theme_Holo_Light_DialogWhenLarge_NoActionBar :
-                        android.R.style.Theme_Holo_DialogWhenLarge_NoActionBar);
+                Dialog dialog = new Dialog(this, android.R.style.Theme_Holo_Light);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 final View dialog_view = getLayoutInflater().inflate(R.layout.open_source_licenses, null);
                 WebView wv = (WebView) dialog_view.findViewById(R.id.webView1);
+                dialog.setContentView(dialog_view);
                 wv.loadData(PreferenceUtils.LICENCE_TERMS, "text/html", null);
                 dialog.show();
                 break;

@@ -469,7 +469,7 @@ public class MainActivity extends BaseActivity implements
             shellInteractive = (new Shell.Builder()).useSU().setHandler(handler).open();
 
             // check for busybox
-            try {
+            /*try {
                 if (!RootUtils.isBusyboxAvailable()) {
                     Toast.makeText(this, getString(R.string.error_busybox), Toast.LENGTH_LONG).show();
                     closeInteractiveShell();
@@ -478,7 +478,7 @@ public class MainActivity extends BaseActivity implements
             } catch (RootNotPermittedException e) {
                 e.printStackTrace();
                 Sp.edit().putBoolean(PreferenceUtils.KEY_ROOT, false).apply();
-            }
+            }*/
         }
     }
 

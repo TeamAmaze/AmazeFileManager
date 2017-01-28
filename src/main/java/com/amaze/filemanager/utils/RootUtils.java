@@ -202,10 +202,10 @@ public class RootUtils {
         return result.size()!=0;
     }
 
-    public static boolean isBusyboxAvailable() throws RootNotPermittedException {
+    /*public static boolean isBusyboxAvailable() throws RootNotPermittedException {
         ArrayList<String> output = RootHelper.runShellCommand("busybox");
         return output.size()!=0;
-    }
+    }*/
 
     /**
      * Moves file using root

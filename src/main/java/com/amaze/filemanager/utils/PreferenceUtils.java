@@ -118,29 +118,13 @@ public class PreferenceUtils {
             "&nbsp;* limitations under the License.<br>" +
             "&nbsp;*/ " +
             "<br><br></code></p>" +
-            "<h3>Notices for files:</h3> " +
-            "<ul><li>RootTools.jar</ul></li>" +	//RootTools
+            "<h3>Notices for libraries:</h3> " +
+            "<ul><li>libsuperuser</ul></li>" +	//libsupersu
             "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
             "<br>/*<br>" +
-            "&nbsp;* This file is part of the RootTools Project: http://code.google.com/p/roottools/<br>" +
-            "&nbsp;*<br>" +
-            "&nbsp;* Copyright (c) 2012 Stephen Erickson, Chris Ravenscroft, Dominik Schuermann, Adam Shanks<br>" +
-            "&nbsp;*<br>" +
-            "&nbsp;* This code is dual-licensed under the terms of the Apache License Version 2.0 and<br>" +
-            "&nbsp;* the terms of the General Public License (GPL) Version 2.<br>" +
-            "&nbsp;* You may use this code according to either of these licenses as is most appropriate<br>" +
-            "&nbsp;* for your project on a case-by-case basis.<br>" +
-            "&nbsp;*<br>" +
-            "&nbsp;* The terms of each license can be found in the root directory of this project's repository as well as at:<br>" +
-            "&nbsp;*<br>" +
-            "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>" +
-            "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.gnu.org/licenses/gpl-2.0.txt<br>" +
-            "&nbsp;*<br>" +
-            "&nbsp;* Unless required by applicable law or agreed to in writing, software<br>" +
-            "&nbsp;* distributed under these Licenses is distributed on an \"AS IS\" BASIS,<br>" +
-            "&nbsp;* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>" +
-            "&nbsp;* See each License for the specific language governing permissions and<br>" +
-            "&nbsp;* limitations under that License.<br>" +
+            "&nbsp;*                                  Apache License<br>" +
+            "&nbsp;*                            Version 2.0, January 2004<br>" +
+            "&nbsp;*                         http://www.apache.org/licenses/<br>" +
             "&nbsp;*/ " +
             "<br><br></code></p>" +
             "<h3>Notices for libraries:</h3> " +
@@ -290,10 +274,50 @@ public class PreferenceUtils {
             "&nbsp;*/ " +
             "<br><br></code></p>" +
             "<h3>Notices for libraries:</h3>" +
-            "<ul><li>Universal Image Loader</ul></li>" +	// universalImageLoader
+            "<ul><li>JCIFS</ul></li>" +	// jcifs
             "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
             "<br>/*<br>" +
-            "&nbsp;* Copyright 2011-2015 Sergey Tarasevich<br>" +
+            "&nbsp;* Copyright (C) <year>  <name of author><br>" +
+            "&nbsp;* <br>" +
+            "&nbsp;* This library is free software; you can redistribute it and/or<br>" +
+            "&nbsp;* modify it under the terms of the GNU Lesser General Public<br>" +
+            "&nbsp;* License as published by the Free Software Foundation; either<br>" +
+            "&nbsp;* version 2.1 of the License, or (at your option) any later version.<br>" +
+            "&nbsp;* <br>" +
+            "&nbsp;* This library is distributed in the hope that it will be useful,<br>" +
+            "&nbsp;* but WITHOUT ANY WARRANTY; without even the implied warranty of<br>" +
+            "&nbsp;* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU<br>" +
+            "&nbsp;* Lesser General Public License for more details.<br>" +
+            "&nbsp;* <br>" +
+            "&nbsp;* You should have received a copy of the GNU Lesser General Public<br>" +
+            "&nbsp;* License along with this library; if not, write to the Free Software<br>" +
+            "&nbsp;* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA<br>" +
+            "&nbsp;*/ " +
+            "<br><br></code></p>" +
+            "<h3>Notices for libraries:</h3>" +
+            "<ul><li>Apache Mina</li> <li>Apache FtpServer</li></ul>" +	// apache
+            "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
+            "<br>/*<br>" +
+            "&nbsp;* Copyright [yyyy] [name of copyright owner]<br>" +
+            "&nbsp;* <br>" +
+            "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
+            "&nbsp;* you may not use this file except in compliance with the License.<br>" +
+            "&nbsp;* You may obtain a copy of the License at<br>" +
+            "&nbsp;* <br>" +
+            "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>" +
+            "&nbsp;* <br>" +
+            "&nbsp;* Unless required by applicable law or agreed to in writing, software<br>" +
+            "&nbsp;* distributed under the License is distributed on an \"AS IS\" BASIS,<br>" +
+            "&nbsp;* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>" +
+            "&nbsp;* See the License for the specific language governing permissions and<br>" +
+            "&nbsp;* limitations under the License.<br>" +
+            "&nbsp;*/ " +
+            "<br><br></code></p>" +
+            "<h3>Notices for libraries:</h3>" +
+            "<ul><li>MPAndroidChart</ul></li>" +	// MPAndroidChart
+            "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
+            "<br>/*<br>" +
+            "&nbsp;* Copyright 2016 Philipp Jahoda<br>" +
             "&nbsp;* <br>" +
             "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
             "&nbsp;* you may not use this file except in compliance with the License.<br>" +

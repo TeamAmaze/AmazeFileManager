@@ -123,7 +123,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core
     compile group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.0'
 
-    compile 'com.jcraft:jsch:0.1.53'
+    //compile 'com.jcraft:jsch:0.1.53'
     compile 'com.android.volley:volley:1.0.0'
     compile 'eu.chainfire:libsuperuser:1.0.0.+'
 }
