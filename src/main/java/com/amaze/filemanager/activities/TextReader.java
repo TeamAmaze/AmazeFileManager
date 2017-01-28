@@ -383,26 +383,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
         OutputStream outputStream = null;
 
-        if (parcelFileDescriptor != null) {
-            File descriptorFile = new File(GenericCopyUtil.PATH_FILE_DESCRIPTOR + parcelFileDescriptor.getFd());
-            try {
-                outputStream = new FileOutputStream(descriptorFile);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                outputStream = null;
-            }
-        }
-
-        if (outputStream == null) {
-            try {
-                outputStream = getContentResolver().openOutputStream(uri);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                outputStream = null;
-            }
-        }
-
-        if(outputStream == null && file.canWrite()) {
+        if(file.canWrite()) {
             try {
 
                 outputStream = new FileOutputStream(file);
@@ -421,6 +402,28 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 outputStream = null;
+            }
+        }
+
+        if (outputStream == null) {
+
+            if (parcelFileDescriptor != null) {
+                File descriptorFile = new File(GenericCopyUtil.PATH_FILE_DESCRIPTOR + parcelFileDescriptor.getFd());
+                try {
+                    outputStream = new FileOutputStream(descriptorFile);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    outputStream = null;
+                }
+            }
+
+            if (outputStream == null) {
+                try {
+                    outputStream = getContentResolver().openOutputStream(uri);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    outputStream = null;
+                }
             }
         }
 
@@ -642,39 +645,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             throws StreamNotFoundException {
         InputStream stream = null;
 
-        // trying to get URI from intent action
-        try {
-            // getting a writable file descriptor
-            parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "rw");
-            File parcelFile = new File(GenericCopyUtil.PATH_FILE_DESCRIPTOR + parcelFileDescriptor.getFd());
-
-            stream = new FileInputStream(parcelFile);
-        } catch (FileNotFoundException e) {
-
-            // falling back to readable file descriptor
-            try {
-                parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
-                File parcelFile = new File(GenericCopyUtil.PATH_FILE_DESCRIPTOR + parcelFileDescriptor.getFd());
-
-                stream = new FileInputStream(parcelFile);
-            } catch (FileNotFoundException e1) {
-                e1.printStackTrace();
-                stream = null;
-            }
-        }
-
-        if (stream == null) {
-            // couldn't get a file descriptor based on path, let's try opening stream directly
-            try {
-                stream = getContentResolver().openInputStream(uri);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                stream = null;
-
-            }
-        }
-
-        if (stream == null && !file.canWrite() && BaseActivity.rootMode) {
+        if (!file.canWrite() && BaseActivity.rootMode) {
 
             // try loading stream associated using root
 
@@ -695,13 +666,47 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 e.printStackTrace();
                 stream = null;
             }
-        } else if (stream == null && file.canRead()) {
+        } else if (file.canRead()) {
 
             // readable file in filesystem
             try {
                 stream=new FileInputStream(file.getPath());
             } catch (FileNotFoundException e) {
                 stream=null;
+            }
+        }
+
+        if (stream == null) {
+            // trying to get URI from intent action
+            try {
+                // getting a writable file descriptor
+                parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "rw");
+                File parcelFile = new File(GenericCopyUtil.PATH_FILE_DESCRIPTOR + parcelFileDescriptor.getFd());
+
+                stream = new FileInputStream(parcelFile);
+            } catch (FileNotFoundException e) {
+
+                // falling back to readable file descriptor
+                try {
+                    parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
+                    File parcelFile = new File(GenericCopyUtil.PATH_FILE_DESCRIPTOR + parcelFileDescriptor.getFd());
+
+                    stream = new FileInputStream(parcelFile);
+                } catch (FileNotFoundException e1) {
+                    e1.printStackTrace();
+                    stream = null;
+                }
+            }
+
+            if (stream == null) {
+                // couldn't get a file descriptor based on path, let's try opening stream directly
+                try {
+                    stream = getContentResolver().openInputStream(uri);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    stream = null;
+
+                }
             }
         }
 
