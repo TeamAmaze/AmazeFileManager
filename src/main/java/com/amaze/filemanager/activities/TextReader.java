@@ -835,7 +835,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
                     // highlighting previous element in list
                     Map.Entry keyValueNew = (Map.Entry) nodes.get(--mCurrent).getKey();
-                    mInput.getText().setSpan(new BackgroundColorSpan(ContextCompat.getColor(this, R.color.search_text_highlight)),
+                    mInput.getText().setSpan(new BackgroundColorSpan(getResources().getColor(R.color.search_text_highlight)),
                             (Integer) keyValueNew.getKey(),
                             (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
@@ -860,7 +860,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                     }
 
                     Map.Entry keyValueNew = (Map.Entry) nodes.get(++mCurrent).getKey();
-                    mInput.getText().setSpan(new BackgroundColorSpan(ContextCompat.getColor(this, R.color.search_text_highlight)),
+                    mInput.getText().setSpan(new BackgroundColorSpan(getResources().getColor(R.color.search_text_highlight)),
                             (Integer) keyValueNew.getKey(),
                             (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
