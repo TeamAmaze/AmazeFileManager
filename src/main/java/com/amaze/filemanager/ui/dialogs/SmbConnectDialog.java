@@ -15,6 +15,7 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -39,6 +40,8 @@ import jcifs.smb.SmbFile;
  */
 public class SmbConnectDialog extends DialogFragment {
     private UtilitiesProviderInterface utilsProvider;
+
+    private static final String TAG = "SmbConnectDialog";
 
 
     public interface SmbConnectionListener{
@@ -298,7 +301,7 @@ public class SmbConnectDialog extends DialogFragment {
     public SmbFile connectingWithSmbServer(String[] auth, boolean anonym) {
         try {
             String yourPeerIP = auth[0], domain = auth[3];
-            String path = "smb://"+(android.text.TextUtils.isEmpty(domain) ? "" :( URLEncoder.encode(domain + ";","UTF-8")) )+ (anonym ? "" : (URLEncoder.encode(auth[1] + ":" + auth[2], "UTF-8") + "@")) + yourPeerIP + "/";
+            String path = "smb://"+(android.text.TextUtils.isEmpty(domain) ? "" :( URLEncoder.encode(domain + ";","UTF-8")) )+ (anonym ? "" : (URLEncoder.encode(auth[1], "UTF-8") + ":" + URLEncoder.encode(auth[2], "UTF-8") + "@")) + yourPeerIP + "/";
             SmbFile smbFile = new SmbFile(path);
             return smbFile;
         } catch (Exception e) {
