@@ -289,6 +289,7 @@ public class CopyService extends Service {
                                 if(!f1.isSmb()
                                         && (f1.getMode() == OpenMode.ROOT || mode == OpenMode.ROOT)
                                         && BaseActivity.rootMode) {
+                                    // either source or target are in root
                                     progressHandler.setSourceFilesProcessed(++sourceProgress);
                                     copyRoot(f1, hFile, move);
                                     continue;
@@ -346,12 +347,8 @@ public class CopyService extends Service {
             void copyRoot(BaseFile sourceFile, HFile targetFile, boolean move) {
 
                 try {
-                    OpenMode targetOpenMode = targetFile.getMode();
-                    if (!move) RootUtils.copy(sourceFile.getPath(),
-                            targetFile.getPath(),
-                            targetOpenMode == OpenMode.ROOT ? targetFile.getParent() : null);
-                    else if (move) RootUtils.move(sourceFile.getPath(), targetFile.getPath(),
-                            targetOpenMode == OpenMode.ROOT ? targetFile.getParent() : null);
+                    if (!move) RootUtils.copy(sourceFile.getPath(), targetFile.getPath());
+                    else if (move) RootUtils.move(sourceFile.getPath(), targetFile.getPath());
                     ServiceWatcherUtil.POSITION+=sourceFile.getSize();
                 } catch (RootNotPermittedException e) {
                     failedFOps.add(sourceFile);

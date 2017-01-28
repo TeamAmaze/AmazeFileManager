@@ -106,8 +106,6 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     //int index=0;
     ScrollView scrollView;
 
-    private int filePermissionsOctal = -1;  // stores and preserves file permissions in root
-
     /*
      * List maintaining the searched text's start/end index as key/value pair
      */
@@ -137,6 +135,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     // input stream associated with the file
     private InputStream inputStream;
     private ParcelFileDescriptor parcelFileDescriptor;
+    private File cacheFile;     // represents a file saved in cache
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -400,12 +399,11 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             }
         }
 
-        if (BaseActivity.rootMode && outputStream ==  null){
+        if (BaseActivity.rootMode && cacheFile.exists() && outputStream == null){
             // try loading stream associated using root
             try {
-                filePermissionsOctal = RootUtils.getFilePermissions(file.getParent());
-                RootUtils.chmod(file.getParent(), 744);
-                outputStream = new FileOutputStream(file);
+
+                outputStream = new FileOutputStream(cacheFile);
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -441,7 +439,12 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         outputStream.write(inputText.getBytes());
         outputStream.close();
 
-        resetPermissions(file.getParent(), filePermissionsOctal);
+        if (cacheFile!=null && cacheFile.exists()) {
+            // cat cache content to original file and delete cache file
+            RootUtils.cat(cacheFile.getPath(), mFile.getPath());
+
+            cacheFile.delete();
+        }
 
         runOnUiThread(new Runnable() {
             @Override
@@ -450,18 +453,6 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 Toast.makeText(c, getString(R.string.done), Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    /**
-     * Resets the initial permissions which file had, before modifying
-     * @param path
-     * @param permissions
-     */
-    private void resetPermissions(String path, int permissions) throws RootNotPermittedException {
-
-        if (filePermissionsOctal!=-1) {
-            RootUtils.chmod(path, permissions);
-        }
     }
 
     private void setProgress(boolean show) {
@@ -600,12 +591,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             }
         }
 
-        try {
-            resetPermissions(mFile.getParent(), filePermissionsOctal);
-        } catch (RootNotPermittedException e) {
-            e.printStackTrace();
-            Toast.makeText(this, getString(R.string.rootfailure), Toast.LENGTH_LONG).show();
-        }
+        if (cacheFile != null && cacheFile.exists()) cacheFile.delete();
     }
 
     @Override
@@ -665,18 +651,19 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             throws StreamNotFoundException {
         InputStream stream = null;
 
-        if (!file.canRead() && BaseActivity.rootMode) {
+        if (!file.canWrite() && BaseActivity.rootMode) {
 
             // try loading stream associated using root
 
             try {
-                // preserving file permissions for after closing the file
-                filePermissionsOctal = RootUtils.getFilePermissions(file.getParent());
 
-                // assigning permission to write this file to Amaze
-                RootUtils.chmod(file.getParent(), 744);
+                File cacheDir = getExternalCacheDir();
+
+                cacheFile = new File(cacheDir, mFile.getName());
+                // creating a cache file
+                RootUtils.copy(mFile.getPath(), cacheFile.getPath());
                 try {
-                    stream = new FileInputStream(file.getPath());
+                    stream = new FileInputStream(cacheFile);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                     stream = null;

@@ -205,7 +205,7 @@ public abstract class FileUtil {
         if(f.getParentFile().canWrite()) {
             return f.renameTo(new File(newPath));
         } else if(root) {
-            RootUtils.rename(f.getPath(), newPath, f.getParent());
+            RootUtils.rename(f.getPath(), newPath);
             return true;
         }
         return false;

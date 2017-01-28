@@ -545,7 +545,7 @@ public class HFile {
             if(isRoot() && rootmode) {
                 setMode(OpenMode.ROOT);
 
-                RootUtils.delete(getPath(), getPath());
+                RootUtils.delete(getPath());
             } else {
 
                 FileUtil.deleteFile(new File(path), context);

@@ -8,7 +8,6 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.RootHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 
 public class RootUtils {
@@ -42,66 +41,98 @@ public class RootUtils {
     }
 
     /**
-     * Get a shell based listing
-     * Context is an third-party context level shell
-     * @param str
-     * @return
-     */
-    public static List<String> getDirListing(String str) throws RootNotPermittedException {
-        return RootHelper.runNonRootShellCommand(LS.replace("%", str));
-    }
-
-    /**
      * Change permissions (owner/group/others) of a specified path
      * @param path
      * @param octalNotation octal notation of permission
      * @throws RootNotPermittedException
      */
     public static void chmod(String path, int octalNotation) throws RootNotPermittedException {
+
+        String mountPoint = mountFileSystemRW(path);
+
         String command = "chmod %d \"%s\"";
 
         RootHelper.runShellCommand(String.format(command, octalNotation, path));
+
+        if (mountPoint!=null) {
+            // we mounted the filesystem as rw, let's mount it back to ro
+            mountFileSystemRO(mountPoint);
+        }
     }
 
 
     /**
-     * Mount path for writable access (rw)
-     * @param path
+     * Mount filesystem associated with path for writable access (rw)
+     * Since we don't have the root of filesystem to remount, we need to parse output of
+     * # mount command.
+     * @param path the path on which action to perform
+     * @return String the root of mount point that was ro, and mounted to rw; null otherwise
      * @throws RootNotPermittedException
      */
-    private static void mountOwnerRW(String path) throws RootNotPermittedException{
-        chmod(path, 644);
+    private static String mountFileSystemRW(String path) throws RootNotPermittedException {
+        String command = "mount";
+        ArrayList<String> output = RootHelper.runShellCommand(command);
+        String mountPoint = "", types = null;
+        for (String line : output) {
+            String[] words = line.split(" ");
+
+            if (path.contains(words[2])) {
+                // current found point is bigger than last one, hence not a conflicting one
+                // we're finding the best match, this omits for eg. / and /sys when we're actually
+                // looking for /system
+                if (words[2].length() > mountPoint.length()) {
+                    mountPoint = words[2];
+                    types = words[5];
+                }
+            } else continue;
+        }
+
+        if (!mountPoint.equals("") && types!=null) {
+
+            // we have the mountpoint, check for mount options if already rw
+            if (types.contains("rw")) {
+                // already a rw filesystem return
+                return null;
+            } else if (types.contains("ro")) {
+                // read-only file system, remount as rw
+                String mountCommand = "mount -o rw,remount " + mountPoint;
+                ArrayList<String> mountOutput = RootHelper.runShellCommand(mountCommand);
+
+                if (mountOutput.size()!=0) {
+                    // command failed, and we got a reason echo'ed
+                    return null;
+                } else return mountPoint;
+            }
+        }
+        return null;
     }
 
     /**
-     * Mount path for readable access (ro)
-     * @param path
+     * Mount path for read-only access (ro)
+     * @param path the root of device/filesystem to be mounted as ro
      * @throws RootNotPermittedException
      */
-    private static void mountOwnerRO(String path) throws RootNotPermittedException{
-        chmod(path, 444);
+    private static void mountFileSystemRO(String path) throws RootNotPermittedException {
+        String command = "umount -r \"" + path + "\"";
+        RootHelper.runShellCommand(command);
     }
 
     /**
      * Copies file using root
      * @param source
      * @param destination
-     * @param mountPath
      * @throws RootNotPermittedException
      */
-    public static void copy(String source, String destination, String mountPath) throws RootNotPermittedException {
+    public static void copy(String source, String destination) throws RootNotPermittedException {
 
-        int mountPathPermissionsOctal = 644;
-        if (mountPath != null) {
+        // remounting destination as rw
+        String mountPoint = mountFileSystemRW(destination);
 
-            // target is inside root director, mount the parent first, before writing
-            mountPathPermissionsOctal = getFilePermissions(mountPath);
-            mountOwnerRW(mountPath);
-        }
         RootHelper.runShellCommand("cp \"" + source + "\" \"" + destination + "\"");
 
-        if (mountPath != null) {
-            chmod(mountPath, mountPathPermissionsOctal);
+        if (mountPoint!=null) {
+            // we mounted the filesystem as rw, let's mount it back to ro
+            mountFileSystemRO(mountPoint);
         }
     }
 
@@ -109,29 +140,33 @@ public class RootUtils {
      * Creates an empty directory using root
      * @param path path to new directory
      * @param name name of directory
-     * @param mountPath path to mount
      * @throws RootNotPermittedException
      */
-    public static void mkDir(String path, String name, String mountPath) throws RootNotPermittedException {
+    public static void mkDir(String path, String name) throws RootNotPermittedException {
 
-        int mountPathPermissionsOctal = getFilePermissions(mountPath);
-        mountOwnerRW(mountPath);
+        String mountPoint = mountFileSystemRW(path);
+
         RootHelper.runShellCommand("mkdir \"" + path + "/" + name + "\"");
-        chmod(mountPath, mountPathPermissionsOctal);
+        if (mountPoint!=null) {
+            // we mounted the filesystem as rw, let's mount it back to ro
+            mountFileSystemRO(mountPoint);
+        }
     }
 
     /**
      * Creates an empty file using root
      * @param path path to new file
-     * @param mountPath path to mount
      * @throws RootNotPermittedException
      */
-    public static void mkFile(String path, String mountPath) throws RootNotPermittedException {
+    public static void mkFile(String path) throws RootNotPermittedException {
 
-        int mountPathPermissionsOctal = getFilePermissions(mountPath);
-        mountOwnerRW(mountPath);
+        String mountPoint = mountFileSystemRW(path);
+
         RootHelper.runShellCommand("touch \"" + path +"\"");
-        chmod(mountPath, mountPathPermissionsOctal);
+        if (mountPoint!=null) {
+            // we mounted the filesystem as rw, let's mount it back to ro
+            mountFileSystemRO(mountPoint);
+        }
     }
 
 
@@ -141,7 +176,7 @@ public class RootUtils {
      * @param path
      * @return
      */
-    public static int getFilePermissions(String path) throws RootNotPermittedException {
+    private static int getFilePermissions(String path) throws RootNotPermittedException {
         String line = RootHelper.runShellCommand("stat -c  %a \"" + path + "\"").get(0);
 
         return Integer.valueOf(line.toString());
@@ -150,13 +185,21 @@ public class RootUtils {
     /**
      * Recursively removes a path with it's contents (if any)
      * @param path
-     * @param mountPath path to mount before performing operation
+     * @return boolean whether file was deleted or not
      * @throws RootNotPermittedException
      */
-    public static void delete(String path, String mountPath) throws RootNotPermittedException {
+    public static boolean delete(String path) throws RootNotPermittedException {
 
-        mountOwnerRW(mountPath);
-        RootHelper.runShellCommand("rm -r \"" + path + "\"");
+        String mountPoint = mountFileSystemRW(path);
+
+        ArrayList<String> result = RootHelper.runShellCommand("rm -rf \"" + path + "\"");
+
+        if (mountPoint!=null) {
+            // we mounted the filesystem as rw, let's mount it back to ro
+            mountFileSystemRO(mountPoint);
+        }
+
+        return result.size()!=0;
     }
 
     public static boolean isBusyboxAvailable() throws RootNotPermittedException {
@@ -168,32 +211,52 @@ public class RootUtils {
      * Moves file using root
      * @param path
      * @param destination
-     * @param mountPath path to mount before performing operation
      * @throws RootNotPermittedException
      */
-    public static void move(String path, String destination, String mountPath)
+    public static void move(String path, String destination)
             throws RootNotPermittedException {
 
-        int mountPathPermissionsOctal = getFilePermissions(mountPath);
-        mountOwnerRW(mountPath);
-        RootHelper.runShellCommand("mv \"" + path + " \" \"" + destination + "\"");
-        chmod(mountPath, mountPathPermissionsOctal);
+        // remounting destination as rw
+        String mountPoint = mountFileSystemRW(destination);
+
+        //mountOwnerRW(mountPath);
+        RootHelper.runShellCommand("mv \"" + path + "\" \"" + destination + "\"");
+
+        if (mountPoint!=null) {
+            // we mounted the filesystem as rw, let's mount it back to ro
+            mountFileSystemRO(mountPoint);
+        }
     }
 
     /**
      * Renames file using root
      * @param oldPath path to file before rename
      * @param newPath path to file after rename
-     * @param mountPath path to mount before performing operation
      * @throws RootNotPermittedException
      */
-    public static void rename(String oldPath, String newPath, String mountPath)
+    public static void rename(String oldPath, String newPath)
             throws RootNotPermittedException {
 
-        int mountPathPermissionsOctal = getFilePermissions(mountPath);
-        mountOwnerRW(mountPath);
+        String mountPoint = mountFileSystemRW(oldPath);
+
         RootHelper.runShellCommand("mv \"" + oldPath + "\" \"" + newPath + "\"");
-        chmod(mountPath, mountPathPermissionsOctal);
+
+        if (mountPoint!=null) {
+            // we mounted the filesystem as rw, let's mount it back to ro
+            mountFileSystemRO(mountPoint);
+        }
+    }
+
+    public static void cat(String sourcePath, String destinationPath)
+            throws RootNotPermittedException {
+
+        String mountPoint = mountFileSystemRW(destinationPath);
+
+        RootHelper.runShellCommand("cat \"" + sourcePath + "\" > \"" + destinationPath + "\"");
+        if (mountPoint!=null) {
+            // we mounted the filesystem as rw, let's mount it back to ro
+            mountFileSystemRO(mountPoint);
+        }
     }
 
     public static String parsePermission(String permLine) {

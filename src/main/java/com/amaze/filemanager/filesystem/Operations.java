@@ -97,7 +97,7 @@ public class Operations {
                             if (file.exists()) errorCallBack.exists(file);
                             try {
 
-                                RootUtils.mkDir(file.getParent(), file.getName(), file.getParent());
+                                RootUtils.mkDir(file.getParent(), file.getName());
                             } catch (RootNotPermittedException e) {
                                 Logger.log(e, file.getPath(), context);
                             }
@@ -172,7 +172,7 @@ public class Operations {
                             if (file.exists()) errorCallBack.exists(file);
                             try {
 
-                                RootUtils.mkFile(file.getPath(), file.getParent());
+                                RootUtils.mkFile(file.getPath());
                             } catch (RootNotPermittedException e) {
                                 Logger.log(e, file.getPath(), context);
                             }
@@ -254,7 +254,7 @@ public class Operations {
                                 boolean a = !file.exists() && file1.exists();
                                 if (!a && rootMode){
                                     try {
-                                        RootUtils.rename(file.getPath(), file1.getPath(), file.getParent());
+                                        RootUtils.rename(file.getPath(), file1.getPath());
                                     } catch (Exception e) {
                                         Logger.log(e,oldFile.getPath()+"\n"+newFile.getPath(),context);
                                     }
@@ -269,7 +269,7 @@ public class Operations {
                         case ROOT:
                             try {
 
-                                RootUtils.rename(file.getPath(), file1.getPath(),file.getParent());
+                                RootUtils.rename(file.getPath(), file1.getPath());
                             } catch (Exception e) {
                                 Logger.log(e,oldFile.getPath()+"\n"+newFile.getPath(),context);
                             }

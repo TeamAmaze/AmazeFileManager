@@ -110,6 +110,7 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
             zipViewer.files.clear();
         }
     }
+
     void delete(final Context context, final String file) {
         final String where = MediaStore.MediaColumns.DATA + "=?";
         final String[] selectionArgs = new String[] {

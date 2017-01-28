@@ -256,7 +256,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                                         ArrayList<BaseFile> files = new ArrayList<>();
                                                         if (Build.VERSION.SDK_INT >= 21) {
                                                             String parent = f1.getParent();
-                                                            if (!parent.equals("app") && !parent.equals("priv-app")){
+                                                            if (!parent.equals("app") && !parent.equals("priv-app")) {
                                                                 BaseFile baseFile=new BaseFile(f1.getParent());
                                                                 baseFile.setMode(OpenMode.ROOT);
                                                                 files.add(baseFile);

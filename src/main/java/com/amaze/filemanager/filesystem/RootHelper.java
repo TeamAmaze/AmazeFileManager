@@ -67,8 +67,9 @@ public class RootHelper {
     }
 
     /**
-     * Runs the command and stores output in a list. The listener is set on the caller thread,
-     * thus any code run in callback must be thread safe.
+     * Runs the command on an interactive shell. Provides a listener for the caller to interact.
+     * The caller is executed on a worker background thread, hence any calls from the callback
+     * should be thread safe.
      * Command is run from superuser context (u:r:SuperSU0)
      * @param cmd the command
      * @param callback
@@ -84,6 +85,9 @@ public class RootHelper {
     }
 
     /**
+     * @deprecated
+     * Use {@link #runShellCommand(String)} instead which runs command on an interactive shell
+     *
      * Runs the command and stores output in a list. The listener is set on the caller thread,
      * thus any code run in callback must be thread safe.
      * Command is run from a third-party level context (u:r:init_shell0)
@@ -422,7 +426,7 @@ public class RootHelper {
             mode=OpenMode.FILE;
             a = new ArrayList<>();
         }
-        if(getModeCallBack!=null)getModeCallBack.getMode(mode);
+        if(getModeCallBack!=null) getModeCallBack.getMode(mode);
         return a;
     }
 }

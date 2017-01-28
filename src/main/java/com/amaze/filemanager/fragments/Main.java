@@ -691,8 +691,6 @@ public class Main extends android.support.v4.app.Fragment {
                     return true;*/
                 case R.id.delete:
                     utils.deleteFiles(LIST_ELEMENTS, ma, plist, utilsProvider.getAppTheme());
-
-
                     return true;
                 case R.id.share:
                     ArrayList<File> arrayList = new ArrayList<File>();
