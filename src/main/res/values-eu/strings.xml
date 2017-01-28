@@ -81,7 +81,6 @@
     <string name="newfolder">Karpeta berria</string>
     <string name="entername">Izena sartu</string>
     <string name="extracting">Erauzten</string>
-    <string name="zipping">Zip fitxategi batean biltzen</string>
     <string name="stopping">Gelditzen</string>
     <string name="guide1">Ongi etorri Amaze File Managerera</string>
     <string name="guide2">Banda urdina uki ezazu Bide-barra ikusi edo ezkutatzeko</string>
@@ -192,7 +191,6 @@
     <string name="copying_fles">Fitxategiak kopiatzen</string>
     <string name="done">Eginda</string>
     <string name="Extracting_fles">Fitxategiak erauzten</string>
-    <string name="Zipping_fles">Fitxategiak Zip batean biltzen</string>
     <string name="items">elementu</string>
     <string name="set">Ezarri</string>
     <string name="enablerootmde">Root modua gaitu</string>

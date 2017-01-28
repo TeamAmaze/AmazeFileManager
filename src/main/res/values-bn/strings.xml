@@ -149,8 +149,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="extracting">এ্যাক্সট্যাক্ট করা হচ্ছে</string>
 
-    <string name="zipping">জিপ করা হচ্ছে</string>
-
     <string name="stopping">থামানো হচ্ছে</string>
 
     <string name="guide1">স্বাগতম এ্যামেজ ফাইল ম্যানেজারে!</string>
@@ -368,8 +366,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <string name="done">সম্পন্ন হয়েছে</string>
 
     <string name="Extracting_fles">ফাইলগুলো এক্সট্র্যাক্ট করা হচ্ছে</string>
-
-    <string name="Zipping_fles">ফাইলগুলো জিপ করা হচ্ছে</string>
 
     <string name="items">Items</string>
 

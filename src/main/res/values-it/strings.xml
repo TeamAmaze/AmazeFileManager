@@ -326,7 +326,7 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
     <string name="fab_skin">Aspetto bottone</string>
     <string name="gplus_pic_title">Accedi con Google+</string>
     <string name="gplus_pic_summary">Mostra immagine di copertina G+ nel pannello di navigazione</string>
-    <string name="icon_credits">Grafica di <a href=\"http://cookicons.co/\">CookIcons</a></string>
+    <string name="icon_credits">Grafica di &lt;a href=\"http://cookicons.co/\">CookIcons&lt;/a></string>
 
     <string name="color_title">Colori</string>
     <string name="color_summary">Imposta i colori dei vari componenti dell\'interfaccia utente</string>
