@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Copyright (C) 2014-2015 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+    Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
     This file is part of Amaze File Manager.
 
@@ -65,11 +65,11 @@
     <string name="filecreated">Berkas Dibuat</string>
     <string name="searchpath">Jalur Pencarian</string>
     <string name="enterfile">Masukkan Nama Berkas</string>
-    <string name="name">Nama:</string>
-    <string name="date">Tanggal:</string>
-    <string name="location">Lokasi:</string>
-    <string name="size">Ukuran Folder:</string>
-    <string name="totalitems">Total Item:</string>
+    <string name="name">Nama</string>
+    <string name="date">Tanggal</string>
+    <string name="location">Lokasi</string>
+    <string name="size">Ukuran Folder</string>
+    <string name="totalitems">Total Item</string>
     <string name="enterzipname">Masukkan Nama Zip</string>
     <string name="noappfound">Tidak ada Apl yang bisa membuka berkas ini</string>
     <string name="copying">Menyalin</string>
@@ -81,7 +81,6 @@
     <string name="newfolder">Folder Baru</string>
     <string name="entername">Masukkan Nama</string>
     <string name="extracting">Mengekstrak</string>
-    <string name="zipping">Memampatkan</string>
     <string name="stopping">Menghentikan</string>
     <string name="guide1">Selamat datang di Amaze File Manager</string>
     <string name="guide2">Sentuh strip biru untuk menampilkan atau menyembunyikan BilahJalur</string>
@@ -192,7 +191,6 @@
     <string name="copying_fles">Menyalin Berkas</string>
     <string name="done">Selesai</string>
     <string name="Extracting_fles">Mengekstrak Berkas</string>
-    <string name="Zipping_fles">Memampatkan Berkas</string>
     <string name="items">Item</string>
     <string name="item">Item</string>
     <string name="set">Setel</string>
@@ -282,10 +280,11 @@
     <string name="greek_translation_title">Yunani</string>
     <string name="dutch_translation_title">Belanda</string>
     <string name="romanian_translation_title">Romania</string>
-	<string name="vietnamese_translation_title">Vietnam</string>
+    <string name="vietnamese_translation_title">Vietnam</string>
     <string name="japanese_translation_title">Jepang</string>
     <string name="brazilian_portuguese_translation_title">Brazil Portugis</string>
-    
+    <string name="tamil_translation_title">Tamil</string>
+
     <string name="zip_viewer">Penilik Zip</string>
     <string name="unin_system_apk">Ini adalah apl sistem, menghapusnya akan membuat sistem tidak stabil.\\nLanjutkan?</string>
     <string name="warning">Peringatan</string>
@@ -411,10 +410,9 @@ jika tidak, akan mencari yang lain</string>
     <string name="ftp_notif_title">Server FTP Amaze sedang berjalan</string>
     <string name="ftp_notif_text">pada %s</string>
     <string name="ftp_notif_stop_server">BERHENTI</string>
-    <string name="ftp_preference_port_auto_chkbx">Pilih port secara otomatis</string>
-    <string name="ftp_preference_port_auto_chkbx_summary">Otomatis memilih port yang tersedia. Nilai bawaan 2211.</string>
-    <string name="ftp_preference_port_edit">Port FTP</string>
-    <string name="ftp_preference_port_edit_summary">Port FTP. Juga bisa diatur secara otomatis.</string>
+    <string name="ftp_port_edit_menu_title">Pilih Port FTP</string>
+    <string name="ftp_port_change_success">Port FTP berhasil diubah</string>
+    <string name="ftp_port_change_error_invalid">Port yang dipilih tidak valid</string>
     <string name="primary_two_title">Warna Utama (Tab Kanan)</string>
     <string name="primary_two_summary">Tetapkan warna elemen UI yang besar di tab kanan</string>
     <string name="g_plus">Google Plus</string>
@@ -431,41 +429,58 @@ terkait dengan pengembangan</string>
     <string name="use_custom_ip">Gunakan IP ubahsuai</string>
     <string name="bookmark_lost">Markah tidak ditemukan, membuat ulang&#8230;</string>
 
-    <string name="smb_instructions">
-        <html>
-            <body>
-            <center>\\n
-            <h1>Cara mengakses folder berbagi pada windows dari android (smb)</h1>\\n
-            </center>\\n
-            <ol>\\n
-            <li>\\n
-            <b>Aktifkan Layanan Berbagi Berkas</b>\\n
-            <br/>Buka Panel Kontrol, klik Pilih grup rumah dan opsi berbagi pada menu
-                    Jaringan dan Internet, dan klik Ubah pengaturan berbagi lanjutan. Aktifkan
-                    fitur berbagi berkas dan printer.\\n
-            </li><br/><li/><b>Pengaturan Berbagi Berkas Tambahan</b><br/>Anda mungkin juga
-                    ingin mengkonfigurasi pengaturan berbagi lanjutan lainnya di sini. \\n
-            Contoh, Anda bisa mengakses berkas Anda tanpa sandi jika Anda percaya semua
-                perangkat pada jaringan lokal Anda. Setelah pengaturan berbagi berkas dan printer diaktifkan, Anda bisa
-                membuka File Explorer atau Windows Explorer, klik kanan folder yang ingin Anda bagikan, dan
-                pilih Properti. \\n
-            Klik tombol Berbagi dan buat folder tersedia di jaringan.\\n
-            <li><li/><br/><b>Pastikan kedua perangkat berada pada WiFi yang sama</b><br/> \\n
-            Fitur ini akan membuat berkas tersedia pada jaringan lokal, jadi PC dan perangkat Anda
-                    juga harus berada pada jaringan lokal yang sama. Anda tidak bisa mengakses folder berbagi
-                    melalui internet atau ketika telepon seluler Anda tersambung menggunakan mobile data — perangkat
-                    harus tersambung ke jaringan Wi-Fi.</li><li>\\n
-            <br/><b>Temukan Alamat IP</b>\\n
-            <br/>Buka Command Prompt. Ketik \'ipconfig\' dan tekan Enter. Cari Default Gateway
-                    pada adapter jaringan Anda untuk alamat router Anda. Lihat
-                    \\\"IPv4 Address\\\" pada adapter yang sama untuk alamat IP
-                    komputer Anda.</li><li/><br/>\\n
-            <b>Masukkan detail pada kotak jendela smb</b>\\n
-            <br/>\\n
-            </ol>\\n
-            </body>\\n
-            </html>
-    </string>
     <string name="share_limit">Tidak bisa membagikan lebih dari 100 berkas.</string>
-</resources>
+    <string name="otg_access">Pilih root dari perangkat OTG</string>
+    <string name="no_profile_pic">Tidak ada gambar profil G+</string>
+    <string name="opening">Membuka..</string>
+    <string name="information">Informasi</string>
+    <!-- reference to file accessed date -->
+    <string name="accessed">Diakses</string>
+    <!-- reference to file modified date -->
+    <string name="modified">Diubah</string>
+
+    <string name="title">Judul</string>
+    <string name="artist">Artis</string>
+    <string name="album">Album</string>
+    <string name="year">Tahun</string>
+    <string name="duration">Durasi</string>
+    <string name="comment">Komentar</string>
+    <!-- reference to audio/video file -->
+    <string name="container">Kontainer</string>
+    <string name="codec">Kodek</string>
+    <string name="channels">Saluran</string>
+    <string name="sample_rate">Laju Sampel</string>
+    <string name="bitrate">Laju Bit</string>
+    <string name="dimensions">Dimensi</string>
+    <string name="frame_rate">Laju Frame</string>
+    <string name="image_type">Tipe Gambar</string>
+    <string name="width">Lebar</string>
+    <string name="height">Tinggi</string>
+    <string name="date_modified">Tanggal Diubah</string>
+    <string name="software">Perangkat Lunak</string>
+    <string name="creator">Pembuat</string>
+    <string name="camera_brand">Merek Kamera</string>
+    <string name="camera_model">Model Kamera</string>
+    <string name="date_taken">Tanggal Diambil</string>
+    <string name="exposure_time">Waktu Paparan</string>
+    <string name="aperture_value">Bukaan Diafragma</string>
+    <string name="image_iso">Nilai Kecepatan ISO</string>
+    <string name="flash_fired">Menggunakan Flash</string>
+    <string name="focal_length">Jarak Fokus</string>
+    <string name="document">Dokumen</string>
+    <string name="subject">Subyek</string>
+    <string name="author">Penulis</string>
+    <string name="keywords">Kata Kunci</string>
+    <string name="producer">Produser</string>
+    <string name="created">Dibuat</string>
+    <string name="format">Format</string>
+    <string name="pages">Jumlah Halaman</string>
+    <!-- reference to a document file -->
+    <string name="optimized">Dioptimalkan</string>
+    <string name="security">Keamanan</string>
+    <string name="paper_size">Ukuran Kertas</string>
+
+    <string name="copied">disalin</string>
+    <string name="moved">dipindahkan</string>
+    </resources>
 

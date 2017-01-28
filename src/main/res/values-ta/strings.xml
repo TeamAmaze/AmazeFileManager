@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Copyright (C) 2014-2015 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+    Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
     This file is part of Amaze File Manager.
 
@@ -65,10 +65,10 @@
     <string name="filecreated">கோப்பை உருவாக்கு</string>
     <string name="searchpath">தேடுதல் பாதை</string>
     <string name="enterfile">கோப்பின் பெயரை உள்ளீடு</string>
-    <string name="name">பெயர்:</string>
-    <string name="date">தேதி:</string>
-    <string name="location">இடம்:</string>
-    <string name="size">கோப்புறையின் அளவு:</string>
+    <string name="name">பெயர்</string>
+    <string name="date">தேதி</string>
+    <string name="location">இடம்</string>
+    <string name="size">கோப்புறையின் அளவ</string>
     <string name="totalitems">மொத்த உருப்படிகள்:</string>
     <string name="enterzipname">ஜிப்  பெயரை உள்ளீடவும்</string>
     <string name="noappfound">இந்த கோப்பினை திறக்கக்கூடிய நிரல் இல்லை</string>
@@ -81,7 +81,6 @@
     <string name="newfolder">புதிய கோப்புறை</string>
     <string name="entername">பெயரை உள்ளீடு</string>
     <string name="extracting">பிரித்தெடுக்கிறது</string>
-    <string name="zipping">சுருக்குகிறது</string>
     <string name="stopping">நிறுத்துகிறது</string>
     <string name="guide1">அமேஸ் கோப்பு மேலாளர் வரவேற்கிறது</string>
     <string name="guide2">பாதைப்பட்டையை காண அல்லது மறைக்க நீல பட்டைய தொடவும்</string>
@@ -192,7 +191,6 @@
     <string name="copying_fles">கோப்புகளை நகலெடுக்கிறது</string>
     <string name="done">முடிந்தது</string>
     <string name="Extracting_fles">கோப்புகளை பிரித்தெடுக்கிறது</string>
-    <string name="Zipping_fles">கோப்புகளை சுருக்குகிறது</string>
     <string name="items">உருப்படிகள்</string>
     <string name="item">உருப்படி</string>
     <string name="set">அமை</string>
@@ -282,10 +280,11 @@
     <string name="greek_translation_title">கிரேக்கம்</string>
     <string name="dutch_translation_title">டச்சு</string>
     <string name="romanian_translation_title">ரோமானியன்</string>
-	<string name="vietnamese_translation_title">வியட்நாமியர்</string>
+    <string name="vietnamese_translation_title">வியட்நாமியர்</string>
     <string name="japanese_translation_title">ஜப்பானியம்</string>
     <string name="brazilian_portuguese_translation_title">ப்ரெசிலியன் போர்த்துக்கீசியம்</string>
-    
+    <string name="tamil_translation_title">தமிழ்</string>
+
     <string name="zip_viewer">ஜிப் பார்வையாளர்</string>
     <string name="unin_system_apk">இது முறைமை நிரல், இதை நீக்கினால் முறைமை நிலையற்றதாகிவிடும்.\\nதொடரவேண்டுமா?</string>
     <string name="warning">எச்சரிக்கை</string>
@@ -411,10 +410,9 @@
     <string name="ftp_notif_title">அமேஸ் எப்டிபி சேவையகம் இயங்கிக்கொண்டு இருக்கிறது</string>
     <string name="ftp_notif_text">%s யில்</string>
     <string name="ftp_notif_stop_server">நிறுத்து</string>
-    <string name="ftp_preference_port_auto_chkbx">போர்டை தானாக தேர்வுசெய்க</string>
-    <string name="ftp_preference_port_auto_chkbx_summary">கிடைக்கும் போர்டை தானாக தேர்வுசெய்யும். 2211 இயல்புநிலை போர்ட்.</string>
-    <string name="ftp_preference_port_edit">எப்டிபி போர்ட்</string>
-    <string name="ftp_preference_port_edit_summary">எப்டிபி போர்ட். இது தானாக அமைத்துக்கொள்ளும்.</string>
+    <string name="ftp_port_edit_menu_title">FTP port ஐ தேர்ந்த்தேடு</string>
+    <string name="ftp_port_change_success">FTP PORT வெற்றிகரமாக மாற்றப்பபட்டது</string>
+    <string name="ftp_port_change_error_invalid">தகுதியற்ற போர்ட் எண் தேர்வுசெய்யப்பட்டது</string>
     <string name="primary_two_title">முதன்மை வண்ணம் (வலது தாவல்)</string>
     <string name="primary_two_summary">வலது தாவலின் பெரிய இடைமுக கூறுகளுக்கு வண்ணத்தை அமைக்க</string>
     <string name="g_plus">கூகிள் பிளஸ்</string>
@@ -431,37 +429,78 @@
     <string name="use_custom_ip">பயனர் ஐபியை பயன்படுத்து</string>
     <string name="bookmark_lost">புத்தகக்குறி காணப்படவில்லை, மறுஉருவாக்குகிறது&#8230;</string>
 
-    <string name="smb_instructions">
-        <html>
-            <body>
-            <center>\\n
-            <h1>பகிரப்பட்ட விண்டோஸ் கோப்புறையை அண்ட்ராய்டில் (SMB) எப்படி அனுகுவது</h1>\\n
-            </center>\\n
-            <ol>\\n
-            <li>\\n
-            <b>கோப்பு பகிர்வை செயல்படுத்து</b>\\n
-            <br/>கண்ட்ரோல் பேனல் திறந்து, நெட்வொர்க் மற்றும் இன்டர்நெட் கீழ் முகப்புக்குழு 
-மற்றும் பகிர்தல் விருப்பங்களை  தேர்வுசெய்க, மற்றும் மேம்பட்ட பகிர்வு அமைப்புகளை தேர்வுசெய்க.
- கோப்பு மற்றும் அச்சுப்பொறி பகிர்வு அம்சத்தை இயக்கு.\\n
-            </li><br/><li/><b>கூடுதல் கோப்புப் பகிர்வு அமைப்புகள்.</b><br/>இங்கே உள்ள மற்ற முன்னேறிய பகிர்வு அமைப்புகளை நீங்கள் கட்டமைக்க வேண்டும். \\n 
-உதாரணமாக, நீங்கள் உங்கள் உள்ளூர் வலையில் உள்ள அணைத்து சாதனத்தையும்
-நம்பினால் கடவுச்சொல் இல்லாமல் கோப்புகளை அனுகுமாறு அமைக்கலாம். கோப்பு மற்றும் 
-அச்சுப்பொறி பகிர்வு இயங்கியவுடன், நீங்கள் கோப்பு எக்ஸ்ப்ளோரர் அல்லது விண்டோஸ்
- எக்ஸ்ப்ளோரர் திறந்து, நீங்கள் பகிர விரும்பும் கோப்புறையை வலது கிளிக் செய்து பகிரவும், மற்றும்
-பண்புகளை தேர்வுசெய்க. \\n பகிர்வுப் பொத்தானைக் கிளிக் செய்து பிணையத்தில் போல்டரை உருவாக்கு. \\n<li><li/><br/><b>இரண்டு சாதனங்களும் ஒரே வைஃபையில் உள்ளதா என உறுதிப்படுத்தவும்</b><br/> \\n இந்த அம்சம் உள்ளூர் நெட்வொர்க்கில் கோப்புகளை கிடைக்க செய்கிறது, எனவே 
-உங்கள் கணினி மற்றும் மொபைல் சாதனங்கள் ஒரே உள்ளூர் நெட்வொர்க்கில் இருக்க வேண்டும்.
-நீங்கள் பகிரப்பட்ட விண்டோஸ் அடைவை இணைத்திலோ அல்லது உங்கள் ஸ்மார்ட்போன் அதன் 
-மொபைல் தரவில்  இணைக்கப்பட்டுள்ள போதோ அணுக முடியாது - இது வைஃபையில் இணைக்கப்பட்டிருக்க வேண்டும்.</li><li>\\n
-            <br/><b>ஐபி முகவரியை கண்டுபிடி</b>\\n
-            <br/>கட்டளை பெட்டியை திறந்து. \'ipconfig\' என உள்ளீட்டு என்டர் ஐ அழுத்தவும்.
- உங்கள் நெட்வொர்க் அடாப்டர் கீழ் இயல்புநிலை நுழைவாயில் உங்கள் ரௌட்டர் ஐபி முகவரியை பாருங்கள்.
- உங்கள் கணினியின் ஐபி முகவரியை கண்டுபிடிக்க அதே அடாப்டர் பிரிவின் கீழ் \\\"IPv4 முகவரி\\\" ஐ பாருங்கள்.</li><li/><br/>\\n
-            <b>SMB உரைபெட்டியில் தகவல்களை உள்ளீடவும்</b>\\n
-            <br/>\\n
-            </ol>\\n
-            </body>\\n
-            </html>
-    </string>
     <string name="share_limit">100 கோப்புகளுக்கு மேல் பகிரமுடியாது</string>
-</resources>
+    <string name="otg_access">OTG சாதனத்தின் ரூட் தேர்வு</string>
+    <string name="no_profile_pic">G+ இல் சுயவிவரப்படம் இல்லை</string>
+    <string name="opening">திறத்தல்
+</string>
+    <string name="information">தகவல்</string>
+    <!-- reference to file accessed date -->
+    <string name="accessed">அனுகியது</string>
+    <!-- reference to file modified date -->
+    <string name="modified">மாற்றியமைக்கப்பட்டது</string>
+
+    <string name="title">தலைப்பு
+</string>
+    <string name="artist">கலைஞர்</string>
+    <string name="album">தொகுப்பு ஏடு</string>
+    <string name="year">வருடம்
+</string>
+    <string name="duration">காலஅளவு</string>
+    <string name="comment">விமர்சனம்</string>
+    <!-- reference to audio/video file -->
+    <string name="container">கொள்கலன்</string>
+    <string name="codec">இருவழி குறிமுறை மாற்றி</string>
+    <string name="channels">தகவல் தொடர்புத்தளம்</string>
+    <string name="sample_rate">மாதிரி விகிதம்</string>
+    <string name="bitrate">துண்டு விகிதம்</string>
+    <string name="dimensions">பரிணாமங்கள்</string>
+    <string name="frame_rate">சட்டவிகிதம்</string>
+    <string name="image_type">படத்தின் வகை</string>
+    <string name="width">அகலம்</string>
+    <string name="height">உயரம்</string>
+    <string name="date_modified">தேதி மாற்றியமைக்கப்பட்டது</string>
+    <string name="software">மென்பொருள்
+</string>
+    <string name="creator">உ ருவாக்கியவர்</string>
+    <string name="camera_brand">புகைப்படக்கருவி நிறுவனம்</string>
+    <string name="camera_model">புகைப்படக்கருவி வகை</string>
+    <string name="date_taken">எடுக்கப்பட்ட தேதி</string>
+    <string name="exposure_time">வெளிக்காட்டும் நேரம்</string>
+    <string name="aperture_value">துளைமதிப்பு</string>
+    <string name="image_iso">ISO வேக மதிப்பீடு</string>
+    <string name="flash_fired">மின்வெட்டோளி நெருப்பு</string>
+    <string name="focal_length">குவிய நீளம்</string>
+    <string name="document">ஆவணங்கள்</string>
+    <string name="subject">பாடம்</string>
+    <string name="author">ஆசிரியர்</string>
+    <string name="keywords">முக்கிய வார்த்த்தைகள்</string>
+    <string name="producer">தயாரிப்பாளர்</string>
+    <string name="created">உருவாக்கப்பட்டது</string>
+    <string name="format">அமைப்பு</string>
+    <string name="pages">பக்கங்களின் எண்ணிக்கை</string>
+    <!-- reference to a document file -->
+    <string name="optimized">உ கந்த அளவாக்கியது</string>
+    <string name="security">பாதுகாப்பு</string>
+    <string name="paper_size">இதழின் அளவு</string>
+
+    <string name="copied">நகலெடுக்கப்பட்டது</string>
+    <string name="moved">நகர்த்தப்பட்டது</string>
+    <string name="process_chart_description">முன்னேற்றம்</string>
+    <string name="copy_complete">முழுமையாக நகலெடுக்கப்பட்டது</string>
+    <string name="move_complete">முழுமையாக நகர்த்தப்பட்டது</string>
+    <string name="waiting_title">காத்திருத்தல்</string>
+    <string name="compressing">நெருக்கி அழுத்திவைக்கப்பட்டது
+
+</string>
+    <string name="cancelled">தவிர்க்ப்பட்டது</string>
+    <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+    <string name="written">எழுதியது</string>
+    <string name="out_of">வெளியே</string>
+    <!-- reference to - 'Processing file # of #' in process viewer -->
+    <string name="of">உடைய</string>
+    <string name="processing_file">செயலாக்கோப்பு
+</string>
+    <string name="current_speed">தற்போதைய வேகம்</string>
+    </resources>
 
