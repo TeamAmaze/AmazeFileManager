@@ -83,7 +83,7 @@ public class ServiceWatcherUtil {
      * Thus avoids posting any callback after service has stopped.
      */
     public void stopWatch() {
-        handler.post(runnable);
+        if (handlerThread.isAlive()) handler.post(runnable);
     }
 
     /**
