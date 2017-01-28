@@ -49,7 +49,8 @@ public class RootHelper {
      * @throws RootNotPermittedException
      */
     public static ArrayList<String> runShellCommand(String cmd) throws RootNotPermittedException {
-        if (!MainActivity.shellInteractive.isRunning()) throw new RootNotPermittedException();
+        if (MainActivity.shellInteractive == null || !MainActivity.shellInteractive.isRunning())
+            throw new RootNotPermittedException();
         final ArrayList<String> result = new ArrayList<>();
 
         // callback being called on a background handler thread
@@ -79,7 +80,8 @@ public class RootHelper {
      */
     public static void runShellCommand(String cmd, Shell.OnCommandResultListener callback)
             throws RootNotPermittedException {
-        if (!MainActivity.shellInteractive.isRunning()) throw new RootNotPermittedException();
+        if (MainActivity.shellInteractive == null || !MainActivity.shellInteractive.isRunning())
+            throw new RootNotPermittedException();
         MainActivity.shellInteractive.addCommand(cmd, 0, callback);
         MainActivity.shellInteractive.waitForIdle();
     }

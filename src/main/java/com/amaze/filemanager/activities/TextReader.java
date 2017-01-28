@@ -220,28 +220,28 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             if (fileName == null && uri != null) {
                 if (uri.getScheme().equals("file")) {
                     fileName = uri.getLastPathSegment();
-                } else {
-                    ContentProviderClient client = null;
-                    Cursor cursor = null;
-                    try {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            client = getContentResolver().acquireUnstableContentProviderClient(uri);
-                        } else {
-                            throw new Exception();
-                        }
+                }
 
-                        cursor = client.query(uri, new String[] {
-                                MediaStore.Images.ImageColumns.DISPLAY_NAME
-                        }, null, null, null);
+                ContentProviderClient client = null;
+                Cursor cursor = null;
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        client = getContentResolver().acquireUnstableContentProviderClient(uri);
+                    } else {
+                        throw new Exception();
+                    }
 
-                        if (cursor != null && cursor.moveToFirst()) {
-                            fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
-                        }
-                    } finally {
+                    cursor = client.query(uri, new String[] {
+                            MediaStore.Images.ImageColumns.DISPLAY_NAME
+                    }, null, null, null);
 
-                        if (cursor != null) {
-                            cursor.close();
-                        }
+                    if (cursor != null && cursor.moveToFirst()) {
+                        fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
+                    }
+                } finally {
+
+                    if (cursor != null) {
+                        cursor.close();
                     }
                 }
             }
@@ -713,7 +713,6 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                     e.printStackTrace();
                     stream = null;
 
-                    // couldn't get input stream, let's try using root or basic filesystem calls
                 }
             }
         }
