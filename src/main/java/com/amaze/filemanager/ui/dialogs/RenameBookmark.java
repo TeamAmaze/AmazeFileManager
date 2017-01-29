@@ -157,7 +157,7 @@ public class RenameBookmark extends DialogFragment {
                             URL a = new URL(t);
                             String userinfo = a.getUserInfo();
                             if (userinfo == null && user.length() > 0) {
-                                t = "smb://" + ((URLEncoder.encode(user + ":" + pass, "UTF-8") + "@")) + a.getHost() +a.getPath();
+                                t = "smb://" + ((URLEncoder.encode(user, "UTF-8") + ":" + URLEncoder.encode(pass, "UTF-8") + "@")) + a.getHost() +a.getPath();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
