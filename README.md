@@ -33,6 +33,8 @@ Basic r/w operations might not work on external memory on Kitkat devices. Don't 
     you point the finger at us for messing up your files, We will laugh at you. 
         
     A lot.
+    
+See our [Privacy Policy](https://github.com/arpitkh96/AmazeFileManager/wiki/Privacy-Policy)
 
 Contributors
 -----
