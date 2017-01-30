@@ -30,6 +30,11 @@ All the network calls made to receive your information are made to the secure Go
 Hence we strive to use commercially acceptable means to protect your Personal Information, we cannot guarantee its
 absolute security.
 
+### Distribution
+The only official channel for distribution of Amaze are [Google Play Store](https://play.google.com/store/apps/details?id=com.amaze.filemanager) and [Android File Host](https://www.androidfilehost.com/?w=files&flid=73967) mentioned on our Homepage. Any other mode of distribution is not official and thus, is not maintained by us. 
+
+**This privacy policy is effective to distribution made on official channel only.**
+
 ### Changes to This Privacy Policy
 This Privacy Policy is effective as of *30 Jan 17* and will remain in effect except with respect to any
 changes in its provisions in the future, which will be in effect immediately after being posted on this
