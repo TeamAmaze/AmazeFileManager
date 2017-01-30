@@ -40,7 +40,6 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.DataPackage;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.GenericCopyUtil;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -562,7 +561,9 @@ public class ExtractService extends Service {
         @Override
         public void onPostExecute(Integer b) {
 
-            watcherUtil.stopWatch();
+            // check whether watcherutil was initialized. It was not initialized when we got exception
+            // in extracting the file
+            if(watcherUtil != null) watcherUtil.stopWatch();
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
             stopSelf();
@@ -621,8 +622,12 @@ public class ExtractService extends Service {
      * is executing the callbacks in {@link com.amaze.filemanager.fragments.ProcessViewer}
      * @return
      */
-    public synchronized ArrayList<DataPackage> getDataPackageList() {
-        return this.dataPackages;
+    public synchronized DataPackage getDataPackage(int index) {
+        return this.dataPackages.get(index);
+    }
+
+    public synchronized int getDataPackageSize() {
+        return this.dataPackages.size();
     }
 
     /**

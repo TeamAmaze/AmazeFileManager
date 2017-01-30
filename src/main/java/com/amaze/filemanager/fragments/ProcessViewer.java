@@ -61,7 +61,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.concurrent.TimeUnit;
 
 public class ProcessViewer extends Fragment {
@@ -134,23 +133,9 @@ public class ProcessViewer extends Fragment {
             CopyService.LocalBinder localBinder = (CopyService.LocalBinder) service;
             CopyService copyService = localBinder.getService();
 
-            ArrayList<DataPackage> dataPackages;
-            try {
-                dataPackages = copyService.getDataPackageList();
-            } catch (ConcurrentModificationException e) {
-                // array list was being modified while fetching (even after synchronization) :/
-                // return for now
-                return;
-            }
+            for (int i=0; i<copyService.getDataPackageSize(); i++) {
 
-            for (final DataPackage dataPackage : dataPackages) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        processResults(dataPackage, ServiceType.COPY);
-                    }
-                });
+                processResults(copyService.getDataPackage(i), ServiceType.COPY);
             }
 
             // animate the chart a little after initial values have been applied
@@ -159,7 +144,8 @@ public class ProcessViewer extends Fragment {
             copyService.setProgressListener(new CopyService.ProgressListener() {
                 @Override
                 public void onUpdate(final DataPackage dataPackage) {
-                    if (getActivity()==null) {
+                    if (getActivity() == null || getActivity().getSupportFragmentManager().
+                            findFragmentByTag(MainActivity.KEY_INTENT_PROCESS_VIEWER) == null) {
                         // callback called when we're not inside the app
                         return;
                     }
@@ -193,23 +179,9 @@ public class ProcessViewer extends Fragment {
             ExtractService.LocalBinder localBinder = (ExtractService.LocalBinder) service;
             ExtractService extractService = localBinder.getService();
 
-            ArrayList<DataPackage> dataPackages;
-            try {
-                dataPackages = extractService.getDataPackageList();
-            } catch (ConcurrentModificationException e) {
-                // array list was being modified while fetching (even after synchronization) :/
-                // return for now
-                return;
-            }
+            for (int i=0; i<extractService.getDataPackageSize(); i++) {
 
-            for (final DataPackage dataPackage : dataPackages) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        processResults(dataPackage, ServiceType.EXTRACT);
-                    }
-                });
+                processResults(extractService.getDataPackage(i), ServiceType.EXTRACT);
             }
 
             // animate the chart a little after initial values have been applied
@@ -252,23 +224,9 @@ public class ProcessViewer extends Fragment {
             ZipTask.LocalBinder localBinder = (ZipTask.LocalBinder) service;
             ZipTask zipTask = localBinder.getService();
 
-            ArrayList<DataPackage> dataPackages;
-            try {
-                dataPackages = zipTask.getDataPackageList();
-            } catch (ConcurrentModificationException e) {
-                // array list was being modified while fetching (even after synchronization) :/
-                // return for now
-                return;
-            }
+            for (int i=0; i<zipTask.getDataPackageSize(); i++) {
 
-            for (final DataPackage dataPackage : dataPackages) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        processResults(dataPackage, ServiceType.COMPRESS);
-                    }
-                });
+                processResults(zipTask.getDataPackage(i), ServiceType.COMPRESS);
             }
 
             // animate the chart a little after initial values have been applied
@@ -361,25 +319,25 @@ public class ProcessViewer extends Fragment {
 
             mProgressFileNameText.setText(name);
 
-            Spanned bytesText = Html.fromHtml(getString(R.string.written)
+            Spanned bytesText = Html.fromHtml(getResources().getString(R.string.written)
                     + " <font color='" + accentColor + "'><i>" + Formatter.formatFileSize(getContext(), doneBytes)
-                    + " </font></i>" + getString(R.string.out_of) + " <i>"
+                    + " </font></i>" + getResources().getString(R.string.out_of) + " <i>"
                     + Formatter.formatFileSize(getContext(), total) + "</i>");
             mProgressBytesText.setText(bytesText);
 
-            Spanned fileProcessedSpan = Html.fromHtml(getString(R.string.processing_file)
+            Spanned fileProcessedSpan = Html.fromHtml(getResources().getString(R.string.processing_file)
                     + " <font color='" + accentColor + "'><i>" + (dataPackage.getSourceProgress())
-                    + " </font></i>" + getString(R.string.of) + " <i>"
+                    + " </font></i>" + getResources().getString(R.string.of) + " <i>"
                     + dataPackage.getSourceFiles() + "</i>");
             mProgressFileText.setText(fileProcessedSpan);
 
-            Spanned speedSpan = Html.fromHtml(getString(R.string.current_speed)
+            Spanned speedSpan = Html.fromHtml(getResources().getString(R.string.current_speed)
                     + ": <font color='" + accentColor + "'><i>"
                     + Formatter.formatFileSize(getContext(), dataPackage.getSpeedRaw())
                     + "/s</font></i>");
             mProgressSpeedText.setText(speedSpan);
 
-            Spanned timerSpan = Html.fromHtml(getString(R.string.service_timer)
+            Spanned timerSpan = Html.fromHtml(getResources().getString(R.string.service_timer)
                     + ": <font color='" + accentColor + "'><i>"
                     + formatTimer(++time)
                     + "</font></i>");
@@ -457,7 +415,7 @@ public class ProcessViewer extends Fragment {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
                 getActivity().sendBroadcast(intent);
-                mProgressTypeText.setText(getString(R.string.cancelled));
+                mProgressTypeText.setText(getResources().getString(R.string.cancelled));
                 mProgressSpeedText.setText("");
                 mProgressFileText.setText("");
                 mProgressBytesText.setText("");

@@ -78,7 +78,6 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.text.DecimalFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -354,10 +353,8 @@ public class Futils {
     public static float readableFileSizeFloat(long size) {
         if (size <= 0)
             return 0;
-        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
-        Float newSize = Float.valueOf(new DecimalFormat("#,##0.##").format(size
-                / Math.pow(1024, digitGroups)));
-        return newSize;
+        float digitGroups = (float) (size / (1024*1024));
+        return digitGroups;
     }
 
     private boolean isSelfDefault(File f, Context c){

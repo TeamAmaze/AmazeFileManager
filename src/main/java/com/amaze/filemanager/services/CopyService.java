@@ -488,7 +488,7 @@ public class CopyService extends Service {
             intent.setMove(move);
             intent.setCompleted(isComplete);
             putDataPackage(intent);
-            if(progressListener!=null){
+            if(progressListener!=null) {
                 progressListener.onUpdate(intent);
                 if(isComplete) progressListener.refresh();
             }
@@ -588,8 +588,12 @@ public class CopyService extends Service {
      * is executing the callbacks in {@link com.amaze.filemanager.fragments.ProcessViewer}
      * @return
      */
-    public synchronized ArrayList<DataPackage> getDataPackageList() {
-        return this.dataPackages;
+    public synchronized DataPackage getDataPackage(int index) {
+        return this.dataPackages.get(index);
+    }
+
+    public synchronized int getDataPackageSize() {
+        return this.dataPackages.size();
     }
 
     /**

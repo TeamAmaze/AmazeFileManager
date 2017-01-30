@@ -348,7 +348,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
             if (openprocesses) {
                 android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.content_frame, new ProcessViewer());
+                transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
                 //   transaction.addToBackStack(null);
                 select = 102;
                 openprocesses = false;
@@ -2419,7 +2419,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         } else if ((openprocesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
 
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.content_frame, new ProcessViewer());
+            transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
             //   transaction.addToBackStack(null);
             select = 102;
             openprocesses = false;

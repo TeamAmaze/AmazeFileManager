@@ -39,7 +39,6 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.DataPackage;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.GenericCopyUtil;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ProgressHandler;
@@ -344,8 +343,12 @@ public class ZipTask extends Service {
      * is executing the callbacks in {@link com.amaze.filemanager.fragments.ProcessViewer}
      * @return
      */
-    public synchronized ArrayList<DataPackage> getDataPackageList() {
-        return this.dataPackages;
+    public synchronized DataPackage getDataPackage(int index) {
+        return this.dataPackages.get(index);
+    }
+
+    public synchronized int getDataPackageSize() {
+        return this.dataPackages.size();
     }
 
     /**

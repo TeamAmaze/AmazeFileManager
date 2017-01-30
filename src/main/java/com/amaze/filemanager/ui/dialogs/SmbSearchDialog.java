@@ -139,8 +139,10 @@ public class SmbSearchDialog extends DialogFragment {
         private static final int VIEW_ELEMENT = 2;
 
         LayoutInflater mInflater;
+        Context context;
 
         public Listviewadapter(Context context, @LayoutRes int resource, List<Computer> objects) {
+            this.context = context;
             addAll(objects);
             mInflater = (LayoutInflater) context
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -150,14 +152,14 @@ public class SmbSearchDialog extends DialogFragment {
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             switch (viewType) {
                 case VIEW_PROGRESSBAR:
-                    ProgressBar progressBar = new ProgressBar(getContext(), null, android.R.attr.progressBarStyle);
+                    ProgressBar progressBar = new ProgressBar(context, null, android.R.attr.progressBarStyle);
                     progressBar.setIndeterminate(true);
                     progressBar.setBackgroundDrawable(null);
 
                     return new ViewHolder(progressBar);
                 default:
                 case VIEW_ELEMENT:
-                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.smb_computers_row, parent, false);
+                    View view = mInflater.inflate(R.layout.smb_computers_row, parent, false);
 
                     return new ElementViewHolder(view);
             }
