@@ -1763,6 +1763,9 @@ public class MainActivity extends BaseActivity implements
 
             if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
             else onDrawerClosed();
+        } else if (requestCode == REQUEST_CODE_SAF && responseCode != Activity.RESULT_OK) {
+            // otg access not provided
+            pending_path = null;
         }
     }
 
