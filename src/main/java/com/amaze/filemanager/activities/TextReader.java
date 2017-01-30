@@ -383,29 +383,31 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
         OutputStream outputStream = null;
 
-        if(file.canWrite()) {
-            try {
+        if (uri.toString().contains("file://")) {
 
-                outputStream = new FileOutputStream(file);
-            } catch (FileNotFoundException e) {
-                outputStream = null;
+            // dealing with files
+            if(file.canWrite()) {
+                try {
+
+                    outputStream = new FileOutputStream(file);
+                } catch (FileNotFoundException e) {
+                    outputStream = null;
+                }
             }
-        }
 
-        if (BaseActivity.rootMode && outputStream == null) {
-            // try loading stream associated using root
-            try {
+            if (BaseActivity.rootMode && outputStream == null) {
+                // try loading stream associated using root
+                try {
 
-                if (cacheFile != null && cacheFile.exists())
-                    outputStream = new FileOutputStream(cacheFile);
+                    if (cacheFile != null && cacheFile.exists())
+                        outputStream = new FileOutputStream(cacheFile);
 
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                outputStream = null;
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    outputStream = null;
+                }
             }
-        }
-
-        if (outputStream == null) {
+        } else if (uri.toString().contains("content://")) {
 
             if (parcelFileDescriptor != null) {
                 File descriptorFile = new File(GenericCopyUtil.PATH_FILE_DESCRIPTOR + parcelFileDescriptor.getFd());
@@ -645,38 +647,42 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             throws StreamNotFoundException {
         InputStream stream = null;
 
-        if (!file.canWrite() && BaseActivity.rootMode) {
+        if (uri.toString().contains("file://")) {
 
-            // try loading stream associated using root
+            // dealing with files
+            if (!file.canWrite() && BaseActivity.rootMode) {
 
-            try {
+                // try loading stream associated using root
 
-                File cacheDir = getExternalCacheDir();
-
-                cacheFile = new File(cacheDir, mFile.getName());
-                // creating a cache file
-                RootUtils.copy(mFile.getPath(), cacheFile.getPath());
                 try {
-                    stream = new FileInputStream(cacheFile);
-                } catch (FileNotFoundException e) {
+
+                    File cacheDir = getExternalCacheDir();
+
+                    cacheFile = new File(cacheDir, mFile.getName());
+                    // creating a cache file
+                    RootUtils.copy(mFile.getPath(), cacheFile.getPath());
+                    try {
+                        stream = new FileInputStream(cacheFile);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        stream = null;
+                    }
+                } catch (RootNotPermittedException e) {
                     e.printStackTrace();
                     stream = null;
                 }
-            } catch (RootNotPermittedException e) {
-                e.printStackTrace();
-                stream = null;
-            }
-        } else if (file.canRead()) {
+            } else if (file.canRead()) {
 
-            // readable file in filesystem
-            try {
-                stream=new FileInputStream(file.getPath());
-            } catch (FileNotFoundException e) {
-                stream=null;
+                // readable file in filesystem
+                try {
+                    stream=new FileInputStream(file.getPath());
+                } catch (FileNotFoundException e) {
+                    stream=null;
+                }
             }
-        }
+        } else if (uri.toString().contains("content://")) {
 
-        if (stream == null) {
+            // dealing with content provider
             // trying to get URI from intent action
             try {
                 // getting a writable file descriptor
