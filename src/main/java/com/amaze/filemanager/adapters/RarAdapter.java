@@ -310,7 +310,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             holder.genericIcon.setImageDrawable(Icons.loadMimeIcon(zipViewer.getActivity(), rowItem.getName(), false,zipViewer.res));
             final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
             if (zipViewer.showLastModified)
-                holder.date.setText(Futils.getdate(rowItem.getTime(), "MMM dd, yyyy", zipViewer.year));
+                holder.date.setText(Futils.getdate(rowItem.getTime(), zipViewer.year));
             if (rowItem.isDirectory()) {
                 holder.genericIcon.setImageDrawable(folder);
                 gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
