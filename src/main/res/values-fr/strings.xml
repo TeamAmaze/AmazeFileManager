@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="app_name">Amaze</string>
   <string name="drawer_open">Ouvrir le panneau de navigation</string>
   <string name="drawer_close">Fermer le panneau de navigation</string>
   <string name="books">Favoris</string>
@@ -39,6 +40,7 @@
   <string name="properties">Propriétés</string>
   <string name="copyingapk">Copier l\'APK vers</string>
   <string name="addbook">Ajouter un favori</string>
+  <string name="delbook">Supprimer le favori</string>
   <string name="addtobook">Ajouter aux favoris</string>
   <string name="enterpath">Entrer le chemin</string>
   <string name="cancel">ANNULER</string>
@@ -142,6 +144,7 @@
   <string name="pink">Rose</string>
   <string name="purple">Violet</string>
   <string name="deep_purple">Violet foncé</string>
+  <string name="indigo">Indigo</string>
   <string name="blue">bleu</string>
   <string name="light_blue">Bleu clair</string>
   <string name="cyan">Cyan</string>
@@ -149,10 +152,12 @@
   <string name="green">Vert</string>
   <string name="light_green">Vert clair</string>
   <string name="amber">Ambre</string>
+  <string name="orange">Orange</string>
   <string name="deep_orange">Orange foncé</string>
   <string name="brown">Marron</string>
   <string name="black">Noir</string>
   <string name="blue_grey">Gris Bleu</string>
+  <string name="supersu">SuperSU</string>
   <!--DirectorySortMode-->
   <string name="foldersOnTop">Dossier en haut</string>
   <string name="filesOnTop">Fichiers en haut</string>
@@ -199,6 +204,7 @@
   <string name="gridview">Vue Grille</string>
   <string name="setlistview">Paramètre Vue Liste</string>
   <string name="setgridview">Paramètres Vue Grille</string>
+  <string name="permission">Permissions</string>
   <string name="hide">Masquer</string>
   <string name="exit">Sortir</string>
   <string name="enternewname">Entrer un nouveau NomA</string>
@@ -211,6 +217,7 @@
   <string name="fullChangelog">Changlog complets</string>
   <string name="ok">OK</string>
   <string name="chooseUI">Choisissez l\'interface utilisateur de l\'élément</string>
+  <string name="ui">Interface</string>
   <string name="general">Général</string>
   <string name="thumbSummary">Afficher des vignettes pour les applications et images</string>
   <string name="thumb">Afficher Vignettes</string>
@@ -256,6 +263,7 @@
   <string name="french_translation_title">Français</string>
   <string name="russian_translation_title">Russe</string>
   <string name="spanish_translation_title">Espagnol</string>
+  <string name="basque_translation_title">Basque</string>
   <string name="chinese_translation_title">Chinois</string>
   <string name="serbian_translation_title">Serbe</string>
   <string name="turkish_translation_title">Turc</string>
@@ -269,6 +277,7 @@
   <string name="vietnamese_translation_title">vietnamien</string>
   <string name="japanese_translation_title">Japonnais</string>
   <string name="brazilian_portuguese_translation_title">Portugais brésilien</string>
+  <string name="tamil_translation_title">Tamoul</string>
   <string name="zip_viewer">Visionneur ZIP</string>
   <string name="unin_system_apk">Ceci est une application système, sa suppression pourrait conduire à une instabilité du système.\nPoursuivre ?</string>
   <string name="warning">Attention</string>
@@ -280,6 +289,7 @@
   <string name="zip_summary">Les nouveaux fichiers zip seront créés dans ce dossier. La valeur par défaut est le répertoire dans lequel les fichiers sont présents</string>
   <string name="openas">Ouvrir en tant que</string>
   <string name="text">Texte</string>
+  <string name="audio">Audio</string>
   <string name="video">Vidéo</string>
   <string name="other">Autre</string>
   <string name="contributors">Contributeurs</string>
@@ -292,6 +302,8 @@
   <string name="database">Base de données</string>
   <string name="colourednavigation">Barre de navigation colorée</string>
   <string name="colourednavigationsum">Choisir si la barre de navigation doit être colorée avec l\'habillage</string>
+  <string name="sd_card_grant_next">sd_card_grant_next</string>
+  <string name="sd_card_grant_first">sd_card_grant_first</string>
   <string name="fab_skin">Aspect FAB</string>
   <string name="gplus_pic_title">S\'enregistrer avec G+</string>
   <string name="gplus_pic_summary">Afficher l\'image de couverture dans le navigateur</string>
@@ -334,6 +346,7 @@
   <string name="extstorage">Stockage Externe</string>
   <string name="folders">Dossiers</string>
   <string name="videos">Vidéos</string>
+  <string name="documents">Documents</string>
   <string name="images">Photos</string>
   <string name="clear">Effacer</string>
   <string name="md5">md5 : </string>
@@ -366,7 +379,6 @@
   <string name="path">Emplacement</string>
   <string name="renamebookmark">Modifier les favoris</string>
   <string name="cut">Couper</string>
-  <string name="empty"></string>
   <string name="search">Rechercher</string>
   <string name="invalid_name">Nom incorrect</string>
   <string name="search_hint">Entrez le texte à rechercher&#8230;</string>
@@ -387,9 +399,13 @@
   <string name="ftp_notif_title">Le serveur FTP est en cours d\'exécution</string>
   <string name="ftp_notif_text">À %s</string>
   <string name="ftp_notif_stop_server">ARRÊT</string>
+  <string name="ftp_port_edit_menu_title">Choisissez le port FTP</string>
+  <string name="ftp_port_change_success">Port FTP modifié avec succès</string>
+  <string name="ftp_port_change_error_invalid">Numéro de port sélectionné invalide</string>
   <string name="primary_two_title">Couleur Primaire (Onglet Droit)</string>
   <string name="primary_two_summary">Assigner la couleur des grands ensembles de l\'IU
         pour l\'onglet de droite.</string>
+  <string name="g_plus">Google Plus</string>
   <string name="support_development">Aider au développement</string>
   <string name="report_bugs_title">Signaler un bug</string>
   <string name="report_bugs_summary">Signaler un bug ou demander une nouvelle fonctionnalité</string>
@@ -433,21 +449,55 @@
         </html>
     </string>
   <string name="share_limit">Impossible de partage plus de 100 fichiers</string>
+  <string name="no_profile_pic">Aucune photo de profil G+</string>
   <string name="information">Informations</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
   <string name="title">Titre</string>
+  <string name="artist">Artiste</string>
+  <string name="album">Album</string>
   <string name="duration">Durée</string>
   <!-- reference to audio/video file -->
+  <string name="codec">Codec</string>
+  <string name="dimensions">Dimensions</string>
   <string name="width">Largeur</string>
   <string name="height">Hauteur</string>
+  <string name="date_modified">Date de modification</string>
+  <string name="creator">Créateur</string>
+  <string name="date_taken">Date de prise</string>
   <string name="exposure_time">Temps d\'exposition</string>
   <string name="focal_length">Longueur focale</string>
+  <string name="document">Document</string>
+  <string name="author">Auteur</string>
+  <string name="keywords">Mots clés</string>
+  <string name="producer">Producteur</string>
+  <string name="format">Format</string>
+  <string name="pages">Nombre de pages</string>
   <!-- reference to a document file -->
+  <string name="optimized">Optimisé</string>
+  <string name="security">Sécurité</string>
   <!-- %s will be replaced with either copied or moved -->
+  <string name="copied">copié</string>
+  <string name="moved">déplacé</string>
+  <string name="process_chart_description">Progression</string>
+  <string name="copy_complete">Copie terminée</string>
+  <string name="move_complete">Transfert terminé</string>
+  <string name="waiting_title">En attente</string>
+  <string name="extract_complete">Extraction terminée</string>
+  <string name="compression_complete">Compression terminée</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="processing_file">Traitement du fichier</string>
+  <string name="current_speed">Vitesse actuelle</string>
+  <string name="error_file_not_found">Erreur : fichier non trouvé</string>
+  <string name="error_io">Erreur E/S</string>
   <string name="tap_and_hold_tips">Appuyer et maintenir sur un fichier ou dossier pour plus d\'options</string>
   <string name="permission_read">Lire</string>
+  <string name="permission_write">Écriture</string>
+  <string name="permission_execute">Exécution</string>
+  <string name="permission_owner">Propriétaire</string>
+  <string name="permission_group">Groupe</string>
   <string name="permission_other">Autres</string>
+  <string name="clipboard_path_copy">Répertorie copié dans le presse-papier</string>
+  <string name="service_timer">Temps écoulé</string>
 </resources>

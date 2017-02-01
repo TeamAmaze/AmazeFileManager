@@ -19,24 +19,105 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="app_name">File Manager</string>
   <string name="drawer_open">Buka navigasi rinci</string>
   <string name="drawer_close">Tutup navigasi rinci</string>
   <string name="books">Bookmark</string>
+  <string name="icon">ikon</string>
+  <string name="efn">Masukan Nama Berkas</string>
+  <string name="storage">Penyimpanan</string>
   <string name="gallery">Galeri</string>
+  <string name="apps">Pengelola Aplikasi</string>
+  <string name="ftp">Server FTP</string>
+  <string name="bookmanag">Pengelola Bookmark</string>
   <string name="setting">Setelan</string>
+  <string name="select">Pilih Item</string>
+  <string name="pressagain">Tekan lagi untuk keluar</string>
+  <string name="open">Buka</string>
+  <string name="backup">Cadangkan</string>
+  <string name="uninstall">Copot pemasangan</string>
+  <string name="play">Play Store</string>
+  <string name="properties">Rincian</string>
+  <string name="copyingapk">Menyalin apk ke </string>
+  <string name="addbook">Tambah Ke Bookmark</string>
+  <string name="delbook">Hapus Bookmark</string>
+  <string name="addtobook">Tambahkan ke bookmark</string>
+  <string name="enterpath">Masukkan Path</string>
   <string name="cancel">BATAL</string>
+  <string name="create">BUAT</string>
+  <string name="success">Sukses</string>
+  <string name="filenotexists">Berkas Tidak Ada</string>
+  <string name="loading">Memuat&#8230;</string>
+  <string name="file_empty">Berkas ini kosong</string>
+  <string name="error">Kesalahan</string>
+  <string name="cantlistfiles">Tidak bisa melihat daftar berkas tanpa akses root</string>
+  <string name="searchresults">Hasil Pencarian</string>
+  <string name="itemsselected">Item Dipilih</string>
+  <string name="rename">Ganti nama</string>
   <string name="save">Simpan</string>
+  <string name="renameerror">Gagal mengganti nama</string>
+  <string name="renamed">Sukses mengganti nama</string>
+  <string name="bookmarksadded">Bookmark ditambahkan</string>
+  <string name="fileexist">Berkas dengan nama yang sama sudah ada </string>
+  <string name="filecreated">Berkas Dibuat</string>
+  <string name="searchpath">Path pencarian</string>
+  <string name="enterfile">Masukan Nama Berkas</string>
+  <string name="name">Nama</string>
+  <string name="date">Tanggal</string>
   <string name="location">Lokasi</string>
+  <string name="size">Ukuran Folder</string>
+  <string name="totalitems">Total item</string>
+  <string name="enterzipname">Masukkan nama Zip</string>
+  <string name="noappfound">Tidak ada aplikasi untuk membuka file ini</string>
+  <string name="copying">Menyalin</string>
+  <string name="moving">Memindahkan</string>
+  <string name="add">Tambah</string>
+  <string name="tab">Tab</string>
+  <string name="file">Berkas</string>
+  <string name="folder">Folder</string>
+  <string name="newfolder">Folder Baru</string>
+  <string name="entername">Masukan Nama</string>
+  <string name="extracting">Mengekstrak</string>
+  <string name="stopping">Menghentikan</string>
+  <string name="guide1">Selamat datang di File Manager yang Menajubkan</string>
+  <string name="guide2">Sentuh strip biru untuk menampilkan atau menyembunyikan PathBar</string>
+  <string name="guide3">Sentuh dan tahan berkas apapun opsi lebih lanjut</string>
+  <string name="guide4">Seperti menyalin, memindahkan, rincian dll</string>
+  <string name="guide5">Gunakan tombol Kembali perangkat anda untuk keluar dari aplikasi kapan saja&#8230;</string>
+  <string name="guide6">.. Dan gunakan tombol panah kiri untuk navigasi pada file manager</string>
+  <string name="maintab">Tab utama tidak dapat dihapus</string>
+  <string name="openparent">Buka Induk Direktori</string>
+  <string name="openwith">Buka dengan</string>
   <string name="share">Bagikan</string>
   <string name="about">Tentang</string>
+  <string name="extract">Ekstrak</string>
+  <string name="compress">Kompres</string>
   <string name="yes">Ya</string>
   <string name="no">Tidak</string>
   <string name="confirm">Konfirmasi</string>
+  <string name="deleting">Menghapus</string>
+  <string name="questiondelete">Apakah anda yakin ingin menghapus berkas ini?</string>
+  <string name="questionset">Apakah anda ingin menetapkan jalur saat ini sebagai rumah untuk tab ini?</string>
+  <string name="viewmode">Modus Tinjau</string>
+  <string name="uimode">Mode UI</string>
+  <string name="directorysort">Mode Urutan Direktori</string>
+  <string name="sortby">Urutkan Berdasarkan</string>
+  <string name="theme">Tema</string>
+  <string name="skin">Kulit</string>
+  <string name="random">Kulit Acak</string>
+  <string name="random_summary">Setel acak warna primer pada saat startup</string>
+  <string name="colorize">Warna Ikon</string>
+  <string name="colorize_summary">Setel warna ikon statis. Tidak mengganti preferensi warna ikon direktori.</string>
   <string name="back">Kembali</string>
   <string name="home">Beranda</string>
+  <string name="paste">Tempel</string>
   <string name="close">Tutup</string>
   <string name="history">History</string>
   <string name="refresh">Segarkan</string>
+  <string name="copy">Salin</string>
+  <string name="rootmode">Root Explorer</string>
+  <string name="rootmodesummary">Untuk perangkat yang mempunyai akses root saja. Periksa hanya jika anda yakin tentang hal itu.</string>
+  <string name="mountsystemsummary">Aktifkan ini jika anda ingin mengedit file sistem</string>
   <string name="delete">Hapus</string>
   <!-- New -->
   <!-- Array -->
@@ -49,6 +130,7 @@
   <string name="green">Hijau</string>
   <!--DirectorySortMode-->
   <!--SortBy-->
+  <string name="sortName">Nama</string>
   <string name="sortSize">Ukuran</string>
   <!--ListMode-->
   <!--Folder-->
@@ -77,7 +159,6 @@
   <string name="recent">Berkas Terbaru</string>
   <string name="edit">Ubah</string>
   <string name="path">Jalur</string>
-  <string name="empty"></string>
   <string name="search">Pencarian</string>
   <string name="start_ftp">Mulai</string>
   <string name="information">Informasi</string>

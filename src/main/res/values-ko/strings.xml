@@ -334,7 +334,6 @@
   <string name="edit"> 수정</string>
   <string name="path">경로</string>
   <string name="cut">잘라내기</string>
-  <string name="empty"></string>
   <string name="search">검색</string>
   <string name="start_ftp">시작</string>
   <string name="information">정보</string>
@@ -354,4 +353,5 @@
   <string name="tap_and_hold_tips">파일이나 폴더를 길게 누르면 더 많은 옵션을 볼 수 있습니다</string>
   <string name="permission_read">읽음</string>
   <string name="permission_other">추가 사항</string>
+  <string name="clipboard_path_copy">클립보드에 복사되었습니다</string>
 </resources>
