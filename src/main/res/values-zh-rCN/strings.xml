@@ -25,7 +25,7 @@
   <string name="books">书签</string>
   <string name="icon">图标</string>
   <string name="efn">请输入文件名</string>
-  <string name="storage">存储</string>
+  <string name="storage">主目录</string>
   <string name="gallery">图库</string>
   <string name="apps">应用管理</string>
   <string name="ftp">FTP 服务器</string>
@@ -63,11 +63,11 @@
   <string name="filecreated">文件创建成功</string>
   <string name="searchpath">搜索路径</string>
   <string name="enterfile">请输入文件名</string>
-  <string name="name">名称：</string>
-  <string name="date">时间戳：</string>
-  <string name="location">路径：</string>
-  <string name="size">大小：</string>
-  <string name="totalitems">文件数：</string>
+  <string name="name">名称</string>
+  <string name="date">时间戳</string>
+  <string name="location">路径</string>
+  <string name="size">大小</string>
+  <string name="totalitems">文件数</string>
   <string name="enterzipname">请输入 ZIP 文件名</string>
   <string name="noappfound">无法找到可以打开此文件的应用</string>
   <string name="copying">正在复制</string>
@@ -116,7 +116,7 @@
   <string name="history">历史记录</string>
   <string name="refresh">刷新</string>
   <string name="copy">复制</string>
-  <string name="rootmode">Root 浏览器</string>
+  <string name="rootmode">根目录浏览</string>
   <string name="rootmodesummary">仅供已获取 Root 权限的设备使用</string>
   <string name="mountsystemsummary">如果您想修改系统文件请启用此选项</string>
   <string name="mountsystem">挂载 System 分区为可读写</string>
@@ -229,7 +229,7 @@
   <string name="miscellaneous">其他</string>
   <string name="rootPrefSummary">显示文件及文件夹的权限</string>
   <string name="rootPref">显示权限</string>
-  <string name="aboutFileManager">关于</string>
+  <string name="aboutFileManager">详细信息</string>
   <string name="version">版本</string>
   <string name="rate">为本应用评分</string>
   <string name="license">开源许可</string>
@@ -252,7 +252,7 @@
   <string name="archtext">这是一个压缩包文件，您要执行哪一项操作？</string>
   <string name="pitext">这是一个应用安装包，您要执行哪一项操作？</string>
   <string name="xda_title">XDA 论坛</string>
-  <string name="xda_summary">获取应用的问答及帮助</string>
+  <string name="xda_summary">寻求帮助或分享心得</string>
   <string name="invalid_dir">无效的目录</string>
   <string name="circularimages">对图像和视频使用圆形图标</string>
   <string name="circularicons">使用圆形图标</string>
@@ -291,7 +291,7 @@
   <string name="zip_summary">新 ZIP 文件将会创建到此目录，默认创建压缩包到当前目录</string>
   <string name="openas">打开方式</string>
   <string name="text">文本</string>
-  <string name="audio">音频</string>
+  <string name="audio">音乐</string>
   <string name="video">视频</string>
   <string name="other">其他</string>
   <string name="image">图片</string>
@@ -304,7 +304,9 @@
   <string name="tables">表格</string>
   <string name="database">数据库</string>
   <string name="colourednavigation">导航栏变色</string>
-  <string name="colourednavigationsum">设置导航栏是否跟随皮肤颜色变色</string>
+  <string name="colourednavigationsum">动态调整导航栏以适应皮肤颜色</string>
+  <string name="sd_card_grant_next">SD卡授权下一个</string>
+  <string name="sd_card_grant_first">SD卡授权第一个</string>
   <string name="fab_skin">浮动操作按钮颜色</string>
   <string name="gplus_pic_title">用 G+ 账号登录</string>
   <string name="gplus_pic_summary">在抽屉中显示 G+ 用户头像</string>
@@ -313,10 +315,10 @@
   <string name="color_summary">为各种界面组件设置颜色</string>
   <string name="primary_color_title">主色调（左侧面板）</string>
   <string name="primary_color_summary">设置左侧面板大部分控件的颜色</string>
-  <string name="accent_color_title">反差色</string>
+  <string name="accent_color_title">强调色</string>
   <string name="accent_color_summary">为浮动操作按钮以及其他控件设置颜色</string>
   <string name="icon_color_title">图标颜色</string>
-  <string name="icon_color_summary">给图标设置颜色</string>
+  <string name="icon_color_summary">为图标设置颜色</string>
   <string name="hide_mode_title">隐藏模式</string>
   <string name="none">没有</string>
   <string name="hide_toolbar">隐藏工具栏</string>
@@ -337,7 +339,7 @@
   <string name="needsaccess">需要写入权限</string>
   <string name="needsaccesssummary">请选择根目录下的 \t</string>
   <string name="needsaccesssummary1">\\t 授予当前操作写入权限</string>
-  <string name="smb_con">SMB 连接</string>
+  <string name="smb_con">共享连接</string>
   <string name="smb_server">服务器 IP 地址</string>
   <string name="username">用户名</string>
   <string name="password">密码</string>
@@ -380,7 +382,6 @@
   <string name="path">路径</string>
   <string name="renamebookmark">修改书签</string>
   <string name="cut">剪切</string>
-  <string name="empty"></string>
   <string name="search">搜索</string>
   <string name="invalid_name">无效名称</string>
   <string name="search_hint">请输入要搜索的内容</string>
@@ -405,13 +406,13 @@
   <string name="ftp_port_change_error_invalid">选定的端口号无效</string>
   <string name="primary_two_title">主色调（右侧面板）</string>
   <string name="primary_two_summary">设置右侧面板大部分控件的颜色</string>
-  <string name="g_plus">Google+</string>
+  <string name="g_plus">Google +</string>
   <string name="support_development">协助开发</string>
   <string name="report_bugs_title">反馈问题</string>
   <string name="report_bugs_summary">反馈问题或提交新功能需求</string>
   <string name="translate_title">贡献翻译</string>
-  <string name="translate_summary">前往 Amaze 本地化管理系统进行语言翻译</string>
-  <string name="g_plus_community_summary">参加 beta 版测试并讨论后续改进</string>
+  <string name="translate_summary">前往 Amaze 本地化系统进行语言翻译</string>
+  <string name="g_plus_community_summary">参与 beta 版测试并讨论后续改进</string>
   <string name="easter_egg_title">工作室模式</string>
   <string name="paypal_copy_message">Paypal ID 已复制至剪贴板</string>
   <string name="searchingdevices">正在搜索设备</string>
@@ -443,6 +444,7 @@
   <string name="duration">时长</string>
   <string name="comment">注释</string>
   <!-- reference to audio/video file -->
+  <string name="container">容器格式文件</string>
   <string name="codec">编解码器</string>
   <string name="channels">声道</string>
   <string name="sample_rate">采样率</string>
@@ -493,6 +495,7 @@
   <string name="written">已写入</string>
   <string name="out_of">不超过</string>
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="of">中的</string>
   <string name="processing_file">处理文件</string>
   <string name="current_speed">当前频率</string>
   <string name="smb_launch_error">您需要将此文件复制到存储空间中才能打开它</string>
@@ -507,4 +510,7 @@
   <string name="permission_owner">所有者</string>
   <string name="permission_group">用户组</string>
   <string name="permission_other">其他</string>
+  <string name="clipboard_path_copy">路径已复制到剪贴板</string>
+  <string name="error_busybox">无法找到 Busybox 。请关闭交互式 shell。</string>
+  <string name="service_timer">用时</string>
 </resources>

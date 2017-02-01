@@ -355,7 +355,6 @@
   <string name="path">Cale</string>
   <string name="renamebookmark">Modificaţi marcajul</string>
   <string name="cut">Mutare</string>
-  <string name="empty"></string>
   <string name="search">Căutare</string>
   <string name="start_ftp">Pornire</string>
   <string name="searchingdevices">Căutare dispozitive</string>
@@ -373,4 +372,5 @@
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="tap_and_hold_tips">Apăsați și țineți apăsat pe un fișier sau un dosar pentru mai multe opțiuni</string>
+  <string name="clipboard_path_copy">Cale copiată în clipboard</string>
 </resources>

@@ -19,6 +19,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="history">Tarixi</string>
+  <string name="refresh">Yangilash</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
@@ -35,9 +37,9 @@
   <!--Folder-->
   <string name="Yellow">Sariq</string>
   <string name="version">Qo‘shish</string>
+  <string name="donate">Ehson</string>
   <string name="color_title">Rang</string>
   <string name="none">Asl</string>
-  <string name="empty"></string>
   <string name="information">Ma’lumot</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->

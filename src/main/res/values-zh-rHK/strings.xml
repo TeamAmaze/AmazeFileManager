@@ -382,7 +382,6 @@
   <string name="path">路徑</string>
   <string name="renamebookmark">編輯書籤</string>
   <string name="cut">剪切</string>
-  <string name="empty"></string>
   <string name="search">搜索</string>
   <string name="invalid_name">無效名稱</string>
   <string name="search_hint">輸入以搜尋&#8230;</string>
@@ -504,4 +503,7 @@
   <string name="permission_owner">擁有者</string>
   <string name="permission_group">群組</string>
   <string name="permission_other">其他</string>
+  <string name="clipboard_path_copy">路徑已複製到剪貼板</string>
+  <string name="error_busybox">Busybox 找不到。關閉互動式 shell。</string>
+  <string name="service_timer">已用時間</string>
 </resources>

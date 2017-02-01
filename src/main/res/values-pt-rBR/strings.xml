@@ -382,7 +382,6 @@
   <string name="path">Caminho</string>
   <string name="renamebookmark">Modificar favorito</string>
   <string name="cut">Recortar</string>
-  <string name="empty"></string>
   <string name="search">Procurar</string>
   <string name="invalid_name">Nome inválido</string>
   <string name="search_hint">Digite para procurar&#8230;</string>
@@ -422,50 +421,64 @@
   <string name="smb_instructions">
         <html>
             <body>
-            <center>\n
-            <h1>Como acessar uma pasta compartilhada do Windows no Android (smb)</h1>\n
-            </center>\n
-            <ol>\n
-            <li>\n
-            <b>Ative o compartilhamento de arquivos</b>\n
-            <br/>Abra o Painel de Controle, clique em \'Escolher opções de grupo doméstico e de 
-                    compartilhamento\' no grupo Rede e Internet, e depois clique em \'Alterar as 
-                    configurações de compartilhamento avançadas\'. Ative a opção de compartilhamento 
-                    de arquivo e impressora.\n
-            </li><br/><li/><b>Configurações adicionais de compartilhamento de arquivos</b><br/>Você 
-                    pode querer configurar outras definições de compartilhamento avançadas. \n
-            Por exemplo, você pode ativar o acesso aos seus arquivos sem precisar digitar uma senha, 
-                caso confie em todos os dispositivos da sua rede local. Assim que o compartilhamento 
-                de arquivo e impressora estiver ativo, você poderá abrir o Windows Explorer, clicar 
-                com o botão direito do mouse em uma pasta que quiser compartilhar e selecionar 
-                Propriedades. \n
-            Clique no botão Compartilhar para que a pasta fique disponível na rede.\n
-            <li><li/><br/><b>Certifique-se de que ambos os dispositivos estejam na mesma rede Wi-fi</b><br/> \n
-            Esta funcionalidade disponibiliza arquivos na rede local, permitindo que seu computador e 
-                    aparelhos móveis tenham acesso a mesma rede local. Você não poderá acessar uma 
-                    pasta compartilhada do Windows através da Internet ou quando seu smartphone estiver 
-                    conectado através de dados móveis - ele precisa estar conectado à rede Wi-Fi.</li><li>\n
-            <br/><b>Procure o endereço IP</b>\n
-            <br/>Abra o Prompt de Comando. Digite \'ipconfig\' e pressione Enter. Procure por Gateway
-                    Padrão no seu adaptador de rede para identificar o endereço IP do seu roteador.  
-                    Encontre o \"Endereço IPv4\" na mesma seção do adaptador para identificar o 
-                    endereço IP do seu computador.</li><li/><br/>\n
-            <b>Digite os detalhes na caixa de diálogo smb</b>\n
-            <br/>\n
-            </ol>\n
-            </body>\n
-            </html>
+                <h1>How to access shared windows folder on android (smb)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Enable File Sharing</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Open the Control Panel, click Choose homegroup and sharing options under Network
+                        and Internet, and click Change advanced sharing settings. Enable the file and
+                        printer sharing feature.\n\n
+                    </p>
+
+                    <li>
+                        <b>Additional File Sharing settings</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        You may also want to configure the other advanced sharing settings here. \n
+                        For example, you could enable access to your files without a password if you trust all
+                        the devices on your local network.Once file and printer sharing is enabled, you can
+                        open File Explorer or Windows Explorer, right-click a folder you want to share, and
+                        select Properties. \n
+                        Click the Share button and make the folder available on the network.\n\n
+                        </p>
+
+                    <li>
+                        <b>Make sure both devices are on same Wifi</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        This feature makes files available on the local network, so your PC and mobile devices
+                        have to be on the same local network. You can\’t access a shared Windows folder
+                        over the Internet or when your smartphone is connected to its mobile data — it
+                        has to be connected to Wi-Fi.\n\n
+                    </p>
+
+                    <li>
+                        <b>Find IP Address</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Open Command Prompt. Type \'ipconfig\' and press Enter. Look for Default Gateway
+                        under your network adapter for your router\'s IP address. Look for
+                        \\"IPv4 Address\\" under the same adapter section to find your computer\'s IP
+                        address.\n\n
+                    </p>
+
+                    <b>Enter details in smb dialog box</b>\n
+                </ul>
+            </body>
+        </html>
     </string>
   <string name="share_limit">Não é possível compartilhar mais que 100 arquivos</string>
   <string name="otg_access">Selecione a raiz do dispositivo OTG</string>
   <string name="no_profile_pic">Nenhuma foto de perfil G +</string>
   <string name="opening">Abertura...</string>
-  <string name="information">Informação</string>
+  <string name="information">Informações</string>
   <!-- reference to file accessed date -->
   <string name="accessed">Acessado</string>
   <!-- reference to file modified date -->
   <string name="modified">Modificado</string>
-  <string name="title">Título</string>
+  <string name="title">Title</string>
   <string name="artist">Artista</string>
   <string name="album">álbum</string>
   <string name="year">Ano</string>
@@ -527,6 +540,9 @@
   <string name="processing_file">Processamento de arquivo</string>
   <string name="current_speed">Velocidade atual</string>
   <string name="smb_launch_error">Você precisará copiar este arquivo para armazenamento para abri-lo</string>
+  <string name="error_file_not_found">Erro! Arquivo não encontrado</string>
+  <string name="error_io">Erro I/O</string>
+  <string name="error_root_not_permitted">Erro: Raiz permissão não concedida</string>
   <string name="medium_text">Texto Médio</string>
   <string name="tap_and_hold_tips">Toque longo num arquivo ou pasta para mais opções</string>
   <string name="permission_read">Lidas</string>
@@ -535,4 +551,7 @@
   <string name="permission_owner">Proprietário</string>
   <string name="permission_group">Grupo</string>
   <string name="permission_other">Outro</string>
+  <string name="clipboard_path_copy">Caminho copiado para a área de transferência</string>
+  <string name="error_busybox">Busybox não encontrado. Fechando o shell interativo.</string>
+  <string name="service_timer">Tempo decorrido</string>
 </resources>
