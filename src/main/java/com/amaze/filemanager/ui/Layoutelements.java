@@ -28,7 +28,12 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 
+import java.util.Calendar;
+
 public class Layoutelements implements Parcelable {
+
+    private static final String CURRENT_YEAR = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+
     public Layoutelements(Parcel im) {
         title = im.readString();
         desc = im.readString();
@@ -98,7 +103,7 @@ public class Layoutelements implements Parcelable {
         this.isDirectory = isDirectory;
         if (!date.trim().equals("")) {
             this.date = Long.parseLong(date);
-            this.date1 = Futils.getdate(this.date, "MMM dd, yyyy", "16");
+            this.date1 = Futils.getdate(this.date, CURRENT_YEAR);
         }
     }
 
