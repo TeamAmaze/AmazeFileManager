@@ -35,14 +35,12 @@ import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,10 +61,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.exceptions.StreamNotFoundException;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
-import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.services.asynctasks.SearchTextTask;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.GenericCopyUtil;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.OpenMode;
@@ -74,7 +71,6 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
-import com.github.junrar.io.RandomAccessStream;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.BufferedReader;
@@ -86,7 +82,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Timer;
@@ -323,7 +318,6 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
      */
     private void saveFile(final Uri uri, final File file, final String editTextString) {
 
-
         Toast.makeText(c, R.string.saving, Toast.LENGTH_SHORT).show();
         new Thread(new Runnable() {
             @Override
@@ -379,20 +373,14 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
      */
     private void writeTextFile(final Uri uri, final File file, String inputText)
             throws StreamNotFoundException, IOException, RootNotPermittedException {
-        mOriginal = inputText;
-
         OutputStream outputStream = null;
 
         if (uri.toString().contains("file://")) {
-
             // dealing with files
-            if(file.canWrite()) {
-                try {
-
-                    outputStream = new FileOutputStream(file);
-                } catch (FileNotFoundException e) {
-                    outputStream = null;
-                }
+            try {
+                outputStream = FileUtil.getOutputStream(file, this);
+            } catch (Exception e) {
+                outputStream = null;
             }
 
             if (BaseActivity.rootMode && outputStream == null) {
@@ -434,6 +422,10 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         // saving data to file
         outputStream.write(inputText.getBytes());
         outputStream.close();
+
+        mOriginal = inputText;
+        mModified = false;
+        invalidateOptionsMenu();
 
         if (cacheFile!=null && cacheFile.exists()) {
             // cat cache content to original file and delete cache file
@@ -536,9 +528,14 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.text, menu);
-        menu.findItem(R.id.save).setVisible(mModified);
         menu.findItem(R.id.find).setVisible(true);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.save).setVisible(mModified);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -613,10 +610,16 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             }
             mTimer = new Timer();
             mTimer.schedule(new TimerTask() {
+
+                boolean modified;
+
                 @Override
                 public void run() {
-                    mModified = !mInput.getText().toString().equals(mOriginal);
-                    invalidateOptionsMenu();
+                    modified = !mInput.getText().toString().equals(mOriginal);
+                    if (mModified != modified) {
+                        mModified = modified;
+                        invalidateOptionsMenu();
+                    }
                 }
             }, 250);
         }

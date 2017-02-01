@@ -136,6 +136,10 @@ public abstract class FileUtil {
         return true;
     }
 
+    public static OutputStream getOutputStream(final File target, Context context) throws Exception {
+        return getOutputStream(target, context, 0);
+    }
+
     public static OutputStream getOutputStream(final File target, Context context, long s) throws Exception {
 
         OutputStream outStream = null;
@@ -489,7 +493,29 @@ public abstract class FileUtil {
     }
 
     /**
-     * Check is a file is writable. Detects write issues on external SD card.
+     * Check if a file is readable.
+     *
+     * @param file
+     *            The file
+     * @return true if the file is reabable.
+     */
+    public static final boolean isReadable(final File file) {
+        if (file == null)
+            return false;
+        if (!file.exists()) return false;
+
+        boolean result;
+        try {
+            result = file.canRead();
+        } catch (SecurityException e) {
+            return false;
+        }
+
+        return result;
+    }
+
+    /**
+     * Check if a file is writable. Detects write issues on external SD card.
      *
      * @param file
      *            The file
