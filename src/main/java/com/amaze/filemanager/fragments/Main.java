@@ -91,8 +91,8 @@ import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
@@ -160,6 +160,7 @@ public class Main extends android.support.v4.app.Fragment {
     private View rootView;
     private View actionModeView;
     private FastScroller fastScroller;
+    private Bitmap mFolderBitmap;
 
     // ATTRIBUTES FOR APPEARANCE AND COLORS
     public String fabSkin, iconskin;
@@ -292,7 +293,8 @@ public class Main extends android.support.v4.app.Fragment {
         initNoFileLayout();
         SHOW_HIDDEN = Sp.getBoolean("showHidden", false);
         COLORISE_ICONS = Sp.getBoolean("coloriseIcons", true);
-        folder = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_grid_folder_new));
+        mFolderBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_grid_folder_new);
+        folder = new BitmapDrawable(res, mFolderBitmap);;
         getSortModes();
         DARK_IMAGE = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_image_dark));
         DARK_VIDEO = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_video_dark));
@@ -358,7 +360,7 @@ public class Main extends android.support.v4.app.Fragment {
         IS_LIST = false;
 
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
-        folder = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_grid_folder_new));
+        folder = new BitmapDrawable(res, mFolderBitmap);
         fixIcons();
 
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
@@ -385,7 +387,7 @@ public class Main extends android.support.v4.app.Fragment {
         }
 
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
-        folder = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_grid_folder_new));
+        folder = new BitmapDrawable(res, mFolderBitmap);
         fixIcons();
         if (mLayoutManager == null)
             mLayoutManager = new LinearLayoutManager(getActivity());
@@ -1292,7 +1294,7 @@ public class Main extends android.support.v4.app.Fragment {
     void fixIcons() {
         for (Layoutelements layoutelements : LIST_ELEMENTS) {
             BitmapDrawable iconDrawable = layoutelements.isDirectory() ?
-                    folder : Icons.loadMimeIcon(getActivity(), layoutelements.getDesc(), !IS_LIST, res);
+                    folder : Icons.loadMimeIcon(layoutelements.getDesc(), !IS_LIST, res);
             layoutelements.setImageId(iconDrawable);
         }
     }
@@ -1310,14 +1312,19 @@ public class Main extends android.support.v4.app.Fragment {
             }
             if (mFile[i].isDirectory()) {
                 folder_count++;
-                Layoutelements layoutelements = new Layoutelements(folder, name, mFile[i].getPath(), "", "", "", 0, false, mFile[i].lastModified() + "", true);
+                Layoutelements layoutelements = new Layoutelements(folder, name, mFile[i].getPath(),
+                        "", "", "", 0, false, mFile[i].lastModified() + "", true);
                 layoutelements.setMode(OpenMode.SMB);
                 searchHelper.add(layoutelements.generateBaseFile());
                 a.add(layoutelements);
             } else {
                 file_count++;
                 try {
-                    Layoutelements layoutelements = new Layoutelements(Icons.loadMimeIcon(getActivity(), mFile[i].getPath(), !IS_LIST, res), name, mFile[i].getPath(), "", "", Formatter.formatFileSize(getContext(), mFile[i].length()), mFile[i].length(), false, mFile[i].lastModified() + "", false);
+                    Layoutelements layoutelements = new Layoutelements(
+                            Icons.loadMimeIcon(mFile[i].getPath(), !IS_LIST, res), name,
+                            mFile[i].getPath(), "", "", Formatter.formatFileSize(getContext(),
+                            mFile[i].length()), mFile[i].length(), false,
+                            mFile[i].lastModified() + "", false);
                     layoutelements.setMode(OpenMode.SMB);
                     searchHelper.add(layoutelements.generateBaseFile());
                     a.add(layoutelements);
@@ -1354,7 +1361,7 @@ public class Main extends android.support.v4.app.Fragment {
                     //e.printStackTrace();
                 }
                 try {
-                    Layoutelements layoutelements = utils.newElement(Icons.loadMimeIcon(getActivity(), f.getPath(), !IS_LIST, res), f.getPath(), mFile.getPermisson(), mFile.getLink(), size, longSize, false, false, mFile.getDate() + "");
+                    Layoutelements layoutelements = utils.newElement(Icons.loadMimeIcon(f.getPath(), !IS_LIST, res), f.getPath(), mFile.getPermisson(), mFile.getLink(), size, longSize, false, false, mFile.getDate() + "");
                     layoutelements.setMode(mFile.getMode());
                     LIST_ELEMENTS.add(layoutelements);
                     file_count++;

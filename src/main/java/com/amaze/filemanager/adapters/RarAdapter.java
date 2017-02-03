@@ -311,7 +311,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             holder.date.setText(R.string.goback);
         }
         else {
-            holder.genericIcon.setImageDrawable(Icons.loadMimeIcon(zipViewer.getActivity(), rowItem.getName(), false,zipViewer.res));
+            holder.genericIcon.setImageDrawable(Icons.loadMimeIcon(rowItem.getName(), false,zipViewer.res));
             final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
             if (zipViewer.showLastModified)
                 holder.date.setText(Futils.getdate(rowItem.getTime(), zipViewer.year));
@@ -344,7 +344,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                         gradientDrawable.setColor(Color.parseColor("#f9a825"));
                     else if(Icons.isApk(rowItem.getName()))
                         gradientDrawable.setColor(Color.parseColor("#a4c439"));
-                    else if (Icons.isgeneric(rowItem.getName()))
+                    else if (Icons.isGeneric(rowItem.getName()))
                         gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
                     else gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
                 } else gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
@@ -459,7 +459,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
         GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
 
-        holder.genericIcon.setImageDrawable(Icons.loadMimeIcon(zipViewer.getActivity(), rowItem.getFileNameString(), false,zipViewer.res));
+        holder.genericIcon.setImageDrawable(Icons.loadMimeIcon(rowItem.getFileNameString(), false,zipViewer.res));
         holder.txtTitle.setText(rowItem.getFileNameString().substring(rowItem.getFileNameString().lastIndexOf("\\") + 1));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -486,7 +486,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                     gradientDrawable.setColor(Color.parseColor("#f9a825"));
                 else if(Icons.isApk(rowItem.getFileNameString()))
                     gradientDrawable.setColor(Color.parseColor("#a4c439"));
-                else if (Icons.isgeneric(rowItem.getFileNameString()))
+                else if (Icons.isGeneric(rowItem.getFileNameString()))
                     gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
                 else gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
             } else gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));

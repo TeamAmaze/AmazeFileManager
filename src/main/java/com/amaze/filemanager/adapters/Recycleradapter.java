@@ -342,7 +342,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) filetype = 0;
             else if (Icons.isApk((rowItem.getDesc()))) filetype = 1;
             else if (Icons.isVideo(rowItem.getDesc())) filetype = 2;
-            else if (Icons.isgeneric(rowItem.getDesc())) filetype = 3;
+            else if (Icons.isGeneric(rowItem.getDesc())) filetype = 3;
             holder.txtTitle.setText(rowItem.getTitle());
             holder.genericIcon.setImageDrawable(rowItem.getImageId());
             holder.genericText.setText("");
@@ -508,7 +508,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         gradientDrawable.setColor(c7);
                     else if (Icons.isApk(rowItem.getDesc()))
                         gradientDrawable.setColor(c8);
-                    else if (Icons.isgeneric(rowItem.getDesc())) {
+                    else if (Icons.isGeneric(rowItem.getDesc())) {
                         gradientDrawable.setColor(c9);
                     } else {
                         gradientDrawable.setColor(main.icon_skin_color);
@@ -589,7 +589,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.genericIcon.setColorFilter(c6);
             else if (Icons.isArchive(rowItem.getDesc()))
                 holder.genericIcon.setColorFilter(c7);
-            else if (Icons.isgeneric(rowItem.getDesc()))
+            else if (Icons.isGeneric(rowItem.getDesc()))
                 holder.genericIcon.setColorFilter(c9);
             else if (Icons.isApk(rowItem.getDesc()) || Icons.isPicture(rowItem.getDesc()))
                 holder.genericIcon.setColorFilter(null);
