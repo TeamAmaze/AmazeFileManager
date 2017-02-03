@@ -36,9 +36,11 @@
   <string name="open">Aç</string>
   <string name="backup">Yedek</string>
   <string name="uninstall">Kaldır</string>
+  <string name="play">Play store</string>
   <string name="properties">Özellikler</string>
   <string name="copyingapk">Apk kopyalanıyor</string>
   <string name="addbook">Yer işareti ekle</string>
+  <string name="delbook">Yer işaretini sil</string>
   <string name="addtobook">Yer işaretlerine ekle</string>
   <string name="enterpath">Yolu gir</string>
   <string name="cancel">İptal</string>
@@ -155,6 +157,7 @@
   <string name="brown">Kahverengi</string>
   <string name="black">Siyah</string>
   <string name="blue_grey">Mavi ile gri</string>
+  <string name="supersu">SuperSU</string>
   <!--DirectorySortMode-->
   <string name="foldersOnTop">Üst klasörler</string>
   <string name="filesOnTop">Üst dosyalar</string>
@@ -234,6 +237,7 @@
   <string name="hiddenfiles">Gizli dosyalar</string>
   <string name="type">Tip</string>
   <string name="typeDesc">Tip (Azalan)</string>
+  <string name="rootdirectory">Root</string>
   <string name="new_string">Yeni</string>
   <string name="setringtone">Zil sesi olarak ayarla</string>
   <string name="copy_path">Kopyalam yolu</string>
@@ -273,7 +277,9 @@
   <string name="dutch_translation_title">Felemenkçe</string>
   <string name="romanian_translation_title">Romence</string>
   <string name="vietnamese_translation_title">Vietnamca</string>
+  <string name="japanese_translation_title">Japonca</string>
   <string name="brazilian_portuguese_translation_title">Brezilya Portekizcesi</string>
+  <string name="tamil_translation_title">Tamil dili</string>
   <string name="zip_viewer">Sıkıştırma görüntüleyicisi</string>
   <string name="unin_system_apk">\"Bu sistem uygulamasını silmeniz durumunda sistemin istikrarına yol açabilir
 Devam etmek istiyor musunuz?\"</string>
@@ -287,6 +293,7 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="openas">Farklı aç</string>
   <string name="text">Metin</string>
   <string name="audio">Ses</string>
+  <string name="video">Video</string>
   <string name="other">Diğer</string>
   <string name="image">Resim</string>
   <string name="contributors">Katkıda bulunanlar</string>
@@ -344,24 +351,31 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="total">Toplam:</string>
   <string name="calculating">hesaplanıyor</string>
   <string name="sort">Sırala</string>
+  <string name="ascending">Artan</string>
+  <string name="descending">Artan</string>
   <string name="defualt">Ön tanımlı</string>
+  <string name="doit">Yap</string>
   <string name="wanthelp"><u>Yardım mı gerekiyor?</u></string>
   <string name="quick">Hızlı Erişim</string>
   <string name="recent">Son Kullanılan Dosyalar</string>
   <string name="edit">Düzenle</string>
   <string name="find">Sayfada bul</string>
+  <string name="grant">İzin</string>
+  <string name="grantper">İzin ver</string>
+  <string name="grantfailed">İzin verilmedi</string>
   <string name="granttext">Uygulamanın devam edebilmesi için depolama iznine ihtiyacı var. İptal etmek uygulamayı sonlandıracaktır.</string>
   <string name="grantgplus">Uygulama bu özellik için izne ihtiyaç duymaktadır. İptal etmek özellik seçimini pasif yapacaktır.</string>
+  <string name="operationunsuccesful">İşlem Başarısız</string>
   <string name="creatingfile">Dosya Oluşturuluyor</string>
   <string name="creatingfolder">Klasör oluşturuluyor</string>
   <string name="renaming">Yeniden adlandırılıyor</string>
+  <string name="cantbeempty">%s boş olamaz</string>
   <string name="ip">Adres</string>
   <string name="connectionname">Bağlantı ismi</string>
   <string name="nodevicefound">Cihaz bulunamadı</string>
   <string name="path">Yol</string>
   <string name="renamebookmark">Yer İmini Düzenle</string>
   <string name="cut">Kes</string>
-  <string name="empty"></string>
   <string name="search">Ara</string>
   <string name="invalid_name">Geçersiz İsim</string>
   <string name="advanced_search">Gelişmiş Arama</string>
@@ -391,22 +405,56 @@ tartışmalarının parçası olun</string>
   <string name="searchingdevices">Cihazlar aranıyor</string>
   <string name="use_custom_ip">Özel IP kullan</string>
   <string name="bookmark_lost">Yer imi bulunamadı, oluşturuluyor&#8230;</string>
+  <string name="share_limit">100 dosyadan fazlası paylaşılamaz</string>
+  <string name="otg_access">OTG aygıt kökünü seçin</string>
+  <string name="no_profile_pic">G+ profil fotoğrafı yok</string>
+  <string name="opening">Açılıyor..</string>
   <string name="information">Bilgi</string>
   <!-- reference to file accessed date -->
+  <string name="accessed">Erişim Tarihi</string>
   <!-- reference to file modified date -->
+  <string name="modified">Değiştirme tarihi</string>
   <string name="title">Başlık</string>
+  <string name="artist">Sanatçı</string>
+  <string name="album">Albüm</string>
+  <string name="year">Yıl</string>
   <string name="duration">Süre</string>
+  <string name="comment">Yorum</string>
   <!-- reference to audio/video file -->
+  <string name="codec">Codec</string>
+  <string name="channels">Kanallar</string>
+  <string name="sample_rate">Örnek Hızı</string>
+  <string name="bitrate">Bit hızı</string>
+  <string name="dimensions">Boyutlar</string>
+  <string name="frame_rate">Kare Hızı</string>
+  <string name="image_type">Resim Türü</string>
   <string name="width">Genişlik</string>
   <string name="height">Yükseklik</string>
+  <string name="date_modified">Değiştirme Tarihi</string>
+  <string name="software">Yazılım</string>
+  <string name="creator">Yaratıcı</string>
+  <string name="camera_brand">Kamera Markası</string>
+  <string name="camera_model">Kamera Modeli</string>
+  <string name="date_taken">Çekildiği Tarih</string>
   <string name="exposure_time">Pozlama Süresi</string>
+  <string name="aperture_value">Diyafram Değeri</string>
+  <string name="image_iso">ISO hız değeri</string>
   <string name="focal_length">Odak Uzaklığı</string>
   <string name="document">Belge</string>
   <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="error_root_not_permitted">Hata: Root izni verilmedi</string>
+  <string name="medium_text">Orta metin</string>
   <string name="tap_and_hold_tips">Daha fazla seçenek için dosya veya klasörün üzerine basılı tutun</string>
   <string name="permission_read">Oku</string>
+  <string name="permission_write">Yazma</string>
+  <string name="permission_execute">Yürütme</string>
+  <string name="permission_owner">Sahibi</string>
+  <string name="permission_group">Grup</string>
   <string name="permission_other">Diğer</string>
+  <string name="clipboard_path_copy">Yol panoya kopyalandı</string>
+  <string name="error_busybox">Busybox bulunamadı. Etkileşimli kabuk kapatılıyor.</string>
+  <string name="service_timer">Geçen süre</string>
 </resources>

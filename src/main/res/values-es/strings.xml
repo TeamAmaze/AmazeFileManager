@@ -370,7 +370,6 @@
   <string name="path">Ruta</string>
   <string name="renamebookmark">Modificar marcador</string>
   <string name="cut">Cortar</string>
-  <string name="empty"></string>
   <string name="search">Buscar</string>
   <string name="invalid_name">Nombre no válido</string>
   <string name="search_hint">Escribe para buscar&#8230;</string>
@@ -409,4 +408,5 @@
   <string name="tap_and_hold_tips">Mantenga pulsado un archivo o carpeta para más opciones</string>
   <string name="permission_read">Leido</string>
   <string name="permission_other">Otro</string>
+  <string name="clipboard_path_copy">Ruta copiada al portapapeles</string>
 </resources>

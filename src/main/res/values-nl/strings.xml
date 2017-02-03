@@ -358,7 +358,6 @@
   <string name="path">Locatie</string>
   <string name="renamebookmark">Bladwijzer aanpassen</string>
   <string name="cut">Verplaatsen</string>
-  <string name="empty"></string>
   <string name="search">Zoeken</string>
   <string name="invalid_name">Ongeldige naam</string>
   <string name="search_hint">Type om te zoeken&#8230;</string>
@@ -395,4 +394,5 @@
   <string name="tap_and_hold_tips">Druk en houd een bestand of map ingedrukt voor meer opties</string>
   <string name="permission_read">Lezen</string>
   <string name="permission_other">Anders</string>
+  <string name="clipboard_path_copy">Pad gekopieerd naar klembord</string>
 </resources>

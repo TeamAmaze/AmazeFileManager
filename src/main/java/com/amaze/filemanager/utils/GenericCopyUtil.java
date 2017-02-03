@@ -6,6 +6,7 @@ import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 
@@ -72,7 +73,17 @@ public class GenericCopyUtil {
             } else {
 
                 // source file is neither smb nor otg; getting a channel from direct file instead of stream
-                inChannel = new RandomAccessFile(new File(mSourceFile.getPath()), "r").getChannel();
+                File file = new File(mSourceFile.getPath());
+                if (FileUtil.isReadable(file)) {
+                    inChannel = new RandomAccessFile(file, "r").getChannel();
+                } else {
+                    ContentResolver contentResolver = mContext.getContentResolver();
+                    DocumentFile documentSourceFile = FileUtil.getDocumentFile(file,
+                            mSourceFile.isDirectory(), mContext);
+
+                    bufferedInputStream = new BufferedInputStream(contentResolver
+                            .openInputStream(documentSourceFile.getUri()), DEFAULT_BUFFER_SIZE);
+                }
             }
 
             // initializing the output channels based on file types
@@ -91,7 +102,17 @@ public class GenericCopyUtil {
                 bufferedOutputStream = new BufferedOutputStream(mTargetFile.getOutputStream(mContext), DEFAULT_BUFFER_SIZE);
             } else {
                 // copying normal file, target not in OTG
-                outChannel = new RandomAccessFile(new File(mTargetFile.getPath()), "rw").getChannel();
+                File file = new File(mTargetFile.getPath());
+                if (FileUtil.isWritable(file)) {
+                    outChannel = new RandomAccessFile(file, "rw").getChannel();
+                } else {
+                    ContentResolver contentResolver = mContext.getContentResolver();
+                    DocumentFile documentTargetFile = FileUtil.getDocumentFile(file,
+                            mTargetFile.isDirectory(), mContext);
+
+                    bufferedOutputStream = new BufferedOutputStream(contentResolver
+                            .openOutputStream(documentTargetFile.getUri()), DEFAULT_BUFFER_SIZE);
+                }
             }
 
             if (bufferedInputStream!=null) {

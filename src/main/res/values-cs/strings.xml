@@ -22,39 +22,103 @@
   <string name="drawer_open">Otevřít navigační lištu</string>
   <string name="drawer_close">Zavřít navigační lištu</string>
   <string name="books">Záložky</string>
+  <string name="icon">ikona</string>
+  <string name="efn">Zadejte název souboru</string>
+  <string name="storage">Úložiště</string>
   <string name="gallery">Galerie</string>
+  <string name="apps">Správce Aplikací</string>
+  <string name="ftp">Server FTP</string>
+  <string name="bookmanag">Správce záložek</string>
   <string name="setting">Nastavení</string>
+  <string name="select">Vybrat položku</string>
+  <string name="pressagain">Pro ukončení stiskněte znovu</string>
+  <string name="open">Otevřít</string>
+  <string name="backup">Záloha</string>
+  <string name="uninstall">Odinstalovat</string>
+  <string name="play">Obchod Play</string>
+  <string name="properties">Předvolby</string>
+  <string name="addbook">Přidat záložku</string>
+  <string name="delbook">Odstranit záložku</string>
+  <string name="addtobook">Přidat do záložek</string>
+  <string name="enterpath">Zadejte cestu</string>
   <string name="cancel">ZRUŠIT</string>
+  <string name="create">VYTVOŘIT</string>
+  <string name="success">Úspěch</string>
+  <string name="filenotexists">Soubor neexistuje</string>
+  <string name="loading">Načítání&#8230;</string>
+  <string name="file_empty">Soubor je prázdny</string>
+  <string name="error">Chyba</string>
+  <string name="searchresults">Výsledky vyhledávání</string>
   <string name="save">Uložit</string>
+  <string name="enterfile">Zadejte název souboru</string>
   <string name="location">Místo</string>
+  <string name="file">Soubor</string>
+  <string name="folder">Složka</string>
+  <string name="newfolder">Nová složka</string>
+  <string name="entername">Zadejte název</string>
+  <string name="extracting">Probíhá extrahování</string>
+  <string name="stopping">Zastavování</string>
+  <string name="openparent">Otevřít nadřazený adresář</string>
+  <string name="openwith">Otevřít pomocí</string>
   <string name="share">Sdílet</string>
   <string name="about">O</string>
+  <string name="extract">Extrahovat</string>
+  <string name="compress">Komprimovat</string>
   <string name="yes">Ano</string>
   <string name="no">Ne</string>
   <string name="confirm">Potvrdit</string>
+  <string name="deleting">Odstraňování</string>
+  <string name="questiondelete">Opravdu chcete odstranit následující soubory?</string>
+  <string name="viewmode">Režim zobrazení</string>
   <string name="back">Zpět</string>
   <string name="home">Doma</string>
+  <string name="paste">Vložit</string>
   <string name="close">Zavřít</string>
   <string name="history">History</string>
   <string name="refresh">Obnovit</string>
+  <string name="copy">Kopírovat</string>
+  <string name="rootmode">Root Explorer</string>
+  <string name="rootfailure">Root přístup nebyl udělen</string>
+  <string name="selectall">Vybrat Vše</string>
   <string name="delete">Smazat</string>
+  <string name="setashome">Nastavit jako domácí</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
   <!-- Theme -->
+  <string name="light">Material Light</string>
+  <string name="dark">Material Dark</string>
   <!--Skin-->
   <string name="red">Červená</string>
+  <string name="pink">Růžová</string>
+  <string name="purple">Fialová</string>
+  <string name="indigo">Indigo</string>
   <string name="blue">Modrá</string>
   <string name="cyan">Tyrkysová</string>
   <string name="green">Zelená</string>
   <!--DirectorySortMode-->
   <!--SortBy-->
+  <string name="sortName">Jméno</string>
+  <string name="lastModified">Naposledy upraveno</string>
   <string name="sortSize">Rozměry</string>
+  <string name="sortNameDesc">Název (sest.)</string>
   <!--ListMode-->
+  <string name="detailedView">Zobrazení podrobností</string>
+  <string name="simpleView">Jednoduché zobrazení</string>
   <!--Folder-->
   <string name="Yellow">Žlutá</string>
+  <string name="pick_a_file">Vybrat soubor</string>
+  <string name="in_safe">Nedostatek místa</string>
   <string name="skip">Přeskočit</string>
+  <string name="overwrite">Přepsat</string>
+  <string name="cant_read_file">Soubor nelze načíst</string>
+  <string name="not_allowed">Toto není dovoleno</string>
+  <string name="processes">Procesy</string>
   <string name="done">Hotovo</string>
+  <string name="newfile">Nový soubor</string>
+  <string name="nofiles">Žádné soubory</string>
+  <string name="free">Volné Místo:  </string>
+  <string name="listview">Zobrazení seznamu</string>
   <string name="exit">Konec</string>
   <string name="changelog">Changelog</string>
   <string name="ok">OK</string>
@@ -77,7 +141,6 @@
   <string name="recent">Nedávné soubory</string>
   <string name="edit">Editace</string>
   <string name="path">Cesta</string>
-  <string name="empty"></string>
   <string name="search">Hledat</string>
   <string name="start_ftp">Start</string>
   <string name="information">Informace</string>

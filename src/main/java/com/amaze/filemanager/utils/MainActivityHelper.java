@@ -180,7 +180,7 @@ public class MainActivityHelper {
         final MaterialDialog.Builder x = new MaterialDialog.Builder(mainActivity);
         x.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         x.title(R.string.needsaccess);
-        LayoutInflater layoutInflater = (LayoutInflater) mainActivity.getSystemService(mainActivity.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater layoutInflater = (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.lexadrawer, null);
         x.customView(view, true);
         // textView

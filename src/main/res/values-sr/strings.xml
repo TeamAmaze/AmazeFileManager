@@ -377,7 +377,6 @@
   <string name="path">Путања</string>
   <string name="renamebookmark">Измени обележивач</string>
   <string name="cut">Исеци</string>
-  <string name="empty"></string>
   <string name="search">Тражи</string>
   <string name="invalid_name">Неисправан назив</string>
   <string name="search_hint">Куцајте за претрагу&#8230;</string>
@@ -429,4 +428,5 @@
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="tap_and_hold_tips">Тапните и држите фајл или фасциклу за више могућности</string>
   <string name="permission_other">Друго</string>
+  <string name="clipboard_path_copy">Путања копирана на клипборд</string>
 </resources>

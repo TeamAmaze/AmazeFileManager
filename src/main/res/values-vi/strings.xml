@@ -328,7 +328,6 @@
   <string name="path">Đường dẫn</string>
   <string name="renamebookmark">Tùy chỉnh Bookmark</string>
   <string name="cut">Cắt</string>
-  <string name="empty"></string>
   <string name="search">Tìm kiếm</string>
   <string name="invalid_name">Tên không hợp lệ</string>
   <string name="search_hint">Gõ để tìm kiếm&#8230;</string>
@@ -366,4 +365,5 @@
   <string name="tap_and_hold_tips">Chạm và giữ vào một tệp tin hoặc thư mục để có thêm lựa chọn</string>
   <string name="permission_read">Đọc</string>
   <string name="permission_other">Khác</string>
+  <string name="clipboard_path_copy">Đường dẫn đã được sao chép đến clipboard</string>
 </resources>
