@@ -110,8 +110,8 @@ public class IconHolder {
         super();
         this.mContext = context;
         this.mUseThumbs = useThumbs;
-        this.mRequests = new HashMap<ImageView, String>();
-        this.mIcons = new HashMap<String,Bitmap>();
+        this.mRequests = new HashMap<>();
+        this.mIcons = new HashMap<>();
         this.mAppIcons = new LinkedHashMap<String, Bitmap>(MAX_CACHE, .75F, true) {
             private static final long serialVersionUID = 1L;
             @Override
@@ -119,7 +119,7 @@ public class IconHolder {
                 return size() > MAX_CACHE;
             }
         };
-        this.mAlbums = new HashMap<String, Long>();
+        this.mAlbums = new HashMap<>();
         this.grid=grid;
         Resources res=mContext.getResources();
         int dp=50;
@@ -214,7 +214,7 @@ public class IconHolder {
                 }else if(Icons.isVideo(filePath))
                     return getVideoDrawable(fso);
             } catch (OutOfMemoryError outOfMemoryError) {
-               cleanup();
+                cleanup();
                 shutdownWorker();
             }
 
