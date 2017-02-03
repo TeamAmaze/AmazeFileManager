@@ -19,8 +19,10 @@
 
 package com.amaze.filemanager.fragments;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -29,6 +31,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -63,15 +66,15 @@ import com.amaze.filemanager.ui.ZipObj;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -80,7 +83,13 @@ public class ZipViewer extends Fragment {
     private UtilitiesProviderInterface utilsProvider;
     public String s;
     public File f;
-    public ArrayList<BaseFile> files;       // files to be deleted from cache
+
+    /**
+     * files to be deleted from cache
+     * with a Map maintaining key - the root of directory created (for deletion purposes after we exit out of here
+     * and value - the path of file to open
+     */
+    public ArrayList<BaseFile> files;
     public Boolean selection = false;
     public String current;
     public String skin, accentColor, iconskin, year;
@@ -107,9 +116,19 @@ public class ZipViewer extends Fragment {
     int mToolbarHeight, hidemode;
     View mToolbarContainer;
     public Resources res;
-    int openmode;
-    //0 for zip 1 for rar
+    int openmode;   //0 for zip 1 for rar
     boolean stopAnims=true;
+
+    public boolean isOpen = false;  // flag states whether to open file after service extracts it
+
+    public static final String KEY_CACHE_FILES = "cache_files";
+    public static final String KEY_PATH = "path";
+    public static final String KEY_URI = "uri";
+    public static final String KEY_OPEN_MODE = "open_mode";
+    public static final String KEY_FILE = "file";
+    public static final String KEY_WHOLE_LIST = "whole_list";
+    public static final String KEY_ELEMENTS = "elements";
+    public static final String KEY_OPEN = "is_open";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -157,7 +176,7 @@ public class ZipViewer extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        s = getArguments().getString("path");
+        s = getArguments().getString(KEY_PATH);
         Uri uri=Uri.parse(s);
         f = new File(uri.getPath());
         mToolbarContainer = getActivity().findViewById(R.id.lin);
@@ -200,8 +219,9 @@ public class ZipViewer extends Fragment {
 
         //mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
-        files = new ArrayList<>();
         if (savedInstanceState == null && f != null) {
+
+            files = new ArrayList<>();
             if (f.getPath().endsWith(".rar")) {
                 openmode = 1;
                 SetupRar(null);
@@ -210,10 +230,13 @@ public class ZipViewer extends Fragment {
                 SetupZip(null);
             }
         } else {
-            f = new File(savedInstanceState.getString("file"));
-            s=savedInstanceState.getString("uri");
-            uri=Uri.parse(s);
+
+            f = new File(savedInstanceState.getString(KEY_FILE));
+            s = savedInstanceState.getString(KEY_URI);
+            uri = Uri.parse(s);
             f = new File(uri.getPath());
+            files = savedInstanceState.getParcelableArrayList(KEY_CACHE_FILES);
+            isOpen = savedInstanceState.getBoolean(KEY_OPEN);
             if (f.getPath().endsWith(".rar")) {
                 openmode = 1;
                 SetupRar(savedInstanceState);
@@ -225,7 +248,7 @@ public class ZipViewer extends Fragment {
         }
         String fileName=null;
         try {
-            if (uri.getScheme().equals("file")) {
+            if (uri.getScheme().equals(KEY_FILE)) {
                 fileName = uri.getLastPathSegment();
             } else {
                 Cursor cursor = null;
@@ -357,73 +380,22 @@ public class ZipViewer extends Fragment {
                     mode.invalidate();
                     return true;
                 case R.id.ex:
-                    if(openmode==0)exZip();
-                    else exRar();
+
+                    Toast.makeText(getActivity(), getResources().getString(R.string.extracting), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getActivity(), ExtractService.class);
+                    ArrayList<String> a = new ArrayList<String>();
+                    for (int i : rarAdapter.getCheckedItemPositions()) {
+                        a.add(openmode==0 ? elements.get(i).getName() : elementsRar.get(i).getFileNameString());
+                    }
+                    intent.putExtra(ExtractService.KEY_PATH_ZIP, f.getPath());
+                    intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
+                    ServiceWatcherUtil.runService(getContext(), intent);
                     mode.finish();
                     return true;
             }
             return false;
         }
 
-        /**
-         * Method will extract only items selected by the user at a level in a rar hierarchy
-         */
-        void exRar() {
-            try {
-                Toast.makeText(getActivity(), getResources().getString(R.string.extracting), Toast.LENGTH_SHORT).show();
-                FileOutputStream fileOutputStream;
-                String fileName = f.getName().substring(0, f.getName().lastIndexOf("."));
-                for (int i : rarAdapter.getCheckedItemPositions()) {
-                    if (!elementsRar.get(i).isDirectory()) {
-                        File f1 = new File(f.getParent() + "/" + fileName +
-                                "/" + elementsRar.get(i).getFileNameString().trim().replaceAll("\\\\",
-                                "/"));
-                        if (!f1.getParentFile().exists()) f1.getParentFile().mkdirs();
-                        fileOutputStream = new FileOutputStream(f1);
-                        archive.extractFile(elementsRar.get(i), fileOutputStream);
-                    } else {
-                        String name = elementsRar.get(i).getFileNameString().trim();
-                        for (FileHeader v : archive.getFileHeaders()) {
-                            if (v.getFileNameString().trim().contains(name + "\\") ||
-                                    v.getFileNameString().trim().equals(name)) {
-                                File f2 = new File(f.getParent() + "/" + fileName +
-                                        "/" + v.getFileNameString().trim().replaceAll("\\\\", "/"));
-                                if (v.isDirectory()) f2.mkdirs();
-                                else {
-                                    if (!f2.getParentFile().exists())
-                                        f2.getParentFile().mkdirs();
-                                    fileOutputStream = new FileOutputStream(f2);
-                                    archive.extractFile(v, fileOutputStream);
-                                }
-                            }
-
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        /**
-         * Method will extract only items selected by the user at a level in a zip hierarchy
-         */
-        void exZip(){
-
-            try {
-                Toast.makeText(getActivity(), getResources().getString(R.string.extracting), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getActivity(), ExtractService.class);
-                ArrayList<String> a = new ArrayList<String>();
-                for (int i : rarAdapter.getCheckedItemPositions()) {
-                    a.add(elements.get(i).getName());
-                }
-                intent.putExtra(ExtractService.KEY_PATH_ZIP, f.getPath());
-                intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
-                getActivity().startService(intent);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {
             if (rarAdapter != null) rarAdapter.toggleChecked(false, "");
@@ -446,7 +418,6 @@ public class ZipViewer extends Fragment {
 
         // needed to remove any extracted file from cache, when onResume was not called
         // in case of opening any unknown file inside the zip
-        // FIXME : only deletes most recent openUnknown file from cache
         if (files.size()!=0) {
 
             new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute((files));
@@ -458,19 +429,52 @@ public class ZipViewer extends Fragment {
         super.onResume();
 
         mainActivity.floatingActionButton.hideMenuButton(true);
+        Intent intent = new Intent(getActivity(), ExtractService.class);
+        getActivity().bindService(intent, mServiceConnection, 0);
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        getActivity().unbindService(mServiceConnection);
+    }
+
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+            // open file if pending
+            if (isOpen) {
+                // open most recent entry added to files to be deleted from cache
+                File cacheFile = new File(files.get(files.size()-1).getPath());
+                if (cacheFile != null && cacheFile.exists())
+                    utilsProvider.getFutils().openFile(cacheFile, zipViewer.mainActivity);
+
+                // reset the flag
+                isOpen = false;
+            }
+        }
+    };
 
     void putDatatoSavedInstance(Bundle outState) {
         if (openmode == 0) {
 
-            outState.putParcelableArrayList("wholelist", wholelist);
-            outState.putParcelableArrayList("elements", elements);
+            outState.putParcelableArrayList(KEY_WHOLE_LIST, wholelist);
+            outState.putParcelableArrayList(KEY_ELEMENTS, elements);
         }
-        outState.putInt("openmode", openmode);
-        outState.putString("path", current);
-        outState.putString("uri",s);
-        outState.putString("file", f.getPath());
-
+        outState.putInt(KEY_OPEN_MODE, openmode);
+        outState.putString(KEY_PATH, current);
+        outState.putString(KEY_URI, s);
+        outState.putString(KEY_FILE, f.getPath());
+        outState.putParcelableArrayList(KEY_CACHE_FILES, files);
+        outState.putBoolean(KEY_OPEN, isOpen);
     }
 
     void SetupRar(Bundle savedInstanceState) {
@@ -478,10 +482,10 @@ public class ZipViewer extends Fragment {
         if (savedInstanceState == null)
             loadRarlist(f.getPath());
         else {
-            String path = savedInstanceState.getString("file");
+            String path = savedInstanceState.getString(KEY_FILE);
             if (path != null && path.length() > 0) {
                 f = new File(path);
-                current = savedInstanceState.getString("path");
+                current = savedInstanceState.getString(KEY_PATH);
                 new RarHelperTask(this, current).execute(f);
             } else loadRarlist(f.getPath());
         }
@@ -491,10 +495,10 @@ public class ZipViewer extends Fragment {
         if (savedInstanceState == null)
             loadlist(s);
         else {
-            wholelist = savedInstanceState.getParcelableArrayList("wholelist");
-            elements = savedInstanceState.getParcelableArrayList("elements");
-            current = savedInstanceState.getString("path");
-            f = new File(savedInstanceState.getString("file"));
+            wholelist = savedInstanceState.getParcelableArrayList(KEY_WHOLE_LIST);
+            elements = savedInstanceState.getParcelableArrayList(KEY_ELEMENTS);
+            current = savedInstanceState.getString(KEY_PATH);
+            f = new File(savedInstanceState.getString(KEY_FILE));
             createviews(elements, current);
         }
     }
