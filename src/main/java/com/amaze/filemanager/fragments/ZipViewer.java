@@ -222,6 +222,9 @@ public class ZipViewer extends Fragment {
         if (savedInstanceState == null && f != null) {
 
             files = new ArrayList<>();
+            // adding a cache file to delete where any user interaction elements will be cached
+            String fileName = f.getName().substring(0, f.getName().lastIndexOf("."));
+            files.add(new BaseFile(getActivity().getExternalCacheDir().getPath() + "/" + fileName));
             if (f.getPath().endsWith(".rar")) {
                 openmode = 1;
                 SetupRar(null);
@@ -418,10 +421,8 @@ public class ZipViewer extends Fragment {
 
         // needed to remove any extracted file from cache, when onResume was not called
         // in case of opening any unknown file inside the zip
-        if (files.size()!=0) {
 
-            new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute((files));
-        }
+        new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute((files));
     }
 
     @Override
@@ -457,8 +458,9 @@ public class ZipViewer extends Fragment {
                 if (cacheFile != null && cacheFile.exists())
                     utilsProvider.getFutils().openFile(cacheFile, zipViewer.mainActivity);
 
-                // reset the flag
+                // reset the flag and cache file, as it's root is already in the list for deletion
                 isOpen = false;
+                files.remove(files.size()-1);
             }
         }
     };

@@ -76,8 +76,7 @@ public class ExtractService extends Service {
     public static final String KEY_PATH_ZIP = "zip";
     public static final String KEY_ENTRIES_ZIP = "entries";
     public static final String TAG_BROADCAST_EXTRACT_CANCEL = "excancel";
-
-    private static final String KEY_PATH_EXTRACT = "extractpath";
+    public static final String KEY_PATH_EXTRACT = "extractpath";
 
     @Override
     public void onCreate() {
@@ -89,7 +88,15 @@ public class ExtractService extends Service {
     public int onStartCommand(Intent intent, int flags, final int startId) {
         Bundle b = new Bundle();
         String file = intent.getStringExtra(KEY_PATH_ZIP);
-        epath = PreferenceManager.getDefaultSharedPreferences(this).getString(KEY_PATH_EXTRACT, file);
+        String extractPath = intent.getStringExtra(KEY_PATH_EXTRACT);
+
+        if (extractPath != null) {
+            // a custom dynamic path to extract files to
+            epath = extractPath;
+        } else {
+
+            epath = PreferenceManager.getDefaultSharedPreferences(this).getString(KEY_PATH_EXTRACT, file);
+        }
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         entries=intent.getStringArrayListExtra(KEY_ENTRIES_ZIP);
@@ -571,16 +578,16 @@ public class ExtractService extends Service {
             File f = new File(file);
 
             String path;
-            if(epath.equals(file)){
+            if(epath.equals(file)) {
 
                 // custom extraction path not set, extract at default path
-                path=f.getParent()+"/"+f.getName().substring(0,f.getName().lastIndexOf("."));
-            } else{
+                path=f.getParent()+"/"+f.getName().substring(0, f.getName().lastIndexOf("."));
+            } else {
 
                 if(epath.endsWith("/")) {
-                    path=epath+f.getName().substring(0,f.getName().lastIndexOf("."));
+                    path=epath + f.getName().substring(0, f.getName().lastIndexOf("."));
                 } else {
-                    path=epath+"/"+f.getName().substring(0,f.getName().lastIndexOf("."));
+                    path=epath + "/" + f.getName().substring(0, f.getName().lastIndexOf("."));
                 }
             }
 

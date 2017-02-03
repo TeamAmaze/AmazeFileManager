@@ -409,10 +409,12 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
                         } else {
 
-                            String archiveDirPath = zipViewer.f.getPath().substring(0,
-                                    zipViewer.f.getPath().lastIndexOf("."));
+                            String fileName = zipViewer.f.getName().substring(0,
+                                    zipViewer.f.getName().lastIndexOf("."));
+                            String archiveCacheDirPath = zipViewer.getActivity().getExternalCacheDir().getPath() +
+                                    "/" + fileName;
 
-                            BaseFile file = new BaseFile(archiveDirPath + "/"
+                            BaseFile file = new BaseFile(archiveCacheDirPath + "/"
                                     + rowItem.getName().replaceAll("\\\\", "/"));
                             file.setMode(OpenMode.FILE);
                             // this file will be opened once service finishes up it's extraction
@@ -430,6 +432,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                             a.add(rowItem.getName());
                             intent.putExtra(ExtractService.KEY_PATH_ZIP, zipViewer.f.getPath());
                             intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
+                            intent.putExtra(ExtractService.KEY_PATH_EXTRACT,
+                                    zipViewer.getActivity().getExternalCacheDir().getPath());
                             ServiceWatcherUtil.runService(zipViewer.getContext(), intent);
                         }
                     }
@@ -539,11 +543,15 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                                 (zipViewer.f);
 
                     } else {
-                        String archiveDirPath = zipViewer.f.getPath().substring(0, zipViewer.f.getPath().lastIndexOf("."));
+                        String fileName = zipViewer.f.getName().substring(0,
+                                zipViewer.f.getName().lastIndexOf("."));
+                        String archiveCacheDirPath = zipViewer.getActivity().getExternalCacheDir().getPath() +
+                                "/" + fileName;
 
-                        BaseFile file1 = new BaseFile(archiveDirPath + "/"
+                        BaseFile file1 = new BaseFile(archiveCacheDirPath + "/"
                                 + rowItem.getFileNameString().replaceAll("\\\\", "/"));
                         file1.setMode(OpenMode.FILE);
+
                         // this file will be opened once service finishes up it's extraction
                         zipViewer.files.add(file1);
                         // setting flag for binder to know
@@ -559,6 +567,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                         a.add(rowItem.getFileNameString());
                         intent.putExtra(ExtractService.KEY_PATH_ZIP, zipViewer.f.getPath());
                         intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
+                        intent.putExtra(ExtractService.KEY_PATH_EXTRACT,
+                                zipViewer.getActivity().getExternalCacheDir().getPath());
                         ServiceWatcherUtil.runService(zipViewer.getContext(), intent);
                     }
                 }
