@@ -513,4 +513,5 @@
   <string name="clipboard_path_copy">路径已复制到剪贴板</string>
   <string name="error_busybox">无法找到 Busybox 。请关闭交互式 shell。</string>
   <string name="service_timer">用时</string>
+  <string name="please_wait">请稍候</string>
 </resources>
