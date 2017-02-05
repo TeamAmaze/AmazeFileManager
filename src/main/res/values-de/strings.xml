@@ -27,6 +27,8 @@
   <string name="efn">Dateiname eingeben</string>
   <string name="storage">Speicher</string>
   <string name="gallery">Galerie</string>
+  <string name="apps">App Manager</string>
+  <string name="ftp">FTP Server</string>
   <string name="bookmanag">Lesezeichen Manager</string>
   <string name="setting">Einstellungen</string>
   <string name="select">Auswählen</string>
@@ -38,6 +40,7 @@
   <string name="properties">Eigenschaften</string>
   <string name="copyingapk">Kopiere apk nach </string>
   <string name="addbook">Lesezeichen hinzufügen</string>
+  <string name="delbook">gelöschte Lesezeichen</string>
   <string name="addtobook">Zu Lesezeichen hinzufügen</string>
   <string name="enterpath">Pfad eingeben</string>
   <string name="cancel">Abbrechen</string>
@@ -70,6 +73,7 @@
   <string name="copying">Kopiert</string>
   <string name="moving">Verschiebe</string>
   <string name="add">Hinzufügen</string>
+  <string name="tab">Tabulator</string>
   <string name="file">Datei</string>
   <string name="folder">Ordner</string>
   <string name="newfolder">Neuer Ordner</string>
@@ -100,6 +104,7 @@
   <string name="directorysort">Sortierungsmodus der Verzeichnisse</string>
   <string name="sortby">Sortieren nach</string>
   <string name="theme">Thema</string>
+  <string name="skin">Aussehen</string>
   <string name="random">Zufälliger Skin</string>
   <string name="random_summary">Nimm zufälliges Thema beim Starten</string>
   <string name="colorize">Symbole einfärben</string>
@@ -111,6 +116,7 @@
   <string name="history">Verlauf</string>
   <string name="refresh">Aktualisieren</string>
   <string name="copy">Kopieren</string>
+  <string name="rootmode">Root Explorer</string>
   <string name="rootmodesummary">Nur für gerootete Geräte. Nur aktivieren wenn Sie ganz sicher sind.</string>
   <string name="mountsystemsummary">Ermöglicht Modifizieren der Systemdateien</string>
   <string name="mountsystem">Systemordner als beschreibbar einhängen</string>
@@ -135,18 +141,23 @@
   <string name="daytime">Tageslicht</string>
   <!--Skin-->
   <string name="red">Rot</string>
+  <string name="pink">Pink</string>
   <string name="purple">Violett</string>
   <string name="deep_purple">Dunkles lila</string>
+  <string name="indigo">Indigoblau</string>
   <string name="blue">Blau</string>
   <string name="light_blue">Hellblau</string>
   <string name="cyan">Cyan</string>
+  <string name="teal">Aquamarin</string>
   <string name="green">Grün</string>
   <string name="light_green">Hellgrün</string>
   <string name="amber">Bernstein</string>
+  <string name="orange">Orange</string>
   <string name="deep_orange">Dunkles Orange</string>
   <string name="brown">Braun</string>
   <string name="black">Schwarz</string>
   <string name="blue_grey">Blaugrau</string>
+  <string name="supersu">SuperSU</string>
   <!--DirectorySortMode-->
   <string name="foldersOnTop">Ordner oben</string>
   <string name="filesOnTop">Dateien oben</string>
@@ -226,6 +237,7 @@
   <string name="hiddenfiles">Versteckte Dateien</string>
   <string name="type">Typ</string>
   <string name="typeDesc">Typ (Desc)</string>
+  <string name="rootdirectory">Stammverzeichnis</string>
   <string name="new_string">Neu</string>
   <string name="setringtone">Als Klingelton verwenden</string>
   <string name="copy_path">Pfad kopieren</string>
@@ -267,6 +279,7 @@
   <string name="vietnamese_translation_title">Vietnamesisch</string>
   <string name="japanese_translation_title">Japanisch</string>
   <string name="brazilian_portuguese_translation_title">Brasilianisches Portugiesisch</string>
+  <string name="tamil_translation_title">Tamil</string>
   <string name="zip_viewer">Zip Betrachter</string>
   <string name="unin_system_apk">Das ist eine Systemanwendung. Das Löschen könnte zu einer Instabilität des Systems führen. Ausführen?</string>
   <string name="warning">Warnung</string>
@@ -277,6 +290,9 @@
   <string name="archive_summary">Archiv-Dateien werden in dieses Verzeichnis entpackt. Standardmäßig ist dies dasjenige Verzeichnis, in welchem sich das Archiv befindet.</string>
   <string name="zip_summary">Neue zip Dateien werden in diesem Ordner erstellt. Die Standardeinstellung ist der Ordner, in denen die Dateien liegen.</string>
   <string name="openas">Öffnen als</string>
+  <string name="text">Text</string>
+  <string name="audio">Audio</string>
+  <string name="video">Video</string>
   <string name="other">Anderer</string>
   <string name="image">Bild</string>
   <string name="contributors">Mitwirkende</string>
@@ -324,6 +340,7 @@
   <string name="smb_server">IP-Adresse des Servers</string>
   <string name="username">Benutzername</string>
   <string name="password">Passwort</string>
+  <string name="anonymous">Unbekannt</string>
   <string name="bluetooth">Bluetooth</string>
   <string name="extstorage">Externer Speicher</string>
   <string name="folders">Verzeichnisse</string>
@@ -376,6 +393,7 @@ andernfalls wird nach Treffern gesucht.</string>
   <string name="ftp_status_running">Läuft</string>
   <string name="ftp_status_not_running">Läuft nicht</string>
   <string name="ftp_no_wifi">Stelle sicher, dass du mit WiFi verbunden bist.</string>
+  <string name="domain">Domain</string>
   <string name="invalid">Ungültig %s</string>
   <string name="ftp_notif_starting">FTP Server startet</string>
   <string name="ftp_notif_title">Amaze FTP Server startet</string>
@@ -386,6 +404,7 @@ andernfalls wird nach Treffern gesucht.</string>
   <string name="ftp_port_change_error_invalid">Gewählte Portnummer ist ungültig</string>
   <string name="primary_two_title">Primärfarbe (rechter Tab)</string>
   <string name="primary_two_summary">Setze Farbe für große UI Elemente in dem rechten Tab</string>
+  <string name="g_plus">Google +</string>
   <string name="support_development">Unterstütze die Entwicklung</string>
   <string name="report_bugs_title">Melde Fehler</string>
   <string name="report_bugs_summary">Melde Fehler oder schlage neue Funktionen vor</string>
@@ -398,6 +417,8 @@ rund um die Entwicklung</string>
   <string name="searchingdevices">Suche nach Geräten</string>
   <string name="use_custom_ip">Verwende benutzerdefinierte IP</string>
   <string name="bookmark_lost">Lesezeichen nicht gefunden, erstelle erneut&#8230;</string>
+  <string name="smb_instructions">
+         <html><body> <h1>Wie freigegebenen Windows-Ordner Zugriff auf Android (Smb)</h1>\n\n <ul><li><b>File-Sharing aktivieren</b> \n</li> <p style="margin-left: 40px"> Öffnen Sie die Systemsteuerung, klicken Sie auf Wählen Sie Heimnetzgruppe und Freigabeoptionen unter Netzwerk und Internet, und klicken Sie auf erweiterte Freigabeeinstellungen ändern. Aktivieren Sie die Datei- und Druckerfreigabe feature.\n\n</p> <li><b>zusätzliche File-Sharing-Einstellungen</b> \n</li> <p style="margin-left: 40px"> kann auch die andere erweiterte Freigabe Einstellungen hier. \n z. B. konfigurieren möchten, könnten Sie Zugriff auf Ihre Dateien ohne Passwort aktivieren, vertraust du alle Geräte in Ihrem lokalen Netzwerk. Wenn Datei- und Druckerfreigabe aktiviert ist, können Sie Datei-Explorer oder Windows Explorer zu öffnen, rechtsklicken Sie einen Ordner, den Sie freigeben möchten, und wählen Sie Eigenschaften. \n Klicken Sie auf die Share-Taste und machen den Ordner finden Sie auf der network.\n\n</p> <li><b>stellen sicher, dass beide Geräte sind auf dem gleichen Wifi</b> \n</li> <p style="margin-left: 40px"> dieses Feature macht Dateien im lokalen Netzwerk verfügbar, so dass Ihr PC und mobilen Geräten im gleichen lokalen Netzwerk sein. Sie können \' t Zugriff auf einen freigegebenen Windows-Ordner über das Internet oder wenn Ihr Smartphone mit seiner mobilen Daten verbunden ist – es hat mit Wi-Fi.\n\n verbunden sein</p> <li><b>IP-Adresse suchen</b> \n</li> <p style="margin-left: 40px"> offenen Eingabeaufforderung. Geben Sie \"Ipconfig\" und drücken Sie die Eingabetaste. Suchen Sie nach Standard-Gateway unter Netzwerkadapter für die IP-Adresse Ihres Routers. Suchen Sie nach \"IPv4 Address\" unter den gleichen Adapter Abschnitt Ihres Computers IP-address.\n\n zu finden</p> <b>Enter Details im Dialogfeld Smb</b> \n</ul></body></html>    </string>
   <string name="share_limit">Es können nicht mehr als 100 Dateien geteilt werden</string>
   <string name="otg_access">Stammverzeichnis des OTG-Geräts wählen</string>
   <string name="no_profile_pic">Kein G+ Profilbild</string>
@@ -409,18 +430,23 @@ rund um die Entwicklung</string>
   <string name="modified">Geändert</string>
   <string name="title">Titel</string>
   <string name="artist">Künstler</string>
+  <string name="album">Album</string>
   <string name="year">Jahr</string>
   <string name="duration">Dauer</string>
   <string name="comment">Kommentar</string>
   <!-- reference to audio/video file -->
+  <string name="container">Behälter</string>
+  <string name="codec">Codec</string>
   <string name="channels">Kanäle</string>
   <string name="sample_rate">Abtastrate</string>
+  <string name="bitrate">Bitrate</string>
   <string name="dimensions">Format</string>
   <string name="frame_rate">Bildfrequenz</string>
   <string name="image_type">Bildtyp</string>
   <string name="width">Breite</string>
   <string name="height">Höhe</string>
   <string name="date_modified">Änderungsdatum</string>
+  <string name="software">Software</string>
   <string name="creator">Erstellt von</string>
   <string name="camera_brand">Marke der Kamera</string>
   <string name="camera_model">Modell der Kamera</string>
@@ -436,6 +462,7 @@ rund um die Entwicklung</string>
   <string name="keywords">Schlüsselwörter</string>
   <string name="producer">Hersteller</string>
   <string name="created">Erstellt</string>
+  <string name="format">Format</string>
   <string name="pages">Anzahl der Seiten</string>
   <!-- reference to a document file -->
   <string name="optimized">Optimiert</string>
@@ -463,8 +490,18 @@ rund um die Entwicklung</string>
   <string name="processing_file">Verarbeite Datei</string>
   <string name="current_speed">Aktuelle Geschwindigkeit</string>
   <string name="smb_launch_error">Kopiere diese Datei in den Gerätespeicher, um sie zu öffnen</string>
+  <string name="error_file_not_found">Fehler: Datei nicht gefunden</string>
+  <string name="error_io">E/A-Fehler</string>
+  <string name="error_root_not_permitted">Fehler: Root-Berechtigung nicht gewährt</string>
+  <string name="medium_text">Mittelgroßer Text</string>
   <string name="tap_and_hold_tips">Tippe und halte Datei für mehr Optionen</string>
   <string name="permission_read">Lesen</string>
+  <string name="permission_write">Schreibrechte</string>
+  <string name="permission_execute">Ausführen</string>
+  <string name="permission_owner">Besitzer</string>
+  <string name="permission_group">Gruppe</string>
   <string name="permission_other">Sonstige</string>
   <string name="clipboard_path_copy">Pfad in Zwischenspeicher kopiert</string>
+  <string name="service_timer">Verstrichene Zeit</string>
+  <string name="please_wait">Bitte warten</string>
 </resources>

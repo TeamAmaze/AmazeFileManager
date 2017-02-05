@@ -98,6 +98,7 @@
   <string name="confirm">Bevestigen</string>
   <string name="deleting">Verwijderen</string>
   <string name="questiondelete">Weet je zeker dat je de volgende bestanden wilt verwijderen?</string>
+  <string name="questionset">Wilt u het huidige pad instellen als standaard voor dit tabblad?</string>
   <string name="viewmode">Weergavemodus</string>
   <string name="uimode">UI-modus</string>
   <string name="directorysort">Sorteermodus van mappen</string>
@@ -135,23 +136,28 @@
   <string name="simple">Simpele interface</string>
   <string name="card">Kaarteninterface</string>
   <!-- Theme -->
+  <string name="light">Materiaal licht</string>
+  <string name="dark">Materiaal Donker</string>
   <string name="daytime">Daglight</string>
   <!--Skin-->
   <string name="red">Rood</string>
   <string name="pink">Roze</string>
   <string name="purple">Paars</string>
   <string name="deep_purple">Donkerpaars</string>
+  <string name="indigo">Indigo</string>
   <string name="blue">Blauw</string>
   <string name="light_blue">Lichtblauw</string>
   <string name="cyan">Cyaan</string>
   <string name="teal">Groenblauw</string>
   <string name="green">Groen</string>
   <string name="light_green">Lichtgroen</string>
+  <string name="amber">Amber</string>
   <string name="orange">Oranje</string>
   <string name="deep_orange">Donkeroranje</string>
   <string name="brown">Bruin</string>
   <string name="black">Zwart</string>
   <string name="blue_grey">Blauwgrijs</string>
+  <string name="supersu">SuperSU</string>
   <!--DirectorySortMode-->
   <string name="foldersOnTop">Mappen bovenaan</string>
   <string name="filesOnTop">Bestanden bovenaan</string>
@@ -181,6 +187,9 @@
   <string name="copying_fles">Bestanden kopiëren</string>
   <string name="done">Gereed</string>
   <string name="Extracting_fles">Bestanden uitpakken</string>
+  <string name="items">Objecten</string>
+  <string name="item">Object</string>
+  <string name="set">Stel in</string>
   <string name="enablerootmde">Root-modus activeren</string>
   <string name="goback">Terug</string>
   <string name="foldercreated">Map aangemaakt</string>
@@ -208,6 +217,7 @@
   <string name="fullChangelog">Alle wijzigingen</string>
   <string name="ok">Oké</string>
   <string name="chooseUI">Item-UI kiezen</string>
+  <string name="ui">Uiterlijk</string>
   <string name="general">Algemeen</string>
   <string name="thumbSummary">Miniatuurweergave van apps en afbeeldingen inschakelen</string>
   <string name="thumb">Miniatuurweergave inschakelen</string>
@@ -225,6 +235,7 @@
   <string name="license">Opensourcelicenties</string>
   <string name="feedback">Feedback versturen</string>
   <string name="hiddenfiles">Verborgen bestanden</string>
+  <string name="type">Type</string>
   <string name="typeDesc">Type (aflopend)</string>
   <string name="rootdirectory">Bovenste map</string>
   <string name="new_string">Nieuw</string>
@@ -240,12 +251,14 @@
   <string name="archive">Archief</string>
   <string name="archtext">Dit is een archief. Welke actie wil je uitvoeren?</string>
   <string name="pitext">Dit is een pakketinstallatieprogramma. Welke actie wil je uitvoeren?</string>
+  <string name="xda_title">XDA thread</string>
   <string name="xda_summary">Veelgestelde vragen, help &amp; probleemoplossing</string>
   <string name="invalid_dir">Ongeldige map</string>
   <string name="circularimages">Ronde pictogrammen gebruiken voor afbeeldingen en video\'s</string>
   <string name="circularicons">Ronde pictogrammen gebruiken</string>
   <string name="back_title">Terugnavigatie</string>
   <string name="back_summary">Aangepaste Terugnavigatie aanzetten aan de bovenkant van de lijst</string>
+  <string name="details">Details</string>
   <string name="translators">Vertalers</string>
   <string name="german_translation_title">Duits</string>
   <string name="italian_translation_title">Italiaans</string>
@@ -260,9 +273,13 @@
   <string name="portuguese_translation_title">Portugees</string>
   <string name="polish_translation_title">Pools</string>
   <string name="korean_translation_title">Koreaans</string>
+  <string name="greek_translation_title">Grieks</string>
   <string name="dutch_translation_title">Nederlands</string>
   <string name="romanian_translation_title">Roemeens</string>
   <string name="vietnamese_translation_title">Vietnamees</string>
+  <string name="japanese_translation_title">Japanse</string>
+  <string name="brazilian_portuguese_translation_title">Braziliaans Portugees</string>
+  <string name="tamil_translation_title">Tamilse</string>
   <string name="zip_viewer">Zip openen</string>
   <string name="unin_system_apk">Dit is een systeemapp. Het verwijderen kan leiden tot instabiliteit van het systeem.\nDoorgaan?</string>
   <string name="warning">Waarschuwing</string>
@@ -280,12 +297,16 @@
   <string name="image">Afbeelding</string>
   <string name="contributors">Bijdragers</string>
   <string name="savepaths">Paden onthouden</string>
+  <string name="savepathsummary">Bij het opstarten, wordt de meest recent bekeken map voor elk tabblad weergegeven</string>
   <string name="select_intent">Selecteren</string>
   <string name="md5copied">MD5-hash gekopieerd naar het klembord</string>
   <string name="generating">Genereren...</string>
   <string name="tables">Tabel(len)</string>
+  <string name="database">Database</string>
   <string name="colourednavigation">Gekleurde navigatiebalk</string>
   <string name="colourednavigationsum">Of de systeemnavigatiebalk gekleurd is met het thema</string>
+  <string name="sd_card_grant_next">sd_card_grant_next</string>
+  <string name="sd_card_grant_first">sd_card_grant_first</string>
   <string name="fab_skin">FAB-thema</string>
   <string name="gplus_pic_title">Inloggen met Google+</string>
   <string name="gplus_pic_summary">Google+-omslagfoto in navigatielade</string>
@@ -303,6 +324,7 @@
   <string name="hide_toolbar">Werkbalk verbergen</string>
   <string name="hide_appbar">Hele appbalk verbergen</string>
   <string name="choose_color">Kleur kiezen</string>
+  <string name="g_plus_community_title">Word lid van de G+ community</string>
   <string name="hide_mode_nothing">Appbalk blijft intact</string>
   <string name="hide_mode_toolbar">Werkbalk verbergt tijdens het scrollen</string>
   <string name="hide_mode_app_bar">Appbalk verbergt tijdens het scrollen</string>
@@ -340,9 +362,11 @@
   <string name="defualt">Standaard</string>
   <string name="doit">Doe het</string>
   <string name="wanthelp"><u>Hulp nodig?</u></string>
+  <string name="quick">Snelle Toegang</string>
   <string name="recent">Recente bestanden</string>
   <string name="edit">Bewerken</string>
   <string name="find">Zoeken in pagina</string>
+  <string name="grant">Toestaan</string>
   <string name="grantper">Toestemming geven</string>
   <string name="grantfailed">Geen toestemming verleend</string>
   <string name="granttext">De app heeft opslag-rechten nodig om te functioneren. Als u op annuleren drukt, wordt de app afgesloten.</string>
@@ -362,12 +386,30 @@
   <string name="invalid_name">Ongeldige naam</string>
   <string name="search_hint">Type om te zoeken&#8230;</string>
   <string name="advanced_search">Geavanceerd zoeken</string>
+  <string name="regular_expression">Reguliere uitdrukking</string>
+  <string name="regular_expression_summary">Zoeken met behulp van een BASH stijl reguliere expressie</string>
+  <string name="match_content">Maak content bijpassend</string>
   <string name="start_ftp">Beginnen</string>
+  <string name="stop_ftp">Stop</string>
+  <string name="ftp_status_running">Actief</string>
+  <string name="ftp_status_not_running">Niet actief</string>
+  <string name="ftp_no_wifi">Zorg ervoor dat u bent verbonden met WiFi</string>
   <string name="domain">Domein</string>
   <string name="ftp_notif_starting">FTP server wordt gestart</string>
+  <string name="ftp_notif_title">Amaze FTP Server actief</string>
+  <string name="ftp_notif_text">op %s</string>
+  <string name="ftp_notif_stop_server">STOP</string>
+  <string name="primary_two_title">Primaire kleur (Rechter Tabblad)</string>
+  <string name="g_plus">Google Plus</string>
   <string name="report_bugs_title">Bugs melden</string>
+  <string name="report_bugs_summary">Meld een bug of verzoek nieuwe functies</string>
   <string name="translate_title">Vertalen</string>
+  <string name="translate_summary">Amaze vertalen in uw eigen taal</string>
+  <string name="easter_egg_title">Studiomodus</string>
+  <string name="paypal_copy_message">PayPal Id gekopieerd naar klembord</string>
   <string name="searchingdevices">Zoeken naar apparaten</string>
+  <string name="use_custom_ip">Gebruik aangepast IP</string>
+  <string name="bookmark_lost">Bladwijzer niet gevonden, opnieuw aan het maken&#8230;</string>
   <string name="information">Informatie</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
@@ -389,10 +431,29 @@
   <string name="optimized">Geoptimaliseerd</string>
   <string name="security">Beveiliging</string>
   <!-- %s will be replaced with either copied or moved -->
+  <string name="compressing">Comprimeren</string>
+  <string name="cancelled">Geannuleerd</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+  <string name="written">Geschreven</string>
+  <string name="out_of">van de</string>
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="of">van de</string>
+  <string name="processing_file">Bestand wordt verwerkt...</string>
+  <string name="current_speed">Huidige snelheid</string>
+  <string name="smb_launch_error">U moet dit bestand kopieren naar de opslag om het te gebruiken</string>
+  <string name="error_file_not_found">Fout: Bestand niet gevonden</string>
+  <string name="error_io">I/O-fout</string>
+  <string name="error_root_not_permitted">Fout: Root machtiging niet verleend</string>
+  <string name="medium_text">Medium Tekst</string>
   <string name="tap_and_hold_tips">Druk en houd een bestand of map ingedrukt voor meer opties</string>
   <string name="permission_read">Lezen</string>
+  <string name="permission_write">Schrijven</string>
+  <string name="permission_execute">Uitvoeren</string>
+  <string name="permission_owner">Eigenaar</string>
+  <string name="permission_group">Groep</string>
   <string name="permission_other">Anders</string>
   <string name="clipboard_path_copy">Pad gekopieerd naar klembord</string>
+  <string name="error_busybox">Busybox niet gevonden. Interactieve shell wordt gesloten.</string>
+  <string name="service_timer">Verstreken tijd</string>
+  <string name="please_wait">Een ogenblik geduld</string>
 </resources>

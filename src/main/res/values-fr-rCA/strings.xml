@@ -235,6 +235,8 @@
   <string name="license">Licences Open Source</string>
   <string name="feedback">Envoyer votre avis</string>
   <string name="hiddenfiles">Masquer des fichiers</string>
+  <string name="type">Type</string>
+  <string name="typeDesc">Type (Desc)</string>
   <string name="rootdirectory">Racine</string>
   <string name="new_string">Nouveau</string>
   <string name="setringtone">Définir comme sonnerie</string>
@@ -291,6 +293,7 @@
   <string name="audio">Audio</string>
   <string name="video">Vidéo</string>
   <string name="other">Autres</string>
+  <string name="image">Image</string>
   <string name="contributors">Contributeurs</string>
   <string name="savepaths">Se souvenir des chemins</string>
   <string name="savepathsummary">Au démarrage, le dernier dossier visité sera affiché sur chaque onglet</string>
@@ -345,6 +348,7 @@
   <string name="extstorage">Stockage Externe</string>
   <string name="folders">Dossiers</string>
   <string name="videos">Vidéos</string>
+  <string name="apks">Apks</string>
   <string name="documents">Documents</string>
   <string name="images">Photos</string>
   <string name="clear">Supprimer</string>
@@ -448,48 +452,80 @@
         </html>
     </string>
   <string name="share_limit">Impossible de partage plus de 100 fichiers</string>
+  <string name="otg_access">Sélectionnez le root du périphérique OTG</string>
   <string name="no_profile_pic">Aucune photo de profil G+</string>
+  <string name="opening">Ouverture..</string>
   <string name="information">Détails</string>
   <!-- reference to file accessed date -->
+  <string name="accessed">Accédé</string>
   <!-- reference to file modified date -->
+  <string name="modified">Modifiée</string>
   <string name="title">Titre</string>
   <string name="artist">Artiste</string>
   <string name="album">Album</string>
+  <string name="year">Année</string>
   <string name="duration">Durée</string>
+  <string name="comment">Note</string>
   <!-- reference to audio/video file -->
+  <string name="container">Conteneur</string>
   <string name="codec">Codec</string>
+  <string name="channels">Canaux</string>
+  <string name="sample_rate">Taux d\'échantillonnage</string>
+  <string name="bitrate">Débit</string>
   <string name="dimensions">Dimensions</string>
+  <string name="frame_rate">Fréquence d’images</string>
+  <string name="image_type">Type d’image</string>
   <string name="width">Largeur</string>
   <string name="height">Hauteur</string>
   <string name="date_modified">Date de modification</string>
+  <string name="software">Logiciel</string>
   <string name="creator">Créateur</string>
+  <string name="camera_brand">Marque de l\'appareil photo</string>
+  <string name="camera_model">Modèle d\'appareil photo</string>
   <string name="date_taken">Date de prise</string>
   <string name="exposure_time">Durée d\'exposition</string>
+  <string name="aperture_value">Valeur d’ouverture</string>
+  <string name="image_iso">Sensibilité ISO</string>
+  <string name="flash_fired">Flash activé</string>
   <string name="focal_length">Longueur focale</string>
   <string name="document">Document</string>
+  <string name="subject">Objet</string>
   <string name="author">Auteur</string>
   <string name="keywords">Mots clés</string>
   <string name="producer">Producteur</string>
+  <string name="created">Créé le</string>
   <string name="format">Format</string>
   <string name="pages">Nombre de pages</string>
   <!-- reference to a document file -->
   <string name="optimized">Optimisé</string>
   <string name="security">Sécurité</string>
+  <string name="paper_size">Format du papier</string>
+  <string name="root_error">Erreur lors du démarrage en mode root</string>
   <!-- %s will be replaced with either copied or moved -->
+  <string name="copy_error">Certain fichiers ne se sont pas terminés correctement %s</string>
   <string name="copied">copié</string>
   <string name="moved">déplacé</string>
   <string name="process_chart_description">Progression</string>
   <string name="copy_complete">Copie terminée</string>
   <string name="move_complete">Transfert terminé</string>
   <string name="waiting_title">En attente</string>
+  <string name="waiting_content">Attendez jusqu\'à ce que l\'opération soit terminée</string>
   <string name="extract_complete">Extraction terminée</string>
   <string name="compression_complete">Compression terminée</string>
+  <string name="compressing">Compression en cours</string>
+  <string name="cancelled">Annulé</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+  <string name="written">Écrit</string>
+  <string name="out_of">hors de</string>
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="of">de</string>
   <string name="processing_file">Traitement du fichier</string>
   <string name="current_speed">Vitesse actuelle</string>
+  <string name="smb_launch_error">Vous devrez copier ce fichier dans l\'espace de stockage pour l\'ouvrir</string>
   <string name="error_file_not_found">Erreur : fichier non trouvé</string>
   <string name="error_io">Erreur E/S</string>
+  <string name="error_root_not_permitted">Erreur: les privilèges root ne sont pas accordées</string>
+  <string name="medium_text">Texte moyen</string>
   <string name="tap_and_hold_tips">Appuyer et maintenir sur un fichier ou dossier pour plus d\'options</string>
   <string name="permission_read">Lire</string>
   <string name="permission_write">Écriture</string>
@@ -498,5 +534,7 @@
   <string name="permission_group">Groupe</string>
   <string name="permission_other">Autres</string>
   <string name="clipboard_path_copy">Répertorie copié dans le presse-papier</string>
+  <string name="error_busybox">BusyBox introuvable. Le script shell est arrêté.</string>
   <string name="service_timer">Temps écoulé</string>
+  <string name="please_wait">Veuillez patienter</string>
 </resources>

@@ -298,6 +298,7 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="image">Resim</string>
   <string name="contributors">Katkıda bulunanlar</string>
   <string name="savepaths">Yolu hatırla</string>
+  <string name="savepathsummary">Başlarken, her sekme için en son görüntülenen klasör görüntülenir</string>
   <string name="select_intent">Seç</string>
   <string name="md5copied">MD5 panoya kopyalanan</string>
   <string name="generating">Yaratılıyor</string>
@@ -305,6 +306,8 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="database">Veri tabanı</string>
   <string name="colourednavigation">Renkli gezinti çubuğu</string>
   <string name="colourednavigationsum">Sistem gezinti çubuğu ile renklendirilmiş olsun ya da olmasın</string>
+  <string name="sd_card_grant_next">sd_card_grant_next</string>
+  <string name="sd_card_grant_first">sd_card_grant_first</string>
   <string name="fab_skin">FAB arayüzü</string>
   <string name="gplus_pic_title">Google+ ile oturum aç</string>
   <string name="gplus_pic_summary">Çekmecede Google+ kapak resmini göster</string>
@@ -332,7 +335,11 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="textreader">Düz Yazı Okuyucu</string>
   <string name="databasereader">Veritabanı Okuyucu</string>
   <string name="showDividers">Ayırıcıları Göster</string>
+  <string name="topFab">Uygulama çubuğu\'nda FAB</string>
+  <string name="topFabS">Whether + butonu üstte veya altta olmalıdır. Sadece uygulama çubuğu gizlenmiyorsa etkinleştirilebilir.</string>
   <string name="needsaccess">Yazma İzni Gerekli</string>
+  <string name="needsaccesssummary">\t kök dizini seçiniz</string>
+  <string name="needsaccesssummary1">\tçalıştırmak için yazma iznine erişim için </string>
   <string name="smb_con">SMB Bağlantısı</string>
   <string name="smb_server">Sunucu IP Adresi</string>
   <string name="username">Kullanıcı adı</string>
@@ -378,21 +385,30 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="cut">Kes</string>
   <string name="search">Ara</string>
   <string name="invalid_name">Geçersiz İsim</string>
+  <string name="search_hint">Ara&#8230;</string>
   <string name="advanced_search">Gelişmiş Arama</string>
   <string name="regular_expression">Düzenli İfade</string>
   <string name="regular_expression_summary">BASH tarzı düzenli ifade aramayı kullan</string>
   <string name="match_content">İçerik karışlaştırma</string>
+  <string name="match_content_summary">Eğer ayarlanırsa, normal ifade tüm dosya ismi ile eşleştirilecek,
+        Aksi durumda ortaya çıkacaktır.</string>
   <string name="start_ftp">Başla</string>
   <string name="stop_ftp">Dur</string>
   <string name="ftp_status_running">Çalışıyor</string>
   <string name="ftp_status_not_running">Çalışmıyor</string>
   <string name="ftp_no_wifi">WiFi bağlantınız olduğuna emin olun.</string>
+  <string name="domain">Alan Adı</string>
+  <string name="invalid">Geçersiz %s</string>
   <string name="ftp_notif_starting">FTP Sunucu başlatılıyor</string>
   <string name="ftp_notif_title">Amaze FTP Sunucu çalışıyor</string>
   <string name="ftp_notif_text">%s adresinde</string>
   <string name="ftp_notif_stop_server">DUR</string>
+  <string name="ftp_port_edit_menu_title">FTP bağlantı noktası seçin</string>
+  <string name="ftp_port_change_success">FTP bağlantı noktası başarıyla değiştirildi</string>
+  <string name="ftp_port_change_error_invalid">Geçersiz bir bağlantı noktası numarası seçili</string>
   <string name="primary_two_title">Birincil Renk (Sağ Sekme)</string>
   <string name="primary_two_summary">Sağ arayüz sekmesinin rengini belirle</string>
+  <string name="g_plus">Google Plus</string>
   <string name="support_development">Geliştirmeye Destek</string>
   <string name="report_bugs_title">Hata Bildirimi</string>
   <string name="report_bugs_summary">Hata bildirimi veya yeni özellik isteği yapın</string>
@@ -405,6 +421,53 @@ tartışmalarının parçası olun</string>
   <string name="searchingdevices">Cihazlar aranıyor</string>
   <string name="use_custom_ip">Özel IP kullan</string>
   <string name="bookmark_lost">Yer imi bulunamadı, oluşturuluyor&#8230;</string>
+  <string name="smb_instructions">
+<html>
+            <body>
+                <h1>Android\'de paylaşılan windows klasörüne nasıl erişilir (smb)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Dosya Paylaşımını Etkinleştirme</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Denetim Masasını açın, Ağ ve İnternet\'in altındaki ev grubu ve paylaşım seçeneklerini belirle\'yi tıklayın
+                        ve Gelişmiş paylaşım ayarlarını değiştir\'i tıklayın. Dosyayı ve
+                        yazıcı paylaşma özelliğini etkinleştirin.\n\n
+                    </p>
+
+                    <li>
+                        <b>Ek Dosya Paylaşımı ayarları</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Diğer gelişmiş paylaşım ayarlarını burada da yapılandırmak isteyebilirsiniz.\n
+                        Örneğin, yerel ağınızdaki tüm aygıtlara güveniyorsanız, dosyalarınıza şifre olmadan erişimi etkinleştirebilirsiniz.
+                        Dosya ve yazıcı paylaşımı etkinleştirildiğinde, Dosya Gezgini\'ni veya Windows Gezgini\'ni açın, paylaşmak istediğiniz klasörü sağ tıklayın Ve Özellikler\'i seçin.\n
+                        Paylaş düğmesini tıklayın ve klasörü ağ üzerinde kullanılabilir yapın.\n\n
+                        </p>
+
+                    <li>
+                        <b>Her iki cihazın aynı kablosuz ağa bağlı olduğundan emin olun</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Bu özellik, dosyaları yerel ağda kullanılabilir hale getirir, bu nedenle bilgisayarınız ve mobil cihazlarınızın aynı yerel ağ üzerinde olması gerekir.
+                        Telefonunuzda mobil veri ile internete bağlı iseniz Internet üzerinden paylaşılan bir Windows klasörüne erişemezsiniz. Wi-Fi ile bağlanmış olmanız gerekmektedir.\n\n
+                    </p>
+
+                    <li>
+                        <b> IP Adresi Bulma</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Komut İstemi\'ni açın. 
+                        \'Ipconfig\' yazıp Enter tuşuna basın. 
+                        Yönelticinizin IP adresi için Ağ Bağdaştırıcınızın Altındaki Varsayılan Ağ Geçidi\'ne bakın. 
+                        Bilgisayarınızın IP adresini bulmak için aynı bağdaştırıcı bölümünde \\ \"IPv4 Adresi \\" bölümüne bakın.\n\n
+                    </p>
+
+                    <b>Smb iletişim kutusundaki ayrıntıları girin</b>\n
+                </ul>
+            </body>
+        </html>
+    </string>
   <string name="share_limit">100 dosyadan fazlası paylaşılamaz</string>
   <string name="otg_access">OTG aygıt kökünü seçin</string>
   <string name="no_profile_pic">G+ profil fotoğrafı yok</string>
@@ -421,6 +484,7 @@ tartışmalarının parçası olun</string>
   <string name="duration">Süre</string>
   <string name="comment">Yorum</string>
   <!-- reference to audio/video file -->
+  <string name="container">Paket</string>
   <string name="codec">Codec</string>
   <string name="channels">Kanallar</string>
   <string name="sample_rate">Örnek Hızı</string>
@@ -439,12 +503,44 @@ tartışmalarının parçası olun</string>
   <string name="exposure_time">Pozlama Süresi</string>
   <string name="aperture_value">Diyafram Değeri</string>
   <string name="image_iso">ISO hız değeri</string>
+  <string name="flash_fired">Flaş patladı</string>
   <string name="focal_length">Odak Uzaklığı</string>
   <string name="document">Belge</string>
+  <string name="subject">Konu</string>
+  <string name="author">Hazırlayan</string>
+  <string name="keywords">Anahtar Sözcükler</string>
+  <string name="producer">Yapımcı</string>
+  <string name="created">Oluşturuldu</string>
+  <string name="format">Biçim</string>
+  <string name="pages">Sayfa sayısı</string>
   <!-- reference to a document file -->
+  <string name="optimized">Optimize edildi</string>
+  <string name="security">Güvenlik</string>
+  <string name="paper_size">Kağıt boyutu</string>
+  <string name="root_error">İnteraktif root shell başlatılırken hata oluştu</string>
   <!-- %s will be replaced with either copied or moved -->
+  <string name="copy_error">Bazı dosyalarda %s başarısız</string>
+  <string name="copied">kopyalandı</string>
+  <string name="moved">taşındı</string>
+  <string name="process_chart_description">İlerleme Durumu</string>
+  <string name="copy_complete">Kopyalama Tamamlandı</string>
+  <string name="move_complete">Taşıma işlemi tamamlandı</string>
+  <string name="waiting_title">Bekleniyor</string>
+  <string name="waiting_content">İşlemin tamamlanması bekleniyor</string>
+  <string name="extract_complete">Dışarı çıkarma tamamlandı</string>
+  <string name="compression_complete">Sıkıştırma Tamamlandı</string>
+  <string name="compressing">Sıkıştırılıyor</string>
+  <string name="cancelled">İptal edildi</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+  <string name="written">Yazıldı</string>
+  <string name="out_of">\'ın</string>
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="of"> </string>
+  <string name="processing_file">Dosya işleniyor</string>
+  <string name="current_speed">Geçerli hız</string>
+  <string name="smb_launch_error">Bu dosyayı açmak için depolama birimine kopyalamak gerekir</string>
+  <string name="error_file_not_found">Hata: Dosya bulunamadı</string>
+  <string name="error_io">G/Ç Hatası</string>
   <string name="error_root_not_permitted">Hata: Root izni verilmedi</string>
   <string name="medium_text">Orta metin</string>
   <string name="tap_and_hold_tips">Daha fazla seçenek için dosya veya klasörün üzerine basılı tutun</string>
@@ -457,4 +553,5 @@ tartışmalarının parçası olun</string>
   <string name="clipboard_path_copy">Yol panoya kopyalandı</string>
   <string name="error_busybox">Busybox bulunamadı. Etkileşimli kabuk kapatılıyor.</string>
   <string name="service_timer">Geçen süre</string>
+  <string name="please_wait">Lütfen bekleyin</string>
 </resources>
