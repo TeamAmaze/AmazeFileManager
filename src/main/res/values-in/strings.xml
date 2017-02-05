@@ -53,6 +53,7 @@
   <string name="cantlistfiles">Tidak bisa melihat daftar berkas tanpa akses root</string>
   <string name="searchresults">Hasil Pencarian</string>
   <string name="itemsselected">Item Dipilih</string>
+  <string name="newhomedirectory">Direktori rumah baru</string>
   <string name="rename">Ganti nama</string>
   <string name="save">Simpan</string>
   <string name="renameerror">Gagal mengganti nama</string>
@@ -118,26 +119,80 @@
   <string name="rootmode">Root Explorer</string>
   <string name="rootmodesummary">Untuk perangkat yang mempunyai akses root saja. Periksa hanya jika anda yakin tentang hal itu.</string>
   <string name="mountsystemsummary">Aktifkan ini jika anda ingin mengedit file sistem</string>
+  <string name="mountsystem">Atur sistem folder sebagai dapat ditulis</string>
+  <string name="rootfailure">Akses root tidak diberikan</string>
+  <string name="selectall">Pilih semua</string>
   <string name="delete">Hapus</string>
+  <string name="setashome">Atur sebagai rumah</string>
+  <string name="sethome">Atur Direktori beranda</string>
+  <string name="foldercolor">Warna folder</string>
+  <string name="imagegallery">Galeri Gambar</string>
+  <string name="fileexplorer">Eksplor file</string>
+  <string name="changegallerypath">Ubah garis Galeri</string>
+  <string name="usedefaultgallerypath">Gunakan garis default galeri foto</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
+  <string name="simple">UI sederhana</string>
+  <string name="card">Kartu UI</string>
   <!-- Theme -->
+  <string name="light">Bahan terang</string>
+  <string name="dark">Materi gelap</string>
+  <string name="daytime">Siang hari</string>
   <!--Skin-->
   <string name="red">Merah</string>
+  <string name="pink">Merah muda</string>
+  <string name="purple">Ungu</string>
+  <string name="deep_purple">Ungu gelap</string>
+  <string name="indigo">Biru tua</string>
   <string name="blue">Biru</string>
+  <string name="light_blue">Biru Muda</string>
   <string name="cyan">Sian</string>
+  <string name="teal">Hijau tua kebiruan</string>
   <string name="green">Hijau</string>
+  <string name="light_green">Hijau Muda</string>
+  <string name="amber">Sawo matang</string>
+  <string name="orange">Oranye</string>
+  <string name="deep_orange">Oranye gelap</string>
+  <string name="brown">Cokelat</string>
+  <string name="black">Hitam</string>
+  <string name="blue_grey">Biru Keabu-abuan</string>
+  <string name="supersu">SuperSU</string>
   <!--DirectorySortMode-->
+  <string name="foldersOnTop">Folder di atas</string>
+  <string name="filesOnTop">File di atas</string>
+  <string name="noneOnTop">Tidak ada satupun di atas</string>
   <!--SortBy-->
   <string name="sortName">Nama</string>
+  <string name="lastModified">Modifikasi terakhir</string>
   <string name="sortSize">Ukuran</string>
+  <string name="sortNameDesc">Nama (Deskripsi)</string>
+  <string name="lastModifiedDesc">Modifikasi terakhir (deskripsi)</string>
+  <string name="sortSizeDesc">Ukuran (Deskripsi)</string>
   <!--ListMode-->
+  <string name="detailedView">Tampilan detil</string>
+  <string name="simpleView">Tampilan sederhana</string>
   <!--Folder-->
   <string name="Yellow">Kuning</string>
+  <string name="pick_a_file">Pilih berkas</string>
+  <string name="process_viewer">Tampilan proses</string>
+  <string name="in_safe">Cukup ruang</string>
+  <string name="no_file_overwrite">Tidak ada File yang ditimpa</string>
   <string name="skip">Lewati</string>
+  <string name="overwrite">Timpa</string>
+  <string name="cant_read_file">Tidak dapat membaca file</string>
+  <string name="not_allowed">Tidak diijinkan</string>
+  <string name="processes">Proses</string>
+  <string name="searching">Mencari</string>
   <string name="done">Selesai</string>
+  <string name="permission">Ijin</string>
+  <string name="hide">Menyembunyikan</string>
   <string name="exit">Keluar</string>
+  <string name="enternewname">Masukkan nama baru</string>
+  <string name="doforall">Lakukan untuk semua item</string>
+  <string name="randomDialog">Acak</string>
+  <string name="setRandom">Perubahan akan terjadi setelah Anda me-restart aplikasi</string>
+  <string name="authors">Pencipta</string>
   <string name="changelog">Perubahan</string>
   <string name="ok">Oke</string>
   <string name="version">Versi</string>
@@ -146,6 +201,7 @@
   <string name="archive">Arsip</string>
   <string name="details">Detail</string>
   <string name="donate">Donasi</string>
+  <string name="text">Teks</string>
   <string name="other">Lainnya</string>
   <string name="color_title">Warna</string>
   <string name="none">Tidak ada</string>
@@ -171,6 +227,7 @@
   <string name="height">Tinggi</string>
   <string name="exposure_time">Waktu Pencahayaan</string>
   <string name="focal_length">Panjang Fokal</string>
+  <string name="document">Dokumen</string>
   <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
