@@ -52,7 +52,6 @@
   <string name="password">Salasana</string>
   <string name="defualt">Oletus</string>
   <string name="path">Polku</string>
-  <string name="empty"></string>
   <string name="start_ftp">Aloita</string>
   <string name="information">Tietoja</string>
   <!-- reference to file accessed date -->

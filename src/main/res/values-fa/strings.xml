@@ -371,7 +371,6 @@
   <string name="path">مسیر</string>
   <string name="renamebookmark">ویرایش نشانه گذاریها</string>
   <string name="cut">برش</string>
-  <string name="empty"></string>
   <string name="search">جستجو</string>
   <string name="invalid_name">نام غیر قابل قبول</string>
   <string name="search_hint">برای جستجو تایپ کنید&#8230;</string>
@@ -408,4 +407,5 @@
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="tap_and_hold_tips">روی فایل یا پوشه انگشت خود را نگه دارید تا اطلاعات بیشتری را ببینید</string>
+  <string name="clipboard_path_copy">مسیر به کلیپبورد کپی شد</string>
 </resources>

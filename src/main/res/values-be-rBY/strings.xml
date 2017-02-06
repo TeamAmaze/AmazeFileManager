@@ -19,81 +19,537 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="app_name">Amaze</string>
   <string name="drawer_open">Адкрыць панэль</string>
   <string name="drawer_close">Зачыніць панель</string>
   <string name="books">Закладкі</string>
+  <string name="icon">значок</string>
+  <string name="efn">Увядзіце імя файла</string>
+  <string name="storage">Сховішча</string>
   <string name="gallery">Галерэя</string>
+  <string name="apps">Менеджэр дадаткаў</string>
+  <string name="ftp">FTP сервер</string>
+  <string name="bookmanag">Кіраванне закладкамі</string>
   <string name="setting">Настройкі</string>
+  <string name="select">Выбраць элемент</string>
+  <string name="pressagain">Націсніце яшчэ раз, каб выйсці</string>
+  <string name="open">Адчыніць</string>
+  <string name="backup">Рэзервовая копія</string>
+  <string name="uninstall">Выдаліць</string>
+  <string name="play">Play store</string>
+  <string name="properties">Уласцівасці</string>
+  <string name="copyingapk">Капіяваць Apk у </string>
+  <string name="addbook">Дадаць закладку</string>
+  <string name="delbook">Выдаліць закладку</string>
+  <string name="addtobook">Дадаць у закладкі</string>
+  <string name="enterpath">Увядзіце шлях</string>
   <string name="cancel">АДМЕНА</string>
+  <string name="create">СТВАРЫЦЬ</string>
+  <string name="success">Паспяхова</string>
+  <string name="filenotexists">Файл не існуе</string>
+  <string name="loading">Загрузка&#8230;</string>
+  <string name="file_empty">Файл пусты</string>
+  <string name="error">Памылка</string>
+  <string name="cantlistfiles">Немагчыма паказаць спіс файлаў без root правоў</string>
+  <string name="searchresults">Вынікі пошуку</string>
+  <string name="itemsselected">Выбраныя элементы</string>
+  <string name="newhomedirectory">Новы хатні каталог</string>
+  <string name="rename">Перайменаваць</string>
   <string name="save">Захаваць</string>
+  <string name="renameerror">Не атрымалася перайменаваць</string>
+  <string name="renamed">Паспяхова перайменавана</string>
+  <string name="bookmarksadded">Дададзена ў закладкі</string>
+  <string name="fileexist">Файл з такім іменем ўжо існуе </string>
+  <string name="filecreated">Файл створаны</string>
+  <string name="searchpath">Шлях пошуку</string>
+  <string name="enterfile">Увядзіце імя файла</string>
+  <string name="name">Імя</string>
+  <string name="date">Дата</string>
   <string name="location">Месцазнаходжанне</string>
+  <string name="size">Памер</string>
+  <string name="totalitems">Усяго элементаў</string>
+  <string name="enterzipname">Увядзіце імя zip-архіва</string>
+  <string name="noappfound">Няма праграм для адкрыцця гэтага файла</string>
+  <string name="copying">Капіяванне</string>
+  <string name="moving">Перасоўванне</string>
+  <string name="add">Дадаць</string>
+  <string name="tab">Закладка</string>
+  <string name="file">Файл</string>
+  <string name="folder">Тэчка</string>
+  <string name="newfolder">Новая тэчка</string>
+  <string name="entername">Увядзіце назву</string>
+  <string name="extracting">Выманне</string>
+  <string name="stopping">Прыпынак</string>
+  <string name="guide1">Сардэчна запрашаем у Amaze File Manager</string>
+  <string name="guide2">Націсніце на сінюю палоску, каб паказаць ці схаваць панэль</string>
+  <string name="guide3">Націсніце і ўтрымлівайце любы файл, каб адкрыць больш опцый</string>
+  <string name="guide4">Капіяванне, перасоўванне, уласцівасці і г.д.</string>
+  <string name="guide5">Выкарыстоўвайце кнопку \"Назад\" вашай прылады, каб у любы час выйсці з прыкладання&#8230;</string>
+  <string name="guide6">..і для навігацыі па файлаваму мэнэджэру, выкарыстоўвайце кнопку са стрэлкай налева</string>
+  <string name="maintab">Галоўная закладка не можа быць выдалена</string>
+  <string name="openparent">Адкрыць бацькоўскую дырэкторыю</string>
+  <string name="openwith">Адкрыць з дапамогай</string>
   <string name="share">Падзяліцца</string>
   <string name="about">Аб праграме</string>
-  <string name="yes">Да</string>
+  <string name="extract">Выняць</string>
+  <string name="compress">Сціснуць</string>
+  <string name="yes">Так</string>
   <string name="no">Не</string>
   <string name="confirm">Пацвердзіць</string>
+  <string name="deleting">Выдаленне</string>
+  <string name="questiondelete">Вы ўпэўненыя, што хочаце выдаліць выбраныя файлы?</string>
+  <string name="questionset">Вы хочаце ўсталяваць бягучы шлях як хатні для гэтай укладкі?</string>
+  <string name="viewmode">Рэжым прагляду</string>
+  <string name="uimode">Рэжым інтэрфейсу</string>
+  <string name="directorysort">Рэжым сартавання каталога</string>
+  <string name="sortby">Сартаваць</string>
+  <string name="theme">Тэма</string>
+  <string name="skin">Тэма</string>
+  <string name="random">Выпадковая тэма</string>
+  <string name="random_summary">Усталёўвае выпадковы асноўны колер пры запуску</string>
+  <string name="colorize">Размаляваць значкі</string>
+  <string name="colorize_summary">Усталёўвае статычны колер значкоў. Не перавызначае ўстаноўлены колер значкоў дырэкторый.</string>
   <string name="back">Назад</string>
   <string name="home">Дом</string>
+  <string name="paste">Уставіць</string>
   <string name="close">Закрыць</string>
   <string name="history">Гісторыя</string>
   <string name="refresh">Абнавiць</string>
+  <string name="copy">Капіяваць</string>
+  <string name="rootmode">Root Explorer</string>
+  <string name="rootmodesummary">Толькі для прылад з root правамі. Выкарыстоўвайце толькі калі ўпэўненыя ў сваіх дзеяннях.</string>
+  <string name="mountsystemsummary">Уключыце гэтую опцыю, калі хочаце рэдагаваць сістэмныя файлы</string>
+  <string name="mountsystem">Мантаваць сістэмныя тэчкі з правам на запіс</string>
+  <string name="rootfailure">Root доступ не прадастаўлены</string>
+  <string name="selectall">Абраць усё</string>
   <string name="delete">Выдаліць</string>
+  <string name="setashome">Зрабіць хатняй тэчкай</string>
+  <string name="sethome">Усталяваць хатні каталог</string>
+  <string name="foldercolor">Колер тэчкі</string>
+  <string name="imagegallery">Галерэя выяў</string>
+  <string name="fileexplorer">Праваднік</string>
+  <string name="changegallerypath">Змяніць шлях да галерэі</string>
+  <string name="usedefaultgallerypath">Выкарыстоўваць шлях да галерэі па змаўчанні</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
+  <string name="simple">Просты</string>
+  <string name="card">Карткі</string>
   <!-- Theme -->
+  <string name="light">Светлы</string>
+  <string name="dark">Цёмны</string>
+  <string name="daytime">Дзённы час</string>
   <!--Skin-->
   <string name="red">Чырвоны</string>
+  <string name="pink">Ружовы</string>
+  <string name="purple">Фіялетавы</string>
+  <string name="deep_purple">Барвовы</string>
+  <string name="indigo">Індзіга</string>
   <string name="blue">Сіні</string>
+  <string name="light_blue">Светла-блакітны</string>
   <string name="cyan">Блакітны</string>
+  <string name="teal">Смарагдавы</string>
   <string name="green">Зялёны</string>
+  <string name="light_green">Светла-зялёны</string>
+  <string name="amber">Бурштынавы</string>
+  <string name="orange">Аранжавы</string>
+  <string name="deep_orange">Цёмна-аранжавы</string>
+  <string name="brown">Карычневы</string>
+  <string name="black">Чорны</string>
+  <string name="blue_grey">Шэра-блакітны</string>
+  <string name="supersu">SuperSU</string>
   <!--DirectorySortMode-->
+  <string name="foldersOnTop">Тэчкі наверсе</string>
+  <string name="filesOnTop">Файлы наверсе</string>
+  <string name="noneOnTop">Нічога наверсе</string>
   <!--SortBy-->
+  <string name="sortName">Імя</string>
+  <string name="lastModified">Апошняе змяненне</string>
   <string name="sortSize">Памер</string>
+  <string name="sortNameDesc">Імя (па змяншэнні)</string>
+  <string name="lastModifiedDesc">Дата апошняй змены (па змяншэнні)</string>
+  <string name="sortSizeDesc">Памер (па змяншэнні)</string>
   <!--ListMode-->
+  <string name="detailedView">Падрабязны выгляд</string>
+  <string name="simpleView">Звычайны выгляд</string>
   <!--Folder-->
   <string name="Yellow">Жоўты</string>
+  <string name="pick_a_file">Выбраць файл</string>
+  <string name="process_viewer">Прагляд працэсаў</string>
+  <string name="in_safe">Недастаткова вольнага месца</string>
+  <string name="no_file_overwrite">Не перазапісваць файл</string>
   <string name="skip">Прапусціць</string>
+  <string name="overwrite">Перазапісаць</string>
+  <string name="cant_read_file">Немагчыма прачытаць файл</string>
+  <string name="not_allowed">Не дазволена</string>
+  <string name="processes">Працэсы</string>
+  <string name="searching">Пошук</string>
+  <string name="copying_fles">Капіяванне файлаў</string>
   <string name="done">Гатова</string>
+  <string name="Extracting_fles">Выманне файлаў</string>
+  <string name="items">Элементы</string>
+  <string name="item">Элемент</string>
+  <string name="set">Усталяваць</string>
+  <string name="enablerootmde">Уключыць рэжым root</string>
+  <string name="goback">Вярнуцца</string>
+  <string name="foldercreated">Тэчка створана</string>
+  <string name="newfile">Новы файл</string>
+  <string name="nofiles">Няма файлаў</string>
+  <string name="tapnhold">Націсніце і ўтрымлівайце файл або тэчку для дадатковых опцый</string>
+  <string name="pathcopied">Шлях скапіяваны ў буфер абмену</string>
+  <string name="used">Астатняе:  </string>
+  <string name="free">Вольна:  </string>
+  <string name="atroot">Вы знаходзіцеся ў каранёвай дырэкторыі</string>
+  <string name="listview">Спіс</string>
+  <string name="gridview">Сетка</string>
+  <string name="setlistview">Налады спісу</string>
+  <string name="setgridview">Налады сеткі</string>
+  <string name="permission">Правы</string>
+  <string name="hide">Схаваць</string>
   <string name="exit">Выхад</string>
+  <string name="enternewname">Задайце новую назву</string>
+  <string name="doforall">Выканаць для ўсіх элементаў</string>
+  <string name="gridcolumnno">Колькасць слупкоў у сетцы</string>
+  <string name="randomDialog">Выпадковы</string>
+  <string name="setRandom">Змены ўступяць у сілу пасля перазапуску праграмы</string>
+  <string name="authors">Аўтары</string>
   <string name="changelog">Спic змен</string>
+  <string name="fullChangelog">Поўны спіс змен</string>
   <string name="ok">ОК</string>
+  <string name="chooseUI">Выберыце UI элемент</string>
+  <string name="ui">Інтэрфейс</string>
+  <string name="general">Агульныя</string>
+  <string name="thumbSummary">Паказваць мініяцюры прыкладанняў і малюнкаў</string>
+  <string name="thumb">Паказваць мініяцюры</string>
+  <string name="hidden">Паказвае схаваныя файлы і тэчкі</string>
+  <string name="lastModifiedSummary">Паказваць дату і час, калі файл быў зменены ў апошні раз</string>
+  <string name="lastModifiedPref">Паказаць апошнія змены</string>
+  <string name="sizePrefSummary">Паказаць памер файлаў і колькасць элементаў у тэчках</string>
+  <string name="sizePref">Паказаць памеры</string>
+  <string name="miscellaneous">Рознае</string>
+  <string name="rootPrefSummary">Паказваць дазволы файлаў і тэчак</string>
+  <string name="rootPref">Паказаць дазволы</string>
+  <string name="aboutFileManager">Аб Amaze File Manager</string>
   <string name="version">Версія</string>
+  <string name="rate">Ацаніць праграму</string>
+  <string name="license">Ліцэнзіі Open Source</string>
+  <string name="feedback">Даслаць водгук</string>
+  <string name="hiddenfiles">Схаваныя файлы</string>
+  <string name="type">Тып</string>
+  <string name="typeDesc">Памер (па змяншэнні)</string>
+  <string name="rootdirectory">Root</string>
   <string name="new_string">Новае</string>
+  <string name="setringtone">Усталяваць як рынгтон</string>
+  <string name="copy_path">Капіяваць шлях</string>
+  <string name="addshortcut">Дадаць ярлык</string>
+  <string name="unsavedchanges">Незахаваныя змены</string>
+  <string name="unsavedchangesdesc">У Вас ёсць незахаваныя змены, вы хочаце захаваць іх перад выхадам?</string>
+  <string name="saving">Захаванне</string>
+  <string name="packageinstaller">Усталёўшчык пакетаў</string>
+  <string name="view">Прагляд</string>
   <string name="install">Устанавіць</string>
   <string name="archive">Архіў</string>
+  <string name="archtext">Гэта архіў. Якое дзеянне вы хацелі б выканаць?</string>
+  <string name="pitext">Гэта усталёвачны пакет. Якое дзеянне вы хацелі б выканаць?</string>
+  <string name="xda_title">XDA</string>
+  <string name="xda_summary">Пытанні і Адказы, Дапамога і рашэнне праблем</string>
+  <string name="invalid_dir">Няправільная дырэкторыя</string>
+  <string name="circularimages">Выкарыстоўваць круглыя значкі для малюнкаў і відэа</string>
+  <string name="circularicons">Выкарыстоўваць круглыя значкі</string>
+  <string name="back_title">Кнопка назад</string>
+  <string name="back_summary">Уключыць кнопку назад у верхняй частцы спісу</string>
   <string name="details">Звесткі</string>
+  <string name="translators">Перакладчыкі</string>
+  <string name="german_translation_title">Нямецкая</string>
+  <string name="italian_translation_title">Італьянская</string>
+  <string name="french_translation_title">Французская</string>
+  <string name="russian_translation_title">Руская</string>
+  <string name="spanish_translation_title">Іспанская</string>
+  <string name="basque_translation_title">Баскская</string>
+  <string name="chinese_translation_title">Кітайская</string>
+  <string name="serbian_translation_title">Сербская</string>
+  <string name="turkish_translation_title">Турэцкая</string>
+  <string name="ukrainian_translation_title">Украінская</string>
+  <string name="portuguese_translation_title">Партугальская</string>
+  <string name="polish_translation_title">Польская</string>
+  <string name="korean_translation_title">Карэйская</string>
+  <string name="greek_translation_title">Грэчаская</string>
+  <string name="dutch_translation_title">Нідэрландская</string>
+  <string name="romanian_translation_title">Румынская</string>
+  <string name="vietnamese_translation_title">В’етнамская</string>
+  <string name="japanese_translation_title">Японская</string>
+  <string name="brazilian_portuguese_translation_title">Партугальская (Бразілія)</string>
+  <string name="tamil_translation_title">Тамільская</string>
+  <string name="zip_viewer">Прагляднік Zip</string>
+  <string name="unin_system_apk">Гэта сістэмнае прыкладанне, выдаленне можа прывесці да нестабільнасці сістэмы.\nПрацягнуць?</string>
+  <string name="warning">Папярэджанне</string>
   <string name="donate">Ахвяраваць</string>
+  <string name="archive_preferences">Налады архівавання</string>
+  <string name="archive_extract_folder">Тэчка для распакавання архіва</string>
+  <string name="zip_create_folder">Тэчка для стварэння zip</string>
+  <string name="archive_summary">Файлы з архіва будуць распакаваны ў азначаную тэчку. Па змаўчанні гэта тэчка, у якой знаходзіцца архіў</string>
+  <string name="zip_summary">Новыя zip-архівы будуць стварацца ва ўказанай тэчцы. Па змаўчанні гэта тэчка, у якой знаходзяцца файлы</string>
+  <string name="openas">Адчыніць як</string>
+  <string name="text">Тэкст</string>
+  <string name="audio">Аўдыё</string>
+  <string name="video">Відэа</string>
   <string name="other">Іншы</string>
+  <string name="image">Выявы</string>
+  <string name="contributors">Аўтары</string>
+  <string name="savepaths">Запомніць шлях</string>
+  <string name="savepathsummary">Пры запуску будуць адлюстроўвацца нядаўна прагледжаных тэчкі для кожнай укладкі</string>
+  <string name="select_intent">Абраць</string>
+  <string name="md5copied">MD5 скапіяваны ў буфер абмену</string>
+  <string name="generating">Стварэнне..</string>
+  <string name="tables">Табліцы</string>
+  <string name="database">База дадзеных</string>
+  <string name="colourednavigation">Каляровая панэль навігацыі</string>
+  <string name="colourednavigationsum">Афарбоўка панэлі навігацыі разам з тэмай</string>
+  <string name="sd_card_grant_next">sd_card_grant_next</string>
+  <string name="sd_card_grant_first">sd_card_grant_first</string>
+  <string name="fab_skin">FAB skin</string>
+  <string name="gplus_pic_title">Увайсці з дапамогай G+</string>
+  <string name="gplus_pic_summary">Паказаць вокладку і значок профілю з G+ у бакавым меню</string>
+  <string name="icon_credits">Графіка ад &lt;a href=\"http://cookicons.co/\"&gt;CookIcons&lt;/a&gt;</string>
   <string name="color_title">Колер</string>
+  <string name="color_summary">Усталяваць колер для розных кампанентаў UI</string>
+  <string name="primary_color_title">Асноўны колер (левая ўкладка)</string>
+  <string name="primary_color_summary">Усталяваць колер вялікіх элементаў UI для левай ўкладкі</string>
+  <string name="accent_color_title">Колер акцэнту</string>
+  <string name="accent_color_summary">Усталяваць колер плаваючай кнопкі FAB і іншых дробных элементаў UI</string>
+  <string name="icon_color_title">Колер іконак</string>
+  <string name="icon_color_summary">Усталяваць колер абразкоў</string>
+  <string name="hide_mode_title">Схаваны рэжым</string>
   <string name="none">Нічога</string>
+  <string name="hide_toolbar">Схаваць панэль інструментаў</string>
+  <string name="hide_appbar">Схаваць усю панэль праграмы</string>
+  <string name="choose_color">Абраць колер</string>
+  <string name="g_plus_community_title">Супольнасць G+</string>
+  <string name="hide_mode_nothing">AppBar застаецца нязменным</string>
+  <string name="hide_mode_toolbar">Toolbar хаваецца пры прагортцы</string>
+  <string name="hide_mode_app_bar">App бар хаваецца падчас прагорткі</string>
+  <string name="no_cover_photo">Няма вокладкі</string>
   <string name="files">Файлы</string>
+  <string name="directories">Тэчкі</string>
+  <string name="textreader">Прагляднік тэксту</string>
+  <string name="databasereader">Прагляднік баз дадзеных</string>
+  <string name="showDividers">Паказаць падзельнікі</string>
+  <string name="topFab">Плав. кнопка на AppBar</string>
+  <string name="topFabS">Кнопка + павінна быць наверсе або ўнізе. Ужываецца толькі калі AppBar не скрыты.</string>
+  <string name="needsaccess">Неабходны доступ да запісу</string>
+  <string name="needsaccesssummary">Калі ласка, абярыце каранёвую тэчку\t</string>
+  <string name="needsaccesssummary1">\tпрадастаўляць доступ на запіс для працы </string>
+  <string name="smb_con">SMB злучэнне</string>
+  <string name="smb_server">IP-адрас сервера</string>
+  <string name="username">Імя карыстальніка</string>
   <string name="password">Пароль</string>
+  <string name="anonymous">Ананімна</string>
   <string name="bluetooth">Bluetooth</string>
+  <string name="extstorage">Знешняе сховішча</string>
+  <string name="folders">Тэчкi</string>
   <string name="videos">Відэа</string>
+  <string name="apks">Apk</string>
+  <string name="documents">Дакументы</string>
   <string name="images">Фота</string>
   <string name="clear">Ачысціць</string>
+  <string name="md5">md5: </string>
+  <string name="md5_2">Капіраваць md5</string>
+  <string name="total">Усяго: </string>
+  <string name="calculating"> вылічэнне </string>
+  <string name="sort">Сартаваць</string>
+  <string name="ascending">Па ўзрастанні</string>
+  <string name="descending">Па змяншэнні</string>
   <string name="defualt">Па змаўчанні</string>
+  <string name="doit">Зрабіць гэта</string>
+  <string name="wanthelp"><u>Патрэбна дапамога?</u></string>
+  <string name="quick">Хуткі доступ</string>
   <string name="recent">Апошнія файлы</string>
   <string name="edit">Праўка</string>
+  <string name="find">Пошук па старонцы</string>
+  <string name="grant">Прадастаўленне</string>
+  <string name="grantper">Прадастаўленне дазволу</string>
+  <string name="grantfailed">Дазвол не прадстаўлены</string>
+  <string name="granttext">Праграмам патрабуецца дазвол працы з сховішчам для працягу. Закрыццё гэтага дыялогу завершыць прыкладанне.</string>
+  <string name="grantgplus">Праграме патрабуецца дазвол для гэтай функцыі. Закрыццё гэтага дыялогу здыме дадзеную функцыю.</string>
+  <string name="operationunsuccesful">Аперацыя беспаспяховая</string>
+  <string name="creatingfile">Стварыць файл</string>
+  <string name="creatingfolder">Стварыць тэчку</string>
+  <string name="renaming">Перайменаваць</string>
+  <string name="cantbeempty">%s не можа быць пустым</string>
+  <string name="ip">Адрас</string>
+  <string name="connectionname">Назва злучэння</string>
+  <string name="nodevicefound">Прылад не знойдзена</string>
   <string name="path">Шлях</string>
-  <string name="empty"></string>
+  <string name="renamebookmark">Змяніць закладку</string>
+  <string name="cut">Выразаць</string>
   <string name="search">Пошук</string>
+  <string name="invalid_name">Няправільнае імя</string>
+  <string name="search_hint">Увядзіце для пошуку&#8230;</string>
+  <string name="advanced_search">Пашыраны пошук</string>
+  <string name="regular_expression">Рэгулярны выраз</string>
+  <string name="regular_expression_summary">Пошук з выкарыстаннем рэгулярных выразаў у стылі BASH</string>
+  <string name="match_content">Пошук кантэнту</string>
+  <string name="match_content_summary">Калі ўсталявана, то рэгулярны выраз будзе праводзіць параўнанне з поўным імем файла, у адваротным выпадку будзе шукаць ўваходжання.</string>
   <string name="start_ftp">Пачаць</string>
+  <string name="stop_ftp">Стоп</string>
+  <string name="ftp_status_running">Працуе</string>
+  <string name="ftp_status_not_running">Не працуе</string>
+  <string name="ftp_no_wifi">Пераканайцеся, што вы падлучаныя да Wi-Fi</string>
+  <string name="domain">Дамен</string>
+  <string name="invalid">Несапраўдны %s</string>
+  <string name="ftp_notif_starting">FTP сервер запушчаны</string>
+  <string name="ftp_notif_title">Amaze FTP сервер запушчаны</string>
+  <string name="ftp_notif_text">на %s</string>
+  <string name="ftp_notif_stop_server">СТОП</string>
+  <string name="ftp_port_edit_menu_title">Выбраць порт FTP</string>
+  <string name="ftp_port_change_success">Порт FTP зменены паспяхова</string>
+  <string name="ftp_port_change_error_invalid">Абраны недапушчальны нумар порта</string>
+  <string name="primary_two_title">Асноўны колер (правая ўкладка)</string>
+  <string name="primary_two_summary">Усталяваць колер вялікіх элементаў UI для правай ўкладкі</string>
+  <string name="g_plus">Google Plus</string>
+  <string name="support_development">Падтрымаць распрацоўку</string>
+  <string name="report_bugs_title">Справаздача пра памылку</string>
+  <string name="report_bugs_summary">Паведамляць пра памылкі ці спытаць новую функцыю</string>
+  <string name="translate_title">Перакласці</string>
+  <string name="translate_summary">Перавесці Amaze вашай мовай</string>
+  <string name="g_plus_community_summary">Прыняць удзел у бэта-тэставанні і абмеркаванні пытанняў, якія адносяцца да распрацоўкі</string>
+  <string name="easter_egg_title">Рэжым Студыі</string>
+  <string name="paypal_copy_message">PayPal id скапіявана ў буфер абмену</string>
+  <string name="searchingdevices">Пошук прылад</string>
+  <string name="use_custom_ip">Выкарыстоўваць карыстацкую IP</string>
+  <string name="bookmark_lost">Закладкі не знойдзены, паўторна стварыць&#8230;</string>
+  <string name="smb_instructions">
+<html>
+            <body>
+                <h1>Як атрымаць доступ да агульнай тэчцы вокны на андроіда (smb)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Ўключыць агульны доступ да файлаў</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                     Адкрыйце панэль кіравання, націсніце Выбраць хатнія групы і сумеснае выкарыстанне магчымасцяў у межах сеткі і Інтэрнэт, і націсніце кнопку Змяніць дадатковыя параметры агульнага доступу. Ўключыць функцыі агульнага доступу да файлаў і друкарак.\n\n
+                    </p>
+
+                    <li>
+                        <b>Дадатковыя налады агульнага доступу да файлаў</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Вы таксама можаце наладзіць іншыя дадатковыя параметры агульнага доступу тут.\n
+                        Напрыклад, вы можаце дазволіць доступ да файлаў без пароля, калі вы давяраеце ўсім
+                        прылады на вашай лакальнай сеткі.Адзін раз да файлаў і друкарак уключаны, вы можаце
+                        адкрыйце Правадыр або Правадыр Windows, пстрыкніце правай кнопкай мышы тэчку, якую вы хочаце падзяліцца, і
+                        выберыце Уласцівасці. \n
+                        Націсніце кнопку падзяліцца і зрабіць тэчку даступнай у сетцы.\n\n
+                        </p>
+
+                    <li>
+                        <b>Пераканайцеся, што абедзьве прылады падключаны на такі ж Wifi</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Гэтая асаблівасць робіць файлы даступнымі ў лакальнай сеткі, так што ваш кампутар і мабільныя прылады
+                        павінны быць на той жа лакальнай сеткі. Вы маеце доступ да агульнай тэчцы Windows,
+                        праз Інтэрнэт або калі ваш смартфон падлучаны да сваёй мабільнай перадачы даных - гэта
+                        павінен быць падлучаны да Wi-Fi.\n\n
+                    </p>
+
+                    <li>
+                        <b>Find IP Адрас</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Адкрыйце акно каманднага радка. Увядзіце \'IPCONFIG\' і націсніце Enter. Паглядзіце на шлюз па змаўчанні
+                        пад сеткавай адаптар для IP-адрас маршрутызатара. Шукаць
+                        \"IPv4 Address\" у рамках таго ж адаптара раздзеле, каб знайсці IP вашага кампутара
+                        адрас.\n\n
+                    </p>
+
+                    <b>Калі ласка, увядзіце дадзеныя ў дыялогавым акне SmB</b>\n
+                </ul>
+            </body>
+        </html>
+    </string>
+  <string name="share_limit">Немагчыма абменьвацца больш за 100 файламі</string>
+  <string name="otg_access">Выберыце каранёвую тэчку OTG прылады</string>
+  <string name="no_profile_pic">Няма выявы профілю G+</string>
+  <string name="opening">Адкрыццё..</string>
   <string name="information">Інфармацыя</string>
   <!-- reference to file accessed date -->
+  <string name="accessed">Даступна</string>
   <!-- reference to file modified date -->
+  <string name="modified">Зменены</string>
   <string name="title">Назва</string>
+  <string name="artist">Выканаўца</string>
+  <string name="album">Альбом</string>
+  <string name="year">Год</string>
   <string name="duration">Працягласць</string>
+  <string name="comment">Каментар</string>
   <!-- reference to audio/video file -->
+  <string name="container">Кантэйнер</string>
+  <string name="codec">Кодэк</string>
+  <string name="channels">Каналы</string>
+  <string name="sample_rate">Частата дыскрэтызацыі</string>
+  <string name="bitrate">Бітрэйт</string>
+  <string name="dimensions">Памеры</string>
+  <string name="frame_rate">Частата кадраў</string>
+  <string name="image_type">Тып выявы</string>
   <string name="width">Шырыня</string>
   <string name="height">Вышыня</string>
+  <string name="date_modified">Дата змянення</string>
+  <string name="software">Праграмнае забеспячэнне</string>
+  <string name="creator">Аўтар</string>
+  <string name="camera_brand">Брэнд камеры</string>
+  <string name="camera_model">Мадэль камеры</string>
+  <string name="date_taken">Дата здымкі</string>
   <string name="exposure_time">Вытрымка</string>
+  <string name="aperture_value">Значенне дыяфрагмы</string>
+  <string name="image_iso">Адчувальнасць ISO</string>
+  <string name="flash_fired">Выбліск ўключаны</string>
   <string name="focal_length">Фокусная адлегласць</string>
+  <string name="document">Дакумент</string>
+  <string name="subject">Тэма</string>
+  <string name="author">Аўтар</string>
+  <string name="keywords">Ключавыя словы</string>
+  <string name="producer">Прадюсэр</string>
+  <string name="created">Створаны</string>
+  <string name="format">Фармат</string>
+  <string name="pages">Колькасць старонак</string>
   <!-- reference to a document file -->
+  <string name="optimized">Аптымізаваны</string>
+  <string name="security">Бяспека</string>
+  <string name="paper_size">Памер паперы</string>
+  <string name="root_error">Памылка запуску каранёвай інтэрактыўнай абалонкі</string>
   <!-- %s will be replaced with either copied or moved -->
+  <string name="copy_error">Некаторыя файлы не былі паспяхова %s</string>
+  <string name="copied">скапіяваны</string>
+  <string name="moved">перамешчаны</string>
+  <string name="process_chart_description">Прагрэс</string>
+  <string name="copy_complete">Капіраванне завершана</string>
+  <string name="move_complete">Перамяшчэнне завершана</string>
+  <string name="waiting_title">Чаканне</string>
+  <string name="waiting_content">У чаканні завяршэння аперацыі</string>
+  <string name="extract_complete">Распакаванне завершана</string>
+  <string name="compression_complete">Сціснута паспяхова</string>
+  <string name="compressing">Сцісканне</string>
+  <string name="cancelled">Скасавана</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+  <string name="written">Запісана</string>
+  <string name="out_of">з</string>
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="of">з</string>
+  <string name="processing_file">Апрацоўка файлу</string>
+  <string name="current_speed">Бягучая хуткасць</string>
+  <string name="smb_launch_error">Вам спатрэбіцца скапіяваць файл для захоўвання дадзеных, каб адкрыць яго</string>
+  <string name="error_file_not_found">Памылка: Файл не знойдзены</string>
+  <string name="error_io">Памылка ўводу/вываду</string>
+  <string name="error_root_not_permitted">Памылка: Root правы не прадастаўленны</string>
+  <string name="medium_text">Сярэдні тэкст</string>
+  <string name="tap_and_hold_tips">Націсніце і ўтрымлівайце файл або тэчку для дадатковых опцый</string>
   <string name="permission_read">Чытаць</string>
+  <string name="permission_write">Запісаць</string>
+  <string name="permission_execute">Выканаць</string>
+  <string name="permission_owner">Уладальнік</string>
+  <string name="permission_group">Група</string>
   <string name="permission_other">Іншы</string>
+  <string name="clipboard_path_copy">Шлях скапіяваны ў буфер абмену</string>
+  <string name="error_busybox">BusyBox не знойдзены. Закрыццё інтэрактыўнай абалонкі.</string>
+  <string name="service_timer">Прайшло часу</string>
 </resources>

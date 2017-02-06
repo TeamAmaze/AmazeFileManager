@@ -27,6 +27,7 @@
   <string name="storage">저장소</string>
   <string name="gallery">갤러리</string>
   <string name="apps">애플리케이션 매니저</string>
+  <string name="ftp">FTP 서버</string>
   <string name="bookmanag">북마크 매니저</string>
   <string name="setting">설정</string>
   <string name="select">항목 선택</string>
@@ -38,6 +39,7 @@
   <string name="properties">상세정보</string>
   <string name="copyingapk">애플리케이션이 다음 경로에 복사됩니다 </string>
   <string name="addbook">북마크 추가</string>
+  <string name="delbook">북마크 삭제</string>
   <string name="addtobook">북마크에 추가</string>
   <string name="enterpath">경로를 입력해 주세요</string>
   <string name="cancel">취소</string>
@@ -153,6 +155,7 @@
   <string name="brown">고동</string>
   <string name="black">검정</string>
   <string name="blue_grey">블루 그레이</string>
+  <string name="supersu">슈퍼SU</string>
   <!--DirectorySortMode-->
   <string name="foldersOnTop">폴더 우선</string>
   <string name="filesOnTop">파일 우선</string>
@@ -183,6 +186,7 @@
   <string name="done">완료되었습니다</string>
   <string name="Extracting_fles">파일의 압축을 해제하는 중입니다</string>
   <string name="items">항목</string>
+  <string name="item">아이템</string>
   <string name="set">설정</string>
   <string name="enablerootmde">루트 모드 활성화</string>
   <string name="goback">뒤로가기</string>
@@ -325,16 +329,25 @@
   <string name="needsaccess">쓰기 권한이 플요합니다</string>
   <string name="needsaccesssummary">쓰기 권한을 얻으려면</string>
   <string name="needsaccesssummary1"> /tto 폴더를 선택해 주세요 </string>
+  <string name="smb_server">서버 IP 주소</string>
+  <string name="username">사용자 이름</string>
   <string name="password">비밀번호</string>
   <string name="bluetooth">블루투스</string>
+  <string name="extstorage">외장 스토리지</string>
+  <string name="folders">폴더</string>
+  <string name="videos">동영상</string>
   <string name="images">사진</string>
   <string name="clear">삭제</string>
+  <string name="md5_2">md5 복사</string>
   <string name="defualt">기본</string>
   <string name="recent">최근 열어본 파일</string>
   <string name="edit"> 수정</string>
+  <string name="find">페이지에서 찾기</string>
+  <string name="creatingfile">파일 만들기</string>
+  <string name="creatingfolder">폴더 만들기</string>
+  <string name="ip">주소</string>
   <string name="path">경로</string>
   <string name="cut">잘라내기</string>
-  <string name="empty"></string>
   <string name="search">검색</string>
   <string name="start_ftp">시작</string>
   <string name="information">정보</string>
@@ -354,4 +367,5 @@
   <string name="tap_and_hold_tips">파일이나 폴더를 길게 누르면 더 많은 옵션을 볼 수 있습니다</string>
   <string name="permission_read">읽음</string>
   <string name="permission_other">추가 사항</string>
+  <string name="clipboard_path_copy">클립보드에 복사되었습니다</string>
 </resources>

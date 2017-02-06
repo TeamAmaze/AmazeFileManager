@@ -8,20 +8,22 @@ import com.amaze.filemanager.utils.OpenMode;
 /**
  * Created by arpitkh996 on 11-01-2016.
  */
-public class BaseFile extends HFile implements Parcelable{
+public class BaseFile extends HFile implements Parcelable {
+
     long date,size;
     boolean isDirectory;
     String permisson;
     String name;
 
     String link="";
+
     public BaseFile(String path) {
-        super(OpenMode.FILE,path);
+        super(OpenMode.FILE, path);
         this.path = path;
     }
 
     public BaseFile(String path, String permisson, long date, long size, boolean isDirectory) {
-        super(OpenMode.FILE,path);
+        super(OpenMode.FILE, path);
         this.date = date;
         this.size = size;
         this.isDirectory = isDirectory;

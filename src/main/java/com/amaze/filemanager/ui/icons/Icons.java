@@ -19,10 +19,11 @@
 
 package com.amaze.filemanager.ui.icons;
 
-import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.SparseArray;
 
 import com.amaze.filemanager.R;
 
@@ -30,10 +31,11 @@ import java.io.File;
 import java.util.HashMap;
 
 public class Icons {
-    private static HashMap<String, Integer> sMimeIcons = new HashMap<String, Integer>();
+    private static HashMap<String, Integer> sMimeIconIds = new HashMap<String, Integer>();
+    private static SparseArray<Bitmap> sMimeIcons = new SparseArray<>();
 
     private static void add(String mimeType, int resId) {
-        if (sMimeIcons.put(mimeType, resId) != null) {
+        if (sMimeIconIds.put(mimeType, resId) != null) {
             throw new RuntimeException(mimeType + " already registered!");
         }
     }
@@ -222,7 +224,7 @@ public class Icons {
     public static boolean isText(String name) {
         String mimeType = MimeTypes.getMimeType(new File(name));
 
-        Integer res = sMimeIcons.get(mimeType);
+        Integer res = sMimeIconIds.get(mimeType);
         if (res != null && res == R.drawable.ic_doc_text_am) return true;
         if (mimeType != null && mimeType.contains("/")) {
             final String typeOnly = mimeType.split("/")[0];
@@ -235,7 +237,7 @@ public class Icons {
 
     public static boolean isVideo(String name) {
         String mimeType = MimeTypes.getMimeType(new File(name));
-        Integer res = sMimeIcons.get(mimeType);
+        Integer res = sMimeIconIds.get(mimeType);
         if (res != null && res == R.drawable.ic_doc_video_am) return true;
         if (mimeType != null && mimeType.contains("/")) {
             final String typeOnly = mimeType.split("/")[0];
@@ -248,7 +250,7 @@ public class Icons {
 
     public static boolean isAudio(String name) {
         String mimeType = MimeTypes.getMimeType(new File(name));
-        Integer res = sMimeIcons.get(mimeType);
+        Integer res = sMimeIconIds.get(mimeType);
         if (res != null && res == R.drawable.ic_doc_audio_am) return true;
         if (mimeType != null && mimeType.contains("/")) {
             final String typeOnly = mimeType.split("/")[0];
@@ -260,61 +262,57 @@ public class Icons {
     }
 
     public static boolean isCode(String name) {
-        Integer res = sMimeIcons.get(MimeTypes.getMimeType(new File(name)));
+        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
         if (res != null && res == R.drawable.ic_doc_codes) return true;
         return false;
     }
 
     public static boolean isArchive(String name) {
-        Integer res = sMimeIcons.get(MimeTypes.getMimeType(new File(name)));
+        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
         if (res != null && res == R.drawable.ic_zip_box_white_36dp) return true;
         return false;
     }
 
     public static boolean isApk(String name) {
-        Integer res = sMimeIcons.get(MimeTypes.getMimeType(new File(name)));
+        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
         if (res != null && res == R.drawable.ic_doc_apk_white) return true;
         return false;
     }
 
     public static boolean isPdf(String name) {
-        Integer res = sMimeIcons.get(MimeTypes.getMimeType(new File(name)));
+        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
         if (res != null && res == R.drawable.ic_doc_pdf) return true;
         return false;
     }
 
     public static boolean isPicture(String name) {
-        Integer res = sMimeIcons.get(MimeTypes.getMimeType(new File(name)));
+        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
         if (res != null && res == R.drawable.ic_doc_image) return true;
         return false;
     }
 
-    public static boolean isgeneric(String name) {
+    public static boolean isGeneric(String name) {
         String mimeType = MimeTypes.getMimeType(new File(name));
         if (mimeType == null) {
             return true;
         }
-        Integer resId = sMimeIcons.get(mimeType);
+        Integer resId = sMimeIconIds.get(mimeType);
         if (resId == null) {
             return true;
         }
 
-
         return false;
     }
 
-    public static BitmapDrawable loadMimeIcon(Context context, String path, boolean grid, final Resources res) {
+    public static BitmapDrawable loadMimeIcon(String path, boolean grid, final Resources res) {
         String mimeType = MimeTypes.getMimeType(new File(path));
         if (mimeType == null) {
-            /* if(grid)
-            return res.getDrawable(R.drawable.ic_doc_generic_am_grid);
-*/
-            return new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_generic_am));
+            /* if(grid) return loadBitmapDrawableById(res, R.drawable.ic_doc_generic_am_grid);*/
+            return loadBitmapDrawableById(res, R.drawable.ic_doc_generic_am);
         }
 
-
         // Look for exact match first
-        Integer resId = sMimeIcons.get(mimeType);
+        Integer resId = sMimeIconIds.get(mimeType);
 
         if (resId != null) {
             switch (resId) {
@@ -343,32 +341,38 @@ public class Icons {
             case R.drawable.ic_doc_text_am: if(grid)resId=R.drawable.ic_doc_text_am_grid;
                 break;
         }*/
-
-            return new BitmapDrawable(res, BitmapFactory.decodeResource(res, resId));
+            return loadBitmapDrawableById(res, resId);
         }
 
         // Otherwise look for partial match
         final String typeOnly = mimeType.split("/")[0];
 
         if ("audio".equals(typeOnly)) {
-           /* if(grid)return res.getDrawable(R.drawable.ic_doc_audio_am_grid);else*/
-            return new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_audio_am));
-
+           /* if (grid) resId = R.drawable.ic_doc_audio_am_grid; else*/
+            resId = R.drawable.ic_doc_audio_am;
         } else if ("image".equals(typeOnly)) {
-
-            if (grid) return new BitmapDrawable(res,
-                    BitmapFactory.decodeResource(res, R.drawable.ic_doc_image_grid));
-            else
-                return new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_image));
+            if (grid) resId =  R.drawable.ic_doc_image_grid;
+            else resId = R.drawable.ic_doc_image;
         } else if ("text".equals(typeOnly)) {
-
-            /*if(grid)return res.getDrawable(R.drawable.ic_doc_text_am_grid);else*/
-            return new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_text_am));
+            /*if (grid) resId = R.drawable.ic_doc_text_am_grid; else*/
+            resId = R.drawable.ic_doc_text_am;
         } else if ("video".equals(typeOnly)) {
-            /*if(grid)return res.getDrawable(R.drawable.ic_doc_video_am_grid);else*/
-            return new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_video_am));
+            /*if (grid) resId = R.drawable.ic_doc_video_am_grid; else*/
+            resId = R.drawable.ic_doc_video_am;
         }
-        /*if(grid)return res.getDrawable(R.drawable.ic_doc_generic_am_grid);else*/
-        return new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_generic_am));
+        if (resId == null) {
+            /*if (grid) resId = R.drawable.ic_doc_generic_am_grid; else*/
+            resId = R.drawable.ic_doc_generic_am;
+        }
+        return loadBitmapDrawableById(res, resId);
+    }
+
+    private static BitmapDrawable loadBitmapDrawableById(Resources res, int resId) {
+        Bitmap bitmap = sMimeIcons.get(resId);
+        if (bitmap == null) {
+            bitmap = BitmapFactory.decodeResource(res, resId);
+            sMimeIcons.put(resId, bitmap);
+        }
+        return new BitmapDrawable(res, bitmap);
     }
 }

@@ -90,9 +90,10 @@ import jcifs.smb.SmbFile;
 
 public class Futils {
 
-    public  final int READ = 4;
-    public  final int WRITE = 2;
-    public  final int EXECUTE = 1;
+    private static final SimpleDateFormat sSDF = new SimpleDateFormat("MMM dd, yyyy");
+    public static final int READ = 4;
+    public static final int WRITE = 2;
+    public static final int EXECUTE = 1;
     private Toast studioCount;
 
     public Futils() {
@@ -650,11 +651,9 @@ public class Futils {
         return (sdf.format(f)).toString();
     }
 
-    public static String getdate(long f,String form,String year) {
-
-        SimpleDateFormat sdf = new SimpleDateFormat(form);
-        String date=(sdf.format(f)).toString();
-        if(date.substring(date.length()-2,date.length()).equals(year))
+    public static String getdate(long f, String year) {
+        String date = sSDF.format(f);
+        if(date.substring(date.length()-4,date.length()).equals(year))
             date=date.substring(0,date.length()-6);
         return date;
     }

@@ -28,6 +28,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,9 +64,9 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
     private UtilitiesProviderInterface utilsProvider;
     Context context;
     List<Layoutelements> items;
-    public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
+    public SparseBooleanArray myChecked = new SparseBooleanArray();
     AppsList app;
-    ArrayList<PackageInfo> c = new ArrayList<PackageInfo>();
+    ArrayList<PackageInfo> c = new ArrayList<>();
 
     public AppsAdapter(Context context, UtilitiesProviderInterface utilsProvider, int resourceId,
                        List<Layoutelements> items, AppsList app, ArrayList<PackageInfo> c) {

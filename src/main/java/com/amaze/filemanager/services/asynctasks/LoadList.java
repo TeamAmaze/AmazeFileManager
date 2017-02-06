@@ -36,7 +36,6 @@ import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
@@ -226,7 +225,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                         //e.printStackTrace();
                     }
                     try {
-                        Layoutelements layoutelements = utilsProvider.getFutils().newElement(Icons.loadMimeIcon(ma.getActivity(),
+                        Layoutelements layoutelements = utilsProvider.getFutils().newElement(Icons.loadMimeIcon(
                                 f.getPath(), !ma.IS_LIST, ma.res), f.getPath(), ele.getPermisson(),
                                 ele.getLink(), size, longSize, false, false, ele.getDate() + "");
                         layoutelements.setMode(ele.getMode());
