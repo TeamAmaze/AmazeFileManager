@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.util.LruCache;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +31,7 @@ import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.views.CustomViewPager;
 import com.amaze.filemanager.ui.views.Indicator;
+import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.MainActivityHelper;
@@ -217,7 +219,7 @@ public class TabFragment extends android.support.v4.app.Fragment
         tabHandler = new TabHandler(getActivity());
         int i=1;
         ArrayList<String> items=new ArrayList<String>();
-
+        final int counterPathAnimation = 1;
         // Getting old path from database before clearing
 
         tabHandler.clear();
@@ -225,7 +227,9 @@ public class TabFragment extends android.support.v4.app.Fragment
             if(fragment.getClass().getName().contains("Main")){
                 Main m=(Main)fragment;
                 items.add(parsePathForName(m.CURRENT_PATH,m.openMode));
-                if(i-1==MainActivity.currentTab && i==pos){
+
+                if(i-1==MainActivity.currentTab && i==pos
+                        && AppConfig.getCache().get(MainActivity.COUNTER_KEY_CACH) < counterPathAnimation){
                     mainActivity.updatePath(m.CURRENT_PATH,m.results,m.openMode,m
                             .folder_count,m.file_count);
                     mainActivity.updateDrawer(m.CURRENT_PATH);
