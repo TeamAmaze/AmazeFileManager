@@ -70,8 +70,8 @@
   <string name="totalitems">Total éléments: </string>
   <string name="enterzipname">Entrer le nom du ZIP</string>
   <string name="noappfound">Aucune application n\'a été trouvée pour ouvrir ce fichier</string>
-  <string name="copying">Copier</string>
-  <string name="moving">Déplacer</string>
+  <string name="copying">Copie en cours</string>
+  <string name="moving">Déplacement en cours</string>
   <string name="add">Ajouter</string>
   <string name="tab">Onglet</string>
   <string name="file">Fichier</string>
@@ -79,7 +79,7 @@
   <string name="newfolder">Nouveau dossier</string>
   <string name="entername">Entrer le nom</string>
   <string name="extracting">Extraction</string>
-  <string name="stopping">Arrêt</string>
+  <string name="stopping">En cours d\'arrêt</string>
   <string name="guide1">Bienvenue sur Amaze File Manager</string>
   <string name="guide2">Toucher le bandeau bleu pour afficher ou masquer la barre de répertoires</string>
   <string name="guide3">Appuyer et maintenir n\'importe quel fichier pour plus d\'options...</string>
