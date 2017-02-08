@@ -552,4 +552,5 @@
   <string name="clipboard_path_copy">Шлях скапіяваны ў буфер абмену</string>
   <string name="error_busybox">BusyBox не знойдзены. Закрыццё інтэрактыўнай абалонкі.</string>
   <string name="service_timer">Прайшло часу</string>
+  <string name="please_wait">Калі ласка, пачакайце</string>
 </resources>

@@ -554,4 +554,5 @@
   <string name="clipboard_path_copy">Caminho copiado para a área de transferência</string>
   <string name="error_busybox">Busybox não encontrado. Fechando o shell interativo.</string>
   <string name="service_timer">Tempo decorrido</string>
+  <string name="please_wait">Por favor, aguarde</string>
 </resources>
