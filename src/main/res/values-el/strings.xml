@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="app_name">Κατάπληξη</string>
   <string name="drawer_open">Άνοιγμα μενού πλοήγησης</string>
   <string name="drawer_close">Κλείσιμο μενού πλοήγησης</string>
   <string name="books">Σελιδοδείκτες</string>
@@ -27,6 +28,7 @@
   <string name="storage">Αποθηκευτικός χώρος</string>
   <string name="gallery">Έκθεση</string>
   <string name="apps">Διαχειριστής εφαρμογών</string>
+  <string name="ftp">Διακομιστής FTP</string>
   <string name="bookmanag">Διαχειριστής σελιδοδεικτών</string>
   <string name="setting">Ρυθμίσεις</string>
   <string name="select">Επιλογή αντικειμένου</string>
@@ -34,6 +36,7 @@
   <string name="open">Άνοιγμα</string>
   <string name="backup">Αντίγραφο ασφαλείας</string>
   <string name="uninstall">Απεγκατάσταση</string>
+  <string name="play">Play store</string>
   <string name="properties">Ιδιότητες</string>
   <string name="copyingapk">Αντιγραφή του apk σε </string>
   <string name="addbook">Προσθήκη σελιδοδείκτη</string>
