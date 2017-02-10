@@ -269,6 +269,7 @@
   <string name="dutch_translation_title">Alemán</string>
   <string name="romanian_translation_title">Rumano</string>
   <string name="vietnamese_translation_title">Vietnamita</string>
+  <string name="japanese_translation_title">Japones</string>
   <string name="brazilian_portuguese_translation_title">Portugués brasileño</string>
   <string name="zip_viewer">Visor de ZIP</string>
   <string name="unin_system_apk">Esta es una aplicación del sistema, borrarla puede provocar inestabilidad en el sistema.\n¿Continuar?</string>
@@ -384,8 +385,11 @@
   <string name="ftp_notif_title">Servidor FTP de Amaze funcionando</string>
   <string name="ftp_notif_text">en %s</string>
   <string name="ftp_notif_stop_server">PARAR</string>
+  <string name="ftp_port_change_error_invalid">Numero de puerto seleccionado no valido</string>
   <string name="primary_two_title">Color primario (pestaña derecha)</string>
+  <string name="g_plus">Google Plus</string>
   <string name="support_development">Apoyar el desarrollo</string>
+  <string name="translate_title">Traducir</string>
   <string name="searchingdevices">Buscando dispositivos</string>
   <string name="information">Información</string>
   <!-- reference to file accessed date -->
@@ -393,6 +397,7 @@
   <string name="title">Título</string>
   <string name="duration">Duración</string>
   <!-- reference to audio/video file -->
+  <string name="channels">Canales</string>
   <string name="width">Ancho</string>
   <string name="height">Altura</string>
   <string name="exposure_time">Tiempo de exposición</string>
