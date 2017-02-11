@@ -453,7 +453,7 @@
         </html>
     </string>
   <string name="share_limit">Impossible de partage plus de 100 fichiers</string>
-  <string name="otg_access">Sélectionnez le root du périphérique OTG</string>
+  <string name="otg_access">Sélectionner le root du périphérique OTG</string>
   <string name="no_profile_pic">Aucune photo de profil G+</string>
   <string name="opening">Ouverture..</string>
   <string name="information">Informations</string>

@@ -53,7 +53,7 @@
   <string name="cantlistfiles">Tidak bisa melihat daftar berkas tanpa akses root</string>
   <string name="searchresults">Hasil Pencarian</string>
   <string name="itemsselected">Item Dipilih</string>
-  <string name="newhomedirectory">Direktori rumah baru</string>
+  <string name="newhomedirectory">Direktori baru Laman Depan</string>
   <string name="rename">Ganti nama</string>
   <string name="save">Simpan</string>
   <string name="renameerror">Gagal mengganti nama</string>
@@ -119,25 +119,24 @@
   <string name="rootmode">Root Explorer</string>
   <string name="rootmodesummary">Untuk perangkat yang mempunyai akses root saja. Periksa hanya jika anda yakin tentang hal itu.</string>
   <string name="mountsystemsummary">Aktifkan ini jika anda ingin mengedit file sistem</string>
-  <string name="mountsystem">Atur sistem folder sebagai dapat ditulis</string>
+  <string name="mountsystem">Mount folder system sebagai dapat ditulisi</string>
   <string name="rootfailure">Akses root tidak diberikan</string>
   <string name="selectall">Pilih semua</string>
   <string name="delete">Hapus</string>
-  <string name="setashome">Atur sebagai rumah</string>
   <string name="sethome">Atur Direktori beranda</string>
   <string name="foldercolor">Warna folder</string>
   <string name="imagegallery">Galeri Gambar</string>
-  <string name="fileexplorer">Eksplor file</string>
-  <string name="changegallerypath">Ubah garis Galeri</string>
-  <string name="usedefaultgallerypath">Gunakan garis default galeri foto</string>
+  <string name="fileexplorer">File Explorer</string>
+  <string name="changegallerypath">Ubah Path Galeri</string>
+  <string name="usedefaultgallerypath">Gunakan Path Gambar Galeri Bawaan</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
   <string name="simple">UI sederhana</string>
-  <string name="card">Kartu UI</string>
+  <string name="card">UI Kartu</string>
   <!-- Theme -->
-  <string name="light">Bahan terang</string>
-  <string name="dark">Materi gelap</string>
+  <string name="light">Material Terang</string>
+  <string name="dark">Material Gelap</string>
   <string name="daytime">Siang hari</string>
   <!--Skin-->
   <string name="red">Merah</string>
@@ -190,7 +189,7 @@
   <string name="items">Item</string>
   <string name="item">Item</string>
   <string name="set">Atur</string>
-  <string name="enablerootmde">Mengaktifkan Mode root</string>
+  <string name="enablerootmde">Aktifkan Mode Root</string>
   <string name="goback">Kembali</string>
   <string name="foldercreated">Folder dibuat</string>
   <string name="newfile">File baru</string>

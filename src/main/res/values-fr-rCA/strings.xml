@@ -282,6 +282,7 @@
   <string name="tamil_translation_title">Tamoul</string>
   <string name="zip_viewer">Visionneur ZIP</string>
   <string name="unin_system_apk">Ceci est une application système, sa suppression pourrait conduire à une instabilité du système.\nPoursuivre ?</string>
+  <string name="warning">Avertissement</string>
   <string name="donate">Faire une donation</string>
   <string name="archive_preferences">Préférences d\'archivage</string>
   <string name="archive_extract_folder">Dossier d\'extraction de l\'archive</string>
