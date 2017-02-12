@@ -306,6 +306,8 @@
   <string name="database">База данных</string>
   <string name="colourednavigation">Цветная панель навигации</string>
   <string name="colourednavigationsum">Окраска панели навигации вместе со скином</string>
+  <string name="sd_card_grant_next">sd_card_grant_next</string>
+  <string name="sd_card_grant_first">sd_card_grant_first</string>
   <string name="fab_skin">Скин плав. кнопки</string>
   <string name="gplus_pic_title">Войти в G+</string>
   <string name="gplus_pic_summary">Показать обложку и значок профиля из G+ в боковом меню</string>
@@ -432,35 +434,24 @@
                     </p>
 
                     <li>
-                        <b>Дополнительные настройки общего доступа</b>\n
+                        <b>Дополнительные  параметры общего доступа</b>\n
                     </li>
                     <p style="margin-left: 40px">
-                        You may also want to configure the other advanced sharing settings here. \n
-                        For example, you could enable access to your files without a password if you trust all
-                        the devices on your local network.Once file and printer sharing is enabled, you can
-                        open File Explorer or Windows Explorer, right-click a folder you want to share, and
-                        select Properties. \n
-                        Click the Share button and make the folder available on the network.\n\n
+                        Вы также можете настроить другие дополнительные параметры общего доступа здесь. \nНапример, вы можете разрешить доступ к файлам без пароля, если Вы доверяете всем устройства в этой сети. После того, как общий доступ к файлам и принтерам включен, откройте Проводник Windows или другой файловый менеджер, щелкните правой кнопкой мыши по папке, которой Вы хотите поделиться, и нажмите «Свойства». \nПосле перейдите на вкладку «Доступ» и откройте общий доступ к папке. \n\n
                         </p>
 
                     <li>
-                        <b>Make sure both devices are on same Wifi</b>\n
+                        <b>Убедитесь, что устройства находятся в одной сети</b>\n
                     </li>
                     <p style="margin-left: 40px">
-                        This feature makes files available on the local network, so your PC and mobile devices
-                        have to be on the same local network. You can\’t access a shared Windows folder
-                        over the Internet or when your smartphone is connected to its mobile data — it
-                        has to be connected to Wi-Fi.\n\n
+                       Ваши устройства Windows и Android должны находиться в одной локальной сети. Например, Вы не получите доступ к папке из Windows на Android, если на устройстве Android будет включён только мобильный интернет!\n\n
                     </p>
 
                     <li>
-                        <b>Find IP Address</b>\n
+                        <b>Поиск IP адреса</b>\n
                     </li>
                     <p style="margin-left: 40px">
-                        Open Command Prompt. Type \'ipconfig\' and press Enter. Look for Default Gateway
-                        under your network adapter for your router\'s IP address. Look for
-                        \\"IPv4 Address\\" under the same adapter section to find your computer\'s IP
-                        address.\n\n
+                        Откройте командную строку. Введите \'ipconfig\' и нажмите Enter. Найдите                         \\"IPv4-адрес\\" адаптера, через который Windows и Android устройства подключены к одной сети.\n\n
                     </p>
 
                     <b>Enter details in smb dialog box</b>\n
