@@ -305,6 +305,8 @@
   <string name="database">Datenbank</string>
   <string name="colourednavigation">Farbige Navigationsleiste</string>
   <string name="colourednavigationsum">Ob oder nicht, die Navigationsleiste wird mit der Farbe des Skins angezeigt.</string>
+  <string name="sd_card_grant_next">Das von Ihnen gewählte Verzeichnis ist nicht korrekt. Bitte wählen Sie das gewünschte Speichergerät aus der Liste und tippen Sie auf \"Auswählen\". Stellen Sie zuvor sicher, dass Sie im Stammverzeichnis des Speichergerätes sind</string>
+  <string name="sd_card_grant_first">Sie müssen Amaze Datei Manager den Zugriff auf die SD-Karte erlauben, um diese Aktion abzuschließen. Bitte wählen Sie das gewünschte Speichergerät aus der Liste und tippen Sie auf \"Auswählen\". Stellen Sie zuvor sicher, dass Sie im Stammverzeichnis des Speichergerätes sind</string>
   <string name="fab_skin">FAB Skin</string>
   <string name="gplus_pic_title">Mit G+ anmelden</string>
   <string name="gplus_pic_summary">Zeige G+ Titelbild im Drawer</string>
@@ -329,6 +331,7 @@
   <string name="no_cover_photo">Kein Titelfoto</string>
   <string name="files">Dateien</string>
   <string name="directories">Ordner</string>
+  <string name="textreader">Text-Reader</string>
   <string name="databasereader">Datenbank-Leser</string>
   <string name="showDividers">Zeige Trenner</string>
   <string name="topFab">FAB auf der Anwendungsleiste</string>
@@ -502,6 +505,7 @@ rund um die Entwicklung</string>
   <string name="permission_group">Gruppe</string>
   <string name="permission_other">Sonstige</string>
   <string name="clipboard_path_copy">Pfad in Zwischenspeicher kopiert</string>
+  <string name="error_busybox">Busybox nicht gefunden. Schließen interaktive Shell.</string>
   <string name="service_timer">Verstrichene Zeit</string>
   <string name="please_wait">Bitte warten</string>
 </resources>

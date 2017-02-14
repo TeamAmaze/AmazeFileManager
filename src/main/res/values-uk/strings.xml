@@ -553,4 +553,5 @@
   <string name="clipboard_path_copy">Шлях скопійований в буфер обміну</string>
   <string name="error_busybox">BusyBox, не знайдено. Закриття інтерактивної оболонки.</string>
   <string name="service_timer">Пройшло часу</string>
+  <string name="please_wait">Будь ласка, зачекайте</string>
 </resources>

@@ -79,7 +79,7 @@
   <string name="newfolder">Новая тэчка</string>
   <string name="entername">Увядзіце назву</string>
   <string name="extracting">Выманне</string>
-  <string name="stopping">Прыпынак</string>
+  <string name="stopping">Прыпыненне</string>
   <string name="guide1">Сардэчна запрашаем у Amaze File Manager</string>
   <string name="guide2">Націсніце на сінюю палоску, каб паказаць ці схаваць панэль</string>
   <string name="guide3">Націсніце і ўтрымлівайце любы файл, каб адкрыць больш опцый</string>
@@ -110,7 +110,7 @@
   <string name="colorize">Размаляваць значкі</string>
   <string name="colorize_summary">Усталёўвае статычны колер значкоў. Не перавызначае ўстаноўлены колер значкоў дырэкторый.</string>
   <string name="back">Назад</string>
-  <string name="home">Дамоў</string>
+  <string name="home">Хатняя</string>
   <string name="paste">Усталяваць</string>
   <string name="close">Зачыніць</string>
   <string name="history">Гісторыя</string>
@@ -121,7 +121,7 @@
   <string name="mountsystemsummary">Уключыце гэтую опцыю, калі хочаце рэдагаваць сістэмныя файлы</string>
   <string name="mountsystem">Мантаваць сістэмныя тэчкі з правам на запіс</string>
   <string name="rootfailure">Root доступ не прадастаўлены</string>
-  <string name="selectall">Абраць усё</string>
+  <string name="selectall">Выбраць усё</string>
   <string name="delete">Выдаліць</string>
   <string name="setashome">Зрабіць хатняй тэчкай</string>
   <string name="sethome">Усталяваць хатні каталог</string>
