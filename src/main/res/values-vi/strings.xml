@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="app_name">Amaze</string>
   <string name="drawer_open">Mở ngăn kéo điều hướng</string>
   <string name="drawer_close">Thoát ngăn kéo điều hướng</string>
   <string name="books">Bookmark</string>
@@ -27,6 +28,7 @@
   <string name="storage">Lưu trữ</string>
   <string name="gallery">Thư viện</string>
   <string name="apps">Quản lý ứng dụng</string>
+  <string name="ftp">Máy chủ FTP</string>
   <string name="bookmanag">Quản lý Bookmark</string>
   <string name="setting">Thiết lập</string>
   <string name="select">Chọn mục</string>
@@ -38,12 +40,14 @@
   <string name="properties">Thuộc tính</string>
   <string name="copyingapk">Đang sao chép apk đến </string>
   <string name="addbook">Thêm Bookmark</string>
+  <string name="delbook">Xoá dấu trang</string>
   <string name="addtobook">Thêm vào Bookmark</string>
   <string name="enterpath">Nhập đường dẫn</string>
   <string name="cancel">Thoát</string>
   <string name="create">Tạo</string>
   <string name="success">Thành công</string>
   <string name="filenotexists">Tệp không tồn tại</string>
+  <string name="loading">Đang tải&#8230;</string>
   <string name="file_empty">Tệp rỗng</string>
   <string name="error">Lỗi</string>
   <string name="cantlistfiles">Không thể liệt kê tệp tin mà không root</string>
@@ -80,6 +84,7 @@
   <string name="guide2">Chạm vào dải màu xanh để hiển thị hoặc ẩn thanh đường dẫn</string>
   <string name="guide3">Chạm và giữ bất kỳ tệp tin nào để có nhiều lựa chọn</string>
   <string name="guide4">Như sao chép, di chuyển, thuộc tính,...</string>
+  <string name="guide5">Dùng phím Quay lại của thiết bị để thoát ứng dụng bất kỳ lúc nào&#8230;</string>
   <string name="guide6">..Và sử dụng nút mũi tên trái để điều hướng quản lý tệp</string>
   <string name="maintab">Đã không thể gỡ bỏ thẻ chính</string>
   <string name="openparent">Mở danh mục chính</string>
@@ -111,8 +116,10 @@
   <string name="history">Lịch sử</string>
   <string name="refresh">Làm mới</string>
   <string name="copy">Sao chép</string>
+  <string name="rootmode">Root Explorer</string>
   <string name="rootmodesummary">Chỉ cho thiết bị đã được root. Chỉ kiểm tra khi bạn chắc chắn về nó.</string>
   <string name="mountsystemsummary">Kích hoạt điều này nếu bạn muốn sửa tệp hệ thống</string>
+  <string name="mountsystem">Liên kết các thư mục hệ thống ở chế độ có thể ghi</string>
   <string name="rootfailure">Truy cập root không được cấp phép</string>
   <string name="selectall">Chọn hết</string>
   <string name="delete">Xóa</string>
@@ -120,6 +127,7 @@
   <string name="sethome">Đặt danh mục nhà</string>
   <string name="foldercolor">Màu thư mục</string>
   <string name="imagegallery">Thư viện hình ảnh</string>
+  <string name="fileexplorer">File Explorer</string>
   <string name="changegallerypath">Thay đổi đường dẫn thư viện</string>
   <string name="usedefaultgallerypath">Dùng đường dẫn thư viện hình ảnh mặc định</string>
   <!-- New -->
@@ -128,6 +136,8 @@
   <string name="simple">Đơn giản</string>
   <string name="card">Thẻ</string>
   <!-- Theme -->
+  <string name="light">Material Sáng</string>
+  <string name="dark">Material Tối</string>
   <!--Skin-->
   <string name="red">Đỏ</string>
   <string name="blue">Lam</string>
@@ -212,6 +222,7 @@
   <string name="hiddenfiles">Những tệp ẩn</string>
   <string name="type">Loại</string>
   <string name="typeDesc">Loại (Giảm dần)</string>
+  <string name="rootdirectory">Root</string>
   <string name="new_string">Mới</string>
   <string name="setringtone">Đặt làm nhạc chuông</string>
   <string name="copy_path">Sao chép đường dẫn</string>
@@ -225,6 +236,7 @@
   <string name="archive">Lưu trữ</string>
   <string name="archtext">Đây là một gói lưu trữ. Hành động bạn muốn thực thi là gì?</string>
   <string name="pitext">Đây là một gói cài đặt. Hành động bạn muốn thực thi là gì?</string>
+  <string name="xda_title">Chủ đề tại XDA</string>
   <string name="xda_summary">H&amp;Đ, Hướng dẫn &amp; Gỡ rối</string>
   <string name="invalid_dir">Thư mục không hợp lệ</string>
   <string name="circularimages">Dùng biểu tượng hình tròn cho hình ảnh và video</string>
@@ -233,6 +245,26 @@
   <string name="back_summary">Kích hoạt điều hướng qua lại tại đỉnh của danh sách</string>
   <string name="details">Chi tiết</string>
   <string name="translators">Phiên dịch viên</string>
+  <string name="german_translation_title">Tiếng Đức</string>
+  <string name="italian_translation_title">Tiếng Ý</string>
+  <string name="french_translation_title">Tiếng Pháp</string>
+  <string name="russian_translation_title">Tiếng Nga</string>
+  <string name="spanish_translation_title">Tiếng Tây Ban Nha</string>
+  <string name="basque_translation_title">Tiếng Basque</string>
+  <string name="chinese_translation_title">Tiếng Trung Quốc</string>
+  <string name="serbian_translation_title">Tiếng Serbia</string>
+  <string name="turkish_translation_title">Tiếng Thổ Nhĩ Kỳ</string>
+  <string name="ukrainian_translation_title">Tiếng Ukraina</string>
+  <string name="portuguese_translation_title">Tiếng Bồ Đào Nha</string>
+  <string name="polish_translation_title">Tiếng Ba Lan</string>
+  <string name="korean_translation_title">Tiếng Hàn Quốc</string>
+  <string name="greek_translation_title">Tiếng Hy Lạp</string>
+  <string name="dutch_translation_title">Tiếng Hà Lan</string>
+  <string name="romanian_translation_title">Tiếng Romania</string>
+  <string name="vietnamese_translation_title">Tiếng Việt Nam</string>
+  <string name="japanese_translation_title">Tiếng Nhật</string>
+  <string name="brazilian_portuguese_translation_title">Tiếng Bồ Đào Nha (Brazil)</string>
+  <string name="tamil_translation_title">Tiếng Tamil</string>
   <string name="zip_viewer">Trình xem Zip</string>
   <string name="unin_system_apk">Đây là một ứng dụng hệ thống, xóa nó có thể dẫn đến sự mất ổn định hệ thống.\nThực thi?</string>
   <string name="warning">Cảnh báo</string>
@@ -245,10 +277,12 @@
   <string name="openas">Mở dưới dạng</string>
   <string name="text">Văn bản</string>
   <string name="audio">Âm thanh</string>
+  <string name="video">Video</string>
   <string name="other">Khác</string>
   <string name="image">Hình ảnh</string>
   <string name="contributors">Người đóng góp</string>
   <string name="savepaths">Nhớ đường dẫn</string>
+  <string name="savepathsummary">Lúc khởi động, thư mục được xem gần đây nhất của từng thẻ sẽ được hiển thị</string>
   <string name="select_intent">Chọn</string>
   <string name="md5copied">MD5 đã được sao chép vào clipboard</string>
   <string name="generating">Đang thực thi..</string>
@@ -256,6 +290,8 @@
   <string name="database">Dữ liệu</string>
   <string name="colourednavigation">Thanh điều hướng đã được màu</string>
   <string name="colourednavigationsum">Có hay không thanh điều hướng hệ thống được màu cùng với giao diện</string>
+  <string name="sd_card_grant_next">sd_card_grant_next</string>
+  <string name="sd_card_grant_first">sd_card_grant_first</string>
   <string name="fab_skin">Giao diện FAB</string>
   <string name="gplus_pic_title">Đăng nhập bằng G+</string>
   <string name="gplus_pic_summary">Hiện ảnh bìa G + trong ngăn kéo</string>
@@ -273,6 +309,7 @@
   <string name="hide_toolbar">Ẩn thanh công cụ</string>
   <string name="hide_appbar">Ẩn thanh ứng dụng</string>
   <string name="choose_color">Chọn màu</string>
+  <string name="g_plus_community_title">Tham gia cộng đồng G+</string>
   <string name="hide_mode_nothing">Thanh ứng dụng vẫn còn nguyên vẹn</string>
   <string name="hide_mode_toolbar">Ẩn thanh công cụ khi cuộn</string>
   <string name="hide_mode_app_bar">Ẩn thanh ứng dụng khi cuộn</string>
@@ -300,6 +337,7 @@
   <string name="documents">Tài liệu</string>
   <string name="images">Hình ảnh</string>
   <string name="clear">Xóa</string>
+  <string name="md5">md5: </string>
   <string name="md5_2">Sao chép md5</string>
   <string name="total">Tổng cộng: </string>
   <string name="calculating"> đang tính toán </string>
@@ -313,6 +351,7 @@
   <string name="recent">Các tệp gần đây</string>
   <string name="edit">Sửa</string>
   <string name="find">Tìm trong trang</string>
+  <string name="grant">Cấp</string>
   <string name="grantper">Cấp phép Grant</string>
   <string name="grantfailed">Cấp phép chưa được cấp</string>
   <string name="granttext">Ứng dụng cần sự cho phép lưu trữ để tiếp tục. Thoát hộp thoại này sẽ thoát khỏi ứng dụng.</string>
@@ -342,28 +381,112 @@
   <string name="ftp_status_running">Đang chạy</string>
   <string name="ftp_status_not_running">Chưa chạy</string>
   <string name="ftp_no_wifi">Hãy chắc rằng bạn đã kết nối đến WiFi</string>
+  <string name="domain">Tên miền</string>
+  <string name="invalid">Không hợp lệ %s</string>
   <string name="ftp_notif_starting">FTP Server đang bắt đầu</string>
   <string name="ftp_notif_title">Amaze FTP Server đang chạy</string>
   <string name="ftp_notif_text">tại %s</string>
   <string name="ftp_notif_stop_server">Ngừng</string>
+  <string name="ftp_port_edit_menu_title">Chọn công FTP</string>
+  <string name="ftp_port_change_success">Thay đổi cổng FTP thành công</string>
+  <string name="ftp_port_change_error_invalid">Đã chọn số cổng không hợp lệ</string>
   <string name="primary_two_title">Màu nguyên thủy (Thẻ phải)</string>
   <string name="primary_two_summary">Đặt màu sắc cho các yếu tố UI lớn cho các thẻ bên phải</string>
+  <string name="g_plus">Google Plus</string>
+  <string name="support_development">Ủng hộ phát triển</string>
+  <string name="report_bugs_title">Báo lỗi</string>
+  <string name="report_bugs_summary">Báo lỗi hoặc yêu cầu tính năng mới</string>
+  <string name="translate_title">Dịch</string>
+  <string name="translate_summary">Dịch Amaze sang ngôn ngữ của bạn</string>
+  <string name="g_plus_community_summary">Tham gia thử nghiệm và thảo luận beta
+        có liên quan đến phát triển</string>
+  <string name="easter_egg_title">Chế độ Studio</string>
+  <string name="paypal_copy_message">Đã chép ID Paypal vào clipboard</string>
   <string name="searchingdevices">Đang tìm kiếm thiết bị</string>
+  <string name="use_custom_ip">Dùng IP tuỳ chỉnh</string>
+  <string name="bookmark_lost">Không phát hiện dấu trang, đang tạo lại&#8230;</string>
+  <string name="share_limit">Không thể chia sẻ hơn 100 tập tin</string>
+  <string name="otg_access">Chọn thư mục gốc của thiết bị OTG</string>
+  <string name="no_profile_pic">Không có hình ảnh đại diện G+</string>
+  <string name="opening">Đang mở..</string>
   <string name="information">Thông tin</string>
   <!-- reference to file accessed date -->
+  <string name="accessed">Đã truy cập</string>
   <!-- reference to file modified date -->
+  <string name="modified">Đã thay đổi</string>
+  <string name="title">Tiêu đề</string>
+  <string name="artist">Nghệ sĩ</string>
+  <string name="album">Album</string>
+  <string name="year">Năm</string>
   <string name="duration">Thời lượng</string>
+  <string name="comment">Bình luận</string>
   <!-- reference to audio/video file -->
+  <string name="container">Bộ chứa</string>
+  <string name="codec">Bộ mã</string>
+  <string name="channels">Kênh</string>
+  <string name="sample_rate">Tốc độ mẫu</string>
+  <string name="bitrate">Tốc độ bit</string>
+  <string name="dimensions">Kích thước</string>
+  <string name="frame_rate">Tốc độ khung</string>
+  <string name="image_type">Kiểu ảnh</string>
   <string name="width">Chiều rộng</string>
   <string name="height">Chiều cao</string>
+  <string name="date_modified">Ngày thay đổi</string>
+  <string name="software">Phần mềm</string>
+  <string name="creator">Trình tạo</string>
+  <string name="camera_brand">Thương hiệu máy ảnh</string>
+  <string name="camera_model">Kiểu máy ảnh</string>
+  <string name="date_taken">Ngày chụp</string>
   <string name="exposure_time">Thời gian phơi sáng</string>
+  <string name="aperture_value">Giá trị khẩu độ</string>
+  <string name="image_iso">Tốc độ ISO</string>
+  <string name="flash_fired">Sử dụng đèn flash</string>
   <string name="focal_length">Tiêu cự</string>
+  <string name="document">Tài liệu</string>
+  <string name="subject">Tiêu đề</string>
+  <string name="author">Tác giả</string>
+  <string name="keywords">Từ khóa</string>
+  <string name="producer">Nhà sản xuất</string>
+  <string name="created">Đã tạo</string>
+  <string name="format">Định dạng</string>
+  <string name="pages">Số trang</string>
   <!-- reference to a document file -->
+  <string name="optimized">Đã tối ưu hóa</string>
+  <string name="security">Bảo mật</string>
+  <string name="paper_size">Cỡ giấy</string>
+  <string name="root_error">Lỗi bắt đầu dòng lệnh root tương tác</string>
   <!-- %s will be replaced with either copied or moved -->
+  <string name="copy_error">Một số tập tin không được %s thành công</string>
+  <string name="copied">chép</string>
+  <string name="moved">di chuyển</string>
+  <string name="process_chart_description">Tiến trình</string>
+  <string name="copy_complete">Sao chép hoàn thành</string>
+  <string name="move_complete">Di chuyển hoàn thành</string>
+  <string name="waiting_title">Đang chờ</string>
+  <string name="waiting_content">Đang chờ hoạt động hoàn thành</string>
+  <string name="extract_complete">Trích xuất hoàn thành</string>
+  <string name="compression_complete">Nén hoàn thành</string>
+  <string name="compressing">Đang nén</string>
+  <string name="cancelled">Đã huỷ bỏ</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+  <string name="written">Đã ghi</string>
+  <string name="out_of">trên</string>
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="of">trên</string>
+  <string name="processing_file">Đang xử lý tập tin</string>
+  <string name="current_speed">Tốc độ hiện tại</string>
+  <string name="smb_launch_error">Bạn sẽ cần chép tập tin này sang bộ nhớ để mở nó</string>
+  <string name="error_file_not_found">Lỗi: Không tìm thấy tập tin</string>
+  <string name="error_io">Lỗi I/O</string>
+  <string name="error_root_not_permitted">Lỗi: Chưa cấp quyền root</string>
+  <string name="medium_text">Cỡ chữ trung bình</string>
   <string name="tap_and_hold_tips">Chạm và giữ vào một tệp tin hoặc thư mục để có thêm lựa chọn</string>
   <string name="permission_read">Đọc</string>
+  <string name="permission_write">Ghi</string>
+  <string name="permission_execute">Thực thi</string>
+  <string name="permission_owner">Chủ sở hữu</string>
+  <string name="permission_group">Nhóm</string>
   <string name="permission_other">Khác</string>
   <string name="clipboard_path_copy">Đường dẫn đã được sao chép đến clipboard</string>
+  <string name="error_busybox">Không phát hiện Busybox. Đang đóng dòng lệnh tương tác.</string>
 </resources>
