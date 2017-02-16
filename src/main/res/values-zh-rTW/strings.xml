@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="app_name">Amaze 檔案管理員</string>
   <string name="drawer_open">開啟導覽清單</string>
   <string name="drawer_close">關閉導覽清單</string>
   <string name="books">書籤</string>
