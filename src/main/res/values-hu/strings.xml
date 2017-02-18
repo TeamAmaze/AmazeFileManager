@@ -19,7 +19,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="app_name">Amaze File Manager</string>
   <string name="drawer_open">Navigációs fiók megnyitása</string>
   <string name="drawer_close">Navigációs fiók bezárása</string>
   <string name="books">Könyvjelzők</string>
