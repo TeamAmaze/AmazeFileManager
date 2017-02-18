@@ -19,6 +19,7 @@
 
 package com.amaze.filemanager.activities;
 
+import android.accounts.Account;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -48,6 +49,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -93,19 +95,19 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.exceptions.TypeNotSupportedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
+import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.FTPServerFragment;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
@@ -129,9 +131,10 @@ import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.provider.DatabaseContract;
+import com.amaze.filemanager.utils.provider.SyncUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
@@ -279,7 +282,6 @@ public class MainActivity extends BaseActivity implements
         grid.initializeTable(DataUtils.LIST, 0);
         grid.initializeTable(DataUtils.GRID, 0);
         grid.initializeTable(DataUtils.BOOKS, 1);
-        grid.initializeTable(DataUtils.DRIVE, 1);
         grid.initializeTable(DataUtils.SMB, 1);
 
         if (!Sp.getBoolean("booksadded", false)) {
@@ -714,15 +716,48 @@ public class MainActivity extends BaseActivity implements
         }
 
         try {
-            for (String[] file : grid.readTableSecondary(DataUtils.DRIVE)) {
-                accounts.add(file);
+
+            // for cloud accounts, title = user id, path = service type
+            // iterating all accounts in cloud types from central repository
+            for (OpenMode openMode : OpenMode.values()) {
+
+                switch (openMode) {
+                    case BOX:
+                    case DROPBOX:
+                    case GDRIVE:
+                    case ONEDRIVE:
+                        for (Account account : SyncUtils.QueryAccounts(this, openMode)) {
+
+                            String[] strings = new String[] {
+                                    account.name,
+                                    account.type
+                            };
+                            accounts.add(strings);
+                        }
+                        break;
+                }
             }
-            DataUtils.setAccounts(accounts);
-            if (accounts.size() > 0) {
+
+            if (accounts.size() > 0 && CloudSheetFragment.isCloudProviderAvailable(this)) {
                 Collections.sort(accounts, new BookSorter());
-                for (String[] file : accounts)
-                    list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
-                            .drive)));
+                for (String[] file : accounts) {
+                    switch (file[1]) {
+                        case DatabaseContract.ACCOUNT_TYPE_BOX:
+                            list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_box_white_24dp)));
+                            break;
+                        case DatabaseContract.ACCOUNT_TYPE_DROPBOX:
+                            list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_dropbox_white_24dp)));
+                            break;
+                        case DatabaseContract.ACCOUNT_TYPE_GOOGLE_DRIVE:
+                            list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_google_drive_white_24dp)));
+                            break;
+                        case DatabaseContract.ACCOUNT_TYPE_ONE_DRIVE:
+                            list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_onedrive_white_24dp)));
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 list.add(new SectionItem());
             }
         } catch (Exception e) {
@@ -1512,11 +1547,54 @@ public class MainActivity extends BaseActivity implements
 
             list.add(new SectionItem());
         }
-        ArrayList<String[]> accounts = DataUtils.getAccounts();
-        if (accounts != null && accounts.size() > 0) {
+
+        ArrayList<String[]> accounts = new ArrayList<>();
+
+        // for cloud accounts, title = user id, path = service type
+        // iterating all accounts in cloud types from central repository
+        for (OpenMode openMode : OpenMode.values()) {
+
+            switch (openMode) {
+                case BOX:
+                case DROPBOX:
+                case GDRIVE:
+                case ONEDRIVE:
+                    try {
+                        for (Account account : SyncUtils.QueryAccounts(this, openMode)) {
+
+                            String[] strings = new String[] {
+                                    account.name,
+                                    account.type
+                            };
+                            accounts.add(strings);
+                        }
+                    } catch (TypeNotSupportedException e) {
+                        e.printStackTrace();
+                        break;
+                    }
+                    break;
+            }
+        }
+
+        if (accounts.size() > 0 && CloudSheetFragment.isCloudProviderAvailable(this)) {
             Collections.sort(accounts, new BookSorter());
             for (String[] file : accounts) {
-                list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.drive)));
+                switch (file[1]) {
+                    case DatabaseContract.ACCOUNT_TYPE_BOX:
+                        list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_box_white_24dp)));
+                        break;
+                    case DatabaseContract.ACCOUNT_TYPE_DROPBOX:
+                        list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_dropbox_white_24dp)));
+                        break;
+                    case DatabaseContract.ACCOUNT_TYPE_GOOGLE_DRIVE:
+                        list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_google_drive_white_24dp)));
+                        break;
+                    case DatabaseContract.ACCOUNT_TYPE_ONE_DRIVE:
+                        list.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_onedrive_white_24dp)));
+                        break;
+                    default:
+                        break;
+                }
             }
 
             list.add(new SectionItem());
@@ -2174,7 +2252,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(0);
-                utils.revealShow(fabBgView, false);
+                //utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
@@ -2185,47 +2263,21 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(1);
-                utils.revealShow(fabBgView, false);
+                //utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(R.id.menu_item2);
+        final FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(R.id.menu_item2);
         floatingActionButton3.setColorNormal(folderskin);
         floatingActionButton3.setColorPressed(fabskinpressed);
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(2);
-                utils.revealShow(fabBgView, false);
+                //utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
-        final FloatingActionButton floatingActionButton4 = (FloatingActionButton) findViewById(R.id.menu_item3);
-        floatingActionButton4.setColorNormal(folderskin);
-        floatingActionButton4.setColorPressed(fabskinpressed);
-        floatingActionButton4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainActivityHelper.add(3);
-                utils.revealShow(fabBgView, false);
-                floatingActionButton.close(true);
-            }
-        });
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                PackageManager pm = getPackageManager();
-                boolean app_installed;
-                try {
-                    pm.getPackageInfo("com.amaze.filemanager.driveplugin", PackageManager.GET_ACTIVITIES);
-                    app_installed = true;
-                } catch (PackageManager.NameNotFoundException e) {
-                    app_installed = false;
-                }
-                if (!app_installed) floatingActionButton4.setVisibility(View.GONE);
-            }
-        }).run();
     }
 
     public void updatePath(@NonNull final String news, boolean results, OpenMode
@@ -2515,7 +2567,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void renameBookmark(final String title, final String path) {
-        if (DataUtils.containsBooks(new String[]{title,path}) != -1 || DataUtils.containsAccounts(new String[]{title,path}) != -1) {
+        if (DataUtils.containsBooks(new String[]{title,path}) != -1 || SyncUtils.ContainsAccount(this, title, path)) {
             RenameBookmark renameBookmark=RenameBookmark.getInstance(title,path,BaseActivity.accentSkin);
             if(renameBookmark!=null){
                 renameBookmark.show(getFragmentManager(),"renamedialog");

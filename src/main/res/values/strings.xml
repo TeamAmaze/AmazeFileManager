@@ -570,5 +570,11 @@
     <string name="error_busybox">Busybox not found. Closing interactive shell.</string>
     <string name="service_timer">Time Elapsed</string>
     <string name="please_wait">Please Wait</string>
+    <string name="cloud_connection">Cloud Connection</string>
+    <string name="cloud_connection_new">New Cloud Connection</string>
+    <string name="cloud_dropbox">Dropbox</string>
+    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_onedrive">OneDrive</string>
+    <string name="cloud_box">Box</string>
 </resources>
 

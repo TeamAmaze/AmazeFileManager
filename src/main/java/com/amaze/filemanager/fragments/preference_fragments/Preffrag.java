@@ -19,33 +19,28 @@
 
 package com.amaze.filemanager.fragments.preference_fragments;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
-import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.ui.views.CheckBx;
-import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
-public class Preffrag extends PreferenceFragment{
+public class Preffrag extends PreferenceFragment {
 
     private static final CharSequence PREFERENCE_KEY_ABOUT = "about";
 
@@ -174,8 +169,8 @@ public class Preffrag extends PreferenceFragment{
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 if(gplus.isChecked()){
-                    boolean b=checkGplusPermission();
-                    if(!b)requestGplusPermission();
+                    boolean b= MainActivityHelper.checkAccountsPermission(getActivity());
+                    if(!b) MainActivityHelper.requestAccountsPermission(getActivity());
                 }
                 return false;
             }
@@ -198,50 +193,7 @@ public class Preffrag extends PreferenceFragment{
     }
 
     public void invalidateGplus(){
-        boolean a=checkGplusPermission();
+        boolean a=MainActivityHelper.checkAccountsPermission(getActivity());
         if(!a)gplus.setChecked(false);
     }
-    public boolean checkGplusPermission() {
-        // Verify that all required contact permissions have been granted.
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.GET_ACCOUNTS)
-                != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.INTERNET)
-                != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-        return true;
-    }
-    private void requestGplusPermission() {
-        final String[] PERMISSIONS = {Manifest.permission.GET_ACCOUNTS,
-                Manifest.permission.INTERNET};
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                Manifest.permission.GET_ACCOUNTS) || ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                Manifest.permission.INTERNET)) {
-            // Provide an additional rationale to the user if the permission was not granted
-            // and the user would benefit from additional context for the use of the permission.
-            // For example, if the request has been denied previously.
-
-            String fab_skin = (BaseActivity.accentSkin);
-            final MaterialDialog materialDialog = Futils.showBasicDialog(getActivity(), fab_skin, utilsProvider.getAppTheme(), new String[]{getResources().getString(R.string.grantgplus), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel), null});
-            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ActivityCompat
-                            .requestPermissions(getActivity(),PERMISSIONS, 66);
-                    materialDialog.dismiss();
-                }
-            });
-            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getActivity().finish();
-                }
-            });
-            materialDialog.setCancelable(false);
-            materialDialog.show();
-
-        } else {
-            // Contact permissions have not been granted yet. Request them directly.
-            ActivityCompat
-                    .requestPermissions(getActivity(), PERMISSIONS, 66);
-        }
-    }}
+}

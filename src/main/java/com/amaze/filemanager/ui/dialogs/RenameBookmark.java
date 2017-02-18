@@ -18,6 +18,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.provider.SyncUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.net.URL;
@@ -63,7 +64,7 @@ public class RenameBookmark extends DialogFragment {
         fabskin=getArguments().getString("fabskin");
         Sp=PreferenceManager.getDefaultSharedPreferences(c);
         studiomode=Sp.getInt("studio", 0);
-        if (DataUtils.containsBooks(new String[]{title, path}) != -1 || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
+        if (DataUtils.containsBooks(new String[]{title, path}) != -1 || SyncUtils.ContainsAccount(getActivity(), title, path)) {
             final MaterialDialog materialDialog;
             String pa = path;
             MaterialDialog.Builder builder = new MaterialDialog.Builder(c);

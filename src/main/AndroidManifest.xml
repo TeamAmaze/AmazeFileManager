@@ -30,14 +30,20 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="com.amaze.cloud.permission.ACCESS_PROVIDER" />
+    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
 
-    <uses-sdk 
-        android:minSdkVersion="14" 
+    <uses-sdk
+        android:minSdkVersion="14"
         android:targetSdkVersion="25" />
-        
+
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
+
     <application
         android:name=".utils.AppConfig"
         android:icon="@mipmap/ic_launcher"
@@ -72,21 +78,21 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-		<activity
-			android:uiOptions="splitActionBarWhenNarrow"
+        <activity
+            android:uiOptions="splitActionBarWhenNarrow"
             android:label="@string/setting"
-            android:name=".activities.Preferences" 
-			android:theme="@style/appCompatLight">
-	    <intent-filter>
+            android:name=".activities.Preferences"
+            android:theme="@style/appCompatLight">
+            <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-           
+
         </activity>
-		<activity
+        <activity
             android:label="@string/textreader"
             android:name=".activities.TextReader"
-			android:theme="@style/appCompatLight">
+            android:theme="@style/appCompatLight">
             <intent-filter
                 android:label="Amaze Text Editor">
                 <action android:name="android.intent.action.VIEW"/>
@@ -115,20 +121,20 @@
             />
 
         <service
-			android:name = ".services.ExtractService"
-			android:label = "Extracting"
-			>	
-		</service>
+            android:name = ".services.ExtractService"
+            android:label = "Extracting"
+            >
+        </service>
         <service
-			android:name = ".services.ZipTask"
-			android:label = "Compressing"
+            android:name = ".services.ZipTask"
+            android:label = "Compressing"
             >
-		</service>
-			<service
-			android:name = ".services.CopyService"
-			android:label = "Copying"
+        </service>
+        <service
+            android:name = ".services.CopyService"
+            android:label = "Copying"
             >
-		</service>
+        </service>
 
         <service
             android:name="com.amaze.filemanager.services.ftpservice.FTPService"
@@ -145,6 +151,44 @@
             </intent-filter>
         </service>
 
+        <service android:name=".services.cloud.CloudAccountsService$GOOGLE_DRIVE_SERVICE">
+            <intent-filter>
+                <action android:name="android.accounts.ACCOUNT_AUTHENTICATOR" />
+            </intent-filter>
+
+            <meta-data android:name="android.accounts.ACCOUNT_AUTHENTICATOR"
+                android:resource="@xml/authenticator_gdrive"
+                />
+        </service>
+
+        <service android:name=".services.cloud.CloudAccountsService$DROPBOX_SERVICE">
+            <intent-filter>
+                <action android:name="android.accounts.ACCOUNT_AUTHENTICATOR" />
+            </intent-filter>
+            <meta-data android:name="android.accounts.ACCOUNT_AUTHENTICATOR"
+                android:resource="@xml/authenticator_dropbox"
+                />
+        </service>
+
+        <service android:name=".services.cloud.CloudAccountsService$ONEDRIVE_SERVICE">
+            <intent-filter>
+                <action android:name="android.accounts.ACCOUNT_AUTHENTICATOR" />
+            </intent-filter>
+
+            <meta-data android:name="android.accounts.ACCOUNT_AUTHENTICATOR"
+                android:resource="@xml/authenticator_onedrive"
+                />
+        </service>
+
+        <service android:name=".services.cloud.CloudAccountsService$BOX_SERVICE">
+            <intent-filter>
+                <action android:name="android.accounts.ACCOUNT_AUTHENTICATOR" />
+            </intent-filter>
+            <meta-data android:name="android.accounts.ACCOUNT_AUTHENTICATOR"
+                android:resource="@xml/authenticator_box"
+                />
+        </service>
+
         <receiver
             android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver"
             android:exported="true">
@@ -153,6 +197,7 @@
                 <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_STOP_FTPSERVER" />
             </intent-filter>
         </receiver>
+
         <receiver
             android:name="com.amaze.filemanager.ui.notifications.FTPNotification"
             android:exported="true">

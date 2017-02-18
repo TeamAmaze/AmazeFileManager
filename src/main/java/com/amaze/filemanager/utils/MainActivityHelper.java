@@ -1,13 +1,17 @@
 package com.amaze.filemanager.utils;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -25,6 +29,7 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
+import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
@@ -32,6 +37,7 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.ui.dialogs.SmbSearchDialog;
+import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -140,12 +146,10 @@ public class MainActivityHelper {
                 mkfile(ma.openMode,path1,ma);
                 break;
             case 2:
-                SmbSearchDialog smbDialog=new SmbSearchDialog();
-                smbDialog.show(mainActivity.getFragmentManager(),"tab");
+                BottomSheetDialogFragment fragment = new CloudSheetFragment();
+                fragment.show(ma.getActivity().getSupportFragmentManager(),
+                        CloudSheetFragment.TAG_FRAGMENT);
                 break;
-            /*case 3:
-                mainActivity.bindDrive();
-                break;*/
         }
     }
 
@@ -573,5 +577,58 @@ public class MainActivityHelper {
 
         if (file.getName().equals(file.getParentName())) return true;
         else return false;
+    }
+
+
+
+    public static boolean checkAccountsPermission(Context context) {
+        // Verify that all required contact permissions have been granted.
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.GET_ACCOUNTS)
+                != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.INTERNET)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }
+        return true;
+    }
+
+    public static void requestAccountsPermission(final Activity activity) {
+        final String[] PERMISSIONS = {Manifest.permission.GET_ACCOUNTS,
+                Manifest.permission.INTERNET};
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
+                Manifest.permission.GET_ACCOUNTS) || ActivityCompat.shouldShowRequestPermissionRationale(activity,
+                Manifest.permission.INTERNET)) {
+            // Provide an additional rationale to the user if the permission was not granted
+            // and the user would benefit from additional context for the use of the permission.
+            // For example, if the request has been denied previously.
+
+            String fab_skin = (BaseActivity.accentSkin);
+            final MaterialDialog materialDialog = Futils.showBasicDialog(activity, fab_skin,
+                    ((UtilitiesProviderInterface) activity).getAppTheme(),
+                    new String[] {
+                            activity.getResources().getString(R.string.grantgplus),
+                            activity.getResources().getString(R.string.grantper),
+                            activity.getResources().getString(R.string.grant),
+                            activity.getResources().getString(R.string.cancel), null
+                    });
+            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ActivityCompat.requestPermissions(activity,PERMISSIONS, 66);
+                    materialDialog.dismiss();
+                }
+            });
+            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    activity.finish();
+                }
+            });
+            materialDialog.setCancelable(false);
+            materialDialog.show();
+
+        } else {
+            // Contact permissions have not been granted yet. Request them directly.
+            ActivityCompat.requestPermissions(activity, PERMISSIONS, 66);
+        }
     }
 }
