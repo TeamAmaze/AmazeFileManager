@@ -3,6 +3,8 @@ package com.amaze.filemanager.utils;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 
+import com.amaze.filemanager.utils.color.ColorUsage;
+
 import java.util.Calendar;
 
 /**
@@ -46,6 +48,12 @@ public class PreferenceUtils {
                 Math.max( (int)(b * factor), 0 ) );
     }
 
+    /**
+     * @deprecated use {@link com.amaze.filemanager.activities.BaseActivity#getColorPreference()#getColor(int)}
+     * and {@link ColorUsage#ACCENT}
+     * @param Sp
+     * @return
+     */
     public static int getAccent(SharedPreferences Sp) {
         if (accent == -1)
             accent = Sp.getInt(KEY_ACCENT, DEFAULT_ACCENT);
@@ -68,7 +76,12 @@ public class PreferenceUtils {
         return folder;
     }
 
-    @Deprecated
+    /**
+     * @deprecated use {@link com.amaze.filemanager.activities.BaseActivity#getColorPreference()#getColor(int)}
+     * and {@link ColorUsage#ACCENT}
+     * @param Sp
+     * @return
+     */
     public static String getAccentString(SharedPreferences Sp) {
         return (colors[getAccent(Sp)]);
     }
@@ -77,7 +90,10 @@ public class PreferenceUtils {
         primary=accent=folder=primaryTwo=-1;
     }
 
-    @Deprecated
+    /**
+     * @deprecated use {@link com.amaze.filemanager.activities.BaseActivity#getColorPreference()#getColor(int)}
+     * and {@link ColorUsage#ACCENT}
+     */
     public final static String[] colors = new String[]{
             "#F44336",
             "#e91e63",

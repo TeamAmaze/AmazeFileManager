@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -18,7 +17,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.provider.SyncUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.net.URL;
@@ -32,18 +30,18 @@ public class RenameBookmark extends DialogFragment {
     private UtilitiesProviderInterface utilsProvider;
 
     String title,path,user="",pass="",ipp="";
-    String fabskin;
+    int fabskin;
     Context c;
     BookmarkCallback bookmarkCallback;
     SharedPreferences Sp;
     int studiomode=0;
 
-    public static RenameBookmark getInstance(String name, String path, String fabskin) {
+    public static RenameBookmark getInstance(String name, String path, int fabskin) {
         RenameBookmark renameBookmark = new RenameBookmark();
         Bundle bundle = new Bundle();
         bundle.putString("title", name);
         bundle.putString("path", path);
-        bundle.putString("fabskin", fabskin);
+        bundle.putInt("fabskin", fabskin);
         renameBookmark.setArguments(bundle);
         return renameBookmark;
     }
@@ -61,17 +59,17 @@ public class RenameBookmark extends DialogFragment {
             bookmarkCallback=(BookmarkCallback)getActivity();
         title=getArguments().getString("title");
         path=getArguments().getString("path");
-        fabskin=getArguments().getString("fabskin");
+        fabskin=getArguments().getInt("fabskin");
         Sp=PreferenceManager.getDefaultSharedPreferences(c);
         studiomode=Sp.getInt("studio", 0);
-        if (DataUtils.containsBooks(new String[]{title, path}) != -1 || SyncUtils.ContainsAccount(getActivity(), title, path)) {
+        if (DataUtils.containsBooks(new String[]{title, path}) != -1) {
             final MaterialDialog materialDialog;
             String pa = path;
             MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
             builder.title(R.string.renamebookmark);
-            builder.positiveColor(Color.parseColor(fabskin));
-            builder.negativeColor(Color.parseColor(fabskin));
-            builder.neutralColor(Color.parseColor(fabskin));
+            builder.positiveColor(fabskin);
+            builder.negativeColor(fabskin);
+            builder.neutralColor(fabskin);
             builder.positiveText(R.string.save);
             builder.neutralText(R.string.cancel);
             builder.negativeText(R.string.delete);

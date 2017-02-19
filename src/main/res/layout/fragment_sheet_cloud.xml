@@ -36,6 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/material_sheet_row_height_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
                 android:src="@drawable/ic_remote_grey600_24dp"
@@ -58,6 +59,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/material_sheet_row_height_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="gone"
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
                 android:src="@drawable/ic_dropbox_grey600_24dp"
@@ -80,6 +83,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/material_sheet_row_height_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="gone"
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
                 android:src="@drawable/ic_box_grey600_24dp"
@@ -102,6 +107,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/material_sheet_row_height_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="gone"
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
                 android:src="@drawable/ic_google_drive_grey600_24dp"
@@ -124,6 +131,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/material_sheet_row_height_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="gone"
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
                 android:src="@drawable/ic_onedrive_grey600_24dp"

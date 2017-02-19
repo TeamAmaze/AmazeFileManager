@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        app:errorEnabled="true"
+        android:id="@+id/text_input_layout_user_id"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textUri"
+            android:hint="@string/cloud_email"
+            android:id="@+id/edit_text_cloud_user_id"
+            android:layout_gravity="center_horizontal" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/text_input_layout_password"
+        android:layout_width="match_parent"
+        app:errorEnabled="true"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.AppCompatEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:hint="@string/password"
+            android:id="@+id/edit_text_cloud_password"
+            android:layout_gravity="center_horizontal" />
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>

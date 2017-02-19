@@ -4,9 +4,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -15,16 +12,16 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.EditTextColorStateUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.io.UnsupportedEncodingException;
@@ -39,15 +36,16 @@ import jcifs.smb.SmbFile;
  * Created by arpitkh996 on 17-01-2016.
  */
 public class SmbConnectDialog extends DialogFragment {
+
     private UtilitiesProviderInterface utilsProvider;
 
     private static final String TAG = "SmbConnectDialog";
-
 
     public interface SmbConnectionListener{
         void addConnection(boolean edit,String name,String path,String oldname,String oldPath);
         void deleteConnection(String name,String path);
     }
+
     Context context;
     SmbConnectionListener smbConnectionListener;
     String emptyAddress, emptyName,invalidDomain,invalidUsername;
@@ -60,6 +58,7 @@ public class SmbConnectDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
         final boolean edit=getArguments().getBoolean("edit",false);
         final String path=getArguments().getString("path");
         final String name=getArguments().getString("name");
@@ -157,20 +156,23 @@ public class SmbConnectDialog extends DialogFragment {
                 else usernameTIL.setError("");
             }
         });
-        int color = Color.parseColor(PreferenceUtils.getAccentString(sharedPreferences));
+        int accentColor = utilsProvider.getColorPreference().getColor(ColorUsage.ACCENT);
         final AppCompatEditText pass = (AppCompatEditText) v2.findViewById(R.id.passwordET);
         final AppCompatCheckBox ch = (AppCompatCheckBox) v2.findViewById(R.id.checkBox2);
         TextView help = (TextView) v2.findViewById(R.id.wanthelp);
-        setTint(con_name,color);
-        setTint(user,color);
-        setTint(pass,color);
-        Futils.setTint(ch,color);
+
+        EditTextColorStateUtil.setTint(con_name, accentColor);
+        EditTextColorStateUtil.setTint(user, accentColor);
+        EditTextColorStateUtil.setTint(pass, accentColor);
+
+        Futils.setTint(ch, accentColor);
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Futils.showSMBHelpDialog(context,PreferenceUtils.getAccentString(sharedPreferences));
             }
         });
+
         ch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -225,7 +227,7 @@ public class SmbConnectDialog extends DialogFragment {
         ba3.neutralText(R.string.cancel);
         ba3.positiveText(R.string.create);
         if (edit) ba3.negativeText(R.string.delete);
-        ba3.positiveColor(color).negativeColor(color).neutralColor(color);
+        ba3.positiveColor(accentColor).negativeColor(accentColor).neutralColor(accentColor);
         ba3.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -307,31 +309,6 @@ public class SmbConnectDialog extends DialogFragment {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        }
-    }
-
-    private static ColorStateList createEditTextColorStateList(int color) {
-        int[][] states = new int[3][];
-        int[] colors = new int[3];
-        int i = 0;
-        states[i] = new int[]{-android.R.attr.state_enabled};
-        colors[i] = Color.parseColor("#f6f6f6");
-        i++;
-        states[i] = new int[]{-android.R.attr.state_pressed, -android.R.attr.state_focused};
-        colors[i] = Color.parseColor("#666666");
-        i++;
-        states[i] = new int[]{};
-        colors[i] = color;
-        return new ColorStateList(states, colors);
-    }
-
-    private static void setTint(EditText editText, int color) {
-        if (Build.VERSION.SDK_INT >= 21) return;
-        ColorStateList editTextColorStateList = createEditTextColorStateList(color);
-        if (editText instanceof AppCompatEditText) {
-            ((AppCompatEditText) editText).setSupportBackgroundTintList(editTextColorStateList);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            editText.setBackgroundTintList(editTextColorStateList);
         }
     }
 }

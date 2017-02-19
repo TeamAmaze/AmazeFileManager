@@ -112,6 +112,7 @@ import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
+import com.amaze.filemanager.ui.dialogs.CloudConnectDialog;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
@@ -159,7 +160,7 @@ public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, OnRequestPermissionsResultCallback,
         SmbConnectionListener, DataChangeListener, BookmarkCallback,
-        SearchAsyncHelper.HelperCallbacks {
+        SearchAsyncHelper.HelperCallbacks, CloudConnectDialog.CloudConnectionListener {
 
     final Pattern DIR_SEPARATOR = Pattern.compile("/");
     /* Request code used to invoke sign in user interactions. */
@@ -2567,8 +2568,9 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void renameBookmark(final String title, final String path) {
-        if (DataUtils.containsBooks(new String[]{title,path}) != -1 || SyncUtils.ContainsAccount(this, title, path)) {
-            RenameBookmark renameBookmark=RenameBookmark.getInstance(title,path,BaseActivity.accentSkin);
+        if (DataUtils.containsBooks(new String[]{title,path}) != -1) {
+            RenameBookmark renameBookmark=RenameBookmark.getInstance(title, path,
+                    getColorPreference().getColor(ColorUsage.ACCENT));
             if(renameBookmark!=null){
                 renameBookmark.show(getFragmentManager(),"renamedialog");
             }
@@ -2795,7 +2797,8 @@ public class MainActivity extends BaseActivity implements
                         }
                     }
                 } else
-                    Snackbar.make(frameLayout, "Connection already exists", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(frameLayout, getString(R.string.connection_exists),
+                            Snackbar.LENGTH_SHORT).show();
             } else {
                 int i = -1;
                 if ((i = DataUtils.containsServer(new String[]{oldname, oldPath})) != -1) {
@@ -2888,5 +2891,32 @@ public class MainActivity extends BaseActivity implements
         mainFragment.createViews(mainFragment.LIST_ELEMENTS, false, mainFragment.CURRENT_PATH,
                 mainFragment.openMode, false, !mainFragment.IS_LIST);
         mainFragment.mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void addConnection(boolean edit, String userId, String password, OpenMode accountType,
+                              String oldUserId, String oldPassword) {
+
+        if (SyncUtils.ContainsAccount(this, userId, accountType)) {
+            // account already exists
+
+            Snackbar.make(frameLayout, getString(R.string.connection_exists),
+                    Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!edit) {
+            SyncUtils.CreateSyncAccount(this, userId, accountType, password);
+            mainActivity.refreshDrawer();
+        } else {
+            SyncUtils.RenameAccount(this, new Account(oldUserId, OpenMode.ACCOUNT_MAP.get(accountType)),
+                    userId, password);
+        }
+    }
+
+    @Override
+    public void deleteConnection(String name, OpenMode accountType) {
+
+        SyncUtils.RemoveAccount(this, new Account(name, OpenMode.ACCOUNT_MAP.get(accountType)));
     }
 }

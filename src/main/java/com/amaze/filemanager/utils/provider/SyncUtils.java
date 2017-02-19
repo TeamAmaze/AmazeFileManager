@@ -79,13 +79,13 @@ public class SyncUtils {
      * @return an account object associated with a specific account name and type from
      *         from central repository. Returns null if account not in central repository
      */
-    public static boolean ContainsAccount(Activity activity, String accountName, String accountType) {
+    public static boolean ContainsAccount(Activity activity, String accountName, OpenMode accountType) {
         AccountManager accountManager = (AccountManager) activity.getSystemService(Context.ACCOUNT_SERVICE);
 
         if (!MainActivityHelper.checkAccountsPermission(activity))
             MainActivityHelper.requestAccountsPermission(activity);
 
-        Account[] accounts = accountManager.getAccountsByType(accountType);
+        Account[] accounts = accountManager.getAccountsByType(OpenMode.ACCOUNT_MAP.get(accountType));
         for (Account account : accounts) {
             if (account.name.equals(accountName)) return true;
         }
