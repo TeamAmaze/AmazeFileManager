@@ -53,6 +53,7 @@
   <string name="newhomedirectory">Nový domovský adresář</string>
   <string name="rename">Přejmenovat</string>
   <string name="save">Uložit</string>
+  <string name="renamed">Přejmenování proběhlo úspěšně</string>
   <string name="bookmarksadded">Založka přidána</string>
   <string name="fileexist">Již existuje soubor se stejným názvem </string>
   <string name="filecreated">Soubor vytvořen</string>
@@ -65,6 +66,7 @@
   <string name="noappfound">K otevření toho souboru nebyla nalezena žádná aplikace</string>
   <string name="copying">Kopírování</string>
   <string name="moving">Přesun</string>
+  <string name="add">Přidat</string>
   <string name="file">Soubor</string>
   <string name="folder">Složka</string>
   <string name="newfolder">Nová složka</string>
@@ -213,6 +215,14 @@
   <string name="other">Ostatní</string>
   <string name="image">Obraz</string>
   <string name="contributors">Přispěvatelé</string>
+  <string name="select_intent">Vybrat</string>
+  <string name="md5copied">MD5 zkopírován do schránky</string>
+  <string name="generating">Generování..</string>
+  <string name="tables">Tabulky</string>
+  <string name="database">Databáze</string>
+  <string name="colourednavigation">Barevný navigační panel</string>
+  <string name="sd_card_grant_next">sd_card_grant_next</string>
+  <string name="sd_card_grant_first">sd_card_grant_first</string>
   <string name="color_title">Barva</string>
   <string name="accent_color_title">Barva zvýraznění</string>
   <string name="icon_color_title">Barva ikony</string>
@@ -229,9 +239,18 @@
   <string name="extstorage">Externí úložiště</string>
   <string name="folders">Složky</string>
   <string name="videos">Videa</string>
+  <string name="documents">Dokumenty</string>
   <string name="images">Obrázky</string>
   <string name="clear">Smazat vše</string>
+  <string name="md5">md5: </string>
+  <string name="md5_2">Kopírovat md5</string>
+  <string name="total">Celkem: </string>
+  <string name="calculating"> měřím </string>
+  <string name="sort">Řazení</string>
+  <string name="ascending">Vzestupně</string>
+  <string name="descending">Sestupně</string>
   <string name="defualt">Výchozí</string>
+  <string name="quick">Rychlý přístup</string>
   <string name="recent">Nedávné soubory</string>
   <string name="edit">Editace</string>
   <string name="find">Najít na stránce</string>
@@ -255,21 +274,65 @@
   <string name="stop_ftp">Konec</string>
   <string name="ftp_status_running">Spuštěno</string>
   <string name="ftp_status_not_running">Není spuštěno</string>
+  <string name="domain">Doména</string>
+  <string name="ftp_notif_text">na %s</string>
+  <string name="ftp_notif_stop_server">STOP</string>
+  <string name="g_plus">Google Plus</string>
+  <string name="support_development">Podpořte vývoj</string>
+  <string name="report_bugs_title">Ohlásit chybu</string>
+  <string name="report_bugs_summary">Nahlásit chybu nebo požádat o nové funkce</string>
+  <string name="translate_title">Přeložit</string>
+  <string name="easter_egg_title">Studiový mód</string>
   <string name="information">Informace</string>
   <!-- reference to file accessed date -->
+  <string name="accessed">Poslední přístup</string>
   <!-- reference to file modified date -->
+  <string name="modified">Upraveno</string>
   <string name="title">Název</string>
+  <string name="artist">Interpret</string>
+  <string name="album">Album</string>
+  <string name="year">Rok</string>
   <string name="duration">Délka</string>
+  <string name="comment">Komentář</string>
   <!-- reference to audio/video file -->
+  <string name="container">Složka</string>
+  <string name="codec">Kodek</string>
+  <string name="channels">Kanály</string>
+  <string name="sample_rate">Vzorkovací frekvence</string>
+  <string name="bitrate">Datový tok</string>
+  <string name="dimensions">Rozměry</string>
+  <string name="frame_rate">Snímkovací frekvence</string>
+  <string name="image_type">Typ obrázku</string>
   <string name="width">Šířka</string>
   <string name="height">Výška</string>
+  <string name="date_modified">Datum změny</string>
+  <string name="software">Software</string>
+  <string name="creator">Autor</string>
+  <string name="camera_model">Model fotoaparátu</string>
   <string name="exposure_time">Expoziční čas</string>
+  <string name="flash_fired">S bleskem</string>
   <string name="focal_length">Ohnisková vzdálenost</string>
   <string name="document">Dokument</string>
+  <string name="subject">Předmět</string>
+  <string name="author">Autor</string>
+  <string name="keywords">Klíčová slova</string>
+  <string name="producer">Producent</string>
+  <string name="created">Vytvořeno</string>
+  <string name="pages">Počet stránek</string>
   <!-- reference to a document file -->
+  <string name="optimized">Optimalizováno</string>
+  <string name="security">Zabezpečení</string>
+  <string name="paper_size">Velikost papíru</string>
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="current_speed">Aktuální rychlost</string>
+  <string name="error_io">Chyba I/O</string>
+  <string name="medium_text">Střední Text</string>
   <string name="permission_read">Načíst</string>
+  <string name="permission_owner">Majitel</string>
+  <string name="permission_group">Skupina</string>
   <string name="permission_other">Ostatní</string>
+  <string name="service_timer">Uplynulý čas</string>
+  <string name="please_wait">Čekejte prosím</string>
 </resources>
