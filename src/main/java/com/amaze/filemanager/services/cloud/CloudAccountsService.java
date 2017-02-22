@@ -24,14 +24,14 @@ public class CloudAccountsService {
         return new Account(accountName, accountType);
     }
 
-    public static class GOOGLE_DRIVE_SERVICE extends Service {
+    public class GOOGLE_DRIVE_SERVICE extends Service {
 
         private Authenticator mAuthenticator;
 
         @Override
         public void onCreate() {
             super.onCreate();
-            mAuthenticator = new Authenticator(getApplicationContext());
+            mAuthenticator = new Authenticator(this);
         }
 
         @Nullable
@@ -41,14 +41,14 @@ public class CloudAccountsService {
         }
     }
 
-    public static class DROPBOX_SERVICE extends Service {
+    public class DROPBOX_SERVICE extends Service {
 
         private Authenticator mAuthenticator;
 
         @Override
         public void onCreate() {
             super.onCreate();
-            mAuthenticator = new Authenticator(getApplicationContext());
+            mAuthenticator = new Authenticator(this);
         }
 
         @Nullable
@@ -58,14 +58,14 @@ public class CloudAccountsService {
         }
     }
 
-    public static class BOX_SERVICE extends Service {
+    public class BOX_SERVICE extends Service {
 
         private Authenticator mAuthenticator;
 
         @Override
         public void onCreate() {
             super.onCreate();
-            mAuthenticator = new Authenticator(getApplicationContext());
+            mAuthenticator = new Authenticator(this);
         }
 
         @Nullable
@@ -75,14 +75,14 @@ public class CloudAccountsService {
         }
     }
 
-    public static class ONEDRIVE_SERVICE extends Service {
+    public class ONEDRIVE_SERVICE extends Service {
 
         private Authenticator mAuthenticator;
 
         @Override
         public void onCreate() {
             super.onCreate();
-            mAuthenticator = new Authenticator(getApplicationContext());
+            mAuthenticator = new Authenticator(this);
         }
 
         @Nullable
@@ -92,7 +92,7 @@ public class CloudAccountsService {
         }
     }
 
-    private static class Authenticator extends AbstractAccountAuthenticator {
+    private class Authenticator extends AbstractAccountAuthenticator {
 
         public Authenticator(Context context) {
             super(context);
@@ -100,7 +100,7 @@ public class CloudAccountsService {
 
         @Override
         public Bundle editProperties(AccountAuthenticatorResponse response, String accountType) {
-            return null;
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -119,12 +119,12 @@ public class CloudAccountsService {
         @Override
         public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account,
                                    String authTokenType, Bundle options) throws NetworkErrorException {
-            return null;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public String getAuthTokenLabel(String authTokenType) {
-            return null;
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -136,7 +136,7 @@ public class CloudAccountsService {
         @Override
         public Bundle hasFeatures(AccountAuthenticatorResponse response, Account account,
                                   String[] features) throws NetworkErrorException {
-            return null;
+            throw new UnsupportedOperationException();
         }
     }
 }

@@ -36,14 +36,13 @@ public class SyncUtils {
 
         Account account = CloudAccountsService.GET_ACCOUNT(userName,
                 OpenMode.ACCOUNT_MAP.get(accountType));
-        AccountManager accountManager = (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
+        AccountManager accountManager = AccountManager.get(context);
 
-        if (accountManager.addAccountExplicitly(account, null, null)) {
+        if (accountManager.addAccountExplicitly(account, password, null)) {
             ContentResolver.setIsSyncable(account, DatabaseContract.PROVIDER_AUTHORITY, 1);
             ContentResolver.setSyncAutomatically(account, DatabaseContract.PROVIDER_AUTHORITY, true);
             ContentResolver.addPeriodicSync(account, DatabaseContract.PROVIDER_AUTHORITY,
                     new Bundle(), SYNC_FREQUENCY);
-            accountManager.setPassword(account, password);
             newAccount = true;
         }
 
