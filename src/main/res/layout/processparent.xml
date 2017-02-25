@@ -1,0 +1,136 @@
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            card_view:cardCornerRadius="4dp"
+            card_view:cardUseCompatPadding="true"
+            card_view:cardElevation="4dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/progress_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_alignParentTop="true"
+                    android:paddingBottom="@dimen/material_generic"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/textParent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/progress_chart"
+                    android:padding="@dimen/material_generic"
+                    >
+
+                    <ImageView
+                        android:id="@+id/progress_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/material_generic"
+                        android:layout_alignParentLeft="true"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/delete_button"
+                        android:src="@drawable/ic_action_cancel_light"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        android:background="@drawable/ripple"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@id/progress_image"
+                        android:layout_toLeftOf="@id/delete_button"
+                        android:orientation="vertical"
+                        >
+
+                        <TextView
+                            android:id="@+id/text_view_progress_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+                            android:textColor="@android:color/darker_gray"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="@dimen/material_generic"
+                            />
+
+                        <com.amaze.filemanager.ui.views.ThemedTextView
+                            android:id="@+id/text_view_progress_file_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/material_generic"
+                            android:textStyle="italic"
+                            />
+
+                        <com.amaze.filemanager.ui.views.ThemedTextView
+                            android:id="@+id/text_view_progress_bytes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/material_generic"
+                            />
+
+                        <com.amaze.filemanager.ui.views.ThemedTextView
+                            android:id="@+id/text_view_progress_file"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/material_generic"
+                            />
+
+                        <com.amaze.filemanager.ui.views.ThemedTextView
+                            android:id="@+id/text_view_progress_speed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/material_generic"
+                            />
+
+                        <com.amaze.filemanager.ui.views.ThemedTextView
+                            android:id="@+id/text_view_progress_timer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/material_generic"
+                            />
+
+                    </LinearLayout>
+                </RelativeLayout>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+    </ScrollView>
+</FrameLayout>

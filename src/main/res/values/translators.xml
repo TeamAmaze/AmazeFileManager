@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+
+    <!-- Non-translatable strings, must not be defined in any other language -->
+    <string name="german_translation_summary" translatable="false">Patrick Mertens, Unpublished, Dennis Rüdiger</string>
+    <string name="italian_translation_summary" translatable="false">Francesco Credidio, Federico Cappelletti</string>
+    <string name="french_translation_summary" translatable="false">Nicolas PIMENTEL, Primokorn, Renaud ROLLAND</string>
+    <string name="russian_translation_summary" translatable="false">Pablo Luchiano, Kim BeeJay, Yaroslav Pronin</string>
+    <string name="spanish_translation_summary" translatable="false">Jose Miguel Sarasola, Roberto M.F. (Roboe)</string>
+    <string name="basque_translation_summary" translatable="false">Aitor Beriain</string>
+    <string name="chinese_translation_summary" translatable="false">amtlib-dot-dll, Felix2yu, Charles Kane</string>
+    <string name="serbian_translation_summary" translatable="false">Mladen Pejaković</string>
+    <string name="turkish_translation_summary" translatable="false">Hakan Güven</string>
+    <string name="ukrainian_translation_summary" translatable="false">Pablo Luchiano</string>
+    <string name="portuguese_translation_summary" translatable="false">Sérgio Marques</string>
+    <string name="brazilian_portuguese_translation_summary" translatable="false">André Marcelo Alvarenga</string>
+    <string name="polish_translation_summary" translatable="false">M. Kucharskov, P. Kowalczyk, hawkeye116477</string>
+    <string name="korean_translation_summary" translable="false" translatable="false">Park Kyungjin</string>
+    <string name="greek_translation_summary" translable="false" translatable="false">Vasilis K.</string>
+    <string name="dutch_translation_summary" translable="false" translatable="false">Robin van der Vliet</string>
+    <string name="romanian_translation_summary" translable="false" translatable="false">Igor S.</string>
+	<string name="vietnamese_translation_summary" translable="false" translatable="false">ngoisaosang</string>
+    <string name="japanese_translation_summary" translatable="false">Naofumi Fukue</string>
+    <string name="tamil_translation_summary" translatable="false">Kuralarasi for StarsSoft</string>
+    <string name="app_version" translatable="false">v3.1.2 Beta 9</string>
+    <string name="author_1" translatable="false">Arpit Khurana</string>
+    <string name="author_2" translatable="false">Vishal Nehra</string>
+    <string name="github" translatable="false">Github</string>
+    <string name="googleplus" translatable="false">Google+</string>
+</resources>

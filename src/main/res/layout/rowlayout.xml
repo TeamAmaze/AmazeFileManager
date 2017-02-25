@@ -1,0 +1,152 @@
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/second"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/minimal_row_size"
+    android:clickable="true"
+    android:paddingLeft="@dimen/minimal_material_padding"
+    android:paddingRight="@dimen/minimal_material_padding">
+    <RelativeLayout
+        android:id="@+id/icon_frame_parent"
+        android:layout_width="@dimen/minimal_icon_parent_width"
+        android:layout_height="@dimen/minimal_row_size"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true">
+        <FrameLayout
+            android:id="@+id/iconframe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/icon_margin_top"
+            >
+            <ImageView
+                android:layout_width="@dimen/minimal_icon_size"
+                android:layout_height="@dimen/minimal_icon_size"
+                android:visibility="gone"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center"
+                android:id="@+id/apk_icon"/>
+            <com.amaze.filemanager.ui.views.RoundedImageView
+                android:id="@+id/picture_icon"
+                android:layout_width="@dimen/minimal_icon_size"
+                android:layout_height="@dimen/minimal_icon_size"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/icon" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="8dp"
+                android:background="@drawable/circle_shape"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/generic_icon"/>
+
+            <TextView
+                android:layout_width="@dimen/minimal_icon_size"
+                android:layout_height="@dimen/minimal_icon_size"
+                android:textSize="12dp"
+                android:singleLine="true"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:id="@+id/generictext"
+                android:textColor="@android:color/white"
+                />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/check_icon"
+            android:layout_width="@dimen/tick_icon_size"
+            android:layout_height="@dimen/tick_icon_size"
+            android:padding="@dimen/check_icon_padding"
+            android:src="@drawable/ic_checkmark_selected"
+            android:layout_marginBottom="@dimen/check_icon_margin_bottom_right"
+            android:layout_marginRight="@dimen/check_icon_margin_bottom_right"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/properties"
+        android:background="@drawable/ripple"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:padding="8dp"
+        android:clickable="true"
+        android:src="@drawable/ic_more_vert_black_48dp"/>
+
+    <RelativeLayout
+        android:layout_toRightOf="@id/icon_frame_parent"
+        android:layout_toLeftOf="@id/properties"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
+
+        <com.amaze.filemanager.ui.views.ThemedTextView
+            android:id="@+id/firstline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:ellipsize="middle"
+            android:clickable="false"
+            android:textSize="17sp" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/firstline"
+            android:layout_marginTop="5dp">
+
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_alignParentLeft="true"
+                android:textColor="?android:attr/textColorTertiary"
+                />
+            <TextView
+                android:id="@+id/secondLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/date"
+                android:layout_marginLeft="10dip"
+                android:textSize="13sp"
+                android:textColor="?android:attr/textColorTertiary"
+                />
+
+            <TextView
+                android:id="@+id/permis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textColor="?android:attr/textColorTertiary"
+                android:textSize="13sp"
+                />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

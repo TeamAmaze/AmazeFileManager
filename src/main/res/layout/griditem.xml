@@ -1,0 +1,147 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="170dp"
+             android:id="@+id/second"
+             android:background="@drawable/item_doc_grid"
+             android:foreground="@drawable/item_backgrund"
+             android:layout_margin="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="6dp"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/icon_frame"
+            android:layout_marginBottom="6dp"
+            android:background="#fff"
+            android:foregroundGravity="fill"
+            >
+
+            <ImageView
+                android:id="@+id/generic_icon"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center"
+                android:scaleType="centerInside"
+                android:contentDescription="@null" />
+            <ImageView
+                android:id="@+id/icon_thumb"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:contentDescription="@null" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/check_icon_grid"
+                    android:layout_width="@dimen/check_icon_size_grid"
+                    android:layout_height="@dimen/check_icon_size_grid"
+                    android:src="@drawable/ic_grid_selection_check"
+                    android:alpha="0.7"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/permis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|top|end"
+                android:layout_marginRight="5dp"
+                android:singleLine="true"
+                android:textColor="#80000000"
+                android:ellipsize="end"
+                android:textSize="12dp"
+                android:textAlignment="viewEnd"
+                style="@android:style/TextAppearance.Small" />
+
+        </FrameLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/properties"
+                android:background="@drawable/ripple"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="1dp"
+                android:clickable="true"
+                android:src="@drawable/ic_more_vert_black_48dp"/>
+
+            <LinearLayout
+                android:id="@+id/line1"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_toLeftOf="@id/properties"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+
+
+                <com.amaze.filemanager.ui.views.ThemedTextView
+                    android:id="@+id/firstline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:ellipsize="middle"
+                    android:paddingLeft="5dp"
+                    android:textSize="14dp"
+                    android:layout_toLeftOf="@id/properties"
+                    android:textColor="@android:color/black"
+                    android:layout_gravity="start|center_vertical"
+                    android:textAlignment="viewStart"
+                    style="@android:style/TextAppearance.Medium" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/line2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/properties"
+                android:layout_below="@id/line1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+
+
+                <TextView
+                    android:id="@+id/secondLine"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:textSize="12dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    style="@android:style/TextAppearance.Small" />
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/secondLine"
+                    android:layout_gravity="start"
+                    android:textSize="12dp"
+                    android:paddingLeft="5dp"
+                    android:textAlignment="viewStart"
+                    style="@android:style/TextAppearance.Small" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </LinearLayout>
+</FrameLayout>

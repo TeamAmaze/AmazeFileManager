@@ -1,0 +1,63 @@
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/texteditor"
+    android:orientation="vertical"
+    android:animateLayoutChanges="true"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:elevation="10dp"
+        android:layout_width="match_parent"
+        android:id="@+id/lin"
+        android:layout_height="wrap_content">
+        <include layout="@layout/toolbar"
+            android:layout_height="?actionBarSize"
+            android:layout_width="match_parent"
+            />
+        <include layout="@layout/actionmode_textviewer"/>
+    </LinearLayout>
+    <View
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:id="@+id/editscroll"
+        android:layout_height="match_parent">
+    <EditText
+            android:id="@+id/fname"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:fontFamily="sans-serif-light"
+            android:textSize="14sp"
+            android:ems="10"
+            android:gravity="left|top"
+            android:inputType="textCapSentences|textMultiLine"
+            />
+
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="drawer_width">304dp</dimen>
+    <!-- +8 -->
+    <dimen name="drawer_header_height">171dp</dimen>
+    <dimen name="drawer_header_height_with_padding">179dp</dimen>
+
+</resources>

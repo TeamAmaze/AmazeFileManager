@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">Amaze File Manager</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="books">Bookmarks</string>
+    <string name="icon">icon</string>
+    <string name="efn">Enter File Name</string>
+    <string name="storage">Storage</string>
+    <string name="gallery">Gallery</string>
+    <string name="apps">App Manager</string>
+    <string name="ftp">FTP Server</string>
+    <string name="bookmanag">Bookmarks Manager</string>
+    <string name="setting">Settings</string>
+    <string name="select">Select Item</string>
+    <string name="pressagain">Press  again to exit</string>
+    <string name="open">Open</string>
+    <string name="backup">Backup</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="play">Play store</string>
+    <string name="properties">Properties</string>
+    <string name="copyingapk">Copying apk to </string>
+    <string name="addbook">Add Bookmark</string>
+    <string name="delbook">Delete Bookmark</string>
+    <string name="addtobook">Add to Bookmark</string>
+    <string name="enterpath">Enter Path</string>
+    <string name="cancel">CANCEL</string>
+    <string name="create">CREATE</string>
+    <string name="success">Success</string>
+    <string name="filenotexists">File Not Exists</string>
+    <string name="loading">Loading&#8230;</string>
+    <string name="file_empty">File is empty</string>
+    <string name="error">Error</string>
+    <string name="cantlistfiles">Can\'t list files without root</string>
+    <string name="searchresults">Search Results</string>
+    <string name="itemsselected">Items Selected</string>
+    <string name="newhomedirectory">New Home Directory</string>
+    <string name="rename">Rename</string>
+    <string name="save">Save</string>
+    <string name="renameerror">Rename Unsuccessful</string>
+    <string name="renamed">Rename Successful</string>
+    <string name="bookmarksadded">Bookmarks Added</string>
+    <string name="fileexist">File with same name already exists </string>
+    <string name="filecreated">File Created</string>
+    <string name="searchpath">Search Path</string>
+    <string name="enterfile">Enter File Name</string>
+    <string name="name">Name</string>
+    <string name="date">Date</string>
+    <string name="location">Location</string>
+    <string name="size">Size of Folder</string>
+    <string name="totalitems">Total Items</string>
+    <string name="enterzipname">Enter Zip Name</string>
+    <string name="noappfound">No App found to open this file</string>
+    <string name="copying">Copying</string>
+    <string name="moving">Moving</string>
+    <string name="add">Add</string>
+    <string name="tab">Tab</string>
+    <string name="file">File</string>
+    <string name="folder">Folder</string>
+    <string name="newfolder">New Folder</string>
+    <string name="entername">Enter Name</string>
+    <string name="extracting">Extracting</string>
+    <string name="stopping">Stopping</string>
+    <string name="guide1">Welcome to Amaze File Manager</string>
+    <string name="guide2">Touch the blue strip to show or hide PathBar</string>
+    <string name="guide3">Touch and hold any file for more options</string>
+    <string name="guide4">Like copy,move,properties etc</string>
+    <string name="guide5">Use Back Button of your device to exit app anytime&#8230;</string>
+    <string name="guide6">..And use left arrow button for navigation in file manager</string>
+    <string name="maintab">Main Tab can\'t be removed</string>
+    <string name="openparent">Open Parent Directory</string>
+    <string name="openwith">Open with</string>
+    <string name="share">Share</string>
+    <string name="about">About</string>
+    <string name="extract">Extract</string>
+    <string name="compress">Compress</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="confirm">Confirm</string>
+    <string name="deleting">Deleting</string>
+    <string name="questiondelete">Do you really want to delete following files?</string>
+    <string name="questionset">Do you want to set current path as home for this tab?</string>
+    <string name="viewmode">View Mode</string>
+    <string name="uimode">UI Mode</string>
+    <string name="directorysort">Directory Sort Mode</string>
+    <string name="sortby">Sort By</string>
+    <string name="theme">Theme</string>
+    <string name="skin">Skin</string>
+    <string name="random">Random Skin</string>
+    <string name="random_summary">Sets random primary color at startup</string>
+    <string name="colorize">Colorize Icons</string>
+    <string name="colorize_summary">Sets static icon color. Doesn\'t override directory icon color preference.</string>
+    <string name="back">Back</string>
+    <string name="home">Home</string>
+    <string name="paste">Paste</string>
+    <string name="close">Close</string>
+    <string name="history">History</string>
+    <string name="refresh">Refresh</string>
+    <string name="copy">Copy</string>
+    <string name="rootmode">Root Explorer</string>
+    <string name="rootmodesummary">For rooted device only. Check it only if you are sure about it.</string>
+    <string name="mountsystemsummary">Enable this if you want to edit System Files</string>
+    <string name="mountsystem">Mount System Folders as Writable</string>
+    <string name="rootfailure">Root Access not granted</string>
+    <string name="selectall">Select All</string>
+    <string name="delete">Delete</string>
+    <string name="setashome">Set As Home</string>
+    <string name="sethome">Set Home Directory</string>
+    <string name="foldercolor">Folder Color</string>
+    <string name="imagegallery">Image Gallery</string>
+    <string name="fileexplorer">File Explorer</string>
+    <string name="changegallerypath">Change Gallery Path</string>
+    <string name="usedefaultgallerypath">Use Default Image Gallery Path</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <string name="simple">Simple UI</string>
+    <string name="card">Card UI</string>
+    <!-- Theme -->
+    <string name="light">Material Light</string>
+    <string name="dark">Material Dark</string>
+    <string name="daytime">Daytime</string>
+    <!--Skin-->
+    <string name="red">Red</string>
+    <string name="pink">Pink</string>
+    <string name="purple">Purple</string>
+    <string name="deep_purple">Deep Purple</string>
+    <string name="indigo">Indigo</string>
+    <string name="blue">Blue</string>
+    <string name="light_blue">Light Blue</string>
+    <string name="cyan">Cyan</string>
+    <string name="teal">Teal</string>
+    <string name="green">Green</string>
+    <string name="light_green">Light Green</string>
+    <string name="amber">Amber</string>
+    <string name="orange">Orange</string>
+    <string name="deep_orange">Deep Orange</string>
+    <string name="brown">Brown</string>
+    <string name="black">Black</string>
+    <string name="blue_grey">Blue Grey</string>
+    <string name="supersu">SuperSU</string>
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">Folders On Top</string>
+    <string name="filesOnTop">Files On Top</string>
+    <string name="noneOnTop">None On Top</string>
+    <!--SortBy-->
+    <string name="sortName">Name</string>
+    <string name="lastModified">Last Modified</string>
+    <string name="sortSize">Size</string>
+    <string name="sortNameDesc">Name (Desc)</string>
+    <string name="lastModifiedDesc">Last Modified (Desc)</string>
+    <string name="sortSizeDesc">Size (Desc)</string>
+    <!--ListMode-->
+    <string name="detailedView">Detailed View</string>
+    <string name="simpleView">Simple View</string>
+    <!--Folder-->
+    <string name="Yellow">Yellow</string>
+    <string name="pick_a_file">Pick a file</string>
+    <string name="process_viewer">Process Viewer</string>
+    <string name="in_safe">Insufficient space</string>
+    <string name="no_file_overwrite">No File Overwritten</string>
+    <string name="skip">Skip</string>
+    <string name="overwrite">Overwrite</string>
+    <string name="cant_read_file">Can\'t read file</string>
+    <string name="not_allowed">Not Allowed</string>
+    <string name="processes">Processes</string>
+    <string name="searching">Searching</string>
+    <string name="copying_fles">Copying Files</string>
+    <string name="done">Done</string>
+    <string name="Extracting_fles">Extracting Files</string>
+    <string name="items">Items</string>
+    <string name="item">Item</string>
+    <string name="set">Set</string>
+    <string name="enablerootmde">Enable Root Mode</string>
+    <string name="goback">Go Back</string>
+    <string name="foldercreated">Folder Created</string>
+    <string name="newfile">New File</string>
+    <string name="nofiles">No Files</string>
+    <string name="tapnhold">Tap and hold on a File or Folder for more options</string>
+    <string name="pathcopied">Path copied to clipboard</string>
+    <string name="used">Used By Others:  </string>
+    <string name="free">Free Space:  </string>
+    <string name="atroot">You are at the root</string>
+    <string name="listview">List View</string>
+    <string name="gridview">Grid View</string>
+    <string name="setlistview">Setting ListView</string>
+    <string name="setgridview">Setting GridView</string>
+    <string name="permission">Permissions</string>
+    <string name="hide">Hide</string>
+    <string name="exit">Exit</string>
+    <string name="enternewname">Enter new name</string>
+    <string name="doforall">Do for all items</string>
+    <string name="gridcolumnno">Number of columns in grid view</string>
+    <string name="randomDialog">Random</string>
+    <string name="setRandom">Changes will take place after you restart the app</string>
+    <string name="authors">Authors</string>
+    <string name="changelog">Changelog</string>
+    <string name="fullChangelog">Full Changelog</string>
+    <string name="ok">OK</string>
+    <string name="chooseUI">Choose Item UI</string>
+    <string name="ui">Interface</string>
+    <string name="general">General</string>
+    <string name="thumbSummary">Show Thumbnails of apps and images</string>
+    <string name="thumb">Show Thumbnails</string>
+    <string name="hidden">Show Hidden Files and Folders</string>
+    <string name="lastModifiedSummary">Show the date and time when the file was modified last time</string>
+    <string name="lastModifiedPref">Show Last Modified</string>
+    <string name="sizePrefSummary">Show size of files and number of items in folders</string>
+    <string name="sizePref">Show Sizes</string>
+    <string name="miscellaneous">Miscellaneous</string>
+    <string name="rootPrefSummary">Show Permissions of Files and Folders</string>
+    <string name="rootPref">Show Permissions</string>
+    <string name="aboutFileManager">About Amaze File Manager</string>
+    <string name="version">Version</string>
+    <string name="rate">Rate the app</string>
+    <string name="license">Open Source Licenses</string>
+    <string name="feedback">Send Feedback</string>
+    <string name="hiddenfiles">Hidden Files</string>
+    <string name="type">Type</string>
+    <string name="typeDesc">Type (Desc)</string>
+    <string name="rootdirectory">Root</string>
+    <string name="new_string">New</string>
+    <string name="setringtone">Set as ringtone</string>
+    <string name="copy_path">Copy Path</string>
+    <string name="addshortcut">Add Shortcut</string>
+    <string name="unsavedchanges">Unsaved Changes</string>
+    <string name="unsavedchangesdesc">You have unsaved changes, do you want to save them before exiting?</string>
+    <string name="saving">Saving</string>
+    <string name="packageinstaller">Package Installer</string>
+    <string name="view">View</string>
+    <string name="install">Install</string>
+    <string name="archive">Archive</string>
+    <string name="archtext">This is an archive. What action would you like to perform?</string>
+    <string name="pitext">This is a package installer. What action would you like to perform?</string>
+    <string name="xda_title">XDA thread</string>
+    <string name="xda_summary">Q&amp;A, Help &amp; Troubleshooting</string>
+    <string name="invalid_dir">Invalid Directory</string>
+    <string name="circularimages">Use circular icons for images and videos</string>
+    <string name="circularicons">Use circular icons</string>
+    <string name="back_title">Back navigation</string>
+    <string name="back_summary">Enables custom back navigation at top of the list</string>
+    <string name="details">Details</string>
+    <string name="translators">Translators</string>
+    <string name="german_translation_title">German</string>
+    <string name="italian_translation_title">Italian</string>
+    <string name="french_translation_title">French</string>
+    <string name="russian_translation_title">Russian</string>
+    <string name="spanish_translation_title">Spanish</string>
+    <string name="basque_translation_title">Basque</string>
+    <string name="chinese_translation_title">Chinese</string>
+    <string name="serbian_translation_title">Serbian</string>
+    <string name="turkish_translation_title">Turkish</string>
+    <string name="ukrainian_translation_title">Ukrainian</string>
+    <string name="portuguese_translation_title">Portuguese</string>
+    <string name="polish_translation_title">Polish</string>
+    <string name="korean_translation_title">Korean</string>
+    <string name="greek_translation_title">Greek</string>
+    <string name="dutch_translation_title">Dutch</string>
+    <string name="romanian_translation_title">Romanian</string>
+    <string name="vietnamese_translation_title">Vietnamese</string>
+    <string name="japanese_translation_title">Japanese</string>
+    <string name="brazilian_portuguese_translation_title">Brazilian portuguese</string>
+    <string name="tamil_translation_title">Tamil</string>
+
+    <string name="zip_viewer">Zip Viewer</string>
+    <string name="unin_system_apk">This is a system app, deleting it might lead to system un-stability.\nProceed?</string>
+    <string name="warning">Warning</string>
+    <string name="donate">Donate</string>
+    <string name="archive_preferences">Archive Preferences</string>
+    <string name="archive_extract_folder">Archive Extract Folder</string>
+    <string name="zip_create_folder">Zip Create Folder</string>
+    <string name="archive_summary">Archive files will be extracted to this folder. Default value is the directory in which archive is present</string>
+    <string name="zip_summary">New zip files will be created in this folder. Default value is the directory in which files are present</string>
+    <string name="openas">Open As</string>
+    <string name="text">Text</string>
+    <string name="audio">Audio</string>
+    <string name="video">Video</string>
+    <string name="other">Other</string>
+    <string name="image">Image</string>
+    <string name="contributors">Contributors</string>
+    <string name="savepaths">Remember paths</string>
+    <string name="savepathsummary">When starting up, the most recently viewed folder for each tab will be displayed</string>
+    <string name="select_intent">Select</string>
+    <string name="md5copied">MD5 copied to clipboard</string>
+    <string name="generating">Generating..</string>
+    <string name="tables">Table(s)</string>
+    <string name="database">Database</string>
+    <string name="colourednavigation">Colored Navigation bar</string>
+    <string name="colourednavigationsum">Whether or not the system navigation bar is colored with the skin</string>
+
+    <string name="sd_card_grant_next">sd_card_grant_next</string>
+    <string name="sd_card_grant_first">sd_card_grant_first</string>
+    <string name="fab_skin">FAB skin</string>
+    <string name="gplus_pic_title">Sign-In with G+</string>
+    <string name="gplus_pic_summary">Show G+ cover pic in drawer</string>
+    <string name="icon_credits">Graphics by &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
+
+    <string name="color_title">Color</string>
+    <string name="color_summary">Set color to various UI components</string>
+    <string name="primary_color_title">Primary Color (Left Tab)</string>
+    <string name="primary_color_summary">Set color to large UI elements for the left tab</string>
+    <string name="accent_color_title">Accent Color</string>
+    <string name="accent_color_summary">Set color to FAB and other small UI elements</string>
+    <string name="icon_color_title">Icon Color</string>
+    <string name="icon_color_summary">Set color to icons</string>
+    <string name="hide_mode_title">Hide Mode</string>
+    <string name="none">None</string>
+    <string name="hide_toolbar">Hide Toolbar</string>
+    <string name="hide_appbar">Hide whole App bar</string>
+    <string name="choose_color">Choose color</string>
+    <string name="g_plus_community_title">Join G+ Community</string>
+    <string name="hide_mode_nothing">App bar remains intact</string>
+    <string name="hide_mode_toolbar">Toolbar hides on scroll</string>
+    <string name="hide_mode_app_bar">App bar hides on scroll</string>
+    <string name="no_cover_photo">No cover photo</string>
+    <string name="files">Files</string>
+    <string name="directories">Directories</string>
+    <string name="textreader">Text Reader</string>
+    <string name="databasereader">Database Reader</string>
+    <string name="showDividers">Show Dividers</string>
+    <string name="topFab">FAB on App bar</string>
+    <string name="topFabS">Whether + button should be at the top or bottom. Only applicable if app bar doesn\'t hide.</string>
+    <string name="needsaccess">Write Access Required</string>
+    <string name="needsaccesssummary">Please choose the root directory of \t</string>
+    <string name="needsaccesssummary1">\tto grant write access to operate </string>
+    <string name="smb_con">SMB Connection</string>
+    <string name="smb_server">Server IP Address</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="anonymous">Anonymous</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="extstorage">External Storage</string>
+    <string name="folders">Folders</string>
+    <string name="videos">Videos</string>
+    <string name="apks">Apks</string>
+    <string name="documents">Documents</string>
+    <string name="images">Images</string>
+    <string name="clear">Clear</string>
+    <string name="md5">md5: </string>
+    <string name="md5_2">Copy md5</string>
+    <string name="total">Total: </string>
+    <string name="calculating"> calculating </string>
+    <string name="sort">Sort</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
+    <string name="defualt">Default</string>
+    <string name="doit">Do it</string>
+    <string name="wanthelp"><u>Need help?</u></string>
+    <string name="quick">Quick Access</string>
+    <string name="recent">Recent Files</string>
+    <string name="edit">Edit</string>
+    <string name="find">Find in page</string>
+    <string name="grant">Grant</string>
+    <string name="grantper">Grant permission</string>
+    <string name="grantfailed">Permission not granted</string>
+    <string name="granttext">App needs storage permission to continue. Canceling this dialog will exit the app.</string>
+    <string name="grantgplus">App needs permission for this feature. Canceling this dialog will uncheck this feature.</string>
+    <string name="operationunsuccesful">Operation Unsuccessful</string>
+    <string name="creatingfile">Creating File</string>
+    <string name="creatingfolder">Creating Folder</string>
+    <string name="renaming">Renaming</string>
+    <string name="cantbeempty">%s cannot be empty</string>
+    <string name="ip">Address</string>
+    <string name="connectionname">Connection name</string>
+    <string name="nodevicefound">No device found</string>
+    <string name="path">Path</string>
+    <string name="renamebookmark">Modify Bookmark</string>
+    <string name="cut">Cut</string>
+    <string name="empty"></string>
+    <string name="search">Search</string>
+    <string name="invalid_name">Invalid Name</string>
+    <string name="search_hint">Type to search&#8230;</string>
+    <string name="advanced_search">Advanced Search</string>
+    <string name="regular_expression">Regular Expression</string>
+    <string name="regular_expression_summary">Search using a BASH style regular expression</string>
+    <string name="match_content">Match content</string>
+    <string name="match_content_summary">If set, regular expression will be matched with entire file name,
+        will look for occurrence otherwise.</string>
+    <string name="start_ftp">Start</string>
+    <string name="stop_ftp">Stop</string>
+    <string name="ftp_status_running">Running</string>
+    <string name="ftp_status_not_running">Not Running</string>
+    <string name="ftp_no_wifi">Make sure you\'re connected to WiFi</string>
+    <string name="domain">Domain</string>
+    <string name="invalid">Invalid %s</string>
+    <string name="ftp_notif_starting">FTP Server is starting</string>
+    <string name="ftp_notif_title">Amaze FTP Server running</string>
+    <string name="ftp_notif_text">at %s</string>
+    <string name="ftp_notif_stop_server">STOP</string>
+    <string name="ftp_port_edit_menu_title">Choose FTP port</string>
+    <string name="ftp_port_change_success">FTP port changed successfully</string>
+    <string name="ftp_port_change_error_invalid">Invalid port number selected</string>
+    <string name="primary_two_title">Primary Color (Right Tab)</string>
+    <string name="primary_two_summary">Set color to large UI elements for the right tab</string>
+    <string name="g_plus">Google Plus</string>
+    <string name="support_development">Support Development</string>
+    <string name="report_bugs_title">Report Bugs</string>
+    <string name="report_bugs_summary">Report bugs or request new feature</string>
+    <string name="translate_title">Translate</string>
+    <string name="translate_summary">Translate Amaze in your language</string>
+    <string name="g_plus_community_summary">Take part in beta testing and discussions
+        related to development</string>
+    <string name="easter_egg_title">Studio Mode</string>
+    <string name="paypal_copy_message">Paypal id copied to clipboard</string>
+    <string name="searchingdevices">Searching for devices</string>
+    <string name="use_custom_ip">Use custom IP</string>
+    <string name="bookmark_lost">Bookmark not found, recreating&#8230;</string>
+
+    <string name="smb_instructions">
+        <html>
+            <body>
+                <h1>How to access shared windows folder on android (smb)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Enable File Sharing</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Open the Control Panel, click Choose homegroup and sharing options under Network
+                        and Internet, and click Change advanced sharing settings. Enable the file and
+                        printer sharing feature.\n\n
+                    </p>
+
+                    <li>
+                        <b>Additional File Sharing settings</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        You may also want to configure the other advanced sharing settings here. \n
+                        For example, you could enable access to your files without a password if you trust all
+                        the devices on your local network.Once file and printer sharing is enabled, you can
+                        open File Explorer or Windows Explorer, right-click a folder you want to share, and
+                        select Properties. \n
+                        Click the Share button and make the folder available on the network.\n\n
+                        </p>
+
+                    <li>
+                        <b>Make sure both devices are on same Wifi</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        This feature makes files available on the local network, so your PC and mobile devices
+                        have to be on the same local network. You can\’t access a shared Windows folder
+                        over the Internet or when your smartphone is connected to its mobile data — it
+                        has to be connected to Wi-Fi.\n\n
+                    </p>
+
+                    <li>
+                        <b>Find IP Address</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Open Command Prompt. Type \'ipconfig\' and press Enter. Look for Default Gateway
+                        under your network adapter for your router\'s IP address. Look for
+                        \\\"IPv4 Address\\\" under the same adapter section to find your computer\'s IP
+                        address.\n\n
+                    </p>
+
+                    <b>Enter details in smb dialog box</b>\n
+                </ul>
+            </body>
+        </html>
+    </string>
+    <string name="share_limit">Can\'t share more than 100 files</string>
+    <string name="otg_access">Select the root of OTG device</string>
+    <string name="no_profile_pic">No G+ profile picture</string>
+    <string name="opening">Opening..</string>
+    <string name="information">Information</string>
+    <!-- reference to file accessed date -->
+    <string name="accessed">Accessed</string>
+    <!-- reference to file modified date -->
+    <string name="modified">Modified</string>
+
+    <string name="title">Title</string>
+    <string name="artist">Artist</string>
+    <string name="album">Album</string>
+    <string name="year">Year</string>
+    <string name="duration">Duration</string>
+    <string name="comment">Comment</string>
+    <!-- reference to audio/video file -->
+    <string name="container">Container</string>
+    <string name="codec">Codec</string>
+    <string name="channels">Channels</string>
+    <string name="sample_rate">Sample Rate</string>
+    <string name="bitrate">Bitrate</string>
+    <string name="dimensions">Dimensions</string>
+    <string name="frame_rate">Frame Rate</string>
+    <string name="image_type">Image Type</string>
+    <string name="width">Width</string>
+    <string name="height">Height</string>
+    <string name="date_modified">Date Modified</string>
+    <string name="software">Software</string>
+    <string name="creator">Creator</string>
+    <string name="camera_brand">Camera Brand</string>
+    <string name="camera_model">Camera Model</string>
+    <string name="date_taken">Date Taken</string>
+    <string name="exposure_time">Exposure Time</string>
+    <string name="aperture_value">Aperture Value</string>
+    <string name="image_iso">ISO Speed Rating</string>
+    <string name="flash_fired">Flash Fired</string>
+    <string name="focal_length">Focal Length</string>
+    <string name="document">Document</string>
+    <string name="subject">Subject</string>
+    <string name="author">Author</string>
+    <string name="keywords">Keywords</string>
+    <string name="producer">Producer</string>
+    <string name="created">Created</string>
+    <string name="format">Format</string>
+    <string name="pages">Number of Pages</string>
+    <!-- reference to a document file -->
+    <string name="optimized">Optimized</string>
+    <string name="security">Security</string>
+    <string name="paper_size">Paper Size</string>
+
+    <string name="root_error">Error starting an interactive root shell</string>
+
+    <!-- %s will be replaced with either copied or moved -->
+    <string name="copy_error">Some files weren\'t successfully %s</string>
+    <string name="copied">copied</string>
+    <string name="moved">moved</string>
+    <string name="process_chart_description">Progress</string>
+    <string name="copy_complete">Copy Complete</string>
+    <string name="move_complete">Move Complete</string>
+    <string name="waiting_title">Waiting</string>
+    <string name="waiting_content">Waiting for operation to complete</string>
+    <string name="extract_complete">Extraction complete</string>
+    <string name="compression_complete">Compression Complete</string>
+    <string name="compressing">Compressing</string>
+    <string name="cancelled">Cancelled</string>
+    <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+    <string name="written">Written</string>
+    <string name="out_of">out of</string>
+    <!-- reference to - 'Processing file # of #' in process viewer -->
+    <string name="of">of</string>
+    <string name="processing_file">Processing file</string>
+    <string name="current_speed">Current Speed</string>
+    <string name="smb_launch_error">You will need to copy this file to storage to open it</string>
+    <string name="error_file_not_found">Error: File Not Found</string>
+    <string name="error_io">I/O Error</string>
+    <string name="error_root_not_permitted">Error: Root permission not granted</string>
+    <string name="medium_text">Medium Text</string>
+    <string name="tap_and_hold_tips">Tap and hold on a File or Folder for more options</string>
+    <string name="permission_read">Read</string>
+    <string name="permission_write">Write</string>
+    <string name="permission_execute">Execute</string>
+    <string name="permission_owner">Owner</string>
+    <string name="permission_group">Group</string>
+    <string name="permission_other">Other</string>
+    <string name="clipboard_path_copy">Path copied to clipboard</string>
+    <string name="error_busybox">Busybox not found. Closing interactive shell.</string>
+    <string name="service_timer">Time Elapsed</string>
+    <string name="please_wait">Please Wait</string>
+</resources>
+

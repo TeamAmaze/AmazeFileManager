@@ -1,0 +1,192 @@
+<!--
+  Copyright 2012 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+    <style name="menu_labels_style_light">
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/fab_label_background</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <!-- appCompat -->
+    <!-- light -->
+    <style name="appCompatLight" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="popup">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="toolbar_theme">@style/overflow_white1</item>
+
+    </style>
+    <style name="overflow_white1" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="android:textColorSecondary">#ffffff</item>
+        <item name="android:textColorPrimary">#ffffff</item>
+        <item name="android:textColorHint">#ffffff</item>
+        <item name="actionModeStyle">@style/custom_action_mode_light</item>
+        <item name="android:actionModeStyle">@style/custom_action_mode_light</item>
+
+    </style>
+    <style name="custom_action_mode_light" parent="Widget.AppCompat.ActionMode">
+        <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="background">@color/holo_dark_action_mode</item>
+        <item name="android:background">@color/holo_dark_action_mode</item>
+    </style>
+
+    <!-- dark -->
+    <style name="appCompatDark" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="popup">@style/Theme.AppCompat</item>
+        <item name="toolbar_theme">@style/overflow_white2</item>
+    </style>
+    <style name="overflow_white2" parent="Theme.AppCompat">
+
+        <item name="android:textColorSecondary">#ffffff</item>
+        <item name="android:textColorPrimary">#ffffff</item>
+        <item name="android:textColorHint">#ffffff</item>
+        <item name="actionModeStyle">@style/custom_action_mode_dark</item>
+        <item name="android:actionModeStyle">@style/custom_action_mode_dark</item>
+    </style>
+    <style name="custom_action_mode_dark" parent="Widget.AppCompat.ActionMode">
+        <item name="background">@color/holo_dark_action_mode</item>
+        <item name="android:background">@color/holo_dark_action_mode</item>
+    </style>
+
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/white</item>
+    </style>
+
+
+
+    <!-- styles for preferences -->
+    <!-- light -->
+    <style name="pref_accent_light_red" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_red</item>
+    </style>
+    <style name="pref_accent_light_pink" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_pink</item>
+    </style>
+    <style name="pref_accent_light_purple" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_purple</item>
+    </style>
+    <style name="pref_accent_light_deep_purple" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_deep_purple</item>
+    </style>
+    <style name="pref_accent_light_indigo" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_indigo</item>
+    </style>
+    <style name="pref_accent_light_blue" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_blue</item>
+    </style>
+    <style name="pref_accent_light_light_blue" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_light_blue</item>
+    </style>
+    <style name="pref_accent_light_cyan" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_cyan</item>
+    </style>
+    <style name="pref_accent_light_teal" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_teal</item>
+    </style>
+    <style name="pref_accent_light_green" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_green</item>
+    </style>
+    <style name="pref_accent_light_light_green" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_light_green</item>
+    </style>
+    <style name="pref_accent_light_amber" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_amber</item>
+    </style>
+    <style name="pref_accent_light_orange" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_orange</item>
+    </style>
+    <style name="pref_accent_light_deep_orange" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_deep_orange</item>
+    </style>
+    <style name="pref_accent_light_brown" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_brown</item>
+    </style>
+    <style name="pref_accent_light_black" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_black</item>
+    </style>
+    <style name="pref_accent_light_blue_grey" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_blue_grey</item>
+    </style>
+    <style name="pref_accent_light_super_su" parent="appCompatLight">
+        <item name="colorAccent">@color/accent_super_su</item>
+    </style>
+
+
+    <!-- dark -->
+    <style name="pref_accent_dark_red" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_red</item>
+    </style>
+    <style name="pref_accent_dark_pink" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_pink</item>
+    </style>
+    <style name="pref_accent_dark_purple" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_purple</item>
+    </style>
+    <style name="pref_accent_dark_deep_purple" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_deep_purple</item>
+    </style>
+    <style name="pref_accent_dark_indigo" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_indigo</item>
+    </style>
+    <style name="pref_accent_dark_blue" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_blue</item>
+    </style>
+    <style name="pref_accent_dark_light_blue" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_light_blue</item>
+    </style>
+    <style name="pref_accent_dark_cyan" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_cyan</item>
+    </style>
+    <style name="pref_accent_dark_teal" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_teal</item>
+    </style>
+    <style name="pref_accent_dark_green" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_green</item>
+    </style>
+    <style name="pref_accent_dark_light_green" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_light_green</item>
+    </style>
+    <style name="pref_accent_dark_amber" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_amber</item>
+    </style>
+    <style name="pref_accent_dark_orange" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_orange</item>
+    </style>
+    <style name="pref_accent_dark_deep_orange" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_deep_orange</item>
+    </style>
+    <style name="pref_accent_dark_brown" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_brown</item>
+    </style>
+    <style name="pref_accent_dark_black" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_black</item>
+    </style>
+    <style name="pref_accent_dark_blue_grey" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_blue_grey</item>
+    </style>
+    <style name="pref_accent_dark_super_su" parent="appCompatDark">
+        <item name="colorAccent">@color/accent_super_su</item>
+    </style>
+</resources>

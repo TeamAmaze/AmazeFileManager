@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/material_generic"
+        app:cardElevation="@dimen/material_generic_card_elevation"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/material_generic"
+            >
+
+            <!-- image title -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_large"
+                android:paddingBottom="@dimen/material_generic"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/image"
+                    android:textColor="@android:color/darker_gray"
+                    />
+            </RelativeLayout>
+
+            <!-- image type -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_image_type_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/image_type"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_image_type_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_image_type_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                />
+
+            <!-- width -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_image_width_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/width"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_image_width_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_image_width_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                />
+
+            <!-- height -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_image_height_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/height"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_image_height_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_image_height_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                android:visibility="gone"
+                />
+
+            <!-- date modified -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_image_date_modified_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/date_modified"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_image_date_modified_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_image_date_modified_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                android:visibility="gone"
+                />
+
+            <!-- software -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_image_software_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/software"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_image_software_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_image_software_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                android:visibility="gone"
+                />
+
+            <!-- creator -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_image_creator_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/creator"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_image_creator_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_image_creator_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                android:visibility="gone"
+                />
+
+            <!-- camera brand -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_image_camera_brand_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/camera_brand"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_image_camera_brand_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_image_camera_brand_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                android:visibility="gone"
+                />
+
+            <!-- camera model -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_image_camera_model_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/camera_model"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_image_camera_model_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_image_camera_model_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                android:visibility="gone"
+                />
+
+            <!-- date taken -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_image_date_taken_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/date_taken"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_image_date_taken_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_image_date_taken_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                android:visibility="gone"
+                />
+
+            <!-- exposure time -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_image_exposure_time_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/exposure_time"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_image_exposure_time_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_image_exposure_time_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                android:visibility="gone"
+                />
+
+            <!-- aperture value -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_image_aperture_value_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/aperture_value"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_image_aperture_value_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_image_aperture_value_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                android:visibility="gone"
+                />
+
+            <!-- ISO speed rating -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_image_iso_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/image_iso"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_image_iso_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_image_iso_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                android:visibility="gone"
+                />
+
+            <!-- flash fired -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_image_flash_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/flash_fired"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_image_flash_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_image_flash_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                android:visibility="gone"
+                />
+
+            <!-- focal length -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_image_focal_length_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/focal_length"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_image_focal_length_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_image_focal_length_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

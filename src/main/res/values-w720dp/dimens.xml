@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="drawer_width">250dp</dimen>
+    <!-- height as per the 16:9 aspect ration rule for drawer header image -->
+    <dimen name="drawer_header_height">140.625dp</dimen>
+    <dimen name="drawer_header_height_with_padding">148.625dp</dimen>
+</resources>
