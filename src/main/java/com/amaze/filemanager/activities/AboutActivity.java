@@ -1,5 +1,5 @@
 package com.amaze.filemanager.activities;
-
+//Gene ben aybike aydemir
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
