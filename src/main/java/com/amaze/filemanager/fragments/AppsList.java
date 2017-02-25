@@ -55,7 +55,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+//meric
 public class AppsList extends ListFragment {
     UtilitiesProviderInterface utilsProvider;
     AppsList app = this;
