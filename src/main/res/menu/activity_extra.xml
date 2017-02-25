@@ -1,0 +1,79 @@
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/paste"
+        android:title="@string/paste"
+        android:icon="@drawable/ic_content_paste_white_36dp"
+        app:showAsAction="always"
+        android:visible="false" />
+    <item
+        android:id="@+id/search"
+        android:title="@string/search"
+        android:icon="@drawable/ic_action_search"
+        app:showAsAction="always" />
+    <item android:id="@+id/home"
+        android:title="@string/home"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_home_white_48dp"
+        />
+
+    <item
+        app:showAsAction="ifRoom"
+        android:id="@+id/item10"
+        android:title="@string/sort"
+        android:icon="@drawable/ic_sort_white_48dp">
+        <menu >
+            <item android:title="@string/sortby"
+                android:id="@+id/sortby"/>
+            <item android:title="@string/directorysort"
+                android:id="@+id/dsort"/>
+        </menu>
+
+    </item>
+    <item android:id="@+id/history"
+        android:icon="@drawable/ic_history_white_48dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/history"
+/>
+    <item
+        android:id="@+id/view"
+        android:title=""/>
+    <item
+        android:id="@+id/hiddenitems"
+        android:visible="false"
+        android:title="@string/hiddenfiles" />
+    <item
+        android:id="@+id/sethome"
+        android:title="@string/setashome"/>
+    <item
+        android:id="@+id/extract"
+        android:title="@string/extract"
+        android:visible="false"/>
+
+    <!-- orderInCategory=9999 to have the element exit always at the end of the list -->
+    <item
+        android:id="@+id/item3"
+        android:title="@string/exit"
+        android:orderInCategory="9999"
+        android:icon="@drawable/ic_action_cancel_light" />
+
+</menu>

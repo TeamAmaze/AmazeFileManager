@@ -1,0 +1,59 @@
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+    
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="60dp">
+    <ImageButton
+        android:id="@+id/delete_button"
+        android:layout_width="48dp"
+        android:gravity="center_vertical"
+        android:layout_alignParentRight="true"
+        android:layout_height="fill_parent"
+        android:src="@drawable/ic_action_cancel_light"
+        android:background="?android:selectableItemBackground"
+        android:contentDescription="@string/delbook" />
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:id="@+id/bookmarkrow"
+        android:layout_toLeftOf="@id/delete_button"
+        android:orientation="vertical"
+        android:paddingLeft="10dip">
+        <TextView
+            android:id="@+id/text1"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:paddingLeft="?android:listPreferredItemPaddingLeft" />
+
+        <TextView
+            android:id="@+id/text2"
+            style="?android:textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:paddingLeft="?android:listPreferredItemPaddingLeft" />
+    </LinearLayout>
+    <!-- A button that, when pressed, will delete this list item row from its container. -->
+
+</RelativeLayout>

@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<!--
+
+Copyright (C) 2014-2015 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+This file is part of Amaze File Manager.
+
+Amaze File Manager is free software: you can redistribute it and/or modify
+
+it under the terms of the GNU General Public License as published by
+
+the Free Software Foundation, either version 3 of the License, or
+
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<resources
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:ignore="MissingTranslation">
+        <string name="app_name">এ্যামেজ ফাইল ম্যানেজার</string>
+
+        <string name="drawer_open">নেভিগেশান ড্রয়ার খুলুন</string>
+
+    <string name="drawer_close">নেভিগেশান ড্রয়ার বন্ধ করুন</string>
+
+    <string name="books">বুকমার্ক</string>
+
+    <string name="icon">আইকন</string>
+
+    <string name="efn">ফাইলের নাম লিখুন</string>
+
+    <string name="storage">স্টোরেজ</string>
+
+    <string name="gallery">গ্যালারি</string>
+
+    <string name="apps">এ্যাপ ম্যানেজার</string>
+
+    <string name="ftp">এফটিপি সার্ভার</string>
+
+    <string name="bookmanag">বুকমার্ক ম্যানেজার</string>
+
+    <string name="setting">সেটিংস</string>
+
+    <string name="select">আইটেম সিলেক্ট করুন</string>
+
+    <string name="pressagain">বের হওয়ার জন্য আবার চাপুন</string>
+
+    <string name="open">খুলুন</string>
+
+    <string name="backup">ব্যাকআপ করুন</string>
+
+    <string name="uninstall">আনইন্সটল</string>
+
+    <string name="play">প্লে স্টোর</string>
+
+    <string name="properties">বিস্তারিত</string>
+
+    <string name="copyingapk">এপিকে কপি করা হচ্ছে এ</string>
+
+    <string name="addbook">বুকমার্ক সংযুক্ত করুন</string>
+
+    <string name="addtobook">বুকমার্কে সংযুক্ত করুন</string>
+
+    <string name="enterpath">পাথটি লিখুন</string>
+
+    <string name="cancel">বাতিল</string>
+
+    <string name="create">তৈরি করুন</string>
+
+    <string name="success">সফল</string>
+
+    <string name="filenotexists">ফাইলটি নেই</string>
+
+    <string name="loading">লোড হচ্ছে...</string>
+
+    <string name="file_empty">ফাইলটি খালি</string>
+
+    <string name="error">ইরোর</string>
+
+    <string name="cantlistfiles">রুট ছাড়া ফাইলের তালিকা তৈরি করা যাচ্ছে না</string>
+
+    <string name="searchresults">অনুসন্ধানের ফলাফল</string>
+
+    <string name="itemsselected">আইটেম নির্বাচিত হয়েছে</string>
+
+    <string name="newhomedirectory">নতুন হোম ডাইরেক্টরি</string>
+
+    <string name="rename">পুনরায় নামকরণ</string>
+
+    <string name="save">সংরক্ষণ করুন</string>
+
+    <string name="renameerror">পুনরায় নামকরণ সফল হয়নি</string>
+
+    <string name="renamed">পুনরায় নামকরণ সফল হয়েছে</string>
+
+    <string name="bookmarksadded">বুকমার্ক সংযুক্ত হয়েছে</string>
+
+    <string name="fileexist">একই নামে আরেকটি ফাইল আছে</string>
+
+    <string name="filecreated">ফাইলটি তৈরি হয়েছে</string>
+
+    <string name="searchpath">খোঁজার পাথ</string>
+
+    <string name="enterfile">ফাইলের নামটি দিন</string>
+
+    <string name="name">নাম: </string>
+
+    <string name="date">তারিখ: </string>
+
+    <string name="location">সংরক্ষণস্হল: </string>
+
+    <string name="size">ফোল্ডারের আকার: </string>
+
+    <string name="totalitems">সর্বমোট আইটেম: </string>
+
+    <string name="enterzipname">জিপের নামটি দিন</string>
+
+    <string name="noappfound">কোন অ্যাপ পাওয়া যায়নি ফাইলটি খোলার জন্য</string>
+
+    <string name="copying">কপি হচ্ছে</string>
+
+    <string name="moving">সরানো হচ্ছে</string>
+
+    <string name="add">সংযুক্ত করুন</string>
+
+    <string name="tab">ট্যাব</string>
+
+    <string name="file">ফাইল</string>
+
+    <string name="folder">ফোল্ডার</string>
+
+    <string name="newfolder">নতুন ফোল্ডার</string>
+
+    <string name="entername">নাম দিন</string>
+
+    <string name="extracting">এ্যাক্সট্যাক্ট করা হচ্ছে</string>
+
+    <string name="stopping">থামানো হচ্ছে</string>
+
+    <string name="guide1">স্বাগতম এ্যামেজ ফাইল ম্যানেজারে!</string>
+
+    <string name="guide2">নীল স্ট্রিপটা স্পর্শ করুন পাথবার দেখতে বা লুকাতে</string>
+
+    <string name="guide3">যেকোনো ফাইলকে স্পর্শ করে ধরে রাখুন অারও অপসনের জন্য</string>
+
+    <string name="guide4">যেমন কপি, স্থানান্তর করা, বিস্তারিত জানা ইত্যাদি করার জন্য</string>
+
+    <string name="guide5">আপনার ডিভাইসের ব্যাক বাটনটি ব্যবহার করুন যেকোনো সময় অ্যাপ থেকে বের হওয়ার জন্য...</string>
+
+    <string name="guide6">..And use left arrow button for navigation in file manager</string>
+
+    <string name="maintab">প্রধান ট্যাবটি বাদ দেওয়া যাবেনা</string>
+
+    <string name="openparent">প্যারেন্ট ডাইরেক্টরিটি খুলুন</string>
+
+    <string name="openwith">ওপেন করুন</string>
+
+    <string name="share">শেয়ার</string>
+
+    <string name="about">অ্যাপটি সম্বন্ধে</string>
+
+    <string name="extract">এ্যাক্সট্যাক্ট</string>
+
+    <string name="compress">কম্প্রেস</string>
+
+    <string name="yes">হ্যাঁ</string>
+
+    <string name="no">না</string>
+
+    <string name="confirm">নিশ্চিত</string>
+
+    <string name="deleting">মুছে ফেলা হচ্ছে</string>
+
+    <string name="questiondelete">অাপনি কি নির্ধারিত ফাইলগুলো মুছে ফেলার ব্যাপারে নিশ্চিত?</string>
+
+    <string name="questionset">Do you want to set current path as home for this tab?</string>
+
+    <string name="viewmode">ভিউ মোড</string>
+
+    <string name="uimode">ইউআই মোড</string>
+
+    <string name="directorysort">Directory Sort Mode</string>
+
+    <string name="sortby">Sort By</string>
+
+    <string name="theme">থিম</string>
+
+    <string name="skin">স্কিন</string>
+
+    <string name="random">Random Skin</string>
+
+    <string name="random_summary">Sets random primary color at startup</string>
+
+    <string name="colorize">Colorize Icons</string>
+
+    <string name="colorize_summary">Sets static icon color. Doesn\'t override directory icon color preference.</string>
+
+    <string name="back">ফিরে যান</string>
+
+    <string name="home">হোম</string>
+
+    <string name="paste">পেস্ট</string>
+
+    <string name="close">বন্ধ করুন</string>
+
+    <string name="history">ইতিহাস</string>
+
+    <string name="refresh">Refresh</string>
+
+    <string name="copy">কপি</string>
+
+    <string name="rootmode">রুট এক্সপ্লোরার</string>
+
+    <string name="rootmodesummary">For rooted device only. Check it only if you are sure about it.</string>
+
+    <string name="mountsystemsummary">Enable this if you want to edit System Files</string>
+
+    <string name="mountsystem">Mount System Folders as Writable</string>
+
+    <string name="rootfailure">রুট প্রবেশ গ্রহণযোগ্য নয়</string>
+
+    <string name="selectall">সবগুলো নির্বাচন করুন</string>
+
+    <string name="delete">বাতিল</string>
+
+    <string name="setashome">হোম হিসাবে নির্ধারণ করুন</string>
+
+    <string name="sethome">হোম ডাইরেক্টরি নির্বাচন করুন</string>
+
+    <string name="foldercolor">ফোল্ডারের রং</string>
+
+    <string name="imagegallery">চিত্র গ্যালারি</string>
+
+    <string name="fileexplorer">ফাইল এক্সপ্লোরার</string>
+
+    <string name="changegallerypath">গ্যালারি পাথ বদলি করুন</string>
+
+    <string name="usedefaultgallerypath">প্রাথমিক চিত্র গ্যালারি পাথটি ব্যবহার করুন</string>
+
+
+    <!-- New -->
+
+    <!-- Array -->
+
+
+    <!-- UI -->
+
+    <string name="simple">সাধারণ ইউঅাই</string>
+
+    <string name="card">কার্ড ইউআই</string>
+
+    <!-- Theme -->
+
+    <string name="light">ম্যাটেরিয়াল লাইট</string>
+
+    <string name="dark">ম্যাটেরিয়াল ডার্ক</string>
+
+    <string name="daytime">ডেটাইম</string>
+
+    <!--Skin-->
+
+    <string name="red">লাল</string>
+
+    <string name="pink">গোপাল</string>
+
+    <string name="purple">বেগুনি</string>
+
+    <string name="deep_purple">গাঢ় বেগুনি</string>
+
+    <string name="indigo">ইন্ডিগো</string>
+
+    <string name="blue">নীল</string>
+
+    <string name="light_blue">হালকা নীল</string>
+
+    <string name="cyan">সায়ান</string>
+
+    <string name="teal">টিয়াল</string>
+
+    <string name="green">সবুজ</string>
+
+    <string name="light_green">হালকা সবুজ</string>
+
+    <string name="amber">এ্যাম্বার</string>
+
+    <string name="orange">কমলা</string>
+
+    <string name="deep_orange">গাঢ় কমলা</string>
+
+    <string name="brown">বাদামি</string>
+
+    <string name="black">কালো</string>
+
+    <string name="blue_grey">বাদামি নীল</string>
+
+    <string name="supersu">সুপারএসইউ</string>
+
+    <!--DirectorySortMode-->
+
+    <string name="foldersOnTop">ফোল্ডারগুলো সবার উপরে</string>
+
+    <string name="filesOnTop">ফাইলগুলো সবার উপরে</string>
+
+    <string name="noneOnTop">কোনো কিছুই সবার উপরে না</string>
+
+    <!--SortBy-->
+
+    <string name="sortName">নাম</string>
+
+    <string name="lastModified">সর্বশেষ পরিবর্তিত হয়েছে</string>
+
+    <string name="sortSize">আকার</string>
+
+    <string name="sortNameDesc">নাম (Desc)</string>
+
+    <string name="lastModifiedDesc">সর্বশেষ পরিবর্তিত হয়েছে (Desc)</string>
+
+    <string name="sortSizeDesc">আকার (Desc)</string>
+
+    <!--ListMode-->
+
+    <string name="detailedView">বিস্তারিত দেখুন</string>
+
+    <string name="simpleView">সিম্পল দেখুন</string>
+
+    <!--Folder-->
+
+    <string name="Yellow">হলুদ</string>
+
+    <string name="pick_a_file">একটি ফাইল নির্বাচন করুন</string>
+
+    <string name="process_viewer">Process Viewer</string>
+
+    <string name="in_safe">অপর্যাপ্ত জায়গা</string>
+
+    <string name="no_file_overwrite">No File Overwritten</string>
+
+    <string name="skip">Skip</string>
+
+    <string name="overwrite">Overwrite</string>
+
+    <string name="cant_read_file">Can\'t read file</string>
+
+    <string name="not_allowed">Not Allowed</string>
+
+    <string name="processes">Processes</string>
+
+    <string name="searching">অনুসন্ধান করা হচ্ছে</string>
+
+    <string name="copying_fles">ফাইলগুলো কপি করা হচ্ছে</string>
+
+    <string name="done">সম্পন্ন হয়েছে</string>
+
+    <string name="Extracting_fles">ফাইলগুলো এক্সট্র্যাক্ট করা হচ্ছে</string>
+
+    <string name="items">Items</string>
+
+    <string name="item">Item</string>
+
+    <string name="set">Set</string>
+
+    <string name="enablerootmde">Enable Root Mode</string>
+
+    <string name="goback">Go Back</string>
+
+    <string name="foldercreated">Folder Created</string>
+
+    <string name="newfile">New File</string>
+
+    <string name="nofiles">No Files</string>
+
+    <string name="tapnhold">Tap and hold on a File or Folder for more options</string>
+
+    <string name="pathcopied">Path copied to clipboard</string>
+
+    <string name="used">Used By Others: </string>
+
+    <string name="free">Free Space: </string>
+
+    <string name="atroot">You are at the root</string>
+
+    <string name="listview">List View</string>
+
+    <string name="gridview">Grid View</string>
+
+    <string name="setlistview">Setting ListView</string>
+
+    <string name="setgridview">Setting GridView</string>
+
+    <string name="permission">Permissions</string>
+
+    <string name="hide">Hide</string>
+
+    <string name="exit">Exit</string>
+
+    <string name="enternewname">Enter new name</string>
+
+    <string name="doforall">Do for all items</string>
+
+    <string name="gridcolumnno">Number of columns in grid view</string>
+
+    <string name="randomDialog">Random</string>
+
+    <string name="setRandom">Changes will take place after you restart the app</string>
+
+    <string name="authors">Authors</string>
+
+    <string name="changelog">Changelog</string>
+
+    <string name="fullChangelog">Full Changelog</string>
+
+    <string name="ok">OK</string>
+
+    <string name="chooseUI">Choose Item UI</string>
+
+    <string name="ui">Interface</string>
+
+    <string name="general">General</string>
+
+    <string name="thumbSummary">Show Thumbnails of apps and images</string>
+
+    <string name="thumb">Show Thumbnails</string>
+
+    <string name="hidden">Show Hidden Files and Folders</string>
+
+    <string name="lastModifiedSummary">Show the date and time when the file was modified last time</string>
+
+    <string name="lastModifiedPref">Show Last Modified</string>
+
+    <string name="sizePrefSummary">Show size of files and number of items in folders</string>
+
+    <string name="sizePref">Show Sizes</string>
+
+    <string name="miscellaneous">Miscellaneous</string>
+
+    <string name="rootPrefSummary">Show Permissions of Files and Folders</string>
+
+    <string name="rootPref">Show Permissions</string>
+
+    <string name="aboutFileManager">About Amaze File Manager</string>
+
+    <string name="version">Version</string>
+
+    <string name="rate">Rate the app</string>
+
+    <string name="license">Open Source Licenses</string>
+
+    <string name="feedback">Send Feedback</string>
+
+    <string name="hiddenfiles">Hidden Files</string>
+
+    <string name="type">Type</string>
+
+    <string name="typeDesc">Type (Desc)</string>
+
+    <string name="rootdirectory">Root</string>
+
+    <string name="new_string">New</string>
+
+    <string name="setringtone">Set as ringtone</string>
+
+    <string name="copy_path">Copy Path</string>
+
+    <string name="addshortcut">Add Shortcut</string>
+
+    <string name="unsavedchanges">Unsaved Changes</string>
+
+    <string name="unsavedchangesdesc">You have unsaved changes, do you want to save them before exiting?</string>
+
+    <string name="saving">Saving</string>
+
+    <string name="packageinstaller">Package Installer</string>
+
+    <string name="view">View</string>
+
+    <string name="install">Install</string>
+
+    <string name="archive">Archive</string>
+
+    <string name="archtext">This is an archive. What action would you like to perform?</string>
+
+    <string name="pitext">This is a package installer. What action would you like to perform?</string>
+
+    <string name="xda_title">XDA</string>
+
+    <string name="xda_summary">Q&amp;A, Help &amp; Troubleshooting</string>
+
+    <string name="invalid_dir">Invalid Directory</string>
+
+    <string name="circularimages">Use circular icons for images and videos</string>
+
+    <string name="circularicons">Use circular icons</string>
+
+    <string name="back_title">Back navigation</string>
+
+    <string name="back_summary">Enables custom back navigation at top of the list</string>
+
+    <string name="details">Details</string>
+
+    <string name="translators">Translators</string>
+
+    <string name="german_translation_title">German</string>
+
+    <string name="italian_translation_title">Italian</string>
+
+    <string name="french_translation_title">French</string>
+
+    <string name="russian_translation_title">Russian</string>
+
+    <string name="spanish_translation_title">Spanish</string>
+
+    <string name="basque_translation_title">Basque</string>
+
+    <string name="chinese_translation_title">Chinese</string>
+
+    <string name="serbian_translation_title">Serbian</string>
+
+    <string name="turkish_translation_title">Turkish</string>
+
+    <string name="ukrainian_translation_title">Ukrainian</string>
+
+    <string name="portuguese_translation_title">Portuguese</string>
+
+    <string name="polish_translation_title">Polish</string>
+
+    <string name="korean_translation_title">Korean</string>
+
+    <string name="greek_translation_title">Греческий</string>
+
+    <string name="dutch_translation_title">Dutch</string>
+
+    <string name="romanian_translation_title">Romanian</string>
+
+
+
+
+    <string name="zip_viewer">Zip Viewer</string>
+
+    <string name="unin_system_apk">This is a system app, deleting it might lead to system un-stability.\nProceed?</string>
+
+    <string name="warning">Warning</string>
+
+    <string name="donate">Donate</string>
+
+    <string name="archive_preferences">Archive Preferences</string>
+
+    <string name="archive_extract_folder">Archive Extract Folder</string>
+
+    <string name="zip_create_folder">Zip Create Folder</string>
+
+    <string name="archive_summary">Archive files will be extracted to this folder. Default value is the directory in which archive is present</string>
+
+    <string name="zip_summary">New zip files will be created in this folder. Default value is the directory in which files are present</string>
+
+    <string name="openas">Open As</string>
+
+    <string name="text">Text</string>
+
+    <string name="audio">Audio</string>
+
+    <string name="video">Video</string>
+
+    <string name="other">Other</string>
+
+    <string name="image">Image</string>
+
+    <string name="contributors">Contributors</string>
+
+    <string name="savepaths">Remember paths</string>
+
+    <string name="savepathsummary">When starting up,the most recently viewed folder for each tab will be displayed</string>
+
+    <string name="select_intent">Select</string>
+
+    <string name="md5copied">MD5 copied to clipboard</string>
+
+    <string name="generating">Generating..</string>
+
+    <string name="tables">Table(s)</string>
+
+    <string name="database">Database</string>
+
+    <string name="colourednavigation">Colored Navigation bar</string>
+
+    <string name="colourednavigationsum">Whether or not the system navigation bar is colored with the skin</string>
+
+
+    <string name="sd_card_grant_next">sd_card_grant_next</string>
+
+    <string name="sd_card_grant_first">sd_card_grant_first</string>
+
+    <string name="fab_skin">FAB skin</string>
+
+    <string name="gplus_pic_title">Sign-In with G+</string>
+
+    <string name="gplus_pic_summary">Show G+ cover pic in drawer</string>
+
+    <string name="icon_credits">Graphics by &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
+
+
+    <string name="color_title">Color</string>
+
+    <string name="color_summary">Set color to various UI components</string>
+
+    <string name="primary_color_title">Primary Color (Left Tab)</string>
+
+    <string name="primary_color_summary">Set color to large UI elements for the left tab</string>
+
+    <string name="accent_color_title">Accent Color</string>
+
+    <string name="accent_color_summary">Set color to FAB and other small UI elements</string>
+
+    <string name="icon_color_title">Icon Color</string>
+
+    <string name="icon_color_summary">Set color to icons</string>
+
+    <string name="hide_mode_title">Hide Mode</string>
+
+    <string name="none">None</string>
+
+    <string name="hide_toolbar">Hide Toolbar</string>
+
+    <string name="hide_appbar">Hide whole App bar</string>
+
+    <string name="choose_color">Choose color</string>
+
+    <string name="g_plus_community_title">G+ Community</string>
+
+    <string name="hide_mode_nothing">App bar remains intact</string>
+
+    <string name="hide_mode_toolbar">Toolbar hides on scroll</string>
+
+    <string name="hide_mode_app_bar">App bar hides on scroll</string>
+
+    <string name="no_cover_photo">No cover photo</string>
+
+    <string name="files">Files</string>
+
+    <string name="directories">Directories</string>
+
+    <string name="textreader">Text Reader</string>
+
+    <string name="databasereader">Database Reader</string>
+
+    <string name="showDividers">Show Dividers</string>
+
+    <string name="topFab">FAB on App bar</string>
+
+    <string name="topFabS">Whether + button should be at the top or bottom. Only applicable if app bar doesn\'t hide.</string>
+
+    <string name="needsaccess">Write Access Required</string>
+
+    <string name="needsaccesssummary">Please choose the root directory of \t</string>
+
+    <string name="needsaccesssummary1">\tto grant write access to operate </string>
+
+    <string name="smb_con">SMB Connection</string>
+
+    <string name="smb_server">Server IP Address</string>
+
+    <string name="username">Username</string>
+
+    <string name="password">Password</string>
+
+    <string name="anonymous">Anonymous</string>
+
+    <string name="bluetooth">Bluetooth</string>
+
+    <string name="extstorage">External Storage</string>
+
+    <string name="folders">Folders</string>
+
+    <string name="videos">Videos</string>
+
+    <string name="apks">Apks</string>
+
+    <string name="documents">Documents</string>
+
+    <string name="images">Images</string>
+
+    <string name="clear">Clear</string>
+
+    <string name="md5">md5: </string>
+
+    <string name="md5_2">Copy md5</string>
+
+    <string name="total">Total: </string>
+
+    <string name="calculating"> calculating </string>
+
+    <string name="sort">Sort</string>
+
+    <string name="ascending">Ascending</string>
+
+    <string name="descending">Descending</string>
+
+    <string name="defualt">Default</string>
+
+    <string name="doit">Do it</string>
+
+    <string name="wanthelp"><u>Need help?</u></string>
+
+    <string name="quick">Quick Access</string>
+
+    <string name="recent">Recent Files</string>
+
+    <string name="edit">Edit</string>
+
+    <string name="find">Find in page</string>
+
+    <string name="grant">Grant</string>
+
+    <string name="grantper">Grant permission</string>
+
+    <string name="grantfailed">Permission not granted</string>
+
+    <string name="granttext">App needs storage permission to continue. Canceling this dialog will exit the app.</string>
+
+    <string name="grantgplus">App needs permission for this feature. Canceling this dialog will uncheck this feature.</string>
+
+    <string name="operationunsuccesful">Operation Unsuccessful</string>
+
+    <string name="creatingfile">Creating File</string>
+
+    <string name="creatingfolder">Creating Folder</string>
+
+    <string name="renaming">Renaming</string>
+
+    <string name="cantbeempty">%s cannot be empty</string>
+
+    <string name="ip">Address</string>
+
+    <string name="connectionname">Connection name</string>
+
+    <string name="nodevicefound">No device found</string>
+
+    <string name="searchingdevices">Searching for devices</string>
+
+    <string name="path">Path</string>
+
+    <string name="renamebookmark">Modify Bookmark</string>
+
+    <string name="cut">Cut</string>
+
+    <string name="empty"></string>
+
+    <string name="search">Search</string>
+
+    <string name="invalid_name">Invalid Name</string>
+
+    <string name="search_hint">Type to search&#8230;</string>
+
+    <string name="advanced_search">Advanced Search</string>
+
+    <string name="regular_expression">Regular Expression</string>
+
+    <string name="regular_expression_summary">Search using a BASH style regular expression</string>
+
+    <string name="match_content">Match content</string>
+
+    <string name="match_content_summary">If set, regular expression will be matched with entire file name,
+
+        will look for occurrence otherwise.</string>
+
+    <string name="start_ftp">Start</string>
+
+    <string name="stop_ftp">Stop</string>
+
+    <string name="ftp_status_running">Running</string>
+
+    <string name="ftp_status_not_running">Not Running</string>
+
+    <string name="ftp_no_wifi">Make sure you\'re connected to WiFi</string>
+
+    <string name="domain">Domain</string>
+
+    <string name="invalid">Invalid %s</string>
+
+    <string name="ftp_notif_starting">FTP Server is starting</string>
+
+    <string name="ftp_notif_title">Amaze FTP Server running</string>
+
+    <string name="ftp_notif_text">at %s</string>
+
+    <string name="ftp_notif_stop_server">STOP</string>
+
+    <string name="primary_two_title">Primary Color (Right Tab)</string>
+
+    <string name="primary_two_summary">Set color to large UI elements for the right tab</string>
+</resources>

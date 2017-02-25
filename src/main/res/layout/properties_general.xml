@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/material_generic"
+        app:cardElevation="@dimen/material_generic_card_elevation"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/material_generic"
+            >
+
+            <!-- general title -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_large"
+                android:paddingBottom="@dimen/material_generic"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/general"
+                    android:textColor="@android:color/darker_gray"
+                    />
+            </RelativeLayout>
+
+            <!-- title -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_general_title_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_general_title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_general_title_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                />
+
+            <!-- artist -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_general_artist_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/artist"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_general_artist_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_general_artist_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                />
+
+            <!-- Album -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_general_album_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/album"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_general_album_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_general_album_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                />
+
+            <!-- Year -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_general_year_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/year"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_general_year_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_general_year_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                />
+
+            <!-- Duration -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_general_duration_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/duration"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_general_duration_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_general_duration_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                />
+
+            <!-- Comment -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_general_comment_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comment"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_general_comment_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_general_comment_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                />
+
+            <!-- Container -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_general_container_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/container"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_general_container_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_general_container_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

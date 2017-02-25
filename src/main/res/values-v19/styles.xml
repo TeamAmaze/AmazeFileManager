@@ -1,0 +1,71 @@
+<!--
+  Copyright 2012 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+
+    <!-- appCompat -->
+    <!-- light -->
+    <style name="appCompatLight" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="popup">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="toolbar_theme">@style/overflow_white1</item>
+    </style>
+    <style name="overflow_white1" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <item name="android:textColorSecondary">#ffffff</item>
+        <item name="android:textColorPrimary">#ffffff</item>
+        <item name="android:textColorHint">#ffffff</item>
+        <item name="actionModeStyle">@style/custom_action_mode_light</item>
+        <item name="android:actionModeStyle">@style/custom_action_mode_light</item>
+    </style>
+    <style name="custom_action_mode_light" parent="Widget.AppCompat.ActionMode">
+        <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="background">@color/holo_dark_action_mode</item>
+        <item name="android:background">@color/holo_dark_action_mode</item>
+    </style>
+
+    <!-- dark -->
+    <style name="appCompatDark" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="popup">@style/Theme.AppCompat</item>
+        <item name="toolbar_theme">@style/overflow_white2</item>
+    </style>
+
+    <style name="overflow_white2" parent="Theme.AppCompat">
+
+        <item name="android:textColorSecondary">#ffffff</item>
+        <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
+        <item name="android:textColorHint">#ffffff</item>
+        <item name="actionModeStyle">@style/custom_action_mode_dark</item>
+        <item name="android:actionModeStyle">@style/custom_action_mode_dark</item>
+    </style>
+    <style name="custom_action_mode_dark" parent="Widget.AppCompat.ActionMode">
+        <item name="background">@color/holo_dark_action_mode</item>
+        <item name="android:background">@color/holo_dark_action_mode</item>
+    </style>
+
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/white</item>
+    </style>
+</resources>

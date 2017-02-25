@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/material_generic"
+        app:cardElevation="@dimen/material_generic_card_elevation"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/material_generic"
+            >
+
+            <!-- information title -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_large"
+                android:paddingBottom="@dimen/material_generic"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/information"
+                    android:textColor="@android:color/darker_gray"
+                    />
+            </RelativeLayout>
+
+            <!-- file name -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_name_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/name"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_file_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_name_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                />
+
+            <!-- file type -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_type_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/type"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_file_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_type_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                />
+
+            <!-- Size -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_size_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/size"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_file_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_size_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                />
+
+            <!-- Location -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_location_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/location"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_file_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_location_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                />
+
+            <!-- Accessed date -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_accessed_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/accessed"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_file_accessed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_accessed_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+
+            <!-- divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_margin="@dimen/material_generic"
+                />
+
+            <!-- Modified date -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/material_generic_list_item"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginLeft="@dimen/material_generic"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_view_modified_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/modified"
+                    android:textSize="@dimen/material_generic_title"
+                    />
+                <TextView
+                    android:id="@+id/text_view_file_modified"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_view_modified_title"
+                    android:textSize="@dimen/material_generic_title_summary"
+                    />
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

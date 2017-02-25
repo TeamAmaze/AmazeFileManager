@@ -1,0 +1,57 @@
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# =========================
+# Operating System Files
+# =========================
+
+# OSX
+# =========================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must ends with two \r.
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Android Studio
+.idea/*
+#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+.gradle/
+build/
+.settings
+bin/
+gen/
+gradle/
+.classpath
+local.properties
+gradlew
+gradlew.bat
+.project
+AmazeFileManager.iml
+libs/libs.iml
+.idea/
+gradle.properties
+projectFilesBackup

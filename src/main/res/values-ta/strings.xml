@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">அமேஸ் கோப்பு மேலாளர்</string>
+    <string name="drawer_open">ஊடுருவல் பட்டியை திற</string>
+    <string name="drawer_close">ஊடுருவல் பட்டியை மூடு</string>
+    <string name="books">புத்தகக்குறிகள்</string>
+    <string name="icon">படவுரு</string>
+    <string name="efn">கோப்பின் பெயரை உள்ளீடு</string>
+    <string name="storage">நினைவகம்</string>
+    <string name="gallery">காட்சியகம்</string>
+    <string name="apps">நிரல் மேலாளர்</string>
+    <string name="ftp">எப்டீபி சேவையகம்</string>
+    <string name="bookmanag">புத்தகக்குறிகள் மேலாளர்</string>
+    <string name="setting">அமைப்புகள்</string>
+    <string name="select">தேர்ந்தெடு</string>
+    <string name="pressagain">வெளியேற மீண்டும் அழுத்தவும்</string>
+    <string name="open">திற</string>
+    <string name="backup">காப்பு</string>
+    <string name="uninstall">நிறுவல் நீக்கம்</string>
+    <string name="play">ப்ளே ஸ்டோர்</string>
+    <string name="properties">பண்புகள்</string>
+    <string name="copyingapk">ஏபிகே வை நகலெடுத்துக்கொண்டிருக்கிறது</string>
+    <string name="addbook">புத்தகக்குறி சேர்</string>
+    <string name="addtobook">புத்தகக்குறியில் சேர்</string>
+    <string name="enterpath">பாதையை உள்ளீடு</string>
+    <string name="cancel">ரத்து செய்</string>
+    <string name="create">உருவாக்கு</string>
+    <string name="success">வெற்றி</string>
+    <string name="filenotexists">கோப்பு காணப்படவில்லை</string>
+    <string name="loading">ஏற்றப்படுகிறது&#8230;</string>
+    <string name="file_empty">கோப்பு காலியாக உள்ளது</string>
+    <string name="error">பிழை</string>
+    <string name="cantlistfiles">ரூட் இல்லாமல் கோப்புகளை பட்டியலிட முடியாது</string>
+    <string name="searchresults">தேடல் முடிவுகள்</string>
+    <string name="itemsselected">உருப்படிகள் தேர்ந்தெடுக்கப்பட்டது</string>
+    <string name="newhomedirectory">புதிய முகப்பு அடைவு</string>
+    <string name="rename">மறுபெயரிடு</string>
+    <string name="save">சேமி</string>
+    <string name="renameerror">மறுபெயரிடல் தோல்வி</string>
+    <string name="renamed">மறுபெயரிடல் வெற்றி</string>
+    <string name="bookmarksadded">புத்தகக்குறிகள் சேர்க்கப்பட்டது</string>
+    <string name="fileexist">இதே பெயரில் கோப்பு ஏற்கனவே உள்ளது</string>
+    <string name="filecreated">கோப்பை உருவாக்கு</string>
+    <string name="searchpath">தேடுதல் பாதை</string>
+    <string name="enterfile">கோப்பின் பெயரை உள்ளீடு</string>
+    <string name="name">பெயர்</string>
+    <string name="date">தேதி</string>
+    <string name="location">இடம்</string>
+    <string name="size">கோப்புறையின் அளவ</string>
+    <string name="totalitems">மொத்த உருப்படிகள்:</string>
+    <string name="enterzipname">ஜிப்  பெயரை உள்ளீடவும்</string>
+    <string name="noappfound">இந்த கோப்பினை திறக்கக்கூடிய நிரல் இல்லை</string>
+    <string name="copying">நகலெடுகிறது</string>
+    <string name="moving">நகர்த்துகிறது</string>
+    <string name="add">சேர்</string>
+    <string name="tab">தாவல்</string>
+    <string name="file">கோப்பு</string>
+    <string name="folder">கோப்புறை</string>
+    <string name="newfolder">புதிய கோப்புறை</string>
+    <string name="entername">பெயரை உள்ளீடு</string>
+    <string name="extracting">பிரித்தெடுக்கிறது</string>
+    <string name="stopping">நிறுத்துகிறது</string>
+    <string name="guide1">அமேஸ் கோப்பு மேலாளர் வரவேற்கிறது</string>
+    <string name="guide2">பாதைப்பட்டையை காண அல்லது மறைக்க நீல பட்டைய தொடவும்</string>
+    <string name="guide3">மேலும் பல விருப்பங்களுக்கு கோப்பினை தொடர்ந்து தொடவும்</string>
+    <string name="guide4">நகல், நகர்த்து, பண்புகள் போன்றவை</string>
+    <string name="guide5">எந்நேரத்திலும் நிரலில் இருந்து வெளியேற சாதனத்தின் பின் பொத்தானை பயன்படுத்தவும்&#8230;</string>
+    <string name="guide6">..மற்றும் கோப்பு மேலாளரில் இடது அம்புக்குறியை பயன்படுத்தி ஊடுருவல் பட்டைக்கு செல்லலாம்</string>
+    <string name="maintab">முதன்மை தாவலை நீக்க முடியாது</string>
+    <string name="openparent">முதன்மை அடைவை திற</string>
+    <string name="openwith">வேறு முறையில் திற</string>
+    <string name="share">பகிர்</string>
+    <string name="about">தகவல்</string>
+    <string name="extract">பிரித்தல்</string>
+    <string name="compress">நெருக்கி அழுத்திவை</string>
+    <string name="yes">ஆம்</string>
+    <string name="no">இல்லை</string>
+    <string name="confirm">உறுதி செய்தல்</string>
+    <string name="deleting">அழிக்கிறது</string>
+    <string name="questiondelete">நீங்கள் பின்வரும் கோப்புகளை அழிக்க விரும்புகிறீர்களா?</string>
+    <string name="questionset">நீங்கள் இந்த தாவலுக்கு தற்போதைய பாதையை முகப்பாக அமைக்கவேண்டுமா?</string>
+    <string name="viewmode">பார்வை முறை</string>
+    <string name="uimode">இடைமுக முறை</string>
+    <string name="directorysort">அடைவு வரிசைபாடு முறை</string>
+    <string name="sortby">வரிசை முறை</string>
+    <string name="theme">அடிப்படை வண்ணம்</string>
+    <string name="skin">வண்ண அமைப்பு</string>
+    <string name="random">சுழற்சிமுறை வண்ணம்</string>
+    <string name="random_summary">தொடங்கும்போது சுழற்சிமுறை வண்ணம் அமைகிறது</string>
+    <string name="colorize">வண்ண படவுரு</string>
+    <string name="colorize_summary">நிலையான படவுரு வண்ணத்தை அமைகிறது. அடைவு படவுரு வண்ண விருப்பம் மேலோங்காது.</string>
+    <string name="back">பின்னே</string>
+    <string name="home">முகப்பு</string>
+    <string name="paste">ஒட்டு</string>
+    <string name="close">மூடு</string>
+    <string name="history">வரலாறு</string>
+    <string name="refresh">புதுப்பி</string>
+    <string name="copy">நகல்</string>
+    <string name="rootmode">ரூட் ஆய்வாளர்</string>
+    <string name="rootmodesummary">ரூட் செய்யப்பட்ட சாதனத்திற்கு மட்டும். நீங்கள் நிச்சயமாக இருந்தால் மட்டும் இதை சோதித்து பார்க்கவும்.</string>
+    <string name="mountsystemsummary">நீங்கள் முறைமை கோப்புகளை திருத்த இதை இயக்க வேண்டும்</string>
+    <string name="mountsystem">முறைமை கோப்புறையை எழுதுமாறு ஏற்றவும்</string>
+    <string name="rootfailure">ரூட் அணுகல் கிடைக்கப்பெறவில்லை</string>
+    <string name="selectall">அனைத்தையும் தேர்ந்தெடு</string>
+    <string name="delete">அழி</string>
+    <string name="setashome">முகப்பாக அமை</string>
+    <string name="sethome">முகப்பு அடைவை அமை</string>
+    <string name="foldercolor">கோப்புறை வண்ணம்</string>
+    <string name="imagegallery">பட காட்சியகம்</string>
+    <string name="fileexplorer">கோப்பு ஆய்வாளர்</string>
+    <string name="changegallerypath">காட்சியக பாதையை மாற்று</string>
+    <string name="usedefaultgallerypath">இயல்புநிலை பட காட்சியக பாதையை பயன்படுத்தவும்</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <string name="simple">எளிமையான இடைமுகம்</string>
+    <string name="card">அட்டை இடைமுகம்</string>
+    <!-- Theme -->
+    <string name="light">திட வெண்மை நிறம்</string>
+    <string name="dark">திட கருமை நிறம்</string>
+    <string name="daytime">பகல் நேரம்</string>
+    <!--Skin-->
+    <string name="red">சிவப்பு</string>
+    <string name="pink">பிங்க்</string>
+    <string name="purple">ஊதா</string>
+    <string name="deep_purple">கரு ஊதா</string>
+    <string name="indigo">இண்டிகோ</string>
+    <string name="blue">நீலம்</string>
+    <string name="light_blue">கடல் நீலம்</string>
+    <string name="cyan">கேயான்</string>
+    <string name="teal">டீல்</string>
+    <string name="green">பச்சை</string>
+    <string name="light_green">வெளிர் பச்சை</string>
+    <string name="amber">தங்க வண்ணம்</string>
+    <string name="orange">ஆரஞ்சு</string>
+    <string name="deep_orange">கரு ஆரஞ்சு</string>
+    <string name="brown">காபி வண்ணம்</string>
+    <string name="black">கருப்பு</string>
+    <string name="blue_grey">நீல சாம்பல் வண்ணம்</string>
+    <string name="supersu">SuperSU</string>
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">கோப்புறைகள் மேலே</string>
+    <string name="filesOnTop">கோப்புகள் மேலே</string>
+    <string name="noneOnTop">மேலே எதுவுமில்லை</string>
+    <!--SortBy-->
+    <string name="sortName">பெயர்</string>
+    <string name="lastModified">கடைசியாக மாற்றியது</string>
+    <string name="sortSize">அளவீடு</string>
+    <string name="sortNameDesc">பெயர் (மேலே)</string>
+    <string name="lastModifiedDesc">கடைசியாக மாற்றியது (மேலே)</string>
+    <string name="sortSizeDesc">அளவு (மேலே)</string>
+    <!--ListMode-->
+    <string name="detailedView">விரிவான பார்வை</string>
+    <string name="simpleView">எளிமையான பார்வை</string>
+    <!--Folder-->
+    <string name="Yellow">மஞ்சள்</string>
+    <string name="pick_a_file">கோப்பை எடுக்கவும்</string>
+    <string name="process_viewer">செயல்பாடு பார்வையகம்</string>
+    <string name="in_safe">போதுமான இடவசதி இல்லை</string>
+    <string name="no_file_overwrite">கோப்பு மேலெழுதப்படவில்லை</string>
+    <string name="skip">தவிர்</string>
+    <string name="overwrite">மேலெழுது</string>
+    <string name="cant_read_file">கோப்பை படிக்கமுடியவில்லை</string>
+    <string name="not_allowed">அனுமதி இல்லை</string>
+    <string name="processes">செயல்பாடுகள்</string>
+    <string name="searching">தேடுகிறது</string>
+    <string name="copying_fles">கோப்புகளை நகலெடுக்கிறது</string>
+    <string name="done">முடிந்தது</string>
+    <string name="Extracting_fles">கோப்புகளை பிரித்தெடுக்கிறது</string>
+    <string name="items">உருப்படிகள்</string>
+    <string name="item">உருப்படி</string>
+    <string name="set">அமை</string>
+    <string name="enablerootmde">ரூட் முறையை இயக்கு</string>
+    <string name="goback">பின்னே செல்</string>
+    <string name="foldercreated">கோப்புறை உருவாக்கப்பட்டது</string>
+    <string name="newfile">புதிய கோப்பு</string>
+    <string name="nofiles">கோப்புகள் இல்லை</string>
+    <string name="tapnhold">மேலும் பல விருப்பங்களுக்கு கோப்பு அல்லது கோப்புறையை தொடர்ந்து தொடவும்</string>
+    <string name="pathcopied">பாதை பிடிப்புபலகைக்கு நகலெடுக்கப்பட்டது</string>
+    <string name="used">மற்றவர்களால் பயன்படுத்தப்பட்டது:</string>
+    <string name="free">காலி இடம்:</string>
+    <string name="atroot">நீங்கள் ரூட்டில் உள்ளீர்கள்</string>
+    <string name="listview">பட்டியல் பார்வை</string>
+    <string name="gridview">கட்ட பார்வை</string>
+    <string name="setlistview">அமைப்பு பட்டியல் பார்வை</string>
+    <string name="setgridview">அமைப்பு கட்ட பார்வை</string>
+    <string name="permission">அனுமதிகள்</string>
+    <string name="hide">மறை</string>
+    <string name="exit">வெளியேறு</string>
+    <string name="enternewname">புதிய பெயரை உள்ளீடவும்</string>
+    <string name="doforall">அனைத்து உருப்படிகளுக்கும் செய்க</string>
+    <string name="gridcolumnno">கட்ட பார்வையில் வரிசையின் எண்ணிக்கை</string>
+    <string name="randomDialog">சுழற்சிமுறை</string>
+    <string name="setRandom">நிரலை மறுதொடங்கிய பிறகு மாற்றங்கள் அமலுக்கு வரும்</string>
+    <string name="authors">பதிப்பாளர்ககள்</string>
+    <string name="changelog">மாற்ற பதிவு</string>
+    <string name="fullChangelog">முழு மாற்ற பதிவு</string>
+    <string name="ok">சரி</string>
+    <string name="chooseUI">உருப்படி இடைமுகத்தை தேர்வுசெய்</string>
+    <string name="ui">இடைமுகம்</string>
+    <string name="general">பொது</string>
+    <string name="thumbSummary">நிரல்கள் மற்றும் படங்களின் சிறுபடவுருகளை காண்பி</string>
+    <string name="thumb">சிறுபடவுருகளை காண்பி</string>
+    <string name="hidden">மறைக்கப்பட்ட கோப்பு மற்றும் கோப்புறைகளை காண்பி</string>
+    <string name="lastModifiedSummary">கோப்பு கடைசியாக மாற்றப்பட்ட தேதி மற்றும் நேரத்தை காண்பி</string>
+    <string name="lastModifiedPref">கடைசியாக மாற்றப்பட்டதை காண்பி</string>
+    <string name="sizePrefSummary">கோப்புறைகளில் கோப்புகளின் அளவையும் உருபடிகளின் எண்ணிக்கையும் காண்பி</string>
+    <string name="sizePref">அளவை காண்பி</string>
+    <string name="miscellaneous">இதரம்</string>
+    <string name="rootPrefSummary">கோப்பு மற்றும் கோப்புறைகளின் அனுமதிகளை காண்பி</string>
+    <string name="rootPref">அனுமதிகளை காண்பி</string>
+    <string name="aboutFileManager">அமேஸ் கோப்பு மேலாளர் பற்றிய தகவல்கள்</string>
+    <string name="version">பதிப்பு</string>
+    <string name="rate">நிரலை மதிப்பீடு</string>
+    <string name="license">ஓப்பன் சோர்ஸ் உரிமங்கள்</string>
+    <string name="feedback">பின்னூட்டம் அனுப்பு</string>
+    <string name="hiddenfiles">மறைத்த கோப்புகள்</string>
+    <string name="type">வகை</string>
+    <string name="typeDesc">வகை (மேலே)</string>
+    <string name="rootdirectory">ரூட்</string>
+    <string name="new_string">புதிய</string>
+    <string name="setringtone">மணியோசையாக அமைக்கவும்</string>
+    <string name="copy_path">நகல் பாதை</string>
+    <string name="addshortcut">குறுக்குவழியை சேர்</string>
+    <string name="unsavedchanges">சேமிக்கப்படாத மாற்றங்கள்</string>
+    <string name="unsavedchangesdesc">நீங்கள் சேமிக்கப்படாத மாற்றங்கள் உள்ளன, வெளியேறுவதற்கு முன் அவைகளை நீங்கள்  விரும்புகிறீர்கள்?</string>
+    <string name="saving">சேமிக்கிறது</string>
+    <string name="packageinstaller">நிரல் தொகுப்பு நிறுவுனர்</string>
+    <string name="view">பார்த்தல்</string>
+    <string name="install">நிறுவு</string>
+    <string name="archive">சுருக்ககாப்பு</string>
+    <string name="archtext">இது ஒரு சுருக்ககாப்பு. என்ன செயல் செய்ய விரும்புகிறீர்கள்?</string>
+    <string name="pitext">இது ஒரு நிரல் தொகுப்பு நிறுவி. என்ன செயல் செய்ய விரும்புகிறீர்கள்?</string>
+    <string name="xda_title">XDA உறைகள்</string>
+    <string name="xda_summary">Q&amp;A, உதவி &amp; பழுது நீக்கம்</string>
+    <string name="invalid_dir">தவறான அடைவு</string>
+    <string name="circularimages">நிழற்படங்கள் மற்றும் காணொளிகளுக்கு வட்ட படவுருக்களை பயன்படுத்து</string>
+    <string name="circularicons">வட்ட படவுருக்களை பயன்படுத்து</string>
+    <string name="back_title">பின் ஊடுருவல்</string>
+    <string name="back_summary">விருப்ப பின் ஊடுருவலை பட்டியலில் மேலே செயல்படுத்துகிறது</string>
+    <string name="details">விளக்கம்</string>
+    <string name="translators">மொழிபெயர்ப்பாளர்கள்</string>
+    <string name="german_translation_title">ஜெர்மன்</string>
+    <string name="italian_translation_title">இத்தாலியன்</string>
+    <string name="french_translation_title">ப்ரெஞ்சு</string>
+    <string name="russian_translation_title">இரஷ்யன்</string>
+    <string name="spanish_translation_title">ஸ்பேனிஷ்</string>
+    <string name="basque_translation_title">பசுயூ</string>
+    <string name="chinese_translation_title">சீனம்</string>
+    <string name="serbian_translation_title">செர்பியன்</string>
+    <string name="turkish_translation_title">துருக்கியம்</string>
+    <string name="ukrainian_translation_title">உக்ரேனியன்</string>
+    <string name="portuguese_translation_title">போர்த்துக்கீசியம்</string>
+    <string name="polish_translation_title">போலிஷ்</string>
+    <string name="korean_translation_title">கொரியன்</string>
+    <string name="greek_translation_title">கிரேக்கம்</string>
+    <string name="dutch_translation_title">டச்சு</string>
+    <string name="romanian_translation_title">ரோமானியன்</string>
+    <string name="vietnamese_translation_title">வியட்நாமியர்</string>
+    <string name="japanese_translation_title">ஜப்பானியம்</string>
+    <string name="brazilian_portuguese_translation_title">ப்ரெசிலியன் போர்த்துக்கீசியம்</string>
+    <string name="tamil_translation_title">தமிழ்</string>
+
+    <string name="zip_viewer">ஜிப் பார்வையாளர்</string>
+    <string name="unin_system_apk">இது முறைமை நிரல், இதை நீக்கினால் முறைமை நிலையற்றதாகிவிடும்.\\nதொடரவேண்டுமா?</string>
+    <string name="warning">எச்சரிக்கை</string>
+    <string name="donate">பண உதவி</string>
+    <string name="archive_preferences">சுருக்ககாப்பு விருப்பங்கள்</string>
+    <string name="archive_extract_folder">சுருக்ககாப்பை பிரிக்கும் கோப்புறை</string>
+    <string name="zip_create_folder">ஜிப் உருவாக்கும் கோப்புறை</string>
+    <string name="archive_summary">சுருக்ககாப்பு கோப்புகள் இந்த கோப்புறையில் பிரித்தெடுக்கப்படும். சுருக்ககாப்பு இருக்கும் அடைவிலேயே இயல்பாக பிரித்தெடுக்கும்.</string>
+    <string name="zip_summary">புதிய ஜிப் கோப்புகள் இந்த கோப்புறையில் உருவாக்கப்படும். கோப்புகள் இருக்கும் அடைவிலேயே இயல்பாக ஜிப் உருவாக்கப்படும்.</string>
+    <string name="openas">இந்த முறையில் திறக்க</string>
+    <string name="text">உரை</string>
+    <string name="audio">கேட்பொலி</string>
+    <string name="video">காணொலி</string>
+    <string name="other">பிற</string>
+    <string name="image">நிழற்பபடம்</string>
+    <string name="contributors">பங்களிப்பாளர்கள்</string>
+    <string name="savepaths">பாதைகளை நினைவுகொள்க</string>
+    <string name="savepathsummary">தொடங்கும்போது, அதிகமாக பார்க்கப்பட்ட கோப்புறை ஒவ்வொரு தாவலிலும் காட்டப்படும்</string>
+    <string name="select_intent">தேர்ந்தெடு</string>
+    <string name="md5copied">MD5 பிடிப்புபலகைக்கு நகலெடுக்கப்பட்டது</string>
+    <string name="generating">உருவாக்குகிறது..</string>
+    <string name="tables">அட்டவணை(கள்)</string>
+    <string name="database">தரவுத்தளம்</string>
+    <string name="colourednavigation">வண்ணமய ஊடுருவல் பட்டை</string>
+    <string name="colourednavigationsum">முறைமை ஊடுருவல் பட்டை வண்ண அமைப்பால் வண்ணமயமாக்கப்பட்டாலும் இல்லாவிட்டாலும்</string>
+
+    <string name="sd_card_grant_next">sd_card_grant_next</string>
+    <string name="sd_card_grant_first">sd_card_grant_first</string>
+    <string name="fab_skin">FAB வண்ண அமைப்பு</string>
+    <string name="gplus_pic_title">G+ இல் உள்நுழைக</string>
+    <string name="gplus_pic_summary">G+ உரைபடத்தை பட்டியில் காண்பி</string>
+    <string name="icon_credits">வரைகலை வடிவங்கள் &lt;a href=\"http://cookicons.co/\">குக்ஐகான்ஸ்&lt;/a></string>
+
+    <string name="color_title">வண்ணம்</string>
+    <string name="color_summary">பல்வேறு இடைமுக கூறுகளுக்கு வண்ணத்தை அமைக்க</string>
+    <string name="primary_color_title">முதன்மை வண்ணம் (இடது தாவல்)</string>
+    <string name="primary_color_summary">இடது தாவலின் பெரிய இடைமுக கூறுகளுக்கு வண்ணத்தை அமைக்க</string>
+    <string name="accent_color_title">கோடுகளின் வண்ணம்</string>
+    <string name="accent_color_summary">FAB மற்றும் இதர சிறிய இடைமுக கூறுகளுக்கு வண்ணத்தை அமைக்க</string>
+    <string name="icon_color_title">படவுறு வண்ணம்</string>
+    <string name="icon_color_summary">படவுருகளுக்கு வண்ணத்தை அமை</string>
+    <string name="hide_mode_title">மறைத்தல் முறை</string>
+    <string name="none">ஒன்றுமில்லை</string>
+    <string name="hide_toolbar">கருவிப்பட்டையை மறை</string>
+    <string name="hide_appbar">மொத்த நிரல் பட்டையை மறை</string>
+    <string name="choose_color">வண்ணத்தை தேர்வுசெய்க</string>
+    <string name="g_plus_community_title">G+ குழுவில் சேர</string>
+    <string name="hide_mode_nothing">நிரல் பட்டை அப்படியே இருக்கவேண்டும்</string>
+    <string name="hide_mode_toolbar">நகர்த்தளின்போது கருவிபட்டையை மறை</string>
+    <string name="hide_mode_app_bar">நகர்த்தளின்போது நிரல் பட்டையை மறை</string>
+    <string name="no_cover_photo">உரைப்படம் இல்லை</string>
+    <string name="files">கோப்புகள்</string>
+    <string name="directories">அடைவுகள்</string>
+    <string name="textreader">உரை வாசிப்பாளர்</string>
+    <string name="databasereader">தரவுத்தள வசிப்பாளர்</string>
+    <string name="showDividers">வகுப்புகளை காண்பி</string>
+    <string name="topFab">நிரல் பட்டையில் FAB</string>
+    <string name="topFabS">+ பொத்தான் மேல் அல்லது கீழாக இருக்க. நிரல் பட்டையை மறைக்காமல் இருந்தால் மட்டுமே இது செயல்படும்.</string>
+    <string name="needsaccess">எழுத அணுகல் தேவைப்படுகிறது</string>
+    <string name="needsaccesssummary">தயவுசெய்து பின்வருவத்தின் ரூட் அடைவை தேர்வுசெய்க \\t</string>
+    <string name="needsaccesssummary1">\\t இயக்கத்திற்கு எழுத அணுகல் வழங்க</string>
+    <string name="smb_con">SMB தொடர்பு</string>
+    <string name="smb_server">சர்வர் ஐபி முகவரி</string>
+    <string name="username">பயனர் பெயர்</string>
+    <string name="password">கடவுச்சொல்</string>
+    <string name="anonymous">பெயரில்லாத</string>
+    <string name="bluetooth">ப்ளூடூத்</string>
+    <string name="extstorage">வெளி நினைவகம்</string>
+    <string name="folders">கோப்புறைகள்</string>
+    <string name="videos">காணொலிகள்</string>
+    <string name="apks">ஏபிகேகள்</string>
+    <string name="documents">ஆவணங்கள்</string>
+    <string name="images">உருவம்</string>
+    <string name="clear">சுத்தம் செய்க</string>
+    <string name="md5">md5: </string>
+    <string name="md5_2">md5 நகல்</string>
+    <string name="total">மொத்தம்:</string>
+    <string name="calculating">கணக்கிடப்படுகிறது</string>
+    <string name="sort">வரிசைப்படுத்து</string>
+    <string name="ascending">ஏறுமுகப்படுத்தல்</string>
+    <string name="descending">இறங்குமுகப்படுத்தல்</string>
+    <string name="defualt">இயல்புநிலை</string>
+    <string name="doit">செய்து முடி</string>
+    <string name="wanthelp"><u>உதவி தேவையா?</u></string>
+    <string name="quick">விரைவு அணுகல்</string>
+    <string name="recent">சமீபத்திய கோப்புகள்</string>
+    <string name="edit">மாற்று</string>
+    <string name="find">பக்கத்தில் தேடு</string>
+    <string name="grant">வழங்கு</string>
+    <string name="grantper">அனுமதி வழங்கு</string>
+    <string name="grantfailed">அனுமதி வழங்கப்படவில்லை</string>
+    <string name="granttext">மேலும் தொடர நிரலுக்கு நினைவாக அனுமதி தேவை. இந்த உரையை ரத்துச்செய்தால் நிரலில் இருந்து வெளியேற்றப்படுவீர்கள்</string>
+    <string name="grantgplus">இந்த அம்சத்தை செயல்படுத்த நிரலுக்கு அனுமதி தேவை. இந்த உரையை ரத்துச்செய்தால் அம்சம் செயலுக்குவராது.</string>
+    <string name="operationunsuccesful">செயல்முறை தோல்வி</string>
+    <string name="creatingfile">கோப்பை உருவாக்குகிறது</string>
+    <string name="creatingfolder">கோப்புறையை உருவாக்குகிறது</string>
+    <string name="renaming">மறுபெயரிடுகிறது</string>
+    <string name="cantbeempty">%s காலியாக இருக்கக்கூடாது</string>
+    <string name="ip">முகவரி</string>
+    <string name="connectionname">இணைப்பின் பெயர்</string>
+    <string name="nodevicefound">சாதனம் காணப்பபடவில்லை</string>
+    <string name="path">பாதை</string>
+    <string name="renamebookmark">புத்தகக்குறிகளை மாற்றியமை</string>
+    <string name="cut">வெட்டு</string>
+    <string name="empty"></string>
+    <string name="search">தேடுதல்</string>
+    <string name="invalid_name">தவறான பெயர்</string>
+    <string name="search_hint">தேட உள்ளீடவும்&#8230;</string>
+    <string name="advanced_search">மேம்பட்டதேடல்</string>
+    <string name="regular_expression">வழக்கமான உச்சரிப்பு</string>
+    <string name="regular_expression_summary">பாஷ் பாணி வழக்கமான உச்சரிப்பை பயன்படுத்தி தேடவும்</string>
+    <string name="match_content">தகவலை பொருத்திப்பார்</string>
+    <string name="match_content_summary">அமைத்தால், வழக்கமான உச்சரிப்பு கோப்பின் பெயருடன் பொருத்திப்பார்க்கப்படும்,
+        இல்லையேல் வேறுமாதிரி செயல்படும்.</string>
+    <string name="start_ftp">தொடங்கு</string>
+    <string name="stop_ftp">நிறுத்து</string>
+    <string name="ftp_status_running">இயங்குகிறது</string>
+    <string name="ftp_status_not_running">இயங்கவில்லை</string>
+    <string name="ftp_no_wifi">நீங்கள் வைபை உடன் இணைத்து உள்ளதா என உறுதிசெய்யவும்</string>
+    <string name="domain">டொமைன்</string>
+    <string name="invalid">தவறான %s</string>
+    <string name="ftp_notif_starting">எப்டிபி சேவையகம் தொடங்குகிறது</string>
+    <string name="ftp_notif_title">அமேஸ் எப்டிபி சேவையகம் இயங்கிக்கொண்டு இருக்கிறது</string>
+    <string name="ftp_notif_text">%s யில்</string>
+    <string name="ftp_notif_stop_server">நிறுத்து</string>
+    <string name="ftp_port_edit_menu_title">FTP port ஐ தேர்ந்த்தேடு</string>
+    <string name="ftp_port_change_success">FTP PORT வெற்றிகரமாக மாற்றப்பபட்டது</string>
+    <string name="ftp_port_change_error_invalid">தகுதியற்ற போர்ட் எண் தேர்வுசெய்யப்பட்டது</string>
+    <string name="primary_two_title">முதன்மை வண்ணம் (வலது தாவல்)</string>
+    <string name="primary_two_summary">வலது தாவலின் பெரிய இடைமுக கூறுகளுக்கு வண்ணத்தை அமைக்க</string>
+    <string name="g_plus">கூகிள் பிளஸ்</string>
+    <string name="support_development">வளர்ச்சிக்கு ஆதரவு</string>
+    <string name="report_bugs_title">பிழைகளின் அறிவித்தல்</string>
+    <string name="report_bugs_summary">பிழைகளை அறிவி அல்லது புதிய அம்சத்திற்கு வேண்டுகோள்விடுக்க</string>
+    <string name="translate_title">மொழிபெயர்ப்பு</string>
+    <string name="translate_summary">அமெஸ்ஸை உன் மொழிக்கு மாற்று</string>
+    <string name="g_plus_community_summary">சோதனை மற்றும் விவாதத்தில் பங்குபெற
+        வளர்ச்சி சமந்தப்பட்டது</string>
+    <string name="easter_egg_title">ஸ்டூடியோ முறை</string>
+    <string name="paypal_copy_message">பேபால் ஐடி பிடிப்புபலகைக்கு நகலெடுக்கப்பட்டது</string>
+    <string name="searchingdevices">சாதனத்தை தேடுகிறது</string>
+    <string name="use_custom_ip">பயனர் ஐபியை பயன்படுத்து</string>
+    <string name="bookmark_lost">புத்தகக்குறி காணப்படவில்லை, மறுஉருவாக்குகிறது&#8230;</string>
+
+    <string name="share_limit">100 கோப்புகளுக்கு மேல் பகிரமுடியாது</string>
+    <string name="otg_access">OTG சாதனத்தின் ரூட் தேர்வு</string>
+    <string name="no_profile_pic">G+ இல் சுயவிவரப்படம் இல்லை</string>
+    <string name="opening">திறத்தல்
+</string>
+    <string name="information">தகவல்</string>
+    <!-- reference to file accessed date -->
+    <string name="accessed">அனுகியது</string>
+    <!-- reference to file modified date -->
+    <string name="modified">மாற்றியமைக்கப்பட்டது</string>
+
+    <string name="title">தலைப்பு
+</string>
+    <string name="artist">கலைஞர்</string>
+    <string name="album">தொகுப்பு ஏடு</string>
+    <string name="year">வருடம்
+</string>
+    <string name="duration">காலஅளவு</string>
+    <string name="comment">விமர்சனம்</string>
+    <!-- reference to audio/video file -->
+    <string name="container">கொள்கலன்</string>
+    <string name="codec">இருவழி குறிமுறை மாற்றி</string>
+    <string name="channels">தகவல் தொடர்புத்தளம்</string>
+    <string name="sample_rate">மாதிரி விகிதம்</string>
+    <string name="bitrate">துண்டு விகிதம்</string>
+    <string name="dimensions">பரிணாமங்கள்</string>
+    <string name="frame_rate">சட்டவிகிதம்</string>
+    <string name="image_type">படத்தின் வகை</string>
+    <string name="width">அகலம்</string>
+    <string name="height">உயரம்</string>
+    <string name="date_modified">தேதி மாற்றியமைக்கப்பட்டது</string>
+    <string name="software">மென்பொருள்
+</string>
+    <string name="creator">உ ருவாக்கியவர்</string>
+    <string name="camera_brand">புகைப்படக்கருவி நிறுவனம்</string>
+    <string name="camera_model">புகைப்படக்கருவி வகை</string>
+    <string name="date_taken">எடுக்கப்பட்ட தேதி</string>
+    <string name="exposure_time">வெளிக்காட்டும் நேரம்</string>
+    <string name="aperture_value">துளைமதிப்பு</string>
+    <string name="image_iso">ISO வேக மதிப்பீடு</string>
+    <string name="flash_fired">மின்வெட்டோளி நெருப்பு</string>
+    <string name="focal_length">குவிய நீளம்</string>
+    <string name="document">ஆவணங்கள்</string>
+    <string name="subject">பாடம்</string>
+    <string name="author">ஆசிரியர்</string>
+    <string name="keywords">முக்கிய வார்த்த்தைகள்</string>
+    <string name="producer">தயாரிப்பாளர்</string>
+    <string name="created">உருவாக்கப்பட்டது</string>
+    <string name="format">அமைப்பு</string>
+    <string name="pages">பக்கங்களின் எண்ணிக்கை</string>
+    <!-- reference to a document file -->
+    <string name="optimized">உ கந்த அளவாக்கியது</string>
+    <string name="security">பாதுகாப்பு</string>
+    <string name="paper_size">இதழின் அளவு</string>
+
+    <string name="copied">நகலெடுக்கப்பட்டது</string>
+    <string name="moved">நகர்த்தப்பட்டது</string>
+    <string name="process_chart_description">முன்னேற்றம்</string>
+    <string name="copy_complete">முழுமையாக நகலெடுக்கப்பட்டது</string>
+    <string name="move_complete">முழுமையாக நகர்த்தப்பட்டது</string>
+    <string name="waiting_title">காத்திருத்தல்</string>
+    <string name="compressing">நெருக்கி அழுத்திவைக்கப்பட்டது
+
+</string>
+    <string name="cancelled">தவிர்க்ப்பட்டது</string>
+    <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+    <string name="written">எழுதியது</string>
+    <string name="out_of">வெளியே</string>
+    <!-- reference to - 'Processing file # of #' in process viewer -->
+    <string name="of">உடைய</string>
+    <string name="processing_file">செயலாக்கோப்பு
+</string>
+    <string name="current_speed">தற்போதைய வேகம்</string>
+    </resources>
+

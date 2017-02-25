@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp">
+
+        <TextView
+            android:id="@+id/name1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@android:style/TextAppearance.Medium"
+            android:textStyle="bold"
+            android:text="@string/author_1"/>
+        <TextView
+            android:id="@+id/git1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name1"
+            android:layout_marginTop="15dp"
+            style="@android:style/TextAppearance.Small"
+            android:text="@string/github"/>
+        <TextView
+            android:id="@+id/googlePlus1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/git1"
+            android:layout_below="@+id/name1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
+            style="@android:style/TextAppearance.Small"
+            android:text="@string/googleplus"/>
+        </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:id="@+id/name2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@android:style/TextAppearance.Medium"
+            android:textStyle="bold"
+            android:text="@string/author_2"/>
+        <TextView
+            android:id="@+id/git2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name2"
+            android:layout_marginTop="15dp"
+            style="@android:style/TextAppearance.Small"
+            android:text="@string/github"/>
+        <TextView
+            android:id="@+id/googlePlus2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/git2"
+            android:layout_below="@+id/name2"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
+            style="@android:style/TextAppearance.Small"
+            android:text="@string/googleplus"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/icon_credits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"/>
+
+</LinearLayout>
