@@ -201,7 +201,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     int sdk, COUNTER = 0;
     TextView mGoogleName, mGoogleId;
     LinearLayout buttons;
-    HorizontalScrollView scroll, pathbarScroll;
+    HorizontalScrollView pathbarScroll;
     CountDownTimer timer;
     IconUtils icons;
     TabHandler tabHandler;
