@@ -213,7 +213,7 @@ public class MainActivity extends BaseActivity implements
     int sdk, COUNTER = 0;
     TextView mGoogleName, mGoogleId;
     LinearLayout buttons;
-    HorizontalScrollView scroll, scroll1;
+    HorizontalScrollView scroll1;
     CountDownTimer timer;
     IconUtils icons;
     TabHandler tabHandler;
@@ -1869,10 +1869,9 @@ public class MainActivity extends BaseActivity implements
                 }
             }
 
-            scroll.post(new Runnable() {
+            scroll1.post(new Runnable() {
                 @Override
                 public void run() {
-                    sendScroll(scroll);
                     sendScroll(scroll1);
                 }
             });
@@ -1994,10 +1993,10 @@ public class MainActivity extends BaseActivity implements
 
         pathbar = (LinearLayout) findViewById(R.id.pathbar);
         buttons = (LinearLayout) findViewById(R.id.buttons);
-        scroll = (HorizontalScrollView) findViewById(R.id.scroll);
+
         scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
-        scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
+
         ImageView divider = (ImageView) findViewById(R.id.divider1);
         if (getAppTheme().equals(AppTheme.LIGHT))
             divider.setImageResource(R.color.divider);
@@ -2289,7 +2288,7 @@ public class MainActivity extends BaseActivity implements
                     animPath.setText(newPathBuilder.toString());
                     //bapath.setText(oldPath);
 
-                    scroll.post(new Runnable() {
+                    scroll1.post(new Runnable() {
                         @Override
                         public void run() {
                             scroll1.fullScroll(View.FOCUS_RIGHT);
@@ -2318,7 +2317,7 @@ public class MainActivity extends BaseActivity implements
                     animPath.setVisibility(View.GONE);
                     bapath.setText(newPath);
 
-                    scroll.post(new Runnable() {
+                    scroll1.post(new Runnable() {
                         @Override
                         public void run() {
                             scroll1.fullScroll(View.FOCUS_RIGHT);
@@ -2333,7 +2332,7 @@ public class MainActivity extends BaseActivity implements
                     animPath.setText(oldPathBuilder.toString());
                     bapath.setText(newPath);
 
-                    scroll.post(new Runnable() {
+                    scroll1.post(new Runnable() {
                         @Override
                         public void run() {
                             scroll1.fullScroll(View.FOCUS_LEFT);
@@ -2356,7 +2355,7 @@ public class MainActivity extends BaseActivity implements
                         super.onAnimationStart(animation);
                         animPath.setVisibility(View.VISIBLE);
                         bapath.setText("");
-                        scroll.post(new Runnable() {
+                        scroll1.post(new Runnable() {
                             @Override
                             public void run() {
                                 scroll1.fullScroll(View.FOCUS_RIGHT);
@@ -2397,7 +2396,7 @@ public class MainActivity extends BaseActivity implements
                     animPath.setText(oldPath);
                     bapath.setText("");
 
-                    scroll.post(new Runnable() {
+                    scroll1.post(new Runnable() {
                         @Override
                         public void run() {
                             scroll1.fullScroll(View.FOCUS_LEFT);
@@ -2433,7 +2432,7 @@ public class MainActivity extends BaseActivity implements
                             // we should not be having anything here in path bar
                             animPath.setVisibility(View.VISIBLE);
                             bapath.setText("");
-                            scroll.post(new Runnable() {
+                            scroll1.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     scroll1.fullScroll(View.FOCUS_RIGHT);

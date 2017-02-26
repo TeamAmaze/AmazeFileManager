@@ -1712,10 +1712,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 }
             }
 
-            scroll.post(new Runnable() {
+            scroll1.post(new Runnable() {
                 @Override
                 public void run() {
-                    sendScroll(scroll);
                     sendScroll(scroll1);
                 }
             });
@@ -1838,10 +1837,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
         pathbar = (LinearLayout) findViewById(R.id.pathbar);
         buttons = (LinearLayout) findViewById(R.id.buttons);
-        scroll = (HorizontalScrollView) findViewById(R.id.scroll);
+
         scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
-        scroll.setSmoothScrollingEnabled(true);
         scroll1.setSmoothScrollingEnabled(true);
+
         ImageView divider = (ImageView) findViewById(R.id.divider1);
         if (getAppTheme().equals(AppTheme.LIGHT))
             divider.setImageResource(R.color.divider);
@@ -2133,7 +2132,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     animPath.setText(newPathBuilder.toString());
                     //bapath.setText(oldPath);
 
-                    scroll.post(new Runnable() {
+                    scroll1.post(new Runnable() {
                         @Override
                         public void run() {
                             scroll1.fullScroll(View.FOCUS_RIGHT);
@@ -2162,7 +2161,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     animPath.setVisibility(View.GONE);
                     bapath.setText(newPath);
 
-                    scroll.post(new Runnable() {
+                    scroll1.post(new Runnable() {
                         @Override
                         public void run() {
                             scroll1.fullScroll(View.FOCUS_RIGHT);
@@ -2177,7 +2176,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     animPath.setText(oldPathBuilder.toString());
                     bapath.setText(newPath);
 
-                    scroll.post(new Runnable() {
+                    scroll1.post(new Runnable() {
                         @Override
                         public void run() {
                             scroll1.fullScroll(View.FOCUS_LEFT);
@@ -2200,7 +2199,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                         super.onAnimationStart(animation);
                         animPath.setVisibility(View.VISIBLE);
                         bapath.setText("");
-                        scroll.post(new Runnable() {
+                        scroll1.post(new Runnable() {
                             @Override
                             public void run() {
                                 scroll1.fullScroll(View.FOCUS_RIGHT);
@@ -2241,7 +2240,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     animPath.setText(oldPath);
                     bapath.setText("");
 
-                    scroll.post(new Runnable() {
+                    scroll1.post(new Runnable() {
                         @Override
                         public void run() {
                             scroll1.fullScroll(View.FOCUS_LEFT);
@@ -2277,7 +2276,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                             // we should not be having anything here in path bar
                             animPath.setVisibility(View.VISIBLE);
                             bapath.setText("");
-                            scroll.post(new Runnable() {
+                            scroll1.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     scroll1.fullScroll(View.FOCUS_RIGHT);
