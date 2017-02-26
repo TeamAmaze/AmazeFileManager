@@ -28,6 +28,7 @@
   <!--SortBy-->
   <!--ListMode-->
   <!--Folder-->
+  <string name="password">পাছৱৰ্ড</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
   <!-- reference to audio/video file -->
