@@ -29,7 +29,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -60,7 +59,6 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -93,7 +91,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
@@ -105,7 +102,6 @@ import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
@@ -129,7 +125,6 @@ import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -206,7 +201,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     int sdk, COUNTER = 0;
     TextView mGoogleName, mGoogleId;
     LinearLayout buttons;
-    HorizontalScrollView scroll, scroll1;
+    HorizontalScrollView scroll, pathbarScroll;
     CountDownTimer timer;
     IconUtils icons;
     TabHandler tabHandler;
@@ -1712,10 +1707,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 }
             }
 
-            scroll1.post(new Runnable() {
+            pathbarScroll.post(new Runnable() {
                 @Override
                 public void run() {
-                    sendScroll(scroll1);
+                    sendScroll(pathbarScroll);
                 }
             });
 
@@ -1838,8 +1833,8 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         pathbar = (LinearLayout) findViewById(R.id.pathbar);
         buttons = (LinearLayout) findViewById(R.id.buttons);
 
-        scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
-        scroll1.setSmoothScrollingEnabled(true);
+        pathbarScroll = (HorizontalScrollView) findViewById(R.id.pathbar_scroll);
+        pathbarScroll.setSmoothScrollingEnabled(true);
 
         ImageView divider = (ImageView) findViewById(R.id.divider1);
         if (getAppTheme().equals(AppTheme.LIGHT))
@@ -2132,10 +2127,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     animPath.setText(newPathBuilder.toString());
                     //bapath.setText(oldPath);
 
-                    scroll1.post(new Runnable() {
+                    pathbarScroll.post(new Runnable() {
                         @Override
                         public void run() {
-                            scroll1.fullScroll(View.FOCUS_RIGHT);
+                            pathbarScroll.fullScroll(View.FOCUS_RIGHT);
                         }
                     });
                 }
@@ -2161,10 +2156,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     animPath.setVisibility(View.GONE);
                     bapath.setText(newPath);
 
-                    scroll1.post(new Runnable() {
+                    pathbarScroll.post(new Runnable() {
                         @Override
                         public void run() {
-                            scroll1.fullScroll(View.FOCUS_RIGHT);
+                            pathbarScroll.fullScroll(View.FOCUS_RIGHT);
                         }
                     });
                 }
@@ -2176,10 +2171,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     animPath.setText(oldPathBuilder.toString());
                     bapath.setText(newPath);
 
-                    scroll1.post(new Runnable() {
+                    pathbarScroll.post(new Runnable() {
                         @Override
                         public void run() {
-                            scroll1.fullScroll(View.FOCUS_LEFT);
+                            pathbarScroll.fullScroll(View.FOCUS_LEFT);
                         }
                     });
                 }
@@ -2199,10 +2194,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                         super.onAnimationStart(animation);
                         animPath.setVisibility(View.VISIBLE);
                         bapath.setText("");
-                        scroll1.post(new Runnable() {
+                        pathbarScroll.post(new Runnable() {
                             @Override
                             public void run() {
-                                scroll1.fullScroll(View.FOCUS_RIGHT);
+                                pathbarScroll.fullScroll(View.FOCUS_RIGHT);
                             }
                         });
                     }
@@ -2240,10 +2235,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     animPath.setText(oldPath);
                     bapath.setText("");
 
-                    scroll1.post(new Runnable() {
+                    pathbarScroll.post(new Runnable() {
                         @Override
                         public void run() {
-                            scroll1.fullScroll(View.FOCUS_LEFT);
+                            pathbarScroll.fullScroll(View.FOCUS_LEFT);
                         }
                     });
                 }
@@ -2276,10 +2271,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                             // we should not be having anything here in path bar
                             animPath.setVisibility(View.VISIBLE);
                             bapath.setText("");
-                            scroll1.post(new Runnable() {
+                            pathbarScroll.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    scroll1.fullScroll(View.FOCUS_RIGHT);
+                                    pathbarScroll.fullScroll(View.FOCUS_RIGHT);
                                 }
                             });
                         }
