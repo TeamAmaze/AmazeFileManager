@@ -460,7 +460,7 @@
                     <p style="margin-left: 40px">
                         Open Command Prompt. Type \'ipconfig\' and press Enter. Look for Default Gateway
                         under your network adapter for your router\'s IP address. Look for
-                        \\"IPv4 Address\\" under the same adapter section to find your computer\'s IP
+                        \"IPv4 Address\" under the same adapter section to find your computer\'s IP
                         address.\n\n
                     </p>
 
@@ -554,4 +554,5 @@
   <string name="clipboard_path_copy">Caminho copiado para a área de transferência</string>
   <string name="error_busybox">Busybox não encontrado. Fechando o shell interativo.</string>
   <string name="service_timer">Tempo decorrido</string>
+  <string name="please_wait">Por favor, aguarde</string>
 </resources>

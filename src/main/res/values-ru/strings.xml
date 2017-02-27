@@ -306,6 +306,8 @@
   <string name="database">База данных</string>
   <string name="colourednavigation">Цветная панель навигации</string>
   <string name="colourednavigationsum">Окраска панели навигации вместе со скином</string>
+  <string name="sd_card_grant_next">sd_card_grant_next</string>
+  <string name="sd_card_grant_first">sd_card_grant_first</string>
   <string name="fab_skin">Скин плав. кнопки</string>
   <string name="gplus_pic_title">Войти в G+</string>
   <string name="gplus_pic_summary">Показать обложку и значок профиля из G+ в боковом меню</string>
@@ -419,6 +421,43 @@
   <string name="searchingdevices">Поиск устройств</string>
   <string name="use_custom_ip">Использовать другой IP</string>
   <string name="bookmark_lost">Закладка не найдена, пересоздание&#8230;</string>
+  <string name="smb_instructions">
+<html>
+            <body>
+                <h1>Как получить доступ к общей папки Windows на Android</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Включить общий доступ к файлам</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Откройте панель управления, нажмите «Выбор домашней группы и параметров общего доступа», далее нажмите  «Изменить дополнительные параметры общего доступа» и включите общий доступ к папкам и принтерам.\n\n
+                    </p>
+
+                    <li>
+                        <b>Дополнительные  параметры общего доступа</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Вы также можете настроить другие дополнительные параметры общего доступа здесь. \nНапример, вы можете разрешить доступ к файлам без пароля, если Вы доверяете всем устройства в этой сети. После того, как общий доступ к файлам и принтерам включен, откройте Проводник Windows или другой файловый менеджер, щелкните правой кнопкой мыши по папке, которой Вы хотите поделиться, и нажмите «Свойства». \nПосле перейдите на вкладку «Доступ» и откройте общий доступ к папке. \n\n
+                        </p>
+
+                    <li>
+                        <b>Убедитесь, что устройства находятся в одной сети</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                       Ваши устройства Windows и Android должны находиться в одной локальной сети. Например, Вы не получите доступ к папке из Windows на Android, если на устройстве Android будет включён только мобильный интернет!\n\n
+                    </p>
+
+                    <li>
+                        <b>Поиск IP адреса</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Откройте командную строку. Введите \'ipconfig\' и нажмите Enter. Найдите                         \"IPv4-адрес\" адаптера, через который Windows и Android устройства подключены к одной сети.\n\n
+                    </p>
+
+                    <b>Enter details in smb dialog box</b>\n
+                </ul>
+            </body>
+        </html>    </string>
   <string name="share_limit">Нельзя отправить больше 100 файлов</string>
   <string name="otg_access">Выберите корень OTG устройства</string>
   <string name="no_profile_pic">Нет аватарки на G+</string>
@@ -504,4 +543,5 @@
   <string name="clipboard_path_copy">Путь скопирован в буфер обмена</string>
   <string name="error_busybox">Busybox не найден. Закрытие интерактивной оболочки.</string>
   <string name="service_timer">Прошло времени</string>
+  <string name="please_wait">Подождите…</string>
 </resources>
