@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="app_name">Amaze</string>
   <string name="drawer_open">Navigációs fiók megnyitása</string>
   <string name="drawer_close">Navigációs fiók bezárása</string>
   <string name="books">Könyvjelzők</string>
@@ -39,6 +40,7 @@
   <string name="properties">Tulajdonságok</string>
   <string name="copyingapk">Apk másolása ide:</string>
   <string name="addbook">Könyvjelző hozzáadása</string>
+  <string name="delbook">Könyvjelző törlése</string>
   <string name="addtobook">Hozzáadás a könyvjelzőkhöz</string>
   <string name="enterpath">Adja meg az elérési útvonalat</string>
   <string name="cancel">MÉGSE</string>
@@ -155,6 +157,7 @@
   <string name="brown">Barna</string>
   <string name="black">Fekete</string>
   <string name="blue_grey">Szürkéskék</string>
+  <string name="supersu">SuperSU</string>
   <!--DirectorySortMode-->
   <string name="foldersOnTop">Mappák felülre</string>
   <string name="filesOnTop">Fájlok felülre</string>
@@ -277,6 +280,7 @@
   <string name="vietnamese_translation_title">Vietnámi</string>
   <string name="japanese_translation_title">Japán</string>
   <string name="brazilian_portuguese_translation_title">Brazíliai portugál</string>
+  <string name="tamil_translation_title">Tamil</string>
   <string name="zip_viewer">Zip megjelenítő</string>
   <string name="unin_system_apk">Ez egy rendszeralkalmazás. Törlésével veszélyeztetheti a rendszer stabilitását.\\n
 Folytatja?</string>
@@ -303,6 +307,8 @@ Folytatja?</string>
   <string name="database">Adatbázis</string>
   <string name="colourednavigation">Színes navigációs sáv</string>
   <string name="colourednavigationsum">Függetlenül attól, hogy a felszínben a rendszer navigációs sáv színezett</string>
+  <string name="sd_card_grant_next">sd_kártya_engedély_következő</string>
+  <string name="sd_card_grant_first">sd_kártya_engedély_először</string>
   <string name="fab_skin">FAB felszín</string>
   <string name="gplus_pic_title">Bejelentkezés G+ azonosítóval</string>
   <string name="gplus_pic_summary">G+ borítókép megjelenítése a fiókban</string>
@@ -348,6 +354,7 @@ Folytatja?</string>
   <string name="documents">Dokumentumok</string>
   <string name="images">Képek</string>
   <string name="clear">Törlés</string>
+  <string name="md5">md5: </string>
   <string name="md5_2">md5 másolása</string>
   <string name="total">Összes:</string>
   <string name="calculating">kiszámítás</string>
@@ -459,6 +466,7 @@ megtalálásához..</li><li/><br/>\\n
   <string name="modified">Módosítva</string>
   <string name="title">Cím</string>
   <string name="artist">Előadó</string>
+  <string name="album">Album</string>
   <string name="year">Év</string>
   <string name="duration">Időtartam</string>
   <string name="comment">Megjegyzés</string>
@@ -496,7 +504,9 @@ megtalálásához..</li><li/><br/>\\n
   <string name="optimized">Optimalizálva</string>
   <string name="security">Biztonság</string>
   <string name="paper_size">Papír mérete</string>
+  <string name="root_error">Hiba egy interaktív root shellben</string>
   <!-- %s will be replaced with either copied or moved -->
+  <string name="copy_error">Néhány fájlt nem sikerült %s</string>
   <string name="copied">másolva</string>
   <string name="moved">áthelyezve</string>
   <string name="process_chart_description">Folyamat</string>
@@ -509,11 +519,26 @@ megtalálásához..</li><li/><br/>\\n
   <string name="compressing">Tömörítés</string>
   <string name="cancelled">Megszakítva</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+  <string name="written">Írta</string>
+  <string name="out_of">out of</string>
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="of">-ból</string>
   <string name="processing_file">Fájl feldolgozása</string>
   <string name="current_speed">Aktuális sebesség</string>
+  <string name="smb_launch_error">Át kell másolni a fájlt a tárhelyre a megnyitáshoz</string>
+  <string name="error_file_not_found">Hiba: A fájl nem található</string>
+  <string name="error_io">I/O Hiba</string>
+  <string name="error_root_not_permitted">Hiba: Root jogosultság nem adott</string>
+  <string name="medium_text">Közepes szöveg</string>
   <string name="tap_and_hold_tips">Érintse meg és tartsa nyomva a fájlt vagy mappát további lehetőségek eléréséhez</string>
   <string name="permission_read">Elolvas</string>
+  <string name="permission_write">Írás</string>
+  <string name="permission_execute">Futtatás</string>
+  <string name="permission_owner">Hirdető</string>
+  <string name="permission_group">Csoport</string>
   <string name="permission_other">Egyéb</string>
   <string name="clipboard_path_copy">Az útvonal a vágólapra került</string>
+  <string name="error_busybox">BusyBox nem található. Interaktív rendszerhéj bezárása.</string>
+  <string name="service_timer">Eltelt idő</string>
+  <string name="please_wait">Kérjük, várjon</string>
 </resources>
