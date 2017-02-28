@@ -279,6 +279,7 @@ public class MainActivityHelper {
 
     public static final int DOESNT_EXIST = 0;
     public static final int WRITABLE_OR_ON_SDCARD = 1;
+    //For Android 5
     public static final int CAN_CREATE_FILES = 2;
 
     public int checkFolder(final File folder, Context context) {

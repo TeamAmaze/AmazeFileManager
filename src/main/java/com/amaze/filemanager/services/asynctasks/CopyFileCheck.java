@@ -101,7 +101,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
     private void showDialog() {
         if (counter == conflictingFiles.size() || conflictingFiles.size() == 0) {
             if (filesToCopy != null && filesToCopy.size() != 0) {
-                int mode = mainActivity.mainActivityHelper.checkFolder(new File(path), mainActivity);
+                int mode = mainActivity.mainActivityHelper.checkFolder(new File(path), context);
                 if (mode == MainActivityHelper.CAN_CREATE_FILES) {
                     mainActivity.oparrayList = filesToCopy;
                     mainActivity.operation = move ? DataUtils.MOVE : DataUtils.COPY;
@@ -113,36 +113,36 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
                         intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, filesToCopy);
                         intent.putExtra(CopyService.TAG_COPY_TARGET, path);
                         intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, openMode.ordinal());
-                        ServiceWatcherUtil.runService(mainActivity, intent);
+                        ServiceWatcherUtil.runService(context, intent);
                     } else {
                         new MoveFiles(filesToCopy, main, main.getActivity(), openMode)
                                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     }
                 }
             } else {
-                Toast.makeText(mainActivity, context.getResources().getString(R.string.no_file_overwrite), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getResources().getString(R.string.no_file_overwrite), Toast.LENGTH_SHORT).show();
             }
         } else {
-            final MaterialDialog.Builder x = new MaterialDialog.Builder(mainActivity);
+            final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context);
             LayoutInflater layoutInflater =
                     (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = layoutInflater.inflate(R.layout.copy_dialog, null);
-            x.customView(view, true);
+            dialogBuilder.customView(view, true);
             // textView
             TextView textView = (TextView) view.findViewById(R.id.textView);
             textView.setText(context.getResources().getString(R.string.fileexist) + "\n" + conflictingFiles.get(counter).getName());
             // checkBox
             final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
             Futils.setTint(checkBox, Color.parseColor(BaseActivity.accentSkin));
-            x.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
-            x.title(context.getResources().getString(R.string.paste));
-            x.positiveText(R.string.skip);
-            x.negativeText(R.string.overwrite);
-            x.neutralText(R.string.cancel);
-            x.positiveColor(Color.parseColor(BaseActivity.accentSkin));
-            x.negativeColor(Color.parseColor(BaseActivity.accentSkin));
-            x.neutralColor(Color.parseColor(BaseActivity.accentSkin));
-            x.onPositive(new MaterialDialog.SingleButtonCallback() {
+            dialogBuilder.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
+            dialogBuilder.title(context.getResources().getString(R.string.paste));
+            dialogBuilder.positiveText(R.string.skip);
+            dialogBuilder.negativeText(R.string.overwrite);
+            dialogBuilder.neutralText(R.string.cancel);
+            dialogBuilder.positiveColor(Color.parseColor(BaseActivity.accentSkin));
+            dialogBuilder.negativeColor(Color.parseColor(BaseActivity.accentSkin));
+            dialogBuilder.neutralColor(Color.parseColor(BaseActivity.accentSkin));
+            dialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
                 @Override
                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                     if (counter < conflictingFiles.size()) {
@@ -151,7 +151,6 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
                             counter++;
                         } else {
                             for (int j = counter; j < conflictingFiles.size(); j++) {
-
                                 filesToCopy.remove(conflictingFiles.get(j));
                             }
                             counter = conflictingFiles.size();
@@ -160,7 +159,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
                     }
                 }
             });
-            x.onNegative(new MaterialDialog.SingleButtonCallback() {
+            dialogBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
                 @Override
                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                     if (counter < conflictingFiles.size()) {
@@ -174,10 +173,10 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
                 }
             });
 
-            final MaterialDialog y = x.build();
-            y.show();
+            final MaterialDialog dialog = dialogBuilder.build();
+            dialog.show();
             if (filesToCopy.get(0).getParent().equals(path)) {
-                View negative = y.getActionButton(DialogAction.NEGATIVE);
+                View negative = dialog.getActionButton(DialogAction.NEGATIVE);
                 negative.setEnabled(false);
             }
         }
