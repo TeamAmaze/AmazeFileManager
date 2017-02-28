@@ -22,6 +22,7 @@ import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 
@@ -101,11 +102,12 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
         if (counter == conflictingFiles.size() || conflictingFiles.size() == 0) {
             if (filesToCopy != null && filesToCopy.size() != 0) {
                 int mode = mainActivity.mainActivityHelper.checkFolder(new File(path), mainActivity);
-                if (mode == 2) {
-                    mainActivity.oparrayList = (filesToCopy);
+                if (mode == MainActivityHelper.CAN_CREATE_FILES) {
+                    mainActivity.oparrayList = filesToCopy;
                     mainActivity.operation = move ? DataUtils.MOVE : DataUtils.COPY;
                     mainActivity.oppathe = path;
-                } else if (mode == 1 || mode == 0) {
+                } else if (mode == MainActivityHelper.WRITABLE_OR_ON_SDCARD
+                        || mode == MainActivityHelper.DOESNT_EXIST) {
                     if (!move) {
                         Intent intent = new Intent(context, CopyService.class);
                         intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, filesToCopy);
