@@ -44,6 +44,8 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
     private Context context;
     private boolean rootMode = false;
     private OpenMode openMode = OpenMode.FILE;
+    //causes folder containing filesToCopy to be deleted
+    private File deleteCopiedFolder = null;
 
     public CopyFileCheck(Main ma, String path, Boolean move, MainActivity con, boolean rootMode) {
         main = ma;
@@ -68,19 +70,17 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
         long totalBytes = 0;
 
         for (int i = 0; i < params[0].size(); i++) {
-            BaseFile f1 = filesToCopy.get(i);
+            BaseFile file = filesToCopy.get(i);
 
-            if (f1.isDirectory()) {
-
-                totalBytes = totalBytes + f1.folderSize();
+            if (file.isDirectory()) {
+                totalBytes = totalBytes + file.folderSize();
             } else {
-
-                totalBytes = totalBytes + f1.length();
+                totalBytes = totalBytes + file.length();
             }
         }
-        HFile f = new HFile(openMode, path);
-        if (f.getUsableSpace() >= totalBytes) {
-            for (BaseFile k1 : f.listFiles(rootMode)) {
+        HFile destination = new HFile(openMode, path);
+        if (destination.getUsableSpace() >= totalBytes) {
+            for (BaseFile k1 : destination.listFiles(rootMode)) {
                 for (BaseFile j : filesToCopy) {
                     if (k1.getName().equals((j).getName())) {
                         conflictingFiles.add(j);
@@ -89,6 +89,13 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
             }
         } else publishProgress(context.getResources().getString(R.string.in_safe));
 
+        if(conflictingFiles.size() == 1 && filesToCopy.size() == 1 && filesToCopy.get(0).isDirectory()) {
+            path += MainActivity.DIR_SEPARATOR + conflictingFiles.get(0).getName();
+            conflictingFiles.clear();
+            deleteCopiedFolder = new File(filesToCopy.get(0).getPath());
+            doInBackground(filesToCopy.get(0).listFiles(rootMode));
+        }
+
         return conflictingFiles;
     }
 
@@ -96,6 +103,9 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
     protected void onPostExecute(ArrayList<BaseFile> strings) {
         super.onPostExecute(strings);
         showDialog();
+        if(deleteCopiedFolder != null ) {
+            deleteCopiedFolder.delete();
+        }
     }
 
     private void showDialog() {
@@ -181,4 +191,5 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
             }
         }
     }
+
 }

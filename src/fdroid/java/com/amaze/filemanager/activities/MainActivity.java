@@ -152,7 +152,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         SmbConnectionListener, DataChangeListener, BookmarkCallback,
         SearchAsyncHelper.HelperCallbacks {
 
-    final Pattern DIR_SEPARATOR = Pattern.compile("/");
+    public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     /* Request code used to invoke sign in user interactions. */
     static final int RC_SIGN_IN = 0;
     public Integer select;
