@@ -35,42 +35,50 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class MoveFiles extends AsyncTask<String,Void,Boolean> {
-    ArrayList<BaseFile> files;
-    Main ma;
-    String path;
-    Context context;
-    OpenMode mode;
-    public MoveFiles(ArrayList<BaseFile> files, Main ma, Context context,OpenMode mode){
-        this.ma=ma;
-        this.context=context;
-        this.files=files;
-        this.mode=mode;
+    private ArrayList<BaseFile> files;
+    private Main main;
+    private String path;
+    private Context context;
+    private OpenMode mode;
+
+    public MoveFiles(ArrayList<BaseFile> files, Main ma, Context context, OpenMode mode) {
+        main = ma;
+        this.context = context;
+        this.files = files;
+        this.mode = mode;
     }
 
     @Override
     protected Boolean doInBackground(String... strings) {
-        path=strings[0];
-        boolean b=true;
-        if(files.size()==0)return true;
-        if(mode!=OpenMode.FILE)return false;
-        for(BaseFile f:files){
-            File file=new File(path+"/"+f.getName());
-            File file1=new File(f.getPath());
-            if(!file1.renameTo(file)){b=false;}
-        }
-        return b;
-    }
-    @Override
-    public void onPostExecute(Boolean b){
-        if(b ){
-            if(ma!=null)if(ma.CURRENT_PATH.equals(path))ma.updateList();
-            for(BaseFile f:files) {
-                Futils.scanFile(f.getPath(), context);
-                Futils.scanFile(path + "/" + f.getName(), context);
+        path = strings[0];
+        boolean movedCorrectly = true;
 
+        if (files.size() == 0) return true;
+
+        if (mode != OpenMode.FILE) return false;
+
+        for (BaseFile f : files) {
+            File dest = new File(path + "/" + f.getName());
+            File source = new File(f.getPath());
+            if (!source.renameTo(dest)) {
+                movedCorrectly = false;
             }
         }
-        else if(!b){
+        return movedCorrectly;
+    }
+
+    @Override
+    public void onPostExecute(Boolean movedCorrectly) {
+        if (movedCorrectly) {
+            if (main != null)
+                if (main.CURRENT_PATH.equals(path))
+                    main.updateList();
+
+            for (BaseFile f : files) {
+                Futils.scanFile(f.getPath(), context);
+                Futils.scanFile(path + "/" + f.getName(), context);
+            }
+        } else {
             Intent intent = new Intent(context, CopyService.class);
             intent.putExtra(CopyService.TAG_COPY_SOURCES, (files));
             intent.putExtra(CopyService.TAG_COPY_TARGET, path);
