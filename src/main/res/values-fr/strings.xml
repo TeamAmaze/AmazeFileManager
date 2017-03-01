@@ -338,7 +338,7 @@
   <string name="topFabS">Que le bouton + soit en haut ou en bas. Seulement applicable si la barre d\'accès n\'est pas masquée.</string>
   <string name="needsaccess">Accès en écriture requis</string>
   <string name="needsaccesssummary">Veuillez choisir l\'emplacement racine de \t</string>
-  <string name="needsaccesssummary1">\tto accorde l\'accès racine pour effectuer l\'opération </string>
+  <string name="needsaccesssummary1">\taccorder l\'accès en écriture pour effectuer l\'opération </string>
   <string name="smb_con">Connexion SMB</string>
   <string name="smb_server">Adresse IP Serveur</string>
   <string name="username">Nom utilisateur</string>
@@ -355,7 +355,7 @@
   <string name="md5">md5 : </string>
   <string name="md5_2">Copier md5</string>
   <string name="total">Total : </string>
-  <string name="calculating"> calcul en-cours </string>
+  <string name="calculating"> calcul en cours </string>
   <string name="sort">Trier</string>
   <string name="ascending">Croissant</string>
   <string name="descending">Décroissant</string>
@@ -384,18 +384,18 @@
   <string name="cut">Couper</string>
   <string name="search">Rechercher</string>
   <string name="invalid_name">Nom incorrect</string>
-  <string name="search_hint">Entrez le texte à rechercher&#8230;</string>
+  <string name="search_hint">Entrer le texte à rechercher&#8230;</string>
   <string name="advanced_search">Recherche Avancée</string>
-  <string name="regular_expression">Expression rationelle</string>
-  <string name="regular_expression_summary">Rechercher en utilisant une expression rationelle de style BASH</string>
+  <string name="regular_expression">Expression régulière</string>
+  <string name="regular_expression_summary">Rechercher en utilisant une expression régulière de style BASH</string>
   <string name="match_content">Rechercher le contenu</string>
-  <string name="match_content_summary">Si défini, l\'expression rationelle sera comparée avec le nom
+  <string name="match_content_summary">Si défini, l\'expression régulière sera comparée avec le nom
         de fichier complet, autrement, une instance sera recherchée.</string>
   <string name="start_ftp">Démarrer</string>
   <string name="stop_ftp">Arrêter</string>
   <string name="ftp_status_running">Démarré</string>
   <string name="ftp_status_not_running">Arrêté</string>
-  <string name="ftp_no_wifi">Vérifiez que vous êtes connecté au Wi-Fi</string>
+  <string name="ftp_no_wifi">Vérifier que vous êtes connecté au Wi-Fi</string>
   <string name="domain">Domaine</string>
   <string name="invalid">Invalide %s</string>
   <string name="ftp_notif_starting">Le serveur FTP est en cours de démarrage</string>
@@ -419,7 +419,7 @@
   <string name="paypal_copy_message">Id Paypal copié dans le presse-papiers</string>
   <string name="searchingdevices">Recherche d\'appareils</string>
   <string name="use_custom_ip">Utiliser une adresse IP modifiée</string>
-  <string name="bookmark_lost">Favori non trouvé, recréation&#8230;</string>
+  <string name="bookmark_lost">Favori non trouvé, reconstitution en cours&#8230;</string>
   <string name="smb_instructions">
         <html>
         <body>
@@ -429,23 +429,23 @@
         <ol>\\n
         <li>\\n
         <b>Activation du partage de fichiers</b>\\n
-        <br/>Ouvrez le Panneau de Configuration, cliquez sur Choisir les options de groupe résidentiel et de partage sous Réseau et Internet,
-        et cliquez sur changer les options des partages avancées. Active l\'option de partage de fichiers et d\'imprimantes\\n
+        <br/>Ouvrer le Panneau de Configuration, cliquer sur Choisir les options de groupe résidentiel et de partage sous Réseau et Internet,
+        et cliquer sur changer les options des partages avancées. Active l\'option de partage de fichiers et d\'imprimantes\\n
         </li><br/><li/><b>Options de partages de fichiers avancées
-        </b><br/>You pouvez aussi régler d\'autres paramètres de partages à cet endroit.
+        </b><br/>Vous pouvez aussi régler d\'autres paramètres de partages à cet endroit.
         Par exemple, vous pouvez autoriser l\'accès à vos fichiers sans mot de passe si vous vous trouvez dans un réseau de confiance (réseau domestique).
-        Une fois que le partage de fichiers et d\'imprimantes est activé, vous pouvez ouvrir l\'Explorateur de fichiers, cliquer-droit sur un dossier à partager,
+        Une fois que le partage de fichiers et d\'imprimantes est activé, vous pouvez ouvrir l\'Explorateur de fichiers, clique-droit sur un dossier à partager,
         et sélectionner Propriétés.\\n
-        Cliquez sur l\'onglet Partage et rendez le dossier disponible sur votre réseau.\\n
-        <li><li/><br/><b>Assurez vous que les deux appareils soient connectés au même réseau Wifi</b><br/> \\n
+        Cliquer sur l\'onglet Partage et rendre le dossier accessible sur votre réseau.\\n
+        <li><li/><br/><b>Assurez-vous que les deux appareils soient connectés au même réseau Wifi</b><br/> \\n
         Cette fonction rend disponible vos fichiers sur un réseau local, donc votre PC et votre appareil mobile doit
         se trouver sur le même réseau local. Vous ne pouvez pas accéder à vos partages Windows à travers Internet où quand votre appareil mobile est connecté au réseau cellulaire - Il doit être connecté au Wifi.
         </li><li>\\n
         <br/><b>Trouver votre adresse IP</b>\\n
         <br/>Ouvrez une invite de commande. Tapez \'ipconfig\' et appuyez sur Entrer.
-        Regardez la valeur de Passerelle par défaut pour connaitre l\'IP de votre routeur. Regardez \"Adresse IPv4 \" pour connaitre l\'adresse IP de votre ordinateur.
+        Regarder la valeur de Passerelle par défaut pour connaitre l\'IP de votre routeur. Regardez \"Adresse IPv4 \" pour connaitre l\'adresse IP de votre ordinateur.
         </li><li/><br/>\\n
-        <b>Entrez les détails dans le fenêtre de configuration de smb</b>\\n
+        <b>Entrer les détails dans le fenêtre de configuration de smb</b>\\n
         <br/>\\n
         </ol>\\n
         </body>\\n
@@ -509,7 +509,7 @@
   <string name="copy_complete">Copie terminée</string>
   <string name="move_complete">Transfert terminé</string>
   <string name="waiting_title">En attente</string>
-  <string name="waiting_content">Attendez jusqu\'à ce que l\'opération soit terminée</string>
+  <string name="waiting_content">Patienter jusqu\'à ce que l\'opération soit terminée</string>
   <string name="extract_complete">Extraction terminée</string>
   <string name="compression_complete">Compression terminée</string>
   <string name="compressing">Compression en cours</string>
@@ -533,7 +533,7 @@
   <string name="permission_owner">Propriétaire</string>
   <string name="permission_group">Groupe</string>
   <string name="permission_other">Autres</string>
-  <string name="clipboard_path_copy">Répertorie copié dans le presse-papier</string>
+  <string name="clipboard_path_copy">Chemin d\'accès copié dans le presse-papier</string>
   <string name="error_busybox">BusyBox introuvable. Le script shell est arrêté.</string>
   <string name="service_timer">Temps écoulé</string>
   <string name="please_wait">Veuillez patienter</string>
