@@ -79,6 +79,8 @@
     <string name="tab">Tab</string>
     <string name="file">File</string>
     <string name="folder">Folder</string>
+    <string name="title_files">FILES</string>
+    <string name="title_dirs">DIRECTORIES</string>
     <string name="newfolder">New Folder</string>
     <string name="entername">Enter Name</string>
     <string name="extracting">Extracting</string>

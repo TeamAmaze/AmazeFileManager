@@ -602,13 +602,40 @@ public class Futils {
     public void deleteFiles(ArrayList<Layoutelements> a, final Main b, List<Integer> pos, AppTheme appTheme) {
         final MaterialDialog.Builder c = new MaterialDialog.Builder(b.getActivity());
         c.title(b.getResources().getString(R.string.confirm));
-        String names = "";
+        int fileCounter = 0, dirCounter = 0;
         final ArrayList<BaseFile> todelete = new ArrayList<>();
+        StringBuilder dirNames = new StringBuilder();
+        StringBuilder fileNames = new StringBuilder();
         for (int i = 0; i < pos.size(); i++) {
             todelete.add(a.get(pos.get(i)).generateBaseFile());
-            names = names + "\n" + (i + 1) + ". " + a.get(pos.get(i)).getTitle();
+            if(a.get(pos.get(i)).isDirectory())
+                dirNames.append("\n")
+                        .append(++dirCounter)
+                        .append(". ")
+                        .append(a.get(pos.get(i)).getTitle());
+            else
+                fileNames.append("\n")
+                        .append(++fileCounter)
+                        .append(". ")
+                        .append(a.get(pos.get(i)).getTitle())
+                        .append(" (")
+                        .append(a.get(pos.get(i)).getSize())
+                        .append(")");
         }
-        c.content(b.getResources().getString(R.string.questiondelete) + names);
+
+        String titleFiles = b.getResources().getString(R.string.title_files);
+        String titleDirs = b.getResources().getString(R.string.title_dirs);
+
+        if(fileNames.length() == 0)
+            c.content(b.getResources().getString(R.string.questiondelete) + "\n\n" + "---" +
+                    titleDirs + "---" + dirNames);
+        else if(dirNames.length() == 0)
+            c.content(b.getResources().getString(R.string.questiondelete) + "\n\n" + "---" +
+                    titleFiles + "---" + fileNames);
+        else
+            c.content(b.getResources().getString(R.string.questiondelete) + "\n\n" + "---" +
+                    titleDirs + "---" + dirNames + "\n\n" + "---" +
+                    titleFiles + "---" + fileNames);
         c.theme(appTheme.getMaterialDialogTheme());
         c.negativeText(b.getResources().getString(R.string.no));
         c.positiveText(b.getResources().getString(R.string.yes));
