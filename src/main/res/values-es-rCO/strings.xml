@@ -22,6 +22,7 @@
   <string name="app_name">Panel de navegación de ejemplo</string>
   <string name="drawer_open">Abra el cajón navegación</string>
   <string name="drawer_close">Cierre el cajón navegación</string>
+  <string name="books">Marcadores</string>
   <string name="icon">icono</string>
   <string name="efn">Introduce el nombre del archivo</string>
   <string name="gallery">Galeria</string>
@@ -448,6 +449,7 @@
   <string name="image_iso">Velocidad ISO máxima</string>
   <string name="flash_fired">Flash disparado</string>
   <string name="focal_length">Longitud focal</string>
+  <string name="document">Documento</string>
   <string name="subject">Asunto</string>
   <string name="author">Autor(a)</string>
   <string name="keywords">Palabras clave</string>
