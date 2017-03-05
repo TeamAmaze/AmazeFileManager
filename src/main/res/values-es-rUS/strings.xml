@@ -450,6 +450,7 @@
   <string name="image_iso">Velocidad ISO máxima</string>
   <string name="flash_fired">Flash disparado</string>
   <string name="focal_length">Longitud focal</string>
+  <string name="document">Documento</string>
   <string name="subject">Asunto</string>
   <string name="author">Autor(a)</string>
   <string name="keywords">Palabras clave</string>

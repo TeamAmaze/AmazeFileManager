@@ -357,7 +357,7 @@ public class MainActivityHelper {
                     public void run() {
                         if(toast!=null)toast.cancel();
                         mainActivity.oppathe = path.getPath();
-                        mainActivity.operation = DataUtils.NEW_FOLDER;
+                        mainActivity.operation = DataUtils.NEW_FILE;
                         guideDialogForLEXA(mainActivity.oppathe);
                     }});
 
