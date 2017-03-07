@@ -1733,9 +1733,10 @@ public class MainActivity extends BaseActivity implements
                     break;
                 case DataUtils.COPY://copying
                     Intent intent1 = new Intent(con, CopyService.class);
-                    intent1.putExtra("FILE_PATHS", (oparrayList));
-                    intent1.putExtra("COPY_DIRECTORY", oppathe);
-                    startService(intent1);
+
+                    intent1.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, oparrayList);
+                    intent1.putExtra(CopyService.TAG_COPY_TARGET, oppathe);
+                    ServiceWatcherUtil.runService(mainActivity, intent1);
                     break;
                 case DataUtils.MOVE://moving
                     new MoveFiles((oparrayList), ((Main) getFragment().getTab()),
