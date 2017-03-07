@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.services.ftpservice.FTPService;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
@@ -42,6 +44,7 @@ public class FTPServerFragment extends Fragment {
     Button ftpBtn;
     private MainActivity mainActivity;
     private View rootView;
+    private int skin_color, skinTwoColor;
 
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
 
@@ -236,10 +239,17 @@ public class FTPServerFragment extends Fragment {
         mainActivity.floatingActionButton.hideMenuButton(true);
         mainActivity.buttonBarFrame.setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
+
+        skin_color = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY);
+        skinTwoColor = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
+
+        mainActivity.updateViews(new ColorDrawable(MainActivity.currentTab==1 ?
+                skinTwoColor : skin_color));
     }
 
     @Override
     public void onDestroy() {
+
         super.onDestroy();
     }
 
