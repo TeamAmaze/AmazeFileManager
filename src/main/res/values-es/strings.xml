@@ -40,6 +40,7 @@
   <string name="properties">Propiedades</string>
   <string name="copyingapk">Copiando apk a </string>
   <string name="addbook">Añadir favorito</string>
+  <string name="delbook">Borrar marcador</string>
   <string name="addtobook">Añadir a Favoritos</string>
   <string name="enterpath">Escribe la ruta</string>
   <string name="cancel">CANCELAR</string>
@@ -48,6 +49,7 @@
   <string name="filenotexists">El archivo no existe</string>
   <string name="loading">Cargando&#8230;</string>
   <string name="file_empty">El fichero está vacío</string>
+  <string name="error">Error</string>
   <string name="cantlistfiles">No se puede enumerar los archivos sin root</string>
   <string name="searchresults">Resultados de la búsqueda</string>
   <string name="itemsselected">Elementos seleccionados</string>
@@ -82,6 +84,7 @@
   <string name="guide2">Toque la franja azul para mostrar u ocultar la barra de ruta</string>
   <string name="guide3">Mantenga pulsado cualquier archivo para más opciones ...</string>
   <string name="guide4">Como copiar, mover, propiedades etc.</string>
+  <string name="guide5">Utilice el botón atrás de su dispositivo para salir de la aplicación en cualquier momento&#8230;</string>
   <string name="guide6">..Y Utilizar el botón de flecha izquierda para navegar en el administrador de archivos</string>
   <string name="maintab">No se puede eliminar la pestaña principal</string>
   <string name="openparent">Abrir directorio padre</string>
@@ -141,6 +144,7 @@
   <string name="pink">Rosa</string>
   <string name="purple">Púrpura</string>
   <string name="deep_purple">Púrpura oscuro</string>
+  <string name="indigo">Índigo</string>
   <string name="blue">Azul</string>
   <string name="light_blue">Azul claro</string>
   <string name="cyan">Cian</string>
@@ -153,6 +157,7 @@
   <string name="brown">Marrón</string>
   <string name="black">Negro</string>
   <string name="blue_grey">Azul Gris</string>
+  <string name="supersu">SuperSU</string>
   <!--DirectorySortMode-->
   <string name="foldersOnTop">Carpetas primero</string>
   <string name="filesOnTop">Archivos primero</string>
@@ -213,6 +218,7 @@
   <string name="ok">Aceptar</string>
   <string name="chooseUI">Elija el elemento gráfico</string>
   <string name="ui">Interfaz</string>
+  <string name="general">General</string>
   <string name="thumbSummary">Mostrar miniaturas de aplicaciones e imágenes</string>
   <string name="thumb">Mostrar miniaturas</string>
   <string name="hidden">Mostrar archivos y carpetas ocultos</string>
@@ -273,6 +279,7 @@
   <string name="vietnamese_translation_title">Vietnamita</string>
   <string name="japanese_translation_title">Japones</string>
   <string name="brazilian_portuguese_translation_title">Portugués brasileño</string>
+  <string name="tamil_translation_title">Tamil</string>
   <string name="zip_viewer">Visor de ZIP</string>
   <string name="unin_system_apk">Esta es una aplicación del sistema, borrarla puede provocar inestabilidad en el sistema.\n¿Continuar?</string>
   <string name="warning">Precaución</string>
@@ -284,6 +291,7 @@
   <string name="zip_summary">Los nuevos archivos ZIP se crearán en esta carpeta. El valor por defecto es el directorio donde los ficheros se encuentran.</string>
   <string name="openas">Abrir como</string>
   <string name="text">Texto</string>
+  <string name="audio">Audio</string>
   <string name="video">Vídeo</string>
   <string name="other">Otro</string>
   <string name="image">Imagen</string>
@@ -297,10 +305,13 @@
   <string name="database">Base de datos</string>
   <string name="colourednavigation">Barra de navegación coloreada</string>
   <string name="colourednavigationsum">Establece si la barra de navegación del sistema se colorea en función del tema</string>
+  <string name="sd_card_grant_next">sd_card_grant_next</string>
+  <string name="sd_card_grant_first">sd_card_grant_first</string>
   <string name="fab_skin">Tema del botón flotante</string>
   <string name="gplus_pic_title">Identificarse con G+</string>
   <string name="gplus_pic_summary">Mostrar la foto de portada de G+ en el panel lateral</string>
   <string name="icon_credits">Gráficos por &lt;a href=\"http://cookicons.co/\"&gt;CookIcons&lt;/a&gt;</string>
+  <string name="color_title">Color</string>
   <string name="color_summary">Establecer el color de varios componentes gráficos</string>
   <string name="primary_color_title">Color principal</string>
   <string name="primary_color_summary">Establecer color para grande elementos gráficos</string>
@@ -383,35 +394,108 @@
   <string name="stop_ftp">Parar</string>
   <string name="ftp_status_running">Funcionando</string>
   <string name="ftp_status_not_running">No funcionando</string>
+  <string name="ftp_no_wifi">Asegúrese de que está conectado a WiFi</string>
   <string name="domain">Dominio</string>
   <string name="invalid">%s inválido</string>
   <string name="ftp_notif_starting">Se está iniciando el servidor FTP</string>
   <string name="ftp_notif_title">Servidor FTP de Amaze funcionando</string>
   <string name="ftp_notif_text">en %s</string>
   <string name="ftp_notif_stop_server">PARAR</string>
+  <string name="ftp_port_edit_menu_title">Elija el puerto FTP</string>
+  <string name="ftp_port_change_success">Puerto FTB cambiado con éxito</string>
   <string name="ftp_port_change_error_invalid">Numero de puerto seleccionado no valido</string>
   <string name="primary_two_title">Color primario (pestaña derecha)</string>
   <string name="g_plus">Google Plus</string>
   <string name="support_development">Apoyar el desarrollo</string>
+  <string name="report_bugs_title">Reportar de errores</string>
+  <string name="report_bugs_summary">Informar errores o solicitar nuevas características</string>
   <string name="translate_title">Traducir</string>
+  <string name="g_plus_community_summary">Participar en pruebas beta y debates relacionados con el desarrollo</string>
+  <string name="easter_egg_title">Modo de estudio</string>
+  <string name="paypal_copy_message">Id de Paypal copiado al portapapeles</string>
   <string name="searchingdevices">Buscando dispositivos</string>
+  <string name="use_custom_ip">Utilizar IP personalizada</string>
+  <string name="bookmark_lost">Marcador no encontrado, recreando&#8230;</string>
+  <string name="share_limit">No se pueden compartir más de 100 archivos</string>
+  <string name="otg_access">Seleccione la raíz del dispositivo OTG</string>
+  <string name="no_profile_pic">Sin foto de Perfil de G +</string>
+  <string name="opening">Abriendo...</string>
   <string name="information">Información</string>
   <!-- reference to file accessed date -->
+  <string name="accessed">Accedido</string>
   <!-- reference to file modified date -->
+  <string name="modified">Modificado</string>
   <string name="title">Título</string>
+  <string name="artist">Artista</string>
+  <string name="album">Álbum</string>
+  <string name="year">Año</string>
   <string name="duration">Duración</string>
+  <string name="comment">Comentar</string>
   <!-- reference to audio/video file -->
+  <string name="container">Contenedor</string>
+  <string name="codec">Códec</string>
   <string name="channels">Canales</string>
+  <string name="sample_rate">Frecuencia de muestreo</string>
+  <string name="bitrate">Tasa de bits</string>
+  <string name="dimensions">Dimensiones</string>
+  <string name="frame_rate">Frecuencia de imagen</string>
+  <string name="image_type">Tipo de imagen</string>
   <string name="width">Ancho</string>
   <string name="height">Altura</string>
+  <string name="date_modified">Fecha modificada</string>
+  <string name="software">Software</string>
+  <string name="creator">Autor</string>
+  <string name="camera_brand">Marca de cámara</string>
+  <string name="camera_model">Modelo de la cámara</string>
+  <string name="date_taken">Fecha de captura</string>
   <string name="exposure_time">Tiempo de exposición</string>
+  <string name="aperture_value">Valor de la apertura</string>
+  <string name="image_iso">Velocidad ISO máxima</string>
+  <string name="flash_fired">Flash disparado</string>
   <string name="focal_length">Longitud focal</string>
+  <string name="document">Documento</string>
+  <string name="subject">Asunto</string>
+  <string name="author">Autor(a)</string>
+  <string name="keywords">Palabras clave</string>
+  <string name="producer">Productor</string>
+  <string name="created">Creado</string>
+  <string name="format">Formato</string>
+  <string name="pages">Número de páginas</string>
   <!-- reference to a document file -->
+  <string name="optimized">Optimizado</string>
+  <string name="security">Seguridad</string>
+  <string name="paper_size">Tamaño del papel</string>
   <!-- %s will be replaced with either copied or moved -->
+  <string name="copied">copiado</string>
+  <string name="moved">movido</string>
+  <string name="process_chart_description">Progreso</string>
+  <string name="copy_complete">Copia completada</string>
+  <string name="move_complete">Movimiento completado</string>
+  <string name="waiting_title">Esperando</string>
+  <string name="waiting_content">A la espera de completar la operación</string>
+  <string name="extract_complete">Extracción completada</string>
+  <string name="compression_complete">Compresión completada</string>
+  <string name="compressing">Comprimiendo</string>
+  <string name="cancelled">Cancelado</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+  <string name="written">Escrito</string>
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="processing_file">Procesando el archivo</string>
+  <string name="current_speed">Velocidad actual</string>
+  <string name="smb_launch_error">Necesitará copiar este archivo al almacenamiento para abrirlo</string>
+  <string name="error_file_not_found">Error: Archivo no encontrado</string>
+  <string name="error_io">Error de E/S</string>
+  <string name="error_root_not_permitted">Error: Permiso root no concedido</string>
+  <string name="medium_text">Texto medio</string>
   <string name="tap_and_hold_tips">Mantenga pulsado un archivo o carpeta para más opciones</string>
   <string name="permission_read">Leido</string>
+  <string name="permission_write">Escribir</string>
+  <string name="permission_execute">Ejecutar</string>
+  <string name="permission_owner">Propietario</string>
+  <string name="permission_group">Grupo</string>
   <string name="permission_other">Otro</string>
   <string name="clipboard_path_copy">Ruta copiada al portapapeles</string>
+  <string name="error_busybox">BusyBox no encontrado. Cerrando el shell interactivo.</string>
+  <string name="service_timer">Tiempo transcurrido</string>
+  <string name="please_wait">Por favor, espere</string>
 </resources>
