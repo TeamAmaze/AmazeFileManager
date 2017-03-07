@@ -544,4 +544,11 @@
   <string name="error_busybox">Busybox 找不到。關閉互動式 shell。</string>
   <string name="service_timer">已用時間</string>
   <string name="please_wait">請稍候</string>
+  <string name="no_applications">無任何應用程式</string>
+  <string name="ftp_path">分享路徑</string>
+  <string name="ftp_path_hint">要分享根目錄的路徑</string>
+  <string name="error_ftp_path_file">路徑不是目錄</string>
+  <string name="change">變更</string>
+  <string name="ftp_path_change_success">已成功變更 FTP 路徑</string>
+  <string name="ftp_path_change_error_invalid">無效路徑</string>
 </resources>
