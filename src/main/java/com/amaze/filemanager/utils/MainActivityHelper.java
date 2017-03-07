@@ -40,6 +40,7 @@ import java.util.ArrayList;
  * Created by root on 11/22/15.
  */
 public class MainActivityHelper {
+
     private MainActivity mainActivity;
     private Futils utils;
 

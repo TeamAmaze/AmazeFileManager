@@ -270,7 +270,6 @@ public class Main extends android.support.v4.app.Fragment {
         res = getResources();
         pathname = (TextView) getActivity().findViewById(R.id.pathname);
         mFullPath = (TextView) getActivity().findViewById(R.id.fullpath);
-        goback = res.getString(R.string.goback);
         itemsstring = res.getString(R.string.items);
         apk = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_apk_grid));
         mToolbarContainer.setBackgroundColor(MainActivity.currentTab==1 ? skinTwoColor : skin_color);
@@ -294,6 +293,7 @@ public class Main extends android.support.v4.app.Fragment {
         SHOW_HIDDEN = Sp.getBoolean("showHidden", false);
         COLORISE_ICONS = Sp.getBoolean("coloriseIcons", true);
         mFolderBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_grid_folder_new);
+        goback = res.getString(R.string.goback);
         folder = new BitmapDrawable(res, mFolderBitmap);;
         getSortModes();
         DARK_IMAGE = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_image_dark));
@@ -1079,7 +1079,9 @@ public class Main extends android.support.v4.app.Fragment {
                     //MAIN_ACTIVITY.invalidateFab(openMode);
                 } catch (Exception e) {
                 }
-            } else {//Toast.makeText(getActivity(),res.getString(R.string.error),Toast.LENGTH_LONG).show();
+            } else {
+                // list loading cancelled
+                // TODO: Add support for cancelling list loading
                 loadlist(home, true, OpenMode.FILE);
             }
         } catch (Exception e) {
@@ -1261,6 +1263,13 @@ public class Main extends android.support.v4.app.Fragment {
         loadlist((CURRENT_PATH), true, openMode);
     }
 
+    /**
+     * Assigns sort modes
+     * A value from 0 to 3 defines sort mode as name/last modified/size/type in ascending order
+     * Values from 4 to 7 defines sort mode as name/last modified/size/type in descending order
+     *
+     * Final value of {@link #sortby} varies from 0 to 3
+     */
     public void getSortModes() {
         int t = Integer.parseInt(Sp.getString("sortby", "0"));
         if (t <= 3) {
@@ -1270,8 +1279,8 @@ public class Main extends android.support.v4.app.Fragment {
             asc = -1;
             sortby = t - 4;
         }
-        dsort = Integer.parseInt(Sp.getString("dirontop", "0"));
 
+        dsort = Integer.parseInt(Sp.getString("dirontop", "0"));
     }
 
     @Override

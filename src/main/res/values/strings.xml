@@ -570,5 +570,6 @@
     <string name="error_busybox">Busybox not found. Closing interactive shell.</string>
     <string name="service_timer">Time Elapsed</string>
     <string name="please_wait">Please Wait</string>
+    <string name="no_applications">No applications</string>
 </resources>
 
