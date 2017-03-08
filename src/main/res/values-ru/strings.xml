@@ -19,11 +19,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="app_name">Пример навигации по меню</string>
+  <string name="app_name">Amaze</string>
   <string name="drawer_open">Открыть меню навигации</string>
   <string name="drawer_close">Закрыть меню навигации</string>
   <string name="books">Закладки</string>
-  <string name="icon">иконка</string>
+  <string name="icon">значок</string>
   <string name="efn">Введите имя файла</string>
   <string name="storage">Память</string>
   <string name="gallery">Галерея</string>
@@ -38,7 +38,7 @@
   <string name="uninstall">Удалить</string>
   <string name="play">Открыть в Play Store</string>
   <string name="properties">Свойства</string>
-  <string name="copyingapk">apk-файл скопирован в: </string>
+  <string name="copyingapk">Копирование apk в </string>
   <string name="addbook">Добавить закладку</string>
   <string name="delbook">Удалить закладку</string>
   <string name="addtobook">Добавить в закладки</string>
@@ -544,4 +544,11 @@
   <string name="error_busybox">Busybox не найден. Закрытие интерактивной оболочки.</string>
   <string name="service_timer">Прошло времени</string>
   <string name="please_wait">Подождите…</string>
+  <string name="no_applications">Нет приложений</string>
+  <string name="ftp_path">Общий путь</string>
+  <string name="ftp_path_hint">Путь к корневому каталогу для общего доступа</string>
+  <string name="error_ftp_path_file">Путь не является каталогом</string>
+  <string name="change">Изменить</string>
+  <string name="ftp_path_change_success">FTP путь успешно изменен</string>
+  <string name="ftp_path_change_error_invalid">Неверный путь</string>
 </resources>
