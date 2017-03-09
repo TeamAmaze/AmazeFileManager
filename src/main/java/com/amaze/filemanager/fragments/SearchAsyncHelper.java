@@ -5,13 +5,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+
 
 /**
  * Created by vishal on 26/2/16.
@@ -19,7 +23,7 @@ import java.util.regex.Pattern;
 public class SearchAsyncHelper extends Fragment {
 
     private HelperCallbacks mCallbacks;
-    private String mPath, mInput;
+    private String mPath, mInput , lastSearch="";
     public SearchTask mSearchTask;
     private OpenMode mOpenMode;
     private boolean mRootMode, isRegexEnabled, isMatchesEnabled;
@@ -30,6 +34,8 @@ public class SearchAsyncHelper extends Fragment {
     public static final String KEY_ROOT_MODE = "root_mode";
     public static final String KEY_REGEX = "regex";
     public static final String KEY_REGEX_MATCHES = "matches";
+    private MainActivity mainActivity;
+
 
     // interface for activity to communicate with asynctask
     public interface HelperCallbacks {
@@ -99,7 +105,9 @@ public class SearchAsyncHelper extends Fragment {
 
             // level 1
             // if regex or not
-            if (!isRegexEnabled) search(file, mInput);
+            if (!isRegexEnabled){
+                search(file, mInput);
+            }
             else {
 
                 // compile the regular expression in the input
@@ -137,28 +145,53 @@ public class SearchAsyncHelper extends Fragment {
          */
         private void search(HFile file, String query) {
 
+         /*
+            if(!query.equalsIgnoreCase(lastSearch)) {
+                lastSearch = query;
+            }
+            else{
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        Toast toast  = Toast.makeText( getActivity(), "Same search " , Toast.LENGTH_SHORT);
+                        //if(toast!=null)toast.cancel();
+                        toast.show();
+
+                        }});
+            }*/
+
+
+
+
             if (file.isDirectory()) {
                 ArrayList<BaseFile> f = file.listFiles(mRootMode);
                 // do you have permission to read this directory?
                 if (!isCancelled())
+
                     for (BaseFile x : f) {
                         if (!isCancelled()) {
                             if (x.isDirectory()) {
+
                                 if (x.getName().toLowerCase()
-                                        .contains(query.toLowerCase())) {
+                                        .contains(query.toLowerCase())) {   // EGER DIRECTORY ISE ICINI DE GEZ
                                     publishProgress(x);
                                 }
                                 if (!isCancelled()) search(x, query);
 
-                            } else {
+                            }
+                            else {
+
                                 if (x.getName().toLowerCase()
-                                        .contains(query.toLowerCase())) {
+                                        .contains(query.toLowerCase())) {   // EGER FILE ISE SADECE ISMINI BAS
                                     publishProgress(x);
                                 }
                             }
                         } else return;
                     }
+
                 else return;
+
             } else {
                 System.out
                         .println(file.getPath() + "Permission Denied");

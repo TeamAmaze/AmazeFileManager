@@ -1085,6 +1085,7 @@ public class Main extends android.support.v4.app.Fragment {
         } catch (Exception e) {
         }
 
+
     }
 
     /**
@@ -1419,11 +1420,12 @@ public class Main extends android.support.v4.app.Fragment {
     // adds search results based on result boolean. If false, the adapter is initialised with initial
     // values, if true, new values are added to the adapter.
     public void addSearchResult(BaseFile a) {
+        LIST_ELEMENTS.clear();                 //
         if (listView != null) {
 
             // initially clearing the array for new result set
             if (!results) {
-                LIST_ELEMENTS.clear();
+                LIST_ELEMENTS.clear();                         // ARRAYI CLEAR EDIYOR.
                 file_count = 0;
                 folder_count = 0;
             }
@@ -1432,7 +1434,7 @@ public class Main extends android.support.v4.app.Fragment {
             addTo(a);
             if (!results) {
                 createViews(LIST_ELEMENTS, false, (CURRENT_PATH), openMode, false, !IS_LIST);
-                pathname.setText(MAIN_ACTIVITY.getString(R.string.empty));
+                pathname.setText(MAIN_ACTIVITY.getString(R.string.empty));                  // LISTEYE ELEMAN EKLIYOR EGER VARSA
                 mFullPath.setText(MAIN_ACTIVITY.getString(R.string.searching));
                 results = true;
             } else {
@@ -1444,7 +1446,7 @@ public class Main extends android.support.v4.app.Fragment {
 
     public void onSearchCompleted() {
         if (!results) {
-            // no results were found
+            // no results were found                // EGER ELEMAN BULUNAMAMISSA
             LIST_ELEMENTS.clear();
         }
         new AsyncTask<Void, Void, Void>() {
