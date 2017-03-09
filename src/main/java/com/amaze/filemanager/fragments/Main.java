@@ -1420,7 +1420,7 @@ public class Main extends android.support.v4.app.Fragment {
     // adds search results based on result boolean. If false, the adapter is initialised with initial
     // values, if true, new values are added to the adapter.
     public void addSearchResult(BaseFile a) {
-        LIST_ELEMENTS.clear();                 //
+        LIST_ELEMENTS.clear();                 // ADDED BY MERİC
         if (listView != null) {
 
             // initially clearing the array for new result set
