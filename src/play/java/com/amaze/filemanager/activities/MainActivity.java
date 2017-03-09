@@ -46,6 +46,7 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.service.quicksettings.TileService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -93,7 +94,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
@@ -105,7 +105,6 @@ import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
@@ -129,7 +128,6 @@ import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -376,6 +374,17 @@ public class MainActivity extends BaseActivity implements
                 //Commit the transaction
                 transaction.commit();
                 supportInvalidateOptionsMenu();
+            }  else if (intent.getAction() != null &&
+                    intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)) {
+                // tile preferences, open ftp fragment
+
+                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                transaction2.replace(R.id.content_frame, new FTPServerFragment());
+                findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+
+                select = -2;
+                adapter.toggleChecked(false);
+                transaction2.commit();
             } else {
                 if (path != null && path.length() > 0) {
                     HFile file = new HFile(OpenMode.UNKNOWN, path);
@@ -633,6 +642,22 @@ public class MainActivity extends BaseActivity implements
                     }
                 } else {
                     zipViewer.mActionMode.finish();
+                }
+            } else if (name.contains("FTPServerFragment")) {
+
+                //returning back from FTP server
+                if (path != null && path.length() > 0) {
+                    HFile file = new HFile(OpenMode.UNKNOWN, path);
+                    file.generateMode(this);
+                    if (file.isDirectory())
+                        goToMain(path);
+                    else {
+                        goToMain("");
+                        utils.openFile(new File(path), this);
+                    }
+                } else {
+                    goToMain("");
+
                 }
             } else
                 goToMain("");
@@ -1073,10 +1098,18 @@ public class MainActivity extends BaseActivity implements
                 a.theme(getAppTheme().getMaterialDialogTheme());
                 a.title(R.string.directorysort);
                 int current = Integer.parseInt(Sp.getString("dirontop", "0"));
+
+                final Main mainFrag = ma;
+
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         Sp.edit().putString("dirontop", "" + which).commit();
+                        if (mainFrag != null) {
+
+                            mainFrag.getSortModes();
+                            mainFrag.updateList();
+                        }
                         dialog.dismiss();
                         return true;
                     }
@@ -1728,9 +1761,10 @@ public class MainActivity extends BaseActivity implements
                     break;
                 case DataUtils.COPY://copying
                     Intent intent1 = new Intent(con, CopyService.class);
-                    intent1.putExtra("FILE_PATHS", (oparrayList));
-                    intent1.putExtra("COPY_DIRECTORY", oppathe);
-                    startService(intent1);
+
+                    intent1.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, oparrayList);
+                    intent1.putExtra(CopyService.TAG_COPY_TARGET, oppathe);
+                    ServiceWatcherUtil.runService(mainActivity, intent1);
                     break;
                 case DataUtils.MOVE://moving
                     new MoveFiles((oparrayList), ((Main) getFragment().getTab()),
@@ -2574,7 +2608,7 @@ public class MainActivity extends BaseActivity implements
             }
         } else if ((openprocesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
 
-            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
             //   transaction.addToBackStack(null);
             select = 102;

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -29,7 +30,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.services.ftpservice.FTPService;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
+
+import java.io.File;
 
 /**
  * Created by yashwanthreddyg on 10-06-2016.
@@ -40,6 +44,7 @@ public class FTPServerFragment extends Fragment {
     Button ftpBtn;
     private MainActivity mainActivity;
     private View rootView;
+    private int skin_color, skinTwoColor;
 
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
 
@@ -113,21 +118,71 @@ public class FTPServerFragment extends Fragment {
                                     int portNumber = Integer.parseInt(name);
                                     if (portNumber < 1024) {
                                         Toast.makeText(getActivity(), R.string.ftp_port_change_error_invalid, Toast.LENGTH_SHORT)
-                                             .show();
+                                                .show();
                                     } else {
                                         FTPService.changeFTPServerPort(preferences, portNumber);
                                         Toast.makeText(getActivity(), R.string.ftp_port_change_success, Toast.LENGTH_SHORT)
-                                             .show();
+                                                .show();
                                     }
                                 }
                             }
                         })
-                        .positiveText("CHANGE")
+                        .positiveText(getResources().getString(R.string.change).toUpperCase())
                         .negativeText(R.string.cancel)
                         .build()
                         .show();
-
                 return true;
+            case R.id.ftp_path:
+                MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(getActivity());
+                dialogBuilder.title(getString(R.string.ftp_path));
+                dialogBuilder.input(getString(R.string.ftp_path_hint),
+                        FTPService.getDefaultPathFromPreferences(preferences),
+                        false, new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+
+                            }
+                        });
+                dialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                        EditText editText = dialog.getInputEditText();
+                        if (editText != null) {
+                            String path = editText.getText().toString();
+
+                            File pathFile = new File(path);
+                            if (pathFile.exists() && pathFile.isDirectory()) {
+
+                                FTPService.changeFTPServerPath(preferences, pathFile.getPath());
+                                Toast.makeText(getActivity(), R.string.ftp_path_change_success,
+                                        Toast.LENGTH_SHORT)
+                                        .show();
+                            } else {
+                                // try to get parent
+                                File pathParentFile = new File(pathFile.getParent());
+                                if (pathParentFile.exists() && pathParentFile.isDirectory()) {
+
+                                    FTPService.changeFTPServerPath(preferences, pathParentFile.getPath());
+                                    Toast.makeText(getActivity(), R.string.ftp_path_change_success,
+                                            Toast.LENGTH_SHORT)
+                                            .show();
+                                } else {
+                                    // don't have access, print error
+
+                                    Toast.makeText(getActivity(), R.string.ftp_path_change_error_invalid,
+                                            Toast.LENGTH_SHORT)
+                                            .show();
+                                }
+                            }
+                        }
+                    }
+                });
+
+                dialogBuilder.positiveText(getResources().getString(R.string.change).toUpperCase())
+                        .negativeText(R.string.cancel)
+                        .build()
+                        .show();
         }
 
         return false;
@@ -184,10 +239,17 @@ public class FTPServerFragment extends Fragment {
         mainActivity.floatingActionButton.hideMenuButton(true);
         mainActivity.buttonBarFrame.setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
+
+        skin_color = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY);
+        skinTwoColor = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
+
+        mainActivity.updateViews(new ColorDrawable(MainActivity.currentTab==1 ?
+                skinTwoColor : skin_color));
     }
 
     @Override
     public void onDestroy() {
+
         super.onDestroy();
     }
 

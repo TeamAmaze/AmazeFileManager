@@ -19,25 +19,15 @@
 
 package com.amaze.filemanager.fragments;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.res.TypedArray;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
-import android.text.format.Formatter;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -45,18 +35,17 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
+import com.amaze.filemanager.services.asynctasks.AppListLoader;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.icons.IconHolder;
-import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class AppsList extends ListFragment {
+public class AppsList extends ListFragment implements LoaderManager.LoaderCallbacks<List<Layoutelements>> {
+
     UtilitiesProviderInterface utilsProvider;
     AppsList app = this;
     AppsAdapter adapter;
@@ -67,8 +56,11 @@ public class AppsList extends ListFragment {
     public IconHolder ic;
     ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
     private MainActivity mainActivity;
-    int asc,sortby;
-    private IntentFilter packageFilter;
+    int asc, sortby;
+
+    int index=0, top=0;
+
+    public static final int ID_LOADER_APP_LIST = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,7 +68,7 @@ public class AppsList extends ListFragment {
         utilsProvider = (UtilitiesProviderInterface) getActivity();
 
         setHasOptionsMenu(false);
-        ic=new IconHolder(getActivity(),true,true);
+        ic = new IconHolder(getActivity(),true,true);
 
     }
     @Override
@@ -95,99 +87,27 @@ public class AppsList extends ListFragment {
         vl.setDivider(null);
         if(utilsProvider.getAppTheme().equals(AppTheme.DARK))
             getActivity().getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
-        if(savedInstanceState==null)loadlist(false);
-        else{
-            //c=savedInstanceState.getParcelableArrayList("c");
-            //a=savedInstanceState.getParcelableArrayList("list");
-            //adapter = new AppsAdapter(getActivity(), utilsProvider, R.layout.rowlayout, a, app, c);
-            //setListAdapter(adapter);
-            vl.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
-            vl.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
 
-            loadlist(false);
+        adapter = new AppsAdapter(getContext(), utilsProvider, R.layout.rowlayout, app);
+        setListAdapter(adapter);
+        setListShown(false);
+        setEmptyText(getResources().getString(R.string.no_applications));
+        getLoaderManager().initLoader(ID_LOADER_APP_LIST, null, this);
+
+        if (savedInstanceState != null) {
+
+            index = savedInstanceState.getInt("index");
+            top = savedInstanceState.getInt("top");
         }
-        setHasOptionsMenu(true);
     }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-        inflater.inflate(R.menu.apps_list, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_refresh:
-                Toast.makeText(getActivity(), getResources().getText(R.string.refresh),
-                        Toast.LENGTH_SHORT).show();
-
-                loadlist(false);
-                break;
-            default:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public  void onDestroy(){
-        super.onDestroy();
-    }
-    int index=0,top=0;
-    public void loadlist(boolean save){
-        if(save) {
-            index = vl.getFirstVisiblePosition();
-            View vi = vl.getChildAt(0);
-            top = (vi == null) ? 0 : vi.getTop();
-        } new LoadListTask(save,top,index).execute();
-    }
-    public static int getToolbarHeight(Context context) {
-        final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
-                new int[]{android.R.attr.actionBarSize});
-        int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
-        styledAttributes.recycle();
-
-        return toolbarHeight;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        packageFilter = new IntentFilter();
-        packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
-        packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        packageFilter.addDataScheme("package");
-        getActivity().registerReceiver(br, packageFilter);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        getActivity().unregisterReceiver(br);
-    }
-
-    BroadcastReceiver br = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // TODO Auto-generated method stub
-            if (intent != null) {
-                loadlist(true);
-            }}
-    };
 
 
     @Override
     public void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
-        if(vl!=null){
-            // list too big for the transaction bundle to handle
-            //b.putParcelableArrayList("c",c);
-            //b.putParcelableArrayList("list",a);
+
+        if(vl!=null) {
+
             int index = vl.getFirstVisiblePosition();
             View vi = vl.getChildAt(0);
             int top = (vi == null) ? 0 : vi.getTop();
@@ -195,69 +115,6 @@ public class AppsList extends ListFragment {
             b.putInt("top", top);
         }
     }
-
-    class LoadListTask extends AsyncTask<Void, Void, ArrayList<Layoutelements>> {
-
-        protected ArrayList<Layoutelements> doInBackground(Void[] p1) {
-            try {
-                PackageManager p = getActivity().getPackageManager();
-                List<PackageInfo> all_apps = p.getInstalledPackages(PackageManager.GET_META_DATA);
-                a = new ArrayList<>();
-                c = new ArrayList<>();
-                for (PackageInfo object : all_apps) {
-                    File f=new File(object.applicationInfo.publicSourceDir);
-
-                    a.add(new Layoutelements(new BitmapDrawable(getActivity().getResources(),
-                            BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.ic_doc_apk_grid)),
-                            object.applicationInfo.loadLabel(p).toString(), object.applicationInfo.publicSourceDir,
-                            object.packageName, object.versionName, Formatter.formatFileSize(getContext(), f.length()),f.length(), false,
-                            f.lastModified()+"", false));
-                    c.add(object);
-                }
-                Collections.sort(a, new FileListSorter(0, sortby, asc, false));
-            } catch (Exception e) {
-                //Toast.makeText(getActivity(), "" + e, Toast.LENGTH_LONG).show();
-            }//ArrayAdapter<String> b=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,a);
-            // TODO: Implement this method
-
-            return a;
-        }
-
-        int index,top;
-        boolean save;
-        public LoadListTask(boolean save,int top,int index) {
-            this.save=save;
-            this.index=index;
-            this.top=top;
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-
-        @Override
-        // Once the image is downloaded, associates it to the imageView
-        protected void onPostExecute(ArrayList<Layoutelements> bitmap) {
-            if (isCancelled()) {
-                bitmap = null;
-
-            }
-            try {
-                if (bitmap != null) {
-
-
-                    adapter = new AppsAdapter(getActivity(), utilsProvider, R.layout.rowlayout, bitmap, app, c);
-                    setListAdapter(adapter);
-                    if(save && getListView()!=null)
-                        getListView().setSelectionFromTop(index,top);
-                }
-            } catch (Exception e) {
-            }
-
-        }
-    }  // copy the .apk file to wherever
 
     public boolean unin(String pkg) {
 
@@ -272,6 +129,14 @@ public class AppsList extends ListFragment {
         }
         return true;
     }
+
+    /**
+     * Assigns sort modes
+     * A value from 0 to 2 defines sort mode as name/last modified/size in ascending order
+     * Values from 3 to 5 defines sort mode as name/last modified/size in descending order
+     *
+     * Final value of {@link #sortby} varies from 0 to 2
+     */
     public void getSortModes() {
         int t = Integer.parseInt(Sp.getString("sortbyApps", "0"));
         if (t <= 2) {
@@ -281,6 +146,32 @@ public class AppsList extends ListFragment {
             asc = -1;
             sortby = t - 3;
         }
+    }
 
+    @Override
+    public Loader<List<Layoutelements>> onCreateLoader(int id, Bundle args) {
+        return new AppListLoader(getContext(), sortby, asc);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Layoutelements>> loader, List<Layoutelements> data) {
+
+        // set new data to adapter
+        adapter.setData(data);
+
+        if (isResumed()) {
+            setListShown(true);
+        } else {
+            setListShownNoAnimation(true);
+        }
+
+        if (vl != null)
+            vl.setSelectionFromTop(index, top);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Layoutelements>> loader) {
+
+        adapter.setData(null);
     }
 }

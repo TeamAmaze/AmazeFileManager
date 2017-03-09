@@ -514,4 +514,11 @@
   <string name="error_busybox">无法找到 Busybox 。请关闭交互式 shell。</string>
   <string name="service_timer">用时</string>
   <string name="please_wait">请稍候</string>
+  <string name="no_applications">没有应用程序</string>
+  <string name="ftp_path">共享路径</string>
+  <string name="ftp_path_hint">共享目录的根路径</string>
+  <string name="error_ftp_path_file">路径不是目录</string>
+  <string name="change">更改</string>
+  <string name="ftp_path_change_success">FTP 路径更改成功</string>
+  <string name="ftp_path_change_error_invalid">路径无效</string>
 </resources>

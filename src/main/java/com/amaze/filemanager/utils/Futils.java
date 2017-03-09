@@ -1147,7 +1147,7 @@ public class Futils {
                 int which = dialog.getSelectedIndex();
                 m.Sp.edit().putString("sortbyApps", "" + which).commit();
                 m.getSortModes();
-                m.loadlist(false);
+                m.getLoaderManager().restartLoader(AppsList.ID_LOADER_APP_LIST, null, m);
                 dialog.dismiss();
             }
 
@@ -1157,7 +1157,7 @@ public class Futils {
                 int which = dialog.getSelectedIndex() + 3;
                 m.Sp.edit().putString("sortbyApps", "" + which).commit();
                 m.getSortModes();
-                m.loadlist(false);
+                m.getLoaderManager().restartLoader(AppsList.ID_LOADER_APP_LIST, null, m);
                 dialog.dismiss();
             }
         });

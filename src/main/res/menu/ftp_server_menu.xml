@@ -3,4 +3,7 @@
     <item
         android:id="@+id/choose_ftp_port"
         android:title="@string/ftp_port_edit_menu_title"/>
+    <item
+        android:id="@+id/ftp_path"
+        android:title="@string/ftp_path" />
 </menu>

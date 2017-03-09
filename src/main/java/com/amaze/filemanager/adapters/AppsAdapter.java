@@ -23,7 +23,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -52,33 +51,32 @@ import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class AppsAdapter extends ArrayAdapter<Layoutelements> {
+
     private UtilitiesProviderInterface utilsProvider;
     Context context;
     List<Layoutelements> items;
     public SparseBooleanArray myChecked = new SparseBooleanArray();
     AppsList app;
-    ArrayList<PackageInfo> c = new ArrayList<>();
 
     public AppsAdapter(Context context, UtilitiesProviderInterface utilsProvider, int resourceId,
-                       List<Layoutelements> items, AppsList app, ArrayList<PackageInfo> c) {
-        super(context, resourceId, items);
+                       AppsList app) {
+        super(context, resourceId);
         this.utilsProvider = utilsProvider;
         this.context = context;
-        this.items = items;
         this.app = app;
-        this.c = c;
-        for (int i = 0; i < items.size(); i++) {
+
+        /*for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, false);
-        }
+        }*/
     }
 
     public void toggleChecked(int position) {
@@ -122,6 +120,15 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
             }
         }
         return b;
+    }
+
+    public void setData(List<Layoutelements> data) {
+        clear();
+
+        if (data != null) {
+            this.items = data;
+            addAll(data);
+        }
     }
 
     private class ViewHolder {
@@ -224,16 +231,9 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                             case R.id.unins:
                                 final BaseFile f1 = new BaseFile(rowItem.getDesc());
                                 f1.setMode(OpenMode.ROOT);
-                                ApplicationInfo info1=null;
-                                for(PackageInfo info:c){
-                                    if(info.applicationInfo.publicSourceDir.equals(rowItem.getDesc())) {
-                                        info1=info.applicationInfo;
-                                    }
-                                }
                                 int color= Color.parseColor(PreferenceUtils.getAccentString(app.Sp));
-                                //arrayList.add(utils.newElement(Icons.loadMimeIcon(getActivity(), f1.getPath(), false), f1.getPath(), null, null, utils.getSize(f1),"", false));
-                                //utils.deleteFiles(arrayList, null, arrayList1);
-                                if ((info1.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+
+                                if ((Integer.valueOf(rowItem.getSymlink()) & ApplicationInfo.FLAG_SYSTEM) != 0) {
                                     // system package
                                     if(app.Sp.getBoolean("rootmode",false)) {
                                         MaterialDialog.Builder builder1 = new MaterialDialog.Builder(app.getActivity());
@@ -297,16 +297,18 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                 BaseFile baseFile=RootHelper.generateBaseFile(f,true);
                                 baseFile.setName(rowItem.getTitle() + "_" + rowItem.getSymlink() + ".apk");
                                 ab.add(baseFile);
-                                intent.putExtra("FILE_PATHS", ab);
-                                intent.putExtra("COPY_DIRECTORY", dst.getPath());
-                                intent.putExtra("MODE",0);
-                                app.getActivity().startService(intent);
-                                return true;
 
+                                intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, ab);
+                                intent.putExtra(CopyService.TAG_COPY_TARGET, dst.getPath());
+                                intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, 0);
+
+                                ServiceWatcherUtil.runService(app.getActivity(), intent);
+                                return true;
                         }
                         return false;
                     }
                 });
+
                 popupMenu.inflate(R.menu.app_options);
                 popupMenu.show();
             }

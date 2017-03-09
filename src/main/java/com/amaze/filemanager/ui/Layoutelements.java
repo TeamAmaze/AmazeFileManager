@@ -56,6 +56,7 @@ public class Layoutelements implements Parcelable {
         // Convert Bitmap to Drawable:
         //imageId = new BitmapDrawable(bitmap);
         date1 = im.readString();
+        size = im.readString();
         longSize=im.readLong();
     }
 
@@ -75,6 +76,7 @@ public class Layoutelements implements Parcelable {
         p1.writeInt(header ? 1 : 0);
         //p1.writeParcelable(imageId.getBitmap(), p2);
         p1.writeString(date1);
+        p1.writeString(size);
         p1.writeLong(longSize);
         // TODO: Implement this method
     }
@@ -90,8 +92,10 @@ public class Layoutelements implements Parcelable {
     private String date1 = "";
     private boolean header;
     //same as hfile.modes but different than openmode in Main.java
-    private OpenMode mode=OpenMode.FILE;
-    public Layoutelements(BitmapDrawable imageId, String title, String desc, String permissions, String symlink, String size,long longSize,  boolean header, String date,boolean isDirectory) {
+    private OpenMode mode = OpenMode.FILE;
+
+    public Layoutelements(BitmapDrawable imageId, String title, String desc, String permissions,
+                          String symlink, String size, long longSize, boolean header, String date, boolean isDirectory) {
         this.imageId = imageId;
         this.title = title;
         this.desc = desc;
@@ -106,7 +110,6 @@ public class Layoutelements implements Parcelable {
             this.date1 = Futils.getdate(this.date, CURRENT_YEAR);
         }
     }
-
 
     public static final Parcelable.Creator<Layoutelements> CREATOR =
             new Parcelable.Creator<Layoutelements>() {
@@ -142,9 +145,11 @@ public class Layoutelements implements Parcelable {
     }
 
     public boolean isDirectory() {
-        return isDirectory;}
-    public BaseFile generateBaseFile(){
-        BaseFile baseFile=new BaseFile(getDesc(),getPermissions(),getDate1(),longSize,isDirectory());
+        return isDirectory;
+    }
+
+    public BaseFile generateBaseFile() {
+        BaseFile baseFile=new BaseFile(getDesc(), getPermissions(), getDate1(), getlongSize(), isDirectory());
         baseFile.setMode(mode);
         baseFile.setName(title);
         return baseFile;
@@ -153,6 +158,7 @@ public class Layoutelements implements Parcelable {
     public String getSize() {
         return size;
     }
+
     public long getlongSize() {
         return longSize;
     }

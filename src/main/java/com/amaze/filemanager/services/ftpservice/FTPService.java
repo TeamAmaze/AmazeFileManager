@@ -45,6 +45,8 @@ public class FTPService extends Service implements Runnable {
 
     public static final int DEFAULT_PORT = 2211;
     public static final String PORT_PREFERENCE_KEY = "ftpPort";
+    public static final String KEY_PREFERENCE_PATH = "ftp_path";
+    public static final String DEFAULT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
 
     public static int getDefaultPortFromPreferences(SharedPreferences preferences) {
         try {
@@ -57,13 +59,22 @@ public class FTPService extends Service implements Runnable {
         }
     }
 
+    public static String getDefaultPathFromPreferences(SharedPreferences preferences) {
+        return preferences.getString(KEY_PREFERENCE_PATH, DEFAULT_PATH);
+    }
+
     public static void changeFTPServerPort(SharedPreferences preferences, int port) {
         preferences.edit()
                    .putInt(PORT_PREFERENCE_KEY, port)
                    .apply();
     }
 
+    public static void changeFTPServerPath(SharedPreferences preferences, String path) {
+        preferences.edit().putString(KEY_PREFERENCE_PATH, path).apply();
+    }
+
     private static final String TAG = FTPService.class.getSimpleName();
+
     /**
      * TODO: 25/10/16 This is ugly
      */
@@ -125,8 +136,6 @@ public class FTPService extends Service implements Runnable {
 
         serverFactory.setConnectionConfig(connectionConfigFactory.createConnectionConfig());
 
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-
         BaseUser user = new BaseUser();
         if (!isPasswordProtected) {
             user.setName("anonymous");
@@ -135,7 +144,7 @@ public class FTPService extends Service implements Runnable {
             user.setPassword(password);
         }
 
-        user.setHomeDirectory(path);
+        user.setHomeDirectory(getDefaultPathFromPreferences(preferences));
         List<Authority> list = new ArrayList<>();
         list.add(new WritePermission());
         user.setAuthorities(list);
