@@ -17,6 +17,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.CopyService;
@@ -43,9 +44,10 @@ import java.util.Set;
  */
 public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFileCheck.CopyNode> {
 
-    private enum DO_FOR_ALL_ELEMENTS {REPLACE, DO_NOT_REPLACE}
-
-    ;
+    private enum DO_FOR_ALL_ELEMENTS {
+        DO_NOT_REPLACE,
+        REPLACE
+    }
 
     private Main main;
     private String path;
@@ -152,7 +154,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 if (checkBox.isChecked())
-                    dialogState = DO_FOR_ALL_ELEMENTS.REPLACE;
+                    dialogState = DO_FOR_ALL_ELEMENTS.DO_NOT_REPLACE;
                 doNotReplaceFiles(path, filesToCopy, conflictingFiles);
             }
         });
@@ -160,7 +162,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 if (checkBox.isChecked())
-                    dialogState = DO_FOR_ALL_ELEMENTS.DO_NOT_REPLACE;
+                    dialogState = DO_FOR_ALL_ELEMENTS.REPLACE;
                 replaceFiles(path, filesToCopy, conflictingFiles);
             }
         });
@@ -182,15 +184,15 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
             if ((c = copyFolder.goToNextNode()) != null) {
                 counter = 0;
 
-                if (dialogState == null)
-                    onEndDialog(c.path, c.filesToCopy, c.conflictingFiles);
-                else if (dialogState == DO_FOR_ALL_ELEMENTS.REPLACE)
-                    doNotReplaceFiles(c.path, c.filesToCopy, c.conflictingFiles);
-                else if (dialogState == DO_FOR_ALL_ELEMENTS.DO_NOT_REPLACE)
-                    replaceFiles(c.path, c.filesToCopy, c.conflictingFiles);
-
                 paths.add(c.getPath());
                 filesToCopyPerFolder.add(c.filesToCopy);
+
+                if (dialogState == null)
+                    onEndDialog(c.path, c.filesToCopy, c.conflictingFiles);
+                else if (dialogState == DO_FOR_ALL_ELEMENTS.DO_NOT_REPLACE)
+                    doNotReplaceFiles(c.path, c.filesToCopy, c.conflictingFiles);
+                else if (dialogState == DO_FOR_ALL_ELEMENTS.REPLACE)
+                    replaceFiles(c.path, c.filesToCopy, c.conflictingFiles);
             } else {
                 finishCopying(paths, filesToCopyPerFolder);
             }
@@ -263,7 +265,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
 
         if (move) {
             for (String folder : paths) {
-                new File(folder).delete();
+                FileUtil.deleteFile(new File(folder), context);
             }
         }
     }
