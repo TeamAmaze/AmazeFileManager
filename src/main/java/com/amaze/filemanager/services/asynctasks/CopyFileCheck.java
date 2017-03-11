@@ -43,6 +43,10 @@ import java.util.Set;
  */
 public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFileCheck.CopyNode> {
 
+    private enum DO_FOR_ALL_ELEMENTS {REPLACE, DO_NOT_REPLACE}
+
+    ;
+
     private Main main;
     private String path;
     private Boolean move;
@@ -51,6 +55,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
     private Context context;
     private boolean rootMode = false;
     private OpenMode openMode = OpenMode.FILE;
+    private DO_FOR_ALL_ELEMENTS dialogState = null;
 
     //causes folder containing filesToCopy to be deleted
     private ArrayList<File> deleteCopiedFolder = null;
@@ -131,6 +136,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
         // textView
         TextView textView = (TextView) view.findViewById(R.id.textView);
         textView.setText(context.getResources().getString(R.string.fileexist) + "\n" + conflictingFiles.get(counter).getName());
+
         // checkBox
         final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
         Futils.setTint(checkBox, Color.parseColor(BaseActivity.accentSkin));
@@ -145,33 +151,17 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
         dialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                if (counter < conflictingFiles.size()) {
-                    if (!checkBox.isChecked()) {
-                        filesToCopy.remove(conflictingFiles.get(counter));
-                        counter++;
-                    } else {
-                        for (int j = counter; j < conflictingFiles.size(); j++) {
-                            filesToCopy.remove(conflictingFiles.get(j));
-                        }
-                        counter = conflictingFiles.size();
-                    }
-                }
-
-                onEndDialog(path, filesToCopy, conflictingFiles);
+                if (checkBox.isChecked())
+                    dialogState = DO_FOR_ALL_ELEMENTS.REPLACE;
+                doNotReplaceFiles(path, filesToCopy, conflictingFiles);
             }
         });
         dialogBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                if (counter < conflictingFiles.size()) {
-                    if (!checkBox.isChecked()) {
-                        counter++;
-                    } else {
-                        counter = conflictingFiles.size();
-                    }
-                }
-
-                onEndDialog(path, filesToCopy, conflictingFiles);
+                if (checkBox.isChecked())
+                    dialogState = DO_FOR_ALL_ELEMENTS.DO_NOT_REPLACE;
+                replaceFiles(path, filesToCopy, conflictingFiles);
             }
         });
 
@@ -192,9 +182,15 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
             if ((c = copyFolder.goToNextNode()) != null) {
                 counter = 0;
 
+                if (dialogState == null)
+                    onEndDialog(c.path, c.filesToCopy, c.conflictingFiles);
+                else if (dialogState == DO_FOR_ALL_ELEMENTS.REPLACE)
+                    doNotReplaceFiles(c.path, c.filesToCopy, c.conflictingFiles);
+                else if (dialogState == DO_FOR_ALL_ELEMENTS.DO_NOT_REPLACE)
+                    replaceFiles(c.path, c.filesToCopy, c.conflictingFiles);
+
                 paths.add(c.getPath());
                 filesToCopyPerFolder.add(c.filesToCopy);
-                onEndDialog(c.path, c.filesToCopy, c.conflictingFiles);
             } else {
                 finishCopying(paths, filesToCopyPerFolder);
             }
@@ -202,10 +198,41 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
         }
     }
 
+    private void doNotReplaceFiles(String path, ArrayList<BaseFile> filesToCopy, ArrayList<BaseFile> conflictingFiles) {
+        if (counter < conflictingFiles.size()) {
+            if (dialogState != null) {
+                filesToCopy.remove(conflictingFiles.get(counter));
+                counter++;
+            } else {
+                for (int j = counter; j < conflictingFiles.size(); j++) {
+                    filesToCopy.remove(conflictingFiles.get(j));
+                }
+                counter = conflictingFiles.size();
+            }
+        }
+
+        onEndDialog(path, filesToCopy, conflictingFiles);
+    }
+
+    private void replaceFiles(String path, ArrayList<BaseFile> filesToCopy, ArrayList<BaseFile> conflictingFiles) {
+        if (counter < conflictingFiles.size()) {
+            if (dialogState != null) {
+                counter++;
+            } else {
+                counter = conflictingFiles.size();
+            }
+        }
+
+        onEndDialog(path, filesToCopy, conflictingFiles);
+    }
+
     private void finishCopying(ArrayList<String> paths, ArrayList<ArrayList<BaseFile>> filesToCopyPerFolder) {
-        for (int i = 0; i < filesToCopyPerFolder.size(); i++)
-            if (filesToCopyPerFolder.get(i) == null || filesToCopyPerFolder.get(i).size() == 0)
+        for (int i = 0; i < filesToCopyPerFolder.size(); i++) {
+            if (filesToCopyPerFolder.get(i) == null || filesToCopyPerFolder.get(i).size() == 0) {
                 filesToCopyPerFolder.remove(i);
+                i--;
+            }
+        }
 
         if (filesToCopyPerFolder.size() != 0) {
             int mode = mainActivity.mainActivityHelper.checkFolder(new File(path), context);
@@ -234,8 +261,8 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
             Toast.makeText(context, context.getResources().getString(R.string.no_file_overwrite), Toast.LENGTH_SHORT).show();
         }
 
-        if(move) {
-            for(String folder : paths) {
+        if (move) {
+            for (String folder : paths) {
                 new File(folder).delete();
             }
         }
@@ -285,11 +312,10 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
         }
 
         /**
-         *
          * @return true if there are no more nodes
          */
         CopyNode goToNextNode() {
-            if(queue.isEmpty())
+            if (queue.isEmpty())
                 return null;
             else {
                 CopyNode node = queue.element();
@@ -318,7 +344,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
         }
 
         private CopyNode getUnvisitedChildNode(Set<CopyNode> visited, CopyNode node) {
-            for(CopyNode n : node.nextNodes) {
+            for (CopyNode n : node.nextNodes) {
                 if (!visited.contains(n)) {
                     return n;
                 }
