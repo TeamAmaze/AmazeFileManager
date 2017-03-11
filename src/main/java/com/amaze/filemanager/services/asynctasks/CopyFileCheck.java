@@ -28,34 +28,45 @@ import com.amaze.filemanager.utils.ServiceWatcherUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
 /**
  * Created by arpitkh996 on 12-01-2016.
+ *
+ *  This AsyncTask works by creating a tree where each folder that can be fusioned together with
+ *  another in the destination is a node (CopyNode), each node is copied when the conflicts are dealt
+ *  with (the dialog is shown, and the tree is walked via a BFS).
+ *  If the process is cancelled (via the button in the dialog) the dialog closes without any more code
+ *  to be executed, finishCopying() is never executed so no changes are made.
  */
-
-public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayList<BaseFile>> {
+public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFileCheck.CopyNode> {
 
     private Main main;
     private String path;
     private Boolean move;
-    private ArrayList<BaseFile> filesToCopy, conflictingFiles;
     private int counter = 0;
     private MainActivity mainActivity;
     private Context context;
     private boolean rootMode = false;
     private OpenMode openMode = OpenMode.FILE;
+
     //causes folder containing filesToCopy to be deleted
-    private File deleteCopiedFolder = null;
+    private ArrayList<File> deleteCopiedFolder = null;
+    private CopyNode copyFolder;
+    private final ArrayList<String> paths = new ArrayList<>();
+    private final ArrayList<ArrayList<BaseFile>> filesToCopyPerFolder = new ArrayList<>();
 
     public CopyFileCheck(Main ma, String path, Boolean move, MainActivity con, boolean rootMode) {
         main = ma;
-        this.path = path;
         this.move = move;
         mainActivity = con;
         context = con;
         openMode = main.openMode;
         this.rootMode = rootMode;
-        conflictingFiles = new ArrayList<>();
+
+        this.path = path;
     }
 
     @Override
@@ -64,12 +75,11 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
     }
 
     @Override
-    // Actual download method, run in the task thread
-    protected ArrayList<BaseFile> doInBackground(ArrayList<BaseFile>... params) {
-        filesToCopy = params[0];
+    protected CopyNode doInBackground(ArrayList<BaseFile>... params) {
+        ArrayList<BaseFile> filesToCopy = params[0];
         long totalBytes = 0;
 
-        for (int i = 0; i < params[0].size(); i++) {
+        for (int i = 0; i < filesToCopy.size(); i++) {
             BaseFile file = filesToCopy.get(i);
 
             if (file.isDirectory()) {
@@ -78,117 +88,243 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, ArrayL
                 totalBytes = totalBytes + file.length();
             }
         }
+
         HFile destination = new HFile(openMode, path);
-        if (destination.getUsableSpace() >= totalBytes) {
-            for (BaseFile k1 : destination.listFiles(rootMode)) {
-                for (BaseFile j : filesToCopy) {
-                    if (k1.getName().equals((j).getName())) {
-                        conflictingFiles.add(j);
-                    }
+        if (destination.getUsableSpace() < totalBytes) {
+            publishProgress(context.getResources().getString(R.string.in_safe));
+            return null;
+        }
+
+        copyFolder = new CopyNode(path, filesToCopy);
+
+        return copyFolder;
+    }
+
+    private ArrayList<BaseFile> checkConflicts(ArrayList<BaseFile> filesToCopy, HFile destination) {
+        ArrayList<BaseFile> conflictingFiles = new ArrayList<>();
+
+        for (BaseFile k1 : destination.listFiles(rootMode)) {
+            for (BaseFile j : filesToCopy) {
+                if (k1.getName().equals((j).getName())) {
+                    conflictingFiles.add(j);
                 }
             }
-        } else publishProgress(context.getResources().getString(R.string.in_safe));
-
-        if(conflictingFiles.size() == 1 && filesToCopy.size() == 1 && filesToCopy.get(0).isDirectory()) {
-            path += MainActivity.DIR_SEPARATOR + conflictingFiles.get(0).getName();
-            conflictingFiles.clear();
-            deleteCopiedFolder = new File(filesToCopy.get(0).getPath());
-            doInBackground(filesToCopy.get(0).listFiles(rootMode));
         }
 
         return conflictingFiles;
     }
 
     @Override
-    protected void onPostExecute(ArrayList<BaseFile> strings) {
-        super.onPostExecute(strings);
-        showDialog();
-        if(deleteCopiedFolder != null ) {
-            deleteCopiedFolder.delete();
+    protected void onPostExecute(CopyNode copyFolder) {
+        super.onPostExecute(copyFolder);
+        copyFolder.startCopy();
+        onEndDialog(copyFolder.getPath(), copyFolder.getFilesToCopy(), copyFolder.getConflictingFiles());
+    }
+
+    private void showDialog(final String path, final ArrayList<BaseFile> filesToCopy,
+                            final ArrayList<BaseFile> conflictingFiles) {
+        final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context);
+        LayoutInflater layoutInflater =
+                (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = layoutInflater.inflate(R.layout.copy_dialog, null);
+        dialogBuilder.customView(view, true);
+        // textView
+        TextView textView = (TextView) view.findViewById(R.id.textView);
+        textView.setText(context.getResources().getString(R.string.fileexist) + "\n" + conflictingFiles.get(counter).getName());
+        // checkBox
+        final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+        Futils.setTint(checkBox, Color.parseColor(BaseActivity.accentSkin));
+        dialogBuilder.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
+        dialogBuilder.title(context.getResources().getString(R.string.paste));
+        dialogBuilder.positiveText(R.string.skip);
+        dialogBuilder.negativeText(R.string.overwrite);
+        dialogBuilder.neutralText(R.string.cancel);
+        dialogBuilder.positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        dialogBuilder.negativeColor(Color.parseColor(BaseActivity.accentSkin));
+        dialogBuilder.neutralColor(Color.parseColor(BaseActivity.accentSkin));
+        dialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                if (counter < conflictingFiles.size()) {
+                    if (!checkBox.isChecked()) {
+                        filesToCopy.remove(conflictingFiles.get(counter));
+                        counter++;
+                    } else {
+                        for (int j = counter; j < conflictingFiles.size(); j++) {
+                            filesToCopy.remove(conflictingFiles.get(j));
+                        }
+                        counter = conflictingFiles.size();
+                    }
+                }
+
+                onEndDialog(path, filesToCopy, conflictingFiles);
+            }
+        });
+        dialogBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                if (counter < conflictingFiles.size()) {
+                    if (!checkBox.isChecked()) {
+                        counter++;
+                    } else {
+                        counter = conflictingFiles.size();
+                    }
+                }
+
+                onEndDialog(path, filesToCopy, conflictingFiles);
+            }
+        });
+
+        final MaterialDialog dialog = dialogBuilder.build();
+        dialog.show();
+        if (filesToCopy.get(0).getParent().equals(path)) {
+            View negative = dialog.getActionButton(DialogAction.NEGATIVE);
+            negative.setEnabled(false);
         }
     }
 
-    private void showDialog() {
-        if (counter == conflictingFiles.size() || conflictingFiles.size() == 0) {
-            if (filesToCopy != null && filesToCopy.size() != 0) {
-                int mode = mainActivity.mainActivityHelper.checkFolder(new File(path), context);
-                if (mode == MainActivityHelper.CAN_CREATE_FILES) {
-                    mainActivity.oparrayList = filesToCopy;
-                    mainActivity.operation = move ? DataUtils.MOVE : DataUtils.COPY;
-                    mainActivity.oppathe = path;
-                } else if (mode == MainActivityHelper.WRITABLE_OR_ON_SDCARD
-                        || mode == MainActivityHelper.DOESNT_EXIST) {
-                    if (!move) {
+    private void onEndDialog(String path, ArrayList<BaseFile> filesToCopy,
+                             ArrayList<BaseFile> conflictingFiles) {
+        if (counter != conflictingFiles.size() && conflictingFiles.size() > 0)
+            showDialog(path, filesToCopy, conflictingFiles);
+        else {
+            CopyNode c;
+            if ((c = copyFolder.goToNextNode()) != null) {
+                counter = 0;
+
+                paths.add(c.getPath());
+                filesToCopyPerFolder.add(c.filesToCopy);
+                onEndDialog(c.path, c.filesToCopy, c.conflictingFiles);
+            } else {
+                finishCopying(paths, filesToCopyPerFolder);
+            }
+
+        }
+    }
+
+    private void finishCopying(ArrayList<String> paths, ArrayList<ArrayList<BaseFile>> filesToCopyPerFolder) {
+        for (int i = 0; i < filesToCopyPerFolder.size(); i++)
+            if (filesToCopyPerFolder.get(i) == null || filesToCopyPerFolder.get(i).size() == 0)
+                filesToCopyPerFolder.remove(i);
+
+        if (filesToCopyPerFolder.size() != 0) {
+            int mode = mainActivity.mainActivityHelper.checkFolder(new File(path), context);
+            if (mode == MainActivityHelper.CAN_CREATE_FILES && !path.contains("otg:/")) {
+                //This is used because in newer devices the user has to accept a permission,
+                // see MainActivity.onActivityResult()
+                mainActivity.oparrayListList = filesToCopyPerFolder;
+                mainActivity.oparrayList = null;
+                mainActivity.operation = move ? DataUtils.MOVE : DataUtils.COPY;
+                mainActivity.oppatheList = paths;
+            } else {
+                if (!move) {
+                    for (int i = 0; i < filesToCopyPerFolder.size(); i++) {
                         Intent intent = new Intent(context, CopyService.class);
-                        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, filesToCopy);
-                        intent.putExtra(CopyService.TAG_COPY_TARGET, path);
+                        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, filesToCopyPerFolder.get(i));
+                        intent.putExtra(CopyService.TAG_COPY_TARGET, paths.get(i));
                         intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, openMode.ordinal());
                         ServiceWatcherUtil.runService(context, intent);
-                    } else {
-                        new MoveFiles(filesToCopy, main, main.getActivity(), openMode)
-                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     }
+                } else {
+                    new MoveFiles(filesToCopyPerFolder, main, context, openMode)
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, paths);
                 }
-            } else {
-                Toast.makeText(context, context.getResources().getString(R.string.no_file_overwrite), Toast.LENGTH_SHORT).show();
             }
         } else {
-            final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context);
-            LayoutInflater layoutInflater =
-                    (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = layoutInflater.inflate(R.layout.copy_dialog, null);
-            dialogBuilder.customView(view, true);
-            // textView
-            TextView textView = (TextView) view.findViewById(R.id.textView);
-            textView.setText(context.getResources().getString(R.string.fileexist) + "\n" + conflictingFiles.get(counter).getName());
-            // checkBox
-            final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
-            Futils.setTint(checkBox, Color.parseColor(BaseActivity.accentSkin));
-            dialogBuilder.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
-            dialogBuilder.title(context.getResources().getString(R.string.paste));
-            dialogBuilder.positiveText(R.string.skip);
-            dialogBuilder.negativeText(R.string.overwrite);
-            dialogBuilder.neutralText(R.string.cancel);
-            dialogBuilder.positiveColor(Color.parseColor(BaseActivity.accentSkin));
-            dialogBuilder.negativeColor(Color.parseColor(BaseActivity.accentSkin));
-            dialogBuilder.neutralColor(Color.parseColor(BaseActivity.accentSkin));
-            dialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    if (counter < conflictingFiles.size()) {
-                        if (!checkBox.isChecked()) {
-                            filesToCopy.remove(conflictingFiles.get(counter));
-                            counter++;
-                        } else {
-                            for (int j = counter; j < conflictingFiles.size(); j++) {
-                                filesToCopy.remove(conflictingFiles.get(j));
-                            }
-                            counter = conflictingFiles.size();
-                        }
-                        showDialog();
-                    }
-                }
-            });
-            dialogBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    if (counter < conflictingFiles.size()) {
-                        if (!checkBox.isChecked()) {
-                            counter++;
-                        } else {
-                            counter = conflictingFiles.size();
-                        }
-                        showDialog();
-                    }
-                }
-            });
+            Toast.makeText(context, context.getResources().getString(R.string.no_file_overwrite), Toast.LENGTH_SHORT).show();
+        }
 
-            final MaterialDialog dialog = dialogBuilder.build();
-            dialog.show();
-            if (filesToCopy.get(0).getParent().equals(path)) {
-                View negative = dialog.getActionButton(DialogAction.NEGATIVE);
-                negative.setEnabled(false);
+        if(move) {
+            for(String folder : paths) {
+                new File(folder).delete();
             }
+        }
+    }
+
+    class CopyNode {
+        private String path;
+        private ArrayList<BaseFile> filesToCopy, conflictingFiles;
+        private ArrayList<CopyNode> nextNodes = new ArrayList<>();
+
+        CopyNode(String p, ArrayList<BaseFile> filesToCopy) {
+            path = p;
+            this.filesToCopy = filesToCopy;
+
+            HFile destination = new HFile(openMode, path);
+            conflictingFiles = checkConflicts(filesToCopy, destination);
+
+            for (int i = 0; i < conflictingFiles.size(); i++) {
+                if (conflictingFiles.get(i).isDirectory()) {
+                    if (deleteCopiedFolder == null)
+                        deleteCopiedFolder = new ArrayList<>();
+
+                    deleteCopiedFolder.add(new File(conflictingFiles.get(i).getPath()));
+
+                    nextNodes.add(new CopyNode(path + MainActivity.DIR_SEPARATOR
+                            + conflictingFiles.get(i).getName(),
+                            conflictingFiles.get(i).listFiles(rootMode)));
+
+                    filesToCopy.remove(filesToCopy.indexOf(conflictingFiles.get(i)));
+                    conflictingFiles.remove(i);
+                    i--;
+                }
+            }
+        }
+
+        /**
+         * The next 2 methods are a BFS that runs through one node at a time.
+         */
+
+        LinkedList<CopyNode> queue = new LinkedList<>();
+        Set<CopyNode> visited = new HashSet<>();
+
+        CopyNode startCopy() {
+            queue.add(this);
+            visited.add(this);
+            return this;
+        }
+
+        /**
+         *
+         * @return true if there are no more nodes
+         */
+        CopyNode goToNextNode() {
+            if(queue.isEmpty())
+                return null;
+            else {
+                CopyNode node = queue.element();
+                CopyNode child;
+                if ((child = getUnvisitedChildNode(visited, node)) != null) {
+                    visited.add(child);
+                    queue.add(child);
+                    return child;
+                } else {
+                    queue.remove();
+                    return goToNextNode();
+                }
+            }
+        }
+
+        String getPath() {
+            return path;
+        }
+
+        ArrayList<BaseFile> getFilesToCopy() {
+            return filesToCopy;
+        }
+
+        ArrayList<BaseFile> getConflictingFiles() {
+            return conflictingFiles;
+        }
+
+        private CopyNode getUnvisitedChildNode(Set<CopyNode> visited, CopyNode node) {
+            for(CopyNode n : node.nextNodes) {
+                if (!visited.contains(n)) {
+                    return n;
+                }
+            }
+
+            return null;
         }
     }
 

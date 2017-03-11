@@ -24,9 +24,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.CopyService;
-import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -34,14 +34,14 @@ import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import java.io.File;
 import java.util.ArrayList;
 
-public class MoveFiles extends AsyncTask<String,Void,Boolean> {
-    private ArrayList<BaseFile> files;
+public class MoveFiles extends AsyncTask<ArrayList<String>,Void,Boolean> {
+    private ArrayList<ArrayList<BaseFile>> files;
     private Main main;
-    private String path;
+    private ArrayList<String> paths;
     private Context context;
     private OpenMode mode;
 
-    public MoveFiles(ArrayList<BaseFile> files, Main ma, Context context, OpenMode mode) {
+    public MoveFiles(ArrayList<ArrayList<BaseFile>> files, Main ma, Context context, OpenMode mode) {
         main = ma;
         this.context = context;
         this.files = files;
@@ -49,19 +49,20 @@ public class MoveFiles extends AsyncTask<String,Void,Boolean> {
     }
 
     @Override
-    protected Boolean doInBackground(String... strings) {
-        path = strings[0];
+    protected Boolean doInBackground(ArrayList<String>... strings) {
+        paths = strings[0];
         boolean movedCorrectly = true;
 
         if (files.size() == 0) return true;
 
         if (mode != OpenMode.FILE) return false;
-
-        for (BaseFile f : files) {
-            File dest = new File(path + "/" + f.getName());
-            File source = new File(f.getPath());
-            if (!source.renameTo(dest)) {
-                movedCorrectly = false;
+        for (int i = 0; i < paths.size(); i++) {
+            for (BaseFile f : files.get(i)) {
+                File dest = new File(paths.get(i) + "/" + f.getName());
+                File source = new File(f.getPath());
+                if (!source.renameTo(dest)) {
+                    movedCorrectly = false;
+                }
             }
         }
         return movedCorrectly;
@@ -71,21 +72,24 @@ public class MoveFiles extends AsyncTask<String,Void,Boolean> {
     public void onPostExecute(Boolean movedCorrectly) {
         if (movedCorrectly) {
             if (main != null)
-                if (main.CURRENT_PATH.equals(path))
+                if (main.CURRENT_PATH.equals(paths.get(0)))
                     main.updateList();
-
-            for (BaseFile f : files) {
-                Futils.scanFile(f.getPath(), context);
-                Futils.scanFile(path + "/" + f.getName(), context);
+            for (int i = 0; i < paths.size(); i++) {
+                for (BaseFile f : files.get(i)) {
+                    Futils.scanFile(f.getPath(), context);
+                    Futils.scanFile(paths.get(i) + "/" + f.getName(), context);
+                }
             }
         } else {
-            Intent intent = new Intent(context, CopyService.class);
-            intent.putExtra(CopyService.TAG_COPY_SOURCES, (files));
-            intent.putExtra(CopyService.TAG_COPY_TARGET, path);
-            intent.putExtra(CopyService.TAG_COPY_MOVE, true);
-            intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, mode.ordinal());
+            for (int i = 0; i < paths.size(); i++) {
+                Intent intent = new Intent(context, CopyService.class);
+                intent.putExtra(CopyService.TAG_COPY_SOURCES, files.get(i));
+                intent.putExtra(CopyService.TAG_COPY_TARGET, paths.get(i));
+                intent.putExtra(CopyService.TAG_COPY_MOVE, true);
+                intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, mode.ordinal());
 
-            ServiceWatcherUtil.runService(context, intent);
+                ServiceWatcherUtil.runService(context, intent);
+            }
         }
     }
 }
