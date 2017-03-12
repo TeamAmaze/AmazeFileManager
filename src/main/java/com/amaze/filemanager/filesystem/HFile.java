@@ -391,6 +391,25 @@ public class HFile {
     }
 
     /**
+     * Same as listFiles() but only lists simple files (using isSimpleFile())
+     * //TODO make more efficient
+     * @param rootMode
+     * @return arraylist with only simple files contained in this file
+     */
+    public ArrayList listOnlyFiles(boolean rootMode) {
+        ArrayList<BaseFile> allFiles = listFiles(rootMode);
+
+        for(int i = 0; i < allFiles.size(); i++) {
+            if(!allFiles.get(i).isSimpleFile()) {
+                allFiles.remove(i);
+                i--;
+            }
+        }
+
+        return allFiles;
+    }
+
+    /**
      * Helper method to list children of this file
      * @param context
      * @return

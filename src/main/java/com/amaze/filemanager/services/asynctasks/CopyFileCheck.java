@@ -16,8 +16,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.CopyService;
@@ -124,8 +124,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
     @Override
     protected void onPostExecute(CopyNode copyFolder) {
         super.onPostExecute(copyFolder);
-        copyFolder.startCopy();
-        onEndDialog(copyFolder.getPath(), copyFolder.getFilesToCopy(), copyFolder.getConflictingFiles());
+        onEndDialog(null, null, null);
     }
 
     private void showDialog(final String path, final ArrayList<BaseFile> filesToCopy,
@@ -177,11 +176,17 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
 
     private void onEndDialog(String path, ArrayList<BaseFile> filesToCopy,
                              ArrayList<BaseFile> conflictingFiles) {
-        if (counter != conflictingFiles.size() && conflictingFiles.size() > 0)
-            showDialog(path, filesToCopy, conflictingFiles);
-        else {
-            CopyNode c;
-            if ((c = copyFolder.goToNextNode()) != null) {
+        if (conflictingFiles != null && counter != conflictingFiles.size() && conflictingFiles.size() > 0) {
+            if (dialogState == null)
+                showDialog(path, filesToCopy, conflictingFiles);
+            else if (dialogState == DO_FOR_ALL_ELEMENTS.DO_NOT_REPLACE)
+                doNotReplaceFiles(path, filesToCopy, conflictingFiles);
+            else if (dialogState == DO_FOR_ALL_ELEMENTS.REPLACE)
+                replaceFiles(path, filesToCopy, conflictingFiles);
+        } else {
+            CopyNode c = !copyFolder.hasStarted()? copyFolder.startCopy():copyFolder.goToNextNode();
+
+            if (c != null) {
                 counter = 0;
 
                 paths.add(c.getPath());
@@ -232,6 +237,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
         for (int i = 0; i < filesToCopyPerFolder.size(); i++) {
             if (filesToCopyPerFolder.get(i) == null || filesToCopyPerFolder.get(i).size() == 0) {
                 filesToCopyPerFolder.remove(i);
+                paths.remove(i);
                 i--;
             }
         }
@@ -257,16 +263,27 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
                 } else {
                     new MoveFiles(filesToCopyPerFolder, main, context, openMode)
                             .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, paths);
+
+                    //deletes original files
+                    for (ArrayList<BaseFile> folder : filesToCopyPerFolder) {
+                        BaseFile folderPath = new BaseFile(folder.get(0).getParent());
+
+                        try {
+                            if (folder.size() < folderPath.listOnlyFiles(rootMode).size()) {
+                                for (BaseFile file : folder) {
+                                    file.delete(context, rootMode);
+                                }
+                            } else {
+                                folderPath.delete(context, rootMode);
+                            }
+                        } catch (RootNotPermittedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         } else {
             Toast.makeText(context, context.getResources().getString(R.string.no_file_overwrite), Toast.LENGTH_SHORT).show();
-        }
-
-        if (move) {
-            for (String folder : paths) {
-                FileUtil.deleteFile(new File(folder), context);
-            }
         }
     }
 
@@ -303,11 +320,13 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
         /**
          * The next 2 methods are a BFS that runs through one node at a time.
          */
-
-        LinkedList<CopyNode> queue = new LinkedList<>();
-        Set<CopyNode> visited = new HashSet<>();
+        private LinkedList<CopyNode> queue = null;
+        private Set<CopyNode> visited = null;
 
         CopyNode startCopy() {
+            queue = new LinkedList<>();
+            visited = new HashSet<>();
+
             queue.add(this);
             visited.add(this);
             return this;
@@ -331,6 +350,10 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
                     return goToNextNode();
                 }
             }
+        }
+
+        boolean hasStarted() {
+            return queue != null;
         }
 
         String getPath() {
