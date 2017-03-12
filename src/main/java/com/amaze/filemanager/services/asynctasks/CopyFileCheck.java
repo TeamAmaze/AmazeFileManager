@@ -16,7 +16,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.fragments.Main;
@@ -201,7 +200,6 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
             } else {
                 finishCopying(paths, filesToCopyPerFolder);
             }
-
         }
     }
 
@@ -263,23 +261,6 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
                 } else {
                     new MoveFiles(filesToCopyPerFolder, main, context, openMode)
                             .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, paths);
-
-                    //deletes original files
-                    for (ArrayList<BaseFile> folder : filesToCopyPerFolder) {
-                        BaseFile folderPath = new BaseFile(folder.get(0).getParent());
-
-                        try {
-                            if (folder.size() < folderPath.listOnlyFiles(rootMode).size()) {
-                                for (BaseFile file : folder) {
-                                    file.delete(context, rootMode);
-                                }
-                            } else {
-                                folderPath.delete(context, rootMode);
-                            }
-                        } catch (RootNotPermittedException e) {
-                            e.printStackTrace();
-                        }
-                    }
                 }
             }
         } else {

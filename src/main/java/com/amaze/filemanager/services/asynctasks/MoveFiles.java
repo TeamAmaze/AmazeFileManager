@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.services.CopyService;
@@ -33,6 +34,8 @@ import com.amaze.filemanager.utils.ServiceWatcherUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import static com.amaze.filemanager.activities.BaseActivity.rootMode;
 
 public class MoveFiles extends AsyncTask<ArrayList<String>,Void,Boolean> {
     private ArrayList<ArrayList<BaseFile>> files;
@@ -56,6 +59,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>,Void,Boolean> {
         if (files.size() == 0) return true;
 
         if (mode != OpenMode.FILE) return false;
+
         for (int i = 0; i < paths.size(); i++) {
             for (BaseFile f : files.get(i)) {
                 File dest = new File(paths.get(i) + "/" + f.getName());
@@ -65,15 +69,16 @@ public class MoveFiles extends AsyncTask<ArrayList<String>,Void,Boolean> {
                 }
             }
         }
+
         return movedCorrectly;
     }
 
     @Override
     public void onPostExecute(Boolean movedCorrectly) {
         if (movedCorrectly) {
-            if (main != null)
-                if (main.CURRENT_PATH.equals(paths.get(0)))
+            if (main != null && main.CURRENT_PATH.equals(paths.get(0)))
                     main.updateList();
+
             for (int i = 0; i < paths.size(); i++) {
                 for (BaseFile f : files.get(i)) {
                     Futils.scanFile(f.getPath(), context);
@@ -89,6 +94,18 @@ public class MoveFiles extends AsyncTask<ArrayList<String>,Void,Boolean> {
                 intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, mode.ordinal());
 
                 ServiceWatcherUtil.runService(context, intent);
+            }
+        }
+
+        //final folder cleaning
+        for (ArrayList<BaseFile> folder : files) {
+            BaseFile folderPath = new BaseFile(folder.get(0).getParent());
+
+            try {
+                if (folderPath.listOnlyFiles(rootMode).size() == 0)
+                    folderPath.delete(context, rootMode);
+            } catch (RootNotPermittedException e) {
+                e.printStackTrace();
             }
         }
     }
