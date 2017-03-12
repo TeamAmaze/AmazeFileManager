@@ -19,7 +19,6 @@
 
 package com.amaze.filemanager.services.asynctasks;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -34,6 +33,7 @@ import com.amaze.filemanager.utils.ServiceWatcherUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static com.amaze.filemanager.activities.BaseActivity.rootMode;
 
@@ -98,11 +98,12 @@ public class MoveFiles extends AsyncTask<ArrayList<String>,Void,Boolean> {
         }
 
         //final folder cleaning
+        Collections.reverse(files);
         for (ArrayList<BaseFile> folder : files) {
             BaseFile folderPath = new BaseFile(folder.get(0).getParent());
 
             try {
-                if (folderPath.listOnlyFiles(rootMode).size() == 0)
+                if (folderPath.listFiles(rootMode).size() == 0)
                     folderPath.delete(context, rootMode);
             } catch (RootNotPermittedException e) {
                 e.printStackTrace();
