@@ -1,5 +1,5 @@
 package com.amaze.filemanager.activities;
-
+//Gene ben aybike aydemir
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -35,7 +35,7 @@ import java.util.Random;
 /**
  * Created by vishal on 27/7/16.
  */
-
+//first commit AYBİKEAYDEMİR...
 //first commit ugurtufekci...
 
 
