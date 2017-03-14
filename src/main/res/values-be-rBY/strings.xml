@@ -65,7 +65,7 @@
   <string name="name">Імя</string>
   <string name="date">Дата</string>
   <string name="location">Месцазнаходжанне</string>
-  <string name="size">Памер</string>
+  <string name="size">Памер тэчкі</string>
   <string name="totalitems">Усяго элементаў</string>
   <string name="enterzipname">Увядзіце імя zip-архіва</string>
   <string name="noappfound">Няма праграм для адкрыцця гэтага файла</string>
@@ -133,10 +133,10 @@
   <!-- Array -->
   <!-- UI -->
   <string name="simple">Просты карыст. інтэрфейс</string>
-  <string name="card">Карткі</string>
+  <string name="card">Карткі карыст. інтэрфейсу</string>
   <!-- Theme -->
-  <string name="light">Светлы</string>
-  <string name="dark">Цёмны</string>
+  <string name="light">Светлая</string>
+  <string name="dark">Цёмная</string>
   <string name="daytime">Дзённы час</string>
   <!--Skin-->
   <string name="red">Чырвоны</string>
@@ -196,7 +196,7 @@
   <string name="nofiles">Няма файлаў</string>
   <string name="tapnhold">Націсніце і ўтрымлівайце файл або тэчку для большай колькасці варыянтаў</string>
   <string name="pathcopied">Шлях скапіяваны ў буфер абмену</string>
-  <string name="used">Астатняе:  </string>
+  <string name="used">Выкарыстоўваецца:  </string>
   <string name="free">Вольна:  </string>
   <string name="atroot">Вы знаходзіцеся ў каранёвай дырэкторыі</string>
   <string name="listview">Спіс</string>
@@ -215,17 +215,17 @@
   <string name="changelog">Спic змен</string>
   <string name="fullChangelog">Поўны спіс змен</string>
   <string name="ok">ОК</string>
-  <string name="chooseUI">Выберыце UI элемент</string>
+  <string name="chooseUI">Выберыце элемент інтэрфейсу</string>
   <string name="ui">Інтэрфейс</string>
   <string name="general">Агульныя</string>
-  <string name="thumbSummary">Паказваць мініяцюры прыкладанняў і малюнкаў</string>
+  <string name="thumbSummary">Паказваць мініяцюры праграм і малюнкаў</string>
   <string name="thumb">Паказваць мініяцюры</string>
-  <string name="hidden">Паказвае схаваныя файлы і тэчкі</string>
+  <string name="hidden">Паказваць схаваныя файлы і тэчкі</string>
   <string name="lastModifiedSummary">Паказваць дату і час, калі файл быў зменены ў апошні раз</string>
   <string name="lastModifiedPref">Паказаць апошнія змены</string>
   <string name="sizePrefSummary">Паказаць памер файлаў і колькасць элементаў у тэчках</string>
   <string name="sizePref">Паказаць памеры</string>
-  <string name="miscellaneous">Рознае</string>
+  <string name="miscellaneous">Іншае</string>
   <string name="rootPrefSummary">Паказваць дазволы файлаў і тэчак</string>
   <string name="rootPref">Паказаць дазволы</string>
   <string name="aboutFileManager">Аб Amaze File Manager</string>
@@ -300,7 +300,7 @@
   <string name="select_intent">Выбраць</string>
   <string name="md5copied">MD5 скапіяваны ў буфер абмену</string>
   <string name="generating">Стварэнне..</string>
-  <string name="tables">Табліцы</string>
+  <string name="tables">Табліца(ы)</string>
   <string name="database">База дадзеных</string>
   <string name="colourednavigation">Каляровая панэль навігацыі</string>
   <string name="colourednavigationsum">Афарбоўка панэлі навігацыі разам з тэмай</string>
@@ -309,23 +309,23 @@
   <string name="fab_skin">FAB skin</string>
   <string name="gplus_pic_title">Увайсці з дапамогай G+</string>
   <string name="gplus_pic_summary">Паказаць вокладку і значок профілю з G+ у бакавым меню</string>
-  <string name="icon_credits">Графіка ад &lt;a href=\"http://cookicons.co/\"&gt;CookIcons&lt;/a&gt;</string>
+  <string name="icon_credits">Графіка ад <a href="http://cookicons.co/">CookIcons</a></string>
   <string name="color_title">Колер</string>
   <string name="color_summary">Усталяваць колер для розных кампанентаў UI</string>
-  <string name="primary_color_title">Асноўны колер (левая ўкладка)</string>
+  <string name="primary_color_title">Асноўны колер (Левая ўкладка)</string>
   <string name="primary_color_summary">Усталяваць колер вялікіх элементаў UI для левай ўкладкі</string>
   <string name="accent_color_title">Колер акцэнту</string>
   <string name="accent_color_summary">Усталяваць колер плаваючай кнопкі FAB і іншых дробных элементаў UI</string>
-  <string name="icon_color_title">Колер іконак</string>
-  <string name="icon_color_summary">Усталяваць колер абразкоў</string>
+  <string name="icon_color_title">Колер цэтліка</string>
+  <string name="icon_color_summary">Усталяваць колер цэтлікаў</string>
   <string name="hide_mode_title">Схаваны рэжым</string>
   <string name="none">Нічога</string>
   <string name="hide_toolbar">Схаваць панэль інструментаў</string>
   <string name="hide_appbar">Схаваць усю панэль праграмы</string>
-  <string name="choose_color">Абраць колер</string>
+  <string name="choose_color">Выбраць колер</string>
   <string name="g_plus_community_title">Супольнасць G+</string>
   <string name="hide_mode_nothing">AppBar застаецца нязменным</string>
-  <string name="hide_mode_toolbar">Toolbar хаваецца пры прагортцы</string>
+  <string name="hide_mode_toolbar">Toolbar хаваецца падчас прагорткі</string>
   <string name="hide_mode_app_bar">App бар хаваецца падчас прагорткі</string>
   <string name="no_cover_photo">Няма вокладкі</string>
   <string name="files">Файлы</string>
@@ -334,7 +334,7 @@
   <string name="databasereader">Прагляднік баз дадзеных</string>
   <string name="showDividers">Паказаць падзельнікі</string>
   <string name="topFab">Плав. кнопка на AppBar</string>
-  <string name="topFabS">Кнопка + павінна быць наверсе або ўнізе. Ужываецца толькі калі AppBar не скрыты.</string>
+  <string name="topFabS">Кнопка + павінна быць наверсе або ўнізе. Ужываецца толькі калі AppBar не схаваны.</string>
   <string name="needsaccess">Неабходны доступ да запісу</string>
   <string name="needsaccesssummary">Калі ласка, абярыце каранёвую тэчку\t</string>
   <string name="needsaccesssummary1">\tпрадастаўляць доступ на запіс для працы </string>
@@ -359,7 +359,7 @@
   <string name="ascending">Па ўзрастанні</string>
   <string name="descending">Па змяншэнні</string>
   <string name="defualt">Па змаўчанні</string>
-  <string name="doit">Зрабіць гэта</string>
+  <string name="doit">Зрабі гэта</string>
   <string name="wanthelp"><u>Патрэбна дапамога?</u></string>
   <string name="quick">Хуткі доступ</string>
   <string name="recent">Апошнія файлы</string>
@@ -368,7 +368,7 @@
   <string name="grant">Прадастаўленне</string>
   <string name="grantper">Прадастаўленне дазволу</string>
   <string name="grantfailed">Дазвол не прадстаўлены</string>
-  <string name="granttext">Праграмам патрабуецца дазвол працы з сховішчам для працягу. Закрыццё гэтага дыялогу завершыць прыкладанне.</string>
+  <string name="granttext">Праграмам патрабуецца дазвол працы з сховішчам для працягу. Закрыццё гэтага дыялогу завершыць праграму.</string>
   <string name="grantgplus">Праграме патрабуецца дазвол для гэтай функцыі. Закрыццё гэтага дыялогу здыме дадзеную функцыю.</string>
   <string name="operationunsuccesful">Аперацыя беспаспяховая</string>
   <string name="creatingfile">Стварыць файл</string>
@@ -403,7 +403,7 @@
   <string name="ftp_port_edit_menu_title">Выбраць порт FTP</string>
   <string name="ftp_port_change_success">Порт FTP зменены паспяхова</string>
   <string name="ftp_port_change_error_invalid">Выбраны недапушчальны нумар порта</string>
-  <string name="primary_two_title">Асноўны колер (правая ўкладка)</string>
+  <string name="primary_two_title">Асноўны колер (Правая ўкладка)</string>
   <string name="primary_two_summary">Усталяваць колер вялікіх элементаў UI для правай ўкладкі</string>
   <string name="g_plus">Google Plus</string>
   <string name="support_development">Падтрымаць распрацоўку</string>
@@ -474,7 +474,7 @@
   <!-- reference to file accessed date -->
   <string name="accessed">Даступна</string>
   <!-- reference to file modified date -->
-  <string name="modified">Зменены</string>
+  <string name="modified">Зменена</string>
   <string name="title">Назва</string>
   <string name="artist">Выканаўца</string>
   <string name="album">Альбом</string>
@@ -552,4 +552,11 @@
   <string name="error_busybox">BusyBox не знойдзены. Закрыццё інтэрактыўнай абалонкі.</string>
   <string name="service_timer">Прайшло часу</string>
   <string name="please_wait">Калі ласка, пачакайце</string>
+  <string name="no_applications">Няма праграм</string>
+  <string name="ftp_path">Агульны шлях</string>
+  <string name="ftp_path_hint">Шлях да каранёвага каталогу для агульнага доступу</string>
+  <string name="error_ftp_path_file">Шлях не з\'яўляецца каталогам</string>
+  <string name="change">Змяніць</string>
+  <string name="ftp_path_change_success">FTP шлях паспяхова зменены</string>
+  <string name="ftp_path_change_error_invalid">Няправільны шлях</string>
 </resources>
