@@ -95,7 +95,7 @@ public class CopyService extends Service {
         Bundle b = new Bundle();
         ArrayList<BaseFile> files = intent.getParcelableArrayListExtra(TAG_COPY_SOURCES);
         String targetPath = intent.getStringExtra(TAG_COPY_TARGET);
-        int mode = intent.getIntExtra(TAG_COPY_OPEN_MODE, 0);
+        int mode = intent.getIntExtra(TAG_COPY_OPEN_MODE, OpenMode.UNKNOWN.ordinal());
         final boolean move = intent.getBooleanExtra(TAG_COPY_MOVE, false);
         totalSize = files.get(0).getMode()==OpenMode.OTG ?
                 getTotalBytes(files, getApplicationContext()) : getTotalBytes(files);
