@@ -389,22 +389,32 @@
   <string name="regular_expression">Reguliere uitdrukking</string>
   <string name="regular_expression_summary">Zoeken met behulp van een BASH stijl reguliere expressie</string>
   <string name="match_content">Maak content bijpassend</string>
+  <string name="match_content_summary">Als dit ingesteld is, zal een veel voorkomende expressie gepaard worden met de volledige bestandsnaam,
+Anders wordt er naar een voorval gezocht.</string>
   <string name="start_ftp">Beginnen</string>
   <string name="stop_ftp">Stop</string>
   <string name="ftp_status_running">Actief</string>
   <string name="ftp_status_not_running">Niet actief</string>
   <string name="ftp_no_wifi">Zorg ervoor dat u bent verbonden met WiFi</string>
   <string name="domain">Domein</string>
+  <string name="invalid">Niet geldig %s</string>
   <string name="ftp_notif_starting">FTP server wordt gestart</string>
   <string name="ftp_notif_title">Amaze FTP Server actief</string>
   <string name="ftp_notif_text">op %s</string>
   <string name="ftp_notif_stop_server">STOP</string>
+  <string name="ftp_port_edit_menu_title">Kies FTP poort</string>
+  <string name="ftp_port_change_success">FTP poort succesvol veranderd</string>
+  <string name="ftp_port_change_error_invalid">Ongeldige poortnummer geselecteerd</string>
   <string name="primary_two_title">Primaire kleur (Rechter Tabblad)</string>
+  <string name="primary_two_summary">Kleur instellen voor grote UI-elementen voor de juiste tabblas</string>
   <string name="g_plus">Google Plus</string>
+  <string name="support_development">Ondersteuning ontwikkeling</string>
   <string name="report_bugs_title">Bugs melden</string>
   <string name="report_bugs_summary">Meld een bug of verzoek nieuwe functies</string>
   <string name="translate_title">Vertalen</string>
   <string name="translate_summary">Amaze vertalen in uw eigen taal</string>
+  <string name="g_plus_community_summary">Neem deel aan beta tests en discussies
+*.* Verwant aan ontwikkeling</string>
   <string name="easter_egg_title">Studiomodus</string>
   <string name="paypal_copy_message">PayPal Id gekopieerd naar klembord</string>
   <string name="searchingdevices">Zoeken naar apparaten</string>

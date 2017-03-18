@@ -570,5 +570,13 @@
     <string name="error_busybox">Busybox not found. Closing interactive shell.</string>
     <string name="service_timer">Time Elapsed</string>
     <string name="please_wait">Please Wait</string>
+    <string name="no_applications">No applications</string>
+    <string name="ftp_path">Shared Path</string>
+    <string name="ftp_path_hint">Path to the root of directory to share</string>
+    <string name="error_ftp_path_file">Path not a directory</string>
+    <string name="change">Change</string>
+
+    <string name="ftp_path_change_success">FTP path changed successfully</string>
+    <string name="ftp_path_change_error_invalid">Invalid path</string>
 </resources>
 

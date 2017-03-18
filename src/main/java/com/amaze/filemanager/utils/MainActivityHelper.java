@@ -40,6 +40,7 @@ import java.util.ArrayList;
  * Created by root on 11/22/15.
  */
 public class MainActivityHelper {
+
     private MainActivity mainActivity;
     private Futils utils;
 
@@ -363,7 +364,7 @@ public class MainActivityHelper {
                     public void run() {
                         if(toast!=null)toast.cancel();
                         mainActivity.oppathe = path.getPath();
-                        mainActivity.operation = DataUtils.NEW_FOLDER;
+                        mainActivity.operation = DataUtils.NEW_FILE;
                         guideDialogForLEXA(mainActivity.oppathe);
                     }});
 

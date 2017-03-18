@@ -187,6 +187,7 @@
   <string name="miscellaneous">Diverse</string>
   <string name="rootPrefSummary">Visa behörigheter för filer och mappar</string>
   <string name="rootPref">Visa behörigheter</string>
+  <string name="aboutFileManager">Om Amaze File Manager</string>
   <string name="version">Version</string>
   <string name="rate">Betygsätt appen</string>
   <string name="license">Open Source-licenser</string>

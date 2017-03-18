@@ -34,13 +34,43 @@ public class Operations {
     private static final String QUOTE = "\"";
     private static final String GREATER_THAN = ">";
     private static final String LESS_THAN = "<";
+
     private static final String FAT = "FAT";
 
-    public interface ErrorCallBack{
+    public interface ErrorCallBack {
+
+        /**
+         * Callback fired when file being created in process already exists
+         * @param file
+         */
         void exists(HFile file);
+
+        /**
+         * Callback fired when creating new file/directory and required storage access framework permission
+         * to access SD Card is not available
+         * @param file
+         */
         void launchSAF(HFile file);
-        void launchSAF(HFile file,HFile file1);
-        void done(HFile hFile,boolean b);
+
+        /**
+         * Callback fired when renaming file and required storage access framework permission to access
+         * SD Card is not available
+         * @param file
+         * @param file1
+         */
+        void launchSAF(HFile file, HFile file1);
+
+        /**
+         * Callback fired when we're done processing the operation
+         * @param hFile
+         * @param b defines whether operation was successful
+         */
+        void done(HFile hFile, boolean b);
+
+        /**
+         * Callback fired when an invalid file name is found.
+         * @param file
+         */
         void invalidName(HFile file);
     }
 
@@ -107,9 +137,8 @@ public class Operations {
                         errorCallBack.done(file, file.exists());
                         return null;
                     }
+
                     errorCallBack.done(file, file.exists());
-
-
                 }
                 return null;
             }
@@ -244,7 +273,7 @@ public class Operations {
                         case FILE:
                             int mode = checkFolder(file.getParentFile(), context);
                             if (mode == 2) {
-                                errorCallBack.launchSAF(oldFile,newFile);
+                                errorCallBack.launchSAF(oldFile, newFile);
                             } else if (mode == 1 || mode==0) {
                                 try {
                                     FileUtil.renameFolder(file, file1, context);

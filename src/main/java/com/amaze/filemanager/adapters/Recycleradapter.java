@@ -514,10 +514,9 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         gradientDrawable.setColor(main.icon_skin_color);
                     }
                 } else gradientDrawable.setColor((main.icon_skin_color));
+
                 if (rowItem.getSize().equals(main.goback))
                     gradientDrawable.setColor(c1);
-
-
             }
             if (main.SHOW_PERMISSIONS)
                 holder.perm.setText(rowItem.getPermissions());

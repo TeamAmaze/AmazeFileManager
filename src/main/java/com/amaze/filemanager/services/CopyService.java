@@ -446,7 +446,7 @@ public class CopyService extends Service {
      * @param totalSize total size of selected items to copy
      * @param writtenSize bytes successfully copied
      * @param speed number of bytes being copied per sec
-     * @param isComplete whether operation completed or ongoing
+     * @param isComplete whether operation completed or ongoing (not supported at the moment)
      * @param move if the files are to be moved
      */
     private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
@@ -466,11 +466,17 @@ public class CopyService extends Service {
             int id1 = Integer.parseInt("456" + id);
             mNotifyManager.notify(id1, mBuilder.build());
             if (writtenSize == totalSize || totalSize == 0) {
-                mBuilder.setContentTitle(getString(R.string.copy_complete));
-                if (move)
-                    mBuilder.setContentTitle(getString(R.string.move_complete));
+                if (move) {
+
+                    //mBuilder.setContentTitle(getString(R.string.move_complete));
+                    // set progress to indeterminate as deletion might still be going on from source
+                    mBuilder.setProgress(0, 0, true);
+                } else {
+
+                    mBuilder.setContentTitle(getString(R.string.copy_complete));
+                    mBuilder.setProgress(0, 0, false);
+                }
                 mBuilder.setContentText("");
-                mBuilder.setProgress(0, 0, false);
                 mBuilder.setOngoing(false);
                 mBuilder.setAutoCancel(true);
                 mNotifyManager.notify(id1, mBuilder.build());
