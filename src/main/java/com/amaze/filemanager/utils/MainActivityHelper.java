@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -40,6 +41,8 @@ import java.util.ArrayList;
  * Created by root on 11/22/15.
  */
 public class MainActivityHelper {
+
+    public static final int NEW_FOLDER = 0, NEW_FILE = 1, NEW_SMB = 2, NEW_GOGLEDRIVE = 3;
 
     private MainActivity mainActivity;
     private Futils utils;
@@ -96,17 +99,15 @@ public class MainActivityHelper {
      * @param path current path at which directory to create
      * @param ma {@link Main} current fragment
      */
-    void mkdir(final OpenMode openMode,final String path,final Main ma){
-        final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{mainActivity.getResources().getString(R.string.entername), "",mainActivity.getResources().getString(R.string.newfolder),mainActivity.getResources().getString(R.string.create),mainActivity.getResources().getString(R.string.cancel),null});
-        materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+    void mkdir(final OpenMode openMode, final String path, final Main ma) {
+        mk(R.string.newfolder, new OnClickMaterialListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(MaterialDialog materialDialog) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                mkDir(new HFile(openMode,path + "/" + a),ma);
+                mkDir(new HFile(openMode, path + "/" + a), ma);
                 materialDialog.dismiss();
             }
         });
-        materialDialog.show();
     }
 
     /**
@@ -115,36 +116,56 @@ public class MainActivityHelper {
      * @param path current path at which file to create
      * @param ma {@link Main} current fragment
      */
-    void mkfile(final OpenMode openMode,final String path,final Main ma){
-        final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{mainActivity.getResources().getString(R.string.entername), "",mainActivity.getResources().getString(R.string.newfile),mainActivity.getResources().getString(R.string.create),mainActivity.getResources().getString(R.string.cancel),null});
-        materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+    void mkfile(final OpenMode openMode,final String path,final Main ma) {
+        mk(R.string.newfile, new OnClickMaterialListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(MaterialDialog materialDialog) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                mkFile(new HFile(openMode,path + "/" + a),ma);
+                mkFile(new HFile(openMode, path + "/" + a), ma);
                 materialDialog.dismiss();
             }
         });
+    }
+
+    private void mk(@StringRes int newText, final OnClickMaterialListener l) {
+        final MaterialDialog materialDialog = utils.showNameDialog(mainActivity,
+                new String[]{mainActivity.getResources().getString(R.string.entername),
+                        "",
+                        mainActivity.getResources().getString(newText),
+                        mainActivity.getResources().getString(R.string.create),
+                        mainActivity.getResources().getString(R.string.cancel),
+                        null});
+
+        materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                l.onClick(materialDialog);
+            }
+        });
         materialDialog.show();
+
+    }
+
+    private interface OnClickMaterialListener {
+        void onClick(MaterialDialog materialDialog);
     }
 
     public void add(int pos) {
         final Main ma = (Main) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
-        switch (pos) {
+        final String path = ma.CURRENT_PATH;
 
-            case 0:
-                final String path = ma.CURRENT_PATH;
-                mkdir(ma.openMode,path,ma);
+        switch (pos) {
+            case NEW_FOLDER:
+                mkdir(ma.openMode, path, ma);
                 break;
-            case 1:
-                final String path1 = ma.CURRENT_PATH;
-                mkfile(ma.openMode,path1,ma);
+            case NEW_FILE:
+                mkfile(ma.openMode, path, ma);
                 break;
-            case 2:
+            case NEW_SMB:
                 SmbSearchDialog smbDialog=new SmbSearchDialog();
                 smbDialog.show(mainActivity.getFragmentManager(),"tab");
                 break;
-            /*case 3:
+            /*case NEW_GOOGLEDRIVE:
                 mainActivity.bindDrive();
                 break;*/
         }

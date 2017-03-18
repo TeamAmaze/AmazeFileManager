@@ -2201,52 +2201,50 @@ public class MainActivity extends BaseActivity implements
             }
         });
 
-        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(R.id.menu_new_folder);
-        floatingActionButton1.setColorNormal(folderskin);
-        floatingActionButton1.setColorPressed(fabskinpressed);
-        floatingActionButton1.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fabNewFolder = (FloatingActionButton) findViewById(R.id.menu_new_folder);
+        fabNewFolder.setColorNormal(folderskin);
+        fabNewFolder.setColorPressed(fabskinpressed);
+        fabNewFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mainActivityHelper.add(0);
+                mainActivityHelper.add(MainActivityHelper.NEW_FOLDER);
                 utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(R.id.menu_new_file);
-        floatingActionButton2.setColorNormal(folderskin);
-        floatingActionButton2.setColorPressed(fabskinpressed);
-        floatingActionButton2.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fabNewFile = (FloatingActionButton) findViewById(R.id.menu_new_file);
+        fabNewFile.setColorNormal(folderskin);
+        fabNewFile.setColorPressed(fabskinpressed);
+        fabNewFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mainActivityHelper.add(1);
+                mainActivityHelper.add(MainActivityHelper.NEW_FILE);
                 utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(R.id.menu_new_SMBconnection);
-        floatingActionButton3.setColorNormal(folderskin);
-        floatingActionButton3.setColorPressed(fabskinpressed);
-        floatingActionButton3.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fabNewSMB = (FloatingActionButton) findViewById(R.id.menu_new_SMBconnection);
+        fabNewSMB.setColorNormal(folderskin);
+        fabNewSMB.setColorPressed(fabskinpressed);
+        fabNewSMB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mainActivityHelper.add(2);
+                mainActivityHelper.add(MainActivityHelper.NEW_SMB);
                 utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
-        final FloatingActionButton floatingActionButton4 = (FloatingActionButton) findViewById(R.id.menu_new_googledrive);
-        floatingActionButton4.setColorNormal(folderskin);
-        floatingActionButton4.setColorPressed(fabskinpressed);
-        floatingActionButton4.setOnClickListener(new View.OnClickListener() {
+        final FloatingActionButton fabGoogleDrive = (FloatingActionButton) findViewById(R.id.menu_new_googledrive);
+        fabGoogleDrive.setColorNormal(folderskin);
+        fabGoogleDrive.setColorPressed(fabskinpressed);
+        fabGoogleDrive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mainActivityHelper.add(3);
+                mainActivityHelper.add(MainActivityHelper.NEW_GOGLEDRIVE);
                 utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
-
-        //Add button listener
 
         new Thread(new Runnable() {
             @Override
@@ -2259,7 +2257,7 @@ public class MainActivity extends BaseActivity implements
                 } catch (PackageManager.NameNotFoundException e) {
                     app_installed = false;
                 }
-                if (!app_installed) floatingActionButton4.setVisibility(View.GONE);
+                if (!app_installed) fabGoogleDrive.setVisibility(View.GONE);
             }
         }).run();
     }
