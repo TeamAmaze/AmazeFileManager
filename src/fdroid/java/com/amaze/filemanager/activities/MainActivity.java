@@ -152,7 +152,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         SmbConnectionListener, DataChangeListener, BookmarkCallback,
         SearchAsyncHelper.HelperCallbacks {
 
-    public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
+    final Pattern DIR_SEPARATOR = Pattern.compile("/");
     /* Request code used to invoke sign in user interactions. */
     static final int RC_SIGN_IN = 0;
     public Integer select;
@@ -189,13 +189,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     int hidemode;
     public int operation = -1;
     public ArrayList<BaseFile> oparrayList;
-    public ArrayList<ArrayList<BaseFile>> oparrayListList;
 
     // oppathe - the path at which certain operation needs to be performed
     // oppathe1 - the new path which user wants to create/modify
-    // oppathList - the paths at which certain operation needs to be performed (pairs with oparrayList)
     public String oppathe, oppathe1;
-    public ArrayList<String> oppatheList;
     MaterialDialog materialDialog;
     String newPath = null;
     boolean backPressedToExitOnce = false;
@@ -1090,10 +1087,33 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 break;
             case R.id.paste:
                 String path = ma.CURRENT_PATH;
-                ArrayList<BaseFile> arrayList = COPY_PATH != null? COPY_PATH:MOVE_PATH;
-                boolean move = MOVE_PATH != null;
-                new CopyFileCheck(ma, path, move, mainActivity, BaseActivity.rootMode)
-                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
+                ArrayList<BaseFile> arrayList = new ArrayList<>();
+                if (!path.contains("otg:/")) {
+                    if (COPY_PATH != null) {
+                        arrayList = COPY_PATH;
+                        new CopyFileCheck(ma, path, false, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask
+                                .THREAD_POOL_EXECUTOR, arrayList);
+                    } else if (MOVE_PATH != null) {
+                        arrayList = MOVE_PATH;
+                        new CopyFileCheck(ma, path, true, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                                arrayList);
+                    }
+                } else if (path.contains("otg:/")) {
+                    if (COPY_PATH!=null) {
+
+                        arrayList = COPY_PATH;
+                        Intent intent = new Intent(con, CopyService.class);
+                        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, arrayList);
+                        intent.putExtra(CopyService.TAG_COPY_TARGET, path);
+                        intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, ma.openMode.ordinal());
+
+                        ServiceWatcherUtil.runService(mainActivity, intent);
+                    } else if (MOVE_PATH!=null){
+
+                        arrayList = MOVE_PATH;
+                        new MoveFiles(arrayList, ma, ma.getActivity(),ma.openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                    }
+                }
                 COPY_PATH = null;
                 MOVE_PATH = null;
 
@@ -1553,37 +1573,14 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     new DeleteTask(null, mainActivity).execute((oparrayList));
                     break;
                 case DataUtils.COPY://copying
-                    //legacy compatibility
-                    if(oparrayList != null && oparrayList.size() != 0) {
-                        oparrayListList = new ArrayList<>();
-                        oparrayListList.add(oparrayList);
-                        oparrayList = null;
-                        oppatheList = new ArrayList<>();
-                        oppatheList.add(oppathe);
-                        oppathe = "";
-                    }
-
-                    for (int i = 0; i < oparrayListList.size(); i++) {
-                        Intent intent1 = new Intent(con, CopyService.class);
-                        intent1.putExtra(CopyService.TAG_COPY_SOURCES, oparrayList.get(i));
-                        intent1.putExtra(CopyService.TAG_COPY_TARGET, oppatheList.get(i));
-                        startService(intent1);
-                    }
+                    Intent intent1 = new Intent(con, CopyService.class);
+                    intent1.putExtra("FILE_PATHS", (oparrayList));
+                    intent1.putExtra("COPY_DIRECTORY", oppathe);
+                    startService(intent1);
                     break;
                 case DataUtils.MOVE://moving
-                    //legacy compatibility
-                    if(oparrayList != null && oparrayList.size() != 0) {
-                        oparrayListList = new ArrayList<>();
-                        oparrayListList.add(oparrayList);
-                        oparrayList = null;
-                        oppatheList = new ArrayList<>();
-                        oppatheList.add(oppathe);
-                        oppathe = "";
-                    }
-
-                    new MoveFiles(oparrayListList, ((Main) getFragment().getTab()),
-                            ((Main) getFragment().getTab()).getActivity(), OpenMode.FILE)
-                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
+                    new MoveFiles((oparrayList), ((Main) getFragment().getTab()),
+                            ((Main) getFragment().getTab()).getActivity(), OpenMode.FILE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     break;
                 case DataUtils.NEW_FOLDER://mkdir
                     Main ma1 = ((Main) getFragment().getTab());
