@@ -128,7 +128,6 @@ import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
@@ -2202,7 +2201,7 @@ public class MainActivity extends BaseActivity implements
             }
         });
 
-        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(R.id.menu_item);
+        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(R.id.menu_new_folder);
         floatingActionButton1.setColorNormal(folderskin);
         floatingActionButton1.setColorPressed(fabskinpressed);
         floatingActionButton1.setOnClickListener(new View.OnClickListener() {
@@ -2213,7 +2212,7 @@ public class MainActivity extends BaseActivity implements
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(R.id.menu_item1);
+        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(R.id.menu_new_file);
         floatingActionButton2.setColorNormal(folderskin);
         floatingActionButton2.setColorPressed(fabskinpressed);
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
@@ -2224,7 +2223,7 @@ public class MainActivity extends BaseActivity implements
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(R.id.menu_item2);
+        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(R.id.menu_new_SMBconnection);
         floatingActionButton3.setColorNormal(folderskin);
         floatingActionButton3.setColorPressed(fabskinpressed);
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
@@ -2235,7 +2234,7 @@ public class MainActivity extends BaseActivity implements
                 floatingActionButton.close(true);
             }
         });
-        final FloatingActionButton floatingActionButton4 = (FloatingActionButton) findViewById(R.id.menu_item3);
+        final FloatingActionButton floatingActionButton4 = (FloatingActionButton) findViewById(R.id.menu_new_googledrive);
         floatingActionButton4.setColorNormal(folderskin);
         floatingActionButton4.setColorPressed(fabskinpressed);
         floatingActionButton4.setOnClickListener(new View.OnClickListener() {
@@ -2246,6 +2245,8 @@ public class MainActivity extends BaseActivity implements
                 floatingActionButton.close(true);
             }
         });
+
+        //Add button listener
 
         new Thread(new Runnable() {
             @Override
