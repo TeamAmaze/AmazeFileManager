@@ -554,4 +554,10 @@ tartışmalarının parçası olun</string>
   <string name="error_busybox">Busybox bulunamadı. Etkileşimli kabuk kapatılıyor.</string>
   <string name="service_timer">Geçen süre</string>
   <string name="please_wait">Lütfen bekleyin</string>
+  <string name="no_applications">Uygulama yok</string>
+  <string name="ftp_path">Paylaşılan Yol</string>
+  <string name="error_ftp_path_file">Bir dizin değil</string>
+  <string name="change">Değiştir</string>
+  <string name="ftp_path_change_success">FTP bağlantı noktası başarıyla değiştirildi</string>
+  <string name="ftp_path_change_error_invalid">Yol geçersiz</string>
 </resources>

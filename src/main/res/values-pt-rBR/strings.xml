@@ -555,4 +555,11 @@
   <string name="error_busybox">Busybox não encontrado. Fechando o shell interativo.</string>
   <string name="service_timer">Tempo decorrido</string>
   <string name="please_wait">Por favor, aguarde</string>
+  <string name="no_applications">Não há aplicativos</string>
+  <string name="ftp_path">Caminho compartilhado</string>
+  <string name="ftp_path_hint">Caminho para a raiz do diretório para compartilhar</string>
+  <string name="error_ftp_path_file">Caminho não é um diretório</string>
+  <string name="change">Alterar</string>
+  <string name="ftp_path_change_success">Caminho FTP alterado com sucesso</string>
+  <string name="ftp_path_change_error_invalid">Caminho inválido</string>
 </resources>
