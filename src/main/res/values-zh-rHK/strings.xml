@@ -76,6 +76,8 @@
   <string name="tab">標籤</string>
   <string name="file">檔</string>
   <string name="folder">檔夾</string>
+  <string name="title_files">檔案</string>
+  <string name="title_dirs">目錄</string>
   <string name="newfolder">新檔夾</string>
   <string name="entername">請輸入名稱</string>
   <string name="extracting">正在解壓</string>
