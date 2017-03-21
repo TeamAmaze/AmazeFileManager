@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="storage">Mesto za shranjevanje</string>
   <string name="setting">Nastavitve</string>
   <string name="cancel">PREKLIČI</string>
   <string name="save">Shrani</string>
@@ -58,6 +59,7 @@
   <string name="install">Namesti</string>
   <string name="archive">Arhiv</string>
   <string name="details">Podrobnosti</string>
+  <string name="warning">Opozorilo</string>
   <string name="donate">Prispevaj</string>
   <string name="text">Besedilo</string>
   <string name="other">Drugo</string>

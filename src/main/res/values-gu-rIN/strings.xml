@@ -35,6 +35,7 @@
   <!--Folder-->
   <string name="Yellow">પીળો</string>
   <string name="version">સંસ્કરણ</string>
+  <string name="text">લખાણ</string>
   <string name="color_title">રંગ</string>
   <string name="none">કોઈ નહીં</string>
   <string name="password">પાસવર્ડ</string>
@@ -44,6 +45,7 @@
   <!-- reference to audio/video file -->
   <string name="exposure_time">પ્રદર્શન સમય</string>
   <string name="focal_length">ફોકલ લેન્થ</string>
+  <string name="document">દસ્તાવેજ</string>
   <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->

@@ -21,6 +21,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="drawer_open">Åbn sidemenu</string>
   <string name="drawer_close">Luk sidemenu</string>
+  <string name="storage">Lager</string>
   <string name="setting">Indstillinger</string>
   <string name="cancel">ANNULLER</string>
   <string name="save">Gem</string>
@@ -57,7 +58,9 @@
   <string name="install">Installér</string>
   <string name="archive">Arkiv</string>
   <string name="details">Detaljer</string>
+  <string name="warning">Advarsel</string>
   <string name="donate">Donér</string>
+  <string name="text">Tekst</string>
   <string name="other">Andet</string>
   <string name="color_title">Farve</string>
   <string name="none">Ingen</string>
@@ -76,6 +79,7 @@
   <string name="height">Højde</string>
   <string name="exposure_time">Eksponeringstid</string>
   <string name="focal_length">Fokuslængde</string>
+  <string name="document">Dokument</string>
   <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->

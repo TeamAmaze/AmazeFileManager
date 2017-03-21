@@ -35,6 +35,7 @@
   <!--Folder-->
   <string name="Yellow">పసుపు రంగు</string>
   <string name="version">సంస్కరణ</string>
+  <string name="text">పాఠం</string>
   <string name="color_title">రంగు</string>
   <string name="none">ఏదీ వద్దు</string>
   <string name="password">పాస్‌వర్డ్</string>
@@ -44,6 +45,7 @@
   <!-- reference to audio/video file -->
   <string name="exposure_time">ఎక్స్‌పోజర్ సమయం</string>
   <string name="focal_length">కేంద్రాంతరము</string>
+  <string name="document">పత్రం</string>
   <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->

@@ -28,10 +28,12 @@
   <!--SortBy-->
   <!--ListMode-->
   <!--Folder-->
+  <string name="text">ଟେକ୍ସଟ୍</string>
   <string name="password">ପାସୱାର୍ଡ୍</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
   <!-- reference to audio/video file -->
+  <string name="document">ଡକ୍ୟୁମେଣ୍ଟ୍</string>
   <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
