@@ -76,6 +76,8 @@
   <string name="tab">Вкладка</string>
   <string name="file">Файл</string>
   <string name="folder">Папка</string>
+  <string name="title_files">ФАЙЛЫ</string>
+  <string name="title_dirs">ПАПКИ</string>
   <string name="newfolder">Новая папка</string>
   <string name="entername">Введите имя</string>
   <string name="extracting">Извлечение...</string>
