@@ -75,6 +75,8 @@
   <string name="tab">Закладка</string>
   <string name="file">Файл</string>
   <string name="folder">Тэчка</string>
+  <string name="title_files">ФАЙЛЫ</string>
+  <string name="title_dirs">ТЭЧКІ</string>
   <string name="newfolder">Новая тэчка</string>
   <string name="entername">Увядзіце назву</string>
   <string name="extracting">Выманне</string>
