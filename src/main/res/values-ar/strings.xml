@@ -288,6 +288,7 @@
   <string name="height">الارتفاع</string>
   <string name="exposure_time">مدة التعرض للضوء</string>
   <string name="focal_length">البعد البؤري</string>
+  <string name="document">مستند</string>
   <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->

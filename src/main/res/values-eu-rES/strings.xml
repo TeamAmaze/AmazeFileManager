@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="storage">Biltegiratzea</string>
   <string name="home">Etxean</string>
   <!-- New -->
   <!-- Array -->
@@ -36,6 +37,7 @@
   <!--Folder-->
   <string name="Yellow">Horia</string>
   <string name="version">Bertsioa</string>
+  <string name="warning">Abisua</string>
   <string name="text">Testua</string>
   <string name="other">Beste bat</string>
   <string name="color_title">Kolorea</string>

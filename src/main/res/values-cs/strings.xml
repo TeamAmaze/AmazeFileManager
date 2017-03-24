@@ -70,6 +70,8 @@
   <string name="add">Přidat</string>
   <string name="file">Soubor</string>
   <string name="folder">Složka</string>
+  <string name="title_files">SOUBORY</string>
+  <string name="title_dirs">ADRESÁŘE</string>
   <string name="newfolder">Nová složka</string>
   <string name="entername">Zadejte název</string>
   <string name="extracting">Probíhá extrahování</string>
@@ -103,6 +105,7 @@
   <string name="delete">Smazat</string>
   <string name="setashome">Nastavit jako domácí</string>
   <string name="imagegallery">Galerie obrázků</string>
+  <string name="fileexplorer">Průzkumník souborů</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
@@ -325,12 +328,23 @@
   <string name="security">Zabezpečení</string>
   <string name="paper_size">Velikost papíru</string>
   <!-- %s will be replaced with either copied or moved -->
+  <string name="copied">zkopírováno</string>
+  <string name="moved">přesunuto</string>
+  <string name="process_chart_description">Průběh</string>
+  <string name="copy_complete">Kopírování dokončeno</string>
+  <string name="waiting_title">Čekám</string>
+  <string name="compressing">Komprimace</string>
+  <string name="cancelled">Zrušeno</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="current_speed">Aktuální rychlost</string>
+  <string name="error_file_not_found">Chyba: Soubor nebyl nalezen</string>
   <string name="error_io">Chyba I/O</string>
+  <string name="error_root_not_permitted">Chyba: Root oprávnění není uděleno</string>
   <string name="medium_text">Střední Text</string>
   <string name="permission_read">Načíst</string>
+  <string name="permission_write">Napsat</string>
+  <string name="permission_execute">Vykonat</string>
   <string name="permission_owner">Majitel</string>
   <string name="permission_group">Skupina</string>
   <string name="permission_other">Ostatní</string>

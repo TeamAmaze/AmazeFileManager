@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="storage">Almacenamento</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
@@ -35,6 +36,8 @@
   <!--Folder-->
   <string name="Yellow">Amarelo</string>
   <string name="version">Versión</string>
+  <string name="warning">Aviso</string>
+  <string name="text">Texto</string>
   <string name="color_title">Cor</string>
   <string name="none">Ningún</string>
   <string name="password">Contrasinal</string>

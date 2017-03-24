@@ -282,6 +282,7 @@
   <string name="tamil_translation_title">Tamil</string>
   <string name="zip_viewer">Visor de ZIP</string>
   <string name="unin_system_apk">Esta es una aplicación del sistema, borrarla puede provocar inestabilidad en el sistema.\n¿Continuar?</string>
+  <string name="warning">Advertencia</string>
   <string name="donate">Donar</string>
   <string name="archive_preferences">Archivadores</string>
   <string name="archive_extract_folder">Carpeta donde extraer los archivadores</string>
