@@ -6,4 +6,10 @@
     <item
         android:id="@+id/ftp_path"
         android:title="@string/ftp_path" />
+    <item
+        android:id="@+id/ftp_login"
+        android:title="@string/ftp_login" />
+    <item
+        android:id="@+id/ftp_timeout"
+        android:title="@string/ftp_timeout" />
 </menu>

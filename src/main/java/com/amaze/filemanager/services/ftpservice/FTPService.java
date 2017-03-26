@@ -19,16 +19,23 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.amaze.filemanager.R;
+
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.ftpserver.ConnectionConfigFactory;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.listener.ListenerFactory;
+import org.apache.ftpserver.ssl.SslConfigurationFactory;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -44,34 +51,16 @@ import java.util.List;
 public class FTPService extends Service implements Runnable {
 
     public static final int DEFAULT_PORT = 2211;
+    public static final String DEFAULT_USERNAME = "";
+    public static final int DEFAULT_TIMEOUT = 600;   // default timeout, in sec
+    public static final boolean DEFAULT_SECURE = false;
     public static final String PORT_PREFERENCE_KEY = "ftpPort";
     public static final String KEY_PREFERENCE_PATH = "ftp_path";
+    public static final String KEY_PREFERENCE_USERNAME = "ftp_username";
+    public static final String KEY_PREFERENCE_PASSWORD = "ftp_password";
+    public static final String KEY_PREFERENCE_TIMEOUT = "ftp_timeout";
+    public static final String KEY_PREFERENCE_SECURE = "ftp_secure";
     public static final String DEFAULT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
-
-    public static int getDefaultPortFromPreferences(SharedPreferences preferences) {
-        try {
-            return preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT);
-        } catch (ClassCastException ex) {
-            Log.e("FtpService", "Default port preference is not an int. Resetting to default.");
-            changeFTPServerPort(preferences, DEFAULT_PORT);
-
-            return DEFAULT_PORT;
-        }
-    }
-
-    public static String getDefaultPathFromPreferences(SharedPreferences preferences) {
-        return preferences.getString(KEY_PREFERENCE_PATH, DEFAULT_PATH);
-    }
-
-    public static void changeFTPServerPort(SharedPreferences preferences, int port) {
-        preferences.edit()
-                   .putInt(PORT_PREFERENCE_KEY, port)
-                   .apply();
-    }
-
-    public static void changeFTPServerPath(SharedPreferences preferences, String path) {
-        preferences.edit().putString(KEY_PREFERENCE_PATH, path).apply();
-    }
 
     private static final String TAG = FTPService.class.getSimpleName();
 
@@ -109,11 +98,6 @@ public class FTPService extends Service implements Runnable {
             }
         }
 
-        if (intent != null && intent.getStringExtra("username") != null && intent.getStringExtra("password") != null) {
-            username = intent.getStringExtra("username");
-            password = intent.getStringExtra("password");
-            isPasswordProtected = true;
-        }
         serverThread = new Thread(this);
         serverThread.start();
 
@@ -136,6 +120,13 @@ public class FTPService extends Service implements Runnable {
 
         serverFactory.setConnectionConfig(connectionConfigFactory.createConnectionConfig());
 
+        String usernamePreference = preferences.getString(KEY_PREFERENCE_USERNAME, DEFAULT_USERNAME);
+        if (!usernamePreference.equals(DEFAULT_USERNAME)) {
+            username = usernamePreference;
+            password = preferences.getString(KEY_PREFERENCE_PASSWORD, "");
+            isPasswordProtected = true;
+        }
+
         BaseUser user = new BaseUser();
         if (!isPasswordProtected) {
             user.setName("anonymous");
@@ -144,7 +135,7 @@ public class FTPService extends Service implements Runnable {
             user.setPassword(password);
         }
 
-        user.setHomeDirectory(getDefaultPathFromPreferences(preferences));
+        user.setHomeDirectory(preferences.getString(KEY_PREFERENCE_PATH, DEFAULT_PATH));
         List<Authority> list = new ArrayList<>();
         list.add(new WritePermission());
         user.setAuthorities(list);
@@ -155,9 +146,36 @@ public class FTPService extends Service implements Runnable {
         }
         ListenerFactory fac = new ListenerFactory();
 
-        port = getDefaultPortFromPreferences(preferences);
+        port = preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT);
+
+        if (preferences.getBoolean(KEY_PREFERENCE_SECURE, DEFAULT_SECURE)) {
+            SslConfigurationFactory sslConfigurationFactory = new SslConfigurationFactory();
+
+            File file;
+            try {
+
+                InputStream stream = getResources().openRawResource(R.raw.key);
+                file = File.createTempFile("keystore", "bks");
+                FileOutputStream outputStream = new FileOutputStream(file);
+                IOUtils.copy(stream, outputStream);
+            } catch (Exception e) {
+                e.printStackTrace();
+                file = null;
+            }
+
+            if (file != null) {
+                sslConfigurationFactory.setKeystoreFile(file);
+                sslConfigurationFactory.setKeystorePassword("vishal007");
+                fac.setSslConfiguration(sslConfigurationFactory.createSslConfiguration());
+                fac.setImplicitSsl(true);
+            } else {
+                // no keystore found
+                preferences.edit().putBoolean(KEY_PREFERENCE_SECURE, false).apply();
+            }
+        }
 
         fac.setPort(port);
+        fac.setIdleTimeout(preferences.getInt(KEY_PREFERENCE_TIMEOUT, DEFAULT_TIMEOUT));
 
         serverFactory.addListener("default", fac.createListener());
         try {
@@ -210,7 +228,6 @@ public class FTPService extends Service implements Runnable {
         alarmService.set(AlarmManager.ELAPSED_REALTIME,
                 SystemClock.elapsedRealtime() + 2000, restartServicePI);
     }
-
 
     public static boolean isRunning() {
         // return true if and only if a server Thread is running
@@ -267,7 +284,6 @@ public class FTPService extends Service implements Runnable {
         }
         return connected;
     }
-
 
     public static boolean isConnectedToWifi(Context context) {
 

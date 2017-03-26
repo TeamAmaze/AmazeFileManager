@@ -192,7 +192,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private void switchIcons() {
         if (getAppTheme().equals(AppTheme.DARK)) {
             // dark theme
-            mAuthorsDivider.setBackgroundColor(getResources().getColor(R.color.divider_dark));
+            mAuthorsDivider.setBackgroundColor(getResources().getColor(R.color.divider_dark_card));
         }
     }
 
