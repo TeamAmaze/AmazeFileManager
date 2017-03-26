@@ -155,6 +155,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     final Pattern DIR_SEPARATOR = Pattern.compile("/");
     /* Request code used to invoke sign in user interactions. */
     static final int RC_SIGN_IN = 0;
+    public static String COUNTER_KEY_CACH = "counter";
     public Integer select;
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
@@ -544,11 +545,12 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
     /**
      * Method finds whether a USB device is connected or not
+     *
      * @return true if device is connected
      */
     private boolean isUsbDeviceConnected() {
         UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
-        if (usbManager.getDeviceList().size()!=0) {
+        if (usbManager.getDeviceList().size() != 0) {
             // we need to set this every time as there is no way to know that whether USB device was
             // disconnected after closing the app and another one was connected
             // in that case the uri will obviously change
@@ -1099,7 +1101,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                                 arrayList);
                     }
                 } else if (path.contains("otg:/")) {
-                    if (COPY_PATH!=null) {
+                    if (COPY_PATH != null) {
 
                         arrayList = COPY_PATH;
                         Intent intent = new Intent(con, CopyService.class);
@@ -1108,10 +1110,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                         intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, ma.openMode.ordinal());
 
                         ServiceWatcherUtil.runService(mainActivity, intent);
-                    } else if (MOVE_PATH!=null){
+                    } else if (MOVE_PATH != null) {
 
                         arrayList = MOVE_PATH;
-                        new MoveFiles(arrayList, ma, ma.getActivity(),ma.openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                        new MoveFiles(arrayList, ma, ma.getActivity(), ma.openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
                     }
                 }
                 COPY_PATH = null;
@@ -2190,43 +2192,45 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             // case when app starts
             // FIXME: COUNTER is incremented twice on app startup
             COUNTER++;
-            if (COUNTER == 2) {
 
-                animPath.setAnimation(slideIn);
-                animPath.setText(newPath);
-                animPath.animate().setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        super.onAnimationStart(animation);
-                        animPath.setVisibility(View.VISIBLE);
-                        bapath.setText("");
-                        scroll.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                scroll1.fullScroll(View.FOCUS_RIGHT);
-                            }
-                        });
-                    }
+            //Ever time when we're incrementing counter, it put in the cache and equals
+            // on TabFragment for avoid multiple animation
+            AppConfig.getCache().put(COUNTER_KEY_CACH, COUNTER);
 
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                animPath.setVisibility(View.GONE);
-                                bapath.setText(newPath);
-                            }
-                        }, PATH_ANIM_END_DELAY);
-                    }
+            animPath.setAnimation(slideIn);
+            animPath.setText(newPath);
+            animPath.animate().setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    animPath.setVisibility(View.VISIBLE);
+                    bapath.setText("");
+                    scroll.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scroll1.fullScroll(View.FOCUS_RIGHT);
+                        }
+                    });
+                }
 
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                        super.onAnimationCancel(animation);
-                        //onAnimationEnd(animation);
-                    }
-                }).setStartDelay(PATH_ANIM_START_DELAY).start();
-            }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            animPath.setVisibility(View.GONE);
+                            bapath.setText(newPath);
+                        }
+                    }, PATH_ANIM_END_DELAY);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    super.onAnimationCancel(animation);
+                    //onAnimationEnd(animation);
+                }
+            }).setStartDelay(PATH_ANIM_START_DELAY).start();
 
         } else {
 
@@ -2359,10 +2363,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     }
 
     public void renameBookmark(final String title, final String path) {
-        if (DataUtils.containsBooks(new String[]{title,path}) != -1 || DataUtils.containsAccounts(new String[]{title,path}) != -1) {
-            RenameBookmark renameBookmark=RenameBookmark.getInstance(title,path,BaseActivity.accentSkin);
-            if(renameBookmark!=null){
-                renameBookmark.show(getFragmentManager(),"renamedialog");
+        if (DataUtils.containsBooks(new String[]{title, path}) != -1 || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
+            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, BaseActivity.accentSkin);
+            if (renameBookmark != null) {
+                renameBookmark.show(getFragmentManager(), "renamedialog");
             }
         }
     }
@@ -2449,7 +2453,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
                 if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
-                    if (Sp.getString(KEY_PREF_OTG, null)==null) {
+                    if (Sp.getString(KEY_PREF_OTG, null) == null) {
                         Sp.edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
                         updateDrawer();
                     }
