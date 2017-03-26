@@ -541,4 +541,9 @@ megtalálásához..</li><li/><br/>\\n
   <string name="error_busybox">BusyBox nem található. Interaktív rendszerhéj bezárása.</string>
   <string name="service_timer">Eltelt idő</string>
   <string name="please_wait">Kérjük, várjon</string>
+  <string name="no_applications">Nincsenek alkalmazások</string>
+  <string name="ftp_path">Keresési útvonal</string>
+  <string name="change">Csere</string>
+  <string name="ftp_path_change_success">FTP elérési útja megváltozott sikeresen</string>
+  <string name="ftp_path_change_error_invalid">Érvénytelen útvonal</string>
 </resources>

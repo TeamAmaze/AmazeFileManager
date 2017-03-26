@@ -42,6 +42,7 @@
   <string name="new_string">പുതിയത്</string>
   <string name="install">ഇൻസ്റ്റാൾ</string>
   <string name="donate">സംഭാവന</string>
+  <string name="text">ടെക്സ്റ്റ്</string>
   <string name="color_title">വർണ്ണം</string>
   <string name="none">ഒന്നുമില്ല</string>
   <string name="password">പാസ്‌വേഡ്</string>
@@ -51,6 +52,7 @@
   <!-- reference to audio/video file -->
   <string name="exposure_time">എക്‌സ്പോഷർ സമയം</string>
   <string name="focal_length">ഫോക്കൽ ദൈർഘ്യം</string>
+  <string name="document">പ്രമാണം</string>
   <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->

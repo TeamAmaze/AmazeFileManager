@@ -538,4 +538,6 @@
   <string name="error_busybox">BusyBox introuvable. Le script shell est arrêté.</string>
   <string name="service_timer">Temps écoulé</string>
   <string name="please_wait">Veuillez patienter</string>
+  <string name="no_applications">Aucune application</string>
+  <string name="ftp_path">Chemin d’accès partagé</string>
 </resources>

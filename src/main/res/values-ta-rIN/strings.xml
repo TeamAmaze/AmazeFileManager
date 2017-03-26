@@ -49,6 +49,7 @@
   <string name="new_string">புதிய</string>
   <string name="install">நிறுவு</string>
   <string name="donate">நன்கொடை</string>
+  <string name="text">உரை</string>
   <string name="other">பிற</string>
   <string name="color_title">நிறம்</string>
   <string name="none">ஏதுமில்லை</string>
@@ -62,6 +63,7 @@
   <!-- reference to audio/video file -->
   <string name="exposure_time">வெளிப்பாடு நேரம்</string>
   <string name="focal_length">குவியத்தூரம்</string>
+  <string name="document">ஆவணம்</string>
   <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->

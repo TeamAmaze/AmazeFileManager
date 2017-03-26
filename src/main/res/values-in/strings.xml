@@ -508,4 +508,11 @@ Fitur ini membuat file tersedia di jaringan lokal, sehingga PC dan perangkat sel
   <string name="error_busybox">BusyBox tidak ditemukan. Menutup shell interaktif.</string>
   <string name="service_timer">Waktu berlalu</string>
   <string name="please_wait">Mohon tunggu</string>
+  <string name="no_applications">Tidak ada aplikasi</string>
+  <string name="ftp_path">Path Dibagikan</string>
+  <string name="ftp_path_hint">Path ke root direktori untuk berbagi</string>
+  <string name="error_ftp_path_file">Jalur bukan sebuah direktori</string>
+  <string name="change">Ganti</string>
+  <string name="ftp_path_change_success">Path FTP berhasil diganti</string>
+  <string name="ftp_path_change_error_invalid">Path tidak valid</string>
 </resources>

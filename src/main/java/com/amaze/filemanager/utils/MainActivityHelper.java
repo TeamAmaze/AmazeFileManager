@@ -278,33 +278,39 @@ public class MainActivityHelper {
         });
     }
 
+    public static final int DOESNT_EXIST = 0;
+    public static final int WRITABLE_OR_ON_SDCARD = 1;
+    //For Android 5
+    public static final int CAN_CREATE_FILES = 2;
+
     public int checkFolder(final File folder, Context context) {
-        boolean lol= Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
-        if (lol) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (FileUtil.isOnExtSdCard(folder, context)) {
                 if (!folder.exists() || !folder.isDirectory()) {
-                    return 0;
+                    return DOESNT_EXIST;
                 }
 
                 // On Android 5, trigger storage access framework.
                 if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
                     guideDialogForLEXA(folder.getPath());
-                    return 2;
+                    return CAN_CREATE_FILES;
                 }
-                return 1;
-            } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) return 1;
-            else return 0;
+
+                return WRITABLE_OR_ON_SDCARD;
+            } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+                return WRITABLE_OR_ON_SDCARD;
+            } else return DOESNT_EXIST;
         } else if (Build.VERSION.SDK_INT == 19) {
             if (FileUtil.isOnExtSdCard(folder, context)) {
-
                 // Assume that Kitkat workaround works
-                return 1;
-            } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) return 1;
-            else return 0;
+                return WRITABLE_OR_ON_SDCARD;
+            } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+                return WRITABLE_OR_ON_SDCARD;
+            } else return DOESNT_EXIST;
         } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
-            return 1;
+            return WRITABLE_OR_ON_SDCARD;
         } else {
-            return 0;
+            return DOESNT_EXIST;
         }
     }
 

@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="storage">Lagring</string>
   <string name="cancel">Avbryt</string>
   <string name="save">Lagre</string>
   <string name="share">Del</string>
@@ -53,6 +54,7 @@
   <string name="new_string">Ny</string>
   <string name="install">Installer</string>
   <string name="details">Detaljer</string>
+  <string name="warning">Advarsel</string>
   <string name="donate">Donere</string>
   <string name="text">Tekst</string>
   <string name="other">Annet</string>

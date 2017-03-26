@@ -379,7 +379,7 @@ public class Operations {
     }
 
     private static boolean isFileSystemFAT(String mountPoint) {
-        String[] args = new String[] {"/bin/bash", "-c", "df -T | awk '{print $1,$2,$NF}' | grep \"^"
+        String[] args = new String[] {"/bin/bash", "-c", "df -DO_NOT_REPLACE | awk '{print $1,$2,$NF}' | grep \"^"
                 + mountPoint + "\""};
         try {
             Process proc = new ProcessBuilder(args).start();
