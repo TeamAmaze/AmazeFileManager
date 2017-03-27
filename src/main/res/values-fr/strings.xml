@@ -541,4 +541,11 @@
   <string name="please_wait">Veuillez patienter</string>
   <string name="no_applications">Aucune application</string>
   <string name="ftp_path">Chemin d’accès partagé</string>
+  <string name="unknown_error">Oups, une erreur c\'est produite!</string>
+  <string name="ftp_status_no_connection">Aucune connexion</string>
+  <string name="ftp_status_secure_connection">Connexion sécurisée</string>
+  <string name="ftp_login">S\'identifier</string>
+  <string name="field_empty">Le champ ne peut pas être vide</string>
+  <string name="ftp_timeout">Délai d\'inactivité</string>
+  <string name="ftp_seconds">Secondes</string>
 </resources>
