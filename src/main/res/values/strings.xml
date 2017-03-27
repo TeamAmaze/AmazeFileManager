@@ -589,5 +589,7 @@
     <string name="field_empty">Field can\'t be empty</string>
     <string name="ftp_timeout">Idle timeout</string>
     <string name="ftp_seconds">Seconds</string>
+    <string name="intellihide_toolbar_title">Intellihide Toolbar</string>
+    <string name="intellihide_toolbar_summary">Automatically hide toolbar while scrolling</string>
 </resources>
 

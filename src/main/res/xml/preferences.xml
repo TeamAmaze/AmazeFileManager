@@ -42,6 +42,12 @@
             android:defaultValue="true"
             android:key="showDividers"
             android:title="@string/showDividers"/>
+        <com.amaze.filemanager.ui.views.CheckBx
+            android:defaultValue="true"
+            android:key="intelliHideToolbar"
+            android:summary="@string/intellihide_toolbar_summary"
+            android:title="@string/intellihide_toolbar_title"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/general">
