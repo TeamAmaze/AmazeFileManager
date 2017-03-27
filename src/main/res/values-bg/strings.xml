@@ -22,6 +22,7 @@
   <string name="drawer_open">Отваряне на панела за навигация</string>
   <string name="drawer_close">Затваряне на панела за навигация</string>
   <string name="storage">Хранилище</string>
+  <string name="gallery">Галерия</string>
   <string name="setting">Настройки</string>
   <string name="cancel">ОТКАЗ</string>
   <string name="save">Запиши</string>
@@ -71,6 +72,7 @@
   <string name="defualt">Основен</string>
   <string name="edit">Редактиране</string>
   <string name="path">Път</string>
+  <string name="search">Търсене</string>
   <string name="start_ftp">Начало</string>
   <string name="information">Информация</string>
   <!-- reference to file accessed date -->

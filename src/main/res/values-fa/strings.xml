@@ -75,6 +75,7 @@
   <string name="tab">تب</string>
   <string name="file">فایل</string>
   <string name="folder">پوشه</string>
+  <string name="title_dirs">پوشه ها</string>
   <string name="newfolder">پوشه جدید</string>
   <string name="entername">نام را وارد کنید</string>
   <string name="extracting">در حال بیرون آمدن از فشرده</string>

@@ -76,6 +76,8 @@
   <string name="tab">Pestaña</string>
   <string name="file">Archivo</string>
   <string name="folder">Carpeta</string>
+  <string name="title_files">Archivos</string>
+  <string name="title_dirs">Directorios</string>
   <string name="newfolder">Nueva Carpeta</string>
   <string name="entername">Introducir nombre</string>
   <string name="extracting">Extrayendo</string>

@@ -76,6 +76,8 @@
   <string name="tab">Tabblad</string>
   <string name="file">Bestand</string>
   <string name="folder">Map</string>
+  <string name="title_files">Bestanden</string>
+  <string name="title_dirs">Mappen</string>
   <string name="newfolder">Nieuwe map</string>
   <string name="entername">Naam invoeren</string>
   <string name="extracting">Uitpakken</string>

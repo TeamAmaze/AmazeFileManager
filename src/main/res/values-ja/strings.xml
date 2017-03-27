@@ -75,6 +75,8 @@
   <string name="tab">タブ</string>
   <string name="file">ファイル</string>
   <string name="folder">フォルダー</string>
+  <string name="title_files">ファイル</string>
+  <string name="title_dirs">ディレクトリー</string>
   <string name="newfolder">新しいフォルダー</string>
   <string name="entername">名前を入力</string>
   <string name="extracting">抽出中</string>

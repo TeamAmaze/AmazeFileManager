@@ -67,6 +67,8 @@
   <string name="tab">Flik</string>
   <string name="file">Fil</string>
   <string name="folder">Mapp</string>
+  <string name="title_files">Filer</string>
+  <string name="title_dirs">Kataloger</string>
   <string name="newfolder">Ny mapp</string>
   <string name="entername">Ange namn</string>
   <string name="extracting">Extraherar</string>

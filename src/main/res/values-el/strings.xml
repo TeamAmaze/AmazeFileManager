@@ -73,6 +73,8 @@
   <string name="tab">Καρτέλα</string>
   <string name="file">Αρχείο</string>
   <string name="folder">Φάκελος</string>
+  <string name="title_files">Αρχεία</string>
+  <string name="title_dirs">Φάκελοι</string>
   <string name="newfolder">Νέος φάκελος</string>
   <string name="entername">Εισάγετε όνομα</string>
   <string name="extracting">Εξαγωγή</string>

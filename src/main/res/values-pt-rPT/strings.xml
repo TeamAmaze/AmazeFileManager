@@ -73,6 +73,7 @@
   <string name="tab">Separador</string>
   <string name="file">Ficheiro</string>
   <string name="folder">Pasta</string>
+  <string name="title_dirs">Diretórios</string>
   <string name="newfolder">Nova pasta</string>
   <string name="entername">Digite o nome</string>
   <string name="extracting">A extrair</string>
