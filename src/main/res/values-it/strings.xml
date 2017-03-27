@@ -76,6 +76,8 @@
   <string name="tab">Scheda</string>
   <string name="file">File</string>
   <string name="folder">Cartella</string>
+  <string name="title_files">File</string>
+  <string name="title_dirs">Cartelle</string>
   <string name="newfolder">Nuova cartella</string>
   <string name="entername">Inserisci nome</string>
   <string name="extracting">Estrazione</string>

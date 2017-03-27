@@ -75,6 +75,7 @@
   <string name="tab">Језичак</string>
   <string name="file">Фајл</string>
   <string name="folder">Фасцикла</string>
+  <string name="title_dirs">Фасцикле</string>
   <string name="newfolder">Нова фасцикла</string>
   <string name="entername">Унесите назив</string>
   <string name="extracting">Распакујем</string>

@@ -76,6 +76,8 @@
   <string name="tab">Sekme</string>
   <string name="file">Dosya</string>
   <string name="folder">Klasör</string>
+  <string name="title_files">Dosyalar</string>
+  <string name="title_dirs">Dizinler</string>
   <string name="newfolder">Yeni klasör</string>
   <string name="entername">Ad gir</string>
   <string name="extracting">Ayıklanıyor</string>

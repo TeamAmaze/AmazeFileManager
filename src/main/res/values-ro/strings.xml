@@ -72,6 +72,7 @@
   <string name="tab">Filă</string>
   <string name="file">Fişier</string>
   <string name="folder">Dosar</string>
+  <string name="title_dirs">Dosare</string>
   <string name="newfolder">Dosar nou</string>
   <string name="entername">Introduceţi numele</string>
   <string name="extracting">Extragere</string>

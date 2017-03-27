@@ -75,6 +75,7 @@
   <string name="tab">Llingüeta</string>
   <string name="file">Ficheru</string>
   <string name="folder">Carpeta</string>
+  <string name="title_dirs">Diretorios</string>
   <string name="newfolder">Carpeta nueva</string>
   <string name="entername">Introduz el nome</string>
   <string name="extracting">Estrayendo</string>

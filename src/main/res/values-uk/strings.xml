@@ -76,6 +76,8 @@
   <string name="tab">Вкладка</string>
   <string name="file">Файл</string>
   <string name="folder">Тека</string>
+  <string name="title_files">Файли</string>
+  <string name="title_dirs">Теки</string>
   <string name="newfolder">Нова тека</string>
   <string name="entername">Введіть ім\'я</string>
   <string name="extracting">Розпаковування...</string>
@@ -554,4 +556,11 @@
   <string name="error_busybox">BusyBox, не знайдено. Закриття інтерактивної оболонки.</string>
   <string name="service_timer">Пройшло часу</string>
   <string name="please_wait">Будь ласка, зачекайте</string>
+  <string name="no_applications">Додатки відсутні</string>
+  <string name="ftp_path">Спільний шлях</string>
+  <string name="ftp_path_hint">Шлях до кореневої директорії для поширення</string>
+  <string name="error_ftp_path_file">Шлях не директорія</string>
+  <string name="change">Змінити</string>
+  <string name="ftp_path_change_success">Порт FTP змінено успішно</string>
+  <string name="ftp_path_change_error_invalid">Недійсний шлях</string>
 </resources>

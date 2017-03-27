@@ -76,6 +76,8 @@
   <string name="tab">Karta</string>
   <string name="file">Plik</string>
   <string name="folder">Katalog</string>
+  <string name="title_files">Pliki</string>
+  <string name="title_dirs">Katalogi</string>
   <string name="newfolder">Nowy katalog</string>
   <string name="entername">Wprowadź nazwę</string>
   <string name="extracting">Rozpakowywanie</string>

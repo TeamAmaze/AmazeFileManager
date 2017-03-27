@@ -76,6 +76,8 @@
   <string name="tab">Onglet</string>
   <string name="file">Fichier</string>
   <string name="folder">Dossier</string>
+  <string name="title_files">Fichiers</string>
+  <string name="title_dirs">Répertoires</string>
   <string name="newfolder">Nouveau dossier</string>
   <string name="entername">Entrer le nom</string>
   <string name="extracting">Extraction</string>
