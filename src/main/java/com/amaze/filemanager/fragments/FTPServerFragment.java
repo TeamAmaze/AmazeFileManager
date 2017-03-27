@@ -291,7 +291,7 @@ public class FTPServerFragment extends Fragment {
             case R.id.ftp_timeout:
                 MaterialDialog.Builder timeoutBuilder = new MaterialDialog.Builder(getActivity());
 
-                timeoutBuilder.title(getResources().getString(R.string.ftp_timeout) + "(" +
+                timeoutBuilder.title(getResources().getString(R.string.ftp_timeout) + " (" +
                         getResources().getString(R.string.ftp_seconds) + ")");
                 timeoutBuilder.input(String.valueOf(FTPService.DEFAULT_TIMEOUT + " " +
                                 getResources().getString(R.string.ftp_seconds)), String.valueOf(getFTPTimeout()),

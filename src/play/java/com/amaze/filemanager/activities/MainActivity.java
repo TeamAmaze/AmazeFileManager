@@ -1753,7 +1753,7 @@ public class MainActivity extends BaseActivity implements
                         Intent intent1 = new Intent(con, CopyService.class);
                         intent1.putExtra(CopyService.TAG_COPY_SOURCES, oparrayList.get(i));
                         intent1.putExtra(CopyService.TAG_COPY_TARGET, oppatheList.get(i));
-                        startService(intent1);
+                        ServiceWatcherUtil.runService(this, intent1);
                     }
                     break;
                 case DataUtils.MOVE://moving

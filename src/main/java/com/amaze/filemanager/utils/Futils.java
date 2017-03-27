@@ -623,8 +623,8 @@ public class Futils {
                         .append(")");
         }
 
-        String titleFiles = b.getResources().getString(R.string.title_files);
-        String titleDirs = b.getResources().getString(R.string.title_dirs);
+        String titleFiles = b.getResources().getString(R.string.title_files).toUpperCase();
+        String titleDirs = b.getResources().getString(R.string.title_dirs).toUpperCase();
 
         if(fileNames.length() == 0)
             c.content(b.getResources().getString(R.string.questiondelete) + "\n\n" + "---" +
