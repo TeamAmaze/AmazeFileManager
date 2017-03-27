@@ -320,6 +320,8 @@ public class RootHelper {
      * @param root
      * @param count
      * @return
+     *
+     * TODO: Avoid parsing ls
      */
     public static boolean isDirectory(String a, boolean root,int count) throws RootNotPermittedException {
         File f = new File(a);
@@ -369,6 +371,8 @@ public class RootHelper {
      * @param showHidden to show hidden files
      * @param getModeCallBack callback to set the type of file
      * @return
+     *
+     * TODO: Avoid parsing ls
      */
     public static ArrayList<BaseFile> getFilesList(String path, boolean root, boolean showHidden,
                                                    GetModeCallBack getModeCallBack)
