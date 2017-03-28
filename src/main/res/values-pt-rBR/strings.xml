@@ -551,6 +551,15 @@ Abra o prompt de comando. Digite \'ipconfig\' e pressione Enter. Procure Gateway
   <string name="ftp_path_hint">Caminho para a raiz do diretório para compartilhar</string>
   <string name="error_ftp_path_file">Caminho não é um diretório</string>
   <string name="change">Alterar</string>
+  <string name="unknown_error">Ops. Algo deu errado!</string>
   <string name="ftp_path_change_success">Caminho FTP alterado com sucesso</string>
   <string name="ftp_path_change_error_invalid">Caminho inválido</string>
+  <string name="ftp_status_no_connection">Sem conexão</string>
+  <string name="ftp_status_secure_connection">Conexão Segura</string>
+  <string name="ftp_status_title">Estado</string>
+  <string name="ftp_port">Porta</string>
+  <string name="ftp_login">Acessar</string>
+  <string name="field_empty">O campo não pode ficar vazio</string>
+  <string name="ftp_timeout">Tempo limite de ociosidade</string>
+  <string name="ftp_seconds">Segundos</string>
 </resources>

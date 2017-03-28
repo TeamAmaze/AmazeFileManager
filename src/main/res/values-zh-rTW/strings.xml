@@ -403,7 +403,7 @@
   <string name="ftp_notif_title">Amaze FTP 伺服器執行中</string>
   <string name="ftp_notif_text">在 %s</string>
   <string name="ftp_notif_stop_server">停止</string>
-  <string name="ftp_port_edit_menu_title">選擇 FTP 埠號</string>
+  <string name="ftp_port_edit_menu_title">選擇 FTP 通訊埠</string>
   <string name="ftp_port_change_success">已成功更改 FTP 埠號</string>
   <string name="ftp_port_change_error_invalid">所選取的埠號是無效數值</string>
   <string name="primary_two_title">主顏色 (右側頁籤)</string>
@@ -551,6 +551,15 @@
   <string name="ftp_path_hint">要分享根目錄的路徑</string>
   <string name="error_ftp_path_file">路徑不是目錄</string>
   <string name="change">變更</string>
+  <string name="unknown_error">哎呀，出錯了！</string>
   <string name="ftp_path_change_success">已成功變更 FTP 路徑</string>
   <string name="ftp_path_change_error_invalid">無效路徑</string>
+  <string name="ftp_status_no_connection">沒有連線</string>
+  <string name="ftp_status_secure_connection">安全連線</string>
+  <string name="ftp_status_title">狀態</string>
+  <string name="ftp_port">通訊埠</string>
+  <string name="ftp_login">登入</string>
+  <string name="field_empty">欄位不能為空</string>
+  <string name="ftp_timeout">空閒逾時</string>
+  <string name="ftp_seconds">秒</string>
 </resources>
