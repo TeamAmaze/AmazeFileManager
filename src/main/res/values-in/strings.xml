@@ -513,6 +513,17 @@ Fitur ini membuat file tersedia di jaringan lokal, sehingga PC dan perangkat sel
   <string name="ftp_path_hint">Path ke root direktori untuk berbagi</string>
   <string name="error_ftp_path_file">Jalur bukan sebuah direktori</string>
   <string name="change">Ganti</string>
+  <string name="unknown_error">Aduh, ada sesuatu yang tidak beres!</string>
   <string name="ftp_path_change_success">Path FTP berhasil diganti</string>
   <string name="ftp_path_change_error_invalid">Path tidak valid</string>
+  <string name="ftp_status_no_connection">Tidak ada koneksi</string>
+  <string name="ftp_status_secure_connection">Koneksi aman</string>
+  <string name="ftp_status_title">Status</string>
+  <string name="ftp_port">Port</string>
+  <string name="ftp_login">Masuk</string>
+  <string name="field_empty">Bidang tidak boleh kosong</string>
+  <string name="ftp_timeout">Batas waktu menganggur</string>
+  <string name="ftp_seconds">Detik</string>
+  <string name="intellihide_toolbar_title">Sembunyi Toolbar</string>
+  <string name="intellihide_toolbar_summary">Menyembunyikan toolbar secara otomatis saat bergulir</string>
 </resources>

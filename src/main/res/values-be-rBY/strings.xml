@@ -559,6 +559,14 @@
   <string name="ftp_path_hint">Шлях да каранёвага каталогу для агульнага доступу</string>
   <string name="error_ftp_path_file">Шлях не з\'яўляецца каталогам</string>
   <string name="change">Змяніць</string>
+  <string name="unknown_error">Штосьці пайшло не так!</string>
   <string name="ftp_path_change_success">FTP шлях паспяхова зменены</string>
   <string name="ftp_path_change_error_invalid">Няправільны шлях</string>
+  <string name="ftp_status_no_connection">Няма злучэння</string>
+  <string name="ftp_status_secure_connection">Бяспечнае злучэнне</string>
+  <string name="ftp_status_title">Стан</string>
+  <string name="ftp_port">Порт</string>
+  <string name="ftp_login">Увайсці</string>
+  <string name="field_empty">Поле не можа быць пустым</string>
+  <string name="ftp_seconds">Секунд</string>
 </resources>
