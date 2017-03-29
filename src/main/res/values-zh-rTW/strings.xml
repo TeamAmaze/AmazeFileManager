@@ -562,4 +562,6 @@
   <string name="field_empty">欄位不能為空</string>
   <string name="ftp_timeout">空閒逾時</string>
   <string name="ftp_seconds">秒</string>
+  <string name="intellihide_toolbar_title">自動隱藏工具列</string>
+  <string name="intellihide_toolbar_summary">滾動時自動隱藏工具列</string>
 </resources>
