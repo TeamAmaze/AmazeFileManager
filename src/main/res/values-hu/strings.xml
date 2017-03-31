@@ -76,6 +76,8 @@
   <string name="tab">Lap</string>
   <string name="file">Fájl</string>
   <string name="folder">Mappa</string>
+  <string name="title_files">Fájlok</string>
+  <string name="title_dirs">Könyvtárak</string>
   <string name="newfolder">Új mappa</string>
   <string name="entername">Adja meg a nevet</string>
   <string name="extracting">Kicsomagolás</string>

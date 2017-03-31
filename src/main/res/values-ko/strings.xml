@@ -75,6 +75,8 @@
   <string name="tab">탭</string>
   <string name="file">파일</string>
   <string name="folder">폴더</string>
+  <string name="title_files">파일</string>
+  <string name="title_dirs">폴더</string>
   <string name="newfolder">새 폴더</string>
   <string name="entername">이름을 입력해 주세요</string>
   <string name="extracting">압축을 해제하는 중입니다</string>

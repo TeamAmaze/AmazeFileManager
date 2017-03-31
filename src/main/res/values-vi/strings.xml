@@ -75,6 +75,8 @@
   <string name="tab">Thẻ</string>
   <string name="file">Tệp</string>
   <string name="folder">Thư mục</string>
+  <string name="title_files">Tập tin</string>
+  <string name="title_dirs">Thư mục</string>
   <string name="newfolder">Thư mục mới</string>
   <string name="entername">Nhập tên</string>
   <string name="extracting">Đang giải nén</string>
