@@ -362,7 +362,7 @@
     <string name="documents">Documents</string>
     <string name="images">Images</string>
     <string name="clear">Clear</string>
-    <string name="md5">md5: </string>
+    <string name="md5">md5</string>
     <string name="md5_2">Copy md5</string>
     <string name="total">Total: </string>
     <string name="calculating"> calculating </string>
@@ -591,5 +591,8 @@
     <string name="ftp_seconds">Seconds</string>
     <string name="intellihide_toolbar_title">Intellihide Toolbar</string>
     <string name="intellihide_toolbar_summary">Automatically hide toolbar while scrolling</string>
+    <string name="hash_sha256_copied">SHA-256 copied to clipboard</string>
+    <string name="hash_sha256">SHA-256</string>
+    <string name="hash_sha256_copy">Copy SHA-256</string>
 </resources>
 

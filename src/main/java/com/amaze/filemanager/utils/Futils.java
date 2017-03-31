@@ -744,7 +744,7 @@ public class Futils {
         }
         a.customView(v, true);
         a.positiveText(R.string.copy_path);
-        a.negativeText(c.getResources().getString( R.string.md5_2));
+        a.negativeText(c.getResources().getString( R.string.hash_sha256_copy));
         a.positiveColor(Color.parseColor(fabskin));
         a.negativeColor(Color.parseColor(fabskin));
         a.neutralText(R.string.cancel);

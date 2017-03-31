@@ -80,7 +80,8 @@
                 android:paddingLeft="3dp"
                 android:text="@string/calculating"/>
         </LinearLayout>
-        <LinearLayout android:layout_height="wrap_content"
+        <LinearLayout
+            android:layout_height="wrap_content"
             android:layout_width="wrap_content">
 
             <TextView
@@ -95,6 +96,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="3dp"
+                android:text="@string/calculating"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hash_sha256"
+                android:id="@+id/sha256"
+                android:fontFamily="sans-serif-medium" />
+
+            <TextView
+                android:id="@+id/t10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="6dp"
                 android:text="@string/calculating"/>
         </LinearLayout>
     </LinearLayout>

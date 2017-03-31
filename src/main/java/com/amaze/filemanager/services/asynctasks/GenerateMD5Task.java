@@ -10,29 +10,32 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.ui.CircleAnimation;
 import com.amaze.filemanager.ui.views.SizeDrawable;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.utils.GenericCopyUtil;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by Vishal on 05-02-2015.
  */
-public class GenerateMD5Task extends AsyncTask<String, String, String> {
+public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
 
     private MaterialDialog a;
     private String name, parent, size, items, date;
     private HFile f;
     Context c;
-    String md5 = "", sizeString;
+    String sizeString;
     View textView;
     SizeDrawable sizeDrawable;
     GenerateMD5Task g = this;
-    TextView t5, t6, t7, t8, t9;
-    TextView md5TextView;
+    TextView t5, t6, t7, t8, t9, t10;
+    TextView md5TextView, sha256TextView;
 
     public GenerateMD5Task(MaterialDialog a, HFile f, String name, String parent,
                            String size, String items, String date, final Context c, final View textView) {
@@ -55,12 +58,15 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
         t7 = (TextView) textView.findViewById(R.id.t7);
         t8 = (TextView) textView.findViewById(R.id.t8);
         t9 = (TextView) textView.findViewById(R.id.t9);
+        t10 = (TextView) textView.findViewById(R.id.t10);
         md5TextView = (TextView) textView.findViewById(R.id.md5);
+        sha256TextView = (TextView) textView.findViewById(R.id.sha256);
         if (!f.isDirectory()) {
             textView.findViewById(R.id.divider).setVisibility(View.GONE);
             textView.findViewById(R.id.dirprops).setVisibility(View.GONE);
         } else {
             md5TextView.setVisibility(View.GONE);
+            sha256TextView.setVisibility(View.GONE);
 
             new AsyncTask<Void, Void, long[]>() {
                 @Override
@@ -111,7 +117,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
     }
 
     @Override
-    protected String doInBackground(String... params) {
+    protected String[] doInBackground(String... params) {
         String param = params[0];
         if (f.isDirectory()) {
             int x = f.listFiles(false).size();
@@ -121,23 +127,33 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
         }
         publishProgress("");
         String md5 = "";
+        String sha256 = "";
         try {
-            if (!f.isDirectory()) md5 = getMD5Checksum(param);
+            if (!f.isDirectory()) {
+                md5 = getMD5Checksum(param);
+                sha256 = getSHA256Checksum();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return md5;
+        String[] hashes = new String[] {
+                md5,
+                sha256
+        };
+        return hashes;
     }
 
     @Override
-    protected void onPostExecute(String aVoid) {
+    protected void onPostExecute(final String[] aVoid) {
         super.onPostExecute(aVoid);
         if (a.isShowing()) {
-            md5 = aVoid;
-            if (!f.isDirectory())
-                t9.setText(aVoid);
-            else {
+
+            if (!f.isDirectory()) {
+                t9.setText(aVoid[0]);
+                t10.setText(aVoid[1]);
+            } else {
                 t9.setVisibility(View.GONE);
+                t10.setVisibility(View.GONE);
             }
             if (f.isDirectory())
                 a.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
@@ -147,8 +163,8 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
                     @Override
                     public void onClick(View v) {
                         try {
-                            Futils.copyToClipboard(c, md5);
-                            Toast.makeText(c, c.getResources().getString(R.string.md5copied), Toast.LENGTH_SHORT).show();
+                            Futils.copyToClipboard(c, aVoid[1]);
+                            Toast.makeText(c, c.getResources().getString(R.string.hash_sha256_copied), Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -161,7 +177,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
         // see this How-to for a faster way to convert
         // a byte array to a HEX string
 
-    public  String getMD5Checksum(String filename) throws Exception {
+    public String getMD5Checksum(String filename) throws Exception {
         byte[] b = createChecksum();
         String result = "";
 
@@ -169,6 +185,30 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
             result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
         }
         return result;
+    }
+
+    private String getSHA256Checksum() throws NoSuchAlgorithmException, IOException {
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+        byte[] input = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
+        int length;
+        InputStream inputStream = f.getInputStream();
+        while ((length = inputStream.read(input)) != -1) {
+            if (length > 0)
+                messageDigest.update(input, 0, length);
+        }
+
+        byte[] hash = messageDigest.digest();
+
+        StringBuffer hexString = new StringBuffer();
+
+        for (int i=0; i<hash.length; i++) {
+            // convert hash to base 16
+            String hex = Integer.toHexString(0xff & hash[i]);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        inputStream.close();
+        return hexString.toString();
     }
 
     public  byte[] createChecksum() throws Exception {
