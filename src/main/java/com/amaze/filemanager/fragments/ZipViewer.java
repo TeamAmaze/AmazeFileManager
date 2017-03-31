@@ -422,7 +422,10 @@ public class ZipViewer extends Fragment {
         // needed to remove any extracted file from cache, when onResume was not called
         // in case of opening any unknown file inside the zip
 
-        new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute((files));
+        if (files.get(0).exists()) {
+
+            new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute((files));
+        }
     }
 
     @Override

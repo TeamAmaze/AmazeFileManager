@@ -592,7 +592,7 @@ public class ExtractService extends Service {
             }
 
             if(entries!=null && entries.size()!=0) {
-                if (f.getName().toLowerCase().endsWith(".zip"))
+                if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".apk"))
                     extract(f, path, entries);
                 else if (f.getName().toLowerCase().endsWith(".rar"))
                     extractRar(f, path, entries);
