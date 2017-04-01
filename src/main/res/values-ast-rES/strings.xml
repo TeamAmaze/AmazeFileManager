@@ -496,4 +496,6 @@ to ordenador.</li><li/><br/>\\n
   <string name="smb_launch_error">Precisarás copiar esti ficheru al almacenamientu pa abrilu</string>
   <string name="tap_and_hold_tips">Calca y ten primío nun ficheru o carpeta pa más opciones</string>
   <string name="clipboard_path_copy">El camín copióse al cartafueyu</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">Sirvidor FTP</string>
 </resources>

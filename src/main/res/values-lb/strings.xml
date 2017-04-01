@@ -45,4 +45,5 @@
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="permission_other">Aner</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
 </resources>

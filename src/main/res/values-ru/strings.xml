@@ -553,4 +553,6 @@
   <string name="change">Изменить</string>
   <string name="ftp_path_change_success">FTP путь успешно изменен</string>
   <string name="ftp_path_change_error_invalid">Неверный путь</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">FTP сервер</string>
 </resources>

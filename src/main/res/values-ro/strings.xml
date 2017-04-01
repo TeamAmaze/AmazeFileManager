@@ -374,4 +374,5 @@
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="tap_and_hold_tips">Apăsați și țineți apăsat pe un fișier sau un dosar pentru mai multe opțiuni</string>
   <string name="clipboard_path_copy">Cale copiată în clipboard</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
 </resources>

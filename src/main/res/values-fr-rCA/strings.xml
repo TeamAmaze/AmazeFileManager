@@ -549,4 +549,6 @@
   <string name="field_empty">Le champ ne peut pas être vide</string>
   <string name="ftp_timeout">Délai d\'inactivité</string>
   <string name="ftp_seconds">Secondes</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">Serveur FTP</string>
 </resources>

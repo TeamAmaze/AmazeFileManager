@@ -526,4 +526,6 @@ Fitur ini membuat file tersedia di jaringan lokal, sehingga PC dan perangkat sel
   <string name="ftp_seconds">Detik</string>
   <string name="intellihide_toolbar_title">Sembunyi Toolbar</string>
   <string name="intellihide_toolbar_summary">Menyembunyikan toolbar secara otomatis saat bergulir</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">Server FTP</string>
 </resources>

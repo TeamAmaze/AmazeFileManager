@@ -409,4 +409,6 @@
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="tap_and_hold_tips">روی فایل یا پوشه انگشت خود را نگه دارید تا اطلاعات بیشتری را ببینید</string>
   <string name="clipboard_path_copy">مسیر به کلیپبورد کپی شد</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">FTP سرور </string>
 </resources>

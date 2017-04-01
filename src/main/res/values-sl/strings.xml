@@ -92,4 +92,5 @@
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="permission_read">Preberi</string>
   <string name="permission_other">Drugo</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
 </resources>

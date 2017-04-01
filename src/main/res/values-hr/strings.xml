@@ -60,4 +60,5 @@
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <!-- references 'name/size/location/hash' copied to clipboard -->
 </resources>

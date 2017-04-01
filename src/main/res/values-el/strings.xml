@@ -370,4 +370,6 @@
   <string name="permission_read">Ανάγνωση</string>
   <string name="permission_other">Άλλο</string>
   <string name="clipboard_path_copy">Η διαδρομή αντιγράφτηκε</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">Διακομιστής FTP</string>
 </resources>

@@ -85,4 +85,5 @@
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="permission_read">קרא</string>
   <string name="permission_other">אחר</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
 </resources>

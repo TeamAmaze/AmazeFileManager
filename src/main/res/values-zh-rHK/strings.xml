@@ -527,4 +527,8 @@
   <string name="ftp_seconds">秒</string>
   <string name="intellihide_toolbar_title">自動隱藏工具列</string>
   <string name="intellihide_toolbar_summary">滾動時自動隱藏工具列</string>
+  <string name="hash_sha256">SHA-256</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">複製到剪貼簿</string>
+  <string name="contributors_6_summary">FTP 伺服器</string>
 </resources>

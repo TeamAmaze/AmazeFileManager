@@ -490,4 +490,6 @@
   <string name="permission_other">Khác</string>
   <string name="clipboard_path_copy">Đường dẫn đã được sao chép đến clipboard</string>
   <string name="error_busybox">Không phát hiện Busybox. Đang đóng dòng lệnh tương tác.</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">Máy chủ FTP</string>
 </resources>

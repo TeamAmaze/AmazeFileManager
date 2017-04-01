@@ -350,4 +350,6 @@
   <string name="permission_other">Ostatní</string>
   <string name="service_timer">Uplynulý čas</string>
   <string name="please_wait">Čekejte prosím</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">Server FTP</string>
 </resources>

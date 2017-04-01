@@ -569,4 +569,6 @@
   <string name="ftp_login">Увайсці</string>
   <string name="field_empty">Поле не можа быць пустым</string>
   <string name="ftp_seconds">Секунд</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">FTP сервер</string>
 </resources>
