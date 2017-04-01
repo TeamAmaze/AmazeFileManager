@@ -516,4 +516,6 @@ rund um die Entwicklung</string>
   <string name="change">Ändern</string>
   <string name="ftp_path_change_success">FTP-Pfad wurden erfolgreich geändert</string>
   <string name="ftp_path_change_error_invalid">Ungültiger Pfad</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">FTP Server</string>
 </resources>

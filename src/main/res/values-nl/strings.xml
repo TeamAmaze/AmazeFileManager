@@ -468,4 +468,6 @@ Anders wordt er naar een voorval gezocht.</string>
   <string name="error_busybox">Busybox niet gevonden. Interactieve shell wordt gesloten.</string>
   <string name="service_timer">Verstreken tijd</string>
   <string name="please_wait">Een ogenblik geduld</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">FTP–Server</string>
 </resources>

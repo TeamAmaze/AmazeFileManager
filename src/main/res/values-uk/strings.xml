@@ -563,4 +563,6 @@
   <string name="change">Змінити</string>
   <string name="ftp_path_change_success">Порт FTP змінено успішно</string>
   <string name="ftp_path_change_error_invalid">Недійсний шлях</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">FTP Сервер</string>
 </resources>

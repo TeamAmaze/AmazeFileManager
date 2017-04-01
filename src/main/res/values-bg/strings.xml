@@ -90,4 +90,5 @@
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="permission_read">Прочети</string>
   <string name="permission_other">Други</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
 </resources>

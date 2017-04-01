@@ -562,4 +562,6 @@ Abra o prompt de comando. Digite \'ipconfig\' e pressione Enter. Procure Gateway
   <string name="field_empty">O campo não pode ficar vazio</string>
   <string name="ftp_timeout">Tempo limite de ociosidade</string>
   <string name="ftp_seconds">Segundos</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">Servidor FTP</string>
 </resources>

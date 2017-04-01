@@ -547,4 +547,6 @@ smb_instructions
   <string name="clipboard_path_copy">Skopiowano ścieżkę</string>
   <string name="error_busybox">Nie znaleziono BusyBox. Zamykanie warstwy interaktywnej.</string>
   <string name="service_timer">Czas trwania</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">Serwer FTP</string>
 </resources>

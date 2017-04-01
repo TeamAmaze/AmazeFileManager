@@ -562,4 +562,6 @@ tartışmalarının parçası olun</string>
   <string name="change">Değiştir</string>
   <string name="ftp_path_change_success">FTP bağlantı noktası başarıyla değiştirildi</string>
   <string name="ftp_path_change_error_invalid">Yol geçersiz</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">FTP Sunucu</string>
 </resources>

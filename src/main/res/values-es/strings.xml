@@ -500,4 +500,6 @@
   <string name="error_busybox">BusyBox no encontrado. Cerrando el shell interactivo.</string>
   <string name="service_timer">Tiempo transcurrido</string>
   <string name="please_wait">Por favor, espere</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">Servidor FTP</string>
 </resources>

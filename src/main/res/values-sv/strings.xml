@@ -405,4 +405,6 @@
   <string name="error_busybox">Busybox hittades inte. Stänger interaktivt shell.</string>
   <string name="service_timer">Förfluten tid</string>
   <string name="please_wait">Vänta</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">FTP-server</string>
 </resources>
