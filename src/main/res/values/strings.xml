@@ -595,10 +595,10 @@
     <!-- references 'name/size/location/hash' copied to clipboard -->
     <string name="properties_copied_clipboard">copied to clipboard</string>
     <string name="contributors_1_summary">Translation</string>
-    <string name="contributors_2_summary">Cool icon and banners</string>
+    <string name="contributors_2_summary">Icon and banners</string>
     <string name="contributors_3_summary">Theme Engine</string>
-    <string name="contributors_4_summary">Cool shade behind FAB</string>
-    <string name="contributors_5_summary">Cool color transition when swiping tabs</string>
+    <string name="contributors_4_summary">Shade behind FAB</string>
+    <string name="contributors_5_summary">Color transition when swiping tabs</string>
     <string name="contributors_6_summary">FTP Server</string>
     <string name="contributors_7_summary">Firing up an interactive shell</string>
 </resources>
