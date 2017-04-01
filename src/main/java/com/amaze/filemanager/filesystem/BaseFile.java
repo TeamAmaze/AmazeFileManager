@@ -91,6 +91,7 @@ public class BaseFile extends HFile implements Parcelable {
     public void setPermisson(String permisson) {
         this.permisson = permisson;
     }
+
     protected BaseFile(Parcel in) {
         super(OpenMode.getOpenMode(in.readInt()),in.readString());
         permisson = in.readString();

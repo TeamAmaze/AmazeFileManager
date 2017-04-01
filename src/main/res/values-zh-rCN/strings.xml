@@ -76,6 +76,8 @@
   <string name="tab">标签</string>
   <string name="file">文件</string>
   <string name="folder">文件夹</string>
+  <string name="title_files">文件</string>
+  <string name="title_dirs">目录</string>
   <string name="newfolder">新文件夹</string>
   <string name="entername">请输入名称</string>
   <string name="extracting">正在解压</string>
@@ -514,4 +516,29 @@
   <string name="error_busybox">无法找到 Busybox 。请关闭交互式 shell。</string>
   <string name="service_timer">用时</string>
   <string name="please_wait">请稍候</string>
+  <string name="no_applications">没有应用程序</string>
+  <string name="ftp_path">共享路径</string>
+  <string name="ftp_path_hint">共享目录的根路径</string>
+  <string name="error_ftp_path_file">路径不是目录</string>
+  <string name="change">更改</string>
+  <string name="unknown_error">出现了一些问题</string>
+  <string name="ftp_path_change_success">FTP 路径更改成功</string>
+  <string name="ftp_path_change_error_invalid">路径无效</string>
+  <string name="ftp_status_no_connection">无连接</string>
+  <string name="ftp_status_secure_connection">安全连接</string>
+  <string name="ftp_status_title">状态</string>
+  <string name="ftp_port">端口</string>
+  <string name="ftp_login">登录</string>
+  <string name="field_empty">字段不能为空</string>
+  <string name="ftp_timeout">空闲超时</string>
+  <string name="ftp_seconds">秒</string>
+  <string name="intellihide_toolbar_title">自动隐藏工具栏</string>
+  <string name="intellihide_toolbar_summary">页面滚动时自动隐藏工具栏</string>
+  <string name="hash_sha256">SHA-256</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">已复制到剪切板</string>
+  <string name="contributors_1_summary">翻译</string>
+  <string name="contributors_2_summary">图标和横幅</string>
+  <string name="contributors_3_summary">主题引擎</string>
+  <string name="contributors_6_summary">FTP 服务器</string>
 </resources>

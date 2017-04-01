@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="app_name">Amaze</string>
   <string name="drawer_open">Ouvrir le panneau de navigation</string>
   <string name="drawer_close">Fermer le panneau de navigation</string>
   <string name="books">Favoris</string>
@@ -35,18 +36,18 @@
   <string name="open">Ouvrir</string>
   <string name="backup">Sauvegarder</string>
   <string name="uninstall">Désinstaller</string>
-  <string name="play">Google Play</string>
+  <string name="play">Play store</string>
   <string name="properties">Propriétés</string>
   <string name="copyingapk">Copier l\'APK vers</string>
   <string name="addbook">Ajouter un favori</string>
   <string name="delbook">Supprimer le favori</string>
   <string name="addtobook">Ajouter aux favoris</string>
-  <string name="enterpath">Entrer le chemin</string>
+  <string name="enterpath">Entrer le chemin d\'accès</string>
   <string name="cancel">ANNULER</string>
-  <string name="create">CREER</string>
-  <string name="success">Succès</string>
+  <string name="create">CRÉER</string>
+  <string name="success">Opération réussie</string>
   <string name="filenotexists">Le fichier n\'existe pas</string>
-  <string name="loading">Chargement&#8230;</string>
+  <string name="loading">Chargement en cours&#8230;</string>
   <string name="file_empty">Le fichier est vide</string>
   <string name="error">Erreur</string>
   <string name="cantlistfiles">Impossible de lister les fichiers sans le mode root</string>
@@ -60,13 +61,13 @@
   <string name="bookmarksadded">Favoris ajoutés</string>
   <string name="fileexist">Un fichier avec le même nom existe déjà </string>
   <string name="filecreated">Fichier créé</string>
-  <string name="searchpath">Chemin de recherche</string>
+  <string name="searchpath">Chercher le chemin d\'accès</string>
   <string name="enterfile">Entrer le nom du fichier</string>
   <string name="name">Nom: </string>
   <string name="date">Date: </string>
   <string name="location">Stocké dans: </string>
   <string name="size">Taille: </string>
-  <string name="totalitems">Total éléments: </string>
+  <string name="totalitems">Total des éléments:</string>
   <string name="enterzipname">Entrer le nom du ZIP</string>
   <string name="noappfound">Aucune application n\'a été trouvée pour ouvrir ce fichier</string>
   <string name="copying">Copie en cours</string>
@@ -75,21 +76,23 @@
   <string name="tab">Onglet</string>
   <string name="file">Fichier</string>
   <string name="folder">Dossier</string>
+  <string name="title_files">Fichiers</string>
+  <string name="title_dirs">Répertoires</string>
   <string name="newfolder">Nouveau dossier</string>
   <string name="entername">Entrer le nom</string>
   <string name="extracting">Extraction</string>
-  <string name="stopping">En cours d\'arrêt</string>
+  <string name="stopping">Arrêt en cours...</string>
   <string name="guide1">Bienvenue sur Amaze File Manager</string>
-  <string name="guide2">Toucher le bandeau bleu pour afficher ou masquer la barre de répertoires</string>
-  <string name="guide3">Appuyer et maintenir n\'importe quel fichier pour plus d\'options...</string>
-  <string name="guide4">Comme copier, déplacer, propriétés, etc</string>
-  <string name="guide5">Utiliser le bouton Retour de votre appareil pour sortir de l\'application à n\'importe quel moment&#8230;</string>
+  <string name="guide2">Toucher la barre bleue pour afficher ou masquer la barre d\'adresse</string>
+  <string name="guide3">Appuyer et maintenir le doigt sur n\'importe quel fichier pour plus d\'options</string>
+  <string name="guide4">Tels que copier, déplacer, afficher les propriétés, etc</string>
+  <string name="guide5">Utiliser le bouton Retour de votre appareil pour quitter l\'application à tout moment&#8230;</string>
   <string name="guide6">..Et utiliser la flèche de gauche pour naviguer dans le gestionnaire de fichiers</string>
   <string name="maintab">L\'onglet principal ne peut pas être supprimé</string>
   <string name="openparent">Ouvrir le répertoire Parent</string>
   <string name="openwith">Ouvrir avec</string>
   <string name="share">Partager</string>
-  <string name="about">A propos</string>
+  <string name="about">À Propos</string>
   <string name="extract">Extraire</string>
   <string name="compress">Compresser</string>
   <string name="yes">Oui</string>
@@ -98,16 +101,16 @@
   <string name="deleting">Suppression</string>
   <string name="questiondelete">Voulez-vous vraiment supprimer les fichiers suivants ?</string>
   <string name="questionset">Voulez-vous définir l\'emplacement actuel comme page d\'accueil pour cet onglet ?</string>
-  <string name="viewmode">Mode Affichage</string>
-  <string name="uimode">Mode de l\'interface utilisateur</string>
-  <string name="directorysort">Mode de tri des répertoires</string>
-  <string name="sortby">Trier par</string>
-  <string name="theme">Thèmes</string>
-  <string name="skin">Habillage</string>
-  <string name="random">Habillage aléatoire</string>
-  <string name="random_summary">Définir un habillage aléatoire au démarrage</string>
+  <string name="viewmode">Mode d\'affichage</string>
+  <string name="uimode">Mode d\'interface utilisateur</string>
+  <string name="directorysort">Option de tri des répertoires</string>
+  <string name="sortby">Trier par:</string>
+  <string name="theme">Thème</string>
+  <string name="skin">Apparence</string>
+  <string name="random">Apparence aléatoire</string>
+  <string name="random_summary">Définir une couleur d\'apparence aléatoire au démarrage</string>
   <string name="colorize">Colorer les icônes</string>
-  <string name="colorize_summary">Définir des couleurs pour les icônes différentes du thème</string>
+  <string name="colorize_summary">Définir une couleur d\'icône fixe. Ne remplace pas la préférence de couleur des icônes de répertoire.</string>
   <string name="back">Retour</string>
   <string name="home">Accueil</string>
   <string name="paste">Coller</string>
@@ -115,25 +118,25 @@
   <string name="history">Historique</string>
   <string name="refresh">Actualiser</string>
   <string name="copy">Copier</string>
-  <string name="rootmode">Gestionnaire Root</string>
+  <string name="rootmode">Mode Root</string>
   <string name="rootmodesummary">Pour appareil rooté uniquement. Cochez seulement si vous êtes sûr de vous.</string>
-  <string name="mountsystemsummary">Activez ceci si vous souhaitez modifier des Fichiers système</string>
+  <string name="mountsystemsummary">Activer ceci si vous souhaitez modifier des Fichiers système</string>
   <string name="mountsystem">Monter les dossiers système pour accès en écriture</string>
   <string name="rootfailure">Accès root refusé</string>
   <string name="selectall">Tout sélectionner</string>
   <string name="delete">Supprimer</string>
-  <string name="setashome"> Définit comme Dossier d\'accueil</string>
+  <string name="setashome">Définir comme répertoire d\'accueil</string>
   <string name="sethome">Définir le répertoire d\'Accueil</string>
   <string name="foldercolor">Couleur du dossier</string>
-  <string name="imagegallery">Image galerie</string>
-  <string name="fileexplorer">Gestionnaire de fichiers</string>
-  <string name="changegallerypath">Modifier le répertoire galerie</string>
-  <string name="usedefaultgallerypath">Utiliser le répertoire par défaut de l\'image galerie</string>
+  <string name="imagegallery">Galerie d\'images</string>
+  <string name="fileexplorer">Explorateur de Fichiers</string>
+  <string name="changegallerypath">Modifier le chemin d\'accès de la galerie</string>
+  <string name="usedefaultgallerypath">Utiliser le répertoire par défaut de la Galerie d\'image</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
   <string name="simple">Interface utilisateur simple</string>
-  <string name="card">Interface utilisateur carte</string>
+  <string name="card">Carte d\'interface utilisateur</string>
   <!-- Theme -->
   <string name="light">Clair</string>
   <string name="dark">Sombre</string>
@@ -147,7 +150,7 @@
   <string name="blue">bleu</string>
   <string name="light_blue">Bleu clair</string>
   <string name="cyan">Cyan</string>
-  <string name="teal">Turquoise</string>
+  <string name="teal">Bleu sarcelle</string>
   <string name="green">Vert</string>
   <string name="light_green">Vert clair</string>
   <string name="amber">Ambre</string>
@@ -173,9 +176,9 @@
   <string name="simpleView">Affichage simplifié</string>
   <!--Folder-->
   <string name="Yellow">Jaune</string>
-  <string name="pick_a_file">Prendre un fichier</string>
-  <string name="process_viewer">Observateur de processus</string>
-  <string name="in_safe">Stockage insuffisant</string>
+  <string name="pick_a_file">Choisir un fichier</string>
+  <string name="process_viewer">Visionneuse de processus</string>
+  <string name="in_safe">Espace insuffisant</string>
   <string name="no_file_overwrite">Aucun fichier écrasé</string>
   <string name="skip">Ignorer</string>
   <string name="overwrite">Écraser</string>
@@ -188,75 +191,75 @@
   <string name="Extracting_fles">Extraction des fichiers</string>
   <string name="items">Éléments</string>
   <string name="item">Élément</string>
-  <string name="set">Défini</string>
+  <string name="set">Définir</string>
   <string name="enablerootmde">Activer le Mode ROOT</string>
   <string name="goback">Retour</string>
   <string name="foldercreated">Dossier créé</string>
   <string name="newfile">Nouveau fichier</string>
   <string name="nofiles">Aucun fichier</string>
   <string name="tapnhold">Appuyer et maintenir sur un fichier ou dossier pour plus d\'options</string>
-  <string name="pathcopied">Répertorie copié dans le presse-papier</string>
+  <string name="pathcopied">Chemin d’accès copié dans le presse-papiers</string>
   <string name="used">Utilisé :  </string>
   <string name="free">Libre :  </string>
   <string name="atroot">Vous êtes à la racine</string>
-  <string name="listview">Vue Liste</string>
-  <string name="gridview">Vue Grille</string>
-  <string name="setlistview">Paramètre Vue Liste</string>
-  <string name="setgridview">Paramètres Vue Grille</string>
+  <string name="listview">Affichage par Liste</string>
+  <string name="gridview">Affichage par Grille</string>
+  <string name="setlistview">Paramètre de l\'affichage par Liste</string>
+  <string name="setgridview">Paramètre de l\'affichage par Grille</string>
   <string name="permission">Permissions</string>
   <string name="hide">Masquer</string>
   <string name="exit">Sortir</string>
-  <string name="enternewname">Entrer un nouveau NomA</string>
-  <string name="doforall">Valable pour tous les éléments</string>
-  <string name="gridcolumnno">Nombre de colonnes dans la Vue Grille</string>
+  <string name="enternewname">Entrer un nouveau Nom</string>
+  <string name="doforall">Appliquer à tous les éléments</string>
+  <string name="gridcolumnno">Nombre de colonnes dans l\'affichage par Grille</string>
   <string name="randomDialog">Aléatoire</string>
   <string name="setRandom">Les modifications seront effectives après redémarrage de l\'application</string>
   <string name="authors">Auteurs</string>
   <string name="changelog">Changlog</string>
   <string name="fullChangelog">Changlog complets</string>
   <string name="ok">OK</string>
-  <string name="chooseUI">Choisissez l\'interface utilisateur de l\'élément</string>
+  <string name="chooseUI">Choisir l\'interface utilisateur de l\'élément</string>
   <string name="ui">Interface</string>
   <string name="general">Général</string>
-  <string name="thumbSummary">Afficher des vignettes pour les applications et images</string>
-  <string name="thumb">Afficher Vignettes</string>
+  <string name="thumbSummary">Affiche les miniatures des applications et des images</string>
+  <string name="thumb">Afficher les miniatures</string>
   <string name="hidden">Afficher les fichiers et dossiers cachés</string>
-  <string name="lastModifiedSummary">Afficher la date et l\'heure de la dernière modification du fichier</string>
-  <string name="lastModifiedPref">Afficher Dernière Modification</string>
-  <string name="sizePrefSummary">Afficher la taille des fichiers et le nombre d\'éléments dans les dossiers</string>
-  <string name="sizePref">Afficher les tailles</string>
+  <string name="lastModifiedSummary">Affiche la date et l\'heure de la dernière modification du fichier</string>
+  <string name="lastModifiedPref">Afficher la dernière Modification</string>
+  <string name="sizePrefSummary">Affiche la taille des fichiers et le nombre d\'éléments dans les dossiers</string>
+  <string name="sizePref">Montrer la taille des fichiers</string>
   <string name="miscellaneous">Divers</string>
-  <string name="rootPrefSummary">Afficher les permissions des fichiers et dossiers</string>
+  <string name="rootPrefSummary">Afficher les permissions des fichiers et des dossiers</string>
   <string name="rootPref">Afficher les Permissions</string>
   <string name="aboutFileManager">A propos d\'Amaze File Manager</string>
   <string name="version">Version</string>
   <string name="rate">Noter l\'application</string>
   <string name="license">Licences Open Source</string>
   <string name="feedback">Envoyer votre avis</string>
-  <string name="hiddenfiles">Masquer des fichiers</string>
+  <string name="hiddenfiles">Fichiers cachés</string>
   <string name="type">Type</string>
   <string name="typeDesc">Type (Desc)</string>
-  <string name="rootdirectory">Racine</string>
+  <string name="rootdirectory">Root</string>
   <string name="new_string">Nouveau</string>
   <string name="setringtone">Définir comme sonnerie</string>
   <string name="copy_path">Copier emplacement</string>
   <string name="addshortcut">Ajouter un raccourci </string>
   <string name="unsavedchanges">Modifications annulées</string>
-  <string name="unsavedchangesdesc">Vous avez annulé les changements, voulez-vous les sauvegarder avant de quitter ?</string>
+  <string name="unsavedchangesdesc">Vous avez des modifications en attente de sauvegarde, voulez-vous enregistrer avant de quitter ?</string>
   <string name="saving">Sauvegarde</string>
   <string name="packageinstaller">Programme d\'installation</string>
-  <string name="view">Affichage</string>
+  <string name="view">Voir</string>
   <string name="install">Installer</string>
-  <string name="archive">Archiver</string>
-  <string name="archtext">Ceci est une archive. Quelle action souhaitez-vous faire ?</string>
-  <string name="pitext">Ceci est un programme d\'installation. Quelle action souhaitez-vous faire ?</string>
+  <string name="archive">Archive</string>
+  <string name="archtext">Quelle action souhaitez-vous faire ?</string>
+  <string name="pitext">Quelle action souhaitez-vous faire ?</string>
   <string name="xda_title">Forum XDA</string>
   <string name="xda_summary">Questions/Réponses, Support</string>
   <string name="invalid_dir">Emplacement invalide</string>
-  <string name="circularimages">Utiliser des icônes circulaires pour les images et vidéos</string>
+  <string name="circularimages">Utilise des icônes circulaires pour les images et vidéos</string>
   <string name="circularicons">Utiliser des icônes circulaires</string>
-  <string name="back_title">Navigation par l\'icône retour</string>
-  <string name="back_summary">Activer l\'icône de navigation retour en haut de la liste</string>
+  <string name="back_title">Ajouter un raccourci de Retour pour naviguer dans l\'application</string>
+  <string name="back_summary">Active et affiche le raccourci Retour en haut de la liste</string>
   <string name="details">Détails</string>
   <string name="translators">Traducteurs</string>
   <string name="german_translation_title">Allemand</string>
@@ -275,7 +278,7 @@
   <string name="greek_translation_title">Grec</string>
   <string name="dutch_translation_title">Néerlandais</string>
   <string name="romanian_translation_title">Roumain</string>
-  <string name="vietnamese_translation_title">vietnamien</string>
+  <string name="vietnamese_translation_title">Vietnamien</string>
   <string name="japanese_translation_title">Japonnais</string>
   <string name="brazilian_portuguese_translation_title">Portugais brésilien</string>
   <string name="tamil_translation_title">Tamoul</string>
@@ -295,8 +298,8 @@
   <string name="other">Autre</string>
   <string name="image">Image</string>
   <string name="contributors">Contributeurs</string>
-  <string name="savepaths">Se souvenir des chemins</string>
-  <string name="savepathsummary">Au démarrage, le dernier dossier visité sera affiché sur chaque onglet</string>
+  <string name="savepaths">Se souvenir des chemins d\'accès</string>
+  <string name="savepathsummary">Au démarrage, le dernier dossier consulter sera affiché pour chaque onglet</string>
   <string name="select_intent">Sélectionner</string>
   <string name="md5copied">Le MD5 est copié dans le presse-papiers</string>
   <string name="generating">Génération..</string>
@@ -308,13 +311,12 @@
   <string name="sd_card_grant_first">sd_card_grant_first</string>
   <string name="fab_skin">Aspect FAB</string>
   <string name="gplus_pic_title">S\'enregistrer avec G+</string>
-  <string name="gplus_pic_summary">Afficher l\'image de couverture dans le navigateur</string>
+  <string name="gplus_pic_summary">Afficher la photo de couverture de G+ dans le menu latéral</string>
   <string name="icon_credits">Graphiques par &lt;a href=\"http://cookicons.co/\"&gt;CookIcons&lt;/a&gt;</string>
   <string name="color_title">Couleur</string>
   <string name="color_summary">Définir une couleur aux divers éléments de l\'UI</string>
   <string name="primary_color_title">Couleur Primaire</string>
-  <string name="primary_color_summary">Définir une couleur aux grands ensembles de l\'UI
-        pour l\'onglet de gauche</string>
+  <string name="primary_color_summary">Définir la couleur de l\'interface utilisateur pour l\'onglet de gauche</string>
   <string name="accent_color_title">Couleur accentuée</string>
   <string name="accent_color_summary">Définir la couleur du FAB et d\'autres petits éléments de l\'UI</string>
   <string name="icon_color_title">Couleur d\'icône</string>
@@ -322,12 +324,12 @@
   <string name="hide_mode_title">Mode masqué</string>
   <string name="none">Aucun</string>
   <string name="hide_toolbar">Masquer la barre d\'outils</string>
-  <string name="hide_appbar">Masquer l\'ensemble de la barre d\'accès</string>
+  <string name="hide_appbar">Masquer l\'intégralité de la barre d\'application</string>
   <string name="choose_color">Choisir la couleur</string>
   <string name="g_plus_community_title">Rejoignez la communauté G+</string>
-  <string name="hide_mode_nothing">La barre d\'accès reste intacte</string>
+  <string name="hide_mode_nothing">La barre d\'application reste intacte</string>
   <string name="hide_mode_toolbar">La barre d\'outils se masque au défilement</string>
-  <string name="hide_mode_app_bar">La barre d\'accès se masque au défilement</string>
+  <string name="hide_mode_app_bar">La barre d\'application se masque au défilement</string>
   <string name="no_cover_photo">Pas de couverture photo</string>
   <string name="files">Fichiers</string>
   <string name="directories">Répertoires</string>
@@ -338,7 +340,7 @@
   <string name="topFabS">Que le bouton + soit en haut ou en bas. Seulement applicable si la barre d\'accès n\'est pas masquée.</string>
   <string name="needsaccess">Accès en écriture requis</string>
   <string name="needsaccesssummary">Veuillez choisir l\'emplacement racine de \t</string>
-  <string name="needsaccesssummary1">\tto accorde l\'accès racine pour effectuer l\'opération </string>
+  <string name="needsaccesssummary1">\taccorder l\'accès en écriture pour effectuer l\'opération </string>
   <string name="smb_con">Connexion SMB</string>
   <string name="smb_server">Adresse IP Serveur</string>
   <string name="username">Nom utilisateur</string>
@@ -355,7 +357,7 @@
   <string name="md5">md5 : </string>
   <string name="md5_2">Copier md5</string>
   <string name="total">Total : </string>
-  <string name="calculating"> calcul en-cours </string>
+  <string name="calculating"> calcul en cours </string>
   <string name="sort">Trier</string>
   <string name="ascending">Croissant</string>
   <string name="descending">Décroissant</string>
@@ -384,18 +386,18 @@
   <string name="cut">Couper</string>
   <string name="search">Rechercher</string>
   <string name="invalid_name">Nom incorrect</string>
-  <string name="search_hint">Entrez le texte à rechercher&#8230;</string>
+  <string name="search_hint">Entrer le texte à rechercher&#8230;</string>
   <string name="advanced_search">Recherche Avancée</string>
-  <string name="regular_expression">Expression rationelle</string>
-  <string name="regular_expression_summary">Rechercher en utilisant une expression rationelle de style BASH</string>
+  <string name="regular_expression">Expression régulière</string>
+  <string name="regular_expression_summary">Rechercher en utilisant une expression régulière de style BASH</string>
   <string name="match_content">Rechercher le contenu</string>
-  <string name="match_content_summary">Si défini, l\'expression rationelle sera comparée avec le nom
+  <string name="match_content_summary">Si défini, l\'expression régulière sera comparée avec le nom
         de fichier complet, autrement, une instance sera recherchée.</string>
   <string name="start_ftp">Démarrer</string>
   <string name="stop_ftp">Arrêter</string>
   <string name="ftp_status_running">Démarré</string>
   <string name="ftp_status_not_running">Arrêté</string>
-  <string name="ftp_no_wifi">Vérifiez que vous êtes connecté au Wi-Fi</string>
+  <string name="ftp_no_wifi">Vérifier que vous êtes connecté au Wi-Fi</string>
   <string name="domain">Domaine</string>
   <string name="invalid">Invalide %s</string>
   <string name="ftp_notif_starting">Le serveur FTP est en cours de démarrage</string>
@@ -419,7 +421,7 @@
   <string name="paypal_copy_message">Id Paypal copié dans le presse-papiers</string>
   <string name="searchingdevices">Recherche d\'appareils</string>
   <string name="use_custom_ip">Utiliser une adresse IP modifiée</string>
-  <string name="bookmark_lost">Favori non trouvé, recréation&#8230;</string>
+  <string name="bookmark_lost">Favori non trouvé, reconstitution en cours&#8230;</string>
   <string name="smb_instructions">
         <html>
         <body>
@@ -429,23 +431,23 @@
         <ol>\\n
         <li>\\n
         <b>Activation du partage de fichiers</b>\\n
-        <br/>Ouvrez le Panneau de Configuration, cliquez sur Choisir les options de groupe résidentiel et de partage sous Réseau et Internet,
-        et cliquez sur changer les options des partages avancées. Active l\'option de partage de fichiers et d\'imprimantes\\n
+        <br/>Ouvrer le Panneau de Configuration, cliquer sur Choisir les options de groupe résidentiel et de partage sous Réseau et Internet,
+        et cliquer sur changer les options des partages avancées. Active l\'option de partage de fichiers et d\'imprimantes\\n
         </li><br/><li/><b>Options de partages de fichiers avancées
-        </b><br/>You pouvez aussi régler d\'autres paramètres de partages à cet endroit.
+        </b><br/>Vous pouvez aussi régler d\'autres paramètres de partages à cet endroit.
         Par exemple, vous pouvez autoriser l\'accès à vos fichiers sans mot de passe si vous vous trouvez dans un réseau de confiance (réseau domestique).
-        Une fois que le partage de fichiers et d\'imprimantes est activé, vous pouvez ouvrir l\'Explorateur de fichiers, cliquer-droit sur un dossier à partager,
+        Une fois que le partage de fichiers et d\'imprimantes est activé, vous pouvez ouvrir l\'Explorateur de fichiers, clique-droit sur un dossier à partager,
         et sélectionner Propriétés.\\n
-        Cliquez sur l\'onglet Partage et rendez le dossier disponible sur votre réseau.\\n
-        <li><li/><br/><b>Assurez vous que les deux appareils soient connectés au même réseau Wifi</b><br/> \\n
+        Cliquer sur l\'onglet Partage et rendre le dossier accessible sur votre réseau.\\n
+        <li><li/><br/><b>Assurez-vous que les deux appareils soient connectés au même réseau Wifi</b><br/> \\n
         Cette fonction rend disponible vos fichiers sur un réseau local, donc votre PC et votre appareil mobile doit
         se trouver sur le même réseau local. Vous ne pouvez pas accéder à vos partages Windows à travers Internet où quand votre appareil mobile est connecté au réseau cellulaire - Il doit être connecté au Wifi.
         </li><li>\\n
         <br/><b>Trouver votre adresse IP</b>\\n
         <br/>Ouvrez une invite de commande. Tapez \'ipconfig\' et appuyez sur Entrer.
-        Regardez la valeur de Passerelle par défaut pour connaitre l\'IP de votre routeur. Regardez \"Adresse IPv4 \" pour connaitre l\'adresse IP de votre ordinateur.
+        Regarder la valeur de Passerelle par défaut pour connaitre l\'IP de votre routeur. Regardez \"Adresse IPv4 \" pour connaitre l\'adresse IP de votre ordinateur.
         </li><li/><br/>\\n
-        <b>Entrez les détails dans le fenêtre de configuration de smb</b>\\n
+        <b>Entrer les détails dans le fenêtre de configuration de smb</b>\\n
         <br/>\\n
         </ol>\\n
         </body>\\n
@@ -509,7 +511,7 @@
   <string name="copy_complete">Copie terminée</string>
   <string name="move_complete">Transfert terminé</string>
   <string name="waiting_title">En attente</string>
-  <string name="waiting_content">Attendez jusqu\'à ce que l\'opération soit terminée</string>
+  <string name="waiting_content">Patienter jusqu\'à ce que l\'opération soit terminée</string>
   <string name="extract_complete">Extraction terminée</string>
   <string name="compression_complete">Compression terminée</string>
   <string name="compressing">Compression en cours</string>
@@ -533,8 +535,19 @@
   <string name="permission_owner">Propriétaire</string>
   <string name="permission_group">Groupe</string>
   <string name="permission_other">Autres</string>
-  <string name="clipboard_path_copy">Répertorie copié dans le presse-papier</string>
+  <string name="clipboard_path_copy">Chemin d\'accès copié dans le presse-papier</string>
   <string name="error_busybox">BusyBox introuvable. Le script shell est arrêté.</string>
   <string name="service_timer">Temps écoulé</string>
   <string name="please_wait">Veuillez patienter</string>
+  <string name="no_applications">Aucune application</string>
+  <string name="ftp_path">Chemin d’accès partagé</string>
+  <string name="unknown_error">Oups, une erreur c\'est produite!</string>
+  <string name="ftp_status_no_connection">Aucune connexion</string>
+  <string name="ftp_status_secure_connection">Connexion sécurisée</string>
+  <string name="ftp_login">S\'identifier</string>
+  <string name="field_empty">Le champ ne peut pas être vide</string>
+  <string name="ftp_timeout">Délai d\'inactivité</string>
+  <string name="ftp_seconds">Secondes</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">Serveur FTP</string>
 </resources>

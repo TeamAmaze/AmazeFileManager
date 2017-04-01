@@ -79,6 +79,8 @@
     <string name="tab">Tab</string>
     <string name="file">File</string>
     <string name="folder">Folder</string>
+    <string name="title_files">Files</string>
+    <string name="title_dirs">Directories</string>
     <string name="newfolder">New Folder</string>
     <string name="entername">Enter Name</string>
     <string name="extracting">Extracting</string>
@@ -360,7 +362,7 @@
     <string name="documents">Documents</string>
     <string name="images">Images</string>
     <string name="clear">Clear</string>
-    <string name="md5">md5: </string>
+    <string name="md5">MD5</string>
     <string name="md5_2">Copy md5</string>
     <string name="total">Total: </string>
     <string name="calculating"> calculating </string>
@@ -411,7 +413,7 @@
     <string name="ftp_notif_title">Amaze FTP Server running</string>
     <string name="ftp_notif_text">at %s</string>
     <string name="ftp_notif_stop_server">STOP</string>
-    <string name="ftp_port_edit_menu_title">Choose FTP port</string>
+    <string name="ftp_port_edit_menu_title">FTP port</string>
     <string name="ftp_port_change_success">FTP port changed successfully</string>
     <string name="ftp_port_change_error_invalid">Invalid port number selected</string>
     <string name="primary_two_title">Primary Color (Right Tab)</string>
@@ -570,6 +572,7 @@
     <string name="error_busybox">Busybox not found. Closing interactive shell.</string>
     <string name="service_timer">Time Elapsed</string>
     <string name="please_wait">Please Wait</string>
+
     <string name="cloud_connection">Cloud Connection</string>
     <string name="cloud_connection_new">New Cloud Connection</string>
     <string name="cloud_dropbox">Dropbox</string>
@@ -580,5 +583,36 @@
     <string name="cloud_error_email">E-mail address</string>
     <string name="cloud_email">E-mail ID</string>
     <string name="connection_exists">Connection already exists</string>
+
+    <string name="no_applications">No applications</string>
+    <string name="ftp_path">Shared Path</string>
+    <string name="ftp_path_hint">Path to the root of directory to share</string>
+    <string name="error_ftp_path_file">Path not a directory</string>
+    <string name="change">Change</string>
+    <string name="unknown_error">Oops, something went wrong!</string>
+
+    <string name="ftp_path_change_success">FTP path changed successfully</string>
+    <string name="ftp_path_change_error_invalid">Invalid path</string>
+    <string name="ftp_status_no_connection">No Connection</string>
+    <string name="ftp_status_secure_connection">Secure Connection</string>
+    <string name="ftp_status_title">Status</string>
+    <string name="ftp_port">Port</string>
+    <string name="ftp_login">Login</string>
+    <string name="field_empty">Field can\'t be empty</string>
+    <string name="ftp_timeout">Idle timeout</string>
+    <string name="ftp_seconds">Seconds</string>
+    <string name="intellihide_toolbar_title">Intellihide Toolbar</string>
+    <string name="intellihide_toolbar_summary">Automatically hide toolbar while scrolling</string>
+    <string name="hash_sha256">SHA-256</string>
+    <!-- references 'name/size/location/hash' copied to clipboard -->
+    <string name="properties_copied_clipboard">copied to clipboard</string>
+    <string name="contributors_1_summary">Translation</string>
+    <string name="contributors_2_summary">Icon and banners</string>
+    <string name="contributors_3_summary">Theme Engine</string>
+    <string name="contributors_4_summary">Shade behind FAB</string>
+    <string name="contributors_5_summary">Color transition when swiping tabs</string>
+    <string name="contributors_6_summary">FTP Server</string>
+    <string name="contributors_7_summary">Firing up an interactive shell</string>
+>>>>>>> bae04cbd08c1cf7f907b73795d410b37bc22fa86
 </resources>
 

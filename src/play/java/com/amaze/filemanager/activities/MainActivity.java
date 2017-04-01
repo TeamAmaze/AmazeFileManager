@@ -47,6 +47,7 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.service.quicksettings.TileService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -162,7 +163,7 @@ public class MainActivity extends BaseActivity implements
         SmbConnectionListener, DataChangeListener, BookmarkCallback,
         SearchAsyncHelper.HelperCallbacks, CloudConnectDialog.CloudConnectionListener {
 
-    final Pattern DIR_SEPARATOR = Pattern.compile("/");
+    public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     /* Request code used to invoke sign in user interactions. */
     static final int RC_SIGN_IN = 0;
     public Integer select;
@@ -199,10 +200,13 @@ public class MainActivity extends BaseActivity implements
     int hidemode;
     public int operation = -1;
     public ArrayList<BaseFile> oparrayList;
+    public ArrayList<ArrayList<BaseFile>> oparrayListList;
 
     // oppathe - the path at which certain operation needs to be performed
     // oppathe1 - the new path which user wants to create/modify
+    // oppathList - the paths at which certain operation needs to be performed (pairs with oparrayList)
     public String oppathe, oppathe1;
+    public ArrayList<String> oppatheList;
     MaterialDialog materialDialog;
     String newPath = null;
     boolean backPressedToExitOnce = false;
@@ -379,6 +383,17 @@ public class MainActivity extends BaseActivity implements
                 //Commit the transaction
                 transaction.commit();
                 supportInvalidateOptionsMenu();
+            }  else if (intent.getAction() != null &&
+                    intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)) {
+                // tile preferences, open ftp fragment
+
+                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                transaction2.replace(R.id.content_frame, new FTPServerFragment());
+                findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+
+                select = -2;
+                adapter.toggleChecked(false);
+                transaction2.commit();
             } else {
                 if (path != null && path.length() > 0) {
                     HFile file = new HFile(OpenMode.UNKNOWN, path);
@@ -636,6 +651,22 @@ public class MainActivity extends BaseActivity implements
                     }
                 } else {
                     zipViewer.mActionMode.finish();
+                }
+            } else if (name.contains("FTPServerFragment")) {
+
+                //returning back from FTP server
+                if (path != null && path.length() > 0) {
+                    HFile file = new HFile(OpenMode.UNKNOWN, path);
+                    file.generateMode(this);
+                    if (file.isDirectory())
+                        goToMain(path);
+                    else {
+                        goToMain("");
+                        utils.openFile(new File(path), this);
+                    }
+                } else {
+                    goToMain("");
+
                 }
             } else
                 goToMain("");
@@ -1109,10 +1140,18 @@ public class MainActivity extends BaseActivity implements
                 a.theme(getAppTheme().getMaterialDialogTheme());
                 a.title(R.string.directorysort);
                 int current = Integer.parseInt(Sp.getString("dirontop", "0"));
+
+                final Main mainFrag = ma;
+
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         Sp.edit().putString("dirontop", "" + which).commit();
+                        if (mainFrag != null) {
+
+                            mainFrag.getSortModes();
+                            mainFrag.updateList();
+                        }
                         dialog.dismiss();
                         return true;
                     }
@@ -1143,33 +1182,10 @@ public class MainActivity extends BaseActivity implements
                 break;
             case R.id.paste:
                 String path = ma.CURRENT_PATH;
-                ArrayList<BaseFile> arrayList = new ArrayList<>();
-                if (!path.contains("otg:/")) {
-                    if (COPY_PATH != null) {
-                        arrayList = COPY_PATH;
-                        new CopyFileCheck(ma, path, false, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask
-                                .THREAD_POOL_EXECUTOR, arrayList);
-                    } else if (MOVE_PATH != null) {
-                        arrayList = MOVE_PATH;
-                        new CopyFileCheck(ma, path, true, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                                arrayList);
-                    }
-                } else if (path.contains("otg:/")) {
-                    if (COPY_PATH!=null) {
-
-                        arrayList = COPY_PATH;
-                        Intent intent = new Intent(con, CopyService.class);
-                        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, arrayList);
-                        intent.putExtra(CopyService.TAG_COPY_TARGET, path);
-                        intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, ma.openMode.ordinal());
-
-                        ServiceWatcherUtil.runService(mainActivity, intent);
-                    } else if (MOVE_PATH!=null){
-
-                        arrayList = MOVE_PATH;
-                        new MoveFiles(arrayList, ma, ma.getActivity(),ma.openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
-                    }
-                }
+                ArrayList<BaseFile> arrayList = COPY_PATH != null? COPY_PATH:MOVE_PATH;
+                boolean move = MOVE_PATH != null;
+                new CopyFileCheck(ma, path, move, mainActivity, BaseActivity.rootMode)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
                 COPY_PATH = null;
                 MOVE_PATH = null;
 
@@ -1806,14 +1822,36 @@ public class MainActivity extends BaseActivity implements
                     new DeleteTask(null, mainActivity).execute((oparrayList));
                     break;
                 case DataUtils.COPY://copying
-                    Intent intent1 = new Intent(con, CopyService.class);
-                    intent1.putExtra("FILE_PATHS", (oparrayList));
-                    intent1.putExtra("COPY_DIRECTORY", oppathe);
-                    startService(intent1);
+                    //legacy compatibility
+                    if(oparrayList != null && oparrayList.size() != 0) {
+                        oparrayListList = new ArrayList<>();
+                        oparrayListList.add(oparrayList);
+                        oparrayList = null;
+                        oppatheList = new ArrayList<>();
+                        oppatheList.add(oppathe);
+                        oppathe = "";
+                    }
+                    for (int i = 0; i < oparrayListList.size(); i++) {
+                        Intent intent1 = new Intent(con, CopyService.class);
+                        intent1.putExtra(CopyService.TAG_COPY_SOURCES, oparrayList.get(i));
+                        intent1.putExtra(CopyService.TAG_COPY_TARGET, oppatheList.get(i));
+                        ServiceWatcherUtil.runService(this, intent1);
+                    }
                     break;
                 case DataUtils.MOVE://moving
-                    new MoveFiles((oparrayList), ((Main) getFragment().getTab()),
-                            ((Main) getFragment().getTab()).getActivity(), OpenMode.FILE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                    //legacy compatibility
+                    if(oparrayList != null && oparrayList.size() != 0) {
+                        oparrayListList = new ArrayList<>();
+                        oparrayListList.add(oparrayList);
+                        oparrayList = null;
+                        oppatheList = new ArrayList<>();
+                        oppatheList.add(oppathe);
+                        oppathe = "";
+                    }
+
+                    new MoveFiles(oparrayListList, ((Main) getFragment().getTab()),
+                            ((Main) getFragment().getTab()).getActivity(), OpenMode.FILE)
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
                     break;
                 case DataUtils.NEW_FOLDER://mkdir
                     Main ma1 = ((Main) getFragment().getTab());
@@ -2628,7 +2666,7 @@ public class MainActivity extends BaseActivity implements
             }
         } else if ((openprocesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
 
-            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
             //   transaction.addToBackStack(null);
             select = 102;

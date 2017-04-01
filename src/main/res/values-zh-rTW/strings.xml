@@ -76,6 +76,8 @@
   <string name="tab">分頁</string>
   <string name="file">檔案</string>
   <string name="folder">資料夾</string>
+  <string name="title_files">檔案</string>
+  <string name="title_dirs">目錄</string>
   <string name="newfolder">新增檔案資料夾</string>
   <string name="entername">請輸入名稱</string>
   <string name="extracting">正在解壓縮</string>
@@ -352,7 +354,7 @@
   <string name="documents">文件</string>
   <string name="images">近期圖片</string>
   <string name="clear">清空</string>
-  <string name="md5">md5: </string>
+  <string name="md5">MD5</string>
   <string name="md5_2">複製 md5</string>
   <string name="total">總計： </string>
   <string name="calculating"> 正在計算 </string>
@@ -401,7 +403,7 @@
   <string name="ftp_notif_title">Amaze FTP 伺服器執行中</string>
   <string name="ftp_notif_text">在 %s</string>
   <string name="ftp_notif_stop_server">停止</string>
-  <string name="ftp_port_edit_menu_title">選擇 FTP 埠號</string>
+  <string name="ftp_port_edit_menu_title">選擇 FTP 通訊埠</string>
   <string name="ftp_port_change_success">已成功更改 FTP 埠號</string>
   <string name="ftp_port_change_error_invalid">所選取的埠號是無效數值</string>
   <string name="primary_two_title">主顏色 (右側頁籤)</string>
@@ -544,4 +546,26 @@
   <string name="error_busybox">Busybox 找不到。關閉互動式 shell。</string>
   <string name="service_timer">已用時間</string>
   <string name="please_wait">請稍候</string>
+  <string name="no_applications">無任何應用程式</string>
+  <string name="ftp_path">分享路徑</string>
+  <string name="ftp_path_hint">要分享根目錄的路徑</string>
+  <string name="error_ftp_path_file">路徑不是目錄</string>
+  <string name="change">變更</string>
+  <string name="unknown_error">哎呀，出錯了！</string>
+  <string name="ftp_path_change_success">已成功變更 FTP 路徑</string>
+  <string name="ftp_path_change_error_invalid">無效路徑</string>
+  <string name="ftp_status_no_connection">沒有連線</string>
+  <string name="ftp_status_secure_connection">安全連線</string>
+  <string name="ftp_status_title">狀態</string>
+  <string name="ftp_port">通訊埠</string>
+  <string name="ftp_login">登入</string>
+  <string name="field_empty">欄位不能為空</string>
+  <string name="ftp_timeout">閒置逾時</string>
+  <string name="ftp_seconds">秒</string>
+  <string name="intellihide_toolbar_title">自動隱藏工具列</string>
+  <string name="intellihide_toolbar_summary">滾動時自動隱藏工具列</string>
+  <string name="hash_sha256">SHA-256</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">複製到剪貼簿</string>
+  <string name="contributors_6_summary">FTP 伺服器</string>
 </resources>

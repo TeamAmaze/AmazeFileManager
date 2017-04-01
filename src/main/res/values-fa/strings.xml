@@ -75,6 +75,7 @@
   <string name="tab">تب</string>
   <string name="file">فایل</string>
   <string name="folder">پوشه</string>
+  <string name="title_dirs">پوشه ها</string>
   <string name="newfolder">پوشه جدید</string>
   <string name="entername">نام را وارد کنید</string>
   <string name="extracting">در حال بیرون آمدن از فشرده</string>
@@ -408,4 +409,6 @@
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="tap_and_hold_tips">روی فایل یا پوشه انگشت خود را نگه دارید تا اطلاعات بیشتری را ببینید</string>
   <string name="clipboard_path_copy">مسیر به کلیپبورد کپی شد</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">FTP سرور </string>
 </resources>

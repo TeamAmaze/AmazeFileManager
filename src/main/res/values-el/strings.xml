@@ -73,6 +73,8 @@
   <string name="tab">Καρτέλα</string>
   <string name="file">Αρχείο</string>
   <string name="folder">Φάκελος</string>
+  <string name="title_files">Αρχεία</string>
+  <string name="title_dirs">Φάκελοι</string>
   <string name="newfolder">Νέος φάκελος</string>
   <string name="entername">Εισάγετε όνομα</string>
   <string name="extracting">Εξαγωγή</string>
@@ -368,4 +370,6 @@
   <string name="permission_read">Ανάγνωση</string>
   <string name="permission_other">Άλλο</string>
   <string name="clipboard_path_copy">Η διαδρομή αντιγράφτηκε</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">Διακομιστής FTP</string>
 </resources>

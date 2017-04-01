@@ -19,9 +19,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="storage">Mesto za shranjevanje</string>
   <string name="setting">Nastavitve</string>
   <string name="cancel">PREKLIČI</string>
   <string name="save">Shrani</string>
+  <string name="title_files">Datoteke</string>
   <string name="share">Skupna raba</string>
   <string name="about">O nas</string>
   <string name="yes">Da</string>
@@ -58,6 +60,7 @@
   <string name="install">Namesti</string>
   <string name="archive">Arhiv</string>
   <string name="details">Podrobnosti</string>
+  <string name="warning">Opozorilo</string>
   <string name="donate">Prispevaj</string>
   <string name="text">Besedilo</string>
   <string name="other">Drugo</string>
@@ -89,4 +92,5 @@
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="permission_read">Preberi</string>
   <string name="permission_other">Drugo</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
 </resources>

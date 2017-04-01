@@ -602,13 +602,40 @@ public class Futils {
     public void deleteFiles(ArrayList<Layoutelements> a, final Main b, List<Integer> pos, AppTheme appTheme) {
         final MaterialDialog.Builder c = new MaterialDialog.Builder(b.getActivity());
         c.title(b.getResources().getString(R.string.confirm));
-        String names = "";
+        int fileCounter = 0, dirCounter = 0;
         final ArrayList<BaseFile> todelete = new ArrayList<>();
+        StringBuilder dirNames = new StringBuilder();
+        StringBuilder fileNames = new StringBuilder();
         for (int i = 0; i < pos.size(); i++) {
             todelete.add(a.get(pos.get(i)).generateBaseFile());
-            names = names + "\n" + (i + 1) + ". " + a.get(pos.get(i)).getTitle();
+            if(a.get(pos.get(i)).isDirectory())
+                dirNames.append("\n")
+                        .append(++dirCounter)
+                        .append(". ")
+                        .append(a.get(pos.get(i)).getTitle());
+            else
+                fileNames.append("\n")
+                        .append(++fileCounter)
+                        .append(". ")
+                        .append(a.get(pos.get(i)).getTitle())
+                        .append(" (")
+                        .append(a.get(pos.get(i)).getSize())
+                        .append(")");
         }
-        c.content(b.getResources().getString(R.string.questiondelete) + names);
+
+        String titleFiles = b.getResources().getString(R.string.title_files).toUpperCase();
+        String titleDirs = b.getResources().getString(R.string.title_dirs).toUpperCase();
+
+        if(fileNames.length() == 0)
+            c.content(b.getResources().getString(R.string.questiondelete) + "\n\n" + "---" +
+                    titleDirs + "---" + dirNames);
+        else if(dirNames.length() == 0)
+            c.content(b.getResources().getString(R.string.questiondelete) + "\n\n" + "---" +
+                    titleFiles + "---" + fileNames);
+        else
+            c.content(b.getResources().getString(R.string.questiondelete) + "\n\n" + "---" +
+                    titleDirs + "---" + dirNames + "\n\n" + "---" +
+                    titleFiles + "---" + fileNames);
         c.theme(appTheme.getMaterialDialogTheme());
         c.negativeText(b.getResources().getString(R.string.no));
         c.positiveText(b.getResources().getString(R.string.yes));
@@ -716,31 +743,16 @@ public class Futils {
             });
         }
         a.customView(v, true);
-        a.positiveText(R.string.copy_path);
-        a.negativeText(c.getResources().getString( R.string.md5_2));
-        a.positiveColor(Color.parseColor(fabskin));
-        a.negativeColor(Color.parseColor(fabskin));
-        a.neutralText(R.string.cancel);
+        a.neutralText(R.string.ok);
         a.neutralColor(Color.parseColor(fabskin));
-        a.callback(new MaterialDialog.ButtonCallback() {
-            @Override
-            public void onPositive(MaterialDialog materialDialog) {
-                ((MainActivity) c.getActivity()).copyToClipboard(c.getActivity(), hFile.getPath());
-                Toast.makeText(c.getActivity(), c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNegative(MaterialDialog materialDialog) {
-            }
-        });
         MaterialDialog materialDialog=a.build();
         materialDialog.show();
         /*View bottomSheet = c.findViewById(R.id.design_bottom_sheet);
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.STATE_DRAGGING);*/
-        new GenerateMD5Task(materialDialog, hFile, name, parent, size, items, date,c.getActivity()
-                ,v).execute(hFile.getPath());
+        new GenerateMD5Task(materialDialog, hFile, name, parent, size, items, date,
+                c.MAIN_ACTIVITY, v).execute(hFile.getPath());
     }
     public static long[] getSpaces(HFile hFile){
         if(!hFile.isSmb() && hFile.isDirectory()){
@@ -756,7 +768,7 @@ public class Futils {
         return new long[]{-1,-1,-1};
     }
 
-    public void showProps(final HFile f, final Activity c, AppTheme appTheme) {
+    public void showProps(final HFile f, final BaseActivity c, AppTheme appTheme) {
         String date = null;
         try {
             date = getdate(f.lastModified());
@@ -777,23 +789,8 @@ public class Futils {
                 .title(c.getResources().getString(R.string.properties))
                 .theme(appTheme.getMaterialDialogTheme())
                 .customView(v, true)
-                .positiveText(R.string.copy_path)
-                .negativeText(c.getResources().getString(R.string.md5_2))
-                .positiveColor(Color.parseColor(fabskin))
-                .negativeColor(Color.parseColor(fabskin))
-                .neutralText(R.string.cancel)
+                .neutralText(R.string.ok)
                 .neutralColor(Color.parseColor(fabskin))
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog materialDialog) {
-                        copyToClipboard(c, f.getPath());
-                        Toast.makeText(c, c.getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog materialDialog) {
-                    }
-                })
                 .build();
         materialDialog.show();
         new GenerateMD5Task(materialDialog, (f), name, parent, size, items, date, c, v).execute(f.getPath());
@@ -1147,7 +1144,7 @@ public class Futils {
                 int which = dialog.getSelectedIndex();
                 m.Sp.edit().putString("sortbyApps", "" + which).commit();
                 m.getSortModes();
-                m.loadlist(false);
+                m.getLoaderManager().restartLoader(AppsList.ID_LOADER_APP_LIST, null, m);
                 dialog.dismiss();
             }
 
@@ -1157,7 +1154,7 @@ public class Futils {
                 int which = dialog.getSelectedIndex() + 3;
                 m.Sp.edit().putString("sortbyApps", "" + which).commit();
                 m.getSortModes();
-                m.loadlist(false);
+                m.getLoaderManager().restartLoader(AppsList.ID_LOADER_APP_LIST, null, m);
                 dialog.dismiss();
             }
         });
