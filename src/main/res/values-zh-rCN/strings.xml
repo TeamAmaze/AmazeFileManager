@@ -299,7 +299,7 @@
   <string name="image">图片</string>
   <string name="contributors">贡献者</string>
   <string name="savepaths">记住路径</string>
-  <string name="savepathsummary">一开始会在每个选项卡中显示最近文件夹</string>
+  <string name="savepathsummary">在选项卡中显示最近文件夹</string>
   <string name="select_intent">选择</string>
   <string name="md5copied">MD5 值已复制到剪切板</string>
   <string name="generating">正在生成</string>
@@ -537,8 +537,11 @@
   <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="properties_copied_clipboard">已复制到剪切板</string>
-  <string name="contributors_1_summary">翻译</string>
+  <string name="contributors_1_summary">语言翻译</string>
   <string name="contributors_2_summary">图标和横幅</string>
   <string name="contributors_3_summary">主题引擎</string>
+  <string name="contributors_4_summary">浮动操作按钮阴影</string>
+  <string name="contributors_5_summary">滑动按钮时进行颜色过渡</string>
   <string name="contributors_6_summary">FTP 服务器</string>
+  <string name="contributors_7_summary">启动交互式 shell</string>
 </resources>

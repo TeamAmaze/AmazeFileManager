@@ -405,11 +405,13 @@
   <string name="ftp_port_change_success">Puerto FTB cambiado con éxito</string>
   <string name="ftp_port_change_error_invalid">Numero de puerto seleccionado no valido</string>
   <string name="primary_two_title">Color primario (pestaña derecha)</string>
+  <string name="primary_two_summary">Establecer el color para los elementos de la interfaz de usuario de la pestaña derecha</string>
   <string name="g_plus">Google Plus</string>
   <string name="support_development">Apoyar el desarrollo</string>
   <string name="report_bugs_title">Reportar de errores</string>
   <string name="report_bugs_summary">Informar errores o solicitar nuevas características</string>
   <string name="translate_title">Traducir</string>
+  <string name="translate_summary">Asombro</string>
   <string name="g_plus_community_summary">Participar en pruebas beta y debates relacionados con el desarrollo</string>
   <string name="easter_egg_title">Modo de estudio</string>
   <string name="paypal_copy_message">Id de Paypal copiado al portapapeles</string>
@@ -465,7 +467,9 @@
   <string name="optimized">Optimizado</string>
   <string name="security">Seguridad</string>
   <string name="paper_size">Tamaño del papel</string>
+  <string name="root_error">Error arrancando ventana de comandos como administrador</string>
   <!-- %s will be replaced with either copied or moved -->
+  <string name="copy_error">Algunos archivos no fueron correctamente %s</string>
   <string name="copied">copiado</string>
   <string name="moved">movido</string>
   <string name="process_chart_description">Progreso</string>
@@ -479,7 +483,9 @@
   <string name="cancelled">Cancelado</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <string name="written">Escrito</string>
+  <string name="out_of">fuera de</string>
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="of">de</string>
   <string name="processing_file">Procesando el archivo</string>
   <string name="current_speed">Velocidad actual</string>
   <string name="smb_launch_error">Necesitará copiar este archivo al almacenamiento para abrirlo</string>
@@ -498,6 +504,32 @@
   <string name="error_busybox">BusyBox no encontrado. Cerrando el shell interactivo.</string>
   <string name="service_timer">Tiempo transcurrido</string>
   <string name="please_wait">Por favor, espere</string>
+  <string name="no_applications">No hay aplicaciones</string>
+  <string name="ftp_path">Directorio guardado</string>
+  <string name="ftp_path_hint">Ruta a la raíz del directorio para compartir</string>
+  <string name="error_ftp_path_file">La ruta no es un directorio</string>
+  <string name="change">Cambio</string>
+  <string name="unknown_error">Uyyy, algo ha salido mal!</string>
+  <string name="ftp_path_change_success">Directorio FTP cambiado correctamente</string>
+  <string name="ftp_path_change_error_invalid">Ruta inválida</string>
+  <string name="ftp_status_no_connection">No hay conexión</string>
+  <string name="ftp_status_secure_connection">Conexión segura</string>
+  <string name="ftp_status_title">Estado</string>
+  <string name="ftp_port">Puerto</string>
+  <string name="ftp_login">Entrar</string>
+  <string name="field_empty">El campo no puede estar vacio</string>
+  <string name="ftp_timeout">Tiempo de inactividad</string>
+  <string name="ftp_seconds">Segundos</string>
+  <string name="intellihide_toolbar_title">Barra de herramientas Intellihide</string>
+  <string name="intellihide_toolbar_summary">Barra de herramientas que se oculta automáticamente mientas se desplaza</string>
+  <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">copiado al portapapeles</string>
+  <string name="contributors_1_summary">Traducción</string>
+  <string name="contributors_2_summary">Iconos y banners</string>
+  <string name="contributors_3_summary">Motor de tema</string>
+  <string name="contributors_4_summary">Sombra detrás de FAB</string>
+  <string name="contributors_5_summary">Transición de color al barrer pestañas</string>
   <string name="contributors_6_summary">Servidor FTP</string>
+  <string name="contributors_7_summary">Creando una pantalla de comandos interactiva</string>
 </resources>
