@@ -1088,6 +1088,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 ma.switchView();
                 break;
             case R.id.paste:
+                String path = ma.CURRENT_PATH;
                 ArrayList<BaseFile> arrayList = COPY_PATH != null? COPY_PATH:MOVE_PATH;
                 boolean move = MOVE_PATH != null;
                 new CopyFileCheck(ma, path, move, mainActivity, BaseActivity.rootMode)
