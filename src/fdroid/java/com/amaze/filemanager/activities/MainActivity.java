@@ -155,7 +155,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     final Pattern DIR_SEPARATOR = Pattern.compile("/");
     /* Request code used to invoke sign in user interactions. */
     static final int RC_SIGN_IN = 0;
-    public static String COUNTER_KEY_CACH = "counter";
+    public static final String LAST_PATH_CACHE = "LAST_PATH";
     public Integer select;
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
@@ -1569,7 +1569,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             final int takeFlags = intent.getFlags()
                     & (Intent.FLAG_GRANT_READ_URI_PERMISSION
                     | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
+
             switch (operation) {
                 case DataUtils.DELETE://deletion
                     new DeleteTask(null, mainActivity).execute((oparrayList));
@@ -2013,10 +2015,12 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             }
         });
 
-        FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(R.id.menu_item);
-        floatingActionButton1.setColorNormal(folderskin);
-        floatingActionButton1.setColorPressed(fabskinpressed);
-        floatingActionButton1.setOnClickListener(new View.OnClickListener() {
+        final FloatingActionButton[] subFloatingActionButton = new FloatingActionButton[4];
+
+        subFloatingActionButton[0] = (FloatingActionButton) findViewById(R.id.menu_item);
+        subFloatingActionButton[0].setColorNormal(folderskin);
+        subFloatingActionButton[0].setColorPressed(fabskinpressed);
+        subFloatingActionButton[0].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(0);
@@ -2024,10 +2028,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(R.id.menu_item1);
-        floatingActionButton2.setColorNormal(folderskin);
-        floatingActionButton2.setColorPressed(fabskinpressed);
-        floatingActionButton2.setOnClickListener(new View.OnClickListener() {
+        subFloatingActionButton[1] = (FloatingActionButton) findViewById(R.id.menu_item1);
+        subFloatingActionButton[1].setColorNormal(folderskin);
+        subFloatingActionButton[1].setColorPressed(fabskinpressed);
+        subFloatingActionButton[1].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(1);
@@ -2035,10 +2039,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(R.id.menu_item2);
-        floatingActionButton3.setColorNormal(folderskin);
-        floatingActionButton3.setColorPressed(fabskinpressed);
-        floatingActionButton3.setOnClickListener(new View.OnClickListener() {
+        subFloatingActionButton[2] = (FloatingActionButton) findViewById(R.id.menu_item2);
+        subFloatingActionButton[2].setColorNormal(folderskin);
+        subFloatingActionButton[2].setColorPressed(fabskinpressed);
+        subFloatingActionButton[2].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(2);
@@ -2046,10 +2050,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 floatingActionButton.close(true);
             }
         });
-        final FloatingActionButton floatingActionButton4 = (FloatingActionButton) findViewById(R.id.menu_item3);
-        floatingActionButton4.setColorNormal(folderskin);
-        floatingActionButton4.setColorPressed(fabskinpressed);
-        floatingActionButton4.setOnClickListener(new View.OnClickListener() {
+        subFloatingActionButton[3] = (FloatingActionButton) findViewById(R.id.menu_item3);
+        subFloatingActionButton[3].setColorNormal(folderskin);
+        subFloatingActionButton[3].setColorPressed(fabskinpressed);
+        subFloatingActionButton[3].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(3);
@@ -2069,7 +2073,8 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 } catch (PackageManager.NameNotFoundException e) {
                     app_installed = false;
                 }
-                if (!app_installed) floatingActionButton4.setVisibility(View.GONE);
+                final FloatingActionButton subFloatingFour = subFloatingActionButton[3];
+                if (!app_installed) subFloatingFour.setVisibility(View.GONE);
             }
         }).run();
     }
@@ -2077,6 +2082,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     public void updatePath(@NonNull final String news, boolean results, OpenMode
             openmode, int folder_count, int file_count) {
 
+        setLastCurrentPath(news);
         if (news.length() == 0) return;
         if (news == null) return;
         if (openmode == OpenMode.SMB && news.startsWith("smb:/"))
@@ -2188,15 +2194,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 }
             }).setStartDelay(PATH_ANIM_START_DELAY).start();
         } else if (oldPath.isEmpty()) {
-
-            // case when app starts
-            // FIXME: COUNTER is incremented twice on app startup
-            COUNTER++;
-
-            //Ever time when we're incrementing counter, it put in the cache and equals
-            // on TabFragment for avoid multiple animation
-            AppConfig.getCache().put(COUNTER_KEY_CACH, COUNTER);
-
             animPath.setAnimation(slideIn);
             animPath.setText(newPath);
             animPath.animate().setListener(new AnimatorListenerAdapter() {
@@ -2684,5 +2681,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         mainFragment.createViews(mainFragment.LIST_ELEMENTS, false, mainFragment.CURRENT_PATH,
                 mainFragment.openMode, false, !mainFragment.IS_LIST);
         mainFragment.mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    private void setLastCurrentPath(@NonNull String currentPath) {
+        if (mainFragment != null) AppConfig.getCache().put(LAST_PATH_CACHE, currentPath);
     }
 }

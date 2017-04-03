@@ -28,8 +28,7 @@ public class AppConfig extends Application {
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private static Handler mApplicationHandler = new Handler();
-    private static LruCache<String, Integer> cache= new LruCache<>(100);
-
+    private static LruCache<String, String> cache= new LruCache<>(100);
     private static AppConfig mInstance;
 
     public UtilitiesProviderInterface getUtilsProvider() {
@@ -122,7 +121,7 @@ public class AppConfig extends Application {
         }
     }
 
-    public static LruCache<String, Integer> getCache() {
+    public static LruCache<String, String> getCache() {
         return cache;
     }
 
