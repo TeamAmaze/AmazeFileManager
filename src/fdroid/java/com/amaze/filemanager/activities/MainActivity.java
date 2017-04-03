@@ -1088,34 +1088,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 ma.switchView();
                 break;
             case R.id.paste:
-                String path = ma.CURRENT_PATH;
-                ArrayList<BaseFile> arrayList = new ArrayList<>();
-                if (!path.contains("otg:/")) {
-                    if (COPY_PATH != null) {
-                        arrayList = COPY_PATH;
-                        new CopyFileCheck(ma, path, false, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask
-                                .THREAD_POOL_EXECUTOR, arrayList);
-                    } else if (MOVE_PATH != null) {
-                        arrayList = MOVE_PATH;
-                        new CopyFileCheck(ma, path, true, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                                arrayList);
-                    }
-                } else if (path.contains("otg:/")) {
-                    if (COPY_PATH != null) {
-
-                        arrayList = COPY_PATH;
-                        Intent intent = new Intent(con, CopyService.class);
-                        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, arrayList);
-                        intent.putExtra(CopyService.TAG_COPY_TARGET, path);
-                        intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, ma.openMode.ordinal());
-
-                        ServiceWatcherUtil.runService(mainActivity, intent);
-                    } else if (MOVE_PATH != null) {
-
-                        arrayList = MOVE_PATH;
-                        new MoveFiles(arrayList, ma, ma.getActivity(), ma.openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
-                    }
-                }
+                ArrayList<BaseFile> arrayList = COPY_PATH != null? COPY_PATH:MOVE_PATH;
+                boolean move = MOVE_PATH != null;
+                new CopyFileCheck(ma, path, move, mainActivity, BaseActivity.rootMode)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
                 COPY_PATH = null;
                 MOVE_PATH = null;
 
