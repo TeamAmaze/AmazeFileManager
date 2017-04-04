@@ -19,7 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="app_name">Κατάπληξη</string>
+  <string name="app_name">Αμέιζ</string>
   <string name="drawer_open">Άνοιγμα μενού πλοήγησης</string>
   <string name="drawer_close">Κλείσιμο μενού πλοήγησης</string>
   <string name="books">Σελιδοδείκτες</string>
@@ -40,12 +40,15 @@
   <string name="properties">Ιδιότητες</string>
   <string name="copyingapk">Αντιγραφή του apk σε </string>
   <string name="addbook">Προσθήκη σελιδοδείκτη</string>
+  <string name="delbook">Διαγραφή σελιδοδείκτη</string>
   <string name="addtobook">Προσθήκη σε σελιδοδείκτη</string>
   <string name="enterpath">Εισάγετε διαδρομή</string>
   <string name="cancel">ΑΚΥΡΟ</string>
   <string name="create">ΔΗΜΙΟΥΡΓΙΑ</string>
   <string name="success">Επιτυχία</string>
   <string name="filenotexists">Το αρχείο δεν υπάρχει</string>
+  <string name="loading">Φόρτωση&#8230;</string>
+  <string name="file_empty">Το αρχείο είναι κενό</string>
   <string name="error">Σφάλμα</string>
   <string name="cantlistfiles">Αδύνατη η εμφάνιση αρχείων χωρίς root</string>
   <string name="searchresults">Αποτελέσματα αναζήτησης</string>
@@ -97,6 +100,7 @@
   <string name="confirm">Επιβεβαίωση</string>
   <string name="deleting">Διαγραφή</string>
   <string name="questiondelete">Θέλετε πραγματικά να διαγράψετε τα αρχεία;</string>
+  <string name="questionset">Θέλετε να ορίσετε την τρέχουσα διαδρομή ως \"αρχική\" για αυτή την καρτέλα;</string>
   <string name="viewmode">Τρόπος απεικόνισης</string>
   <string name="uimode">Κατάσταση διεπαφής χρήστη</string>
   <string name="directorysort">Τρόπος ταξινόμησης φακέλων</string>
@@ -155,6 +159,7 @@
   <string name="brown">Καφέ</string>
   <string name="black">Μαύρο</string>
   <string name="blue_grey">Μπλεγκρί</string>
+  <string name="supersu">SuperSU</string>
   <!--DirectorySortMode-->
   <string name="foldersOnTop">Οι φάκελοι στην κορυφή</string>
   <string name="filesOnTop">Τα αρχεία στην κορυφή</string>
@@ -185,6 +190,7 @@
   <string name="done">Ολοκληρώθηκε</string>
   <string name="Extracting_fles">Εξαγωγή αρχείων</string>
   <string name="items">Αντικείμενα</string>
+  <string name="item">Αντικείμενο</string>
   <string name="set">Ορισμός</string>
   <string name="enablerootmde">Ενεργοποίηση κατάστασης root</string>
   <string name="goback">Πίσω</string>
@@ -233,6 +239,7 @@
   <string name="hiddenfiles">Κρυφά αρχεία</string>
   <string name="type">Τύπο</string>
   <string name="typeDesc">Τύπο (Φθήν.)</string>
+  <string name="rootdirectory">Root</string>
   <string name="new_string">Νέο</string>
   <string name="setringtone">Ορισμός ήχου κλήσης</string>
   <string name="copy_path">Αντιγραφή διαδρομής</string>
@@ -270,6 +277,11 @@
   <string name="korean_translation_title">Κορεάτικα</string>
   <string name="greek_translation_title">Ελληνικά</string>
   <string name="dutch_translation_title">Ολλανδικά</string>
+  <string name="romanian_translation_title">Ρουμάνικα</string>
+  <string name="vietnamese_translation_title">Βιετναμέζικα</string>
+  <string name="japanese_translation_title">Ιαπωνικά</string>
+  <string name="brazilian_portuguese_translation_title">Πορτογαλικά Βραζιλίας</string>
+  <string name="tamil_translation_title">Ταμιλικά</string>
   <string name="zip_viewer">Διαχειριστής Zip</string>
   <string name="unin_system_apk">Αυτή είναι μια εφαρμογή συστήματος. Η διαγραφή της μπορεί να οδηγήσει σε αστάθεια του συστήματος!\nΣυνέχεια;</string>
   <string name="warning">Προειδοποίηση</string>
@@ -295,6 +307,8 @@
   <string name="database">Βάση δεδομένων</string>
   <string name="colourednavigation">Έγχρωμη μπάρα πλοήγησης</string>
   <string name="colourednavigationsum">Αν θα είναι η μπάρα πλοήγησης του συστήματος χρωματισμένη σύμφωνα με το θέμα.</string>
+  <string name="sd_card_grant_next">sd_card_grant_next</string>
+  <string name="sd_card_grant_first">sd_card_grant_first</string>
   <string name="fab_skin">Θέμα επιπλέοντος κουμπιού +</string>
   <string name="gplus_pic_title">Είσοδος με το G+</string>
   <string name="gplus_pic_summary">Εμφάνιση της εικόνας του προφίλ σας G+ στο πτυσσόμενο μενού</string>
@@ -336,9 +350,11 @@
   <string name="extstorage">Κάρτα μνήμης</string>
   <string name="folders">Φάκελοι</string>
   <string name="videos">Βίντεο</string>
+  <string name="apks">Apks</string>
   <string name="documents">Έγγραφα</string>
   <string name="images">Εικόνες</string>
   <string name="clear">Καθαρισμός</string>
+  <string name="md5">MD5</string>
   <string name="md5_2">Αντιγραφή md5</string>
   <string name="total">Σύνολο: </string>
   <string name="calculating"> υπολογισμός </string>
@@ -346,30 +362,126 @@
   <string name="ascending">Αύξουσα</string>
   <string name="descending">Φθήνουσα</string>
   <string name="defualt">Εξ\' ορισμού</string>
+  <string name="doit">Κάντο</string>
+  <string name="wanthelp"><u>Χρειάζεστε βοήθεια;</u></string>
+  <string name="quick">Γρήγορη Πρόσβαση</string>
   <string name="recent">Πρόσφατα Αρχεία</string>
   <string name="edit">Επεξεργασία</string>
+  <string name="find">Εύρεση στη σελίδα</string>
+  <string name="grant">Χορήγησε</string>
+  <string name="grantper">Χορήγησε άδεια</string>
+  <string name="grantfailed">Άδεια δεν εκχωρήθηκε</string>
+  <string name="granttext">Η εφαρμογή χρειάζεται άδεια αποθήκευσης για να συνεχίσετε. Ακύρωση αυτού του διαλόγου θα τερματίσει την εφαρμογή.</string>
+  <string name="grantgplus">Η εφαρμογή χρειάζεται άδεια για αυτήν τη δυνατότητα. Ακύρωση αυτού του διαλόγου θα αποεπιλέξει αυτό το χαρακτηριστικό.</string>
+  <string name="operationunsuccesful">Λειτουργία Ανεπιτυχής</string>
+  <string name="creatingfile">Δημιουργία Αρχείου</string>
+  <string name="creatingfolder">Δημιουργία Φακέλου</string>
+  <string name="renaming">Μετονομασία</string>
+  <string name="cantbeempty">%s δεν είναι δυνατό να είναι κενό</string>
+  <string name="ip">Διεύθυνση</string>
+  <string name="connectionname">Όνομα σύνδεσης</string>
+  <string name="nodevicefound">Δεν βρέθηκε συσκευή</string>
   <string name="path">Διαδρομή</string>
+  <string name="renamebookmark">Επεξεργασία Σελιδοδείκτη</string>
   <string name="cut">Αποκοπή</string>
   <string name="search">Αναζητηση</string>
+  <string name="invalid_name">Μη έγκυρο όνομα</string>
+  <string name="search_hint">Πληκτρολόγησε για αναζήτηση&#8230;</string>
+  <string name="advanced_search">Σύνθετη Αναζήτηση</string>
+  <string name="regular_expression">Συνηθισμένη Έκφραση</string>
+  <string name="regular_expression_summary">Αναζήτηση χρησιμοποιώντας μια τύπου BASH συνηθισμένη έκφραση</string>
+  <string name="match_content">Ταίριασμα περιεχομένου</string>
   <string name="start_ftp">Έναρξη</string>
+  <string name="stop_ftp">Διακοπή</string>
+  <string name="ftp_status_running">Εκτελείται</string>
+  <string name="ftp_status_not_running">Δεν Εκτελείται</string>
+  <string name="ftp_no_wifi">Βεβαιωθείτε ότι είστε συνδεδεμένοι σε Wi-Fi</string>
+  <string name="domain">Domain</string>
+  <string name="invalid">Μη Έγκυρο %s</string>
+  <string name="ftp_notif_starting">Εκκίνηση του διακομιστή FTP</string>
+  <string name="ftp_notif_title">Αμέιζ διακομιστής FTP εκτελείτε</string>
+  <string name="ftp_notif_text">στο %s</string>
+  <string name="ftp_notif_stop_server">Σταμάτημα</string>
+  <string name="ftp_port_edit_menu_title">Θύρα FTP</string>
+  <string name="ftp_port_change_success">Θύρα FTP άλλαξε με επιτυχία</string>
+  <string name="ftp_port_change_error_invalid">Μη έγκυρος επιλεγμένος αριθμός θύρας</string>
+  <string name="primary_two_title">Πρωτεύον Χρώμα (Δεξιά Καρτέλα)</string>
   <string name="information">Πληροφορίες</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
   <string name="duration">Διάρκεια</string>
   <!-- reference to audio/video file -->
+  <string name="frame_rate">Ρυθμός Καρέ</string>
   <string name="width">Πλάτος</string>
   <string name="height">Ύψος</string>
+  <string name="date_modified">Ημερομηνία Τροποποίησης</string>
+  <string name="software">Λογισμικό</string>
+  <string name="creator">Δημιουργός</string>
+  <string name="camera_brand">Μάρκα Κάμερας</string>
+  <string name="camera_model">Μοντέλο Κάμερας</string>
+  <string name="date_taken">Ημ/νία Λήψης</string>
   <string name="exposure_time">Χρόνος έκθεσης</string>
+  <string name="aperture_value">Μέγεθος Διαφράγματος</string>
+  <string name="image_iso">Αξιολόγηση Ταχύτητας ISO</string>
+  <string name="flash_fired">Με Φλας</string>
   <string name="focal_length">Μήκος εστίασης</string>
   <string name="document">Έγγραφο</string>
+  <string name="subject">Θέμα</string>
+  <string name="author">Συντάκτης</string>
+  <string name="keywords">Λέξεις-κλειδιά</string>
+  <string name="producer">Παραγωγός</string>
+  <string name="created">Δημιουργήθηκε</string>
+  <string name="format">Μορφή</string>
+  <string name="pages">Αριθμός Σελίδων</string>
   <!-- reference to a document file -->
+  <string name="optimized">Βελτιστοποιημένο</string>
+  <string name="security">Ασφάλεια</string>
+  <string name="paper_size">Μέγεθος Χαρτιού</string>
+  <string name="root_error">Σφάλμα κατά την εκκίνηση διαδραστικού root shell</string>
   <!-- %s will be replaced with either copied or moved -->
+  <string name="copy_error">Ορισμένα αρχεία δεν ήταν επιτυχώς %s</string>
+  <string name="copied">αντιγράφηκε</string>
+  <string name="moved">μετακινήθηκε</string>
+  <string name="process_chart_description">Πρόοδος</string>
+  <string name="copy_complete">Αντιγραφή Ολοκληρώθηκε</string>
+  <string name="move_complete">Μετακίνηση Ολοκληρώθηκε</string>
+  <string name="waiting_title">Αναμονή</string>
+  <string name="waiting_content">Αναμονή για ολοκλήρωση λειτουργίας</string>
+  <string name="extract_complete">Αποσυμπίεση επιτυχής</string>
+  <string name="compression_complete">Συμπίεση Επιτυχής</string>
+  <string name="compressing">Συμπιέζει</string>
+  <string name="cancelled">Ακυρώθηκε</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+  <string name="written">Γράφτηκε</string>
+  <string name="out_of">από</string>
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="of">του</string>
+  <string name="processing_file">Επεξεργασία αρχείου</string>
+  <string name="current_speed">Τρέχουσα ταχύτητα</string>
+  <string name="smb_launch_error">Θα χρειαστεί να αντιγράψετε αυτό το αρχείο στο χώρο αποθήκευσης για να το ανοίξετε</string>
+  <string name="error_file_not_found">Σφάλμα: Αρχείο δεν βρέθηκε</string>
+  <string name="error_io">Σφάλμα εισόδου/εξόδου</string>
+  <string name="error_root_not_permitted">Σφάλμα: Άδεια Root δεν χορηγήθηκε</string>
+  <string name="medium_text">Μεσαίο Κείμενο</string>
   <string name="tap_and_hold_tips">Αγγίξτε παρατεταμένα ένα αρχείο ή φάκελο για περισσότερες επιλογές</string>
   <string name="permission_read">Ανάγνωση</string>
+  <string name="permission_write">Γράψε</string>
+  <string name="permission_execute">Εκτέλεση</string>
+  <string name="permission_owner">Κάτοχος</string>
+  <string name="permission_group">Ομάδα</string>
   <string name="permission_other">Άλλο</string>
   <string name="clipboard_path_copy">Η διαδρομή αντιγράφτηκε</string>
+  <string name="error_busybox">Busybox δεν βρέθηκε. Κλείσιμο διαδραστικού κελύφους.</string>
+  <string name="service_timer">Χρόνος που πέρασε</string>
+  <string name="please_wait">Παρακαλώ περιμένετε</string>
+  <string name="no_applications">Καμία εφαρμογή</string>
+  <string name="ftp_path">Κοινόχρηστη διαδρομή</string>
+  <string name="change">Αλλαγή</string>
+  <string name="unknown_error">Ούπς, κάτι πήγε στραβά!</string>
+  <string name="ftp_status_title">Κατάσταση</string>
+  <string name="ftp_seconds">Δευτερόλεπτα</string>
+  <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_3_summary">Μηχανή Θεμάτων</string>
   <string name="contributors_6_summary">Διακομιστής FTP</string>
 </resources>
