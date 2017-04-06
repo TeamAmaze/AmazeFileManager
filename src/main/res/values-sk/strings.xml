@@ -19,9 +19,44 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="app_name">Amaze</string>
+  <string name="drawer_open">Otvoriť navigačný panel</string>
+  <string name="drawer_close">Zavrieť navigačný panel</string>
+  <string name="books">Záložky</string>
+  <string name="icon">ikona</string>
+  <string name="efn">Zadajte meno súboru</string>
   <string name="storage">Úložisko</string>
+  <string name="gallery">Galéria</string>
+  <string name="apps">Správca aplikácií</string>
+  <string name="ftp">FTP Server</string>
+  <string name="bookmanag">Správca záložiek</string>
+  <string name="setting">Nastavenia</string>
+  <string name="select">Vybrať položku</string>
+  <string name="pressagain">Pre ukončenie stlačte znovu</string>
+  <string name="open">Otvoriť</string>
+  <string name="backup">Zálohovať</string>
+  <string name="uninstall">Odinštalovať</string>
+  <string name="play">Obchod Play</string>
+  <string name="properties">Vlastnosti</string>
+  <string name="copyingapk">Kopírovanie aplikácie na </string>
+  <string name="addbook">Pridať záložku</string>
+  <string name="delbook">Odstrániť záložku</string>
+  <string name="addtobook">Pridať do záložiek</string>
+  <string name="enterpath">Zadajte cestu</string>
   <string name="cancel">ZRUŠIŤ</string>
+  <string name="create">VYTVORIŤ</string>
+  <string name="success">Úspešné</string>
+  <string name="filenotexists">Súbor neexistuje</string>
+  <string name="loading">Načítavanie&#8230;</string>
+  <string name="file_empty">Súbor je prázdny</string>
+  <string name="error">Chyba</string>
+  <string name="cantlistfiles">Nie je možné listovať súbormi bez root oprávnenia</string>
+  <string name="searchresults">Výsledky vyhľadávania</string>
+  <string name="itemsselected">Vybraté položky</string>
+  <string name="newhomedirectory">Nový domovský adresár</string>
+  <string name="rename">Premenovať</string>
   <string name="save">Uložiť</string>
+  <string name="enterfile">Zadajte meno súboru</string>
   <string name="share">Zdieľať</string>
   <string name="confirm">Potvrdiť</string>
   <string name="close">Zavrieť</string>
@@ -73,4 +108,5 @@
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">FTP Server</string>
 </resources>
