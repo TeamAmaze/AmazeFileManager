@@ -1,5 +1,6 @@
 package com.amaze.filemanager.filesystem;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -131,6 +132,10 @@ public class HFile {
         return new File("/").lastModified();
     }
 
+    /**
+     * @deprecated use {@link #length(Context)} to handle content resolvers
+     * @return
+     */
     public long length() {
         long s = 0l;
         switch (mode){
@@ -159,7 +164,29 @@ public class HFile {
      * @return
      */
     public long length(Context context) {
-        return RootHelper.getDocumentFile(path, context, false).length();
+
+        long s = 0l;
+        switch (mode){
+            case SMB:
+                SmbFile smbFile=getSmbFile();
+                if(smbFile!=null)
+                    try {
+                        s = smbFile.length();
+                    } catch (SmbException e) {
+                    }
+                return s;
+            case FILE:
+                s = new File(path).length();
+                return s;
+            case ROOT:
+                BaseFile baseFile=generateBaseFileFromParent();
+                if(baseFile!=null) return baseFile.getSize();
+                break;
+            case OTG:
+                s = RootHelper.getDocumentFile(path, context, false).length();
+                break;
+        }
+        return s;
     }
 
     public String getPath() {
@@ -184,7 +211,29 @@ public class HFile {
         }
         return name;
     }
-    public SmbFile getSmbFile(int timeout){
+
+    public String getName(Context context) {
+        String name = null;
+        switch (mode){
+            case SMB:
+                SmbFile smbFile=getSmbFile();
+                if(smbFile!=null)
+                    return smbFile.getName();
+                break;
+            case FILE:
+                return new File(path).getName();
+            case ROOT:
+                return new File(path).getName();
+            case OTG:
+                return RootHelper.getDocumentFile(path, context, false).getName();
+            default:
+                StringBuilder builder = new StringBuilder(path);
+                name = builder.substring(builder.lastIndexOf("/")+1, builder.length());
+        }
+        return name;
+    }
+
+    public SmbFile getSmbFile(int timeout) {
         try {
             SmbFile smbFile=new SmbFile(path);
             smbFile.setConnectTimeout(timeout);
@@ -214,6 +263,7 @@ public class HFile {
 
     /**
      * Returns a path to parent for various {@link #mode}
+     * @deprecated use {@link #getParent(Context)} to handle content resolvers
      * @return
      */
     public String getParent() {
@@ -247,7 +297,32 @@ public class HFile {
      */
     public String getParent(Context context) {
 
-        return null;
+        String parentPath = "";
+        switch (mode) {
+            case SMB:
+                try {
+                    parentPath = new SmbFile(path).getParent();
+                } catch (MalformedURLException e) {
+                    parentPath = "";
+                    e.printStackTrace();
+                }
+                break;
+            case FILE:
+            case ROOT:
+                parentPath = new File(path).getParent();
+                break;
+            case OTG:
+                DocumentFile documentSourceFile = RootHelper.getDocumentFile(path,
+                        context, false);
+                parentPath =  documentSourceFile.getParentFile().getName();
+                break;
+            default:
+                StringBuilder builder = new StringBuilder(path);
+                StringBuilder parentPathBuilder = new StringBuilder(builder.substring(0,
+                        builder.length()-(getName().length()+1)));
+                return parentPathBuilder.toString();
+        }
+        return parentPath;
     }
 
     public String getParentName() {
@@ -261,6 +336,7 @@ public class HFile {
 
     /**
      * Whether this object refers to a directory or file, handles all types of files
+     * @deprecated use {@link #isDirectory(Context)} to handle content resolvers
      * @return
      */
     public boolean isDirectory() {
@@ -282,7 +358,7 @@ public class HFile {
                 break;
             case ROOT:
                 try {
-                    isDirectory=RootHelper.isDirectory(path,true,5);
+                    isDirectory = RootHelper.isDirectory(path,true,5);
                 } catch (RootNotPermittedException e) {
                     e.printStackTrace();
                     isDirectory = false;
@@ -300,6 +376,44 @@ public class HFile {
         }
         return isDirectory;
     }
+
+    public boolean isDirectory(Context context) {
+
+        boolean isDirectory;
+        switch (mode) {
+            case SMB:
+                try {
+                    isDirectory = new SmbFile(path).isDirectory();
+                } catch (SmbException e) {
+                    isDirectory = false;
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    isDirectory = false;
+                    e.printStackTrace();
+                }
+                break;
+            case FILE:
+                isDirectory = new File(path).isDirectory();
+                break;
+            case ROOT:
+                try {
+                    isDirectory = RootHelper.isDirectory(path,true,5);
+                } catch (RootNotPermittedException e) {
+                    e.printStackTrace();
+                    isDirectory = false;
+                }
+                break;
+            case OTG:
+                isDirectory = RootHelper.getDocumentFile(path, context, false).isDirectory();
+                break;
+            default:
+                isDirectory = new File(path).isDirectory();
+                break;
+
+        }
+        return isDirectory;
+    }
+
 
     public long folderSize() {
         long size = 0l;
@@ -411,8 +525,13 @@ public class HFile {
         else return a;
     }
 
+    /**
+     * Handles getting input stream for various {@link OpenMode}
+     * @deprecated use {@link #getInputStream(Context)} which allows handling content resolver
+     * @return
+     */
     public InputStream getInputStream() {
-        InputStream inputStream = null;
+        InputStream inputStream;
         if (isSmb()) {
             try {
                 inputStream = new SmbFile(path).getInputStream();
@@ -431,24 +550,73 @@ public class HFile {
         return inputStream;
     }
 
-    public OutputStream getOutputStream(Context context) {
-        OutputStream inputStream = null;
-        if (isSmb()) {
-            try {
-                inputStream = new SmbFile(path).getOutputStream();
-            } catch (IOException e) {
-                inputStream = null;
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                inputStream = FileUtil.getOutputStream(new File(path), context, length());
-            } catch (Exception e) {
-                inputStream=null;
-            }
+    public InputStream getInputStream(Context context) {
+        InputStream inputStream;
 
+        switch (mode) {
+            case SMB:
+                try {
+                    inputStream = new SmbFile(path).getInputStream();
+                } catch (IOException e) {
+                    inputStream = null;
+                    e.printStackTrace();
+                }
+                break;
+            case OTG:
+                ContentResolver contentResolver = context.getContentResolver();
+                DocumentFile documentSourceFile = RootHelper.getDocumentFile(path,
+                        context, false);
+                try {
+                    inputStream = contentResolver.openInputStream(documentSourceFile.getUri());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    inputStream = null;
+                }
+                break;
+            default:
+                try {
+                    inputStream = new FileInputStream(path);
+                } catch (FileNotFoundException e) {
+                    inputStream = null;
+                    e.printStackTrace();
+                }
+                break;
         }
         return inputStream;
+    }
+
+    public OutputStream getOutputStream(Context context) {
+        OutputStream outputStream;
+        switch (mode) {
+            case SMB:
+                try {
+                    outputStream = new SmbFile(path).getOutputStream();
+                } catch (IOException e) {
+                    outputStream = null;
+                    e.printStackTrace();
+                }
+                break;
+            case OTG:
+                ContentResolver contentResolver = context.getContentResolver();
+                DocumentFile documentSourceFile = RootHelper.getDocumentFile(path,
+                        context, true);
+                try {
+                    outputStream = contentResolver.openOutputStream(documentSourceFile.getUri());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    outputStream = null;
+                }
+                break;
+            default:
+                try {
+                    outputStream = FileUtil.getOutputStream(new File(path), context, length());
+                } catch (Exception e) {
+                    outputStream=null;
+                    e.printStackTrace();
+                }
+
+        }
+        return outputStream;
     }
 
     public boolean exists() {
