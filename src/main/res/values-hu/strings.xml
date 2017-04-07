@@ -76,6 +76,8 @@
   <string name="tab">Lap</string>
   <string name="file">Fájl</string>
   <string name="folder">Mappa</string>
+  <string name="title_files">Fájlok</string>
+  <string name="title_dirs">Könyvtárak</string>
   <string name="newfolder">Új mappa</string>
   <string name="entername">Adja meg a nevet</string>
   <string name="extracting">Kicsomagolás</string>
@@ -546,4 +548,6 @@ megtalálásához..</li><li/><br/>\\n
   <string name="change">Csere</string>
   <string name="ftp_path_change_success">FTP elérési útja megváltozott sikeresen</string>
   <string name="ftp_path_change_error_invalid">Érvénytelen útvonal</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">FTP-kiszolgáló</string>
 </resources>

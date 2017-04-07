@@ -100,28 +100,6 @@ public class ZipTask extends Service {
             }
         }
 
-        totalBytes = getTotalBytes(baseFiles);
-        progressHandler = new ProgressHandler(baseFiles.size(), totalBytes);
-        progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
-            @Override
-            public void onProgressed(String fileName, int sourceFiles, int sourceProgress,
-                                     long totalSize, long writtenSize, int speed) {
-                publishResults(startId, fileName, sourceFiles, sourceProgress,
-                        totalSize, writtenSize, speed, false);
-            }
-        });
-
-        DataPackage intent1 = new DataPackage();
-        intent1.setName(baseFiles.get(0).getName());
-        intent1.setSourceFiles(baseFiles.size());
-        intent1.setSourceProgress(0);
-        intent1.setTotal(totalBytes);
-        intent1.setByteProgress(0);
-        intent1.setSpeedRaw(0);
-        intent1.setMove(false);
-        intent1.setCompleted(false);
-        putDataPackage(intent1);
-
         mBuilder = new NotificationCompat.Builder(this);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
@@ -185,8 +163,33 @@ public class ZipTask extends Service {
         }
 
         protected Integer doInBackground(Bundle... p1) {
-            int id = p1[0].getInt("id");
+            final int id = p1[0].getInt("id");
             ArrayList<BaseFile> baseFiles = p1[0].getParcelableArrayList(KEY_COMPRESS_FILES);
+
+            // setting up service watchers and initial data packages
+            // finding total size on background thread (this is necessary condition for SMB!)
+            totalBytes = getTotalBytes(baseFiles);
+            progressHandler = new ProgressHandler(baseFiles.size(), totalBytes);
+            progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
+                @Override
+                public void onProgressed(String fileName, int sourceFiles, int sourceProgress,
+                                         long totalSize, long writtenSize, int speed) {
+                    publishResults(id, fileName, sourceFiles, sourceProgress,
+                            totalSize, writtenSize, speed, false);
+                }
+            });
+
+            DataPackage intent1 = new DataPackage();
+            intent1.setName(baseFiles.get(0).getName());
+            intent1.setSourceFiles(baseFiles.size());
+            intent1.setSourceProgress(0);
+            intent1.setTotal(totalBytes);
+            intent1.setByteProgress(0);
+            intent1.setSpeedRaw(0);
+            intent1.setMove(false);
+            intent1.setCompleted(false);
+            putDataPackage(intent1);
+
             zipPath = p1[0].getString(KEY_COMPRESS_PATH);
             execute(toFileArray(baseFiles), zipPath);
             return id;

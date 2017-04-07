@@ -46,6 +46,7 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.service.quicksettings.TileService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -93,7 +94,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
@@ -105,7 +105,6 @@ import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
@@ -129,7 +128,6 @@ import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -148,11 +146,12 @@ import java.util.regex.Pattern;
 import eu.chainfire.libsuperuser.Shell;
 
 
-public class MainActivity extends BaseActivity implements OnRequestPermissionsResultCallback,
+public class MainActivity extends BaseActivity implements
+        OnRequestPermissionsResultCallback,
         SmbConnectionListener, DataChangeListener, BookmarkCallback,
         SearchAsyncHelper.HelperCallbacks {
 
-    final Pattern DIR_SEPARATOR = Pattern.compile("/");
+    public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     /* Request code used to invoke sign in user interactions. */
     static final int RC_SIGN_IN = 0;
     public Integer select;
@@ -189,10 +188,13 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     int hidemode;
     public int operation = -1;
     public ArrayList<BaseFile> oparrayList;
+    public ArrayList<ArrayList<BaseFile>> oparrayListList;
 
     // oppathe - the path at which certain operation needs to be performed
     // oppathe1 - the new path which user wants to create/modify
+    // oppathList - the paths at which certain operation needs to be performed (pairs with oparrayList)
     public String oppathe, oppathe1;
+    public ArrayList<String> oppatheList;
     MaterialDialog materialDialog;
     String newPath = null;
     boolean backPressedToExitOnce = false;
@@ -282,6 +284,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         DataUtils.setHiddenfiles(history.readTable(DataUtils.HIDDEN));
         DataUtils.setGridfiles(grid.readTable(DataUtils.GRID));
         DataUtils.setListfiles(grid.readTable(DataUtils.LIST));
+
         util = new IconUtils(Sp, this);
         icons = new IconUtils(Sp, this);
 
@@ -356,6 +359,17 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 //Commit the transaction
                 transaction.commit();
                 supportInvalidateOptionsMenu();
+            }  else if (intent.getAction() != null &&
+                    intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)) {
+                // tile preferences, open ftp fragment
+
+                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                transaction2.replace(R.id.content_frame, new FTPServerFragment());
+                findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+
+                select = -2;
+                adapter.toggleChecked(false);
+                transaction2.commit();
             } else {
                 if (path != null && path.length() > 0) {
                     HFile file = new HFile(OpenMode.UNKNOWN, path);
@@ -384,7 +398,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         }
 
         if (getAppTheme().equals(AppTheme.DARK)) {
-            mDrawerList.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+            mDrawerList.setBackgroundColor(ContextCompat.getColor(this, R.color.holo_dark_background));
         }
         mDrawerList.setDivider(null);
         if (!isDrawerLocked) {
@@ -613,6 +627,22 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     }
                 } else {
                     zipViewer.mActionMode.finish();
+                }
+            } else if (name.contains("FTPServerFragment")) {
+
+                //returning back from FTP server
+                if (path != null && path.length() > 0) {
+                    HFile file = new HFile(OpenMode.UNKNOWN, path);
+                    file.generateMode(this);
+                    if (file.isDirectory())
+                        goToMain(path);
+                    else {
+                        goToMain("");
+                        utils.openFile(new File(path), this);
+                    }
+                } else {
+                    goToMain("");
+
                 }
             } else
                 goToMain("");
@@ -1053,10 +1083,18 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 a.theme(getAppTheme().getMaterialDialogTheme());
                 a.title(R.string.directorysort);
                 int current = Integer.parseInt(Sp.getString("dirontop", "0"));
+
+                final Main mainFrag = ma;
+
                 a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         Sp.edit().putString("dirontop", "" + which).commit();
+                        if (mainFrag != null) {
+
+                            mainFrag.getSortModes();
+                            mainFrag.updateList();
+                        }
                         dialog.dismiss();
                         return true;
                     }
@@ -1087,33 +1125,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 break;
             case R.id.paste:
                 String path = ma.CURRENT_PATH;
-                ArrayList<BaseFile> arrayList = new ArrayList<>();
-                if (!path.contains("otg:/")) {
-                    if (COPY_PATH != null) {
-                        arrayList = COPY_PATH;
-                        new CopyFileCheck(ma, path, false, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask
-                                .THREAD_POOL_EXECUTOR, arrayList);
-                    } else if (MOVE_PATH != null) {
-                        arrayList = MOVE_PATH;
-                        new CopyFileCheck(ma, path, true, mainActivity, BaseActivity.rootMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                                arrayList);
-                    }
-                } else if (path.contains("otg:/")) {
-                    if (COPY_PATH!=null) {
-
-                        arrayList = COPY_PATH;
-                        Intent intent = new Intent(con, CopyService.class);
-                        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, arrayList);
-                        intent.putExtra(CopyService.TAG_COPY_TARGET, path);
-                        intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, ma.openMode.ordinal());
-
-                        ServiceWatcherUtil.runService(mainActivity, intent);
-                    } else if (MOVE_PATH!=null){
-
-                        arrayList = MOVE_PATH;
-                        new MoveFiles(arrayList, ma, ma.getActivity(),ma.openMode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
-                    }
-                }
+                ArrayList<BaseFile> arrayList = COPY_PATH != null? COPY_PATH:MOVE_PATH;
+                boolean move = MOVE_PATH != null;
+                new CopyFileCheck(ma, path, move, mainActivity, BaseActivity.rootMode)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
                 COPY_PATH = null;
                 MOVE_PATH = null;
 
@@ -1523,16 +1538,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         if (requestCode == image_selector_request_code) {
             if (Sp != null && intent != null && intent.getData() != null) {
@@ -1573,14 +1578,36 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     new DeleteTask(null, mainActivity).execute((oparrayList));
                     break;
                 case DataUtils.COPY://copying
-                    Intent intent1 = new Intent(con, CopyService.class);
-                    intent1.putExtra("FILE_PATHS", (oparrayList));
-                    intent1.putExtra("COPY_DIRECTORY", oppathe);
-                    startService(intent1);
+                    //legacy compatibility
+                    if(oparrayList != null && oparrayList.size() != 0) {
+                        oparrayListList = new ArrayList<>();
+                        oparrayListList.add(oparrayList);
+                        oparrayList = null;
+                        oppatheList = new ArrayList<>();
+                        oppatheList.add(oppathe);
+                        oppathe = "";
+                    }
+                    for (int i = 0; i < oparrayListList.size(); i++) {
+                        Intent intent1 = new Intent(con, CopyService.class);
+                        intent1.putExtra(CopyService.TAG_COPY_SOURCES, oparrayList.get(i));
+                        intent1.putExtra(CopyService.TAG_COPY_TARGET, oppatheList.get(i));
+                        ServiceWatcherUtil.runService(this, intent1);
+                    }
                     break;
                 case DataUtils.MOVE://moving
-                    new MoveFiles((oparrayList), ((Main) getFragment().getTab()),
-                            ((Main) getFragment().getTab()).getActivity(), OpenMode.FILE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+                    //legacy compatibility
+                    if(oparrayList != null && oparrayList.size() != 0) {
+                        oparrayListList = new ArrayList<>();
+                        oparrayListList.add(oparrayList);
+                        oparrayList = null;
+                        oppatheList = new ArrayList<>();
+                        oppatheList.add(oppathe);
+                        oppathe = "";
+                    }
+
+                    new MoveFiles(oparrayListList, ((Main) getFragment().getTab()),
+                            ((Main) getFragment().getTab()).getActivity(), OpenMode.FILE)
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
                     break;
                 case DataUtils.NEW_FOLDER://mkdir
                     Main ma1 = ((Main) getFragment().getTab());
@@ -1609,6 +1636,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
             if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
             else onDrawerClosed();
+        } else if (requestCode == REQUEST_CODE_SAF && responseCode != Activity.RESULT_OK) {
+            // otg access not provided
+            pending_path = null;
         }
     }
 
@@ -1802,8 +1832,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
         mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
-        if (getAppTheme().equals(AppTheme.DARK))
-            mDrawerLinear.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+        if (getAppTheme().equals(AppTheme.DARK)) mDrawerLinear.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
@@ -2418,7 +2447,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             }
         } else if ((openprocesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
 
-            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
             //   transaction.addToBackStack(null);
             select = 102;

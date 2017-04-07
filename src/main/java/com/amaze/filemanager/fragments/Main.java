@@ -273,6 +273,13 @@ public class Main extends android.support.v4.app.Fragment {
         itemsstring = res.getString(R.string.items);
         apk = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_apk_grid));
         mToolbarContainer.setBackgroundColor(MainActivity.currentTab==1 ? skinTwoColor : skin_color);
+
+        if (!Sp.getBoolean("intelliHideToolbar", true)){
+            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) getActivity().findViewById(R.id.action_bar).getLayoutParams();
+            params.setScrollFlags(0);
+            mToolbarContainer.setExpanded(true, true);
+        }
+
         //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
         return rootView;
     }

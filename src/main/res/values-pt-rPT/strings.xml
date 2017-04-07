@@ -73,6 +73,7 @@
   <string name="tab">Separador</string>
   <string name="file">Ficheiro</string>
   <string name="folder">Pasta</string>
+  <string name="title_dirs">Diretórios</string>
   <string name="newfolder">Nova pasta</string>
   <string name="entername">Digite o nome</string>
   <string name="extracting">A extrair</string>
@@ -475,4 +476,6 @@ debater ideias com os programadores</string>
   <string name="tap_and_hold_tips">Toque longo no ficheiro ou pasta para mais opções</string>
   <string name="permission_other">Outro</string>
   <string name="clipboard_path_copy">Caminho copiado para a área de transferência</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">Servidor FTP</string>
 </resources>

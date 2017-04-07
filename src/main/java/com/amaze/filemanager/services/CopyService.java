@@ -97,22 +97,6 @@ public class CopyService extends Service {
         String targetPath = intent.getStringExtra(TAG_COPY_TARGET);
         int mode = intent.getIntExtra(TAG_COPY_OPEN_MODE, OpenMode.UNKNOWN.ordinal());
         final boolean move = intent.getBooleanExtra(TAG_COPY_MOVE, false);
-        totalSize = files.get(0).getMode()==OpenMode.OTG ?
-                getTotalBytes(files, getApplicationContext()) : getTotalBytes(files);
-        totalSourceFiles = files.size();
-        progressHandler = new ProgressHandler(totalSourceFiles, totalSize);
-
-        progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
-
-            @Override
-            public void onProgressed(String fileName, int sourceFiles, int sourceProgress,
-                                     long totalSize, long writtenSize, int speed) {
-                publishResults(startId, fileName, sourceFiles, sourceProgress, totalSize,
-                        writtenSize, speed, false, move);
-            }
-        });
-
-        watcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
 
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         b.putInt(TAG_COPY_START_ID, startId);
@@ -132,17 +116,6 @@ public class CopyService extends Service {
         b.putString(TAG_COPY_TARGET, targetPath);
         b.putInt(TAG_COPY_OPEN_MODE, mode);
         b.putParcelableArrayList(TAG_COPY_SOURCES, files);
-
-        DataPackage intent1 = new DataPackage();
-        intent1.setName(files.get(0).getName());
-        intent1.setSourceFiles(files.size());
-        intent1.setSourceProgress(0);
-        intent1.setTotal(totalSize);
-        intent1.setByteProgress(0);
-        intent1.setSpeedRaw(0);
-        intent1.setMove(move);
-        intent1.setCompleted(false);
-        putDataPackage(intent1);
 
         //going async
         new DoInBackground().execute(b);
@@ -164,6 +137,7 @@ public class CopyService extends Service {
             }
         } catch (Exception e) {
             // skip for now
+            e.printStackTrace();
         }
 
         return totalBytes;
@@ -196,9 +170,41 @@ public class CopyService extends Service {
         }
 
         protected Integer doInBackground(Bundle... p1) {
-            String targetPath = p1[0].getString(TAG_COPY_TARGET);
-            int id = p1[0].getInt(TAG_COPY_START_ID);
+
             sourceFiles = p1[0].getParcelableArrayList(TAG_COPY_SOURCES);
+            final int id = p1[0].getInt(TAG_COPY_START_ID);
+
+            // setting up service watchers and initial data packages
+            // finding total size on background thread (this is necessary condition for SMB!)
+            totalSize = sourceFiles.get(0).getMode()==OpenMode.OTG ?
+                    getTotalBytes(sourceFiles, getApplicationContext()) : getTotalBytes(sourceFiles);
+            totalSourceFiles = sourceFiles.size();
+            progressHandler = new ProgressHandler(totalSourceFiles, totalSize);
+
+            progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
+
+                @Override
+                public void onProgressed(String fileName, int sourceFiles, int sourceProgress,
+                                         long totalSize, long writtenSize, int speed) {
+                    publishResults(id, fileName, sourceFiles, sourceProgress, totalSize,
+                            writtenSize, speed, false, move);
+                }
+            });
+
+            watcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
+
+            DataPackage intent1 = new DataPackage();
+            intent1.setName(sourceFiles.get(0).getName());
+            intent1.setSourceFiles(sourceFiles.size());
+            intent1.setSourceProgress(0);
+            intent1.setTotal(totalSize);
+            intent1.setByteProgress(0);
+            intent1.setSpeedRaw(0);
+            intent1.setMove(move);
+            intent1.setCompleted(false);
+            putDataPackage(intent1);
+
+            String targetPath = p1[0].getString(TAG_COPY_TARGET);
             move=p1[0].getBoolean(TAG_COPY_MOVE);
             copy=new Copy();
             copy.execute(sourceFiles, targetPath, move,

@@ -1,41 +1,50 @@
 package com.amaze.filemanager.services.asynctasks;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.text.format.Formatter;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.ui.CircleAnimation;
 import com.amaze.filemanager.ui.views.SizeDrawable;
 import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.utils.GenericCopyUtil;
+import com.amaze.filemanager.utils.color.ColorUsage;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by Vishal on 05-02-2015.
  */
-public class GenerateMD5Task extends AsyncTask<String, String, String> {
+public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
 
     private MaterialDialog a;
     private String name, parent, size, items, date;
     private HFile f;
-    Context c;
-    String md5 = "", sizeString;
-    View textView;
-    SizeDrawable sizeDrawable;
-    GenerateMD5Task g = this;
-    TextView t5, t6, t7, t8, t9;
-    TextView md5TextView;
+    private BaseActivity c;
+    private String sizeString;
+    private View textView;
+    private SizeDrawable sizeDrawable;
+    private GenerateMD5Task g = this;
+    private TextView t5, t6, t7, t8, t9, t10;
+    private TextView mNameTitle, mLocationTitle, mDateTitle, mSizeTitle;
+    private TextView md5TextView, sha256TextView;
+    private LinearLayout mNameLinearLayout, mSizeLinearLayout, mLocationLinearLayout, mDateLinearLayout;
+    private LinearLayout mMD5LinearLayout, mSHA256LinearLayout;
+    private int accentColor;
 
     public GenerateMD5Task(MaterialDialog a, HFile f, String name, String parent,
-                           String size, String items, String date, final Context c, final View textView) {
+                           String size, String items, String date, final BaseActivity c, final View textView) {
         this.a = a;
         this.c = c;
         this.f = f;
@@ -55,12 +64,35 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
         t7 = (TextView) textView.findViewById(R.id.t7);
         t8 = (TextView) textView.findViewById(R.id.t8);
         t9 = (TextView) textView.findViewById(R.id.t9);
-        md5TextView = (TextView) textView.findViewById(R.id.md5);
+        t10 = (TextView) textView.findViewById(R.id.t10);
+
+        accentColor = c.getColorPreference().getColor(ColorUsage.ACCENT);
+        md5TextView = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_md5);
+        md5TextView.setTextColor(accentColor);
+        sha256TextView = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_sha256);
+        sha256TextView.setTextColor(accentColor);
+        mNameTitle = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_name);
+        mNameTitle.setTextColor(accentColor);
+        mDateTitle = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_date);
+        mDateTitle.setTextColor(accentColor);
+        mSizeTitle = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_size);
+        mSizeTitle.setTextColor(accentColor);
+        mLocationTitle = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_location);
+        mLocationTitle.setTextColor(accentColor);
+
+        mNameLinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_name);
+        mLocationLinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_location);
+        mSizeLinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_size);
+        mDateLinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_date);
+        mMD5LinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_md5);
+        mSHA256LinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_sha256);
+
         if (!f.isDirectory()) {
             textView.findViewById(R.id.divider).setVisibility(View.GONE);
             textView.findViewById(R.id.dirprops).setVisibility(View.GONE);
         } else {
             md5TextView.setVisibility(View.GONE);
+            sha256TextView.setVisibility(View.GONE);
 
             new AsyncTask<Void, Void, long[]>() {
                 @Override
@@ -86,7 +118,6 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
                         textView.findViewById(R.id.divider).setVisibility(View.GONE);
                         textView.findViewById(R.id.dirprops).setVisibility(View.GONE);
                     }
-
                 }
             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
@@ -108,10 +139,51 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
         t8.setText(date);
         a.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
 
+        // setting click listeners for long press
+        mNameLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                Futils.copyToClipboard(c, name);
+                Toast.makeText(c, c.getResources().getString(R.string.name) + " " +
+                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+        mLocationLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                Futils.copyToClipboard(c, parent);
+                Toast.makeText(c, c.getResources().getString(R.string.location) + " " +
+                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+        mSizeLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                Futils.copyToClipboard(c, items);
+                Toast.makeText(c, c.getResources().getString(R.string.size) + " " +
+                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+        mDateLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                Futils.copyToClipboard(c, date);
+                Toast.makeText(c, c.getResources().getString(R.string.date) + " " +
+                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
     }
 
     @Override
-    protected String doInBackground(String... params) {
+    protected String[] doInBackground(String... params) {
         String param = params[0];
         if (f.isDirectory()) {
             int x = f.listFiles(false).size();
@@ -121,39 +193,54 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
         }
         publishProgress("");
         String md5 = "";
+        String sha256 = "";
         try {
-            if (!f.isDirectory()) md5 = getMD5Checksum(param);
+            if (!f.isDirectory()) {
+                md5 = getMD5Checksum(param);
+                sha256 = getSHA256Checksum();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return md5;
+        String[] hashes = new String[] {
+                md5,
+                sha256
+        };
+        return hashes;
     }
 
     @Override
-    protected void onPostExecute(String aVoid) {
+    protected void onPostExecute(final String[] aVoid) {
         super.onPostExecute(aVoid);
         if (a.isShowing()) {
-            md5 = aVoid;
-            if (!f.isDirectory())
-                t9.setText(aVoid);
-            else {
-                t9.setVisibility(View.GONE);
-            }
-            if (f.isDirectory())
-                a.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
-            else {
-                a.getActionButton(DialogAction.NEGATIVE).setEnabled(true);
-                a.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
+
+            if (!f.isDirectory()) {
+                t9.setText(aVoid[0]);
+                t10.setText(aVoid[1]);
+
+                mMD5LinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        try {
-                            Futils.copyToClipboard(c, md5);
-                            Toast.makeText(c, c.getResources().getString(R.string.md5copied), Toast.LENGTH_SHORT).show();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                    public boolean onLongClick(View v) {
+
+                        Futils.copyToClipboard(c, aVoid[0]);
+                        Toast.makeText(c, c.getResources().getString(R.string.md5).toUpperCase() + " " +
+                                c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                        return false;
                     }
                 });
+                mSHA256LinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+
+                        Futils.copyToClipboard(c, aVoid[1]);
+                        Toast.makeText(c, c.getResources().getString(R.string.hash_sha256) + " " +
+                                c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                });
+            } else {
+                t9.setVisibility(View.GONE);
+                t10.setVisibility(View.GONE);
             }
         }
     }
@@ -161,7 +248,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
         // see this How-to for a faster way to convert
         // a byte array to a HEX string
 
-    public  String getMD5Checksum(String filename) throws Exception {
+    public String getMD5Checksum(String filename) throws Exception {
         byte[] b = createChecksum();
         String result = "";
 
@@ -169,6 +256,30 @@ public class GenerateMD5Task extends AsyncTask<String, String, String> {
             result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
         }
         return result;
+    }
+
+    private String getSHA256Checksum() throws NoSuchAlgorithmException, IOException {
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+        byte[] input = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
+        int length;
+        InputStream inputStream = f.getInputStream();
+        while ((length = inputStream.read(input)) != -1) {
+            if (length > 0)
+                messageDigest.update(input, 0, length);
+        }
+
+        byte[] hash = messageDigest.digest();
+
+        StringBuffer hexString = new StringBuffer();
+
+        for (int i=0; i<hash.length; i++) {
+            // convert hash to base 16
+            String hex = Integer.toHexString(0xff & hash[i]);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        inputStream.close();
+        return hexString.toString();
     }
 
     public  byte[] createChecksum() throws Exception {

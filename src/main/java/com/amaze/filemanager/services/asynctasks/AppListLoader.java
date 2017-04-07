@@ -2,6 +2,7 @@ package com.amaze.filemanager.services.asynctasks;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -59,15 +60,25 @@ public class AppListLoader extends AsyncTaskLoader<List<Layoutelements>> {
 
         mApps = new ArrayList<>(apps.size());
 
+
         for (ApplicationInfo object : apps) {
             File sourceDir = new File(object.sourceDir);
 
             String label = object.loadLabel(packageManager).toString();
+            PackageInfo info;
+
+            try {
+                info = packageManager.getPackageInfo(object.packageName, 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+                info = null;
+            }
 
             mApps.add(new Layoutelements(new BitmapDrawable(context.getResources(),
                     BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_doc_apk_grid)),
                     label == null ? object.packageName : label, object.sourceDir,
-                    object.packageName, object.flags + "", Formatter.formatFileSize(getContext(), sourceDir.length()),
+                    object.packageName, object.flags + "_" + (info!=null ? info.versionName:""),
+                    Formatter.formatFileSize(getContext(), sourceDir.length()),
                     sourceDir.length(), false, sourceDir.lastModified()+"", false));
 
             Collections.sort(mApps, new FileListSorter(0, sortBy, asc, false));

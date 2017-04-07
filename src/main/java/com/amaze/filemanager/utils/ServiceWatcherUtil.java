@@ -99,11 +99,11 @@ public class ServiceWatcherUtil {
      */
     public static void runService(final Context context, final Intent intent) {
 
-        if (handlerThread==null || !handlerThread.isAlive()) {
+        /*if (handlerThread==null || !handlerThread.isAlive()) {
             // we're not bound, no need to proceed further and waste up resources
             // start the service directly
 
-            /**
+            *//**
              * We can actually end up racing at this point with the {@link HandlerThread} started
              * in {@link #init(Context)}. If older service has returned, we already have the runnable
              * waiting to execute in #init, and user is in app, and starts another service, and
@@ -113,10 +113,10 @@ public class ServiceWatcherUtil {
              * Though chances are very slim, but even if this condition occurs, only the progress will
              * be flawed, but the actual operation will go fine, due to android's native serial service
              * execution. #nough' said!
-             */
+             *//*
             context.startService(intent);
             return;
-        }
+        }*/
 
         if (pendingIntents.size()==0) {
             init(context);
@@ -144,7 +144,6 @@ public class ServiceWatcherUtil {
         mBuilder.setAutoCancel(false);
         mBuilder.setSmallIcon(R.drawable.ic_all_inclusive_white_36dp);
         mBuilder.setProgress(0, 0, true);
-        notificationManager.notify(ID_NOTIFICATION_WAIT, mBuilder.build());
 
         Runnable runnable = new Runnable() {
             @Override
@@ -162,12 +161,15 @@ public class ServiceWatcherUtil {
                         handler.removeCallbacks(this);
                         waitingThread.quit();
                         return;
+                    } else {
+
+                        notificationManager.notify(ID_NOTIFICATION_WAIT, mBuilder.build());
                     }
                 }
                 handler.postDelayed(this, 5000);
             }
         };
 
-        handler.postDelayed(runnable, 5000);
+        handler.postDelayed(runnable, 0);
     }
 }

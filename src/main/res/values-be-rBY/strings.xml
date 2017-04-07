@@ -75,6 +75,8 @@
   <string name="tab">Закладка</string>
   <string name="file">Файл</string>
   <string name="folder">Тэчка</string>
+  <string name="title_files">ФАЙЛЫ</string>
+  <string name="title_dirs">ТЭЧКІ</string>
   <string name="newfolder">Новая тэчка</string>
   <string name="entername">Увядзіце назву</string>
   <string name="extracting">Выманне</string>
@@ -557,6 +559,19 @@
   <string name="ftp_path_hint">Шлях да каранёвага каталогу для агульнага доступу</string>
   <string name="error_ftp_path_file">Шлях не з\'яўляецца каталогам</string>
   <string name="change">Змяніць</string>
+  <string name="unknown_error">Штосьці пайшло не так!</string>
   <string name="ftp_path_change_success">FTP шлях паспяхова зменены</string>
   <string name="ftp_path_change_error_invalid">Няправільны шлях</string>
+  <string name="ftp_status_no_connection">Няма злучэння</string>
+  <string name="ftp_status_secure_connection">Бяспечнае злучэнне</string>
+  <string name="ftp_status_title">Стан</string>
+  <string name="ftp_port">Порт</string>
+  <string name="ftp_login">Увайсці</string>
+  <string name="field_empty">Поле не можа быць пустым</string>
+  <string name="ftp_seconds">Секунд</string>
+  <string name="hash_sha256">SHA-256</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">скапіявана ў буфер абмену</string>
+  <string name="contributors_1_summary">Пераклад</string>
+  <string name="contributors_6_summary">FTP сервер</string>
 </resources>

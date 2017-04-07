@@ -63,6 +63,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
     private CopyNode copyFolder;
     private final ArrayList<String> paths = new ArrayList<>();
     private final ArrayList<ArrayList<BaseFile>> filesToCopyPerFolder = new ArrayList<>();
+    private ArrayList<BaseFile> filesToCopy;    // a copy of params sent to this
 
     public CopyFileCheck(Main ma, String path, Boolean move, MainActivity con, boolean rootMode) {
         main = ma;
@@ -82,8 +83,13 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
 
     @Override
     protected CopyNode doInBackground(ArrayList<BaseFile>... params) {
-        ArrayList<BaseFile> filesToCopy = params[0];
+        filesToCopy = params[0];
         long totalBytes = 0;
+
+        if (openMode==OpenMode.OTG) {
+            // no helper method for OTG to determine storage space
+            return null;
+        }
 
         for (int i = 0; i < filesToCopy.size(); i++) {
             BaseFile file = filesToCopy.get(i);
@@ -123,7 +129,23 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
     @Override
     protected void onPostExecute(CopyNode copyFolder) {
         super.onPostExecute(copyFolder);
-        onEndDialog(null, null, null);
+        if (openMode!=OpenMode.OTG) {
+
+            onEndDialog(null, null, null);
+        } else {
+
+            startService(filesToCopy, path, openMode);
+        }
+    }
+
+    private void startService(ArrayList<BaseFile> sourceFiles, String target, OpenMode openmode) {
+
+
+        Intent intent = new Intent(context, CopyService.class);
+        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, sourceFiles);
+        intent.putExtra(CopyService.TAG_COPY_TARGET, target);
+        intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, openmode.ordinal());
+        ServiceWatcherUtil.runService(context, intent);
     }
 
     private void showDialog(final String path, final ArrayList<BaseFile> filesToCopy,
@@ -252,11 +274,8 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
             } else {
                 if (!move) {
                     for (int i = 0; i < filesToCopyPerFolder.size(); i++) {
-                        Intent intent = new Intent(context, CopyService.class);
-                        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, filesToCopyPerFolder.get(i));
-                        intent.putExtra(CopyService.TAG_COPY_TARGET, paths.get(i));
-                        intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, openMode.ordinal());
-                        ServiceWatcherUtil.runService(context, intent);
+
+                        startService(filesToCopyPerFolder.get(i), paths.get(i), openMode);
                     }
                 } else {
                     new MoveFiles(filesToCopyPerFolder, main, context, openMode)

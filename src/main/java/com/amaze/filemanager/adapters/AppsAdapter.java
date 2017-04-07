@@ -233,7 +233,8 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                 f1.setMode(OpenMode.ROOT);
                                 int color= Color.parseColor(PreferenceUtils.getAccentString(app.Sp));
 
-                                if ((Integer.valueOf(rowItem.getSymlink()) & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                                if ((Integer.valueOf(rowItem.getSymlink().substring(0,
+                                        rowItem.getSymlink().indexOf("_"))) & ApplicationInfo.FLAG_SYSTEM) != 0) {
                                     // system package
                                     if(app.Sp.getBoolean("rootmode",false)) {
                                         MaterialDialog.Builder builder1 = new MaterialDialog.Builder(app.getActivity());
@@ -295,7 +296,8 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
                                 if(!dst.exists() || !dst.isDirectory())dst.mkdirs();
                                 Intent intent = new Intent(app.getActivity(), CopyService.class);
                                 BaseFile baseFile=RootHelper.generateBaseFile(f,true);
-                                baseFile.setName(rowItem.getTitle() + "_" + rowItem.getSymlink() + ".apk");
+                                baseFile.setName(rowItem.getTitle() + "_" +
+                                        rowItem.getSymlink().substring(rowItem.getSymlink().indexOf("_")+1) + ".apk");
                                 ab.add(baseFile);
 
                                 intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, ab);
